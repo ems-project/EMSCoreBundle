@@ -915,7 +915,7 @@ class Revision implements EntityInterface, \Stringable
     {
         $versionTags = $this->contentType ? $this->contentType->getVersionTags() : [];
 
-        if (!isset($versionTags[0]) || !\is_string($versionTags[0])) {
+        if (!isset($versionTags[0])) {
             throw new \RuntimeException(\sprintf('No version tags found for contentType %s (use hasVersionTags)', $this->getContentTypeName()));
         }
 

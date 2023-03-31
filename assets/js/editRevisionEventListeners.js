@@ -105,6 +105,28 @@ function editRevisionEventListeners(target, onChangeCallback = null){
         ckconfig.extraAllowedContent = 'p(*)[*]{*};div(*)[*]{*};li(*)[*]{*};ul(*)[*]{*}';
         CKEDITOR.dtd.$removeEmpty.i = 0;
 
+        CKEDITOR.on('instanceReady', (event) => {
+            let editor = event.editor;
+            let emsTranslations = ckconfig?.ems?.translations;
+
+            if (typeof emsTranslations === 'undefined' || !emsTranslations.hasOwnProperty(editor.langCode)) return;
+            let emsTranslationsLang = emsTranslations[editor.langCode];
+            let ckeditorSections = [
+                ...Object.getOwnPropertyNames(editor.lang),
+                ...Object.getOwnPropertyNames(Object.getPrototypeOf(editor.lang))
+            ];
+
+            ckeditorSections.forEach((section) => {
+                Object.entries(emsTranslationsLang).forEach(([key, value]) => {
+                    const splitKey = key.split('.');
+                    if (section !== splitKey[0]) return;
+                    if (editor.lang[section].hasOwnProperty(splitKey[1])) {
+                        editor.lang[section][splitKey[1]] = value;
+                    }
+                });
+            });
+        });
+
         if (onChangeCallback && !CKEDITOR.instances[$( this ).attr('id')] && $(this).hasClass('ignore-ems-update') === false) {
             CKEDITOR.replace(this, ckconfig).on('key', onChangeCallback );
         }

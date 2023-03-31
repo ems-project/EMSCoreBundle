@@ -30,7 +30,7 @@ class XliffService
     /**
      * @param FieldType[] $fields
      */
-    public function extract(ContentType $contentType, Document $source, Extractor $extractor, array $fields, Environment $sourceEnvironment, ?Environment $targetEnvironment, string $targetLocale, string $localeField, string $translationField, bool $encodeHtml): void
+    public function extract(ContentType $contentType, Document $source, Extractor $extractor, array $fields, Environment $sourceEnvironment, ?Environment $targetEnvironment, string $targetLocale, string $localeField, string $translationField, bool $withBaseline): void
     {
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
@@ -56,6 +56,11 @@ class XliffService
         } else {
             $currentTranslationData = [];
         }
+        if ($withBaseline && null !== $targetEnvironment && null !== $translationId) {
+            $baselineTranslationData = $this->getCurrentTranslationData($targetEnvironment, $translationField, $translationId, $localeField, $extractor->getSourceLocale());
+        } else {
+            $baselineTranslationData = [];
+        }
 
         $xliffDoc = $extractor->addDocument($contentType->getName(), $source->getId(), \strval($sourceRevision->getId()));
         foreach ($fields as $fieldPath => $field) {
@@ -66,10 +71,11 @@ class XliffService
             }
             $currentValue = $propertyAccessor->getValue($currentData, $propertyPath);
             $translation = $propertyAccessor->getValue($currentTranslationData, $propertyPath);
-            $isFinal = (null !== $targetEnvironment && $contentType->giveEnvironment()->getName() !== $targetEnvironment->getName() && $currentValue === $value && null !== $translation);
+            $baseline = $propertyAccessor->getValue($baselineTranslationData, $propertyPath);
+            $isFinal = (null !== $targetEnvironment && $contentType->giveEnvironment()->getName() !== $targetEnvironment->getName() && $currentValue === $value && (null !== $translation || '' === $value));
 
             if (HtmlHelper::isHtml($value)) {
-                $extractor->addHtmlField($xliffDoc, $fieldPath, $value, $translation, $isFinal, $encodeHtml);
+                $extractor->addHtmlField($xliffDoc, $fieldPath, $value, $translation, $baseline, $isFinal);
             } else {
                 $extractor->addSimpleField($xliffDoc, $fieldPath, $value, $translation, $isFinal);
             }

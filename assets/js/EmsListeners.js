@@ -567,6 +567,7 @@ export default class EmsListeners {
             const type = selectItem.data('type');
             const searchId = selectItem.data('search-id');
             const querySearch = selectItem.data('query-search');
+            const querySearchLabel = selectItem.data('query-search-label');
             const circleOnly = selectItem.data('circleOnly');
             const dynamicLoading = selectItem.data('dynamic-loading');
             const sortable = selectItem.data('sortable');
@@ -579,7 +580,7 @@ export default class EmsListeners {
                 templateSelection: formatRepoSelection, // omitted for brevity, see the source of this page
                 allowClear: true,
                 //https://github.com/select2/select2/issues/3781
-                placeholder: 'Select a document'
+                placeholder: querySearchLabel && '' !== querySearchLabel ? querySearchLabel : 'Search',
             };
 
             if(selectItem.attr('multiple')) {

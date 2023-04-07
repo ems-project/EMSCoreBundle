@@ -2,7 +2,9 @@
 
 namespace EMS\CoreBundle\Form\Field;
 
+use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
+use EMS\CoreBundle\Service\QuerySearchService;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
@@ -10,8 +12,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ObjectPickerType extends Select2Type
 {
-    public function __construct(private readonly ObjectChoiceListFactory $choiceListFactory)
-    {
+    public function __construct(
+        private readonly ObjectChoiceListFactory $choiceListFactory,
+        private readonly QuerySearchService $querySearchService
+    ) {
         parent::__construct($choiceListFactory);
     }
 
@@ -50,6 +54,7 @@ class ObjectPickerType extends Select2Type
             'searchId' => null,
             'circle-only' => false,
             'querySearch' => null,
+            'querySearchLabel' => null,
             'referrer-ems-id' => null,
         ]);
     }
@@ -65,17 +70,36 @@ class ObjectPickerType extends Select2Type
      */
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
+        $querySearch = $options['querySearch'];
+        $querySearchLabel = $this->getQuerySearchLabel($querySearch);
         $view->vars['attr']['data-type'] = $options['type'];
         $view->vars['attr']['data-search-id'] = $options['searchId'];
         $view->vars['attr']['data-circle-only'] = $options['circle-only'];
         $view->vars['attr']['data-dynamic-loading'] = $options['dynamicLoading'];
         $view->vars['attr']['data-sortable'] = $options['sortable'];
-        $view->vars['attr']['data-query-search'] = $options['querySearch'];
+        $view->vars['attr']['data-query-search'] = $querySearch;
+        $view->vars['attr']['data-query-search-label'] = $querySearchLabel;
         $view->vars['attr']['data-referrer-ems-id'] = $options['referrer-ems-id'] ?? false;
     }
 
     public function getBlockPrefix(): string
     {
         return 'objectpicker';
+    }
+
+    private function getQuerySearchLabel(?string $querySearch): ?string
+    {
+        if (null === $querySearch) {
+            return null;
+        }
+        try {
+            $querySearchEntity = $this->querySearchService->getByItemName($querySearch);
+            if ($querySearchEntity instanceof QuerySearch) {
+                return $querySearchEntity->getLabel();
+            }
+        } catch (\RuntimeException) {
+        }
+
+        return null;
     }
 }

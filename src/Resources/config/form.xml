@@ -333,6 +333,7 @@
         </service>
         <service id="ems.form.field.objectpickertype" class="EMS\CoreBundle\Form\Field\ObjectPickerType">
             <argument type="service" id="ems.form.factories.objectChoiceListFactory" />
+            <argument type="service" id="ems.service.query_search" />
             <tag name="form.type"/>
         </service>
         <service id="ems_core.form.dashboard_type" class="EMS\CoreBundle\Form\Form\Dashboard\DashboardType">
@@ -352,10 +353,6 @@
         <service id="ems_core.form.user_type" class="EMS\CoreBundle\Form\Form\UserType">
             <argument type="service" id="ems.service.user" />
             <argument>%ems_core.circles_object%</argument>
-            <tag name="form.type"/>
-        </service>
-        <service id="ems.form.field.objectpickertype" class="EMS\CoreBundle\Form\Field\ObjectPickerType">
-            <argument type="service" id="ems.form.factories.objectChoiceListFactory" />
             <tag name="form.type"/>
         </service>
         <service id="ems.form.field.contenttypefieldpickertype" class="EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType">

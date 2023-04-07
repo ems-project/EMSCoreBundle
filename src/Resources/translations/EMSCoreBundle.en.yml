@@ -528,8 +528,8 @@ data:
 field_type:
     json_menu_editor:
         add: Add
-        add_item: 'Add a new item %singular%'
-        add_node: 'Add a new node %singular%'
+        add_item: 'Add a new %singular%'
+        add_node: 'Add a new %singular%'
         collapse_all_button: 'Expand/Collapse all'
         collapse_button: Expand/Collapse
         delete_item: 'Delete this entry'

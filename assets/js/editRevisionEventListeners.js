@@ -262,6 +262,20 @@ function editRevisionEventListeners(target, onChangeCallback = null){
             $(this).daterangepicker(options);
         }
     });
+
+    target.find('textarea,input').each(function( ) {
+        const counterSpan = this.parentNode.querySelector('.text-counter');
+        if (undefined === counterSpan || !counterSpan.hasAttribute('data-counter-label') || counterSpan.parentNode !== this.parentNode) {
+            return;
+        }
+        const counterLabel = counterSpan.getAttribute('data-counter-label');
+        const updateCounter = function(textarea) {
+            const length = textarea.value.length;
+            counterSpan.textContent = counterLabel.replace('%count%', length);
+        };
+        this.addEventListener('keyup', function(event){ updateCounter(event.target); });
+        updateCounter(this);
+    });
 }
 
 export {editRevisionEventListeners};

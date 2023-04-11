@@ -98,6 +98,7 @@
 	{% else %}
 		{{ block('form_widget') }}
 	{% endif %}
+    <span class="pull-right text-counter" data-counter-label="{{ 'field_type.textarea.counter'|trans|e('html_attr') }}"></span>
 {%- endblock icontext_widget %}
 
 
@@ -1480,3 +1481,9 @@
 		{{ form_row(form.config) }}
 	</div>
 {%- endblock -%}
+
+
+{% block textarea_widget %}
+    {{ parent() }}
+    <span class="pull-right text-counter" data-counter-label="{{ 'field_type.textarea.counter'|trans|e('html_attr') }}"></span>
+{% endblock textarea_widget %}

@@ -526,6 +526,8 @@ data:
         add_to_release: 'Add to release'
         add_to_release_confirm: 'Do you confirm ?'
 field_type:
+    textarea:
+        counter: '%count% characters'
     json_menu_editor:
         add: Add
         add_item: 'Add a new %singular%'

@@ -265,7 +265,7 @@ function editRevisionEventListeners(target, onChangeCallback = null){
 
     target.find('textarea,input').each(function( ) {
         const counterSpan = this.parentNode.querySelector('.text-counter');
-        if (undefined === counterSpan || !counterSpan.hasAttribute('data-counter-label') || counterSpan.parentNode !== this.parentNode) {
+        if (null === counterSpan || !counterSpan.hasAttribute('data-counter-label') || counterSpan.parentNode !== this.parentNode) {
             return;
         }
         const counterLabel = counterSpan.getAttribute('data-counter-label');

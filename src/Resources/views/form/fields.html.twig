@@ -477,6 +477,13 @@
 	{{ parent() }}
 {% endblock form_errors %}
 
+{% block choice_errors %}
+    {% if form.parent is defined and form.parent.vars.helptext is defined and form.parent.vars.helptext %}
+        <div class="help-block">{{ form.parent.vars.helptext|raw }}</div>
+    {% endif %}
+    {{ block('form_errors') }}
+{% endblock choice_errors %}
+
 
 
 {% block tabsfieldtype_row -%}

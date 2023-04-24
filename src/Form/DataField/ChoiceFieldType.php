@@ -102,6 +102,7 @@ class ChoiceFieldType extends DataFieldType
                 'empty_data' => $options['multiple'] ? [] : null,
                 'multiple' => $options['multiple'],
                 'expanded' => $options['expanded'],
+                'placeholder' => $options['placeholder'],
                 'choice_attr' => $this->choiceAttr(...),
         ]);
     }
@@ -133,6 +134,7 @@ class ChoiceFieldType extends DataFieldType
         $resolver->setDefault('select2', false);
         $resolver->setDefault('linked_collection', false);
         $resolver->setDefault('collection_label_field', false);
+        $resolver->setDefault('placeholder', null);
     }
 
     /**
@@ -154,6 +156,8 @@ class ChoiceFieldType extends DataFieldType
                 'required' => false,
         ])->add('labels', TextareaType::class, [
                 'required' => false,
+        ])->add('placeholder', TextType::class, [
+            'required' => false,
         ])->add('linked_collection', TextType::class, [
             'required' => false,
         ])->add('collection_label_field', TextType::class, [

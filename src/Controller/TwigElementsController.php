@@ -95,7 +95,7 @@ class TwigElementsController extends AbstractController
     private function getOtherMenu(): Menu
     {
         $menu = new Menu('views.elements.side-menu-html.other');
-        $menu->addChild('views.elements.side-menu-html.documentations', 'fa fa-book', 'documentation')->setTranslation([]);
+        $menu->addChild('views.elements.side-menu-html.documentation', 'fa fa-book', 'documentation')->setTranslation([]);
 
         return $menu;
     }

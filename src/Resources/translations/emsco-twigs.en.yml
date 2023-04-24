@@ -155,7 +155,7 @@ views:
             filters: Filters
             other: Other
             status: Status
-            documentations: Documentations
+            documentation: Documentation
             wysiwyg: WYSIWYG
             uploaded-files-logs: 'Uploaded file logs'
             audit-logs: Logs

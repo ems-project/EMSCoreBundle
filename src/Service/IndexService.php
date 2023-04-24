@@ -6,6 +6,7 @@ use Elastica\Exception\ResponseException;
 use Elasticsearch\Endpoints\Index;
 use Elasticsearch\Endpoints\Indices\Exists;
 use Elasticsearch\Endpoints\Indices\GetAlias;
+use Elasticsearch\Endpoints\Indices\UpdateAliases;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CoreBundle\Entity\Environment;
@@ -160,6 +161,38 @@ final class IndexService
         }
 
         return $aliases;
+    }
+
+    /**
+     * @param string[] $indexes
+     * @param string[] $indexesToRemove
+     */
+    public function addIndexesToAlias(string $alias, array $indexes, array $indexesToRemove = []): bool
+    {
+        $endpoint = new UpdateAliases();
+        $actions = [];
+        foreach ($indexes as $index) {
+            $actions[] = [
+                'add' => [
+                    'index' => $index,
+                    'alias' => $alias,
+                ],
+            ];
+        }
+        foreach ($indexesToRemove as $index) {
+            $actions[] = [
+                'remove' => [
+                    'index' => $index,
+                    'alias' => $alias,
+                ],
+            ];
+        }
+        $endpoint->setBody([
+            'actions' => $actions,
+        ]);
+        $result = $this->client->requestEndpoint($endpoint);
+
+        return $result->isOk();
     }
 
     /**

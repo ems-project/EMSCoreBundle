@@ -460,6 +460,11 @@
         <service id="ems.form_verification" class="EMS\CoreBundle\Service\Form\Verification\FormVerificationService">
             <argument type="service" id="ems.repository.form_verification"/>
         </service>
+        <service id="ems.managed_alias.manager" class="EMS\CoreBundle\Core\ManagedAlias\ManagedAliasManager">
+            <argument type="service" id="EMS\CoreBundle\Repository\ManagedAliasRepository" />
+            <argument>%ems_core.instance_id%</argument>
+            <tag name="emsco.entity.service"/>
+        </service>
 
         <!-- Aliases -->
         <service id="ems.service.data" alias="EMS\CoreBundle\Service\DataService" public="true"/>

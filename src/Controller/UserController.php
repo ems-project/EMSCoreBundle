@@ -275,6 +275,7 @@ class UserController extends AbstractController
         $table->addColumn('user.index.column.email', 'email');
         $table->addColumn('user.index.column.locale_ui', 'locale');
         $table->addColumn('user.index.column.locale_preferred', 'localePreferred');
+        $table->addColumn('user.index.column.wysiwyg_profile', 'wysiwygProfile');
         if ($this->circleObject) {
             $table->addColumnDefinition(new DataLinksTableColumn('user.index.column.circles', 'circles'));
         }

@@ -867,6 +867,7 @@ user:
             roles: Roles
             username: Username
             locale_preferred: 'Locale preferred'
+            wysiwyg_profile: 'WYSIWYG profile'
             locale_ui: UI
     add:
         button: 'Add user'

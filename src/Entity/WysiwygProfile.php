@@ -131,4 +131,9 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
 
         return $profile;
     }
+
+    public function __toString(): string
+    {
+        return $this->getName();
+    }
 }

@@ -766,15 +766,15 @@ class AppExtension extends AbstractExtension
         return $user ? $user->getDisplayName() : $username;
     }
 
-    public function srcPath(string $input, string $fileName = null): ?string
+    public function srcPath(string $input, bool $asFileName = false): ?string
     {
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $path = \substr($path, 0, \strlen($path) - 8);
 
         return \preg_replace_callback(
             '/(ems:\/\/asset:)(?P<hash>[^\n\r"\'\?]*)(?:\?(?P<query>(?:[^\n\r"|\']*)))?/i',
-            function ($matches) use ($path, $fileName) {
-                if ($fileName) {
+            function ($matches) use ($path, $asFileName) {
+                if ($asFileName) {
                     return $this->fileService->getFile($matches['hash']) ?? $path.$matches['hash'];
                 }
 
@@ -801,7 +801,7 @@ class AppExtension extends AbstractExtension
         );
     }
 
-    public function internalLinks(string $input, string $fileName = null): ?string
+    public function internalLinks(string $input, bool $asFileName = false): ?string
     {
         $url = $this->router->generate('data.link', ['key' => 'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $out = \preg_replace('/ems:\/\/object:/i', $url, $input);
@@ -810,7 +810,7 @@ class AppExtension extends AbstractExtension
             throw new \RuntimeException('Unexpected null value');
         }
 
-        return $this->srcPath($out, $fileName);
+        return $this->srcPath($out, $asFileName);
     }
 
     public function isSuper(): bool

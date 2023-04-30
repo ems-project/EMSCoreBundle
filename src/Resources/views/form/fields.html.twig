@@ -275,26 +275,6 @@
 
 {%- endblock data_field_options_widget -%}
 
-{# {% block datafieldtype_widget %}#}
-{# 	{% if isContainer %}#}
-{# 		<div id="{{ form.vars.id }}" class="container-fluid">#}
-{# 			<div class="row">#}
-{# 				{% for child in form.iterator %}#}
-{# 					{{- form_row(child) -}}#}
-{# 					{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}#}
-{# 						</div><div class="row">#}
-{# 					{% endif %}#}
-{# 				{% endfor %}#}
-{# 			</div>#}
-{# 		</div>#}
-{# 	{% else %}#}
-{# 		{{ form_widget(form) }}#}
-{# 	{% endif %}#}
-{# {% endblock datafieldtype_widget %}#}
-
-{# Labels #}
-
-
 {%- block code_editor_label -%}
     {% if label is not same as(false) -%}
         {% if not compound -%}
@@ -665,7 +645,7 @@
     				{{- form_row(child) -}}
 				</div>
 				{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}
-					</div><div class="row">
+                    <div class="clearfix"></div>
 				{% endif %}
 			{% endfor %}
 			</div>
@@ -675,17 +655,6 @@
     {{ form_row(form._ems_internal_deleted) }}
 </div>
 {% endblock collectionitemtype_row %}
-
-
-{# {%  block data_field_type_row %}#}
-{# 	<div class="{{ form.vars.class }}">#}
-{#     	{{ form_row(form) }}#}
-{# 	</div>#}
-{# 	{% if form.vars.lastOfRow is defined and form.vars.lastOfRow %}#}
-{# 		</div><div class="row">#}
-{# 	{% endif %}#}
-{# {% endblock data_field_type_row %}#}
-
 
 {% block form_field_type_row %}
     {% for child in form.iterator %}
@@ -697,7 +666,7 @@
             {{- form_row(child) -}}
         {% endif %}
         {% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}
-            </div><div class="row">
+            <div class="clearfix"></div>
         {% endif %}
     {% endfor %}
 {% endblock form_field_type_row %}
@@ -712,7 +681,7 @@
             {{- form_row(child) -}}
         {% endif %}
         {% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}
-            </div><div class="row">
+            <div class="clearfix"></div>
         {% endif %}
     {% endfor %}
 {% endblock holder_field_type_widget %}
@@ -730,7 +699,7 @@
                     {{- form_row(child) -}}
                 {% endif %}
 				{% if child.vars.lastOfRow is defined and child.vars.lastOfRow %}
-					</div><div class="row">
+                    <div class="clearfix"></div>
 				{% endif %}
 			{% endfor %}
 		</div>

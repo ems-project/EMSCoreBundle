@@ -299,7 +299,7 @@
 										{{ _self.renderDataFieldBlock(grandchild, source, compare, (attribute(compareCollectionRawData, idx) is defined?attribute(compareCollectionRawData, idx):null), '', subpath) }}
 									</div>
 									{% if grandchild.fieldType.displayOptions.lastOfRow is defined and grandchild.fieldType.displayOptions.lastOfRow %}
-										</div><div class="row">
+										<div class="clearfix"></div>
 									{% endif %}
 								{% endfor %}
 							</div>
@@ -314,7 +314,12 @@
 
 {% block EMS_CoreBundle_Form_DataField_HolderFieldType %}
     {% for child in dataField.getChildren|filter(c => false == c.fieldType.deleted) %}
-        {{ _self.renderDataFieldBlock(child, source, compare, compareRawData, '', path) }}
+        <div class="{{ child.fieldType.displayOptions.class|default('col-md-12') }}">
+            {{ _self.renderDataFieldBlock(child, source, compare, compareRawData, '', path) }}
+        </div>
+        {% if child.fieldType.displayOptions.lastOfRow|default(false) %}
+            <div class="clearfix"></div>
+        {% endif %}
     {% endfor %}
 {% endblock EMS_CoreBundle_Form_DataField_HolderFieldType %}
 
@@ -348,7 +353,7 @@
 				{{ _self.renderDataFieldBlock(child, source, compare, compareRawData, '', path) }}
 			</div>
 			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
-				</div><div class="row">
+                <div class="clearfix"></div>
 			{% endif %}
 		{% endfor %}
 	</div>
@@ -387,7 +392,7 @@
 				{{ _self.renderDataFieldBlock(child, source, compare, compareSubRawData, '', path) }}
 			</div>
 			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
-				</div><div class="row">
+				<div class="clearfix"></div>
 			{% endif %}
 		{% endfor %}
 	</div>

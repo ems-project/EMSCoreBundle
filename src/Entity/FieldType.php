@@ -618,6 +618,42 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $this->parent;
     }
 
+    /**
+     * @return array<string, FieldType>
+     */
+    private function listAllFields(): array
+    {
+        $out = [];
+        foreach ($this->getChildren() as $child) {
+            $out = [...$out, ...$child->listAllFields()];
+        }
+        $out['key_'.$this->getId()] = $this;
+
+        return $out;
+    }
+
+    /**
+     * @param array<mixed>             $newStructure
+     * @param array<string, FieldType> $fieldsByIds
+     */
+    public function reorderFields(array $newStructure, ?array $fieldsByIds = null): void
+    {
+        if (null === $fieldsByIds) {
+            $fieldsByIds = $this->listAllFields();
+        }
+        $this->getChildren()->clear();
+        foreach ($newStructure as $key => $item) {
+            if (\array_key_exists('key_'.$item['id'], $fieldsByIds)) {
+                $this->getChildren()->add($fieldsByIds['key_'.$item['id']]);
+                $fieldsByIds['key_'.$item['id']]->setParent($this);
+                $fieldsByIds['key_'.$item['id']]->setOrderKey($key + 1);
+                $fieldsByIds['key_'.$item['id']]->reorderFields($item['children'] ?? [], $fieldsByIds);
+            } else {
+                throw new \RuntimeException(\sprintf('Field %d not found', $item['id']));
+            }
+        }
+    }
+
     public function addChild(FieldType $child, bool $prepend = false): self
     {
         $child->setParent($this);

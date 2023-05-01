@@ -10,9 +10,11 @@ use EMS\CoreBundle\Entity\Form;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\FormType;
+use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Routes;
+use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form as ComponentForm;
@@ -116,6 +118,25 @@ class FormController extends AbstractController
         ]);
     }
 
+    public function reorder(Request $request, Form $form): Response
+    {
+        $formType = $this->createForm(ReorderType::class, []);
+
+        $formType->handleRequest($request);
+        if ($formType->isSubmitted()) {
+            $data = $formType->getData();
+            $structure = Json::decode((string) $data['items']);
+            $this->formManager->reorderFields($form, $structure);
+
+            return $this->redirectToRoute(Routes::FORM_ADMIN_INDEX);
+        }
+
+        return $this->render('@EMSCore/admin-form/reorder.html.twig', [
+            'form' => $formType->createView(),
+            'entity' => $form,
+        ]);
+    }
+
     public function delete(Form $form): Response
     {
         $this->formManager->delete($form);
@@ -130,6 +151,7 @@ class FormController extends AbstractController
         $table->addColumn('form.index.column.name', 'name');
         $table->addColumn('form.index.column.label', 'label');
         $table->addItemGetAction(Routes::FORM_ADMIN_EDIT, 'form.actions.edit', 'pencil');
+        $table->addItemGetAction(Routes::FORM_ADMIN_REORDER, 'form.actions.reorder', 'reorder');
         $table->addItemPostAction(Routes::FORM_ADMIN_DELETE, 'form.actions.delete', 'trash', 'form.actions.delete_confirm')->setButtonType('outline-danger');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'form.actions.delete_selected', 'form.actions.delete_selected_confirm')
             ->setCssClass('btn btn-outline-danger');

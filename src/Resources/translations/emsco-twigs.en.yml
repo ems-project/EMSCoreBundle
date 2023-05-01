@@ -1,4 +1,6 @@
 form:
+    reorder:
+        title: 'Reorder %label%'
     edit:
         title: 'Edit a form'
     add:

@@ -26,6 +26,7 @@ class Routes
     final public const FORM_ADMIN_INDEX_AJAX = 'emsco_form_admin_index_ajax';
     final public const FORM_ADMIN_ADD = 'emsco_form_admin_add';
     final public const FORM_ADMIN_EDIT = 'emsco_form_admin_edit';
+    final public const FORM_ADMIN_REORDER = 'emsco_form_admin_reorder';
     final public const FORM_ADMIN_DELETE = 'emsco_form_admin_delete';
     final public const RELEASE_INDEX = 'emsco_release_index';
     final public const RELEASE_VIEW = 'emsco_release_view';

@@ -6,10 +6,12 @@
 					<b>{{ child.name }}</b> {{ child.type }}
 
 					<div class="btn-group  pull-right">
-						<a class="btn btn-xs btn-primary" href="{{ path('ems_contenttype_field_edit', { contentType: contentType.id, field: child.id }) }}">
-							<i class="fa fa-edit"></i>
-							{{ 'view.contenttype.reorder_item.edit_field_button'|trans({'%name%': child.name}) }}
-						</a>
+                        {% if contentType is defined %}
+                            <a class="btn btn-xs btn-primary" href="{{ path('ems_contenttype_field_edit', { contentType: contentType.id, field: child.id }) }}">
+                                <i class="fa fa-edit"></i>
+                                {{ 'view.contenttype.reorder_item.edit_field_button'|trans({'%name%': child.name}) }}
+                            </a>
+                        {% endif %}
 					</div>
         		</div>
         		{% if (child.type~'::isContainer')|call_user_func and child.children|length > 0  %}

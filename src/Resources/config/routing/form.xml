@@ -19,4 +19,7 @@
   <route id="emsco_form_admin_delete" path="/admin/form/delete/{form}"
          controller="EMS\CoreBundle\Controller\Form\FormController::delete"
          methods="POST"/>
+  <route id="emsco_form_admin_reorder" path="/admin/form/reorder/{form}"
+         controller="EMS\CoreBundle\Controller\Form\FormController::reorder"
+         methods="GET|POST"/>
 </routes>

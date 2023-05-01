@@ -241,6 +241,7 @@ form:
     field-type-type:
         root: 'Form''s root'
     actions:
+        reorder: 'Reorder'
         delete_selected: 'Delete selected forms'
         delete_confirm: 'Are you sure?'
         delete: Delete

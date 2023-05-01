@@ -644,7 +644,7 @@
 		<dd>
 			<div class="panel panel-default">
 				<div class="panel-body">
-                    {{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+                    {{ diff(dataField.rawData, attribute(compareRawData, dataField.fieldType.name)|default(null), compare, true, false)|nl2br }}
 				</div>
 			</div>
 		</dd>

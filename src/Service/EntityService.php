@@ -28,7 +28,9 @@ abstract class EntityService
      */
     public function reorder(FormInterface $reorderForm): void
     {
-        $order = Json::decode($reorderForm->getData()['items']);
+        /** @var string $items */
+        $items = $reorderForm->getData()['items'];
+        $order = Json::decode($items);
         $i = 1;
         foreach ($order as $id) {
             $item = $this->get($id);

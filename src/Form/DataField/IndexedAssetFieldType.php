@@ -153,7 +153,7 @@ class IndexedAssetFieldType extends DataFieldType
     {
         if (\is_array($data)) {
             foreach ($data as $id => $content) {
-                if (!\in_array($id, ['sha1', 'filename', 'filesize', 'mimetype', '_date', '_author', '_language', '_content', '_title'], true)) {
+                if (!\in_array($id, [EmsFields::CONTENT_FILE_HASH_FIELD, EmsFields::CONTENT_FILE_NAME_FIELD, EmsFields::CONTENT_FILE_SIZE_FIELD, EmsFields::CONTENT_MIME_TYPE_FIELD, EmsFields::CONTENT_FILE_DATE, EmsFields::CONTENT_FILE_AUTHOR, EmsFields::CONTENT_FILE_LANGUAGE, EmsFields::CONTENT_FILE_CONTENT, EmsFields::CONTENT_FILE_TITLE], true)) {
                     unset($data[$id]);
                 } elseif ('sha1' !== $id && empty($data[$id])) {
                     unset($data[$id]);

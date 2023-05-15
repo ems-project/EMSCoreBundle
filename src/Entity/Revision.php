@@ -683,6 +683,11 @@ class Revision implements EntityInterface, \Stringable
         return $hash;
     }
 
+    public function hasHash(): bool
+    {
+        return \is_string($this->rawData[Mapping::HASH_FIELD] ?? null);
+    }
+
     /**
      * @return array<int|string, mixed>
      */

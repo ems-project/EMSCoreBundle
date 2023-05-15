@@ -1486,7 +1486,11 @@ class DataService
 
     public function reloadData(Revision $revision, bool $flush = true): int
     {
-        $revisionHash = $revision->getHash();
+        if ($revision->hasHash()) {
+            $revisionHash = $revision->getHash();
+        } else {
+            $revisionHash = null;
+        }
         $reloadRevision = clone $revision;
 
         $finalizedBy = false;

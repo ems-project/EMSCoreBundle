@@ -46,9 +46,13 @@ final class DocumentInfo
             return true;
         }
 
-        $defaultRevision = $this->getRevision($defaultEnvironment->getName());
+        foreach ($revision->getEnvironments() as $environment) {
+            if ($environment === $defaultEnvironment) {
+                return true;
+            }
+        }
 
-        return $defaultRevision && $defaultRevision->getHash() === $revision->getHash();
+        return false;
     }
 
     public function isPublished(string $environmentName): bool

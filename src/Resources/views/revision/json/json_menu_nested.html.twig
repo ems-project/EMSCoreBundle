@@ -53,20 +53,22 @@
 
 {% block renderItem %}
     {%- set node = def.getNodeByName(item.type) -%}
-    {%- set itemJson = { 'id': item.id, 'label': item.label, 'type': item.type, 'object': (item.object|merge({ 'label': item.label }))  } -%}
-    <li class="collapsible json-menu-nested-item {{ def.isSortable ? 'json-menu-nested-sortable mjs-nestedSortable' }}"
-        data-node-id="{{ node.id }}"
-        data-item-id="{{ item.id }}"
-        data-item="{{ itemJson|json_encode|e('html_attr') }}">
-        {{ block('itemDisplay') }}
-        {% if item is defined and item.children|default([])|length > 0 %}
-            <ol class="json-menu-nested-list collapse" data-list="{{ item.id }}">
-                {%- for childItem in item.children|default([]) -%}
-                    {%- with { 'item': childItem, 'level': (level + 1) } -%}{{ block('renderItem') }}{% endwith %}
-                {% endfor %}
-            </ol>
-        {% endif %}
-    </li>
+    {% if node.id is defined %}
+        {%- set itemJson = { 'id': item.id, 'label': item.label, 'type': item.type, 'object': (item.object|merge({ 'label': item.label }))  } -%}
+        <li class="collapsible json-menu-nested-item {{ def.isSortable ? 'json-menu-nested-sortable mjs-nestedSortable' }}"
+            data-node-id="{{ node.id }}"
+            data-item-id="{{ item.id }}"
+            data-item="{{ itemJson|json_encode|e('html_attr') }}">
+            {{ block('itemDisplay') }}
+            {% if item is defined and item.children|default([])|length > 0 %}
+                <ol class="json-menu-nested-list collapse" data-list="{{ item.id }}">
+                    {%- for childItem in item.children|default([]) -%}
+                        {%- with { 'item': childItem, 'level': (level + 1) } -%}{{ block('renderItem') }}{% endwith %}
+                    {% endfor %}
+                </ol>
+            {% endif %}
+        </li>
+    {% endif %}
 {% endblock %}
 
 {%- block renderPaste -%}

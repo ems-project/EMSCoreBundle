@@ -12,7 +12,6 @@ use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
-use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Html\HtmlHelper;
@@ -28,9 +27,9 @@ class XliffService
     }
 
     /**
-     * @param FieldType[] $fields
+     * @param string[] $fields
      */
-    public function extract(ContentType $contentType, Document $source, Extractor $extractor, array $fields, Environment $sourceEnvironment, ?Environment $targetEnvironment, string $targetLocale, string $localeField, string $translationField, bool $withBaseline): void
+    public function extract(ContentType $contentType, Document $source, Extractor $extractor, array $fields, Environment $sourceEnvironment, ?Environment $targetEnvironment, string $targetLocale, ?string $localeField, ?string $translationField, bool $withBaseline): void
     {
         $propertyAccessor = PropertyAccessor::createPropertyAccessor();
 
@@ -50,53 +49,61 @@ class XliffService
         }
         $sourceData = $sourceRevision->getRawData();
 
-        $translationId = $propertyAccessor->getValue($currentData, Document::fieldPathToPropertyPath($translationField));
-        if (null !== $targetEnvironment && null !== $translationId) {
+        if (null !== $translationField) {
+            $translationId = $propertyAccessor->getValue($currentData, Document::fieldPathToPropertyPath($translationField));
+        }
+        if (null !== $localeField && null !== $translationField && null !== $targetEnvironment && null !== $translationId) {
             $currentTranslationData = $this->getCurrentTranslationData($targetEnvironment, $translationField, $translationId, $localeField, $targetLocale);
         } else {
-            $currentTranslationData = [];
+            $currentTranslationData = (null === $localeField ? $currentData : []);
         }
-        if ($withBaseline && null !== $targetEnvironment && null !== $translationId) {
+        if (null !== $localeField && null !== $translationField && $withBaseline && null !== $targetEnvironment && null !== $translationId) {
             $baselineTranslationData = $this->getCurrentTranslationData($targetEnvironment, $translationField, $translationId, $localeField, $extractor->getSourceLocale());
         } else {
-            $baselineTranslationData = [];
+            $baselineTranslationData = (null === $localeField && $withBaseline ? $sourceData : []);
         }
 
         $xliffDoc = $extractor->addDocument($contentType->getName(), $source->getId(), \strval($sourceRevision->getId()));
-        foreach ($fields as $fieldPath => $field) {
+        foreach ($fields as $fieldPath) {
             $propertyPath = Document::fieldPathToPropertyPath($fieldPath);
-            $value = $propertyAccessor->getValue($sourceData, $propertyPath);
-            if (null === $value) {
-                continue;
-            }
-            $currentValue = $propertyAccessor->getValue($currentData, $propertyPath);
-            $translation = $propertyAccessor->getValue($currentTranslationData, $propertyPath);
-            $baseline = $propertyAccessor->getValue($baselineTranslationData, $propertyPath);
-            $isFinal = (null !== $targetEnvironment && $contentType->giveEnvironment()->getName() !== $targetEnvironment->getName() && $currentValue === $value && (null !== $translation || '' === $value));
+            foreach ($propertyAccessor->iterator($propertyPath, $sourceData, [InsertionRevision::LOCALE_PLACE_HOLDER => $extractor->getSourceLocale()]) as $path => $value) {
+                $sourcePath = \str_replace(InsertionRevision::LOCALE_PLACE_HOLDER, $extractor->getSourceLocale(), $path);
+                $targetPath = \str_replace(InsertionRevision::LOCALE_PLACE_HOLDER, $targetLocale, $path);
+                $currentValue = $propertyAccessor->getValue($currentData, $sourcePath);
+                $translation = $propertyAccessor->getValue($currentTranslationData, $targetPath);
+                $baseline = $propertyAccessor->getValue($baselineTranslationData, $targetPath);
+                $isFinal = (null !== $targetEnvironment && $contentType->giveEnvironment()->getName() !== $targetEnvironment->getName() && $currentValue === $value && (null !== $translation || '' === $value));
 
-            if (HtmlHelper::isHtml($value)) {
-                $extractor->addHtmlField($xliffDoc, $fieldPath, $value, $translation, $baseline, $isFinal);
-            } else {
-                $extractor->addSimpleField($xliffDoc, $fieldPath, $value, $translation, $isFinal);
+                if (HtmlHelper::isHtml($value)) {
+                    $extractor->addHtmlField($xliffDoc, $path, $value, $translation, $baseline, $isFinal);
+                } else {
+                    $extractor->addSimpleField($xliffDoc, $path, $value, $translation, $isFinal);
+                }
             }
         }
     }
 
-    public function insert(InsertReport $insertReport, InsertionRevision $insertionRevision, string $localeField, string $translationField, ?Environment $publishAndArchive, string $username = null): Revision
+    public function insert(InsertReport $insertReport, InsertionRevision $insertionRevision, ?string $localeField, ?string $translationField, ?Environment $publishAndArchive, string $username = null): Revision
     {
         $propertyAccessor = PropertyAccessor::createPropertyAccessor();
         $revision = $this->revisionService->getByRevisionId($insertionRevision->getRevisionId());
         $targetLocale = $insertionRevision->getTargetLocale();
-        $target = $this->getTargetDocument(
-            $publishAndArchive ?? $revision->giveContentType()->giveEnvironment(),
-            $revision,
-            $targetLocale,
-            $localeField,
-            $translationField
-        );
+        if (null !== $translationField && null !== $localeField) {
+            $target = $this->getTargetDocument(
+                $publishAndArchive ?? $revision->giveContentType()->giveEnvironment(),
+                $revision,
+                $targetLocale,
+                $localeField,
+                $translationField
+            );
+        } else {
+            $target = $this->elasticaService->getDocument($revision->giveContentType()->giveEnvironment()->getAlias(), $revision->giveContentType()->getName(), $revision->giveOuuid());
+        }
 
         $data = $revision->getRawData();
-        $propertyAccessor->setValue($data, Document::fieldPathToPropertyPath($localeField), $targetLocale);
+        if (null !== $localeField) {
+            $propertyAccessor->setValue($data, Document::fieldPathToPropertyPath($localeField), $targetLocale);
+        }
         $insertionRevision->extractTranslations($insertReport, $data, $data);
 
         if (null === $target) {
@@ -111,20 +118,26 @@ class XliffService
         return $this->revisionService->updateRawData($currentRevision, $data, $username);
     }
 
-    public function testInsert(InsertReport $insertReport, InsertionRevision $insertionRevision, string $localeField): void
+    public function testInsert(InsertReport $insertReport, InsertionRevision $insertionRevision, ?string $localeField): void
     {
         $propertyAccessor = PropertyAccessor::createPropertyAccessor();
         $revision = $this->revisionService->getByRevisionId($insertionRevision->getRevisionId());
         $targetLocale = $insertionRevision->getTargetLocale();
 
         $data = $revision->getRawData();
-        $propertyAccessor->setValue($data, Document::fieldPathToPropertyPath($localeField), $targetLocale);
+        if (null !== $localeField) {
+            $propertyAccessor->setValue($data, Document::fieldPathToPropertyPath($localeField), $targetLocale);
+        }
         $insertionRevision->extractTranslations($insertReport, $data, $data);
     }
 
-    private function getTargetDocument(Environment $environment, Revision $revision, string $targetLocale, string $localeField, string $translationField): ?Document
+    private function getTargetDocument(Environment $environment, Revision $revision, string $targetLocale, ?string $localeField, ?string $translationField): ?Document
     {
         $propertyAccessor = PropertyAccessor::createPropertyAccessor();
+        if (null === $localeField || null === $translationField) {
+            return $this->elasticaService->getDocument($environment->getAlias(), $revision->giveContentType()->getName(), $revision->giveOuuid());
+        }
+
         $translationId = $propertyAccessor->getValue($revision->getRawData(), Document::fieldPathToPropertyPath($translationField));
         if (!\is_string($translationId)) {
             throw new \RuntimeException('Translation ID not found');

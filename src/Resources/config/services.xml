@@ -112,7 +112,7 @@
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
             <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
-            <argument>%ems_core.default_bulk_size%%</argument>
+            <argument>%ems_core.default_bulk_size%</argument>
         </service>
 
         <service id="ems_core.core_revision_task.task_manager" class="EMS\CoreBundle\Core\Revision\Task\TaskManager">

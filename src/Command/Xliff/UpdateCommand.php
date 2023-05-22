@@ -32,8 +32,8 @@ final class UpdateCommand extends AbstractCommand
     private string $xliffFilename;
     private ?Environment $publishTo = null;
     private bool $archive = false;
-    private string $translationField;
-    private string $localeField;
+    private ?string $translationField;
+    private ?string $localeField;
     private bool $dryRun = false;
 
     public function __construct(
@@ -51,8 +51,8 @@ final class UpdateCommand extends AbstractCommand
             ->addArgument(self::ARGUMENT_XLIFF_FILE, InputArgument::REQUIRED, 'Input XLIFF file')
             ->addOption(self::OPTION_PUBLISH_TO, null, InputOption::VALUE_OPTIONAL, 'If defined the revision will be published in the defined environment')
             ->addOption(self::OPTION_ARCHIVE, null, InputOption::VALUE_NONE, 'If set another revision will be flagged as archived')
-            ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', 'locale')
-            ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field', 'translation_id')
+            ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', null)
+            ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field', null)
             ->addOption(self::OPTION_DRY_RUN, null, InputOption::VALUE_NONE, 'If set nothing is saved in the database');
     }
 
@@ -66,12 +66,16 @@ final class UpdateCommand extends AbstractCommand
         $environmentName = $this->getOptionStringNull(self::OPTION_PUBLISH_TO);
         $this->publishTo = null === $environmentName ? null : $this->environmentService->giveByName($environmentName);
         $this->archive = $this->getOptionBool(self::OPTION_ARCHIVE);
-        $this->translationField = $this->getOptionString(self::OPTION_TRANSLATION_FIELD);
-        $this->localeField = $this->getOptionString(self::OPTION_LOCALE_FIELD);
+        $this->translationField = $this->getOptionStringNull(self::OPTION_TRANSLATION_FIELD);
+        $this->localeField = $this->getOptionStringNull(self::OPTION_LOCALE_FIELD);
         $this->dryRun = $this->getOptionBool(self::OPTION_DRY_RUN);
 
         if ($this->archive && null === $this->publishTo) {
             throw new \RuntimeException(\sprintf('The %s option can be activate only if the %s option is DEFINED', self::OPTION_ARCHIVE, self::OPTION_PUBLISH_TO));
+        }
+
+        if (null === $this->translationField && $this->translationField !== $this->localeField) {
+            throw new \RuntimeException(\sprintf('Both %s and %s options must be defined or not defined at all (fields defined with %%locale%% placeholder)', self::OPTION_TRANSLATION_FIELD, self::OPTION_LOCALE_FIELD));
         }
     }
 

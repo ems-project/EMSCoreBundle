@@ -12,9 +12,7 @@ use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CoreBundle\Commands;
-use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
-use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Internationalization\XliffService;
@@ -59,12 +57,8 @@ final class ExtractCommand extends AbstractCommand
     private string $xliffFilename;
     private ?string $baseUrl = null;
     private string $xliffVersion;
-    /**
-     * @var array<int, FieldType[]>
-     */
-    private array $fieldTypesByContentType = [];
-    private string $translationField;
-    private string $localeField;
+    private ?string $translationField;
+    private ?string $localeField;
     private string $encoding;
     private bool $withBaseline;
 
@@ -86,15 +80,15 @@ final class ExtractCommand extends AbstractCommand
             ->addArgument(self::ARGUMENT_SEARCH_QUERY, InputArgument::REQUIRED, 'Query used to find elasticsearch records to extract from the source environment')
             ->addArgument(self::ARGUMENT_SOURCE_LOCALE, InputArgument::REQUIRED, 'Source locale')
             ->addArgument(self::ARGUMENT_TARGET_LOCALE, InputArgument::REQUIRED, 'Target locale')
-            ->addArgument(self::ARGUMENT_FIELDS, InputArgument::IS_ARRAY, 'List of content type\s fields to extract. Use the pattern %locale% if required. Use the `.` to separate nested fields from their parent. Use `json:` or `base64` to decode a field. E.g. `fr.json:content.title` or `[fr][json:content][title]`')
+            ->addArgument(self::ARGUMENT_FIELDS, InputArgument::IS_ARRAY, 'List of content type\s fields to extract. Use the pattern %locale% if required. Use the `.` to separate nested fields from their parent. Use `json:` `id_key:` and/or `base64;` to decode a field. You can also use `*` as wild char and `|` to list children fields  E.g. `%locale%.json:id_key:content.object.title|content` or `[%locale%][json:id_key:content][object][title|content]`')
             ->addOption(self::OPTION_BULK_SIZE, null, InputOption::VALUE_REQUIRED, 'Size of the elasticsearch scroll request', $this->defaultBulkSize)
             ->addOption(self::OPTION_TARGET_ENVIRONMENT, null, InputOption::VALUE_OPTIONAL, 'Environment with the target documents')
             ->addOption(self::OPTION_XLIFF_VERSION, null, InputOption::VALUE_OPTIONAL, 'XLIFF format version: '.\implode(' ', Extractor::XLIFF_VERSIONS), Extractor::XLIFF_1_2)
             ->addOption(self::OPTION_FILENAME, null, InputOption::VALUE_OPTIONAL, 'Generate the XLIFF specified file')
             ->addOption(self::OPTION_BASE_URL, null, InputOption::VALUE_OPTIONAL, 'Base url, in order to generate a download link to the XLIFF file')
-            ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', 'locale')
+            ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', null)
             ->addOption(self::OPTION_ENCODING, null, InputOption::VALUE_OPTIONAL, 'Encoding used to generate the XLIFF file', 'UTF-8')
-            ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field', 'translation_id')
+            ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field', null)
             ->addOption(self::OPTION_WITH_BASELINE, null, InputOption::VALUE_NONE, 'The baseline has been checked and can be used to flag field as final');
     }
 
@@ -115,10 +109,14 @@ final class ExtractCommand extends AbstractCommand
         $this->xliffFilename = $xliffFilename ?? \tempnam(\sys_get_temp_dir(), 'ems-extract-').'.xlf';
         $this->baseUrl = $this->getOptionStringNull(self::OPTION_BASE_URL);
         $this->xliffVersion = $this->getOptionString(self::OPTION_XLIFF_VERSION);
-        $this->translationField = $this->getOptionString(self::OPTION_TRANSLATION_FIELD);
-        $this->localeField = $this->getOptionString(self::OPTION_LOCALE_FIELD);
+        $this->translationField = $this->getOptionStringNull(self::OPTION_TRANSLATION_FIELD);
+        $this->localeField = $this->getOptionStringNull(self::OPTION_LOCALE_FIELD);
         $this->encoding = $this->getOptionString(self::OPTION_ENCODING);
         $this->withBaseline = $this->getOptionBool(self::OPTION_WITH_BASELINE);
+
+        if (null === $this->translationField && $this->translationField !== $this->localeField) {
+            throw new \RuntimeException(\sprintf('Both %s and %s options must be defined or not defined at all (fields defined with %%locale%% placeholder)', self::OPTION_TRANSLATION_FIELD, self::OPTION_LOCALE_FIELD));
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -141,8 +139,7 @@ final class ExtractCommand extends AbstractCommand
                 $source = Document::fromResult($result);
                 try {
                     $contentType = $this->contentTypeService->giveByName($source->getContentType());
-                    $fieldTypes = $this->getFieldTypes($contentType);
-                    $this->xliffService->extract($contentType, $source, $extractor, $fieldTypes, $this->sourceEnvironment, $this->targetEnvironment, $this->targetLocale, $this->localeField, $this->translationField, $this->withBaseline);
+                    $this->xliffService->extract($contentType, $source, $extractor, $this->fields, $this->sourceEnvironment, $this->targetEnvironment, $this->targetLocale, $this->localeField, $this->translationField, $this->withBaseline);
                 } catch (\Throwable $e) {
                     $this->io->warning($e->getMessage());
                 }
@@ -176,26 +173,5 @@ final class ExtractCommand extends AbstractCommand
         $output->writeln('XLIFF file: '.$this->xliffFilename);
 
         return self::EXECUTE_SUCCESS;
-    }
-
-    /**
-     * @return FieldType[]
-     */
-    private function getFieldTypes(ContentType $contentType): array
-    {
-        if (isset($this->fieldTypesByContentType[$contentType->getId()])) {
-            return $this->fieldTypesByContentType[$contentType->getId()];
-        }
-        $fieldTypes = [];
-        foreach ($this->fields as $field) {
-            $child = $this->contentTypeService->getChildByPath($contentType->getFieldType(), $field, true);
-            if (false === $child) {
-                throw new \RuntimeException(\sprintf('Field %s not found', $field));
-            }
-            $fieldTypes[$field] = $child;
-        }
-        $this->fieldTypesByContentType[$contentType->getId()] = $fieldTypes;
-
-        return $fieldTypes;
     }
 }

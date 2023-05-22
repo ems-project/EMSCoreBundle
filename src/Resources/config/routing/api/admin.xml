@@ -7,6 +7,18 @@
     <route id="emsco_api_start_job" path="/start-job/{job}"
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::startJob"
            methods="POST"/>
+    <route id="emsco_api_start_next_job" path="/next-job/{tag}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\JobController::startNextJob"
+           methods="POST"/>
+    <route id="emsco_api_job_completed" path="/job-completed/{job}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\JobController::jobCompleted"
+           methods="POST"/>
+    <route id="emsco_api_job_failed" path="/job-failed/{job}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\JobController::jobFailed"
+           methods="POST"/>
+    <route id="emsco_api_job_write" path="/job-write/{job}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\JobController::jobWrite"
+           methods="POST"/>
     <route id="emsco_api_content_type" path="/content-types"
            controller="EMS\CoreBundle\Controller\Api\Admin\MetaController::contentTypes"
            methods="GET"/>

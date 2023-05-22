@@ -11,6 +11,7 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
 
 class ScheduleType extends AbstractType
 {
@@ -35,11 +36,18 @@ class ScheduleType extends AbstractType
             'row_attr' => [
                 'class' => 'col-md-8',
             ],
+            'help' => new TranslatableMessage('schedule.cron_help', [], 'emsco-forms'),
         ])->add('command', IconTextType::class, [
             'icon' => 'fa fa-terminal',
             'row_attr' => [
                 'class' => 'col-md-8',
             ],
+        ])->add('tag', IconTextType::class, [
+            'icon' => 'fa fa-tags',
+            'row_attr' => [
+                'class' => 'col-md-8',
+            ],
+            'help' => new TranslatableMessage('schedule.tag_help', [], 'emsco-forms'),
         ]);
 
         if ($options['create']) {

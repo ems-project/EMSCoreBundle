@@ -957,10 +957,13 @@ ems:
 schedule:
     name: Name
     cron: Cron
+    cron_help: '<Minute> <Hour> <Day_of_the_Month> <Month_of_the_Year> <Day_of_the_Week>. E.g. every 15 minutes: */15 * * * *'
     command: Command
     create: Create
     save: Save
     saveAndClose: 'Save and Close'
+    tag: 'Tag'
+    tag_help: 'Used to indentify workers (e.g. CLI) which would remotely execute the job'
 user:
     locale: 'Language UI'
     locale_preferred: 'Language preferred'

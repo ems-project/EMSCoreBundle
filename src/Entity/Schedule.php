@@ -69,6 +69,11 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
      */
     protected int $orderKey = 0;
 
+    /**
+     * @ORM\Column(name="tag", type="string", length=255, nullable=true)
+     */
+    protected ?string $tag = null;
+
     public function __construct()
     {
         $this->id = Uuid::uuid4();
@@ -170,5 +175,15 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
         $json->removeProperty('nextRun');
 
         return $json;
+    }
+
+    public function getTag(): ?string
+    {
+        return $this->tag;
+    }
+
+    public function setTag(?string $tag): void
+    {
+        $this->tag = $tag;
     }
 }

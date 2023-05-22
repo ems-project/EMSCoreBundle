@@ -124,6 +124,7 @@ final class ScheduleController extends AbstractController
         $table->addColumn('schedule.index.column.name', 'name');
         $table->addColumn('schedule.index.column.cron', 'cron');
         $table->addColumn('schedule.index.column.command', 'command');
+        $table->addColumn('schedule.index.column.tag', 'tag');
         $table->addColumnDefinition(new DatetimeTableColumn('schedule.index.column.previous-run', 'previousRun'));
         $table->addColumnDefinition(new DatetimeTableColumn('schedule.index.column.next-run', 'nextRun'));
         $table->addItemGetAction(Routes::SCHEDULE_EDIT, 'view.actions.edit', 'pencil');

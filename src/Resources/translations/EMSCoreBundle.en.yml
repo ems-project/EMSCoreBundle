@@ -1179,6 +1179,7 @@ schedule:
             cron: Cron
             previous-run: 'Previous run'
             next-run: 'Next run'
+            tag: 'Tag'
         reorder: Prioritize
     actions:
         delete_selected: 'Delete selected'

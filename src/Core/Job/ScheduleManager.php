@@ -116,9 +116,9 @@ class ScheduleManager implements EntityServiceInterface
         $schedule->setNextRun($cron->getNextRunDate());
     }
 
-    public function findNext(): ?Schedule
+    public function findNext(?string $tag = null): ?Schedule
     {
-        $schedule = $this->scheduleRepository->findNext();
+        $schedule = $this->scheduleRepository->findNext($tag);
         if (null === $schedule) {
             return null;
         }

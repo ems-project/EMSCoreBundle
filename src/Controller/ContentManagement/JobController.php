@@ -3,11 +3,13 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CoreBundle\Core\Job\ScheduleManager;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Form\JobType;
 use EMS\CoreBundle\Helper\EmsCoreResponse;
 use EMS\CoreBundle\Service\JobService;
+use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 use SensioLabs\AnsiConverter\Theme\Theme;
@@ -21,7 +23,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class JobController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly JobService $jobService, private readonly int $pagingSize, private readonly bool $triggerJobFromWeb)
+    public function __construct(private readonly LoggerInterface $logger, private readonly JobService $jobService, private readonly ScheduleManager $scheduleManager, private readonly int $pagingSize, private readonly bool $triggerJobFromWeb)
     {
     }
 
@@ -131,5 +133,72 @@ class JobController extends AbstractController
             'message' => 'job started',
             'job_id' => $job->getId(),
         ]);
+    }
+
+    public function startNextJob(string $tag, Request $request): Response
+    {
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new NotFoundHttpException('User not found');
+        }
+        $schedule = $this->scheduleManager->findNext($tag);
+        $job = $this->jobService->jobFomSchedule($schedule, $user->getUsername());
+        if (null === $job) {
+            return EmsCoreResponse::createJsonResponse($request, true, [
+                'message' => 'no next job',
+            ]);
+        }
+
+        return EmsCoreResponse::createJsonResponse($request, true, [
+            'message' => \sprintf('job %d flagged has started', $job->getId()),
+            'job_id' => \strval($job->getId()),
+            'command' => $job->getCommand(),
+            'output' => $job->getOutput(),
+        ]);
+    }
+
+    public function jobCompleted(int $job, Request $request): Response
+    {
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new NotFoundHttpException('User not found');
+        }
+        $this->jobService->finish($job);
+
+        return EmsCoreResponse::createJsonResponse($request, true);
+    }
+
+    public function jobFailed(int $job, Request $request): Response
+    {
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new NotFoundHttpException('User not found');
+        }
+        $content = $request->getContent();
+        if (!\is_string($content)) {
+            throw new \RuntimeException('Unexpected non string content');
+        }
+        $data = Json::decode($content);
+        $this->jobService->finish($job, $data['message'] ?? 'job failed');
+
+        return EmsCoreResponse::createJsonResponse($request, true);
+    }
+
+    public function jobWrite(int $job, Request $request): Response
+    {
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new NotFoundHttpException('User not found');
+        }
+        $content = $request->getContent();
+        if (!\is_string($content)) {
+            throw new \RuntimeException('Unexpected non string content');
+        }
+        $data = Json::decode($content);
+        $message = \strval($data['message'] ?? '');
+        $newLine = \boolval($data['new-line'] ?? false);
+        $this->jobService->write($job, $message, $newLine);
+
+        return EmsCoreResponse::createJsonResponse($request, true);
     }
 }

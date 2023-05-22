@@ -112,12 +112,14 @@ class ScheduleRepository extends ServiceEntityRepository
         }
     }
 
-    public function findNext(): ?Schedule
+    public function findNext(?string $tag = null): ?Schedule
     {
         $qb = $this->createQueryBuilder('schedule');
         $qb->andWhere($qb->expr()->lte('schedule.nextRun', ':now'))
+        ->andWhere($qb->expr()->eq('schedule.tag', ':tag'))
         ->setParameters([
             'now' => new \DateTimeImmutable(),
+            'tag' => $tag,
         ])
         ->orderBy('schedule.nextRun', 'asc')
         ->setMaxResults(1);

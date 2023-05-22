@@ -11,6 +11,7 @@ use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Command\JobOutput;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Job;
+use EMS\CoreBundle\Entity\Schedule;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\JobRepository;
 use PHPUnit\TextUI\RuntimeException;
@@ -139,11 +140,15 @@ class JobService implements EntityServiceInterface
         return $output;
     }
 
-    public function finish(int $jobId): void
+    public function finish(int $jobId, ?string $errorMessage = null): void
     {
         $job = $this->repository->findById($jobId);
         $job->setDone(true);
         $job->setProgress(100);
+        if (null !== $errorMessage) {
+            $job->setStatus('failed');
+            $job->setOutput($job->getOutput().PHP_EOL.$errorMessage.PHP_EOL);
+        }
 
         $this->em->persist($job);
         $this->em->flush();
@@ -273,5 +278,29 @@ class JobService implements EntityServiceInterface
         $this->repository->delete($job);
 
         return \strval($id);
+    }
+
+    public function jobFomSchedule(?Schedule $schedule, string $username): ?Job
+    {
+        if (null === $schedule) {
+            return null;
+        }
+        $startDate = $schedule->getPreviousRun();
+        if (null === $startDate) {
+            throw new \RuntimeException('Unexpected null start date');
+        }
+
+        return $this->initJob($username, $schedule->getCommand(), $startDate);
+    }
+
+    public function write(int $jobId, string $message, bool $newLine): void
+    {
+        $job = $this->repository->findById($jobId);
+        $job->setOutput($job->getOutput().$message.($newLine ? PHP_EOL : ''));
+
+        $this->em->persist($job);
+        $this->em->flush();
+
+        $this->logger->info('Job '.$job->getCommand().' completed.');
     }
 }

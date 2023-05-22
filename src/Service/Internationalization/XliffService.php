@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service\Internationalization;
 
 use Doctrine\ORM\UnexpectedResultException;
+use EMS\CommonBundle\Common\PropertyAccess\PropertyAccessor;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
 use EMS\CommonBundle\Search\Search;
@@ -19,7 +20,6 @@ use EMS\Xliff\Xliff\Entity\InsertReport;
 use EMS\Xliff\Xliff\Extractor;
 use EMS\Xliff\Xliff\InsertionRevision;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class XliffService
 {
@@ -32,7 +32,7 @@ class XliffService
      */
     public function extract(ContentType $contentType, Document $source, Extractor $extractor, array $fields, Environment $sourceEnvironment, ?Environment $targetEnvironment, string $targetLocale, string $localeField, string $translationField, bool $withBaseline): void
     {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $propertyAccessor = PropertyAccessor::createPropertyAccessor();
 
         $sourceRevision = $this->revisionService->getCurrentRevisionForEnvironment($source->getId(), $contentType, $sourceEnvironment);
         $currentData = [];
@@ -84,7 +84,7 @@ class XliffService
 
     public function insert(InsertReport $insertReport, InsertionRevision $insertionRevision, string $localeField, string $translationField, ?Environment $publishAndArchive, string $username = null): Revision
     {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $propertyAccessor = PropertyAccessor::createPropertyAccessor();
         $revision = $this->revisionService->getByRevisionId($insertionRevision->getRevisionId());
         $targetLocale = $insertionRevision->getTargetLocale();
         $target = $this->getTargetDocument(
@@ -113,7 +113,7 @@ class XliffService
 
     public function testInsert(InsertReport $insertReport, InsertionRevision $insertionRevision, string $localeField): void
     {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $propertyAccessor = PropertyAccessor::createPropertyAccessor();
         $revision = $this->revisionService->getByRevisionId($insertionRevision->getRevisionId());
         $targetLocale = $insertionRevision->getTargetLocale();
 
@@ -124,7 +124,7 @@ class XliffService
 
     private function getTargetDocument(Environment $environment, Revision $revision, string $targetLocale, string $localeField, string $translationField): ?Document
     {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $propertyAccessor = PropertyAccessor::createPropertyAccessor();
         $translationId = $propertyAccessor->getValue($revision->getRawData(), Document::fieldPathToPropertyPath($translationField));
         if (!\is_string($translationId)) {
             throw new \RuntimeException('Translation ID not found');

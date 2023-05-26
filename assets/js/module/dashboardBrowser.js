@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
                     break
                 case 'browser_object':
                     dialog.getContentElement('info', 'localPage').setValue({
-                        'id': emsId ? emsId.replace('ems://object', '') : url.toString(),
+                        'id': emsId ? emsId.replace('ems://object:', '') : url.toString(),
                         'text': text
                     })
                     break

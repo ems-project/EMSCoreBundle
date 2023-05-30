@@ -43,9 +43,9 @@ class TimeFieldType extends DataFieldType
             $format = $dataField->giveFieldType()->getMappingOptions()['format'];
             $format = DateFieldType::convertJavaDateFormat($format);
 
-            $timeObject = \DateTime::createFromFormat($format, \strval($sourceArray));
+            $timeObject = !\is_array($sourceArray) ? \DateTime::createFromFormat($format, \strval($sourceArray)) : false;
             if ($timeObject) {
-                $dataField->setRawData($timeObject->format(\DateTimeInterface::ISO8601));
+                $dataField->setRawData($timeObject->format(\DateTimeInterface::ATOM));
             } else {
                 $dataField->addMessage('Not able to parse the date');
             }
@@ -85,8 +85,8 @@ class TimeFieldType extends DataFieldType
     {
         $out = parent::viewTransform($dataField);
 
-        if (\is_array($out) && 0 === \count($out)) {
-            return ''; // empty array means null/empty
+        if (\is_array($out)) {
+            return '';
         }
 
         $format = static::getFormat($dataField->giveFieldType()->getOptions());
@@ -105,7 +105,7 @@ class TimeFieldType extends DataFieldType
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $format = static::getFormat($fieldType->getOptions());
-        $converted = \DateTime::createFromFormat($format, \strval($data));
+        $converted = !\is_array($data) ? \DateTime::createFromFormat($format, \strval($data)) : false;
         if ($converted) {
             $out = $converted->format($this::STOREFORMAT);
         } else {

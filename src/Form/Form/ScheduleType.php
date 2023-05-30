@@ -43,6 +43,7 @@ class ScheduleType extends AbstractType
                 'class' => 'col-md-8',
             ],
         ])->add('tag', IconTextType::class, [
+            'required' => false,
             'icon' => 'fa fa-tags',
             'row_attr' => [
                 'class' => 'col-md-8',

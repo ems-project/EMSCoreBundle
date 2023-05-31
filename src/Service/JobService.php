@@ -161,7 +161,7 @@ class JobService implements EntityServiceInterface
         $job = new Job();
         $job->setCommand($command);
         $job->setUser($username);
-        $job->setStarted(false);
+        $job->setStarted(true);
         $job->setDone(false);
         $job->setCreated($startDate);
         $job->setModified(new \DateTime());

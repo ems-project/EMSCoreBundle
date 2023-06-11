@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\DataTable\TableExporter;
 use EMS\CoreBundle\Core\DataTable\TableRenderer;
 use EMS\CoreBundle\Form\Data\ElasticaTable;
@@ -18,8 +19,25 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 final class DatatableController extends AbstractController
 {
-    public function __construct(private readonly DatatableService $datatableService, private readonly TableRenderer $tableRenderer, private readonly TableExporter $tableExporter, private readonly TokenStorageInterface $tokenStorage)
+    public function __construct(
+        private readonly DatatableService $datatableService,
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly TableRenderer $tableRenderer,
+        private readonly TableExporter $tableExporter,
+        private readonly TokenStorageInterface $tokenStorage
+    ) {
+    }
+
+    public function ajaxData(Request $request, string $cacheKey): Response
     {
+        $table = $this->dataTableFactory->createFromCache($cacheKey);
+        $dataTableRequest = DataTableRequest::fromRequest($request);
+        $table->resetIterator($dataTableRequest);
+
+        return $this->render('@EMSCore/datatable/ajax.json.twig', [
+            'dataTableRequest' => $dataTableRequest,
+            'table' => $table,
+        ], new JsonResponse());
     }
 
     public function ajaxElastica(Request $request, string $hashConfig): Response

@@ -113,6 +113,7 @@
         </service>
         <service id="EMS\CoreBundle\Controller\ContentManagement\DatatableController" public="true">
             <argument type="service" id="ems.service.datatable" />
+            <argument type="service" id="emsco.data_table.factory" />
             <argument type="service" id="ems_core.core_data_table.table_renderer" />
             <argument type="service" id="ems_core.core_data_table.table_exporter" />
             <argument type="service" id="security.token_storage" />

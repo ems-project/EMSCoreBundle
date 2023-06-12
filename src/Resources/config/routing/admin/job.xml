@@ -24,7 +24,7 @@
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::startJob"
            methods="POST"
            format="html"/>
-    <route id="emsco_schedule_index" path="/schedule.{_format}"
+    <route id="emsco_schedule_index" path="/schedule"
            controller="EMS\CoreBundle\Controller\Job\ScheduleController::index"
            methods="GET|POST"
            format="html"/>

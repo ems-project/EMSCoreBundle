@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <defaults public="false" />
+
+        <!-- Types -->
+        <service id="emsco.data_table.channel" class="EMS\CoreBundle\DataTable\Type\ChannelDataTableType">
+            <argument type="service" id="ems.service.channel"/>
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.dashboard" class="EMS\CoreBundle\DataTable\Type\DashboardDataTableType">
+            <argument type="service" id="ems.dashboard.manager"/>
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.form" class="EMS\CoreBundle\DataTable\Type\FormDataTableType">
+            <argument type="service" id="ems.form.manager" />
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.form_submission" class="EMS\CoreBundle\DataTable\Type\FormSubmissionDataTableType">
+            <argument type="service" id="ems.form_submission" />
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.job_schedule" class="EMS\CoreBundle\DataTable\Type\JobScheduleDataTableType">
+            <argument type="service" id="ems.schedule.manager" />
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.query_search" class="EMS\CoreBundle\DataTable\Type\QuerySearchDataTableType">
+            <argument type="service" id="ems.service.query_search" />
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.uploaded_file_log" class="EMS\CoreBundle\DataTable\Type\UploadedFileLogDataTableType">
+            <argument type="service" id="ems.service.file" />
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.user" class="EMS\CoreBundle\DataTable\Type\UserDataTableType">
+            <argument type="service" id="ems.service.user" />
+            <argument>%ems_core.circles_object%</argument>
+            <tag name="emsco.datatable" />
+        </service>
+    </services>
+</container>

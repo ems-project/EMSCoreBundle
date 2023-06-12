@@ -5,9 +5,6 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <!-- Deprecated -->
-    <route id="ems_core_user_ajax_data_table" path="/datatable.json"
-           controller="EMS\CoreBundle\Controller\UserController::ajaxDataTableAction"
-           methods="GET"/>
     <route id="ems.user.index" path="/"
            controller="EMS\CoreBundle\Controller\UserController::indexAction"
            methods="GET"/>

@@ -7,9 +7,6 @@
   <route id="emsco_form_admin_index" path="/admin/form"
          controller="EMS\CoreBundle\Controller\Form\FormController::index"
          methods="GET|POST"/>
-  <route id="emsco_form_admin_index_ajax" path="/admin/form/datatable.json"
-         controller="EMS\CoreBundle\Controller\Form\FormController::datatable"
-         methods="GET"/>
   <route id="emsco_form_admin_add" path="/admin/form/add"
          controller="EMS\CoreBundle\Controller\Form\FormController::add"
          methods="GET|POST"/>

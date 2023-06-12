@@ -2,15 +2,13 @@
 
 namespace EMS\CoreBundle\Controller;
 
-use EMS\CoreBundle\Entity\UploadedAsset;
-use EMS\CoreBundle\Form\Data\BoolTableColumn;
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\DataTable\Type\UploadedFileLogDataTableType;
 use EMS\CoreBundle\Form\Data\BytesTableColumn;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
-use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\QueryTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Data\TranslationTableColumn;
-use EMS\CoreBundle\Form\Data\UserTableColumn;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\FileService;
@@ -30,20 +28,11 @@ class UploadedFileController extends AbstractController
     /** @var string */
     final public const HIDE_ACTION = 'hide';
 
-    public function __construct(private readonly LoggerInterface $logger, private readonly FileService $fileService)
-    {
-    }
-
-    public function ajaxDataTable(Request $request): Response
-    {
-        $table = $this->initLogsTable();
-        $dataTableRequest = DataTableRequest::fromRequest($request);
-        $table->resetIterator($dataTableRequest);
-
-        return $this->render('@EMSCore/datatable/ajax.html.twig', [
-            'dataTableRequest' => $dataTableRequest,
-            'table' => $table,
-        ], new JsonResponse());
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly FileService $fileService,
+        private readonly DataTableFactory $dataTableFactory
+    ) {
     }
 
     public function ajaxDataTableGroupedByHash(Request $request): Response
@@ -91,7 +80,7 @@ class UploadedFileController extends AbstractController
 
     public function logs(Request $request): Response
     {
-        $table = $this->initLogsTable();
+        $table = $this->dataTableFactory->create(UploadedFileLogDataTableType::class);
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -159,48 +148,6 @@ class UploadedFileController extends AbstractController
         }
 
         return $response;
-    }
-
-    private function initLogsTable(): EntityTable
-    {
-        $table = new EntityTable($this->fileService, $this->generateUrl('ems_core_uploaded_file_logs_ajax'));
-        $table->addColumnDefinition(new BoolTableColumn('uploaded-file.index.column.available', 'available'));
-        $table->addColumn('uploaded-file.index.column.name', 'name')
-            ->setRoute('ems_file_download', function (UploadedAsset $data) {
-                if (!$data->getAvailable()) {
-                    return null;
-                }
-
-                return [
-                    'sha1' => $data->getSha1(),
-                    'type' => $data->getType(),
-                    'name' => $data->getName(),
-                ];
-            });
-        $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.created', 'created'));
-        $table->addColumnDefinition(new UserTableColumn('uploaded-file.index.column.username', 'user'));
-        $table->addColumnDefinition(new BytesTableColumn('uploaded-file.index.column.size', 'size'));
-        $table->addColumnDefinition(new BoolTableColumn('uploaded-file.index.column.hidden', 'hidden'));
-        $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.head_last', 'headLast'));
-        $table->addColumn('uploaded-file.index.column.type', 'type');
-        $table->addColumn('uploaded-file.index.column.sha1', 'sha1');
-
-        $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'uploaded-file.uploaded-file.download_selected', 'uploaded-file.uploaded-file.download_selected_confirm');
-
-        if ($this->isGranted('ROLE_PUBLISHER')) {
-            $table->addDynamicItemPostAction('ems_core_uploaded_file_show_hide', 'uploaded-file.action.hide-show', 'eye', 'uploaded-file.hide-show-confirm', ['assetId' => 'id']);
-            $table->addTableAction(self::HIDE_ACTION, 'fa fa-eye', 'uploaded-file.uploaded-file.hide-show', 'uploaded-file.uploaded-file.hide-show_confirm');
-        }
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $itemDeleteAction = $table->addDynamicItemPostAction('ems_file_soft_delete', 'uploaded-file.action.soft-delete', 'trash', 'uploaded-file.soft-delete-confirm', ['id' => 'id']);
-            $itemDeleteAction->setButtonType('outline-danger');
-            $deleteAction = $table->addTableAction(self::SOFT_DELETE_ACTION, 'fa fa-trash', 'uploaded-file.uploaded-file.soft_delete_selected', 'uploaded-file.uploaded-file.soft_delete_selected_confirm');
-            $deleteAction->setCssClass('btn btn-outline-danger');
-        }
-
-        $table->setDefaultOrder('created', 'desc');
-
-        return $table;
     }
 
     private function initFileTable(): QueryTable

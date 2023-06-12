@@ -4,46 +4,37 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Form;
 
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Form\FieldTypeManager;
 use EMS\CoreBundle\Core\Form\FormManager;
+use EMS\CoreBundle\DataTable\Type\FormDataTableType;
 use EMS\CoreBundle\Entity\Form;
 use EMS\CoreBundle\Form\Data\EntityTable;
-use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\FormType;
 use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Form\Form\TableType;
-use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Routes;
 use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form as ComponentForm;
 use Symfony\Component\Form\SubmitButton;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class FormController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly FormManager $formManager, private readonly FieldTypeManager $fieldTypeManager)
-    {
-    }
-
-    public function datatable(Request $request): Response
-    {
-        $table = $this->initTable();
-        $dataTableRequest = DataTableRequest::fromRequest($request);
-        $table->resetIterator($dataTableRequest);
-
-        return $this->render('@EMSCore/datatable/ajax.html.twig', [
-            'dataTableRequest' => $dataTableRequest,
-            'table' => $table,
-        ], new JsonResponse());
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly FormManager $formManager,
+        private readonly FieldTypeManager $fieldTypeManager,
+        private readonly DataTableFactory $dataTableFactory,
+    ) {
     }
 
     public function index(Request $request): Response
     {
-        $table = $this->initTable();
+        $table = $this->dataTableFactory->create(FormDataTableType::class);
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -142,21 +133,5 @@ class FormController extends AbstractController
         $this->formManager->delete($form);
 
         return $this->redirectToRoute(Routes::FORM_ADMIN_INDEX);
-    }
-
-    private function initTable(): EntityTable
-    {
-        $table = new EntityTable($this->formManager, $this->generateUrl(Routes::FORM_ADMIN_INDEX_AJAX));
-        $table->addColumn('table.index.column.loop_count', 'orderKey');
-        $table->addColumn('form.index.column.name', 'name');
-        $table->addColumn('form.index.column.label', 'label');
-        $table->addItemGetAction(Routes::FORM_ADMIN_EDIT, 'form.actions.edit', 'pencil');
-        $table->addItemGetAction(Routes::FORM_ADMIN_REORDER, 'form.actions.reorder', 'reorder');
-        $table->addItemPostAction(Routes::FORM_ADMIN_DELETE, 'form.actions.delete', 'trash', 'form.actions.delete_confirm')->setButtonType('outline-danger');
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'form.actions.delete_selected', 'form.actions.delete_selected_confirm')
-            ->setCssClass('btn btn-outline-danger');
-        $table->setDefaultOrder('orderKey');
-
-        return $table;
     }
 }

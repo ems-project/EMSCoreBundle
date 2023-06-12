@@ -4,43 +4,34 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller;
 
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\DataTable\Type\QuerySearchDataTableType;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Form\Data\EntityTable;
-use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\QuerySearchType;
 use EMS\CoreBundle\Form\Form\TableType;
-use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\QuerySearchService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\SubmitButton;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class QuerySearchController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly QuerySearchService $querySearchService)
-    {
-    }
-
-    public function ajaxDataTable(Request $request): Response
-    {
-        $table = $this->initTable();
-        $dataTableRequest = DataTableRequest::fromRequest($request);
-        $table->resetIterator($dataTableRequest);
-
-        return $this->render('@EMSCore/datatable/ajax.html.twig', [
-            'dataTableRequest' => $dataTableRequest,
-            'table' => $table,
-        ], new JsonResponse());
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly QuerySearchService $querySearchService,
+        private readonly DataTableFactory $dataTableFactory
+    ) {
     }
 
     public function index(Request $request): Response
     {
-        $table = $this->initTable();
+        $table = $this->dataTableFactory->create(QuerySearchDataTableType::class);
+
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -96,18 +87,5 @@ final class QuerySearchController extends AbstractController
         $this->querySearchService->delete($querySearch);
 
         return $this->redirectToRoute('ems_core_query_search_index');
-    }
-
-    private function initTable(): EntityTable
-    {
-        $table = new EntityTable($this->querySearchService, $this->generateUrl('ems_core_query_search'));
-        $table->addColumn('query_search.index.column.label', 'label');
-        $table->addColumn('query_search.index.column.name', 'name');
-        $table->addItemGetAction('ems_core_query_search_edit', 'query_search.actions.edit', 'pencil');
-        $table->addItemPostAction('ems_core_query_search_delete', 'query_search.actions.delete', 'trash', 'query_search.actions.delete_confirm');
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'query_search.actions.delete_selected', 'query_search.actions.delete_selected_confirm');
-        $table->setDefaultOrder('label');
-
-        return $table;
     }
 }

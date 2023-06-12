@@ -5,50 +5,36 @@ namespace EMS\CoreBundle\Controller;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\User\UserManager;
+use EMS\CoreBundle\DataTable\Type\UserDataTableType;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\WysiwygProfile;
-use EMS\CoreBundle\Form\Data\BoolTableColumn;
-use EMS\CoreBundle\Form\Data\Condition\Terms;
-use EMS\CoreBundle\Form\Data\DataLinksTableColumn;
-use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
-use EMS\CoreBundle\Form\Data\EntityTable;
-use EMS\CoreBundle\Form\Data\RolesTableColumn;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Form\Form\UserType;
-use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
-use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly ?string $circleObject, private readonly UserService $userService, private readonly UserManager $userManager, private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGenerator)
-    {
-    }
-
-    public function ajaxDataTableAction(Request $request): Response
-    {
-        $table = $this->initTable();
-        $dataTableRequest = DataTableRequest::fromRequest($request);
-        $table->resetIterator($dataTableRequest);
-
-        return $this->render('@EMSCore/datatable/ajax.html.twig', [
-            'dataTableRequest' => $dataTableRequest,
-            'table' => $table,
-        ], new JsonResponse());
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly UserService $userService,
+        private readonly UserManager $userManager,
+        private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGenerator,
+        private readonly DataTableFactory $dataTableFactory
+    ) {
     }
 
     public function indexAction(Request $request): Response
     {
-        $table = $this->initTable();
+        $table = $this->dataTableFactory->create(UserDataTableType::class);
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -263,32 +249,5 @@ class UserController extends AbstractController
         }
 
         return true;
-    }
-
-    private function initTable(): EntityTable
-    {
-        $table = new EntityTable($this->userService, $this->generateUrl(Routes::USER_AJAX_DATA_TABLE));
-        $table->addColumn('user.index.column.username', 'username');
-        $table->addColumn('user.index.column.displayname', 'displayName');
-        $table->addColumnDefinition(new BoolTableColumn('user.index.column.email_notification', 'emailNotification'))
-            ->setIconClass('fa fa-bell');
-        $table->addColumn('user.index.column.email', 'email');
-        $table->addColumn('user.index.column.locale_ui', 'locale');
-        $table->addColumn('user.index.column.locale_preferred', 'localePreferred');
-        $table->addColumn('user.index.column.wysiwyg_profile', 'wysiwygProfile');
-        if ($this->circleObject) {
-            $table->addColumnDefinition(new DataLinksTableColumn('user.index.column.circles', 'circles'));
-        }
-        $table->addColumnDefinition(new BoolTableColumn('user.index.column.enabled', 'enabled'));
-        $table->addColumnDefinition(new RolesTableColumn('user.index.column.roles', 'roles'));
-        $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.lastLogin', 'lastLogin'));
-
-        $table->addDynamicItemGetAction(Routes::USER_EDIT, 'user.action.edit', 'pencil', ['user' => 'id']);
-        $table->addDynamicItemGetAction('homepage', 'user.action.switch', 'user-secret', ['_switch_user' => 'username']);
-        $table->addDynamicItemPostAction(Routes::USER_ENABLING, 'user.action.disable', 'user-times', 'user.action.disable_confirm', ['user' => 'id']);
-        $table->addDynamicItemPostAction(Routes::USER_API_KEY, 'user.action.generate_api', 'key', 'user.action.generate_api_confirm', ['username' => 'username'])->addCondition(new Terms('roles', [Roles::ROLE_API]));
-        $table->addDynamicItemPostAction(Routes::USER_DELETE, 'user.action.delete', 'trash', 'user.action.delete_confirm', ['user' => 'id']);
-
-        return $table;
     }
 }

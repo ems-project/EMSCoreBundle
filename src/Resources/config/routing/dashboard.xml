@@ -13,9 +13,6 @@
     <route id="emsco_dashboard_admin_index" path="/admin/dashboard"
            controller="EMS\CoreBundle\Controller\Dashboard\DashboardController::index"
            methods="GET|POST"/>
-    <route id="emsco_dashboard_admin_index_ajax" path="/admin/dashboard/datatable.json"
-           controller="EMS\CoreBundle\Controller\Dashboard\DashboardController::datatable"
-           methods="GET"/>
     <route id="emsco_dashboard_admin_add" path="/admin/dashboard/add"
            controller="EMS\CoreBundle\Controller\Dashboard\DashboardController::add"
            methods="GET|POST"/>

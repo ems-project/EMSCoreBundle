@@ -34,7 +34,7 @@ final class DatatableController extends AbstractController
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
-        return $this->render('@EMSCore/datatable/ajax.json.twig', [
+        return $this->render('@EMSCore/datatable/ajax.html.twig', [
             'dataTableRequest' => $dataTableRequest,
             'table' => $table,
         ], new JsonResponse());

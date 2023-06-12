@@ -5,43 +5,32 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Dashboard;
 
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\DataTable\Type\DashboardDataTableType;
 use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Form\Data\EntityTable;
-use EMS\CoreBundle\Form\Data\TableAbstract;
-use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
 use EMS\CoreBundle\Form\Form\Dashboard\DashboardType;
 use EMS\CoreBundle\Form\Form\TableType;
-use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Routes;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\SubmitButton;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class DashboardController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly DashboardManager $dashboardManager)
-    {
-    }
-
-    public function datatable(Request $request): Response
-    {
-        $table = $this->initTable();
-        $dataTableRequest = DataTableRequest::fromRequest($request);
-        $table->resetIterator($dataTableRequest);
-
-        return $this->render('@EMSCore/datatable/ajax.html.twig', [
-            'dataTableRequest' => $dataTableRequest,
-            'table' => $table,
-        ], new JsonResponse());
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly DashboardManager $dashboardManager,
+        private readonly DataTableFactory $dataTableFactory
+    ) {
     }
 
     public function index(Request $request): Response
     {
-        $table = $this->initTable();
+        $table = $this->dataTableFactory->create(DashboardDataTableType::class);
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -119,31 +108,5 @@ class DashboardController extends AbstractController
         $this->dashboardManager->undefine($dashboard);
 
         return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
-    }
-
-    private function initTable(): EntityTable
-    {
-        $table = new EntityTable($this->dashboardManager, $this->generateUrl(Routes::DASHBOARD_ADMIN_INDEX_AJAX));
-        $table->addColumn('table.index.column.loop_count', 'orderKey');
-        $table->addColumn('dashboard.index.column.name', 'name');
-        $table->addColumn('dashboard.index.column.label', 'label')->setItemIconCallback(fn (Dashboard $dashboard) => $dashboard->getIcon());
-        $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.type', 'type', '@EMSCore/dashboard/columns.html.twig'));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.definition', 'definition', '@EMSCore/dashboard/columns.html.twig'));
-        $table->addItemGetAction(Routes::DASHBOARD_ADMIN_EDIT, 'dashboard.actions.edit', 'pencil');
-
-        $defineAction = $table->addItemActionCollection('dashboard.actions.define.title', 'gear');
-        $defineAction->addItemPostAction(Routes::DASHBOARD_ADMIN_DEFINE, 'dashboard.actions.define.landing_page', 'dot-circle-o', null, ['definition' => Dashboard::DEFINITION_LANDING_PAGE]);
-        $defineAction->addItemPostAction(Routes::DASHBOARD_ADMIN_DEFINE, 'dashboard.actions.define.quick_search', 'search', null, ['definition' => Dashboard::DEFINITION_QUICK_SEARCH]);
-        $defineAction->addItemPostAction(Routes::DASHBOARD_ADMIN_DEFINE, 'dashboard.actions.define.browser_image', 'image', null, ['definition' => Dashboard::DEFINITION_BROWSER_IMAGE]);
-        $defineAction->addItemPostAction(Routes::DASHBOARD_ADMIN_DEFINE, 'dashboard.actions.define.browser_object', 'book', null, ['definition' => Dashboard::DEFINITION_BROWSER_OBJECT]);
-        $defineAction->addItemPostAction(Routes::DASHBOARD_ADMIN_DEFINE, 'dashboard.actions.define.browser_file', 'file-image-o', null, ['definition' => Dashboard::DEFINITION_BROWSER_FILE]);
-        $defineAction->addItemPostAction(Routes::DASHBOARD_ADMIN_UNDEFINE, 'dashboard.actions.undefine', 'eraser', null);
-
-        $table->addItemPostAction(Routes::DASHBOARD_ADMIN_DELETE, 'dashboard.actions.delete', 'trash', 'dashboard.actions.delete_confirm')->setButtonType('outline-danger');
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'dashboard.actions.delete_selected', 'dashboard.actions.delete_selected_confirm')
-            ->setCssClass('btn btn-outline-danger');
-        $table->setDefaultOrder('orderKey');
-
-        return $table;
     }
 }

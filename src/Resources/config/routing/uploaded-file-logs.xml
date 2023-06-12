@@ -10,8 +10,4 @@
     <route id="ems_core_uploaded_file_show_hide" path="/show-hide/{assetId}"
            controller="EMS\CoreBundle\Controller\UploadedFileController::showHide"
            methods="POST"/>
-
-    <route id="ems_core_uploaded_file_logs_ajax" path="/datatable.json"
-           controller="EMS\CoreBundle\Controller\UploadedFileController::ajaxDataTable"
-           methods="GET"/>
 </routes>

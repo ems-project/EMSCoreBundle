@@ -4,43 +4,32 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller;
 
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\DataTable\Type\ChannelDataTableType;
 use EMS\CoreBundle\Entity\Channel;
-use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
-use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\ChannelType;
 use EMS\CoreBundle\Form\Form\TableType;
-use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\Channel\ChannelService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\SubmitButton;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ChannelController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly ChannelService $channelService)
-    {
-    }
-
-    public function ajaxDataTable(Request $request): Response
-    {
-        $table = $this->initTable();
-        $dataTableRequest = DataTableRequest::fromRequest($request);
-        $table->resetIterator($dataTableRequest);
-
-        return $this->render('@EMSCore/datatable/ajax.html.twig', [
-            'dataTableRequest' => $dataTableRequest,
-            'table' => $table,
-        ], new JsonResponse());
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly ChannelService $channelService,
+        private readonly DataTableFactory $dataTableFactory
+    ) {
     }
 
     public function index(Request $request): Response
     {
-        $table = $this->initTable();
+        $table = $this->dataTableFactory->create(ChannelDataTableType::class);
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -104,22 +93,5 @@ final class ChannelController extends AbstractController
         return $this->render('@EMSCore/channel/menu.html.twig', [
             'channels' => $this->channelService->getAll(),
         ]);
-    }
-
-    private function initTable(): EntityTable
-    {
-        $table = new EntityTable($this->channelService, $this->generateUrl('ems_core_channel_ajax_data_table'));
-        $table->addColumn('table.index.column.loop_count', 'orderKey');
-        $table->addColumn('channel.index.column.label', 'label');
-        $column = $table->addColumn('channel.index.column.name', 'name');
-        $column->setPathCallback(fn (Channel $channel, string $baseUrl = '') => $baseUrl.$channel->getEntryPath(), '_blank');
-        $table->addColumn('channel.index.column.alias', 'alias');
-        $table->addColumnDefinition(new BoolTableColumn('channel.index.column.public', 'public'));
-        $table->addItemGetAction('ems_core_channel_edit', 'channel.actions.edit', 'pencil');
-        $table->addItemPostAction('ems_core_channel_delete', 'channel.actions.delete', 'trash', 'channel.actions.delete_confirm');
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'channel.actions.delete_selected', 'channel.actions.delete_selected_confirm');
-        $table->setDefaultOrder('label');
-
-        return $table;
     }
 }

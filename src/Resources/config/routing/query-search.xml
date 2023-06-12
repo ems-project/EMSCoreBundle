@@ -16,7 +16,4 @@
     <route id="ems_core_query_search_delete" path="/delete/{querySearch}"
            controller="EMS\CoreBundle\Controller\QuerySearchController::delete"
            methods="POST"/>
-    <route id="ems_core_query_search" path="/datatable.json"
-           controller="EMS\CoreBundle\Controller\QuerySearchController::ajaxDataTable"
-           methods="GET"/>
 </routes>

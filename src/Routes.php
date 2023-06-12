@@ -15,7 +15,6 @@ class Routes
     final public const DRAFT_IN_PROGRESS_AJAX = 'emsco_draft_in_progress_ajax';
     final public const DATA_TABLE_AJAX_TABLE = 'emsco_datatable_ajax_table';
     final public const DASHBOARD_ADMIN_INDEX = 'emsco_dashboard_admin_index';
-    final public const DASHBOARD_ADMIN_INDEX_AJAX = 'emsco_dashboard_admin_index_ajax';
     final public const DASHBOARD_ADMIN_ADD = 'emsco_dashboard_admin_add';
     final public const DASHBOARD_ADMIN_EDIT = 'emsco_dashboard_admin_edit';
     final public const DASHBOARD_ADMIN_DELETE = 'emsco_dashboard_admin_delete';
@@ -24,7 +23,6 @@ class Routes
     final public const DASHBOARD = 'emsco_dashboard';
     final public const DASHBOARD_HOME = 'emsco_dashboard_home';
     final public const FORM_ADMIN_INDEX = 'emsco_form_admin_index';
-    final public const FORM_ADMIN_INDEX_AJAX = 'emsco_form_admin_index_ajax';
     final public const FORM_ADMIN_ADD = 'emsco_form_admin_add';
     final public const FORM_ADMIN_EDIT = 'emsco_form_admin_edit';
     final public const FORM_ADMIN_REORDER = 'emsco_form_admin_reorder';
@@ -59,7 +57,6 @@ class Routes
     final public const SCHEDULE_EDIT = 'emsco_schedule_edit';
     final public const SCHEDULE_DUPLICATE = 'emsco_schedule_duplicate';
     final public const SCHEDULE_DELETE = 'emsco_schedule_delete';
-    final public const USER_AJAX_DATA_TABLE = 'emsco_user_datatable';
     final public const USER_INDEX = 'emsco_user_index';
     final public const USER_ADD = 'emsco_user_add';
     final public const USER_EDIT = 'emsco_user_edit';

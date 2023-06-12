@@ -19,6 +19,7 @@ export default class MediaLibrary {
             btnHome: el.querySelector('button.btn-home'),
             btnAddFolder: el.querySelector('button.btn-add-folder'),
             inputUpload:  el.querySelector('input.file-uploader-input'),
+            divFiles: el.querySelector('div.media-lib-files'),
             listFiles: el.querySelector("ul.media-lib-list-files"),
             listFolders: el.querySelector("ul.media-lib-list-folders"),
             listUploads: el.querySelector('ul.media-lib-list-uploads'),
@@ -55,6 +56,8 @@ export default class MediaLibrary {
                 this._loadFolder(event.target.dataset.path, event.target);
             }
         }
+
+        this._initDropArea(this.#elements.divFiles);
     }
 
     _addFiles(files) {
@@ -252,5 +255,24 @@ export default class MediaLibrary {
         }
 
         return url;
+    }
+    _initDropArea(dropArea)  {
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.add('media-lib-drop-area'), false);
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.remove('media-lib-drop-area'), false);
+        });
+
+        dropArea.addEventListener('drop', () => {
+            const files = event.target.files || event.dataTransfer.files;
+            this._addFiles(Array.from(files));
+        }, false);
     }
 }

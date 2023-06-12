@@ -194,6 +194,11 @@ div.media-lib {
         overflow-y: auto;
         height: 100%;
 
+        &.media-lib-drop-area {
+            border: 2px solid $elasticms_light_blue;
+            background-color:  rgb(0, 167, 226, 0.1);
+        }
+
         ul.media-lib-list-files {
           display: flex;
           flex-direction: column;

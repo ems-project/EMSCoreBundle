@@ -19,7 +19,11 @@ final class EntityTable extends TableAbstract
     /**
      * @param mixed $context
      */
-    public function __construct(private readonly EntityServiceInterface $entityService, string $ajaxUrl, private $context = null, int $loadAllMaxRow = 400)
+    public function __construct(
+        private readonly EntityServiceInterface $entityService,
+        string $ajaxUrl,
+        private $context = null,
+        int $loadAllMaxRow = 400)
     {
         if ($this->count() > $loadAllMaxRow) {
             parent::__construct($ajaxUrl, 0, 0);

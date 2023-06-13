@@ -4,9 +4,11 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_datatable_ajax_table" path="/ajax/table/{cacheKey}"
+    <route id="emsco_datatable_ajax_table" path="/ajax/table/{hash}/{optionsCacheKey}"
            controller="EMS\CoreBundle\Controller\ContentManagement\DatatableController::ajaxData"
-           methods="GET"/>
+           methods="GET">
+        <default key="optionsCacheKey" xsi:nil="true" />
+    </route>
 
     <route id="ems_core_datatable_ajax_elastica" path="/ajax/{hashConfig}.json"
            controller="EMS\CoreBundle\Controller\ContentManagement\DatatableController::ajaxElastica"

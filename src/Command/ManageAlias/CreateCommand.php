@@ -49,8 +49,13 @@ final class CreateCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $managedAlias = new ManagedAlias();
-        $managedAlias->setName($this->name);
+        $managedAlias = $this->managedAliasManager->getByItemName($this->name);
+        if (null === $managedAlias) {
+            $managedAlias = new ManagedAlias();
+            $managedAlias->setName($this->name);
+        } else {
+            $this->io->warning('Updating a existing managed alias');
+        }
         $managedAlias->setLabel($this->label);
         $this->managedAliasManager->update($managedAlias);
         $this->io->success(\sprintf('Managed alias %s has been created', $this->name));

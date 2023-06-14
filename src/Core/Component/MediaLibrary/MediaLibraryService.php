@@ -20,6 +20,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class MediaLibraryService
 {
+    private const MAX_FOLDERS = 5000;
+
     public function __construct(
         private readonly ElasticaService $elasticaService,
         private readonly RevisionService $revisionService,
@@ -72,7 +74,7 @@ class MediaLibraryService
         }
 
         $template = $this->templateFactory->create($config);
-        $search = $this->search($config, $searchQuery, $from);
+        $search = $this->search($config, $searchQuery, $config->searchSize, $from);
 
         $rows = [];
         foreach ($search->getDocuments() as $document) {
@@ -102,7 +104,7 @@ class MediaLibraryService
         $searchQuery = $this->elasticaService->getBoolQuery();
         $searchQuery->addMustNot((new Nested())->setPath($config->fieldFile)->setQuery(new Exists($config->fieldFile)));
 
-        $docs = $this->search($config, $searchQuery)->getDocuments();
+        $docs = $this->search($config, $searchQuery, self::MAX_FOLDERS)->getDocuments();
 
         $folders = new MediaLibraryFolders();
 
@@ -142,7 +144,7 @@ class MediaLibraryService
         return $type ?: 'application/bin';
     }
 
-    private function search(MediaLibraryConfig $config, BoolQuery $query, int $from = 0): Response
+    private function search(MediaLibraryConfig $config, BoolQuery $query, int $size, int $from = 0): Response
     {
         if ($config->searchQuery) {
             $query->addMust($config->searchQuery);
@@ -151,7 +153,7 @@ class MediaLibraryService
         $search = new Search([$config->contentType->giveEnvironment()->getAlias()], $query);
         $search->setContentTypes([$config->contentType->getName()]);
         $search->setFrom($from);
-        $search->setSize($config->searchSize);
+        $search->setSize($size);
 
         if ($config->fieldPathOrder) {
             $search->setSort([$config->fieldPathOrder => ['order' => 'asc']]);

@@ -6,5 +6,6 @@ media_library:
             submit: Create
             cancel: Cancel
     file:
+        load_more: 'Loading more files ...'
         add:
             title: Upload

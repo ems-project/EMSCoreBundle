@@ -22,3 +22,10 @@
 {% block breadcrumb %}
     <ul class="media-lib-list-breadcrumb"></ul>
 {% endblock %}
+
+{% block loadMore %}
+    <div class="media-lib-load-more">
+        <i class="fa fa-refresh fa-spin fa-2x fa-fw"></i>
+        <span>{{ 'media_library.file.load_more'|trans }}</span>
+    </div>
+{% endblock %}

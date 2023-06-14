@@ -55,9 +55,14 @@ class MediaLibraryService
     }
 
     /**
-     * @return string[]
+     * @return array{
+     *     totalRows?: int,
+     *     remaining?: bool,
+     *     rowHeader?: string,
+     *     rows?: string[]
+     * }
      */
-    public function getFiles(MediaLibraryConfig $config, string $path): array
+    public function getFiles(MediaLibraryConfig $config, string $path, int $from): array
     {
         $searchQuery = $this->elasticaService->getBoolQuery();
         $searchQuery->addMust((new Nested())->setPath($config->fieldFile)->setQuery(new Exists($config->fieldFile)));
@@ -67,13 +72,12 @@ class MediaLibraryService
         }
 
         $template = $this->templateFactory->create($config);
-        $documents = $this->search($config, $searchQuery)->getDocuments();
+        $search = $this->search($config, $searchQuery, $from);
 
-        $files = [$template->block(MediaLibraryTemplate::BLOCK_FILE_ROW_HEADER)];
-
-        foreach ($documents as $document) {
+        $rows = [];
+        foreach ($search->getDocuments() as $document) {
             $mediaLibraryFile = new MediaLibraryFile($config, $document);
-            $files[] = $template->block(MediaLibraryTemplate::BLOCK_FILE_ROW, [
+            $rows[] = $template->block(MediaLibraryTemplate::BLOCK_FILE_ROW, [
                 'media' => $mediaLibraryFile,
                 'url' => $this->urlGenerator->generate('ems.file.view', [
                     'sha1' => $mediaLibraryFile->file['sha1'],
@@ -82,7 +86,12 @@ class MediaLibraryService
             ]);
         }
 
-        return $files;
+        return \array_filter([
+            'totalRows' => $search->getTotalDocuments(),
+            'remaining' => ($from + $search->getTotalDocuments() < $search->getTotal()),
+            'rowHeader' => 0 == $from ? $template->block(MediaLibraryTemplate::BLOCK_FILE_ROW_HEADER) : null,
+            'rows' => $rows,
+        ]);
     }
 
     /**
@@ -133,7 +142,7 @@ class MediaLibraryService
         return $type ?: 'application/bin';
     }
 
-    private function search(MediaLibraryConfig $config, BoolQuery $query): Response
+    private function search(MediaLibraryConfig $config, BoolQuery $query, int $from = 0): Response
     {
         if ($config->searchQuery) {
             $query->addMust($config->searchQuery);
@@ -141,8 +150,8 @@ class MediaLibraryService
 
         $search = new Search([$config->contentType->giveEnvironment()->getAlias()], $query);
         $search->setContentTypes([$config->contentType->getName()]);
-        $search->setFrom(0);
-        $search->setSize(5000);
+        $search->setFrom($from);
+        $search->setSize($config->searchSize);
 
         if ($config->fieldPathOrder) {
             $search->setSort([$config->fieldPathOrder => ['order' => 'asc']]);

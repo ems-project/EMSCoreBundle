@@ -32,7 +32,9 @@ class MediaLibraryController
 
     public function getFiles(MediaLibraryConfig $config, Request $request): JsonResponse
     {
-        return new JsonResponse($this->mediaLibraryService->getFiles($config, $this->getPath($request)));
+        $from = $request->query->getInt('from');
+
+        return new JsonResponse($this->mediaLibraryService->getFiles($config, $this->getPath($request), $from));
     }
 
     public function getFolders(MediaLibraryConfig $config): JsonResponse

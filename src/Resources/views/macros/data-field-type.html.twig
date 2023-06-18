@@ -111,7 +111,7 @@
 	{% if showA %}
 		<div class="{% if showA and showB %} col-md-6{% endif %} asset-preview-tab" >
 			{% if dataField.rawData and dataField.rawData.sha1 is defined %}
-				{% if dataField.rawData.sha1 and dataField.rawData.mimetype starts with 'image/' %}
+				{% if dataField.rawData.sha1 and dataField.rawData.mimetype|default('missing') starts with 'image/' %}
 					{% set path = emsco_asset_path(dataField.rawData, 'preview') %}
 					{% if dataField.fieldType.displayOptions.imageAssetConfigIdentifier is defined and dataField.fieldType.displayOptions.imageAssetConfigIdentifier %}
                         {% set path = emsco_asset_path(dataField.rawData, dataField.fieldType.displayOptions.imageAssetConfigIdentifier) %}
@@ -128,11 +128,11 @@
 				{% else %}
 					<div class="pad {{ compareColor }}">
 						<strong>
-							<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="{% if doCompare %}text-gray{% endif %}">
+							<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype|default('application/bin'), 'name':dataField.rawData.filename|default('filename.bin') }) }}" class="{% if doCompare %}text-gray{% endif %}">
 								{% if doCompare %}
 									<ins class="diffmod">
 								{% endif %}
-								{{ dataField.rawData.filename }}
+								{{ dataField.rawData.filename|default('N/A') }}
 								{% if doCompare %}
 									</ins>
 								{% endif %}
@@ -192,7 +192,7 @@
 							{% endif %}
 							<li class="list-group-item leaf-item">
 								<strong>{{ 'MIME Type : '|trans }}</strong>
-								{{ dataField.rawData.mimetype }}
+								{{ dataField.rawData.mimetype|default('') }}
 							</li>
 							{% if dataField.rawData._date is defined %}
 								<li class="list-group-item leaf-item">

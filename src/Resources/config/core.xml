@@ -17,6 +17,9 @@
         </service>
 
         <!-- Media Library -->
+        <service id="emsco.core.media_library.request.param_converter" class="EMS\CoreBundle\Core\Component\MediaLibrary\Request\MediaLibraryParamConverter">
+            <tag name="request.param_converter" converter="emsco.media_library_request" />
+        </service>
         <service id="emsco.core.media_library" class="EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryService">
             <argument type="service" id="ems_common.service.elastica" />
             <argument type="service" id="ems.service.revision" />

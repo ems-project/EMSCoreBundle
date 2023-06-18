@@ -11,6 +11,10 @@ use Elastica\Query\Term;
 use EMS\CommonBundle\Elasticsearch\Response\Response;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\Component\MediaLibrary\Folder\MediaLibraryFolder;
+use EMS\CoreBundle\Core\Component\MediaLibrary\Folder\MediaLibraryFolderFactory;
+use EMS\CoreBundle\Core\Component\MediaLibrary\Folder\MediaLibraryFolderStructure;
+use EMS\CoreBundle\Core\Component\MediaLibrary\Request\MediaLibraryRequest;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
@@ -32,28 +36,32 @@ class MediaLibraryService
     ) {
     }
 
-    /**
-     * @param array{filename: string, filesize: string, mimetype: string} $file
-     */
-    public function createFile(MediaLibraryConfig $config, string $fileHash, array $file, string $path): bool
+    public function createFile(MediaLibraryConfig $config, MediaLibraryRequest $request): bool
     {
-        $file['mimetype'] = ('' === $file['mimetype'] ? $this->getMimeType($fileHash) : $file['mimetype']);
+        $path = $this->getFolderPath($config, $request);
 
-        return $this->create($config, [
+        $file = $request->getContentJson()['file'];
+        $file['mimetype'] = ('' === $file['mimetype'] ? $this->getMimeType($file['sha1']) : $file['mimetype']);
+
+        $createdUuid = $this->create($config, [
             $config->fieldPath => $path.$file['filename'],
             $config->fieldFolder => $path,
-            $config->fieldFile => \array_filter(\array_merge($file, [
-                'sha1' => $fileHash,
-            ])),
+            $config->fieldFile => \array_filter($file),
         ]);
+
+        return null !== $createdUuid;
     }
 
-    public function createFolder(MediaLibraryConfig $config, string $folderName, string $path): bool
+    public function createFolder(MediaLibraryConfig $config, MediaLibraryRequest $request, string $folderName): ?MediaLibraryFolder
     {
-        return $this->create($config, [
+        $path = $this->getFolderPath($config, $request);
+
+        $createdUuid = $this->create($config, [
             $config->fieldPath => $path.$folderName,
             $config->fieldFolder => $path,
         ]);
+
+        return $createdUuid ? $this->getFolder($config, $createdUuid) : null;
     }
 
     /**
@@ -64,17 +72,18 @@ class MediaLibraryService
      *     rows?: string[]
      * }
      */
-    public function getFiles(MediaLibraryConfig $config, string $path, int $from): array
+    public function getFiles(MediaLibraryConfig $config, MediaLibraryRequest $request): array
     {
-        $searchQuery = $this->elasticaService->getBoolQuery();
-        $searchQuery->addMust((new Nested())->setPath($config->fieldFile)->setQuery(new Exists($config->fieldFile)));
+        $folder = $request->folderId ? $this->getFolder($config, $request->folderId) : null;
+        $path = $this->getFolderPath($config, $request);
 
-        if ($path) {
-            $searchQuery->addMust((new Term())->setTerm($config->fieldFolder, $path));
-        }
+        $searchQuery = $this->elasticaService->getBoolQuery();
+        $searchQuery
+            ->addMust((new Nested())->setPath($config->fieldFile)->setQuery(new Exists($config->fieldFile)))
+            ->addMust((new Term())->setTerm($config->fieldFolder, $path));
 
         $template = $this->templateFactory->create($config);
-        $search = $this->search($config, $searchQuery, $config->searchSize, $from);
+        $search = $this->search($config, $searchQuery, $config->searchSize, $request->from);
 
         $rows = [];
         foreach ($search->getDocuments() as $document) {
@@ -90,48 +99,51 @@ class MediaLibraryService
 
         return \array_filter([
             'totalRows' => $search->getTotalDocuments(),
-            'remaining' => ($from + $search->getTotalDocuments() < $search->getTotal()),
-            'rowHeader' => 0 == $from ? $template->block(MediaLibraryTemplate::BLOCK_FILE_ROW_HEADER) : null,
+            'remaining' => ($request->from + $search->getTotalDocuments() < $search->getTotal()),
+            'header' => 0 === $request->from ? $template->renderHeader(['folder' => $folder]) : null,
+            'rowHeader' => 0 === $request->from ? $template->block(MediaLibraryTemplate::BLOCK_FILE_ROW_HEADER) : null,
             'rows' => $rows,
         ]);
     }
 
+    public function getFolder(MediaLibraryConfig $config, string $ouuid): MediaLibraryFolder
+    {
+        return (new MediaLibraryFolderFactory($this->elasticaService, $config))->create($ouuid);
+    }
+
     /**
-     * @return array<int, array{ name: string }>
+     * @return array<string, array{ id: string, name: string, path: string, children: array<string, mixed> }>
      */
     public function getFolders(MediaLibraryConfig $config): array
     {
         $searchQuery = $this->elasticaService->getBoolQuery();
         $searchQuery->addMustNot((new Nested())->setPath($config->fieldFile)->setQuery(new Exists($config->fieldFile)));
 
-        $docs = $this->search($config, $searchQuery, self::MAX_FOLDERS)->getDocuments();
+        $documents = $this->search($config, $searchQuery, self::MAX_FOLDERS)->getDocuments();
 
-        $folders = new MediaLibraryFolders();
-
-        foreach ($docs as $document) {
-            $folderPath = $document->getValue($config->fieldPath);
-            $currentPath = \array_filter(\explode('/', $folderPath));
-            $folderName = \basename($folderPath);
-            $folders->add($currentPath, $folderName, $folderPath);
-        }
-
-        return $folders->toArray();
+        return MediaLibraryFolderStructure::create($config, $documents)->toArray();
     }
 
     /**
      * @param array<mixed> $rawData
      */
-    private function create(MediaLibraryConfig $config, array $rawData): bool
+    private function create(MediaLibraryConfig $config, array $rawData): ?string
     {
+        $uuid = Uuid::uuid4();
         $rawData = \array_merge_recursive($config->defaultValue, $rawData);
-        $revision = $this->revisionService->create($config->contentType, Uuid::uuid4(), $rawData);
+        $revision = $this->revisionService->create($config->contentType, $uuid, $rawData);
 
         $form = $this->revisionService->createRevisionForm($revision);
         $this->dataService->finalizeDraft($revision, $form);
 
         $this->elasticaService->refresh($config->contentType->giveEnvironment()->getAlias());
 
-        return 0 === $form->getErrors(true)->count();
+        return 0 === $form->getErrors(true)->count() ? $uuid->toString() : null;
+    }
+
+    private function getFolderPath(MediaLibraryConfig $config, MediaLibraryRequest $request): string
+    {
+        return $request->folderId ? $this->getFolder($config, $request->folderId)->path.'/' : '/';
     }
 
     private function getMimeType(string $fileHash): string

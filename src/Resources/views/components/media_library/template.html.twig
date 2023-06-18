@@ -1,16 +1,9 @@
 {% trans_default_domain 'emsco-component' %}
 
-{%- block mediaLibraryHeaderLeft -%}
-    {% apply spaceless %}
-        <div class="media-lib-container">
-            {{ buttonHome|raw }}
-        </div>
-    {% endapply %}
-{%- endblock mediaLibraryHeaderLeft -%}
-
 {%- block mediaLibraryHeader -%}
     {% apply spaceless %}
         <div class="media-lib-container">
+            {{ buttonHome|raw }}
             {{ buttonAddFolder|raw }}
             {{ buttonUpload|raw }}
             {{ breadcrumb|raw }}

@@ -81,7 +81,7 @@ class AppExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('cant_be_finalized', $this->cantBeFinalized(...)),
+            new TwigFunction('emsco_cant_be_finalized', $this->cantBeFinalized(...)),
             new TwigFunction('sequence', $this->getSequenceNextValue(...)),
             new TwigFunction('diff_text', $this->diffText(...), ['is_safe' => ['html']]),
             new TwigFunction('diff', $this->diff(...), ['is_safe' => ['html']]),
@@ -121,6 +121,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_form', [FormRuntime::class, 'handleForm']),
             new TwigFunction('emsco_get_data_field', [FormRuntime::class, 'getDataField']),
             // deprecated
+            new TwigFunction('cant_be_finalized', $this->cantBeFinalized(...), ['deprecated' => true, 'alternative' => 'emsco_cant_be_finalized']),
             new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames'], ['deprecated' => true, 'alternative' => 'emsco_get_default_environment_names']),
             new TwigFunction('get_content_types', [ContentTypeRuntime::class, 'getContentTypes'], ['deprecated' => true, 'alternative' => 'emsco_get_content_types']),
         ];

@@ -27,6 +27,7 @@
 		"elasticms/submission-bundle": "~5.7.0",
 		"elasticms/xliff": "~5.7.0",
 		"guzzlehttp/guzzle": "^6.3",
+		"maennchen/zipstream-php": "^2.4",
 		"ocramius/doctrine-batch-utils": "^2.5",
 		"ramsey/uuid-doctrine": "^1.8",
 		"sensio/framework-extra-bundle": "^6.2",

@@ -62,9 +62,6 @@
 		"sort-packages": true
 	},
 	"scripts": {
-		"phpcs": "php-cs-fixer fix",
-		"phpstan": "phpstan analyse --memory-limit 1G",
-		"phpunit": "phpunit",
-		"phpall": "php-cs-fixer fix && phpunit && phpstan analyse --memory-limit 1G"
+		"phpunit": "phpunit"
 	}
 }

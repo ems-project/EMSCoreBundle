@@ -10,7 +10,7 @@ use Twig\Environment;
 
 class LoginController
 {
-    public function __construct(private readonly Environment $twig)
+    public function __construct(private readonly Environment $twig, private readonly string $templateNamespace)
     {
     }
 
@@ -19,7 +19,7 @@ class LoginController
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return new Response($this->twig->render('@EMSCore/user/login.html.twig', [
+        return new Response($this->twig->render("@$this->templateNamespace/user/login.html.twig", [
             'last_username' => $lastUsername,
             'error' => $error,
         ]));

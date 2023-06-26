@@ -336,6 +336,7 @@
         <!-- User -->
         <service id="EMS\CoreBundle\Controller\User\LoginController">
             <argument type="service" id="twig"/>
+            <argument>%ems_core.template_namespace%</argument>
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\User\ProfileController" public="true">

@@ -36,6 +36,7 @@ class Configuration implements ConfigurationInterface
     final public const DEFAULT_BULK_SIZE = 500;
     final public const CLEAN_JOBS_TIME_STRING = '-7 days';
     final public const FALLBACK_LOCALE = 'en';
+    final public const TEMPLATE_NAMESPACE = 'EMSCore';
 
     public function getConfigTreeBuilder(): TreeBuilder
     {
@@ -81,6 +82,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('clean_jobs_time_string')->defaultValue(self::CLEAN_JOBS_TIME_STRING)->end()
                 ->scalarNode('fallback_locale')->defaultValue(self::FALLBACK_LOCALE)->end()
                 ->scalarNode('custom_user_options_form')->defaultValue(null)->end()
+                ->scalarNode('template_namespace')->defaultValue(self::TEMPLATE_NAMESPACE)->end()
             ->end()
         ;
 

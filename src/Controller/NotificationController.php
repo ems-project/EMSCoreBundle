@@ -30,7 +30,15 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class NotificationController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly PublishService $publishService, private readonly EnvironmentService $environmentService, private readonly ManagerRegistry $doctrine, private readonly NotificationService $notificationService, private readonly DashboardManager $dashboardManager, private readonly int $pagingSize)
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly PublishService $publishService,
+        private readonly EnvironmentService $environmentService,
+        private readonly ManagerRegistry $doctrine,
+        private readonly NotificationService $notificationService,
+        private readonly DashboardManager $dashboardManager,
+        private readonly int $pagingSize,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -142,7 +150,7 @@ class NotificationController extends AbstractController
 
     public function menuNotificationAction(): Response
     {
-        return $this->render('@EMSCore/notification/menu.html.twig', [
+        return $this->render("@$this->templateNamespace/notification/menu.html.twig", [
             'counter' => $this->notificationService->menuNotification(),
             'dashboardMenu' => $this->dashboardManager->getNotificationMenu(),
         ]);
@@ -190,7 +198,7 @@ class NotificationController extends AbstractController
                  'notifications' => $notifications,
          ]);
 
-        return $this->render('@EMSCore/notification/list.html.twig', [
+        return $this->render("@$this->templateNamespace/notification/list.html.twig", [
                 'counter' => $count,
                 'notifications' => $notifications,
                 'lastPage' => $lastPage,

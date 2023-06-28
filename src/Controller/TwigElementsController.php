@@ -20,7 +20,14 @@ class TwigElementsController extends AbstractController
 {
     final public const ASSET_EXTRACTOR_STATUS_CACHE_ID = 'status.asset_extractor.result';
 
-    public function __construct(private readonly AssetExtractorService $assetExtractorService, private readonly ElasticaService $elasticaService, private readonly UserService $userService, private readonly JobService $jobService, private readonly DashboardManager $dashboardManager, private readonly ContentTypeService $contentTypeService)
+    public function __construct(
+        private readonly AssetExtractorService $assetExtractorService,
+        private readonly ElasticaService $elasticaService,
+        private readonly UserService $userService,
+        private readonly JobService $jobService,
+        private readonly DashboardManager $dashboardManager,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -44,7 +51,7 @@ class TwigElementsController extends AbstractController
         }
 
         return $this->render(
-            '@EMSCore/elements/side-menu.html.twig',
+            "@$this->templateNamespace/elements/side-menu.html.twig",
             [
                 'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
                 'status' => $status,

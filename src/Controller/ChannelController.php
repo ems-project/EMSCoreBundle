@@ -23,7 +23,8 @@ final class ChannelController extends AbstractController
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly ChannelService $channelService,
-        private readonly DataTableFactory $dataTableFactory
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -90,7 +91,7 @@ final class ChannelController extends AbstractController
 
     public function menu(): Response
     {
-        return $this->render('@EMSCore/channel/menu.html.twig', [
+        return $this->render("@$this->templateNamespace/channel/menu.html.twig", [
             'channels' => $this->channelService->getAll(),
         ]);
     }

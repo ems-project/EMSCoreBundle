@@ -401,6 +401,7 @@
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.channel" />
             <argument type="service" id="emsco.data_table.factory" />
+            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -452,6 +453,7 @@
             <argument type="service" id="ems.service.notification"/>
             <argument type="service" id="ems.dashboard.manager"/>
             <argument>%ems_core.paging_size%</argument>
+            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -480,6 +482,7 @@
             <argument type="service" id="ems.service.job"/>
             <argument type="service" id="ems.dashboard.manager"/>
             <argument type="service" id="ems.service.contenttype"/>
+            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>

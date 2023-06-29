@@ -80,7 +80,7 @@ class ManagedAliasManager implements EntityServiceInterface
         if (null !== $name && $managedAlias->getName() !== $name) {
             throw new \RuntimeException(\sprintf('Manage alias name mismatched: %s vs %s', $managedAlias->getName(), $name));
         }
-        $this->repository->update($managedAlias);
+        $this->update($managedAlias);
 
         return $managedAlias;
     }

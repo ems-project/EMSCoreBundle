@@ -47,7 +47,7 @@ class TwigElementsController extends AbstractController
         $status = $this->elasticaService->getHealthStatus();
 
         if ('green' === $status) {
-            $status = $this->getAssetExtractorStatus($this->assetExtractorService);
+            $status = $this->getAssetExtractorStatus();
         }
 
         return $this->render(
@@ -79,24 +79,23 @@ class TwigElementsController extends AbstractController
         );
     }
 
-    private function getAssetExtractorStatus(AssetExtractorService $assetExtractorService): string
+    private function getAssetExtractorStatus(): string
     {
-        try {
-            $cache = new FilesystemAdapter('', 60);
-            $cachedStatus = $cache->getItem(TwigElementsController::ASSET_EXTRACTOR_STATUS_CACHE_ID);
-            if (!$cachedStatus->isHit()) {
-                $cachedStatus->set($assetExtractorService->hello());
-                $cache->save($cachedStatus);
-            }
-            $result = $cachedStatus->get();
-
-            if (($result['code'] ?? 500) === 200) {
-                return 'green';
-            }
-        } catch (\Exception) {
+        $cache = new FilesystemAdapter('', 60);
+        $cachedStatus = $cache->getItem(self::ASSET_EXTRACTOR_STATUS_CACHE_ID);
+        if ($cachedStatus->isHit()) {
+            return $cachedStatus->get();
         }
 
-        return 'yellow';
+        try {
+            $status = 200 === $this->assetExtractorService->hello()['code'] ? 'green' : 'yellow';
+        } catch (\Throwable) {
+            $status = 'yellow';
+        }
+        $cachedStatus->set($status);
+        $cache->save($cachedStatus);
+
+        return $status;
     }
 
     private function getOtherMenu(): Menu

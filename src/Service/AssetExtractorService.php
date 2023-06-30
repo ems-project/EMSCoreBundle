@@ -57,7 +57,7 @@ class AssetExtractorService implements CacheWarmerInterface
     public function hello(): array
     {
         if (!empty($this->tikaServer)) {
-            $client = $this->rest->getClient($this->tikaServer);
+            $client = $this->rest->getClient($this->tikaServer, 3);
             $result = $client->get(self::HELLO_EP);
 
             return [

@@ -48,6 +48,15 @@ class MigrateCommand extends AbstractCommand
     private const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
     private const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
 
+    private const OPTION_ARCHIVE = 'archive';
+    private const OPTION_CHANGED = 'changed';
+    private const OPTION_DONT_FINALIZE = 'dont-finalize';
+    private const OPTION_FORCE = 'force';
+    private const OPTION_BULK_SIZE = 'bulkSize';
+    private const OPTION_RAW = 'raw';
+    private const OPTION_SIGN_DATA = 'sign-data';
+    private const OPTION_SEARCH_QUERY = 'searchQuery';
+
     public function __construct(
         protected Registry $doctrine,
         private readonly ElasticaService $elasticaService,
@@ -95,51 +104,51 @@ class MigrateCommand extends AbstractCommand
                 '1m'
             )
             ->addOption(
-                'bulkSize',
+                self::OPTION_BULK_SIZE,
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Size of the elasticsearch bulk request',
                 '500'
             )
             ->addOption(
-                'force',
+                self::OPTION_FORCE,
                 null,
                 InputOption::VALUE_NONE,
                 'Allow to import from the default environment and to draft revision'
             )
             ->addOption(
-                'raw',
+                self::OPTION_RAW,
                 null,
                 InputOption::VALUE_NONE,
                 'The content will be imported as is. Without any field validation, data stripping or field protection'
             )
             ->addOption(
-                'sign-data',
+                self::OPTION_SIGN_DATA,
                 null,
                 InputOption::VALUE_NONE,
                 'The content will be (re)signed during the reindexing process'
             )
             ->addOption(
-                'searchQuery',
+                self::OPTION_SEARCH_QUERY,
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Query used to find elasticsearch records to import',
                 '{"sort":{"_uid":{"order":"asc"}}}'
             )
             ->addOption(
-                'dont-finalize',
+                self::OPTION_DONT_FINALIZE,
                 null,
                 InputOption::VALUE_NONE,
                 'Don\'t finalize document'
             )
             ->addOption(
-                'changed',
+                self::OPTION_CHANGED,
                 null,
                 InputOption::VALUE_NONE,
                 'Will only migrate if the hash is different, If equal it will only update the modified dateTime of the current revision'
             )
             ->addOption(
-                'archive',
+                self::OPTION_ARCHIVE,
                 null,
                 InputOption::VALUE_NONE,
                 'Will archive revisions that were not modified (see changed option)'
@@ -180,13 +189,13 @@ class MigrateCommand extends AbstractCommand
         }
         $this->scrollTimeout = $scrollTimeout;
 
-        $this->bulkSize = (int) $input->getOption('bulkSize');
-        $this->forceImport = (bool) $input->getOption('forceImport');
-        $this->rawImport = (bool) $input->getOption('rawImport');
-        $this->signData = (bool) $input->getOption('signData');
-        $this->searchQuery = $input->getOption('searchQuery');
-        $this->dontFinalize = (bool) $input->getOption('dontFinalize');
-        $this->onlyChanged = (bool) $input->getOption('onlyChanged');
+        $this->bulkSize = (int) $input->getOption(self::OPTION_BULK_SIZE);
+        $this->forceImport = (bool) $input->getOption(self::OPTION_FORCE);
+        $this->rawImport = (bool) $input->getOption(self::OPTION_RAW);
+        $this->signData = (bool) $input->getOption(self::OPTION_SIGN_DATA);
+        $this->searchQuery = $input->getOption(self::OPTION_SEARCH_QUERY);
+        $this->dontFinalize = (bool) $input->getOption(self::OPTION_DONT_FINALIZE);
+        $this->onlyChanged = (bool) $input->getOption(self::OPTION_CHANGED);
 
         $contentTypeTo = $this->contentTypeRepository->findByName($this->contentTypeNameTo);
         if (null === $contentTypeTo || !$contentTypeTo instanceof ContentType) {
@@ -217,7 +226,7 @@ class MigrateCommand extends AbstractCommand
             $this->indexInDefaultEnv = false;
         }
 
-        $archive = \boolval($input->getOption('archive'));
+        $archive = \boolval($input->getOption(self::OPTION_ARCHIVE));
         if ($archive) {
             $this->archiveModifiedBefore = DateTime::create('now');
             $this->io->note(\sprintf('Will archive not updated revisions before %s', $this->archiveModifiedBefore->format(\DateTimeInterface::ATOM)));

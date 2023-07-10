@@ -51,7 +51,7 @@ class UserOptionsType extends AbstractType
                 ]);
         }
 
-        if (null !== $this->customUserOptionsForm) {
+        if ($this->customUserOptionsForm) {
             $form = $this->formManager->getByName($this->customUserOptionsForm);
             $builder->add(UserOptions::CUSTOM_OPTIONS, $form->getFieldType()->getType(), [
                 'metadata' => $form->getFieldType(),

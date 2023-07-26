@@ -3,9 +3,7 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\Text\Encoder;
-use EMS\CoreBundle\Core\Job\ScheduleManager;
 use EMS\CoreBundle\Entity\Job;
-use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Form\JobType;
 use EMS\CoreBundle\Helper\EmsCoreResponse;
 use EMS\CoreBundle\Service\JobService;
@@ -19,12 +17,16 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class JobController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly JobService $jobService, private readonly ScheduleManager $scheduleManager, private readonly int $pagingSize, private readonly bool $triggerJobFromWeb)
-    {
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly JobService $jobService,
+        private readonly int $pagingSize,
+        private readonly bool $triggerJobFromWeb
+    ) {
     }
 
     public function index(Request $request): Response
@@ -55,32 +57,23 @@ class JobController extends AbstractController
             'job' => $job,
             'status' => $encoder->encodeUrl($job->getStatus()),
             'output' => $encoder->encodeUrl($converter->convert($job->getOutput())),
-            'launchJob' => true === $this->triggerJobFromWeb && false === $job->getStarted(),
+            'launchJob' => true === $this->triggerJobFromWeb && false === $job->getStarted() && !$job->hasTag(),
         ]);
     }
 
-    public function create(Request $request): Response
+    public function create(Request $request, UserInterface $user): Response
     {
-        $form = $this->createForm(JobType::class, []);
+        $job = $this->jobService->newJob($user);
+        $form = $this->createForm(JobType::class, $job);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->getUser();
-            if (!$user instanceof UserInterface) {
-                throw new NotFoundHttpException('User not found');
-            }
+            $this->jobService->save($job);
 
-            $command = $form->get('command')->getData();
-            $job = $this->jobService->createCommand($user, $command);
-
-            return $this->redirectToRoute('job.status', [
-                'job' => $job->getId(),
-            ]);
+            return $this->redirectToRoute('job.status', ['job' => $job->getId()]);
         }
 
-        return $this->render('@EMSCore/job/add.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render('@EMSCore/job/add.html.twig', ['form' => $form->createView()]);
     }
 
     public function delete(Job $job): RedirectResponse
@@ -97,13 +90,8 @@ class JobController extends AbstractController
         return $this->redirectToRoute('job.index');
     }
 
-    public function startJob(Job $job, Request $request): Response
+    public function startJob(Job $job, Request $request, UserInterface $user): Response
     {
-        $user = $this->getUser();
-        if (!$user instanceof UserInterface) {
-            throw new NotFoundHttpException('User not found');
-        }
-
         if ($job->getUser() != $user->getUsername()) {
             throw new AccessDeniedHttpException();
         }
@@ -112,7 +100,7 @@ class JobController extends AbstractController
             return new SymfonyJsonResponse('job already done');
         }
 
-        if (false === $this->triggerJobFromWeb) {
+        if (false === $this->triggerJobFromWeb || $job->hasTag()) {
             return EmsCoreResponse::createJsonResponse($request, true, [
                 'message' => 'job is scheduled',
                 'job_id' => $job->getId(),
@@ -135,18 +123,15 @@ class JobController extends AbstractController
         ]);
     }
 
-    public function startNextJob(string $tag, Request $request): Response
+    public function startNextJob(Request $request, UserInterface $user, string $tag): Response
     {
-        $user = $this->getUser();
-        if (!$user instanceof UserInterface) {
-            throw new NotFoundHttpException('User not found');
-        }
-        $schedule = $this->scheduleManager->findNext($tag);
-        $job = $this->jobService->jobFomSchedule($schedule, $user->getUsername());
+        $job = $this->jobService->nextJob($tag);
         if (null === $job) {
-            return EmsCoreResponse::createJsonResponse($request, true, [
-                'message' => 'no next job',
-            ]);
+            $job = $this->jobService->nextJobScheduled($user->getUsername(), $tag);
+        }
+
+        if (null === $job) {
+            return EmsCoreResponse::createJsonResponse($request, true, ['message' => 'no next job']);
         }
 
         return EmsCoreResponse::createJsonResponse($request, true, [
@@ -157,23 +142,15 @@ class JobController extends AbstractController
         ]);
     }
 
-    public function jobCompleted(int $job, Request $request): Response
+    public function jobCompleted(Request $request, int $job): Response
     {
-        $user = $this->getUser();
-        if (!$user instanceof UserInterface) {
-            throw new NotFoundHttpException('User not found');
-        }
         $this->jobService->finish($job);
 
         return EmsCoreResponse::createJsonResponse($request, true);
     }
 
-    public function jobFailed(int $job, Request $request): Response
+    public function jobFailed(Request $request, int $job): Response
     {
-        $user = $this->getUser();
-        if (!$user instanceof UserInterface) {
-            throw new NotFoundHttpException('User not found');
-        }
         $content = $request->getContent();
         if (!\is_string($content)) {
             throw new \RuntimeException('Unexpected non string content');
@@ -184,12 +161,8 @@ class JobController extends AbstractController
         return EmsCoreResponse::createJsonResponse($request, true);
     }
 
-    public function jobWrite(int $job, Request $request): Response
+    public function jobWrite(Request $request, int $job): Response
     {
-        $user = $this->getUser();
-        if (!$user instanceof UserInterface) {
-            throw new NotFoundHttpException('User not found');
-        }
         $content = $request->getContent();
         if (!\is_string($content)) {
             throw new \RuntimeException('Unexpected non string content');

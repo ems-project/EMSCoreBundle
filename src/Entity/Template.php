@@ -183,6 +183,11 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
      */
     protected bool $spreadsheet = false;
 
+    /**
+     * @ORM\Column(name="tag", type="string", length=255, nullable=true)
+     */
+    protected ?string $tag = null;
+
     public function __construct()
     {
         $this->environments = new ArrayCollection();
@@ -605,5 +610,15 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     public function setSpreadsheet(bool $spreadsheet): void
     {
         $this->spreadsheet = $spreadsheet;
+    }
+
+    public function getTag(): ?string
+    {
+        return $this->tag;
+    }
+
+    public function setTag(?string $tag): void
+    {
+        $this->tag = $tag;
     }
 }

@@ -12,23 +12,21 @@
 			<div class="box-header with-border">
 				<i class="fa fa-gear"></i>
 				<h3 class="box-title">Initiate a job</h3>
-
-				
 			</div>
-			
-			<!-- form start -->
 			{{ form_start(form) }}
-				
-				<div class="box-body">
-					{{ form_row(form.command) }}
-
+			<div class="box-body">
+				<div class="row">
+					<div class="col-md-10">{{ form_row(form.command) }}</div>
+					<div class="col-md-2">{{ form_row(form.tag) }}</div>
 				</div>
-				<!-- /.box-body -->
-				<div class="box-footer">
-					{{ form_widget(form.launch) }}
-				</div>
+			</div>
+			<div class="box-footer">
+				{{ form_widget(form.launch, {
+					'attr': { 'class': 'btn btn-primary btn-sm' },
+					'icon': 'fa fa-save'
+				}) }}
+			</div>
 			{{ form_end(form) }}
-			
 		</div>
 	</div>
 </div>

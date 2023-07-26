@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
-use EMS\CoreBundle\Core\Job\ScheduleManager;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Service\JobService;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,14 +18,17 @@ class JobCommand extends AbstractCommand
     private bool $dump = false;
     private ?string $tag = null;
 
-    public function __construct(private readonly JobService $jobService, private readonly ScheduleManager $scheduleManager, private readonly string $dateFormat, private readonly string $cleanJobsTimeString)
-    {
+    public function __construct(
+        private readonly JobService $jobService,
+        private readonly string $dateFormat,
+        private readonly string $cleanJobsTimeString
+    ) {
         parent::__construct();
     }
 
     protected function configure(): void
     {
-        $this->setDescription('Execute the next pending job if exist. If not execute the oldest due scheduled job if exist.')
+        $this->setDescription('Execute the next pending job if exists. If not execute the oldest due scheduled job if exists.')
             ->addOption(
                 self::OPTION_DUMP,
                 null,
@@ -52,18 +54,18 @@ class JobCommand extends AbstractCommand
     {
         $this->io->title('EMSCO - Job');
 
-        $job = null === $this->tag ? $this->jobService->findNext() : null;
+        $job = $this->jobService->nextJob($this->tag);
+
         if (null === $job) {
             $this->io->comment('No pending job to treat. Looking for due scheduled job.');
-            $schedule = $this->scheduleManager->findNext($this->tag);
-            $job = $this->jobService->jobFomSchedule($schedule, self::USER_JOB_COMMAND);
+            $job = $this->jobService->nextJobScheduled(self::USER_JOB_COMMAND, $this->tag);
         }
 
         if (null === $job) {
             $this->io->comment('Nothing to run. Cleaning jobs.');
             $this->cleanJobs();
 
-            return 0;
+            return self::EXECUTE_SUCCESS;
         }
 
         return $this->runJob($job, $input, $output);

@@ -67,6 +67,11 @@ class Job extends JsonDeserializer implements \JsonSerializable, EntityInterface
      */
     protected $command;
 
+    /**
+     * @ORM\Column(name="tag", type="string", length=255, nullable=true)
+     */
+    protected ?string $tag = null;
+
     public function __construct()
     {
         $this->created = DateTime::create('now');
@@ -180,5 +185,20 @@ class Job extends JsonDeserializer implements \JsonSerializable, EntityInterface
         $json->removeProperty('user');
 
         return $json;
+    }
+
+    public function hasTag(): bool
+    {
+        return null !== $this->tag;
+    }
+
+    public function getTag(): ?string
+    {
+        return $this->tag;
+    }
+
+    public function setTag(?string $tag): void
+    {
+        $this->tag = $tag;
     }
 }

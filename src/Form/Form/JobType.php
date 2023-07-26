@@ -18,15 +18,9 @@ class JobType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('command', TextType::class, [
-                'required' => false,
-            ])
-            ->add('launch', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-save',
-            ]);
+            ->add('command', TextType::class, ['required' => false])
+            ->add('tag', TextType::class, ['required' => false])
+            ->add('launch', SubmitEmsType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

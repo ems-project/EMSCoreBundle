@@ -36,7 +36,8 @@
 							<th class="text-center" style="width: 10px">#</th>
 							<th>Started</th>
 							<th>Last update</th>
-							<th>Command/Service</th>
+							<th>Command</th>
+							<th>Tag</th>
 							<th>Status</th>
 							<th>Action</th>
 						</tr>
@@ -46,6 +47,7 @@
 								<td>{{ job.created|date(date_time_format) }}</td>
 								<td>{{ job.modified|date(date_time_format) }}</td>
 								<td>{{ job.command }}</td>
+								<td>{{ job.tag }}</td>
 								<td>
 									<div class="progress-group">
 					                    <span class="progress-text">{{ job.status }}</span>

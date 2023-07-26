@@ -4,30 +4,54 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Command\JobOutput;
+use EMS\CoreBundle\Core\Job\ScheduleManager;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Job;
-use EMS\CoreBundle\Entity\Schedule;
-use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\JobRepository;
-use PHPUnit\TextUI\RuntimeException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class JobService implements EntityServiceInterface
 {
-    private readonly ObjectManager $em;
+    private ObjectManager $em;
 
-    public function __construct(Registry $doctrine, private readonly KernelInterface $kernel, private readonly LoggerInterface $logger, private readonly JobRepository $repository, private readonly TokenStorageInterface $tokenStorage)
-    {
+    public function __construct(
+        ManagerRegistry $doctrine,
+        private readonly KernelInterface $kernel,
+        private readonly LoggerInterface $logger,
+        private readonly JobRepository $repository,
+        private readonly ScheduleManager $scheduleManager,
+        private readonly TokenStorageInterface $tokenStorage
+    ) {
         $this->em = $doctrine->getManager();
+    }
+
+    public function nextJob(?string $tag = null): ?Job
+    {
+        return $this->repository->findOneBy(
+            ['started' => false, 'done' => false, 'tag' => $tag],
+            ['created' => 'ASC']
+        );
+    }
+
+    public function nextJobScheduled(string $username, ?string $tag): ?Job
+    {
+        $nextScheduled = $this->scheduleManager->findNext($tag);
+
+        if (null === $nextScheduled) {
+            return null;
+        }
+
+        return $this->initJob($username, $nextScheduled->getCommand(), $nextScheduled->givePreviousRun());
     }
 
     public function clean(): void
@@ -55,16 +79,6 @@ class JobService implements EntityServiceInterface
         return $doneJobs;
     }
 
-    public function findNext(): ?Job
-    {
-        return $this->repository->findOneBy([
-            'started' => false,
-            'done' => false,
-        ], [
-            'created' => 'ASC',
-        ]);
-    }
-
     public function count(string $searchValue = '', $context = null): int
     {
         if (null !== $context) {
@@ -79,16 +93,29 @@ class JobService implements EntityServiceInterface
         return $this->repository->countPendingJobs();
     }
 
-    public function createCommand(UserInterface $user, ?string $command): Job
+    public function newJob(UserInterface $user): Job
     {
-        $job = $this->create($user);
+        $job = new Job();
+        $job->setUser($user->getUserIdentifier());
         $job->setStatus('Job intialized');
-        $job->setCommand($command);
-
-        $this->em->persist($job);
-        $this->em->flush();
 
         return $job;
+    }
+
+    public function createCommand(UserInterface $user, ?string $command, ?string $tag = null): Job
+    {
+        $job = $this->newJob($user);
+        $job->setCommand($command);
+        $job->setTag($tag);
+        $this->save($job);
+
+        return $job;
+    }
+
+    public function save(Job $job): void
+    {
+        $this->em->persist($job);
+        $this->em->flush();
     }
 
     public function delete(Job $job): void
@@ -177,7 +204,7 @@ class JobService implements EntityServiceInterface
         try {
             $olderDate = DateTime::create($stringTime);
         } catch (\Throwable $e) {
-            $this->logger->warning(\sprintf('Invalid string to time format: %s', $stringTime));
+            $this->logger->warning(\sprintf('Invalid string to time format: %s (%s)', $stringTime, $e->getMessage()));
 
             return 0;
         }
@@ -194,17 +221,6 @@ class JobService implements EntityServiceInterface
         }
 
         return $jobsCleaned;
-    }
-
-    private function create(UserInterface $user): Job
-    {
-        $job = new Job();
-        $job->setUser($user->getUsername());
-        $job->setDone(false);
-        $job->setStarted(false);
-        $job->setProgress(0);
-
-        return $job;
     }
 
     public function isSortable(): bool
@@ -248,13 +264,13 @@ class JobService implements EntityServiceInterface
 
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
-        throw new RuntimeException('Job entities doesn\'t support JSON update');
+        throw new \RuntimeException('Job entities doesn\'t support JSON update');
     }
 
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         if (null !== $name) {
-            throw new RuntimeException('Job entities doesn\'t support JSON update');
+            throw new \RuntimeException('Job entities doesn\'t support JSON update');
         }
         $meta = JsonClass::fromJsonString($json);
         $job = $meta->jsonDeserialize();
@@ -278,19 +294,6 @@ class JobService implements EntityServiceInterface
         $this->repository->delete($job);
 
         return \strval($id);
-    }
-
-    public function jobFomSchedule(?Schedule $schedule, string $username): ?Job
-    {
-        if (null === $schedule) {
-            return null;
-        }
-        $startDate = $schedule->getPreviousRun();
-        if (null === $startDate) {
-            throw new \RuntimeException('Unexpected null start date');
-        }
-
-        return $this->initJob($username, $schedule->getCommand(), $startDate);
     }
 
     public function write(int $jobId, string $message, bool $newLine): void

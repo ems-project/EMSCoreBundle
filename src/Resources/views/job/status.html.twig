@@ -31,6 +31,13 @@
 					{{ job.command }}
 				</p>
 				<hr>
+				{% if job.tag %}
+					<strong><i class="fa fa-tag margin-r-5"></i> Tag</strong>
+					<p class="text-muted">
+						{{ job.tag }}
+					</p>
+					<hr>
+				{% endif %}
 				<strong><i class="fa fa-clock-o margin-r-5"></i> Last update</strong>
 				<p class="text-muted">
 					{{ job.modified|date(date_time_format) }}

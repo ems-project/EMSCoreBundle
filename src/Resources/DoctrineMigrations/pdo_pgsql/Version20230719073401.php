@@ -8,11 +8,11 @@ use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-final class Version20230520070730 extends AbstractMigration
+final class Version20230719073401 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Add a nullable tag field to the schedule entity';
+        return 'Add a nullable tag field to the job entity';
     }
 
     public function up(Schema $schema): void
@@ -22,7 +22,8 @@ final class Version20230520070730 extends AbstractMigration
             "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
         );
 
-        $this->addSql('ALTER TABLE schedule ADD tag VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE job ADD tag VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE template ADD tag VARCHAR(255) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
@@ -32,6 +33,7 @@ final class Version20230520070730 extends AbstractMigration
             "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
         );
 
-        $this->addSql('ALTER TABLE schedule DROP tag');
+        $this->addSql('ALTER TABLE job DROP tag');
+        $this->addSql('ALTER TABLE template DROP tag');
     }
 }

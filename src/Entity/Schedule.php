@@ -135,6 +135,15 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
         $this->command = $command;
     }
 
+    public function givePreviousRun(): \DateTime
+    {
+        if (null === $this->previousRun) {
+            throw new \RuntimeException('Previous run date is null');
+        }
+
+        return $this->previousRun;
+    }
+
     public function getPreviousRun(): ?\Datetime
     {
         return $this->previousRun;

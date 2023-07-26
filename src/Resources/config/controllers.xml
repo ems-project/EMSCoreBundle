@@ -160,7 +160,6 @@
         <service id="EMS\CoreBundle\Controller\ContentManagement\JobController" public="true">
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.job" />
-            <argument type="service" id="ems.schedule.manager" />
             <argument>%ems_core.paging_size%</argument>
             <argument>%ems_core.trigger_job_from_web%</argument>
             <call method="setContainer"/>

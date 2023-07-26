@@ -103,6 +103,7 @@ class ActionType extends AbstractType
                 'label' => 'The Access-Control-Allow-Originm header',
                 'required' => false,
             ])
+            ->add('tag', TextType::class, ['required' => false])
             ->add('saveAndClose', SubmitEmsType::class, [
                 'attr' => ['class' => 'btn btn-primary btn-sm '],
                 'icon' => 'fa fa-save',

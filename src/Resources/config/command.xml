@@ -315,7 +315,6 @@
         </service>
         <service id="ems.job.run" class="EMS\CoreBundle\Command\JobCommand">
             <argument type="service" id="ems.service.job"/>
-            <argument type="service" id="ems.schedule.manager"/>
             <argument>%ems_core.date_time_format%</argument>
             <argument>%ems_core.clean_jobs_time_string%</argument>
             <tag name="console.command"/>

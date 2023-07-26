@@ -543,7 +543,7 @@ class DataController extends AbstractController
             if (!$user instanceof UserInterface) {
                 throw new \RuntimeException('Unexpected user object');
             }
-            $job = $this->jobService->createCommand($user, $command);
+            $job = $this->jobService->createCommand($user, $command, $template->getTag());
 
             $success = true;
             $this->logger->notice('log.data.job.initialized', [

@@ -10,7 +10,6 @@ use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
-use EMS\CommonBundle\Helper\ArrayTool;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\StorageManager;
@@ -483,18 +482,6 @@ class DataService
     }
 
     /**
-     * @deprecated
-     *
-     * @param array<mixed> $array
-     */
-    public static function ksortRecursive(array &$array, int $sort_flags = SORT_REGULAR): void
-    {
-        @\trigger_error('DataService::ksortRecursive is deprecated use the ArrayTool::normalizeArray instead', E_USER_DEPRECATED);
-
-        ArrayTool::normalizeArray($array, $sort_flags);
-    }
-
-    /**
      * @param array<mixed> $objectArray
      */
     public function signRaw(array &$objectArray): string
@@ -508,7 +495,7 @@ class DataService
         if (isset($objectArray[Mapping::PUBLISHED_DATETIME_FIELD])) {
             unset($objectArray[Mapping::PUBLISHED_DATETIME_FIELD]);
         }
-        ArrayTool::normalizeArray($objectArray);
+        Json::normalize($objectArray);
         $json = Json::encode($objectArray);
 
         $hash = $this->storageManager->computeStringHash($json);
@@ -603,7 +590,7 @@ class DataService
                 $document = $this->searchService->getDocument($contentType, $revision->giveOuuid(), $environment);
                 $indexedItem = $document->getSource();
 
-                ArrayTool::normalizeArray($indexedItem);
+                Json::normalize($indexedItem);
 
                 if (isset($indexedItem[Mapping::PUBLISHED_DATETIME_FIELD])) {
                     unset($indexedItem[Mapping::PUBLISHED_DATETIME_FIELD]);

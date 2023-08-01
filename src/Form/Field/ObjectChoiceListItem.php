@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\Field;
 
 use EMS\CommonBundle\Elasticsearch\Document\Document;
+use EMS\CoreBundle\Core\ContentType\ContentTypeFields;
 use EMS\CoreBundle\Entity\ContentType;
 
 class ObjectChoiceListItem implements \Stringable
@@ -14,6 +15,7 @@ class ObjectChoiceListItem implements \Stringable
     private readonly string $value;
     private ?string $group = null;
     private ?string $color = null;
+    private ?string $tooltip;
 
     public function __construct(Document $document, ?ContentType $contentType)
     {
@@ -42,6 +44,14 @@ class ObjectChoiceListItem implements \Stringable
         }
 
         $this->label = \sprintf('<i class="%s" data-ouuid="%s"></i>&nbsp;&nbsp;%s', $icon, $this->value, $this->title);
+
+        $tooltipField = $contentType?->field(ContentTypeFields::TOOLTIP);
+        $this->tooltip = $tooltipField ? $document->getValue($tooltipField) : null;
+    }
+
+    public function getTooltip(): ?string
+    {
+        return $this->tooltip;
     }
 
     public function getValue(): string

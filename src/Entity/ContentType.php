@@ -795,6 +795,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         if ($this->hasCategoryField()) {
             $sourceFields[] = $this->giveCategoryField();
         }
+        if ($this->field(ContentTypeFields::TOOLTIP)) {
+            $sourceFields[] = $this->field(ContentTypeFields::TOOLTIP);
+        }
 
         return $sourceFields;
     }

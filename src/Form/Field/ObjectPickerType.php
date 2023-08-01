@@ -42,7 +42,10 @@ class ObjectPickerType extends Select2Type
             'choice_label' => fn ($value, $key, $index) => $value->getLabel(),
             'choice_attr' => function ($val, $key, $index) {
                 if ($val instanceof ObjectChoiceListItem) {
-                    return ['title' => $val->getTitle()];
+                    return \array_filter([
+                        'title' => $val->getTitle(),
+                        'data-tooltip' => $val->getTooltip(),
+                    ]);
                 }
 
                 return [];

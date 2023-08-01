@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Core\Document;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Elasticsearch\Response\ResponseInterface;
+use EMS\CoreBundle\Core\ContentType\ContentTypeFields;
 use EMS\CoreBundle\Entity\ContentType;
 
 final class DataLinks
@@ -69,11 +70,17 @@ final class DataLinks
 
         if ($contentType && $contentType->getIcon()) {
             $icon = $contentType->getIcon();
+            $tooltipField = $contentType->field(ContentTypeFields::TOOLTIP);
+
+            if ($tooltipField && $tooltip = $document->getValue($tooltipField, false)) {
+                $item['tooltip'] = $tooltip;
+            }
         } else {
             $icon = ($contentType) ? 'fa fa-question' : 'fa fa-external-link-square';
         }
 
         $item['text'] = \sprintf('<i class="%s"></i> %s', $icon, $text);
+        $item['title'] = $text;
 
         $this->items[] = $item;
     }

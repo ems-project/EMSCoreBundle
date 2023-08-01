@@ -7,6 +7,7 @@ use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elastica\ResultSet;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\Text\Encoder;
@@ -21,6 +22,7 @@ use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer;
 use EMS\CoreBundle\Core\Revision\Wysiwyg\WysiwygRuntime;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Sequence;
 use EMS\CoreBundle\Entity\UserInterface;
@@ -133,7 +135,6 @@ class AppExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('data', $this->data(...)),
             new TwigFilter('inArray', $this->inArray(...)),
             new TwigFilter('firstInArray', $this->firstInArray(...)),
             new TwigFilter('md5', $this->md5(...)),
@@ -178,8 +179,10 @@ class AppExtension extends AbstractExtension
             new TwigFilter('emsco_log_error', [CoreRuntime::class, 'logError']),
             new TwigFilter('emsco_guess_locale', [DataExtractorRuntime::class, 'guessLocale']),
             new TwigFilter('emsco_asset_meta', [DataExtractorRuntime::class, 'assetMeta']),
+            new TwigFilter('emsco_get', $this->get(...)),
             new TwigFilter('emsco_get_content_type', [ContentTypeRuntime::class, 'getContentType']),
             // deprecated
+            new TwigFilter('data', $this->data(...), ['deprecated' => true, 'alternative' => 'emsco_get']),
             new TwigFilter('url_generator', Encoder::webalize(...), ['deprecated' => true, 'alternative' => 'ems_webalize']),
             new TwigFilter('emsco_webalize', Encoder::webalize(...), ['deprecated' => true, 'alternative' => 'ems_webalize']),
             new TwigFilter('get_environment', [EnvironmentRuntime::class, 'getEnvironment'], ['deprecated' => true, 'alternative' => 'emsco_get_environment']),
@@ -969,7 +972,12 @@ class AppExtension extends AbstractExtension
     /**
      * @return array<mixed>|null
      */
-    public function data(?string $key, string $index = null): ?array
+    public function data(?string $key): ?array
+    {
+        return $this->get($key)?->getSource();
+    }
+
+    public function get(?string $key, ?Environment $environment = null): ?DocumentInterface
     {
         if (empty($key)) {
             return null;
@@ -988,9 +996,7 @@ class AppExtension extends AbstractExtension
         }
 
         try {
-            $document = $this->searchService->getDocument($contentType, $ouuid);
-
-            return $document->getSource();
+            return $this->searchService->getDocument($contentType, $ouuid, $environment);
         } catch (NotFoundException) {
             return null;
         }

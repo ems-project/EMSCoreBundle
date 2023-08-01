@@ -40,11 +40,13 @@ export default class IframePreview {
 
     adjustHeight(iframe) {
         const window = iframe.contentWindow || iframe.contentDocument.defaultView;
-        let height = parseInt(window.getComputedStyle(iframe, null).getPropertyValue('border-top-width').replace('px',''), 10);
-        height += parseInt(window.getComputedStyle(iframe, null).getPropertyValue('border-bottom-width').replace('px',''), 10);
-        height += parseInt(window.getComputedStyle(iframe, null).getPropertyValue('padding-top').replace('px',''), 10);
-        height += parseInt(window.getComputedStyle(iframe, null).getPropertyValue('padding-bottom').replace('px',''), 10);
-        height += parseInt(window.document.body.scrollHeight, 10);
+
+        let height = window.document.documentElement.scrollHeight;
+
+        ['border-top-width', 'border-bottom-width', 'padding-top', 'padding-bottom'].forEach((v) => {
+            height += parseInt(window.getComputedStyle(iframe, null).getPropertyValue(v).replace('px',''), 10);
+        });
+
         iframe.height = height;
     }
 

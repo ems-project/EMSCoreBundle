@@ -13,9 +13,6 @@
     <route id="emsco_draft_in_progress" path="/draft/{contentTypeId}"
            controller="EMS\CoreBundle\Controller\Revision\EditController::draftInProgress"
            methods="GET|POST"/>
-    <route id="emsco_draft_in_progress_ajax" path="/draft/{contentType}/datatable.json"
-           controller="EMS\CoreBundle\Controller\Revision\EditController::ajaxDraftInProgress"
-           methods="GET|POST"/>
     <route id="emsco_revision_archive" path="/archive/{revision}"
            controller="EMS\CoreBundle\Controller\Revision\EditController::archiveRevision"
            methods="POST"/>

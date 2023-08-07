@@ -7,14 +7,13 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeActionDataTableType;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
-use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
-use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\ActionType;
 use EMS\CoreBundle\Form\Form\TableType;
-use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Service\ActionService;
@@ -23,7 +22,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\SubmitButton;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,20 +29,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class ActionController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly ActionService $actionService)
-    {
-    }
-
-    public function ajaxDataTableAction(ContentType $contentType, Request $request): Response
-    {
-        $table = $this->initTable($contentType);
-        $dataTableRequest = DataTableRequest::fromRequest($request);
-        $table->resetIterator($dataTableRequest);
-
-        return $this->render('@EMSCore/datatable/ajax.html.twig', [
-            'dataTableRequest' => $dataTableRequest,
-            'table' => $table,
-        ], new JsonResponse());
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly ActionService $actionService,
+        private readonly DataTableFactory $dataTableFactory
+    ) {
     }
 
     /** @deprecated */
@@ -75,7 +64,9 @@ final class ActionController extends AbstractController
             throw new \RuntimeException('Unexpected deleted contentType');
         }
 
-        $table = $this->initTable($contentType);
+        $table = $this->dataTableFactory->create(ContentTypeActionDataTableType::class, [
+            'content_type_name' => $contentType->getName(),
+        ]);
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -247,21 +238,5 @@ final class ActionController extends AbstractController
         return $this->redirectToRoute('ems_core_action_index', [
             'contentType' => $action->giveContentType()->getId(),
         ]);
-    }
-
-    private function initTable(ContentType $contentType): EntityTable
-    {
-        $table = new EntityTable($this->actionService, $this->generateUrl('ems_core_action_datatable_ajax', ['contentType' => $contentType->getId()]), $contentType);
-        $table->addColumn('table.index.column.loop_count', 'orderKey');
-        $table->addColumnDefinition(new BoolTableColumn('action.index.column.public', 'public'));
-        $table->addColumn('action.index.column.name', 'name');
-        $table->addColumn('action.index.column.label', 'label')
-            ->setItemIconCallback(fn (Template $action) => $action->getIcon());
-        $table->addColumn('action.index.column.type', 'renderOption');
-        $table->addItemGetAction('ems_core_action_edit', 'action.actions.edit', 'pencil', ['contentType' => $contentType]);
-        $table->addItemPostAction('ems_core_action_delete', 'action.actions.delete', 'trash', 'action.actions.delete_confirm', ['contentType' => $contentType->getId()]);
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'action.actions.delete_selected', 'action.actions.delete_selected_confirm');
-
-        return $table;
     }
 }

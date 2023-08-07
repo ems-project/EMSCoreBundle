@@ -4,9 +4,6 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="template.datatable.ajax" path="/{contentType}/datatable.json"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ActionController::ajaxDataTableAction"
-           methods="GET|POST"/>
     <route id="template.index" path="/{type}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ActionController::indexAction"
            methods="GET|HEAD"/>

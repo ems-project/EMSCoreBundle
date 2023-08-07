@@ -243,6 +243,11 @@ final class ReleaseService implements EntityServiceInterface
         return $rollback;
     }
 
+    public function getById(int $id): Release
+    {
+        return $this->releaseRepository->getById($id);
+    }
+
     public function getByItemName(string $name): ?EntityInterface
     {
         return $this->releaseRepository->getById($name);

@@ -28,12 +28,6 @@
     <route id="emsco_release_add_revisions" path="/{release}/add-revisions"
            controller="EMS\CoreBundle\Controller\ContentManagement\ReleaseController::addRevisions"
            methods="GET|POST"/>
-    <route id="emsco_release_ajax_data_table" path="/release-datatable.json"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ReleaseController::ajaxReleaseTable"
-           methods="GET"/>
-    <route id="emsco_release_ajax_data_table_member_revision" path="/{release}/member-datatable.json"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ReleaseController::ajaxReleaseTableMemberRevisions"
-           methods="GET"/>
     <route id="emsco_release_ajax_data_table_non_member_revision" path="/{release}/non-member-datatable.json"
            controller="EMS\CoreBundle\Controller\ContentManagement\ReleaseController::ajaxReleaseTableNonMemberRevisions"
            methods="GET"/>

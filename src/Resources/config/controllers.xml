@@ -60,6 +60,7 @@
         <service id="EMS\CoreBundle\Controller\ContentManagement\ActionController" public="true">
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.action" />
+            <argument type="service" id="emsco.data_table.factory" />
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -189,6 +190,7 @@
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.release" />
             <argument type="service" id="ems.service.release_revision" />
+            <argument type="service" id="emsco.data_table.factory" />
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -196,6 +198,7 @@
         <service id="EMS\CoreBundle\Controller\ContentManagement\ViewController" public="true">
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.view.manager" />
+            <argument type="service" id="emsco.data_table.factory" />
             <argument type="service" id="logger"/>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
@@ -252,6 +255,7 @@
         <!-- Log -->
         <service id="EMS\CoreBundle\Controller\Log\LogController" public="true">
             <argument type="service" id="ems.log.manager" />
+            <argument type="service" id="emsco.data_table.factory" />
             <argument type="service" id="logger" />
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
@@ -285,7 +289,7 @@
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
             <argument type="service" id="ems_common.service.elastica" />
             <argument type="service" id="ems.service.search" />
-            <argument type="service" id="ems.log.manager"/>
+            <argument type="service" id="emsco.data_table.factory"/>
             <argument type="service" id="logger" />
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
@@ -293,11 +297,11 @@
         </service>
         <service id="EMS\CoreBundle\Controller\Revision\EditController" public="true">
             <argument type="service" id="ems.service.data" />
-            <argument type="service" id="ems_core.core_revision.draft_in_progress" />
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.publish" />
             <argument type="service" id="ems.service.revision" />
             <argument type="service" id="translator" />
+            <argument type="service" id="emsco.data_table.factory" />
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -494,9 +498,8 @@
             <tag name="container.service_subscriber"/>
         </service>
         <service id="EMS\CoreBundle\Controller\UploadedFileWysiwygController" public="true">
-            <argument type="service" id="ems.service.file" />
             <argument type="service" id="ems_core.core_ui.ajax_service" />
-            <argument type="service" id="router" />
+            <argument type="service" id="emsco.data_table.factory"/>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>

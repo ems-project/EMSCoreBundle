@@ -11,8 +11,4 @@
     <route id="ems_core_uploaded_file_wysiwyg_modal" path="/modal"
            controller="EMS\CoreBundle\Controller\UploadedFileWysiwygController::modal"
            methods="GET|POST"/>
-
-    <route id="ems_core_uploaded_file_wysiwyg_ajax" path="/datatable.json"
-           controller="EMS\CoreBundle\Controller\UploadedFileWysiwygController::ajaxDataTable"
-           methods="GET"/>
 </routes>

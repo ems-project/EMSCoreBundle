@@ -4,10 +4,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_log_index" path="/index.{_format}"
+    <route id="emsco_log_index" path="/index"
            controller="EMS\CoreBundle\Controller\Log\LogController::index"
-           methods="GET|POST"
-           format="html"/>
+           methods="GET|POST"/>
     <route id="emsco_log_delete" path="/delete/{log}"
            controller="EMS\CoreBundle\Controller\Log\LogController::delete"
            methods="POST"/>

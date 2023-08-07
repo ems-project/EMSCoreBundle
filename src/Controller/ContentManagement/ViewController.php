@@ -2,55 +2,46 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\View\ViewManager;
-use EMS\CoreBundle\EMSCoreBundle;
-use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeViewDataTableType;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Data\EntityTable;
-use EMS\CoreBundle\Form\Data\TableAbstract;
-use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
-use EMS\CoreBundle\Form\Data\TranslationTableColumn;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Form\Form\ViewType;
-use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ContentTypeService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\SubmitButton;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ViewController extends AbstractController
 {
-    public function __construct(private readonly ContentTypeService $contentTypeService, private readonly ViewManager $viewManager, private readonly LoggerInterface $logger)
-    {
+    public function __construct(
+        private readonly ContentTypeService $contentTypeService,
+        private readonly ViewManager $viewManager,
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly LoggerInterface $logger
+    ) {
     }
 
     /** @deprecated */
-    public function indexDeprecated(string $type, string $_format, Request $request): Response
+    public function indexDeprecated(string $type, Request $request): Response
     {
         @\trigger_error(\sprintf('Route view.index is deprecated, use %s instead', Routes::VIEW_INDEX), E_USER_DEPRECATED);
 
-        return $this->index($type, $_format, $request);
+        return $this->index($type, $request);
     }
 
-    public function index(string $type, string $_format, Request $request): Response
+    public function index(string $type, Request $request): Response
     {
         $contentType = $this->contentTypeService->giveByName($type);
-        $table = $this->initTable($contentType);
-        $dataTableRequest = DataTableRequest::fromRequest($request);
-
-        if ('json' === $_format) {
-            $table->resetIterator($dataTableRequest);
-
-            return $this->render('@EMSCore/datatable/ajax.html.twig', [
-                'dataTableRequest' => $dataTableRequest,
-                'table' => $table,
-            ], new JsonResponse());
-        }
+        $table = $this->dataTableFactory->create(ContentTypeViewDataTableType::class, [
+            'content_type_name' => $contentType->getName(),
+        ]);
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
@@ -194,26 +185,5 @@ class ViewController extends AbstractController
         return $this->redirectToRoute(Routes::VIEW_INDEX, [
             'type' => $contentType->getName(),
         ]);
-    }
-
-    private function initTable(ContentType $contentType): EntityTable
-    {
-        $table = new EntityTable($this->viewManager, $this->generateUrl(Routes::VIEW_INDEX, [
-            'type' => $contentType->getName(),
-            '_format' => 'json',
-        ]), $contentType);
-        $table->addColumn('table.index.column.loop_count', 'orderKey');
-        $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.public', 'public', '@EMSCore/view/columns.html.twig'));
-        $table->addColumn('view.index.column.name', 'name');
-        $table->addColumn('view.index.column.label', 'label')->setItemIconCallback(fn (View $view) => $view->getIcon() ?? '');
-        $table->addColumnDefinition(new TranslationTableColumn('dashboard.index.column.type', 'type', EMSCoreBundle::TRANS_FORM_DOMAIN));
-        $table->addItemGetAction(Routes::VIEW_EDIT, 'view.actions.edit', 'pencil');
-        $table->addItemPostAction(Routes::VIEW_DUPLICATE, 'view.actions.duplicate', 'pencil', 'view.actions.duplicate_confirm');
-        $table->addItemPostAction(Routes::VIEW_DELETE, 'view.actions.delete', 'trash', 'view.actions.delete_confirm')->setButtonType('outline-danger');
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'view.actions.delete_selected', 'view.actions.delete_selected_confirm')
-            ->setCssClass('btn btn-outline-danger');
-        $table->setDefaultOrder('orderKey');
-
-        return $table;
     }
 }

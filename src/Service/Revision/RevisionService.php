@@ -322,7 +322,7 @@ class RevisionService implements RevisionServiceInterface
         }
     }
 
-    public function getByRevisionId(string $revisionId): Revision
+    public function getByRevisionId(int|string $revisionId): Revision
     {
         $revision = $this->revisionRepository->find($revisionId);
         if (!$revision instanceof Revision) {

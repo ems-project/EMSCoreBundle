@@ -6,25 +6,15 @@ namespace EMS\CoreBundle\Core\Revision;
 
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\ContentType;
-use EMS\CoreBundle\Form\Data\Condition\DateInFuture;
-use EMS\CoreBundle\Form\Data\Condition\InMyCircles;
-use EMS\CoreBundle\Form\Data\Condition\NotEmpty;
-use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
-use EMS\CoreBundle\Form\Data\EntityTable;
-use EMS\CoreBundle\Form\Data\UserTableColumn;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\EntityServiceInterface;
-use EMS\CoreBundle\Service\UserService;
 
 class DraftInProgress implements EntityServiceInterface
 {
     final public const DISCARD_SELECTED_DRAFT = 'DISCARD_SELECTED_DRAFT';
 
-    public function __construct(
-        private readonly RevisionRepository $revisionRepository,
-        private readonly UserService $userService
-    ) {
+    public function __construct(private readonly RevisionRepository $revisionRepository)
+    {
     }
 
     public function isSortable(): bool
@@ -61,42 +51,6 @@ class DraftInProgress implements EntityServiceInterface
         }
 
         return $this->revisionRepository->countDraftInProgress($searchValue, $context);
-    }
-
-    public function getDataTable(string $ajaxUrl, ?ContentType $contentType): EntityTable
-    {
-        $table = new EntityTable($this, $ajaxUrl, $contentType);
-        $table->setRowActionsClass('pull-right');
-        $table->setLabelAttribute('label');
-        $table->setDefaultOrder('modified', 'desc');
-        $table->addColumnDefinition(new DatetimeTableColumn('revision.draft-in-progress.column.modified', 'draftSaveDate'));
-        $table->addColumnDefinition(new UserTableColumn('revision.draft-in-progress.column.auto-save-by', 'autoSaveBy'));
-        $table->addColumn('revision.draft-in-progress.column.label', 'label')->setOrderField('labelField');
-        $lockUntil = new DatetimeTableColumn('revision.draft-in-progress.column.locked', 'lockUntil');
-        $condition = new DateInFuture('lockUntil');
-        $lockUntil->addCondition($condition);
-        $table->addColumnDefinition($lockUntil);
-        $lockBy = new UserTableColumn('revision.draft-in-progress.column.locked-by', 'lockBy');
-        $lockBy->addCondition($condition);
-        $table->addColumnDefinition($lockBy);
-        $inMyCircles = new InMyCircles($this->userService);
-        $table->addDynamicItemGetAction(Routes::EDIT_REVISION, 'revision.draft-in-progress.column.edit-draft', 'pencil', [
-            'revisionId' => 'id',
-        ])->addCondition($inMyCircles)->setButtonType('primary');
-        $table->addDynamicItemGetAction(Routes::VIEW_REVISIONS, 'revision.draft-in-progress.column.view-revision', '', [
-            'type' => 'contentType.name',
-            'ouuid' => 'ouuid',
-        ])->addCondition(new NotEmpty('ouuid'));
-        $table->addDynamicItemPostAction(Routes::DISCARD_DRAFT, 'revision.draft-in-progress.column.discard-draft', 'trash', 'revision.draft-in-progress.column.confirm-discard-draft', [
-           'revisionId' => 'id',
-        ])->addCondition($inMyCircles)->setButtonType('outline-danger');
-
-        if (null !== $contentType && (null === $contentType->getCirclesField() || '' === $contentType->getCirclesField())) {
-            $table->addTableAction(self::DISCARD_SELECTED_DRAFT, 'fa fa-trash', 'revision.draft-in-progress.action.discard-selected-draft', 'revision.draft-in-progress.action.discard-selected-confirm')
-                ->setCssClass('btn btn-outline-danger');
-        }
-
-        return $table;
     }
 
     public function getByItemName(string $name): ?EntityInterface

@@ -17,7 +17,4 @@
     <route id="ems_core_action_delete" path="/{contentType}/delete/{action}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ActionController::delete"
            methods="POST"/>
-    <route id="ems_core_action_datatable_ajax" path="/{contentType}/datatable.json"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ActionController::ajaxDataTableAction"
-           methods="GET|POST"/>
 </routes>

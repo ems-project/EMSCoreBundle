@@ -7,6 +7,41 @@
         <defaults public="false" />
 
         <!-- Types -->
+        <service id="emsco.data_table.content_type.action" class="EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeActionDataTableType">
+            <argument type="service" id="ems.service.action"/>
+            <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService"/>
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.content_type.view" class="EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeViewDataTableType">
+            <argument type="service" id="ems.view.manager"/>
+            <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService"/>
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.release.overview" class="EMS\CoreBundle\DataTable\Type\Release\ReleaseOverviewDataTableType">
+            <argument type="service" id="ems.service.release"/>
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.release.pick" class="EMS\CoreBundle\DataTable\Type\Release\ReleasePickDataTableType">
+            <argument type="service" id="ems.service.release"/>
+            <argument type="service" id="ems.service.revision"/>
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.release.revision" class="EMS\CoreBundle\DataTable\Type\Release\ReleaseRevisionDataTableType">
+            <argument type="service" id="ems.service.release_revision"/>
+            <argument type="service" id="ems.service.release"/>
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.revision.audit" class="EMS\CoreBundle\DataTable\Type\Revision\RevisionAuditDataTableType">
+            <argument type="service" id="ems.log.manager"/>
+            <argument type="service" id="ems.service.revision"/>
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.revision.drafts" class="EMS\CoreBundle\DataTable\Type\Revision\RevisionDraftsDataTableType">
+            <argument type="service" id="ems_core.core_revision.draft_in_progress" />
+            <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
+            <argument type="service" id="ems.service.user" />
+            <tag name="emsco.datatable" />
+        </service>
         <service id="emsco.data_table.channel" class="EMS\CoreBundle\DataTable\Type\ChannelDataTableType">
             <argument type="service" id="ems.service.channel"/>
             <tag name="emsco.datatable" />
@@ -27,6 +62,10 @@
             <argument type="service" id="ems.schedule.manager" />
             <tag name="emsco.datatable" />
         </service>
+        <service id="emsco.data_table.log" class="EMS\CoreBundle\DataTable\Type\LogDataTableType">
+            <argument type="service" id="ems.log.manager" />
+            <tag name="emsco.datatable" />
+        </service>
         <service id="emsco.data_table.query_search" class="EMS\CoreBundle\DataTable\Type\QuerySearchDataTableType">
             <argument type="service" id="ems.service.query_search" />
             <tag name="emsco.datatable" />
@@ -37,6 +76,12 @@
         </service>
         <service id="emsco.data_table.user" class="EMS\CoreBundle\DataTable\Type\UserDataTableType">
             <argument type="service" id="ems.service.user" />
+            <argument>%ems_core.circles_object%</argument>
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.wysiwyg_uploaded_file" class="EMS\CoreBundle\DataTable\Type\WysiwygUploadedFileDataTableType">
+            <argument type="service" id="ems.service.file" />
+            <argument type="service" id="router" />
             <argument>%ems_core.circles_object%</argument>
             <tag name="emsco.datatable" />
         </service>

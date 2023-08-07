@@ -30,9 +30,6 @@
         <default key="revisionId">0</default>
         <default key="compareId">0</default>
     </route>
-    <route id="emsco_view_revisions_table_audit" path="/revisions/{type}:{ouuid}/audit.json"
-           controller="EMS\CoreBundle\Controller\Revision\DetailController::ajaxAuditDataTable"
-           methods="GET"/>
     <route id="emsco_duplicate_revision" path="/duplicate/{environment}/{type}/{ouuid}"
            controller="EMS\CoreBundle\Controller\ContentManagement\DataController::duplicateAction"
            methods="POST"/>
@@ -125,9 +122,6 @@
            path="/json-menu-nested/silent-publish/{revision}/{fieldType}/{field}"
            controller="EMS\CoreBundle\Controller\Revision\JsonMenuNestedController::silentPublish"
            methods="POST"/>
-    <route id="emsco_data_pick_a_release_ajax_data_table" path="/pick-a-release/{revision}.json"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ReleaseController::ajaxReleaseTable"
-           methods="GET"/>
     <route id="emsco_pick_a_release" path="/pick-a-release/{revision}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ReleaseController::pickRelease"
            methods="GET|POST"/>

@@ -164,7 +164,6 @@
         <service id="ems_core.service.uploaded-file" alias="EMS\CoreBundle\Service\DatatableService"/>
         <service id="ems_core.core_revision.draft_in_progress" class="EMS\CoreBundle\Core\Revision\DraftInProgress">
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
-            <argument type="service" id="ems.service.user"/>
         </service>
 
         <service id="ems_core.core_ui.flash_message_logger" class="EMS\CoreBundle\Core\UI\FlashMessageLogger">

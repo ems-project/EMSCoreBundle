@@ -17,7 +17,12 @@ use Psr\Log\LoggerInterface;
 
 final class ReleaseRevisionService implements QueryServiceInterface, EntityServiceInterface
 {
-    public function __construct(private readonly ReleaseRevisionRepository $releaseRevisionRepository, private readonly RevisionRepository $revisionRepository, private readonly LoggerInterface $logger, private readonly ContentTypeService $contentTypeService, private readonly UserService $userService)
+    public function __construct(
+        private readonly ReleaseRevisionRepository $releaseRevisionRepository,
+        private readonly RevisionRepository $revisionRepository,
+        private readonly LoggerInterface $logger,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly UserService $userService)
     {
     }
 

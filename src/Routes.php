@@ -12,7 +12,6 @@ class Routes
     final public const VIEW_REVISIONS_AUDIT = 'emsco_view_revisions_table_audit';
     final public const DISCARD_DRAFT = 'emsco_discard_draft';
     final public const DRAFT_IN_PROGRESS = 'emsco_draft_in_progress';
-    final public const DRAFT_IN_PROGRESS_AJAX = 'emsco_draft_in_progress_ajax';
     final public const DATA_TABLE_AJAX_TABLE = 'emsco_datatable_ajax_table';
     final public const DASHBOARD_ADMIN_INDEX = 'emsco_dashboard_admin_index';
     final public const DASHBOARD_ADMIN_ADD = 'emsco_dashboard_admin_add';
@@ -36,8 +35,6 @@ class Routes
     final public const RELEASE_SET_STATUS = 'emsco_release_set_status';
     final public const RELEASE_ADD_REVISION = 'emsco_release_add_revision';
     final public const RELEASE_ADD_REVISIONS = 'emsco_release_add_revisions';
-    final public const RELEASE_AJAX_DATA_TABLE = 'emsco_release_ajax_data_table';
-    final public const RELEASE_MEMBER_REVISION_AJAX = 'emsco_release_ajax_data_table_member_revision';
     final public const RELEASE_NON_MEMBER_REVISION_AJAX = 'emsco_release_ajax_data_table_non_member_revision';
     final public const VIEW_INDEX = 'emsco_view_index';
     final public const VIEW_EDIT = 'emsco_view_edit';
@@ -50,7 +47,6 @@ class Routes
     final public const DATA_PRIVATE_VIEW = 'emsco_data_private_view';
     final public const DATA_ADD = 'emsco_data_add';
     final public const DATA_TRASH = 'emsco_data_trash';
-    final public const DATA_PICK_A_RELEASE_AJAX_DATA_TABLE = 'emsco_data_pick_a_release_ajax_data_table';
     final public const DATA_ADD_REVISION_TO_RELEASE = 'emsco_data_add_revision_to_release';
     final public const SCHEDULE_INDEX = 'emsco_schedule_index';
     final public const SCHEDULE_ADD = 'emsco_schedule_add';

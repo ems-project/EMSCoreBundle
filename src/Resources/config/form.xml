@@ -415,7 +415,7 @@
             <tag name="form.type"/>
         </service>
         <service id="ems.form.field.analyzerpickertype" class="EMS\CoreBundle\Form\Field\AnalyzerPickerType">
-            <argument type="service" id="doctrine" />
+            <argument type="service" id="ems.repository.analyzer" />
             <tag name="form.type"/>
         </service>
         <service id="ems.form.field.formpickertype" class="EMS\CoreBundle\Form\Field\FormPickerType">

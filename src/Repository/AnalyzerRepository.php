@@ -33,6 +33,14 @@ class AnalyzerRepository extends ServiceEntityRepository
     /**
      * @return Analyzer[]
      */
+    public function findAll()
+    {
+        return $this->findBy([], ['orderKey' => 'asc']);
+    }
+
+    /**
+     * @return Analyzer[]
+     */
     public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
     {
         $qb = $this->createQueryBuilder('analyzer')

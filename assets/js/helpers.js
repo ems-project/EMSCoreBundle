@@ -39,9 +39,14 @@ window.formatRepo = function(repo) {
 };
 
 window.formatRepoSelection = function(repo) {
-    let tooltip = 'tooltip' in repo.element.dataset ? repo.element.dataset.tooltip : repo.tooltip;
+    let tooltip;
+    if (repo.hasOwnProperty('element') && repo.element instanceof HTMLElement) {
+        tooltip = repo.element.dataset.tooltip ?? null;
+    } else {
+        tooltip = repo.tooltip ?? null;
+    }
 
-    if (typeof tooltip !== 'undefined') {
+    if (tooltip !== null) {
         let item = $('<span data-toggle="tooltip" title="'+ tooltip +'">'+ repo.text +'</span>');
         item.tooltip();
         return item;

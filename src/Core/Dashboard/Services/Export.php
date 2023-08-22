@@ -11,7 +11,7 @@ use Twig\Environment;
 
 class Export implements DashboardInterface
 {
-    public function __construct(private readonly Environment $twig)
+    public function __construct(private readonly Environment $twig, private readonly string $templateNamespace)
     {
     }
 
@@ -39,7 +39,7 @@ class Export implements DashboardInterface
                 $response->headers->set('Content-Disposition', $disposition);
             }
         } catch (\Throwable $e) {
-            $response->setContent($this->twig->render('@EMSCore/dashboard/services/error.html.twig', [
+            $response->setContent($this->twig->render("@$this->templateNamespace/dashboard/services/error.html.twig", [
                 'exception' => $e,
                 'dashboard' => $dashboard,
                 'options' => $dashboard->getOptions(),

@@ -23,7 +23,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SearchController extends AbstractController
 {
-    public function __construct(private readonly SortOptionService $sortOptionService, private readonly AggregateOptionService $aggregateOptionService, private readonly SearchFieldOptionService $searchFieldOptionService, private readonly TranslatorInterface $translator)
+    public function __construct(
+        private readonly SortOptionService $sortOptionService,
+        private readonly AggregateOptionService $aggregateOptionService,
+        private readonly SearchFieldOptionService $searchFieldOptionService,
+        private readonly TranslatorInterface $translator,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -53,7 +58,7 @@ class SearchController extends AbstractController
             return $this->redirectToRoute('ems_search_options_index');
         }
 
-        return $this->render('@EMSCore/search-options/index.html.twig', [
+        return $this->render("@$this->templateNamespace/search-options/index.html.twig", [
                 'sortOptions' => $this->sortOptionService->getAll(),
                 'aggregateOptions' => $this->aggregateOptionService->getAll(),
                 'searchFieldOptions' => $this->searchFieldOptionService->getAll(),
@@ -77,7 +82,7 @@ class SearchController extends AbstractController
             return $this->redirectToRoute('ems_search_options_index');
         }
 
-        return $this->render('@EMSCore/entity/new.html.twig', [
+        return $this->render("@$this->templateNamespace/entity/new.html.twig", [
             'entity_name' => $this->translator->trans('search.sort_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
             'form' => $form->createView(),
         ]);
@@ -97,7 +102,7 @@ class SearchController extends AbstractController
             return $this->redirectToRoute('ems_search_options_index');
         }
 
-        return $this->render('@EMSCore/entity/new.html.twig', [
+        return $this->render("@$this->templateNamespace/entity/new.html.twig", [
             'entity_name' => $this->translator->trans('search.search_field_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
             'form' => $form->createView(),
         ]);
@@ -117,7 +122,7 @@ class SearchController extends AbstractController
             return $this->redirectToRoute('ems_search_options_index');
         }
 
-        return $this->render('@EMSCore/entity/new.html.twig', [
+        return $this->render("@$this->templateNamespace/entity/new.html.twig", [
                 'entity_name' => $this->translator->trans('search.aggregate_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
                 'form' => $form->createView(),
         ]);
@@ -143,7 +148,7 @@ class SearchController extends AbstractController
             }
         }
 
-        return $this->render('@EMSCore/entity/edit.html.twig', [
+        return $this->render("@$this->templateNamespace/entity/edit.html.twig", [
                 'entity_name' => $this->translator->trans('search.sort_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
                 'form' => $form->createView(),
         ]);
@@ -169,7 +174,7 @@ class SearchController extends AbstractController
             }
         }
 
-        return $this->render('@EMSCore/entity/edit.html.twig', [
+        return $this->render("@$this->templateNamespace/entity/edit.html.twig", [
                 'entity_name' => $this->translator->trans('search.search_field_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
                 'form' => $form->createView(),
         ]);
@@ -195,7 +200,7 @@ class SearchController extends AbstractController
             }
         }
 
-        return $this->render('@EMSCore/entity/edit.html.twig', [
+        return $this->render("@$this->templateNamespace/entity/edit.html.twig", [
                 'entity_name' => $this->translator->trans('search.aggregate_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
                 'form' => $form->createView(),
         ]);

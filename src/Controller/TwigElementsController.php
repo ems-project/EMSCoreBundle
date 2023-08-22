@@ -72,7 +72,7 @@ class TwigElementsController extends AbstractController
     public function jobsAction(string $username): Response
     {
         return $this->render(
-            '@EMSCore/elements/jobs-list.html.twig',
+            "@$this->templateNamespace/elements/jobs-list.html.twig",
             [
                 'jobs' => $this->jobService->findByUser($username),
             ]

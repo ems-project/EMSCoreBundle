@@ -24,7 +24,8 @@ class ViewController extends AbstractController
         private readonly ContentTypeService $contentTypeService,
         private readonly ViewManager $viewManager,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -67,7 +68,7 @@ class ViewController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/view/index.html.twig', [
+        return $this->render("@$this->templateNamespace/view/index.html.twig", [
             'contentType' => $contentType,
             'form' => $form->createView(),
         ]);
@@ -105,7 +106,7 @@ class ViewController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/view/add.html.twig', [
+        return $this->render("@$this->templateNamespace/view/add.html.twig", [
             'contentType' => $contentType,
             'form' => $form->createView(),
         ]);
@@ -137,7 +138,7 @@ class ViewController extends AbstractController
             ]);
 
             if ('json' === $_format) {
-                return $this->render('@EMSCore/ajax/notification.json.twig', [
+                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                     'success' => true,
                 ]);
             }
@@ -147,7 +148,7 @@ class ViewController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/view/edit.html.twig', [
+        return $this->render("@$this->templateNamespace/view/edit.html.twig", [
             'form' => $form->createView(),
             'contentType' => $view->getContentType(),
             'view' => $view,

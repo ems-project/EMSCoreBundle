@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FileController extends AbstractController
 {
-    public function __construct(private readonly FileService $fileService, private readonly AssetExtractorService $assetExtractorService, private readonly LoggerInterface $logger)
+    public function __construct(private readonly FileService $fileService, private readonly AssetExtractorService $assetExtractorService, private readonly LoggerInterface $logger, private readonly string $templateNamespace)
     {
     }
 
@@ -65,7 +65,7 @@ class FileController extends AbstractController
             throw new NotFoundHttpException(\sprintf('Asset %s not found', $sha1));
         }
 
-        $response = $this->render('@EMSCore/ajax/extract-data-file.json.twig', [
+        $response = $this->render("@$this->templateNamespace/ajax/extract-data-file.json.twig", [
             'success' => true,
             'data' => $data,
         ]);
@@ -111,12 +111,12 @@ class FileController extends AbstractController
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
 
-            return $this->render('@EMSCore/ajax/notification.json.twig', [
+            return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                 'success' => false,
             ]);
         }
 
-        return $this->render('@EMSCore/ajax/file.json.twig', [
+        return $this->render("@$this->templateNamespace/ajax/file.json.twig", [
             'success' => true,
             'asset' => $uploadedAsset,
             'apiRoute' => $apiRoute,
@@ -150,12 +150,12 @@ class FileController extends AbstractController
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
 
-            return $this->render('@EMSCore/ajax/notification.json.twig', [
+            return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                 'success' => false,
             ]);
         }
 
-        return $this->render('@EMSCore/ajax/file.json.twig', [
+        return $this->render("@$this->templateNamespace/ajax/file.json.twig", [
             'success' => true,
             'asset' => $uploadedAsset,
             'apiRoute' => $apiRoute,
@@ -166,7 +166,7 @@ class FileController extends AbstractController
     {
         $images = $this->fileService->getImages();
 
-        return $this->render('@EMSCore/ajax/images.json.twig', [
+        return $this->render("@$this->templateNamespace/ajax/images.json.twig", [
             'images' => $images,
         ]);
     }
@@ -198,12 +198,12 @@ class FileController extends AbstractController
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                 ]);
 
-                return $this->render('@EMSCore/ajax/notification.json.twig', [
+                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                     'success' => false,
                 ]);
             }
 
-            return $this->render('@EMSCore/ajax/multipart.json.twig', [
+            return $this->render("@$this->templateNamespace/ajax/multipart.json.twig", [
                 'success' => true,
                 'asset' => $uploadedAsset,
             ]);
@@ -211,12 +211,12 @@ class FileController extends AbstractController
             $this->logger->warning('log.file.upload_error', [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $file->getError(),
             ]);
-            $this->render('@EMSCore/ajax/notification.json.twig', [
+            $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                 'success' => false,
             ]);
         }
 
-        return $this->render('@EMSCore/ajax/notification.json.twig', [
+        return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
             'success' => false,
         ]);
     }

@@ -29,6 +29,7 @@ class FormController extends AbstractController
         private readonly FormManager $formManager,
         private readonly FieldTypeManager $fieldTypeManager,
         private readonly DataTableFactory $dataTableFactory,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -58,7 +59,7 @@ class FormController extends AbstractController
             return $this->redirectToRoute(Routes::FORM_ADMIN_INDEX);
         }
 
-        return $this->render('@EMSCore/admin-form/index.html.twig', [
+        return $this->render("@$this->templateNamespace/admin-form/index.html.twig", [
             'form' => $form->createView(),
         ]);
     }
@@ -103,7 +104,7 @@ class FormController extends AbstractController
             ]));
         }
 
-        return $this->render($create ? '@EMSCore/admin-form/add.html.twig' : '@EMSCore/admin-form/edit.html.twig', [
+        return $this->render($create ? "@$this->templateNamespace/admin-form/add.html.twig" : "@$this->templateNamespace/admin-form/edit.html.twig", [
             'form' => $formType->createView(),
             'entity' => $form,
         ]);
@@ -122,7 +123,7 @@ class FormController extends AbstractController
             return $this->redirectToRoute(Routes::FORM_ADMIN_INDEX);
         }
 
-        return $this->render('@EMSCore/admin-form/reorder.html.twig', [
+        return $this->render("@$this->templateNamespace/admin-form/reorder.html.twig", [
             'form' => $formType->createView(),
             'entity' => $form,
         ]);

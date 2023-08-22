@@ -60,7 +60,8 @@ class DataController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly ViewTypes $viewTypes,
         private readonly TwigEnvironment $twig,
-        private readonly JobService $jobService
+        private readonly JobService $jobService,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -173,7 +174,7 @@ class DataController extends AbstractController
             throw $this->createAccessDeniedException('Trash not granted!');
         }
 
-        return $this->render('@EMSCore/data/trash.html.twig', [
+        return $this->render("@$this->templateNamespace/data/trash.html.twig", [
             'contentType' => $contentType,
             'revisions' => $this->dataService->getAllDeleted($contentType),
         ]);
@@ -215,7 +216,7 @@ class DataController extends AbstractController
             throw new NotFoundHttpException(\sprintf('Document %s with identifier %s not found in environment %s', $contentType->getSingularName(), $ouuid, $environmentName));
         }
 
-        return $this->render('@EMSCore/data/view-data.html.twig', [
+        return $this->render("@$this->templateNamespace/data/view-data.html.twig", [
             'document' => $document,
             'object' => $document->getRaw(),
             'environment' => $environment,
@@ -574,7 +575,7 @@ class DataController extends AbstractController
             ]);
         }
 
-        $response = $this->render('@EMSCore/ajax/notification.json.twig', [
+        $response = $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
             'success' => $success,
         ]);
         $response->headers->set('Content-Type', 'application/json');
@@ -604,7 +605,7 @@ class DataController extends AbstractController
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
             ]);
 
-            $response = $this->render('@EMSCore/ajax/notification.json.twig', [
+            $response = $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                 'success' => false,
             ]);
             $response->headers->set('Content-Type', 'application/json');
@@ -668,7 +669,7 @@ class DataController extends AbstractController
             }
         }
 
-        $response = $this->render('@EMSCore/data/ajax-revision.json.twig', [
+        $response = $this->render("@$this->templateNamespace/data/ajax-revision.json.twig", [
             'success' => true,
             'formErrors' => $formErrors,
         ]);
@@ -832,7 +833,7 @@ class DataController extends AbstractController
             }
         }
 
-        return $this->render('@EMSCore/data/add.html.twig', [
+        return $this->render("@$this->templateNamespace/data/add.html.twig", [
             'contentType' => $contentType,
             'form' => $form->createView(),
         ]);

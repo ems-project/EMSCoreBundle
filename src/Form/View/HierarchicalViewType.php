@@ -39,9 +39,10 @@ class HierarchicalViewType extends ViewType
         protected SessionInterface $session,
         protected DataService $dataService,
         protected RouterInterface $router,
-        protected ContentTypeService $contentTypeService)
+        protected ContentTypeService $contentTypeService,
+        private readonly string $templateNamespace)
     {
-        parent::__construct($formFactory, $twig, $logger);
+        parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
     public function getLabel(): string
@@ -184,7 +185,7 @@ $dataField->getRawData()
         }
 
         $response = new Response();
-        $response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', [
+        $response->setContent($this->twig->render("@$this->templateNamespace/view/custom/".$this->getBlockPrefix().'.html.twig', [
                 'parent' => $parent,
                 'view' => $view,
                 'form' => $form->createView(),

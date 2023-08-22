@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HierarchicalController extends AbstractController
 {
-    public function __construct(private readonly ContentTypeService $contentTypeService, private readonly SearchService $searchService)
+    public function __construct(private readonly ContentTypeService $contentTypeService, private readonly SearchService $searchService, private readonly string $templateNamespace)
     {
     }
 
@@ -29,7 +29,7 @@ class HierarchicalController extends AbstractController
             throw new NotFoundHttpException(\sprintf('Document %s not found', $ouuid[1]));
         }
 
-        return $this->render('@EMSCore/view/custom/hierarchical_add_item.html.twig', [
+        return $this->render("@$this->templateNamespace/view/custom/hierarchical_add_item.html.twig", [
                 'data' => $document->getSource(),
                 'view' => $view,
                 'contentType' => $contentType,

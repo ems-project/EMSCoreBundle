@@ -28,7 +28,8 @@ class UserController extends AbstractController
         private readonly UserService $userService,
         private readonly UserManager $userManager,
         private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGenerator,
-        private readonly DataTableFactory $dataTableFactory
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -39,7 +40,7 @@ class UserController extends AbstractController
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
 
-        return $this->render('@EMSCore/user/index.html.twig', [
+        return $this->render("@$this->templateNamespace/user/index.html.twig", [
             'form' => $form->createView(),
         ]);
     }
@@ -73,7 +74,7 @@ class UserController extends AbstractController
             }
         }
 
-        return $this->render('@EMSCore/user/add.html.twig', [
+        return $this->render("@$this->templateNamespace/user/add.html.twig", [
             'form' => $form->createView(),
         ]);
     }
@@ -99,7 +100,7 @@ class UserController extends AbstractController
             return $this->redirectToRoute(Routes::USER_INDEX);
         }
 
-        return $this->render('@EMSCore/user/edit.html.twig', [
+        return $this->render("@$this->templateNamespace/user/edit.html.twig", [
             'form' => $form->createView(),
             'user' => $user,
         ]);
@@ -195,7 +196,7 @@ class UserController extends AbstractController
         $em->persist($user);
         $em->flush();
 
-        return $this->render('@EMSCore/ajax/notification.json.twig', [
+        return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
             'success' => true,
         ]);
     }

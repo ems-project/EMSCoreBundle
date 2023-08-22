@@ -17,9 +17,9 @@ use Twig\Environment;
 
 class GalleryViewType extends ViewType
 {
-    public function __construct(FormFactory $formFactory, Environment $twig, private readonly ElasticaService $elasticaService, LoggerInterface $logger, private readonly SearchService $searchService)
+    public function __construct(FormFactory $formFactory, Environment $twig, private readonly ElasticaService $elasticaService, LoggerInterface $logger, private readonly SearchService $searchService, string $templateNamespace)
     {
-        parent::__construct($formFactory, $twig, $logger);
+        parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
     public function getLabel(): string

@@ -20,14 +20,15 @@ final class UserManager
 {
     public const PASSWORD_RETRY_TTL = 7200;
     public const CONFIRMATION_TOKEN_TTL = 86400;
-    private const MAIL_TEMPLATE = '@EMSCore/user/mail.twig';
+    private const MAIL_TEMPLATE = '/user/mail.twig';
 
     public function __construct(
         private readonly TokenStorageInterface $tokenStorage,
         private readonly MailerService $mailerService,
         private readonly UserRepository $userRepository,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
-        private string $fallbackLocale
+        private string $fallbackLocale,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -111,7 +112,7 @@ final class UserManager
             $user->setConfirmationToken(Token::generate());
         }
 
-        $mailTemplate = $this->mailerService->makeMailTemplate(self::MAIL_TEMPLATE);
+        $mailTemplate = $this->mailerService->makeMailTemplate("@$this->templateNamespace".self::MAIL_TEMPLATE);
         $mailTemplate
             ->addTo($user->getEmail())
             ->setSubject('user.resetting.email.subject', ['username' => $user->getUsername()], EMSCoreBundle::TRANS_USER_DOMAIN)

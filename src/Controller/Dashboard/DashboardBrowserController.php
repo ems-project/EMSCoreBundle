@@ -12,7 +12,8 @@ class DashboardBrowserController
 {
     public function __construct(
         private readonly DashboardManager $dashboardManager,
-        private readonly Environment $twig
+        private readonly Environment $twig,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -22,11 +23,11 @@ class DashboardBrowserController
         $response = new Response();
 
         try {
-            $response->setContent($this->twig->render('@EMSCore/dashboard/browser/dashboard-browser-modal.html.twig', [
+            $response->setContent($this->twig->render("@$this->templateNamespace/dashboard/browser/dashboard-browser-modal.html.twig", [
                 'dashboard' => $dashboard,
             ]));
         } catch (\Throwable $e) {
-            $response->setContent($this->twig->render('@EMSCore/dashboard/browser/dashboard-browser-modal-error.html.twig', [
+            $response->setContent($this->twig->render("@$this->templateNamespace/dashboard/browser/dashboard-browser-modal-error.html.twig", [
                 'exception' => $e,
                 'dashboard' => $dashboard,
             ]));

@@ -24,6 +24,7 @@ class DataTableFactory
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly CacheItemPoolInterface $cache,
         private readonly Security $security,
+        private readonly string $templateNamespace,
     ) {
     }
 
@@ -68,6 +69,7 @@ class DataTableFactory
     private function buildEntityTable(AbstractEntityTableType $type, string $ajaxUrl, array $options = []): EntityTable
     {
         $table = new EntityTable(
+            $this->templateNamespace,
             $type->getEntityService(),
             $ajaxUrl,
             $type->getContext($options),

@@ -25,9 +25,17 @@ use Twig\Environment;
 
 class ImporterViewType extends ViewType
 {
-    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger, private readonly FileService $fileService, private readonly JobService $jobService, private readonly TokenStorageInterface $security, private readonly RouterInterface $router)
+    public function __construct(
+        FormFactory $formFactory,
+        Environment $twig,
+        LoggerInterface $logger,
+        private readonly FileService $fileService,
+        private readonly JobService $jobService,
+        private readonly TokenStorageInterface $security,
+        private readonly RouterInterface $router,
+        private readonly string $templateNamespace)
     {
-        parent::__construct($formFactory, $twig, $logger);
+        parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
     public function getLabel(): string
@@ -120,7 +128,7 @@ class ImporterViewType extends ViewType
         }
 
         $response = new Response();
-        $response->setContent($this->twig->render('@EMSCore/view/custom/simple_form_view.html.twig', [
+        $response->setContent($this->twig->render("@$this->templateNamespace/view/custom/simple_form_view.html.twig", [
             'view' => $view,
             'form' => $form->createView(),
             'contentType' => $view->getContentType(),

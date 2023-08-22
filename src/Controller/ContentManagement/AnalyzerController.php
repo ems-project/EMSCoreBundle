@@ -17,13 +17,13 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class AnalyzerController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly HelperService $helperService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly HelperService $helperService, private readonly string $templateNamespace)
     {
     }
 
     public function index(): Response
     {
-        return $this->render('@EMSCore/analyzer/index.html.twig', [
+        return $this->render("@$this->templateNamespace/analyzer/index.html.twig", [
                 'paging' => $this->helperService->getPagingTool(Analyzer::class, 'ems_analyzer_index', 'name'),
         ]);
     }
@@ -51,7 +51,7 @@ class AnalyzerController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/analyzer/edit.html.twig', [
+        return $this->render("@$this->templateNamespace/analyzer/edit.html.twig", [
                 'form' => $form->createView(),
         ]);
     }
@@ -102,7 +102,7 @@ class AnalyzerController extends AbstractController
             }
         }
 
-        return $this->render('@EMSCore/analyzer/add.html.twig', [
+        return $this->render("@$this->templateNamespace/analyzer/add.html.twig", [
                 'form' => $form->createView(),
         ]);
     }

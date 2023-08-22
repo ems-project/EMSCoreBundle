@@ -15,7 +15,7 @@ class QueryTable extends TableAbstract
     /**
      * @param mixed $context
      */
-    public function __construct(private readonly QueryServiceInterface $service, private readonly string $queryName, string $ajaxUrl, private $context = null, int $loadAllMaxRow = 400)
+    public function __construct(private readonly string $templateNamespace, private readonly QueryServiceInterface $service, private readonly string $queryName, string $ajaxUrl, private $context = null, int $loadAllMaxRow = 400)
     {
         if ($this->count() > $loadAllMaxRow) {
             parent::__construct($ajaxUrl, 0, 0);
@@ -91,7 +91,7 @@ class QueryTable extends TableAbstract
 
     public function getRowTemplate(): string
     {
-        return \sprintf("{%%- use '@EMSCore/datatable/row.json.twig' -%%}{{ block('emsco_datatable_row') }}");
+        return \sprintf("{%%- use '@$this->templateNamespace/datatable/row.json.twig' -%%}{{ block('emsco_datatable_row') }}");
     }
 
     public function getAttributeName(): string

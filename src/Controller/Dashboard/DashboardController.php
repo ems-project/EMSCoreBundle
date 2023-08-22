@@ -24,7 +24,8 @@ class DashboardController extends AbstractController
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly DashboardManager $dashboardManager,
-        private readonly DataTableFactory $dataTableFactory
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -54,7 +55,7 @@ class DashboardController extends AbstractController
             return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
         }
 
-        return $this->render('@EMSCore/dashboard/index.html.twig', [
+        return $this->render("@$this->templateNamespace/dashboard/index.html.twig", [
             'form' => $form->createView(),
         ]);
     }
@@ -83,7 +84,7 @@ class DashboardController extends AbstractController
             return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
         }
 
-        return $this->render($create ? '@EMSCore/dashboard/add.html.twig' : '@EMSCore/dashboard/edit.html.twig', [
+        return $this->render($create ? "@$this->templateNamespace/dashboard/add.html.twig" : "@$this->templateNamespace/dashboard/edit.html.twig'", [
             'form' => $form->createView(),
             'dashboard' => $dashboard,
         ]);

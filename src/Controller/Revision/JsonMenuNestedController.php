@@ -27,7 +27,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class JsonMenuNestedController extends AbstractController
 {
-    public function __construct(private readonly AjaxService $ajax, private readonly JsonMenuRenderer $jsonMenuRenderer, private readonly RevisionService $revisionService, private readonly DataService $dataService, private readonly UserService $userService)
+    public function __construct(
+        private readonly AjaxService $ajax,
+        private readonly JsonMenuRenderer $jsonMenuRenderer,
+        private readonly RevisionService $revisionService,
+        private readonly DataService $dataService,
+        private readonly UserService $userService,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -205,6 +211,6 @@ final class JsonMenuNestedController extends AbstractController
 
     private function getAjaxModal(): AjaxModal
     {
-        return $this->ajax->newAjaxModel(JsonMenuRenderer::NESTED_TEMPLATE);
+        return $this->ajax->newAjaxModel("@$this->templateNamespace".JsonMenuRenderer::NESTED_TEMPLATE);
     }
 }

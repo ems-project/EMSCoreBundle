@@ -42,7 +42,8 @@ class EditController extends AbstractController
         private readonly PublishService $publishService,
         private readonly RevisionService $revisionService,
         private readonly TranslatorInterface $translator,
-        private readonly DataTableFactory $dataTableFactory
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -79,7 +80,7 @@ class EditController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/data/edit-json-revision.html.twig', [
+        return $this->render("@$this->templateNamespace/data/edit-json-revision.html.twig", [
             'revision' => $revision,
             'form' => $form->createView(),
         ]);
@@ -241,7 +242,7 @@ class EditController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/data/edit-revision.html.twig', [
+        return $this->render("@$this->templateNamespace/data/edit-revision.html.twig", [
             'revision' => $revision,
             'form' => $form->createView(),
         ]);
@@ -283,7 +284,7 @@ class EditController extends AbstractController
             return $this->redirectToRoute(Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentTypeId->getId()]);
         }
 
-        return $this->render('@EMSCore/data/draft-in-progress.html.twig', [
+        return $this->render("@$this->templateNamespace/data/draft-in-progress.html.twig", [
             'form' => $form->createView(),
             'contentType' => $contentTypeId,
         ]);

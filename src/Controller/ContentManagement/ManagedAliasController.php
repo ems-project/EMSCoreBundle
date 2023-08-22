@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ManagedAliasController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly AliasService $aliasService, private readonly string $instanceId)
+    public function __construct(private readonly LoggerInterface $logger, private readonly AliasService $aliasService, private readonly string $instanceId, private readonly string $templateNamespace)
     {
     }
 
@@ -35,7 +35,7 @@ class ManagedAliasController extends AbstractController
             return $this->redirectToRoute('environment.index');
         }
 
-        return $this->render('@EMSCore/environment/managed_alias.html.twig', [
+        return $this->render("@$this->templateNamespace/environment/managed_alias.html.twig", [
             'new' => true,
             'form' => $form->createView(),
         ]);
@@ -61,7 +61,7 @@ class ManagedAliasController extends AbstractController
             return $this->redirectToRoute('environment.index');
         }
 
-        return $this->render('@EMSCore/environment/managed_alias.html.twig', [
+        return $this->render("@$this->templateNamespace/environment/managed_alias.html.twig", [
             'new' => false,
             'form' => $form->createView(),
         ]);

@@ -23,7 +23,8 @@ class LogController extends AbstractController
     public function __construct(
         private readonly LogManager $logManager,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -46,14 +47,14 @@ class LogController extends AbstractController
             return $this->redirectToRoute(Routes::LOG_INDEX);
         }
 
-        return $this->render('@EMSCore/log/index.html.twig', [
+        return $this->render("@$this->templateNamespace/log/index.html.twig", [
             'form' => $form->createView(),
         ]);
     }
 
     public function view(Log $log): Response
     {
-        return $this->render('@EMSCore/log/view.html.twig', [
+        return $this->render("@$this->templateNamespace/log/view.html.twig", [
             'log' => $log,
         ]);
     }

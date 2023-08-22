@@ -23,7 +23,15 @@ final class TaskManager
     public const TAB_REQUESTER = 'requester';
     public const TAB_MANAGER = 'manager';
 
-    public function __construct(private readonly TaskRepository $taskRepository, private readonly TaskTableService $taskTableService, private readonly RevisionRepository $revisionRepository, private readonly DataService $dataService, private readonly UserService $userService, private readonly EventDispatcherInterface $eventDispatcher, private readonly LoggerInterface $logger)
+    public function __construct(
+        private readonly TaskRepository $taskRepository,
+        private readonly TaskTableService $taskTableService,
+        private readonly RevisionRepository $revisionRepository,
+        private readonly DataService $dataService,
+        private readonly UserService $userService,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly LoggerInterface $logger,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -54,7 +62,7 @@ final class TaskManager
         $taskTableContext = new TaskTableContext($this->userService->getCurrentUser(), $tab, $filters);
         $taskTableContext->showVersionTagColumn = $this->taskRepository->hasVersionedContentType();
 
-        $table = new EntityTable($this->taskTableService, $ajaxUrl, $taskTableContext);
+        $table = new EntityTable($this->templateNamespace, $this->taskTableService, $ajaxUrl, $taskTableContext);
 
         if ($export) {
             $this->taskTableService->buildTableExport($table, $taskTableContext);

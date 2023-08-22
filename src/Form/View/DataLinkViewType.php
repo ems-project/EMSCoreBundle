@@ -16,9 +16,9 @@ use Twig\Environment;
 
 class DataLinkViewType extends ViewType
 {
-    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger)
+    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger, string $templateNamespace)
     {
-        parent::__construct($formFactory, $twig, $logger);
+        parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
     public function getLabel(): string

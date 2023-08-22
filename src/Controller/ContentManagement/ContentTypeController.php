@@ -50,7 +50,8 @@ class ContentTypeController extends AbstractController
         private readonly LoggerInterface $logger,
         private readonly ContentTypeService $contentTypeService,
         private readonly Mapping $mappingService,
-        private readonly FieldTypeManager $fieldTypeManager)
+        private readonly FieldTypeManager $fieldTypeManager,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -84,7 +85,7 @@ class ContentTypeController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/contenttype/json_update.html.twig', [
+        return $this->render("@$this->templateNamespace/contenttype/json_update.html.twig", [
             'form' => $form->createView(),
             'contentType' => $contentType,
         ]);
@@ -251,7 +252,7 @@ class ContentTypeController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/contenttype/add.html.twig', [
+        return $this->render("@$this->templateNamespace/contenttype/add.html.twig", [
             'form' => $form->createView(),
         ]);
     }
@@ -314,7 +315,7 @@ class ContentTypeController extends AbstractController
             return $this->redirectToRoute('contenttype.index');
         }
 
-        return $this->render('@EMSCore/contenttype/index.html.twig', [
+        return $this->render("@$this->templateNamespace/contenttype/index.html.twig", [
             'form' => $form->createView(),
         ]);
     }
@@ -361,7 +362,7 @@ class ContentTypeController extends AbstractController
             return $this->redirectToRoute('contenttype.unreferenced');
         }
 
-        return $this->render('@EMSCore/contenttype/unreferenced.html.twig', [
+        return $this->render("@$this->templateNamespace/contenttype/unreferenced.html.twig", [
             'referencedContentTypes' => $this->contentTypeService->getUnreferencedContentTypes(),
         ]);
     }
@@ -387,7 +388,7 @@ class ContentTypeController extends AbstractController
             return $this->treatFieldSubmit($contentType, $field, $clickable->getName(), $subFieldName);
         }
 
-        return $this->render('@EMSCore/contenttype/field.html.twig', [
+        return $this->render("@$this->templateNamespace/contenttype/field.html.twig", [
             'form' => $form->createView(),
             'field' => $field,
             'contentType' => $contentType,
@@ -410,7 +411,7 @@ class ContentTypeController extends AbstractController
             return $this->redirectToRoute('contenttype.edit', ['id' => $contentType->getId()]);
         }
 
-        return $this->render('@EMSCore/contenttype/reorder.html.twig', [
+        return $this->render("@$this->templateNamespace/contenttype/reorder.html.twig", [
             'form' => $form->createView(),
             'contentType' => $contentType,
         ]);
@@ -495,7 +496,7 @@ class ContentTypeController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/contenttype/edit.html.twig', [
+        return $this->render("@$this->templateNamespace/contenttype/edit.html.twig", [
             'form' => $form->createView(),
             'contentType' => $contentType,
             'mapping' => $mapping,
@@ -582,7 +583,7 @@ class ContentTypeController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/contenttype/structure.html.twig', [
+        return $this->render("@$this->templateNamespace/contenttype/structure.html.twig", [
             'form' => $form->createView(),
             'contentType' => $contentType,
         ]);

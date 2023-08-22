@@ -24,8 +24,6 @@ final class TaskTableService implements EntityServiceInterface
     private const COL_MODIFIED = 'modified';
     private const COL_ACTIONS = 'actions';
 
-    private const TEMPLATE = '@EMSCore/revision/task/columns.twig';
-
     public const COLUMNS = [
         self::COL_TITLE => ['type' => 'block', 'column' => 'taskTitle', 'mapping' => 't.title'],
         self::COL_DOCUMENT => ['type' => 'block', 'column' => 'label', 'mapping' => 'r.labelField'],
@@ -38,7 +36,9 @@ final class TaskTableService implements EntityServiceInterface
         self::COL_ACTIONS => ['type' => 'block', 'label'],
     ];
 
-    public function __construct(private readonly TaskRepository $taskRepository)
+    public function __construct(
+        private readonly TaskRepository $taskRepository,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -59,7 +59,7 @@ final class TaskTableService implements EntityServiceInterface
             $type = $options['type'] ?? null;
 
             if ('block' === $type) {
-                $def = new TemplateBlockTableColumn($options['label'], $name, self::TEMPLATE, $orderField);
+                $def = new TemplateBlockTableColumn($options['label'], $name, "@$this->templateNamespace/revision/task/columns.twig", $orderField);
                 $def->setCellRender(!\in_array($name, [self::COL_DEADLINE, self::COL_MODIFIED]));
                 $table->addColumnDefinition($def)->setCellClass('col-'.$name);
             } else {

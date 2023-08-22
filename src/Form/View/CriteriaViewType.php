@@ -19,9 +19,9 @@ use Twig\Environment;
 
 class CriteriaViewType extends ViewType
 {
-    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger, protected RouterInterface $router)
+    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger, protected RouterInterface $router, string $templateNamespace)
     {
-        parent::__construct($formFactory, $twig, $logger);
+        parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
     public function getLabel(): string

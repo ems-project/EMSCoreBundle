@@ -32,7 +32,8 @@ final class ActionController extends AbstractController
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly ActionService $actionService,
-        private readonly DataTableFactory $dataTableFactory
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -90,7 +91,7 @@ final class ActionController extends AbstractController
             return $this->redirectToRoute('ems_core_action_index', ['contentType' => $contentType->getId()]);
         }
 
-        return $this->render('@EMSCore/action/index.html.twig', [
+        return $this->render("@$this->templateNamespace/action/index.html.twig", [
             'form' => $form->createView(),
             'contentType' => $contentType,
         ]);
@@ -145,7 +146,7 @@ final class ActionController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/action/add.html.twig', [
+        return $this->render("@$this->templateNamespace/action/add.html.twig", [
             'contentType' => $contentType,
             'form' => $form->createView(),
         ]);
@@ -180,7 +181,7 @@ final class ActionController extends AbstractController
             ]);
 
             if ('json' === $_format) {
-                return $this->render('@EMSCore/ajax/notification.json.twig', [
+                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                     'success' => true,
                 ]);
             }
@@ -197,12 +198,12 @@ final class ActionController extends AbstractController
                 }
             }
 
-            return $this->render('@EMSCore/ajax/notification.json.twig', [
+            return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                 'success' => $form->isValid(),
             ]);
         }
 
-        return $this->render('@EMSCore/action/edit.html.twig', [
+        return $this->render("@$this->templateNamespace/action/edit.html.twig", [
             'form' => $form->createView(),
             'action' => $action,
             'contentType' => $action->giveContentType(),

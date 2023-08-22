@@ -31,7 +31,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PublishController extends AbstractController
 {
-    public function __construct(private readonly PublishService $publishService, private readonly JobService $jobService, private readonly EnvironmentService $environmentService, private readonly ContentTypeService $contentTypeService, private readonly SearchService $searchService, private readonly ElasticaService $elasticaService)
+    public function __construct(
+        private readonly PublishService $publishService,
+        private readonly JobService $jobService,
+        private readonly EnvironmentService $environmentService,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly SearchService $searchService,
+        private readonly ElasticaService $elasticaService,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -151,7 +158,7 @@ class PublishController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/publish/publish-search-result.html.twig', [
+        return $this->render("@$this->templateNamespace/publish/publish-search-result.html.twig", [
             'form' => $form->createView(),
             'fromEnvironment' => $environment,
             'contentType' => $contentType,

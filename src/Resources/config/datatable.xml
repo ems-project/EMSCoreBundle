@@ -15,20 +15,24 @@
         <service id="emsco.data_table.content_type.view" class="EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeViewDataTableType">
             <argument type="service" id="ems.view.manager"/>
             <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService"/>
+            <argument>%ems_core.template_namespace%</argument>
             <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.release.overview" class="EMS\CoreBundle\DataTable\Type\Release\ReleaseOverviewDataTableType">
             <argument type="service" id="ems.service.release"/>
+            <argument>%ems_core.template_namespace%</argument>
             <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.release.pick" class="EMS\CoreBundle\DataTable\Type\Release\ReleasePickDataTableType">
             <argument type="service" id="ems.service.release"/>
             <argument type="service" id="ems.service.revision"/>
+            <argument>%ems_core.template_namespace%</argument>
             <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.release.revision" class="EMS\CoreBundle\DataTable\Type\Release\ReleaseRevisionDataTableType">
             <argument type="service" id="ems.service.release_revision"/>
             <argument type="service" id="ems.service.release"/>
+            <argument>%ems_core.template_namespace%</argument>
             <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.revision.audit" class="EMS\CoreBundle\DataTable\Type\Revision\RevisionAuditDataTableType">
@@ -48,6 +52,7 @@
         </service>
         <service id="emsco.data_table.dashboard" class="EMS\CoreBundle\DataTable\Type\DashboardDataTableType">
             <argument type="service" id="ems.dashboard.manager"/>
+            <argument>%ems_core.template_namespace%</argument>
             <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.form" class="EMS\CoreBundle\DataTable\Type\FormDataTableType">

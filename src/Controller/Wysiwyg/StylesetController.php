@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class StylesetController extends AbstractController
 {
-    public function __construct(private readonly WysiwygStylesSetService $wysiwygStylesSetService)
+    public function __construct(private readonly WysiwygStylesSetService $wysiwygStylesSetService, private readonly string $templateNamespace)
     {
     }
 
@@ -18,7 +18,7 @@ class StylesetController extends AbstractController
     {
         $splitLanguage = \explode('_', $language);
 
-        return $this->render('@EMSCore/wysiwyg_styles_set/iframe.html.twig', [
+        return $this->render("@$this->templateNamespace/wysiwyg_styles_set/iframe.html.twig", [
             'styleSet' => $this->wysiwygStylesSetService->getByName($name),
             'language' => \array_shift($splitLanguage),
         ]);

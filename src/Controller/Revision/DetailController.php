@@ -36,7 +36,8 @@ class DetailController extends AbstractController
         private readonly ElasticaService $elasticaService,
         private readonly SearchService $searchService,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly LoggerInterface $logger)
+        private readonly LoggerInterface $logger,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -143,7 +144,7 @@ class DetailController extends AbstractController
             $auditTableForm->handleRequest($request);
         }
 
-        return $this->render('@EMSCore/data/revisions-data.html.twig', [
+        return $this->render("@$this->templateNamespace/data/revisions-data.html.twig", [
             'revision' => $revision,
             'revisionsSummary' => $revisionsSummary,
             'latestVersion' => $latestVersion ?? null,

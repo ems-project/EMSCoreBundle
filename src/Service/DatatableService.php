@@ -17,7 +17,13 @@ final class DatatableService
     private const ALIASES = 'aliases';
     private const CONTENT_TYPES = 'contentTypes';
 
-    public function __construct(private readonly LoggerInterface $logger, private readonly RouterInterface $router, private readonly ElasticaService $elasticaService, private readonly StorageManager $storageManager, private readonly EnvironmentService $environmentService)
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly RouterInterface $router,
+        private readonly ElasticaService $elasticaService,
+        private readonly StorageManager $storageManager,
+        private readonly EnvironmentService $environmentService,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -31,7 +37,7 @@ final class DatatableService
         $aliases = $this->convertToAliases($environmentNames);
         $hashConfig = $this->saveConfig($options, $aliases, $contentTypeNames);
 
-        return ElasticaTable::fromConfig($this->elasticaService, $this->getAjaxUrl($hashConfig, $options[ElasticaTable::PROTECTED] ?? true), $aliases, $contentTypeNames, $options);
+        return ElasticaTable::fromConfig($this->templateNamespace, $this->elasticaService, $this->getAjaxUrl($hashConfig, $options[ElasticaTable::PROTECTED] ?? true), $aliases, $contentTypeNames, $options);
     }
 
     /**
@@ -68,7 +74,7 @@ final class DatatableService
     {
         $config = $this->parsePersistedConfig($this->storageManager->getContents($hashConfig));
 
-        return ElasticaTable::fromConfig($this->elasticaService, $this->getAjaxUrl($hashConfig, $config[self::CONFIG][ElasticaTable::PROTECTED] ?? true), $config[self::ALIASES], $config[self::CONTENT_TYPES], $config[self::CONFIG]);
+        return ElasticaTable::fromConfig($this->templateNamespace, $this->elasticaService, $this->getAjaxUrl($hashConfig, $config[self::CONFIG][ElasticaTable::PROTECTED] ?? true), $config[self::ALIASES], $config[self::CONTENT_TYPES], $config[self::CONFIG]);
     }
 
     /**

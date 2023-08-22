@@ -27,10 +27,16 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
     public const TYPE_PREVIEW = 'preview';
     public const TYPE_REVISION_EDIT = 'revision_edit';
 
-    public const NESTED_TEMPLATE = '@EMSCore/revision/json/json_menu_nested.html.twig';
+    public const NESTED_TEMPLATE = '/revision/json/json_menu_nested.html.twig';
     private const ITEM_ACTIONS = ['move', 'copy', 'paste', 'add', 'edit', 'delete', 'preview'];
 
-    public function __construct(private readonly Environment $twig, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly UrlGeneratorInterface $urlGenerator, private readonly ContentTypeRepository $contentTypeRepository, private readonly RevisionService $revisionService)
+    public function __construct(
+        private readonly Environment $twig,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly ContentTypeRepository $contentTypeRepository,
+        private readonly RevisionService $revisionService,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -102,7 +108,7 @@ final class JsonMenuRenderer implements RuntimeExtensionInterface
 
     private function template(): TemplateWrapper
     {
-        return $this->twig->load(self::NESTED_TEMPLATE);
+        return $this->twig->load("@$this->templateNamespace".self::NESTED_TEMPLATE);
     }
 
     /**

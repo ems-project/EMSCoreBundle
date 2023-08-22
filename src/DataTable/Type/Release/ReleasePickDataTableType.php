@@ -19,7 +19,8 @@ class ReleasePickDataTableType extends AbstractEntityTableType
 {
     public function __construct(
         ReleaseService $releaseService,
-        private readonly RevisionService $revisionService
+        private readonly RevisionService $revisionService,
+        private readonly string $templateNamespace
     ) {
         parent::__construct($releaseService);
     }
@@ -32,8 +33,8 @@ class ReleasePickDataTableType extends AbstractEntityTableType
         $table->setDefaultOrder('executionDate', 'desc');
         $table->addColumn('release.index.column.name', 'name');
         $table->addColumnDefinition(new DatetimeTableColumn('release.index.column.execution_date', 'executionDate'));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.status', 'status', '@EMSCore/release/columns/revisions.html.twig'));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', '@EMSCore/release/columns/revisions.html.twig'))->setCellClass('text-right');
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.status', 'status', "@$this->templateNamespace/release/columns/revisions.html.twig"));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', "@$this->templateNamespace/release/columns/revisions.html.twig"))->setCellClass('text-right');
 
         $table->addItemPostAction(Routes::DATA_ADD_REVISION_TO_RELEASE, 'data.actions.add_to_release', 'plus', 'data.actions.add_to_release_confirm', ['revision' => $revision->getId()])->setButtonType('primary');
     }

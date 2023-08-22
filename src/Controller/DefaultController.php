@@ -7,8 +7,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends AbstractController
 {
+    public function __construct(private readonly string $templateNamespace)
+    {
+    }
+
     public function documentation(): Response
     {
-        return $this->render('@EMSCore/default/documentation.html.twig');
+        return $this->render("@$this->templateNamespace/default/documentation.html.twig");
     }
 }

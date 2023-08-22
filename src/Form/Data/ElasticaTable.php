@@ -32,7 +32,22 @@ class ElasticaTable extends TableAbstract
      * @param string[]              $contentTypeNames
      * @param array<string, string> $defaultSort
      */
-    public function __construct(private readonly ElasticaService $elasticaService, string $ajaxUrl, private readonly array $aliases, private readonly array $contentTypeNames, private readonly string $emptyQuery, private readonly string $query, private readonly string $ascMissingValuesPosition, private readonly string $descMissingValuesPosition, string $filename, string $disposition, string $sheetName, private readonly string $rowContext, private readonly array $defaultSort = [], private readonly bool $protected = true)
+    public function __construct(
+        private readonly string $templateNamespace,
+        private readonly ElasticaService $elasticaService,
+        string $ajaxUrl,
+        private readonly array $aliases,
+        private readonly array $contentTypeNames,
+        private readonly string $emptyQuery,
+        private readonly string $query,
+        private readonly string $ascMissingValuesPosition,
+        private readonly string $descMissingValuesPosition,
+        string $filename,
+        string $disposition,
+        string $sheetName,
+        private readonly string $rowContext,
+        private readonly array $defaultSort = [],
+        private readonly bool $protected = true)
     {
         parent::__construct($ajaxUrl, 0, 0);
         $this->setExportFileName($filename);
@@ -45,10 +60,10 @@ class ElasticaTable extends TableAbstract
      * @param string[]             $contentTypeNames
      * @param array<string, mixed> $options
      */
-    public static function fromConfig(ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, array $options): ElasticaTable
+    public static function fromConfig(string $templateNamespace, ElasticaService $elasticaService, string $ajaxUrl, array $aliases, array $contentTypeNames, array $options): ElasticaTable
     {
         $options = self::resolveOptions($options);
-        $datatable = new self($elasticaService, $ajaxUrl, $aliases, $contentTypeNames, $options[self::EMPTY_QUERY], $options[self::QUERY], $options[self::ASC_MISSING_VALUES_POSITION], $options[self::DESC_MISSING_VALUES_POSITION], $options[self::FILENAME], $options[self::DISPOSITION], $options[self::SHEET_NAME], $options[self::ROW_CONTEXT], $options[self::DEFAULT_SORT], $options[self::PROTECTED]);
+        $datatable = new self($templateNamespace, $elasticaService, $ajaxUrl, $aliases, $contentTypeNames, $options[self::EMPTY_QUERY], $options[self::QUERY], $options[self::ASC_MISSING_VALUES_POSITION], $options[self::DESC_MISSING_VALUES_POSITION], $options[self::FILENAME], $options[self::DISPOSITION], $options[self::SHEET_NAME], $options[self::ROW_CONTEXT], $options[self::DEFAULT_SORT], $options[self::PROTECTED]);
         foreach ($options[self::COLUMNS] as $column) {
             $datatable->addColumnDefinition(new TemplateTableColumn($column));
         }
@@ -243,7 +258,7 @@ class ElasticaTable extends TableAbstract
 
     public function getRowTemplate(): string
     {
-        return \sprintf("{%%- use '@EMSCore/datatable/row.json.twig' -%%}%s{{ block('emsco_datatable_row') }}", $this->getRowContext());
+        return \sprintf("{%%- use '@$this->templateNamespace/datatable/row.json.twig' -%%}%s{{ block('emsco_datatable_row') }}", $this->getRowContext());
     }
 
     public function isProtected(): bool

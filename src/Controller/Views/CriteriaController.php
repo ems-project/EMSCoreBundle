@@ -41,7 +41,15 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class CriteriaController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly ElasticaService $elasticaService, private readonly DataService $dataService, private readonly ContentTypeService $contentTypeService, private readonly ObjectChoiceListFactory $objectChoiceListFactory, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly FormRegistryInterface $formRegistry)
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly ElasticaService $elasticaService,
+        private readonly DataService $dataService,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly ObjectChoiceListFactory $objectChoiceListFactory,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly FormRegistryInterface $formRegistry,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -258,7 +266,7 @@ class CriteriaController extends AbstractController
         }
 
         if (!$valid) {
-            return $this->render('@EMSCore/view/custom/criteria_view.html.twig', [
+            return $this->render("@$this->templateNamespace/view/custom/criteria_view.html.twig", [
                     'view' => $view,
                     'form' => $form->createView(),
                     'contentType' => $contentType,
@@ -300,7 +308,7 @@ class CriteriaController extends AbstractController
 
         $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig);
 
-        return $this->render('@EMSCore/view/custom/criteria_table.html.twig', [
+        return $this->render("@$this->templateNamespace/view/custom/criteria_table.html.twig", [
             'table' => $tables['table'],
             'rowFieldType' => $rowField,
             'columnFieldType' => $columnField,
@@ -506,7 +514,7 @@ class CriteriaController extends AbstractController
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 ]);
 
-                return $this->render('@EMSCore/ajax/notification.json.twig', [
+                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                         'success' => false,
                 ]);
             }
@@ -519,7 +527,7 @@ class CriteriaController extends AbstractController
                     'count' => 0,
                 ]);
 
-                return $this->render('@EMSCore/ajax/notification.json.twig', [
+                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                         'success' => false,
                 ]);
             }
@@ -541,7 +549,7 @@ class CriteriaController extends AbstractController
                     'locked_by' => $revision->getLockBy(),
                 ]);
 
-                return $this->render('@EMSCore/ajax/notification.json.twig', [
+                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                         'success' => false,
                 ]);
             }
@@ -563,7 +571,7 @@ class CriteriaController extends AbstractController
             }
         }
 
-        return $this->render('@EMSCore/ajax/notification.json.twig', [
+        return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                 'success' => true,
         ]);
     }
@@ -798,7 +806,7 @@ class CriteriaController extends AbstractController
                     'count' => 0,
                 ]);
 
-                return $this->render('@EMSCore/ajax/notification.json.twig', [
+                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                         'success' => false,
                 ]);
             }
@@ -820,7 +828,7 @@ class CriteriaController extends AbstractController
                     'locked_by' => $revision->getLockBy(),
                 ]);
 
-                return $this->render('@EMSCore/ajax/notification.json.twig', [
+                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                         'success' => false,
                 ]);
             }
@@ -842,7 +850,7 @@ class CriteriaController extends AbstractController
             }
         }
 
-        return $this->render('@EMSCore/ajax/notification.json.twig', [
+        return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
             'success' => true,
         ]);
     }

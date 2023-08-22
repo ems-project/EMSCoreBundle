@@ -66,6 +66,7 @@
             <argument type="service" id="router" />
             <argument type="service" id="Psr\Cache\CacheItemPoolInterface" />
             <argument type="service" id="security.helper" />
+            <argument>%ems_core.template_namespace%</argument>
         </service>
         <service id="ems.service.datatable" alias="EMS\CoreBundle\Service\DatatableService"/>
         <service id="EMS\CoreBundle\Service\DatatableService">
@@ -74,6 +75,7 @@
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems_common.storage.manager"/>
             <argument type="service" id="ems.service.environment"/>
+            <argument>%ems_core.template_namespace%</argument>
         </service>
         <service id="ems_core.core_document.data_links_factory" class="EMS\CoreBundle\Core\Document\DataLinksFactory">
             <argument type="service" id="ems.service.search"/>
@@ -132,15 +134,18 @@
             <argument type="service" id="ems.service.user" />
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="logger" />
+            <argument>%ems_core.template_namespace%</argument>
         </service>
         <service id="ems_core.core_revision_task.task_table_service" class="EMS\CoreBundle\Core\Revision\Task\Table\TaskTableService">
             <argument type="service" id="ems.repository.task" />
+            <argument>%ems_core.template_namespace%</argument>
         </service>
         <service id="ems_core.core_revision_task.task_subscriber" class="EMS\CoreBundle\Core\Revision\Task\TaskEventSubscriber">
             <argument type="service" id="ems.repository.task"/>
             <argument type="service" id="ems_core.core_mail.mailer_service"/>
             <argument type="service" id="ems.service.user"/>
             <argument>%ems_core.url_user%</argument>
+            <argument>%ems_core.template_namespace%</argument>
             <tag name="kernel.event_subscriber" />
         </service>
 
@@ -186,6 +191,7 @@
             <argument type="service" id="router"/>
             <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
             <argument type="service" id="ems.service.revision"/>
+            <argument>%ems_core.template_namespace%</argument>
             <tag name="twig.runtime"/>
         </service>
 
@@ -212,6 +218,7 @@
             <argument type="service" id="ems.repository.user" />
             <argument type="service" id="security.user_password_hasher" />
             <argument>%ems_core.fallback_locale%</argument>
+            <argument>%ems_core.template_namespace%</argument>
         </service>
 
         <service id="ems.service.mapping" class="EMS\CoreBundle\Service\Mapping">
@@ -465,6 +472,7 @@
             <argument type="service" id="twig"/>
             <argument type="service" id="session"/>
             <argument type="service" id="translator"/>
+            <argument>%ems_core.template_namespace%</argument>
         </service>
         <service id="ems.form_verification" class="EMS\CoreBundle\Service\Form\Verification\FormVerificationService">
             <argument type="service" id="ems.repository.form_verification"/>

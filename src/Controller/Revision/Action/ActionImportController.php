@@ -34,14 +34,15 @@ class ActionImportController
         private readonly FileReaderInterface $fileReader,
         private readonly RevisionService $revisionService,
         private readonly Environment $twig,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly string $templateNamespace
     ) {
     }
 
     public function __invoke(Request $request, int $actionId, string $ouuid): Response
     {
         $action = $this->templateRepository->getById($actionId);
-        $modal = $this->ajax->newAjaxModel('@EMSCore/action/modal_import.html.twig');
+        $modal = $this->ajax->newAjaxModel("@$this->templateNamespace/action/modal_import.html.twig");
 
         if (null === $revision = $this->revisionService->get($ouuid, $action->giveContentType()->getName())) {
             throw new NotFoundHttpException(\sprintf('Revision not found for %s', $ouuid));

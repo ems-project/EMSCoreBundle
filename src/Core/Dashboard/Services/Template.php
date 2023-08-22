@@ -10,7 +10,7 @@ use Twig\Environment;
 
 class Template implements DashboardInterface
 {
-    public function __construct(private readonly Environment $twig)
+    public function __construct(private readonly Environment $twig, private readonly string $templateNamespace)
     {
     }
 
@@ -18,12 +18,12 @@ class Template implements DashboardInterface
     {
         $response = new Response();
         try {
-            $response->setContent($this->twig->render('@EMSCore/dashboard/services/template.html.twig', [
+            $response->setContent($this->twig->render("@$this->templateNamespace/dashboard/services/template.html.twig", [
                 'dashboard' => $dashboard,
                 'options' => $dashboard->getOptions(),
             ]));
         } catch (\Throwable $e) {
-            $response->setContent($this->twig->render('@EMSCore/dashboard/services/error.html.twig', [
+            $response->setContent($this->twig->render("@$this->templateNamespace/dashboard/services/error.html.twig", [
                 'exception' => $e,
                 'dashboard' => $dashboard,
                 'options' => $dashboard->getOptions(),

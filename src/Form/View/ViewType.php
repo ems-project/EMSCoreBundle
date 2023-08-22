@@ -14,7 +14,11 @@ use Twig\Environment;
 
 abstract class ViewType extends AbstractType
 {
-    public function __construct(protected FormFactory $formFactory, protected Environment $twig, protected LoggerInterface $logger)
+    public function __construct(
+        protected FormFactory $formFactory,
+        protected Environment $twig,
+        protected LoggerInterface $logger,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -39,7 +43,7 @@ abstract class ViewType extends AbstractType
     {
         $response = new Response();
         $parameters = $this->getParameters($view, $this->formFactory, $request);
-        $response->setContent($this->twig->render('@EMSCore/view/custom/'.$this->getBlockPrefix().'.html.twig', $parameters));
+        $response->setContent($this->twig->render("@$this->templateNamespace/view/custom/".$this->getBlockPrefix().'.html.twig', $parameters));
 
         return $response;
     }

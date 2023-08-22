@@ -36,7 +36,8 @@ final class ReleaseController extends AbstractController
         private readonly LoggerInterface $logger,
         private readonly ReleaseService $releaseService,
         private readonly ReleaseRevisionService $releaseRevisionService,
-        private readonly DataTableFactory $dataTableFactory
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -46,7 +47,7 @@ final class ReleaseController extends AbstractController
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
-        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+        return $this->render("@$this->templateNamespace/datatable/ajax.html.twig", [
             'dataTableRequest' => $dataTableRequest,
             'table' => $table,
         ], new JsonResponse());
@@ -70,7 +71,7 @@ final class ReleaseController extends AbstractController
             return $this->redirectToRoute(Routes::RELEASE_INDEX);
         }
 
-        return $this->render('@EMSCore/release/index.html.twig', [
+        return $this->render("@$this->templateNamespace/release/index.html.twig", [
             'form' => $form->createView(),
         ]);
     }
@@ -87,7 +88,7 @@ final class ReleaseController extends AbstractController
             return $this->redirectToRoute(Routes::RELEASE_EDIT, ['release' => $release->getId()]);
         }
 
-        return $this->render('@EMSCore/release/add.html.twig', [
+        return $this->render("@$this->templateNamespace/release/add.html.twig", [
             'form_release' => $form->createView(),
         ]);
     }
@@ -128,7 +129,7 @@ final class ReleaseController extends AbstractController
             return $this->redirectToRoute($nextAction, ['release' => $release->getId()]);
         }
 
-        return $this->render('@EMSCore/release/edit.html.twig', [
+        return $this->render("@$this->templateNamespace/release/edit.html.twig", [
             'form' => $revisionsForm->createView(),
             'form_release' => $releaseForm->createView(),
             'release' => $release,
@@ -163,7 +164,7 @@ final class ReleaseController extends AbstractController
             return $this->redirectToRoute(Routes::RELEASE_VIEW, ['release' => $release->getId()]);
         }
 
-        return $this->render('@EMSCore/release/view.html.twig', [
+        return $this->render("@$this->templateNamespace/release/view.html.twig", [
             'form' => $form->createView(),
             'release' => $release,
         ]);
@@ -220,7 +221,7 @@ final class ReleaseController extends AbstractController
             return $this->redirectToRoute(Routes::RELEASE_EDIT, ['release' => $release->getId()]);
         }
 
-        return $this->render('@EMSCore/release/revisions.html.twig', [
+        return $this->render("@$this->templateNamespace/release/revisions.html.twig", [
             'form' => $form->createView(),
         ]);
     }
@@ -240,7 +241,7 @@ final class ReleaseController extends AbstractController
 
         $form = $this->createForm(TableType::class, $table);
 
-        return $this->render('@EMSCore/release/add-to-release.html.twig', [
+        return $this->render("@$this->templateNamespace/release/add-to-release.html.twig", [
             'form' => $form->createView(),
             'revision' => $revision,
         ]);
@@ -248,15 +249,15 @@ final class ReleaseController extends AbstractController
 
     private function getNonMemberRevisionsTable(Release $release): QueryTable
     {
-        $table = new QueryTable($this->releaseRevisionService, 'revisions-to-publish', $this->generateUrl(Routes::RELEASE_NON_MEMBER_REVISION_AJAX, ['release' => $release->getId()]), $release);
+        $table = new QueryTable($this->templateNamespace, $this->releaseRevisionService, 'revisions-to-publish', $this->generateUrl(Routes::RELEASE_NON_MEMBER_REVISION_AJAX, ['release' => $release->getId()]), $release);
         $table->setMassAction(true);
         $table->setLabelAttribute('item_labelField');
         $table->setIdField('emsLink');
         $table->addColumn('release.revision.index.column.label', 'item_labelField');
         $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');
         $table->setSelected($release->getRevisionsOuuids());
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', '@EMSCore/release/columns/revisions.html.twig'));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', '@EMSCore/release/columns/revisions.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', "@$this->templateNamespace/release/columns/revisions.html.twig"));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', "@$this->templateNamespace/release/columns/revisions.html.twig"));
         $table->addTableAction(TableAbstract::ADD_ACTION, 'fa fa-plus', 'release.revision.actions.add', 'release.revision.actions.add_confirm');
         $table->addDynamicItemPostAction(Routes::RELEASE_ADD_REVISION, 'release.revision.action.add', 'plus', 'release.revision.actions.add_confirm', ['release' => \sprintf('%d', $release->getId()), 'emsLinkToAdd' => 'emsLink']);
 

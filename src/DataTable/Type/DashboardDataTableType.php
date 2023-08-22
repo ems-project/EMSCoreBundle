@@ -15,7 +15,7 @@ use EMS\CoreBundle\Routes;
 
 class DashboardDataTableType extends AbstractEntityTableType
 {
-    public function __construct(DashboardManager $entityService)
+    public function __construct(DashboardManager $entityService, private readonly string $templateNamespace)
     {
         parent::__construct($entityService);
     }
@@ -25,8 +25,8 @@ class DashboardDataTableType extends AbstractEntityTableType
         $table->addColumn('table.index.column.loop_count', 'orderKey');
         $table->addColumn('dashboard.index.column.name', 'name');
         $table->addColumn('dashboard.index.column.label', 'label')->setItemIconCallback(fn (Dashboard $dashboard) => $dashboard->getIcon());
-        $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.type', 'type', '@EMSCore/dashboard/columns.html.twig'));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.definition', 'definition', '@EMSCore/dashboard/columns.html.twig'));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.type', 'type', "@$this->templateNamespace/dashboard/columns.html.twig"));
+        $table->addColumnDefinition(new TemplateBlockTableColumn('dashboard.index.column.definition', 'definition', "@$this->templateNamespace/dashboard/columns.html.twig"));
         $table->addItemGetAction(Routes::DASHBOARD_ADMIN_EDIT, 'dashboard.actions.edit', 'pencil');
 
         $defineAction = $table->addItemActionCollection('dashboard.actions.define.title', 'gear');

@@ -32,6 +32,7 @@ class ActionController
         private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGenerator,
         private readonly LoggerInterface $logger,
         private readonly Twig $twig,
+        private readonly string $templateNamespace,
     ) {
     }
 
@@ -75,7 +76,7 @@ class ActionController
             };
         }
 
-        return new Response($this->twig->render('@EMSCore/data/custom-view.html.twig', [
+        return new Response($this->twig->render("@$this->templateNamespace/data/custom-view.html.twig", [
             'template' => $action,
             'environment' => $environment,
             'contentType' => $action->getContentType(),

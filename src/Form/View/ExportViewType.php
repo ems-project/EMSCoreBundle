@@ -25,9 +25,9 @@ use Twig\Environment;
 
 class ExportViewType extends ViewType
 {
-    public function __construct(FormFactory $formFactory, Environment $twig, private readonly ElasticaService $elasticaService, LoggerInterface $logger, private readonly DomPdfPrinter $pdfPrinter)
+    public function __construct(FormFactory $formFactory, Environment $twig, private readonly ElasticaService $elasticaService, LoggerInterface $logger, private readonly DomPdfPrinter $pdfPrinter, string $templateNamespace)
     {
-        parent::__construct($formFactory, $twig, $logger);
+        parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
     public function getLabel(): string

@@ -26,7 +26,8 @@ final class SubmissionController extends AbstractController
         private readonly FormSubmissionService $formSubmissionService,
         private readonly LoggerInterface $logger,
         private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService,
-        private readonly DataTableFactory $dataTableFactory
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -58,7 +59,7 @@ final class SubmissionController extends AbstractController
             return $this->redirectToRoute('form.submissions');
         }
 
-        return $this->render('@EMSCore/form-submission/index.html.twig', [
+        return $this->render("@$this->templateNamespace/form-submission/index.html.twig", [
             'form' => $form->createView(),
         ]);
     }

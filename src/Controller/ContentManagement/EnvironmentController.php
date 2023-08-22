@@ -43,7 +43,21 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EnvironmentController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly SearchService $searchService, private readonly EnvironmentService $environmentService, private readonly ContentTypeService $contentTypeService, private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly PublishService $publishService, private readonly IndexService $indexService, private readonly Mapping $mapping, private readonly AliasService $aliasService, private readonly JobService $jobService, private readonly int $pagingSize, private readonly string $instanceId, private readonly ?string $circlesObject)
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly SearchService $searchService,
+        private readonly EnvironmentService $environmentService,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly PublishService $publishService,
+        private readonly IndexService $indexService,
+        private readonly Mapping $mapping,
+        private readonly AliasService $aliasService,
+        private readonly JobService $jobService,
+        private readonly int $pagingSize,
+        private readonly string $instanceId,
+        private readonly ?string $circlesObject,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -256,7 +270,7 @@ class EnvironmentController extends AbstractController
             $lastPage = 0;
         }
 
-        return $this->render('@EMSCore/environment/align.html.twig', [
+        return $this->render("@$this->templateNamespace/environment/align.html.twig", [
             'form' => $form->createView(),
             'results' => $results,
             'lastPage' => $lastPage,
@@ -463,7 +477,7 @@ class EnvironmentController extends AbstractController
             }
         }
 
-        return $this->render('@EMSCore/environment/add.html.twig', [
+        return $this->render("@$this->templateNamespace/environment/add.html.twig", [
                 'form' => $form->createView(),
         ]);
     }
@@ -491,7 +505,7 @@ class EnvironmentController extends AbstractController
             return $this->redirectToRoute('environment.index');
         }
 
-        return $this->render('@EMSCore/environment/edit.html.twig', [
+        return $this->render("@$this->templateNamespace/environment/edit.html.twig", [
             'environment' => $environment,
             'form' => $form->createView(),
         ]);
@@ -524,7 +538,7 @@ class EnvironmentController extends AbstractController
             $info = false;
         }
 
-        return $this->render('@EMSCore/environment/view.html.twig', [
+        return $this->render("@$this->templateNamespace/environment/view.html.twig", [
                 'environment' => $environment,
                 'info' => $info,
         ]);
@@ -579,7 +593,7 @@ class EnvironmentController extends AbstractController
             }
         }
 
-        return $this->render('@EMSCore/environment/rebuild.html.twig', [
+        return $this->render("@$this->templateNamespace/environment/rebuild.html.twig", [
                 'environment' => $environment,
                 'form' => $form->createView(),
         ]);
@@ -658,7 +672,7 @@ class EnvironmentController extends AbstractController
                 return $this->redirectToRoute('ems_environment_index');
             }
 
-            return $this->render('@EMSCore/environment/index.html.twig', [
+            return $this->render("@$this->templateNamespace/environment/index.html.twig", [
                 'environments' => $environments,
                 'orphanIndexes' => $this->aliasService->getOrphanIndexes(),
                 'unreferencedAliases' => $this->aliasService->getUnreferencedAliases(),

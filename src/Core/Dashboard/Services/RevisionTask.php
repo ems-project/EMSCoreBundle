@@ -19,7 +19,7 @@ use Twig\Environment;
 
 final class RevisionTask implements DashboardInterface
 {
-    public function __construct(private readonly Environment $twig, private readonly RouterInterface $router, private readonly RequestStack $requestStack, private readonly FormFactoryInterface $formFactory, private readonly TaskManager $taskManager)
+    public function __construct(private readonly Environment $twig, private readonly RouterInterface $router, private readonly RequestStack $requestStack, private readonly FormFactoryInterface $formFactory, private readonly TaskManager $taskManager, private readonly string $templateNamespace)
     {
     }
 
@@ -48,7 +48,7 @@ final class RevisionTask implements DashboardInterface
         $form = $this->formFactory->create(TableType::class, $table);
         $form->handleRequest($request);
 
-        return new Response($this->twig->render('@EMSCore/revision/task/dashboard.html.twig', \array_filter([
+        return new Response($this->twig->render("@$this->templateNamespace/revision/task/dashboard.html.twig", \array_filter([
             'table' => $table,
             'formTable' => $form->createView(),
             'currentTab' => $tab,

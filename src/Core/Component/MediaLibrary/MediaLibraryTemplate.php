@@ -17,15 +17,13 @@ class MediaLibraryTemplate
     public const BLOCK_FILE_ROW_HEADER = 'mediaLibraryFileRowHeader';
     public const BLOCK_FILE_ROW = 'mediaLibraryFileRow';
 
-    private const TWIG_TEMPLATE = '@EMSCore/components/media_library/template.html.twig';
-    private const TWIG_ELEMENTS = '@EMSCore/components/media_library/elements.html.twig';
-
     public function __construct(
         private readonly Environment $twig,
-        private readonly MediaLibraryConfig $config
+        private readonly MediaLibraryConfig $config,
+        private readonly string $templateNamespace
     ) {
-        $this->template = $this->twig->load(self::TWIG_TEMPLATE);
-        $this->templateElements = $this->twig->load(self::TWIG_ELEMENTS);
+        $this->template = $this->twig->load("@$this->templateNamespace/components/media_library/template.html.twig");
+        $this->templateElements = $this->twig->load("@$this->templateNamespace/components/media_library/elements.html.twig");
 
         $this->configTemplate = $this->config->template ? $this->twig->load($this->config->template) : null;
     }

@@ -36,6 +36,7 @@
         </service>
         <service id="emsco.core.media_library.template_factory" class="EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryTemplateFactory">
             <argument type="service" id="twig" />
+            <argument>%ems_core.template_namespace%</argument>
         </service>
     </services>
 </container>

@@ -30,7 +30,8 @@ final class TaskController extends AbstractController
         private readonly TaskManager $taskManager,
         private readonly AjaxService $ajax,
         private readonly FormFactoryInterface $formFactory,
-        private readonly TableExporter $tableExporter
+        private readonly TableExporter $tableExporter,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -40,7 +41,7 @@ final class TaskController extends AbstractController
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
-        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+        return $this->render("@$this->templateNamespace/datatable/ajax.html.twig", [
             'dataTableRequest' => $dataTableRequest,
             'table' => $table,
         ], new JsonResponse());
@@ -244,12 +245,12 @@ final class TaskController extends AbstractController
 
     private function getAjaxModal(): AjaxModal
     {
-        return $this->ajax->newAjaxModel('@EMSCore/revision/task/ajax.twig');
+        return $this->ajax->newAjaxModel("@$this->templateNamespace/revision/task/ajax.twig");
     }
 
     private function getAjaxTemplate(): TemplateWrapper
     {
-        return $this->ajax->getTemplating()->load('@EMSCore/revision/task/ajax.twig');
+        return $this->ajax->getTemplating()->load("@$this->templateNamespace/revision/task/ajax.twig");
     }
 
     private function getTable(Request $request, string $tab, bool $export = false): EntityTable

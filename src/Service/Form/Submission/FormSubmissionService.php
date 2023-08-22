@@ -24,7 +24,7 @@ final class FormSubmissionService implements EntityServiceInterface
      *
      * @param Session<mixed> $session
      */
-    public function __construct(private readonly FormSubmissionRepository $formSubmissionRepository, private readonly Environment $twig, private readonly Session $session, private readonly TranslatorInterface $translator)
+    public function __construct(private readonly FormSubmissionRepository $formSubmissionRepository, private readonly Environment $twig, private readonly Session $session, private readonly TranslatorInterface $translator, private readonly string $templateNamespace)
     {
     }
 
@@ -220,7 +220,7 @@ final class FormSubmissionService implements EntityServiceInterface
                 return $this->twig->createTemplate('There are no submissions for this form')->render();
             }
 
-            return $this->twig->render('@EMSCore/email/submissions.email.twig', ['submissions' => $submissions]);
+            return $this->twig->render("@$this->templateNamespace/email/submissions.email.twig", ['submissions' => $submissions]);
         } catch (\Exception $e) {
             return $this->twig->createTemplate('Error in body template: '.$e->getMessage())->render();
         }

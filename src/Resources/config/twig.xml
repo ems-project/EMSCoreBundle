@@ -47,6 +47,7 @@
         <service id="EMS\CoreBundle\Twig\DatatableRuntime">
             <argument type="service" id="ems.service.datatable"/>
             <argument type="service" id="twig"/>
+            <argument>%ems_core.template_namespace%</argument>
             <tag name="twig.runtime"/>
         </service>
 

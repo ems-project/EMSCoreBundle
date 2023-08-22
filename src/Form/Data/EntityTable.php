@@ -20,6 +20,7 @@ final class EntityTable extends TableAbstract
      * @param mixed $context
      */
     public function __construct(
+        private readonly string $templateNamespace,
         private readonly EntityServiceInterface $entityService,
         string $ajaxUrl,
         private $context = null,
@@ -111,6 +112,6 @@ final class EntityTable extends TableAbstract
 
     public function getRowTemplate(): string
     {
-        return \sprintf("{%%- use '@EMSCore/datatable/row.json.twig' -%%}{{ block('emsco_datatable_row') }}");
+        return \sprintf("{%%- use '@$this->templateNamespace/datatable/row.json.twig' -%%}{{ block('emsco_datatable_row') }}");
     }
 }

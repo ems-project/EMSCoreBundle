@@ -79,7 +79,7 @@ class NotificationController extends AbstractController
 
         $success = $this->notificationService->addNotification($ct->getActionById(\intval($templateId)), $revision, $env);
 
-        return $this->render('@EMSCore/ajax/notification.json.twig', [
+        return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                 'success' => $success,
         ]);
     }

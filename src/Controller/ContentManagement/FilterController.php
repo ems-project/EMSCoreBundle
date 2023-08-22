@@ -15,13 +15,13 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class FilterController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly HelperService $helperService)
+    public function __construct(private readonly LoggerInterface $logger, private readonly HelperService $helperService, private readonly string $templateNamespace)
     {
     }
 
     public function indexAction(): Response
     {
-        return $this->render('@EMSCore/filter/index.html.twig', [
+        return $this->render("@$this->templateNamespace/filter/index.html.twig", [
                 'paging' => $this->helperService->getPagingTool(Filter::class, 'ems_filter_index', 'name'),
         ]);
     }
@@ -43,7 +43,7 @@ class FilterController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/filter/edit.html.twig', [
+        return $this->render("@$this->templateNamespace/filter/edit.html.twig", [
                 'form' => $form->createView(),
         ]);
     }
@@ -81,7 +81,7 @@ class FilterController extends AbstractController
             ]);
         }
 
-        return $this->render('@EMSCore/filter/add.html.twig', [
+        return $this->render("@$this->templateNamespace/filter/add.html.twig", [
                 'form' => $form->createView(),
         ]);
     }

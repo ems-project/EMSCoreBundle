@@ -31,7 +31,8 @@ class UploadedFileController extends AbstractController
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly FileService $fileService,
-        private readonly DataTableFactory $dataTableFactory
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -41,7 +42,7 @@ class UploadedFileController extends AbstractController
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
-        return $this->render('@EMSCore/datatable/ajax.html.twig', [
+        return $this->render("@$this->templateNamespace/datatable/ajax.html.twig", [
             'dataTableRequest' => $dataTableRequest,
             'table' => $table,
         ], new JsonResponse());
@@ -73,7 +74,7 @@ class UploadedFileController extends AbstractController
             return $this->redirectToRoute('ems_core_uploaded_file_index');
         }
 
-        return $this->render('@EMSCore/uploaded-file/index.html.twig', [
+        return $this->render("@$this->templateNamespace/uploaded-file/index.html.twig", [
             'form' => $form->createView(),
         ]);
     }
@@ -109,7 +110,7 @@ class UploadedFileController extends AbstractController
             return $this->redirectToRoute('ems_core_uploaded_file_logs');
         }
 
-        return $this->render('@EMSCore/uploaded-file-logs/index.html.twig', [
+        return $this->render("@$this->templateNamespace/uploaded-file-logs/index.html.twig", [
             'form' => $form->createView(),
         ]);
     }
@@ -152,7 +153,7 @@ class UploadedFileController extends AbstractController
 
     private function initFileTable(): QueryTable
     {
-        $table = new QueryTable($this->fileService, 'uploaded-files-grouped-by-hash', $this->generateUrl('ems_core_uploaded_file_ajax'));
+        $table = new QueryTable($this->templateNamespace, $this->fileService, 'uploaded-files-grouped-by-hash', $this->generateUrl('ems_core_uploaded_file_ajax'));
         $table->addColumn('uploaded-file.index.column.name', 'name')
             ->setRoute('ems_file_download', function (array $data) {
                 if (!\is_string($data['id'] ?? null) || !\is_string($data['type'] ?? null) || !\is_string($data['name'] ?? null)) {

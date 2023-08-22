@@ -12,9 +12,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 final class TaskEventSubscriber implements EventSubscriberInterface
 {
-    private const MAIL_TEMPLATE = '@EMSCore/revision/task/mail.twig';
+    private const MAIL_TEMPLATE = '/revision/task/mail.twig';
 
-    public function __construct(private readonly TaskRepository $taskRepository, private readonly MailerService $mailerService, private readonly UserService $userService, private readonly ?string $urlUser)
+    public function __construct(
+        private readonly TaskRepository $taskRepository,
+        private readonly MailerService $mailerService,
+        private readonly UserService $userService,
+        private readonly ?string $urlUser,
+        private readonly string $templateNamespace)
     {
     }
 
@@ -139,7 +144,7 @@ final class TaskEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $mailTemplate = $this->mailerService->makeMailTemplate(self::MAIL_TEMPLATE);
+        $mailTemplate = $this->mailerService->makeMailTemplate("@$this->templateNamespace".self::MAIL_TEMPLATE);
         $mailTemplate
             ->addTo($receiver->getEmail())
             ->setSubject(\sprintf('task.mail.%s', $type), [

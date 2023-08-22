@@ -54,7 +54,7 @@ final class ChannelController extends AbstractController
             return $this->redirectToRoute('ems_core_channel_index');
         }
 
-        return $this->render('@EMSCore/channel/index.html.twig', [
+        return $this->render("@$this->templateNamespace/channel/index.html.twig", [
             'form' => $form->createView(),
         ]);
     }
@@ -63,11 +63,14 @@ final class ChannelController extends AbstractController
     {
         $channel = new Channel();
 
-        return $this->edit($request, $channel, '@EMSCore/channel/add.html.twig');
+        return $this->edit($request, $channel, "@$this->templateNamespace/channel/add.html.twig");
     }
 
-    public function edit(Request $request, Channel $channel, string $view = '@EMSCore/channel/edit.html.twig'): Response
+    public function edit(Request $request, Channel $channel, ?string $view = null): Response
     {
+        if (null === $view) {
+            $view = "@$this->templateNamespace/channel/edit.html.twig";
+        }
         $form = $this->createForm(ChannelType::class, $channel);
         $form->handleRequest($request);
 

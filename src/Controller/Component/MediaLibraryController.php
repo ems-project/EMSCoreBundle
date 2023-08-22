@@ -24,7 +24,8 @@ class MediaLibraryController
         private readonly MediaLibraryService $mediaLibraryService,
         private readonly AjaxService $ajax,
         private readonly TranslatorInterface $translator,
-        private readonly FormFactory $formFactory
+        private readonly FormFactory $formFactory,
+        private readonly string $templateNamespace
     ) {
     }
 
@@ -81,6 +82,6 @@ class MediaLibraryController
 
     private function getAjaxModal(): AjaxModal
     {
-        return $this->ajax->newAjaxModel('@EMSCore/components/media_library/modal.html.twig');
+        return $this->ajax->newAjaxModel("$this->templateNamespace/components/media_library/modal.html.twig");
     }
 }

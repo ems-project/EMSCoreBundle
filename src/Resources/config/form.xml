@@ -445,6 +445,7 @@
             <argument type="service" id="ems.form.manager" />
             <argument type="service" id="form.registry" />
             <argument type="service" id="ems.service.data" />
+            <argument type="service" id="logger" />
             <argument>%ems_core.custom_user_options_form%</argument>
             <tag name="form.type"/>
         </service>

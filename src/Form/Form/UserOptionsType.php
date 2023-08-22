@@ -6,9 +6,11 @@ namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\Core\Form\FormManager;
 use EMS\CoreBundle\Core\User\UserOptions;
+use EMS\CoreBundle\Exception\FormNotFoundException;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\DataTransformer\FormModelTransformer;
 use EMS\CoreBundle\Service\DataService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,6 +29,7 @@ class UserOptionsType extends AbstractType
         private readonly FormManager $formManager,
         protected FormRegistryInterface $formRegistry,
         protected DataService $dataService,
+        protected LoggerInterface $logger,
         private readonly ?string $customUserOptionsForm)
     {
     }
@@ -51,19 +54,25 @@ class UserOptionsType extends AbstractType
                 ]);
         }
 
-        if ($this->customUserOptionsForm) {
-            $form = $this->formManager->getByName($this->customUserOptionsForm);
-            $builder->add(UserOptions::CUSTOM_OPTIONS, $form->getFieldType()->getType(), [
-                'metadata' => $form->getFieldType(),
-                'label' => false,
-                'constraints' => [
-                    new Callback([$this, 'validate']),
-                ],
-            ]);
+        if (null !== $this->customUserOptionsForm) {
+            try {
+                $form = $this->formManager->getByName($this->customUserOptionsForm);
+                $builder->add(UserOptions::CUSTOM_OPTIONS, $form->getFieldType()->getType(), [
+                    'metadata' => $form->getFieldType(),
+                    'label' => false,
+                    'constraints' => [
+                        new Callback([$this, 'validate']),
+                    ],
+                ]);
 
-            $builder->get(UserOptions::CUSTOM_OPTIONS)
-                ->addViewTransformer(new DataFieldViewTransformer($form->getFieldType(), $this->formRegistry))
-                ->addModelTransformer(new FormModelTransformer($form->getFieldType(), $this->formRegistry));
+                $builder->get(UserOptions::CUSTOM_OPTIONS)
+                    ->addViewTransformer(new DataFieldViewTransformer($form->getFieldType(), $this->formRegistry))
+                    ->addModelTransformer(new FormModelTransformer($form->getFieldType(), $this->formRegistry));
+            } catch (FormNotFoundException) {
+                $this->logger->warning('log.user.custom_form_not_found', [
+                    'name' => $this->customUserOptionsForm,
+                ]);
+            }
         }
     }
 

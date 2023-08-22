@@ -108,10 +108,11 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         }
 
         if (\is_array($bundles) && isset($bundles['TwigBundle'])) {
+            $themeNamespace = $configs[0]['template_namespace'] ?? 'EMSCore';
             $container->prependExtensionConfig('twig', [
                 'globals' => $globals,
                 'form_themes' => [
-                    '@EMSCore/form/fields.html.twig',
+                    "@$themeNamespace/form/fields.html.twig",
                 ],
             ]);
         }

@@ -7,10 +7,10 @@ namespace EMS\CoreBundle\Core\Form;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Form;
+use EMS\CoreBundle\Exception\FormNotFoundException;
 use EMS\CoreBundle\Repository\FormRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FormManager implements EntityServiceInterface
 {
@@ -106,7 +106,7 @@ class FormManager implements EntityServiceInterface
     {
         $form = $this->formRepository->getByName($name);
         if (null === $form) {
-            throw new NotFoundHttpException(\sprintf('Form %s not found', $name));
+            throw new FormNotFoundException(\sprintf('Form %s not found', $name));
         }
 
         return $form;

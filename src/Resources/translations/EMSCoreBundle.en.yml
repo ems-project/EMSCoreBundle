@@ -199,6 +199,7 @@ log:
     locked_exception_error: 'Document "%label%" is currently locked by %username%'
     privilege_exception_error: 'You don''t have enough privileges to edit this document'
     user:
+        custom_form_not_found: 'Custom user form "%name%" not found'
         api_key: 'New API key for the user %user_display_name%: %api_key%'
         deleted: 'The user %user_display_name% has been deleted'
         disabled: 'The user %user_display_name% has been disabled'

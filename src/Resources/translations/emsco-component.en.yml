@@ -9,3 +9,12 @@ media_library:
         load_more: 'Loading more files ...'
         add:
             title: Upload
+
+json_menu_nested:
+    error:
+        node_not_found: 'Item type not found'
+        item_not_found: 'Item not found'
+        item_parent_not_found: 'Parent not found'
+        move_child_missing: 'Move failed, current parent does not have item'
+        move_child_exists: 'Move failed, new parent already has item'
+        item_edit_outdated: 'Out of sync, close and retry!'

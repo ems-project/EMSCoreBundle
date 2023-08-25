@@ -16,6 +16,22 @@
             <tag name="request.param_converter" converter="emsco.config" />
         </service>
 
+        <!-- Json Menu Nested -->
+        <service id="emsco.core.json_menu_nested.config_factory"
+                 class="EMS\CoreBundle\Core\Component\JsonMenuNested\Config\JsonMenuNestedConfigFactory"
+                 parent="emsco.config.abstract_config_factory">
+            <argument type="service" id="ems.service.revision" />
+            <tag name="emsco.config.factory" config="EMS\CoreBundle\Core\Component\JsonMenuNested\Config\JsonMenuNestedConfig" />
+        </service>
+        <service id="emsco.core.json_menu_nested.template_factory" class="EMS\CoreBundle\Core\Component\JsonMenuNested\Template\JsonMenuNestedTemplateFactory">
+            <argument type="service" id="twig" />
+        </service>
+        <service id="emsco.core.json_menu_nested" class="EMS\CoreBundle\Core\Component\JsonMenuNested\JsonMenuNestedService">
+            <argument type="service" id="emsco.core.json_menu_nested.template_factory" />
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="ems.service.user" />
+        </service>
+
         <!-- Media Library -->
         <service id="emsco.core.media_library.request.param_converter" class="EMS\CoreBundle\Core\Component\MediaLibrary\Request\MediaLibraryParamConverter">
             <tag name="request.param_converter" converter="emsco.media_library_request" />

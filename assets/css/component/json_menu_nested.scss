@@ -1,0 +1,152 @@
+.json-menu-nested-component {
+    --jmn-color-bg: #F0F0F0;
+    --jmn-color-border: #d7d7d7;
+    --jmn-color-bg-active: #F0F8FF;
+    --jmn-color-light: #F8F8F8;
+    --jmn-border-radius: 5px;
+    --jmn-gap: 10px;
+    --jmn-icon-size: 30px;
+    --jmn-collapse-icon-size: calc(var(--jmn-gap) + var(--jmn-icon-size));
+    position: relative;
+    margin-bottom: 50px;
+
+    .jmn-node-loading {
+        position: absolute;
+        z-index: 1000;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color:rgba(248, 248, 248, 0.3);
+        color: var(--jmn-color-border);
+        text-align: center;
+        font-size: 1em;
+    }
+
+    .jmn-wrapper {
+        position: relative;
+        display: inline-table;
+        width: 100%;
+        border: 1px solid var(--jmn-color-border);
+        border-radius: var(--jmn-border-radius);
+    }
+
+    .jmn-header {
+        border-top-right-radius: var(--jmn-border-radius);
+        border-top-left-radius: var(--jmn-border-radius);
+        background-color: var(--jmn-color-bg);
+        border-bottom: 1px solid var(--jmn-color-border);
+    }
+
+    .jmn-tree {
+        border-bottom-right-radius: var(--jmn-border-radius);
+        border-bottom-left-radius: var(--jmn-border-radius);
+        min-height: calc(var(--jmn-gap) + var(--jmn-icon-size) + var(--jmn-gap));
+
+        > .jmn-node.jmn-collapsible { padding-left: 0; }
+        > .jmn-node:not(.jmn-collapsible) { padding-left: var(--jmn-collapse-icon-size); }
+
+        .jmn-children {
+            padding-left: var(--jmn-icon-size);
+
+            & > .jmn-node {
+                position: relative;
+                padding-left: calc(var(--jmn-gap) * 2);
+
+                &:before {
+                    content: '';
+                    width: var(--jmn-gap);
+                    height: calc(var(--jmn-gap) * 1.5);
+                    border-left: 1px solid;
+                    border-bottom: 1px solid;
+                    border-color: var(--jmn-color-border);
+                    display: block;
+                    position: absolute;
+                    top: var(--jmn-gap);
+                    left: var(--jmn-gap);
+                }
+            }
+        }
+    }
+
+    .jmn-header, .jmn-row {
+        display: flex;
+        justify-content: flex-end;
+        & > :first-child { margin-right: auto; }
+    }
+
+    .jmn-column, .jmn-cell {
+        display: flex;
+        padding: var(--jmn-gap);
+        column-gap: var(--jmn-gap);
+        flex-shrink: 0;
+        &:first-child { justify-content: flex-start; flex-shrink: 1; }
+    }
+    .jmn-column {
+        align-items: center;
+        justify-content: center;
+        padding-top: var(--jmn-gap);
+        padding-bottom: var(--jmn-gap);
+        font-weight: bold;
+        text-align: center;
+    }
+    .jmn-cell {
+        justify-content: flex-end;
+        align-items: flex-start;
+        gap: var(--jmn-gap);
+    }
+
+    .jmn-node {
+        background-color: white;
+        border-top: 1px solid var(--jmn-color-border);
+        &.jmn-move-drag { opacity: 0; }
+        &.jmn-move-ghost, &.jmn-move-chosen { background-color: var(--jmn-color-bg);}
+        &.jmn-node-active { background-color: var(--jmn-color-bg-active) }
+    }
+
+    .jmn-item-icon {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: var(--jmn-icon-size);
+        width: var(--jmn-icon-size);
+        border-radius: 50%;
+        background-color: var(--jmn-color-bg);
+    }
+    .jmn-column-title {
+        padding-left: var(--jmn-collapse-icon-size);
+    }
+    .jmn-cell-title {
+        align-items: baseline;
+    }
+    .jmn-btn-more {
+        background-color: white;
+    }
+
+    .jmn-btn-move {
+        cursor: move;
+        &::before {
+            font-family: FontAwesome, serif;
+            font-weight: 400;
+            content: "\f047";
+            padding-right: 5px;
+        }
+    }
+    .jmn-btn-collapse {
+        padding: 0;
+        border: none;
+        &[aria-expanded="true"]::after {
+            font-family: FontAwesome, serif;
+            font-weight: 400;
+            content: "\f077";
+        }
+        &[aria-expanded="false"]::after {
+            font-family: FontAwesome, serif;
+            font-weight: 400;
+            content: "\f078";
+        }
+    }
+}
+

@@ -4,6 +4,57 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
+    <!-- Json Menu Nested -->
+    <route id="emsco.json_menu_nested.render" path="/json-menu-nested/{hash}/render"
+           controller="EMS\CoreBundle\Controller\Component\JsonMenuNestedController::render"
+           methods="POST">
+        <requirement key="hash">.*</requirement>
+    </route>
+    <route id="emsco.json_menu_nested.item_modal_add" path="/json-menu-nested/{hash}/item/{itemId}/modal-add/{nodeId}"
+           controller="EMS\CoreBundle\Controller\Component\JsonMenuNestedController::itemModalAdd"
+           methods="GET|POST">
+        <requirement key="hash">.*</requirement>
+        <requirement key="itemId">.*</requirement>
+        <requirement key="nodeId">.*</requirement>
+    </route>
+    <route id="emsco.json_menu_nested.item_modal_view" path="/json-menu-nested/{hash}/item/{itemId}/modal-view"
+           controller="EMS\CoreBundle\Controller\Component\JsonMenuNestedController::itemModalView"
+           methods="GET">
+        <requirement key="hash">.*</requirement>
+        <requirement key="itemId">.*</requirement>
+    </route>
+    <route id="emsco.json_menu_nested.item_modal_edit" path="/json-menu-nested/{hash}/item/{itemId}/modal-edit"
+           controller="EMS\CoreBundle\Controller\Component\JsonMenuNestedController::itemModalEdit"
+           methods="GET|POST">
+        <requirement key="hash">.*</requirement>
+        <requirement key="itemId">.*</requirement>
+    </route>
+    <route id="emsco.json_menu_nested.item_add" path="/json-menu-nested/{hash}/item/{itemId}/add"
+           controller="EMS\CoreBundle\Controller\Component\JsonMenuNestedController::itemAdd"
+           methods="POST">
+        <requirement key="hash">.*</requirement>
+        <requirement key="itemId">.*</requirement>
+    </route>
+    <route id="emsco.json_menu_nested.item_delete" path="/json-menu-nested/{hash}/item/{itemId}/delete"
+           controller="EMS\CoreBundle\Controller\Component\JsonMenuNestedController::itemDelete"
+           methods="POST">
+        <requirement key="hash">.*</requirement>
+        <requirement key="itemId">.*</requirement>
+    </route>
+    <route id="emsco.json_menu_nested.item_move" path="/json-menu-nested/{hash}/item/{itemId}/move"
+           controller="EMS\CoreBundle\Controller\Component\JsonMenuNestedController::itemMove"
+           methods="POST">
+        <requirement key="hash">.*</requirement>
+        <requirement key="itemId">.*</requirement>
+    </route>
+    <route id="emsco.json_menu_nested.item" path="/json-menu-nested/{hash}/item/{itemId}"
+           controller="EMS\CoreBundle\Controller\Component\JsonMenuNestedController::item"
+           methods="GET">
+        <requirement key="hash">.*</requirement>
+        <requirement key="itemId">.*</requirement>
+    </route>
+
+    <!-- Media library -->
     <route id="emsco.media_library.files" path="/media-lib/{hash}/files/{folderId}"
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::getFiles"
            methods="GET">
@@ -15,19 +66,16 @@
            methods="GET">
         <requirement key="hash">.*</requirement>
     </route>
-
     <route id="emsco.media_library.add_folder" path="/media-lib/{hash}/add-folder/{folderId}"
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::addFolder"
            methods="GET|POST">
         <requirement key="hash">.*</requirement>
         <default key="folderId" xsi:nil="true"/>
     </route>
-
     <route id="emsco.media_library.add_file" path="/media-lib/{hash}/add-file/{folderId}"
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::addFile"
            methods="POST">
         <requirement key="hash">.*</requirement>
         <default key="folderId" xsi:nil="true"/>
     </route>
-
 </routes>

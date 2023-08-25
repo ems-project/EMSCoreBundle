@@ -434,6 +434,19 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $valid;
     }
 
+    public function isDeleted(): bool
+    {
+        return $this->deleted;
+    }
+
+    public function isContainer(): bool
+    {
+        /** @var DataFieldType $type */
+        $type = $this->getType();
+
+        return $type::isContainer();
+    }
+
     public function isJsonMenuNestedEditor(): bool
     {
         return JsonMenuNestedEditorFieldType::class === $this->getType();
@@ -695,6 +708,17 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     {
         foreach ($this->loopChildren() as $child) {
             if (!$child->getDeleted() && $child->getName() === $name) {
+                return $child;
+            }
+        }
+
+        return null;
+    }
+
+    public function findChildByPath(string $path): ?FieldType
+    {
+        foreach ($this->loopChildren() as $child) {
+            if (!$child->getDeleted() && $child->getPath() === $path) {
                 return $child;
             }
         }

@@ -28,7 +28,7 @@ abstract class AbstractConfigFactory implements ConfigFactoryInterface
     public function createFromOptions(array $options): ConfigInterface
     {
         $resolvedOptions = $this->resolveOptions($options);
-        $hash = $this->getHash($resolvedOptions);
+        $hash = $this->getHash($options);
 
         return $this->create($hash, $resolvedOptions);
     }

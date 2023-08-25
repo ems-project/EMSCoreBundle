@@ -24,4 +24,11 @@ final class AjaxService
 
         return new AjaxModal($template, $this->translator);
     }
+
+    public function ajaxModalTemplate(string $templateName): AjaxModalTemplate
+    {
+        $template = $this->templating->load($templateName);
+
+        return new AjaxModalTemplate($template);
+    }
 }

@@ -9,6 +9,7 @@ import MediaLibrary from "./component/mediaLibrary";
 import JsonMenu from "./module/jsonMenu";
 import JsonMenuNested from "./module/jsonMenuNested";
 import ajaxModal from "./helper/ajaxModal";
+import JsonMenuNestedComponent from "./component/jsonMenuNestedComponent";
 
 (function(factory) {
     "use strict";
@@ -247,6 +248,16 @@ import ajaxModal from "./helper/ajaxModal";
         });
     }
 
+    function initJsonMenuNestedComponent() {
+        const elements = document.getElementsByClassName('json-menu-nested-component');
+
+        window.jsonMenuNestedComponents = [];
+        [].forEach.call(elements, function (element) {
+            const component = new JsonMenuNestedComponent(element);
+            window.jsonMenuNestedComponents[component.id] = component;
+        });
+    }
+
     function initMediaLibrary() {
         let elements = document.getElementsByClassName('media-lib');
         let bodyData = document.querySelector('body').dataset;
@@ -334,6 +345,7 @@ import ajaxModal from "./helper/ajaxModal";
         initAjaxFormSave();
         initJsonMenu();
         initMediaLibrary();
+        initJsonMenuNestedComponent()
         intAjaxModalLinks();
         initPostButtons();
 

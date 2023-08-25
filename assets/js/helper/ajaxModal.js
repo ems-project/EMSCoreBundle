@@ -13,6 +13,7 @@ class AjaxModal {
                 if (e.target.id === this.modal.id) {
                     this.reset();
                 }
+                e.target.dispatchEvent(new Event('ajax-modal-close'));
             });
         }
 
@@ -150,15 +151,15 @@ class AjaxModal {
             let messageType = Object.keys(m)[0];
             let message = m[messageType];
             this.printMessage(messageType, message);
-
-            if (messageType === 'error') {
-                location.reload();
-            }
         });
 
         let modelForm = this.modal.querySelector('form');
         if (modelForm) {
             editRevisionEventListeners(this.$modal.find('form'));
+            modelForm.addEventListener('submit', (event) => {
+                ajaxModal.submitForm(url, callback);
+                event.preventDefault();
+            });
         }
 
         let btnAjaxSubmit = this.modal.querySelector('#ajax-modal-submit');
@@ -177,6 +178,9 @@ class AjaxModal {
     printMessage(messageType, message) {
         let messageClass;
         switch(messageType) {
+            case 'warning':
+                messageClass = 'alert-warning';
+                break;
             case 'error':
                 messageClass = 'alert-danger';
                 break;

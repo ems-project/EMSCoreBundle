@@ -369,6 +369,11 @@ class Revision implements EntityInterface, \Stringable
         return $this->id;
     }
 
+    public function isCurrent(): bool
+    {
+        return null === $this->getEndTime() && null === $this->getVersionDate('to');
+    }
+
     public function isArchived(): bool
     {
         return $this->archived;

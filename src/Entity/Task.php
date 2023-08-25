@@ -9,6 +9,7 @@ use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Core\Revision\Task\TaskLog;
 use EMS\Helpers\Standard\DateTime;
+use EMS\Helpers\Standard\Type;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -40,6 +41,11 @@ class Task implements EntityInterface
      * @ORM\Column(name="status", type="string", length=25)
      */
     private string $status = self::STATUS_PLANNED;
+
+    /**
+     * @ORM\Column(name="delay", type="integer")
+     */
+    private int $delay;
 
     /**
      * @ORM\Column(name="deadline", type="datetime_immutable", nullable=true)
@@ -105,15 +111,10 @@ class Task implements EntityInterface
 
     public function updateFromDTO(TaskDTO $taskDTO): void
     {
-        $this->title = $taskDTO->giveTitle();
-        $this->description = $taskDTO->getDescription();
-        $this->assignee = $taskDTO->giveAssignee();
-
-        $currentDeadline = $this->hasDeadline() ? $this->getDeadline()->format('Y-m-d') : null;
-        $updateDeadline = $taskDTO->hasDeadline() ? $taskDTO->giveDeadline()->format('Y-m-d') : null;
-        if ($currentDeadline !== $updateDeadline) {
-            $this->deadline = $taskDTO->giveDeadline();
-        }
+        $this->title = Type::string($taskDTO->title);
+        $this->assignee = Type::string($taskDTO->assignee);
+        $this->delay = Type::integer($taskDTO->delay);
+        $this->description = $taskDTO->description;
     }
 
     public function getId(): string
@@ -126,8 +127,17 @@ class Task implements EntityInterface
         return $this->status;
     }
 
+    public function isStatus(string ...$status): bool
+    {
+        return \in_array($this->status, $status);
+    }
+
     public function setStatus(string $status): void
     {
+        if (self::STATUS_PROGRESS === $status) {
+            $this->deadline = DateTime::create('now')->add(new \DateInterval(\sprintf('P%dD', $this->delay)));
+        }
+
         $this->status = $status;
     }
 
@@ -151,6 +161,11 @@ class Task implements EntityInterface
     public function getTitle(): string
     {
         return $this->title;
+    }
+
+    public function getDelay(): int
+    {
+        return $this->delay;
     }
 
     public function hasDeadline(): bool

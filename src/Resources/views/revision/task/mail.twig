@@ -12,8 +12,9 @@
 
 {% block mail_deleted %}
      {{ block('_printHello') }}
-    <p>The task "{{ task.title }}" has been deleted.</p>
-    {% if task.createdBy != app.user.userIdentifier %}<p>By {{ app.user.displayName }}</p>{% endif %}
+    <p>The task "{{ task.title }}" has been deleted, by {{ app.user.userIdentifier|displayname }}</p>
+    <p><strong>Comment:</strong><br/><p>{{ comment|nl2br }}</p></p>
+    <hr />
     {{ block('_printInfo') }}
 {% endblock %}
 
@@ -79,8 +80,8 @@
 {% block _printTask %}
     <p>
         <strong>title:&nbsp;</strong>{{ task.title }}<br/>
-        {% if task.assignee != receiver.username %}<strong>assignee:&nbsp;</strong>{{ task.assignee|displayname }}<br/>{% endif %}
-        {% if task.createdBy != receiver.username %}<strong>requester:&nbsp;</strong>{{ task.createdBy|displayname }}<br/>{% endif %}
+        <strong>assignee:&nbsp;</strong>{{ task.assignee|displayname }}<br/>
+        <strong>requester:&nbsp;</strong>{{ task.createdBy|displayname }}<br/>
         {% if task.hasDeadline %}<strong>deadline:&nbsp;</strong>{{ task.deadline.format(date_format) }}<br/>{% endif %}
         {% if task.hasDescription %}
             <strong>description:&nbsp;</strong><br/>

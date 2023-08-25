@@ -10,11 +10,16 @@ use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class RevisionTaskHandleType extends AbstractType
 {
+    public function __construct(private readonly AuthorizationCheckerInterface $security)
+    {
+    }
+
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
@@ -26,20 +31,21 @@ class RevisionTaskHandleType extends AbstractType
         /** @var UserInterface $user */
         $user = $options['user'];
 
-        if ($task->isOpen() && $task->isAssignee($user)) {
+        if ($task->isStatus(Task::STATUS_PROGRESS, Task::STATUS_REJECTED) && $task->isAssignee($user)) {
             $builder
                 ->add('comment', TextareaType::class, [
                     'attr' => ['rows' => 4],
-                    'constraints' => 'approve' !== $options['handle'] ? [new NotBlank()] : [],
+                    'constraints' => !$task->isRequester($user) ? [new NotBlank()] : [],
                 ])
                 ->add('send', ButtonType::class);
         }
 
-        if (!$task->isOpen() && (!$task->isAssignee($user) || $task->isRequester($user))) {
+        if ($task->isStatus(Task::STATUS_COMPLETED)
+            && ($task->isRequester($user) || $this->security->isGranted('ROLE_TASK_MANAGER'))) {
             $builder
                 ->add('comment', TextareaType::class, [
                     'attr' => ['rows' => 4],
-                    'constraints' => 'approve' !== $options['handle'] ? [new NotBlank()] : [],
+                    'constraints' => 'reject' === $options['handle'] ? [new NotBlank()] : [],
                 ])
                 ->add('approve', ButtonType::class)
                 ->add('reject', ButtonType::class);

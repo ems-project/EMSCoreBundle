@@ -28,7 +28,7 @@
             <argument type="service" id="router" />
             <argument type="service" id="request_stack" />
             <argument type="service" id="form.factory" />
-            <argument type="service" id="ems_core.core_revision_task.task_manager" />
+            <argument type="service" id="emsco.revision.task.manager" />
             <argument>%ems_core.template_namespace%</argument>
             <tag name="ems.dashboard" alias="revision_task" />
         </service>

@@ -26,10 +26,6 @@
     <route id="ems_core_task_ajax_tasks" path="/data/revisions/{revisionId}/tasks"
            controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTasks"
            methods="GET|POST"/>
-    <route id="ems_core_task_ajax_tasks_approved" path="/data/revisions/{revisionId}/tasks-approved"
-           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTasksApproved"
-           methods="GET"/>
-
     <route id="ems_core_task_ajax_modal_task" path="/data/revisions/{revisionId}/task-modal/{taskId}"
            controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalTask"
            methods="GET"/>
@@ -40,8 +36,8 @@
            controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalUpdate"
            methods="GET|POST"/>
     <route id="ems_core_task_ajax_delete" path="/data/revisions/{revisionId}/delete/{taskId}"
-           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxDelete"
-           methods="POST"/>
+           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalDelete"
+           methods="GET|POST"/>
     <route id="ems_core_task_ajax_reorder" path="/data/revisions/{revisionId}/reorder"
            controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxReorder"
            methods="POST"/>

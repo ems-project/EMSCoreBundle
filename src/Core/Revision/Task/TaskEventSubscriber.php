@@ -66,7 +66,7 @@ final class TaskEventSubscriber implements EventSubscriberInterface
                 $task->addLog(TaskLog::logNewAssignee($task, $event->username));
                 $this->taskRepository->save($task);
             } else {
-                $this->sendMail($event, 'updated');
+                $this->sendMail($event, 'updated', $task->getAssignee());
             }
         }
     }
@@ -77,7 +77,9 @@ final class TaskEventSubscriber implements EventSubscriberInterface
             $this->sendMail($event, 'deleted', $event->task->getCreatedBy());
         }
 
-        $this->sendMail($event, 'deleted');
+        if ($event->isTaskCurrent()) {
+            $this->sendMail($event, 'deleted', $event->task->getAssignee());
+        }
     }
 
     public function onTaskStatusProgress(TaskEvent $event): void
@@ -85,7 +87,7 @@ final class TaskEventSubscriber implements EventSubscriberInterface
         $this->updateStatus($event, Task::STATUS_PROGRESS);
 
         if ($event->isTaskCurrent()) {
-            $this->sendMail($event, 'created');
+            $this->sendMail($event, 'created', $event->task->getAssignee());
         }
     }
 
@@ -108,7 +110,7 @@ final class TaskEventSubscriber implements EventSubscriberInterface
         $this->updateStatus($event, Task::STATUS_REJECTED);
 
         if ($event->isTaskCurrent()) {
-            $this->sendMail($event, 'rejected');
+            $this->sendMail($event, 'rejected', $event->task->getAssignee());
         }
     }
 
@@ -117,7 +119,7 @@ final class TaskEventSubscriber implements EventSubscriberInterface
         $this->updateStatus($event, Task::STATUS_APPROVED);
 
         if ($event->isTaskCurrent()) {
-            $this->sendMail($event, 'approved');
+            $this->sendMail($event, 'approved', $event->task->getAssignee());
         }
     }
 
@@ -130,17 +132,15 @@ final class TaskEventSubscriber implements EventSubscriberInterface
         $this->taskRepository->save($task);
     }
 
-    private function sendMail(TaskEvent $event, string $type, string $receiverUsername = null): void
+    private function sendMail(TaskEvent $event, string $type, string $receiverUsername): void
     {
         $task = $event->task;
         $revision = $event->revision;
-        $receiverUsername = $receiverUsername ?: $task->getAssignee();
-
         $receiver = $this->userService->getUser($receiverUsername);
 
         if (null === $receiver
             || !$receiver->getEmailNotification()
-            || (Task::STATUS_COMPLETED !== $type && $event->isAssigneeIsRequester())) {
+            || $receiver->getUsername() === $event->username) {
             return;
         }
 
@@ -155,6 +155,7 @@ final class TaskEventSubscriber implements EventSubscriberInterface
                 'receiver' => $receiver,
                 'task' => $task,
                 'revision' => $revision,
+                'comment' => $event->comment,
                 'changeSet' => $event->changeSet,
                 'backendUrl' => $this->urlUser,
             ])

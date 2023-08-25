@@ -32,11 +32,6 @@ class TaskEvent extends Event
         return $this->revision->isTaskCurrent($this->task);
     }
 
-    public function isAssigneeIsRequester(): bool
-    {
-        return $this->task->getCreatedBy() === $this->task->getAssignee();
-    }
-
     public function setComment(?string $comment): void
     {
         $this->comment = $comment;

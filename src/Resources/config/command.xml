@@ -65,11 +65,11 @@
             <argument type="service" id="ems.service.index"/>
             <tag name="console.command"/>
         </service>
-        <service id="ems.command_revision.task_create_command" class="EMS\CoreBundle\Command\Revision\TaskCreateCommand">
+        <service id="emsco.command.revision.task.create" class="EMS\CoreBundle\Command\Revision\TaskCreateCommand">
             <argument type="service" id="ems_core.core_revision_search.revision_searcher"/>
             <argument type="service" id="ems.service.environment"/>
             <argument type="service" id="ems.service.user"/>
-            <argument type="service" id="ems_core.core_revision_task.task_manager"/>
+            <argument type="service" id="emsco.revision.task.manager"/>
             <tag name="console.command"/>
         </service>
         <!-- EMSCO release -->

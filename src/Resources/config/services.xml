@@ -126,9 +126,9 @@
             <argument>%ems_core.default_bulk_size%</argument>
         </service>
 
-        <service id="ems_core.core_revision_task.task_manager" class="EMS\CoreBundle\Core\Revision\Task\TaskManager">
+        <service id="emsco.revision.task.manager" class="EMS\CoreBundle\Core\Revision\Task\TaskManager">
             <argument type="service" id="ems.repository.task" />
-            <argument type="service" id="ems_core.core_revision_task.task_table_service" />
+            <argument type="service" id="emsco.revision.task.table_service" />
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems.service.user" />
@@ -136,11 +136,15 @@
             <argument type="service" id="logger" />
             <argument>%ems_core.template_namespace%</argument>
         </service>
-        <service id="ems_core.core_revision_task.task_table_service" class="EMS\CoreBundle\Core\Revision\Task\Table\TaskTableService">
+        <service id="emsco.revision.task.table_service" class="EMS\CoreBundle\Core\Revision\Task\Table\TaskTableService">
             <argument type="service" id="ems.repository.task" />
             <argument>%ems_core.template_namespace%</argument>
         </service>
-        <service id="ems_core.core_revision_task.task_subscriber" class="EMS\CoreBundle\Core\Revision\Task\TaskEventSubscriber">
+        <service id="emsco.revision.task.handle_type" class="EMS\CoreBundle\Form\Revision\Task\RevisionTaskHandleType">
+            <argument type="service" id="security.authorization_checker" />
+            <tag name="form.type" />
+        </service>
+        <service id="emsco.revision.task.event_subscriber" class="EMS\CoreBundle\Core\Revision\Task\TaskEventSubscriber">
             <argument type="service" id="ems.repository.task"/>
             <argument type="service" id="ems_core.core_mail.mailer_service"/>
             <argument type="service" id="ems.service.user"/>

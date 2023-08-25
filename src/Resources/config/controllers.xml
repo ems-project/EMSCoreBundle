@@ -343,10 +343,11 @@
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Revision\TaskController" public="true">
-            <argument type="service" id="ems_core.core_revision_task.task_manager" />
+            <argument type="service" id="emsco.revision.task.manager" />
             <argument type="service" id="ems_core.core_ui.ajax_service" />
             <argument type="service" id="form.factory" />
             <argument type="service" id="ems_core.core_data_table.table_exporter" />
+            <argument>%ems_core.date_format%</argument>
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>

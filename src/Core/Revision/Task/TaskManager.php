@@ -84,14 +84,11 @@ final class TaskManager
         return $task;
     }
 
-    public function getTasks(int $revisionId): TaskCollection
+    public function getTasksPlanned(int $revisionId): TaskCollection
     {
         $revision = $this->revisionRepository->findOneById($revisionId);
         $tasks = new TaskCollection($revision);
 
-        if ($revision->hasTaskCurrent()) {
-            $tasks->addTask($this->taskRepository->findTaskById($revision->getTaskCurrent()->getId()));
-        }
         if ($revision->hasTaskPlannedIds()) {
             $tasks->addTasks($this->taskRepository->findTasksByIds($revision->getTaskPlannedIds()));
         }
@@ -163,15 +160,9 @@ final class TaskManager
         return $task;
     }
 
-    public function taskDelete(Task $task, int $revisionId, ?string $description = null): void
+    public function taskDelete(Task $task, int $revisionId, ?string $comment = null): void
     {
-        $transaction = $this->revisionTransaction(function (Revision $revision) use ($task, $description) {
-            $currentDescription = $task->hasDescription() ? $task->getDescription() : null;
-            if ($description !== $currentDescription) {
-                $task->setDescription($description);
-                $this->taskRepository->save($task);
-            }
-
+        $transaction = $this->revisionTransaction(function (Revision $revision) use ($task, $comment) {
             if ($revision->isTaskCurrent($task)) {
                 $this->setNextPlanned($revision);
             } elseif ($revision->isTaskPlanned($task)) {
@@ -182,7 +173,10 @@ final class TaskManager
 
             $this->revisionRepository->save($revision);
             $this->taskRepository->delete($task);
-            $this->dispatchEvent($this->createTaskEvent($task, $revision), TaskEvent::DELETE);
+
+            $event = $this->createTaskEvent($task, $revision);
+            $event->comment = $comment;
+            $this->dispatchEvent($event, TaskEvent::DELETE);
         });
         $transaction($revisionId);
     }
@@ -219,12 +213,19 @@ final class TaskManager
         $transaction($revision->getId());
     }
 
-    public function taskValidateRequest(Task $task, int $revisionId, string $comment): void
+    public function taskValidateRequest(Task $task, int $revisionId, ?string $comment = null): void
     {
         $transaction = $this->revisionTransaction(function (Revision $revision) use ($task, $comment) {
             $event = $this->createTaskEvent($task, $revision);
             $event->comment = $comment;
-            $this->dispatchEvent($event, TaskEvent::COMPLETED);
+
+            if ($task->isRequester($this->userService->getCurrentUser())) {
+                $this->dispatchEvent($event, TaskEvent::APPROVED);
+                $revision->addTask($task);
+                $this->setNextPlanned($revision);
+            } else {
+                $this->dispatchEvent($event, TaskEvent::COMPLETED);
+            }
         });
         $transaction($revisionId);
     }
@@ -239,19 +240,7 @@ final class TaskManager
         }
 
         $transaction = $this->revisionTransaction(function (Revision $revision) use ($orderedTaskIds) {
-            $user = $this->userService->getCurrentUser();
-
-            $orderCurrentTaskId = \array_shift($orderedTaskIds);
-            $oldCurrentTask = $revision->getTaskCurrent();
-            $orderTaskCurrent = $this->getTask($orderCurrentTaskId);
-
-            if ($revision->taskCurrentReplace($orderTaskCurrent)) {
-                $this->dispatchEvent($this->createTaskEvent($oldCurrentTask, $revision), TaskEvent::PLANNED);
-                $this->dispatchEvent($this->createTaskEvent($orderTaskCurrent, $revision), TaskEvent::PROGRESS);
-            }
-
             $revision->setTaskPlanned($this->taskRepository->findTasksByIds($orderedTaskIds));
-
             $this->revisionRepository->save($revision);
         });
         $transaction($revisionId);
@@ -288,10 +277,13 @@ final class TaskManager
         return function (int $revisionId) use ($execute) {
             try {
                 $revision = $this->revisionRepository->findOneById($revisionId);
+
+                if (!$revision->tasksEnabled()) {
+                    throw new \RuntimeException(\sprintf('Tasks not enabled for revision %d', $revisionId));
+                }
+
                 $this->dataService->lockRevision($revision);
-
                 $result = $execute($revision);
-
                 $this->dataService->unlockRevision($revision);
 
                 return $result;

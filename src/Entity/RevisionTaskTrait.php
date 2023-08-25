@@ -29,6 +29,11 @@ trait RevisionTaskTrait
      */
     private ?array $taskApprovedIds = [];
 
+    public function tasksEnabled(): bool
+    {
+        return $this->isCurrent() && $this->giveContentType()->tasksEnabled();
+    }
+
     public function addTask(Task $task): void
     {
         if (null === $this->taskCurrent) {

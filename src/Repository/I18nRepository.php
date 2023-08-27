@@ -29,8 +29,7 @@ class I18nRepository extends ServiceEntityRepository
             ->setParameter('identifier', '%'.$identifier.'%');
         }
 
-        return $qb->getQuery()
-        ->getSingleScalarResult();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**

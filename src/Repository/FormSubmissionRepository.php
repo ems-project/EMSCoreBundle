@@ -66,7 +66,7 @@ class FormSubmissionRepository extends ServiceEntityRepository
         $qb->select('count(fs.id)');
         $this->addSearchFilters($qb, $searchValue);
 
-        return $qb->getQuery()->getSingleScalarResult();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     public function removeAllOutdatedSubmission(): int

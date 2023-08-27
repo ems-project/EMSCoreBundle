@@ -40,7 +40,7 @@ final class TaskRepository extends ServiceEntityRepository
         $qb = $this->getTableQueryBuilder($searchValue, $context);
         $qb->select('count(r.id)');
 
-        return $qb->getQuery()->getSingleScalarResult();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**

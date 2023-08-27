@@ -68,7 +68,7 @@ abstract class EntityService
     public function create(object $entity): void
     {
         $repository = $this->getRepository();
-        $count = $repository->createQueryBuilder('a')
+        $count = (int) $repository->createQueryBuilder('a')
             ->select('COUNT(a)')
             ->getQuery()
             ->getSingleScalarResult();

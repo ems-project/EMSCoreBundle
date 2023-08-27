@@ -147,6 +147,6 @@ final class ReleaseRepository extends ServiceEntityRepository
                 'status' => Release::WIP_STATUS,
             ]);
 
-        return $qb->getQuery()->getSingleScalarResult();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 }

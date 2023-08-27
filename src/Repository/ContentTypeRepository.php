@@ -59,10 +59,10 @@ class ContentTypeRepository extends EntityRepository
      */
     public function countContentType(): int
     {
-        return $this->createQueryBuilder('a')
+        return (int) $this->createQueryBuilder('a')
          ->select('COUNT(a)')
          ->getQuery()
-         ->getSingleScalarResult() ?? 0;
+         ->getSingleScalarResult();
     }
 
     /**
@@ -70,10 +70,10 @@ class ContentTypeRepository extends EntityRepository
      */
     public function nextOrderKey(): int
     {
-        $max = $this->createQueryBuilder('a')
+        $max = (int) $this->createQueryBuilder('a')
          ->select('max(a.orderKey)')
          ->getQuery()
-         ->getSingleScalarResult() ?? 0;
+         ->getSingleScalarResult();
 
         return $max + 1;
     }
@@ -85,7 +85,7 @@ class ContentTypeRepository extends EntityRepository
         $this->addSearchFilters($qb, $searchValue);
 
         try {
-            return \intval($qb->getQuery()->getSingleScalarResult());
+            return (int) $qb->getQuery()->getSingleScalarResult();
         } catch (NonUniqueResultException) {
             return 0;
         }

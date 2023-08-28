@@ -84,7 +84,7 @@ class DashboardController extends AbstractController
             return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
         }
 
-        return $this->render($create ? "@$this->templateNamespace/dashboard/add.html.twig" : "@$this->templateNamespace/dashboard/edit.html.twig'", [
+        return $this->render($create ? "@$this->templateNamespace/dashboard/add.html.twig" : "@$this->templateNamespace/dashboard/edit.html.twig", [
             'form' => $form->createView(),
             'dashboard' => $dashboard,
         ]);

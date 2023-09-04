@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Common;
 
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 
 final class DocumentInfo
@@ -29,6 +30,15 @@ final class DocumentInfo
                     return $revision;
                 }
             }
+        }
+
+        return null;
+    }
+
+    public function getDefaultEnvironment(): ?Environment
+    {
+        foreach ($this->revisions as $revision) {
+            return $revision->giveContentType()->giveEnvironment();
         }
 
         return null;

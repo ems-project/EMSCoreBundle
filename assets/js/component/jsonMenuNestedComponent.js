@@ -30,7 +30,11 @@ export default class JsonMenuNestedComponent {
 
             this.#loadParentIds = json.load_parent_ids;
             this.#tree.innerHTML = json.tree;
-            this._sortables();
+            this.#element.dispatchEvent(new CustomEvent('jmn-load', {detail: {
+                jnm: this,
+                data: json,
+                elements: this._sortables(),
+            }}));
             this.loading(false);
         });
     }
@@ -41,7 +45,15 @@ export default class JsonMenuNestedComponent {
         return this._post(`/item/${itemId}/add`, { 'position': position, 'add': add });
     }
     itemDelete(nodeId) {
-        return this._post(`/item/${nodeId}/delete`);
+        const promise = this._post(`/item/${nodeId}/delete`);
+        const self = this;
+        promise.then(() => {
+            self.#element.dispatchEvent(new CustomEvent('jmn-delete', {detail: {
+                jnm: self,
+                nodeId: nodeId,
+            }}));
+        })
+        return promise;
     }
     loading(flag) {
         const element = this.#element.querySelector('.jmn-node-loading');
@@ -61,13 +73,13 @@ export default class JsonMenuNestedComponent {
         }, true);
     }
     _onClickButtonAdd(element, itemId) {
-        this._ajaxModal(element, `/item/${itemId}/modal-add/${element.dataset.add}`);
+        this._ajaxModal(element, `/item/${itemId}/modal-add/${element.dataset.add}`, 'jmn-add');
     }
     _onClickButtonEdit(element, itemId) {
-        this._ajaxModal(element, `/item/${itemId}/modal-edit`);
+        this._ajaxModal(element, `/item/${itemId}/modal-edit`, 'jmn-edit');
     }
     _onClickButtonView(element, itemId) {
-        this._ajaxModal(element, `/item/${itemId}/modal-view`);
+        this._ajaxModal(element, `/item/${itemId}/modal-view`, 'jmn-view');
     }
     _onClickButtonDelete(nodeId) {
         this.itemDelete(nodeId).then(() => { this.load(); });
@@ -126,9 +138,11 @@ export default class JsonMenuNestedComponent {
             onEnd: (event) => { return this._onMoveEnd(event) },
         }
 
-        this.#element.querySelectorAll('.jmn-sortable').forEach((element) => {
+        const sortables =  this.#element.querySelectorAll('.jmn-sortable');
+        sortables.forEach((element) => {
             this.#sortableLists[element.id] = Sortable.create(element, options);
         });
+        return sortables;
     }
     _onMove(event) {
         const dragged = event.dragged;
@@ -173,7 +187,7 @@ export default class JsonMenuNestedComponent {
                 });
         }
     }
-    _ajaxModal(element, path) {
+    _ajaxModal(element, path, eventType) {
         let activeItemId = null;
         const modalSize = element.dataset.modalSize ?? this.modalSize;
 
@@ -186,6 +200,12 @@ export default class JsonMenuNestedComponent {
             if (!json.hasOwnProperty('success') || !json.success) return;
             if (json.hasOwnProperty('load')) this.#loadParentIds.push(json.load);
             if (json.hasOwnProperty('item')) activeItemId = json.item;
+
+            this.#element.dispatchEvent(new CustomEvent(eventType, {detail: {
+                jnm: this,
+                data: json,
+                activeItemId: activeItemId,
+            }}));
         });
         ajaxModal.modal.addEventListener('ajax-modal-close', handlerClose)
     }

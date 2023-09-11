@@ -97,6 +97,10 @@ class IndexedAssetFieldType extends DataFieldType
                             EmsFields::CONTENT_FILE_NAME_FIELD => $this->elasticsearchService->getIndexedStringMapping(),
                             EmsFields::CONTENT_FILE_SIZE_FIELD => $this->elasticsearchService->getLongMapping(),
                             '_content' => $mapping[$current->getName()],
+                            '_author' => $mapping[$current->getName()],
+                            '_title' => $mapping[$current->getName()],
+                            '_date' => $this->elasticsearchService->getDateTimeMapping(),
+                            '_language' => $this->elasticsearchService->getKeywordMapping(),
                     ],
             ],
         ];

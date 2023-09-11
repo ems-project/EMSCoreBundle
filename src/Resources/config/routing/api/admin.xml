@@ -22,6 +22,9 @@
     <route id="emsco_api_content_type" path="/content-types"
            controller="EMS\CoreBundle\Controller\Api\Admin\MetaController::contentTypes"
            methods="GET"/>
+    <route id="emsco_api_get_versions" path="/versions"
+           controller="EMS\CoreBundle\Controller\Api\Admin\InfoController::versions"
+           methods="GET"/>
     <route id="emsco_api_job_status" path="/job-status/{job}"
            controller="EMS\CoreBundle\Controller\Api\Admin\EntitiesController::jobStatus"
            methods="GET"

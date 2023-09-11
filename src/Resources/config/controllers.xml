@@ -15,6 +15,10 @@
             <argument type="service" id="ems.service.contenttype" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Api\Admin\InfoController">
+            <argument type="service" id="ems_common.composer.info" />
+            <tag name="controller.service_arguments"/>
+        </service>
 
         <!-- Api\File -->
         <service id="EMS\CoreBundle\Controller\Api\File\ExtractDataController">

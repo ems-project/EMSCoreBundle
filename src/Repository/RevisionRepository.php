@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder as DBALQueryBuilder;
 use Doctrine\DBAL\Types\Types;
@@ -789,29 +790,34 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
-     * @return Revision[]
+     * @return array<string, Revision[]>
      */
-    public function findAllPublishedRevision(EMSLink $documentLink): array
+    public function findAllPublishedRevision(EMSLink ...$emsIds): array
     {
+        $emsIds = \array_map(static fn (EMSLink $link) => $link->getEmsId(), $emsIds);
+
         $qb = $this->createQueryBuilder('r');
-        $qb->join('r.contentType', 'c');
-        $qb->join('r.environments', 'e');
+        $qb
+            ->addSelect('c')
+            ->addSelect('e')
+            ->join('r.contentType', 'c')
+            ->join('r.environments', 'e')
+            ->andWhere($qb->expr()->eq('c.active', $qb->expr()->literal(true)))
+            ->andWhere($qb->expr()->eq('c.deleted', $qb->expr()->literal(false)))
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
+            ->andWhere($qb->expr()->isNotNull('e.id'))
+            ->andWhere('CONCAT(c.name, \':\', r.ouuid) in (:ems_ids)')
+            ->setParameter('ems_ids', $emsIds, ArrayParameterType::STRING);
 
-        $qb->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'));
-        $qb->andWhere($qb->expr()->eq('c.name', ':contentType'));
-        $qb->andWhere($qb->expr()->eq('c.deleted', ':false'));
-        $qb->andWhere($qb->expr()->eq('c.active', ':true'));
-        $qb->andWhere($qb->expr()->eq('r.deleted', ':false'));
-        $qb->andWhere($qb->expr()->isNotNull('e.id'));
+        /** @var Revision[] $revisions */
+        $revisions = $qb->getQuery()->getResult();
+        $publishedRevisions = [];
 
-        $qb->setParameters([
-            'ouuid' => $documentLink->getOuuid(),
-            'contentType' => $documentLink->getContentType(),
-            'true' => true,
-            'false' => false,
-        ]);
+        foreach ($revisions as $revision) {
+            $publishedRevisions[$revision->getEmsId()][] = $revision;
+        }
 
-        return $qb->getQuery()->execute();
+        return $publishedRevisions;
     }
 
     /**

@@ -254,6 +254,7 @@ import JsonMenuNestedComponent from "./component/jsonMenuNestedComponent";
         window.jsonMenuNestedComponents = [];
         [].forEach.call(elements, function (element) {
             const component = new JsonMenuNestedComponent(element);
+            if (component.id in window.jsonMenuNestedComponents) throw new Error(`duplicate id : ${component.id}`);
             window.jsonMenuNestedComponents[component.id] = component;
         });
     }

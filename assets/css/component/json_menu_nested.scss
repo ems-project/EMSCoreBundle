@@ -1,3 +1,5 @@
+@import "../mixins";
+
 .json-menu-nested-component {
     --jmn-color-bg: #F0F0F0;
     --jmn-color-border: #d7d7d7;
@@ -22,6 +24,12 @@
         color: var(--jmn-color-border);
         text-align: center;
         font-size: 1em;
+    }
+
+    .jmn-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .jmn-wrapper {
@@ -93,7 +101,7 @@
     }
     .jmn-cell {
         justify-content: flex-end;
-        align-items: flex-start;
+        align-items: center;
         gap: var(--jmn-gap);
     }
 
@@ -125,28 +133,24 @@
         background-color: white;
     }
 
+    .jmn-dropdown { @include iconAfter("\f0d7"); }
+    .jmn-dropdown-add { @include iconBefore("\f067"); }
+    .jmn-dropdown-more { @include iconBefore("\f142", 0); }
+
     .jmn-btn-move {
         cursor: move;
-        &::before {
-            font-family: FontAwesome, serif;
-            font-weight: 400;
-            content: "\f047";
-            padding-right: 5px;
-        }
+        @include iconBefore("\f047");
     }
     .jmn-btn-collapse {
         padding: 0;
         border: none;
-        &[aria-expanded="true"]::after {
-            font-family: FontAwesome, serif;
-            font-weight: 400;
-            content: "\f077";
-        }
-        &[aria-expanded="false"]::after {
-            font-family: FontAwesome, serif;
-            font-weight: 400;
-            content: "\f078";
-        }
+        &[aria-expanded="true"]::after { @include icon("\f077"); }
+        &[aria-expanded="false"]::after { @include icon("\f078"); }
+    }
+    .jmn-badge {
+        padding: 5px 10px;
+        border-radius: 10px;
+        line-height: normal;
     }
 }
 

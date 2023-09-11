@@ -13,8 +13,11 @@ class JsonMenuNestedTemplateFactory
     {
     }
 
-    public function create(JsonMenuNestedConfig $config): JsonMenuNestedTemplate
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function create(JsonMenuNestedConfig $config, array $context = []): JsonMenuNestedTemplate
     {
-        return new JsonMenuNestedTemplate($config, $this->twig);
+        return new JsonMenuNestedTemplate($config, $this->twig, $context);
     }
 }

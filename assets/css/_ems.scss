@@ -171,3 +171,7 @@ div.core-js-progress {
 div.dataTables_scroll {
   margin-bottom: 10px;
 }
+
+button > * {
+  pointer-events: none; /* icons clickable inside button, js using event.target */
+}

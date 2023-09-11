@@ -80,4 +80,16 @@ class RevisionRuntime implements RuntimeExtensionInterface
             return null;
         }
     }
+
+    /**
+     * @param string[] $documentLinks
+     *
+     * @return DocumentInfo[]
+     */
+    public function getDocumentsInfo(array $documentLinks): array
+    {
+        $documentLinks = \array_map(static fn (string $documentLink) => EMSLink::fromText($documentLink), $documentLinks);
+
+        return $this->revisionService->getDocumentsInfo(...$documentLinks);
+    }
 }

@@ -43,7 +43,12 @@ class JsonMenuNestedController
     {
         $data = Json::decode($request->getContent());
 
-        return new JsonResponse($this->jsonMenuNestedService->render($config, $data));
+        return new JsonResponse($this->jsonMenuNestedService->render(
+            $config,
+            $data['active_item_id'] ?? null,
+            $data['load_children_id'] ?? null,
+            ...$data['load_parent_ids'] ?? []
+        ));
     }
 
     public function item(JsonMenuNestedConfig $config, string $itemId): JsonResponse
@@ -135,7 +140,6 @@ class JsonMenuNestedController
                 ->setBlockTitle('jmn_modal_title')
                 ->setBlockBody('jmn_modal_form')
                 ->setBlockFooter('jmn_modal_footer_form')
-
                 ->render([
                     'action' => 'edit',
                     'form' => $form->createView(),
@@ -146,6 +150,29 @@ class JsonMenuNestedController
         } catch (JsonMenuNestedException|JsonMenuNestedConfigException $e) {
             return $this->responseWarningModal($e->getMessage());
         }
+    }
+
+    public function itemModalCustom(JsonMenuNestedConfig $config, string $itemId, string $modalName): JsonResponse
+    {
+        if (null === $template = $config->template) {
+            throw new \RuntimeException('No template defined');
+        }
+
+        $item = $config->jsonMenuNested->giveItemById($itemId);
+        $node = $config->nodes->getByType($item->getType());
+
+        return new JsonResponse($this->ajaxService
+            ->ajaxModalTemplate($template)
+            ->setBlockTitle($modalName.'_title')
+            ->setBlockBody($modalName.'_body')
+            ->setBlockFooter($modalName.'_footer')
+            ->render([
+                'config' => $config,
+                'menu' => $config->jsonMenuNested,
+                'node' => $node,
+                'item' => $item,
+            ])
+        );
     }
 
     public function itemModalView(JsonMenuNestedConfig $config, string $itemId): JsonResponse

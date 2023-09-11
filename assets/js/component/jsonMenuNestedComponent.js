@@ -45,15 +45,12 @@ export default class JsonMenuNestedComponent {
         return this._post(`/item/${itemId}/add`, { 'position': position, 'add': add });
     }
     itemDelete(nodeId) {
-        const promise = this._post(`/item/${nodeId}/delete`);
-        const self = this;
-        promise.then(() => {
-            self.#element.dispatchEvent(new CustomEvent('jmn-delete', {detail: {
-                jnm: self,
+        return this._post(`/item/${nodeId}/delete`).then(() => {
+            this.#element.dispatchEvent(new CustomEvent('jmn-delete', {detail: {
+                jnm: this,
                 nodeId: nodeId,
             }}));
-        })
-        return promise;
+        });
     }
     loading(flag) {
         const element = this.#element.querySelector('.jmn-node-loading');
@@ -64,12 +61,14 @@ export default class JsonMenuNestedComponent {
         this.#element.addEventListener('click', (event) => {
             const element = event.target;
             const node = element.parentElement.closest('.jmn-node');
-            const nodeId = node ? node.dataset.id : '_root';
+            const itemId = node ? node.dataset.id : '_root';
 
-            if (element.classList.contains('jmn-btn-add')) this._onClickButtonAdd(element, nodeId);
-            if (element.classList.contains('jmn-btn-edit')) this._onClickButtonEdit(element, nodeId);
-            if (element.classList.contains('jmn-btn-view')) this._onClickButtonView(element, nodeId);
-            if (element.classList.contains('jmn-btn-delete')) this._onClickButtonDelete(nodeId);
+            if (element.classList.contains('jmn-btn-add')) this._onClickButtonAdd(element, itemId);
+            if (element.classList.contains('jmn-btn-edit')) this._onClickButtonEdit(element, itemId);
+            if (element.classList.contains('jmn-btn-view')) this._onClickButtonView(element, itemId);
+            if (element.classList.contains('jmn-btn-delete')) this._onClickButtonDelete(itemId);
+
+            if (element.dataset.hasOwnProperty('jmnModalCustom')) this._onClickModalCustom(element, itemId);
         }, true);
     }
     _onClickButtonAdd(element, itemId) {
@@ -81,8 +80,12 @@ export default class JsonMenuNestedComponent {
     _onClickButtonView(element, itemId) {
         this._ajaxModal(element, `/item/${itemId}/modal-view`, 'jmn-view');
     }
-    _onClickButtonDelete(nodeId) {
-        this.itemDelete(nodeId).then(() => { this.load(); });
+    _onClickButtonDelete(itemId) {
+        this.itemDelete(itemId).then(() => { this.load(); });
+    }
+    _onClickModalCustom(element, itemId) {
+        const modalCustomName = element.dataset.jmnModalCustom;
+        this._ajaxModal(element, `/item/${itemId}/modal-custom/${modalCustomName}`, 'jmn-modal-custom');
     }
     _onClickButtonCollapse(button, longPressed = false) {
         const expanded = button.getAttribute('aria-expanded');
@@ -169,7 +172,7 @@ export default class JsonMenuNestedComponent {
                 fromParentId: fromParentId,
                 toParentId: toParentId,
                 position: position
-            }).finally(() => targetComponent.load(itemId) );
+            }).finally(() => targetComponent.load({ activeItemId: itemId }));
         } else {
             fromComponent.itemGet(itemId)
                 .then((json) => {
@@ -182,7 +185,7 @@ export default class JsonMenuNestedComponent {
                 })
                 .catch(() => {})
                 .finally(() => {
-                    targetComponent.load(itemId);
+                    targetComponent.load({ activeItemId: itemId });
                     fromComponent.load();
                 });
         }

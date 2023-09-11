@@ -253,7 +253,25 @@ class RevisionService implements RevisionServiceInterface
 
     public function getDocumentInfo(EMSLink $documentLink): DocumentInfo
     {
-        return new DocumentInfo($documentLink, $this->revisionRepository->findAllPublishedRevision($documentLink));
+        $publishedRevisions = $this->revisionRepository->findAllPublishedRevision($documentLink);
+        $revisions = $publishedRevisions[$documentLink->getEmsId()] ?? [];
+
+        return new DocumentInfo($documentLink, $revisions);
+    }
+
+    /**
+     * @return array<string, DocumentInfo>
+     */
+    public function getDocumentsInfo(EMSLink ...$documentLinks): array
+    {
+        $publishedRevisions = $this->revisionRepository->findAllPublishedRevision(...$documentLinks);
+
+        $documentsInfo = [];
+        foreach ($publishedRevisions as $emsId => $revisions) {
+            $documentsInfo[$emsId] = new DocumentInfo(EMSLink::fromText($emsId), $revisions);
+        }
+
+        return $documentsInfo;
     }
 
     /**

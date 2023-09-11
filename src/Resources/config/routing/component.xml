@@ -29,6 +29,13 @@
         <requirement key="hash">.*</requirement>
         <requirement key="itemId">.*</requirement>
     </route>
+    <route id="emsco.json_menu_nested.item_modal_custom" path="/json-menu-nested/{hash}/item/{itemId}/modal-custom/{modalName}"
+           controller="EMS\CoreBundle\Controller\Component\JsonMenuNestedController::itemModalCustom"
+           methods="GET">
+        <requirement key="hash">.*</requirement>
+        <requirement key="itemId">.*</requirement>
+        <requirement key="modalName">.*</requirement>
+    </route>
     <route id="emsco.json_menu_nested.item_add" path="/json-menu-nested/{hash}/item/{itemId}/add"
            controller="EMS\CoreBundle\Controller\Component\JsonMenuNestedController::itemAdd"
            methods="POST">

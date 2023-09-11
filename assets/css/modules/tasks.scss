@@ -1,13 +1,5 @@
 @import "~font-awesome/scss/_mixins.scss";
-
-@mixin iconBefore($unicode, $marginRight : 5px) {
-  &::before {
-    font-family: FontAwesome, serif;
-    font-weight: 400;
-    content: $unicode;
-    margin-right: $marginRight;
-  }
-}
+@import "../mixins.scss";
 
 div#ajax-modal {
   .timeline {

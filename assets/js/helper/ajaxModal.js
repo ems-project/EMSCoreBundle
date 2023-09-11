@@ -1,5 +1,6 @@
 import {editRevisionEventListeners} from "../editRevisionEventListeners";
 import {tooltipDataLinks} from "./tooltip";
+import Datatables from "../module/datatables";
 
 class AjaxModal {
     constructor(selector) {
@@ -139,6 +140,8 @@ class AjaxModal {
             this.$modal.find(':input').each(function () {
                 $(this).addClass('ignore-ems-update');
             });
+            // this.modal = document.querySelector(this.selector);
+           new Datatables(this.modal);
         }
         if (json.hasOwnProperty('modalFooter')) {
             this.$modal.find('.ajax-modal-footer').html(json.modalFooter);

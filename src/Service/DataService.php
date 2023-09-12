@@ -1348,43 +1348,49 @@ class DataService
     /**
      * @throws \Exception
      */
-    public function updateDataStructure(FieldType $meta, DataField $dataField): void
+    public function updateDataStructure(FieldType $meta, DataField $dataField, int $parentKey = 0): void
     {
-        // no need to generate the structure for subfields
-        $isContainer = true;
-
-        if (null !== $dataField->getFieldType()) {
-            $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
-
-            if ($dataFieldType instanceof DataFieldType) {
-                $isContainer = $dataFieldType->isContainer();
-            } elseif (!DataService::isInternalField($dataField->getFieldType()->getName())) {
-                $this->logger->warning('service.data.not_a_data_field', [
-                    'field_name' => $dataField->getFieldType()->getName(),
-                ]);
-            }
+        if (null === $fieldType = $dataField->getFieldType()) {
+            return;
         }
 
-        if ($isContainer) {
-            /** @var FieldType $field */
-            foreach ($meta->getChildren() as $key => $field) {
-                // no need to generate the structure for delete field
-                if (!$field->getDeleted()) {
-                    $child = $dataField->__get('ems_'.$field->getName());
-                    if (null == $child) {
-                        $child = new DataField();
-                        $child->setFieldType($field);
-                        $child->setOrderKey($field->getOrderKey());
-                        $child->setParent($dataField);
-                        $dataField->addChild($child, $key);
-                        if (isset($field->getDisplayOptions()['defaultValue'])) {
-                            $child->setEncodedText($field->getDisplayOptions()['defaultValue']);
-                        }
-                    }
-                    if (0 != \strcmp($field->getType(), CollectionFieldType::class)) {
-                        $this->updateDataStructure($field, $child);
-                    }
-                }
+        $dataFieldType = $this->formRegistry->getType($fieldType->getType())->getInnerType();
+        if (!$dataFieldType instanceof DataFieldType && !self::isInternalField($fieldType->getName())) {
+            $this->logger->warning('service.data.not_a_data_field', ['field_name' => $fieldType->getName()]);
+
+            return;
+        }
+
+        if ($dataFieldType instanceof DataFieldType && !$dataFieldType::isContainer()) {
+            return;
+        }
+
+        foreach ($meta->getChildren() as $key => $field) {
+            if ($field->getDeleted() || null !== $dataField->__get('ems_'.$field->getName())) {
+                continue;
+            }
+
+            if (FormFieldType::class === $field->getType()) {
+                /** @var FormFieldType $formFieldType */
+                $formFieldType = $this->formRegistry->getType($field->getType())->getInnerType();
+                $formMeta = $formFieldType->getReferredFieldType($field);
+
+                $this->updateDataStructure($formMeta, $dataField, $key);
+                continue;
+            }
+
+            $child = new DataField();
+            $child->setFieldType($field);
+            $child->setOrderKey($field->getOrderKey());
+            $child->setParent($dataField);
+            $dataField->addChild($child, $parentKey + $key);
+
+            if (isset($field->getDisplayOptions()['defaultValue'])) {
+                $child->setEncodedText($field->getDisplayOptions()['defaultValue']);
+            }
+
+            if (CollectionFieldType::class !== $field->getType()) {
+                $this->updateDataStructure($field, $child);
             }
         }
     }
@@ -1444,7 +1450,6 @@ class DataService
         $data->setRawData($revision->getRawData());
         $revision->setDataField($data);
         $this->updateDataStructure($revision->giveContentType()->getFieldType(), $data);
-        // $revision->getDataField()->updateDataStructure($this->formRegistry, $revision->getContentType()->getFieldType());
         $object = $revision->getRawData();
         $this->updateDataValue($data, $object);
         unset($object[Mapping::CONTENT_TYPE_FIELD]);

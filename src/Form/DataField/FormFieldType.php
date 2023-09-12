@@ -177,7 +177,7 @@ class FormFieldType extends DataFieldType
         ];
     }
 
-    private function getReferredFieldType(FieldType $fieldType): FieldType
+    public function getReferredFieldType(FieldType $fieldType): FieldType
     {
         $formName = $fieldType->getDisplayOption('form');
 

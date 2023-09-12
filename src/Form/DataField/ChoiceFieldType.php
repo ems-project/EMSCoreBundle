@@ -102,7 +102,7 @@ class ChoiceFieldType extends DataFieldType
                 'empty_data' => $options['multiple'] ? [] : null,
                 'multiple' => $options['multiple'],
                 'expanded' => $options['expanded'],
-                'placeholder' => $options['placeholder'],
+                'placeholder' => $options['placeholder'] ?? '',
                 'choice_attr' => $this->choiceAttr(...),
         ]);
     }

@@ -156,6 +156,16 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     /**
      * {@inheritDoc}
      */
+    public function importData(DataField $dataField, float|int|bool|array|string|null $sourceArray, bool $isMigration): array
+    {
+        parent::importData($dataField, $sourceArray, $isMigration);
+
+        return self::getJsonNames($dataField->giveFieldType());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public static function isVirtual(array $option = []): bool
     {
         return true;

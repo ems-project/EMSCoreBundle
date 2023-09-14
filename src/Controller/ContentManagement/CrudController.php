@@ -40,6 +40,10 @@ class CrudController extends AbstractController
 
         try {
             $newRevision = $this->dataService->createData($ouuid, $rawdata, $contentType);
+
+            if ($request->query->getBoolean('refresh')) {
+                $this->dataService->refresh($newRevision->giveContentType()->giveEnvironment());
+            }
         } catch (\Exception $e) {
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
@@ -358,6 +362,10 @@ class CrudController extends AbstractController
             $draft = $this->dataService->replaceData($revision, $rawData, $replaceOrMerge);
         }
         $newRevision = $this->dataService->finalizeDraft($draft);
+
+        if ($request->query->getBoolean('refresh')) {
+            $this->dataService->refresh($draft->giveContentType()->giveEnvironment());
+        }
 
         return new JsonResponse([
             'success' => !$newRevision->getDraft(),

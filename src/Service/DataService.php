@@ -706,6 +706,11 @@ class DataService
         return $form;
     }
 
+    public function refresh(Environment $environment): bool
+    {
+        return $this->elasticaService->refresh($environment->getAlias());
+    }
+
     /**
      * @throws DataStateException
      * @throws \Exception

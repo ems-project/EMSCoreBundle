@@ -23,9 +23,14 @@ final class FlashMessageLogger extends AbstractProcessingHandler
      */
     protected function write(array $record): void
     {
-        $currentRequest = $this->requestStack->getCurrentRequest();
+        if (null === $currentRequest = $this->requestStack->getCurrentRequest()) {
+            return;
+        }
 
-        if (null === $currentRequest || $record['level'] < Logger::NOTICE) {
+        $headers = $currentRequest->headers;
+        $logLevel = $headers->has('x-log-level') ? (int) $headers->get('x-log-level') : Logger::NOTICE;
+
+        if ($record['level'] < $logLevel) {
             return;
         }
 

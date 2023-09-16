@@ -89,12 +89,12 @@
         <service id="emsco.twig_components.json_menu_nested" class="EMS\CoreBundle\Twig\Components\JsonMenuNestedComponent">
             <argument type="service" id="emsco.core.json_menu_nested.config_factory" />
             <argument type="service" id="emsco.core.json_menu_nested.template_factory" />
-            <tag name="twig.component" key="json_menu_nested" template="@EMSCore/components/json_menu_nested/component.html.twig"  />
+            <tag name="twig.component" key="json_menu_nested" template="@%ems_core.template_namespace%/components/json_menu_nested/component.html.twig"  />
         </service>
         <service id="emsco.twig_components.media_library" class="EMS\CoreBundle\Twig\Components\MediaLibraryComponent">
             <argument type="service" id="emsco.core.media_library.config_factory" />
             <argument type="service" id="emsco.core.media_library.template_factory" />
-            <tag name="twig.component" key="media_library" template="@EMSCore/components/media_library/component.html.twig"  />
+            <tag name="twig.component" key="media_library" template="@%ems_core.template_namespace%/components/media_library/component.html.twig"  />
         </service>
 
         <service id="ems.twig.runtime.form" class="EMS\CoreBundle\Twig\FormRuntime">

@@ -25,6 +25,7 @@
         </service>
         <service id="emsco.core.json_menu_nested.template_factory" class="EMS\CoreBundle\Core\Component\JsonMenuNested\Template\JsonMenuNestedTemplateFactory">
             <argument type="service" id="twig" />
+            <argument>%ems_core.template_namespace%</argument>
         </service>
         <service id="emsco.core.json_menu_nested" class="EMS\CoreBundle\Core\Component\JsonMenuNested\JsonMenuNestedService">
             <argument type="service" id="emsco.core.json_menu_nested.template_factory" />

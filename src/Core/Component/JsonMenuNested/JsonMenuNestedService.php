@@ -10,6 +10,7 @@ use EMS\CoreBundle\Core\Component\JsonMenuNested\Config\JsonMenuNestedConfig;
 use EMS\CoreBundle\Core\Component\JsonMenuNested\Config\JsonMenuNestedNode;
 use EMS\CoreBundle\Core\Component\JsonMenuNested\Template\Context\JsonMenuNestedRenderContext;
 use EMS\CoreBundle\Core\Component\JsonMenuNested\Template\JsonMenuNestedTemplateFactory;
+use EMS\CoreBundle\Core\UI\Modal\Modal;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\Helpers\Standard\Json;
@@ -33,10 +34,7 @@ class JsonMenuNestedService
         $menu = $config->jsonMenuNested;
         $renderContext = new JsonMenuNestedRenderContext($menu, $activeItemId, $loadChildrenId, ...$loadParentIds);
 
-        $template = $this->jsonMenuNestedTemplateFactory->create($config, [
-            'menu' => $menu,
-            'render' => $renderContext,
-        ]);
+        $template = $this->jsonMenuNestedTemplateFactory->create($config, ['render' => $renderContext]);
 
         return [
             'load_parent_ids' => $renderContext->getParentIds(),
@@ -60,7 +58,7 @@ class JsonMenuNestedService
     /**
      * @param array{add: array<mixed>, position?: int}|array<mixed> $data
      */
-    public function itemAdd(JsonMenuNestedConfig $config, string $itemId, array $data): void
+    public function itemAdd(JsonMenuNestedConfig $config, string $itemId, array $data): ?JsonMenuNested
     {
         $optionsResolver = new OptionsResolver();
         $optionsResolver
@@ -74,12 +72,18 @@ class JsonMenuNestedService
 
         $jsonMenuNested = $config->jsonMenuNested;
         $item = $jsonMenuNested->giveItemById($itemId);
-        $addChild = new JsonMenuNested($data['add']);
+        $addData = $data['add'];
 
-        if (!$jsonMenuNested->hasChild($addChild)) {
-            $item->addChild($addChild, $data['position'] ?? null);
-            $this->saveStructure($config);
+        $addChild = isset($addData['id']) ? new JsonMenuNested($addData) : JsonMenuNested::create($addData['type'], $addData['object']);
+
+        if ($jsonMenuNested->hasChild($addChild)) {
+            return null;
         }
+
+        $item->addChild($addChild, $data['position'] ?? null);
+        $this->saveStructure($config);
+
+        return $addChild;
     }
 
     /**
@@ -95,12 +99,32 @@ class JsonMenuNestedService
         $this->saveStructure($config);
     }
 
-    public function itemDelete(JsonMenuNestedConfig $config, string $itemId): void
+    public function itemDelete(JsonMenuNestedConfig $config, JsonMenuNested $item): void
     {
-        $item = $config->jsonMenuNested->giveItemById($itemId);
         $item->giveParent()->removeChild($item);
-
         $this->saveStructure($config);
+    }
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function itemModal(JsonMenuNestedConfig $config, JsonMenuNested $item, string $modalName, array $context = []): Modal
+    {
+        $context['item'] = $item;
+        $template = $this->jsonMenuNestedTemplateFactory->create($config, $context);
+
+        $blocks = [];
+        foreach (['title', 'body', 'footer'] as $block) {
+            if ($template->hasBlock($modalName.'_'.$block)) {
+                $blocks[$block] = $template->block($modalName.'_'.$block);
+            }
+        }
+
+        $modal = new Modal(...$blocks);
+        $modal->data['modalName'] = $modalName;
+        $modal->data['item'] = $item->getData();
+
+        return $modal;
     }
 
     /**

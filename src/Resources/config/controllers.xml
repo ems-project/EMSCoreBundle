@@ -54,7 +54,6 @@
         <!-- Component -->
         <service id="EMS\CoreBundle\Controller\Component\JsonMenuNestedController" public="true">
             <argument type="service" id="emsco.core.json_menu_nested"/>
-            <argument type="service" id="ems_core.core_ui.ajax_service"/>
             <argument type="service" id="EMS\CoreBundle\Service\DataService"/>
             <argument type="service" id="form.factory"/>
             <argument type="service" id="translator"/>

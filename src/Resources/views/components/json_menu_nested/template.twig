@@ -88,7 +88,7 @@
 {%- block jmn_cell_structure -%}
     {{ template.block('jmn_button_add', _context)|raw }}
     {{ template.block('jmn_button_item_move', _context)|raw }}
-    {{ template.block('jmn_button_more', _context)|raw }}
+    {{ template.block('jmn_button_item_more', _context)|raw }}
 {%- endblock jmn_cell_structure -%}
 
 {%- block jmn_item_title -%}
@@ -118,6 +118,24 @@
     </button>
 {%- endblock jmn_button_item_add -%}
 
+{%- block jmn_button_item_more -%}
+    {% set menuMore = template.block('jmn_button_item_more_menu', _context)|raw  %}
+    {% if menuMore|length > 0 %}
+        <div class="btn-group btn-group-sm">
+            <button type="button" class="btn btn-sm btn-default dropdown-toggle jmn-dropdown-more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+            <ul class="dropdown-menu pull-right">
+                {{ menuMore|raw }}
+            </ul>
+        </div>
+    {% endif %}
+{%- endblock jmn_button_item_more -%}
+
+{%- block jmn_button_item_more_menu -%}
+    <li>{{ template.block('jmn_button_item_view', _context)|raw }}</li>
+    <li>{{ template.block('jmn_button_item_edit', _context)|raw }}</li>
+    <li>{{ template.block('jmn_button_item_delete', _context)|raw }}</li>
+{%- endblock jmn_button_item_more_menu -%}
+
 {%- block jmn_button_add -%}
     {% set node = node|default(config.nodes.root) %}
     {% set addNodes = config.nodes.children(node) %}
@@ -141,54 +159,33 @@
     {% endfor %}
 {%- endblock jmn_button_add_menu -%}
 
-{%- block jmn_button_more -%}
-    {% set menuMore = template.block('jmn_button_more_menu', _context)|raw  %}
-    {% if menuMore|length > 0 %}
-    <div class="btn-group btn-group-sm">
-        <button type="button" class="btn btn-sm btn-default dropdown-toggle jmn-dropdown-more" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-        <ul class="dropdown-menu pull-right">
-            {{ menuMore|raw }}
-        </ul>
-    </div>
-    {% endif %}
-{%- endblock jmn_button_more -%}
-
-{%- block jmn_button_more_menu -%}
-    <li>{{ template.block('jmn_button_item_view', _context)|raw }}</li>
-    <li>{{ template.block('jmn_button_item_edit', _context)|raw }}</li>
-    <li>{{ template.block('jmn_button_item_delete', _context)|raw }}</li>
-{%- endblock jmn_button_more_menu -%}
-
 {%- block jmn_modal_title -%}
-    {% if node.icon %}<i class="{{ node.icon }}"></i>&nbsp;{% endif %}
-    {{ action|capitalize }} {{ node.type|capitalize }}
+    {% set modalTitle = modalTitle|default("#{action|capitalize} #{node.type|default('')|capitalize}") %}
+    {% if node.icon|default(false) %}<i class="{{ node.icon }}"></i>&nbsp;{% endif %}
+    {{ modalTitle }}
 {%- endblock jmn_modal_title -%}
 
-{%- block jmn_modal_form -%}
-    {{ form_start(form) }}
-    {{ form_widget(form.data) }}
-    {% if form._item_hash is defined %}{{ form_widget(form._item_hash) }}{% endif %}
-    {{ form_end(form) }}
-{%- endblock jmn_modal_form -%}
+{%- block jmn_modal_body -%}
+    {% if action == 'view' %}
+        {{ template.block('jmn_modal_view', _context)|raw }}
+    {% elseif form is defined %}
+        {{ form_start(form) }}
+        {{ form_widget(form.data) }}
+        {% if form._item_hash is defined %}{{ form_widget(form._item_hash) }}{% endif %}
+        {{ form_end(form) }}
+    {% endif %}
+{%- endblock jmn_modal_body -%}
 
-{%- block jmn_modal_footer_form -%}
+{%- block jmn_modal_footer -%}
     <div class="pull-right">
-        <button id="ajax-modal-submit" class="btn btn-sm btn-primary"><i class="fa fa-save"></i>&nbsp;Save</button>
+        {% if form is defined  %}
+            <button id="ajax-modal-submit" class="btn btn-sm btn-primary"><i class="fa fa-save"></i>&nbsp;Save</button>
+        {% endif %}
         <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cancel</button>
     </div>
-{%- endblock jmn_modal_footer_form -%}
+{%- endblock jmn_modal_footer -%}
 
-{%- block jmn_modal_preview -%}
-    {{ template.block('jmn_preview', _context)|raw }}
-{%- endblock jmn_modal_preview -%}
-
-{%- block jmn_modal_footer_close -%}
-    <div class="pull-right">
-        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
-    </div>
-{%- endblock jmn_modal_footer_close -%}
-
-{%- block jmn_preview -%}
+{%- block jmn_modal_view -%}
     {%- if dataFields -%}
         {%- import "@EMSCore/macros/data-field-type.html.twig" as macros -%}
         {{ macros.renderDataField(dataFields, rawData, false, []) }}
@@ -198,5 +195,4 @@
         {{- rawData|json_encode(constant('JSON_PRETTY_PRINT')) -}}
     </pre>
     {%- endif -%}
-{%- endblock jmn_preview -%}
-
+{%- endblock jmn_modal_view -%}

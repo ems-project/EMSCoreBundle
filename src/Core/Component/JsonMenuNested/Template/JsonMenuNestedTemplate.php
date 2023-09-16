@@ -15,21 +15,20 @@ class JsonMenuNestedTemplate
     private ?TemplateWrapper $configTemplate;
     public JsonMenuNestedTemplateContext $context;
 
-    public const TWIG_TEMPLATE = '@EMSCore/components/json_menu_nested/template.twig';
-
     /**
      * @param array<string, mixed> $context
      */
     public function __construct(
         private readonly JsonMenuNestedConfig $config,
         private readonly Environment $twig,
+        private readonly string $templateNamespace,
         array $context = []
     ) {
-        $this->template = $this->twig->load(self::TWIG_TEMPLATE);
+        $this->template = $this->twig->load("@$this->templateNamespace/components/json_menu_nested/template.twig");
         $this->configTemplate = $this->config->template ? $this->twig->load($this->config->template) : null;
 
         $this->context = new JsonMenuNestedTemplateContext([
-            ...['template' => $this, 'config' => $this->config],
+            ...['template' => $this, 'config' => $this->config, 'menu' => $this->config->jsonMenuNested],
             ...$this->config->context,
             ...$context,
         ]);

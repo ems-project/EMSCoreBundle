@@ -140,8 +140,7 @@ class AjaxModal {
             this.$modal.find(':input').each(function () {
                 $(this).addClass('ignore-ems-update');
             });
-            // this.modal = document.querySelector(this.selector);
-           new Datatables(this.modal);
+            editRevisionEventListeners(this.$modal);
         }
         if (json.hasOwnProperty('modalFooter')) {
             this.$modal.find('.ajax-modal-footer').html(json.modalFooter);
@@ -158,7 +157,6 @@ class AjaxModal {
 
         let modelForm = this.modal.querySelector('form');
         if (modelForm) {
-            editRevisionEventListeners(this.$modal.find('form'));
             modelForm.addEventListener('submit', (event) => {
                 ajaxModal.submitForm(url, callback);
                 event.preventDefault();

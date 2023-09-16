@@ -8,8 +8,10 @@ use Twig\Environment;
 
 class MediaLibraryTemplateFactory
 {
-    public function __construct(private readonly Environment $twig, private readonly string $templateNamespace)
-    {
+    public function __construct(
+        private readonly Environment $twig,
+        private readonly string $templateNamespace
+    ) {
     }
 
     public function create(MediaLibraryConfig $config): MediaLibraryTemplate

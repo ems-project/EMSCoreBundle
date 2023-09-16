@@ -9,8 +9,10 @@ use Twig\Environment;
 
 class JsonMenuNestedTemplateFactory
 {
-    public function __construct(private readonly Environment $twig)
-    {
+    public function __construct(
+        private readonly Environment $twig,
+        private readonly string $templateNamespace
+    ) {
     }
 
     /**
@@ -18,6 +20,6 @@ class JsonMenuNestedTemplateFactory
      */
     public function create(JsonMenuNestedConfig $config, array $context = []): JsonMenuNestedTemplate
     {
-        return new JsonMenuNestedTemplate($config, $this->twig, $context);
+        return new JsonMenuNestedTemplate($config, $this->twig, $this->templateNamespace, $context);
     }
 }

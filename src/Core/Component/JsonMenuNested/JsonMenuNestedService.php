@@ -65,7 +65,7 @@ class JsonMenuNestedService
             ->setRequired(['add'])
             ->setDefault('position', null)
             ->setAllowedTypes('add', 'array')
-            ->setAllowedTypes('position', 'int');
+            ->setAllowedTypes('position', ['null', 'int']);
 
         /** @var array{add: array<mixed>, position?: int} $data */
         $data = $optionsResolver->resolve($data);

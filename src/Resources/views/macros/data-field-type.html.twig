@@ -1023,30 +1023,80 @@
 {% endblock %}
 
 {% block EMS_CoreBundle_Form_DataField_JsonMenuNestedLinkFieldType %}
-	{%- set fieldOptions = dataField.fieldType.options.displayOptions -%}
+	{%- set doCompare = compare and dataField.rawData|json_encode is not same as( (attribute(compareRawData, dataField.fieldType.name) is defined?attribute(compareRawData, dataField.fieldType.name):null)|json_encode  )  -%}
+	{%- set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' -%}
+	{%- set displayOptions = dataField.fieldType.options.displayOptions -%}
+	{%- set jmnField = displayOptions.json_menu_nested_field|default(false) -%}
+	{%- set jmnQuery = displayOptions.query|default(false) -%}
+
+	{%- if jmnField and jmnQuery and dataField.rawData is not null -%}
+		{%- set hits = { index:  dataField.fieldType.contentType.environment.alias, body: jmnQuery}|search.hits.hits -%}
+		{%- set structures = [] -%}
+		{%- for h in hits -%}
+			{% set structures = structures|merge([{
+				'id': h._id,
+				'type': h._source._contenttype,
+				'label': h._source._contenttype,
+				'object': h._source|filter((v, k) => k != jmnField),
+				'children': attribute(h._source, jmnField)|default('{}')|json_decode
+			}]) %}
+		{%- endfor -%}
+		{%- set jmnMenu = structures|json_encode|ems_json_menu_nested_decode -%}
+		{%- set items = [] -%}
+		{%- for structure in jmnMenu.children -%}
+			{%- for item in structure -%}{%- set items = items|merge([item]) -%}{%- endfor -%}
+		{%- endfor -%}
+
+		{% if displayOptions.choices_template|default(false) %}
+			{% set choices = displayOptions.choices_template|generate_from_template({ 'items': items })|json_decode %}
+		{% else %}
+			{%- set choices = [] -%}
+			{%- for item in items -%}
+				{%- set label = item.path|map(p => p.label)|join(' > ') -%}
+				{%- set choices = choices|merge({ (label): item.id }) -%}
+			{%- endfor -%}
+		{% endif %}
+
+		{%- set choiceLabels = choices|default([])|keys -%}
+		{%- set choiceValues = choices|default([])|reduce( (carry, c) => carry|default([])|merge([c])) -%}
+	{%- endif -%}
 	<dl>
 		<dt>
-			{%- if dataField.fieldType.displayOptions.label is defined -%}
-				{{- dataField.fieldType.displayOptions.label -}}{%- if is_super() -%}({{- dataField.fieldType.name -}}){%- endif -%}
+			{%- if displayOptions.label is defined -%}
+				{{- displayOptions.label -}}{%- if is_super() -%}({{- dataField.fieldType.name -}}){%- endif -%}
 			{%- else -%}
 				{{- dataField.fieldType.name-}}
 			{%- endif -%}
 		</dt>
 		<dd>
-			<ul>
-				{%- set choices = {} -%}
-				{%- set labels = {} -%}
-				{%- set hits = {
-					index: dataField.fieldType.contentType.environment.alias,
-					body: dataField.fieldType.displayOptions.query|default('{}')
-				}|search.hits.hits -%}
-				{%- for h in hits -%}
-					{% set menu = attribute(h._source, fieldOptions.json_menu_nested_field|default())|default('{}')|ems_json_menu_nested_decode %}
-					{% set choices = menu.toArray()|map(i => i.id) %}
-					{% set labels = menu.toArray()|map(i => i.path|map(i => i.label)|join(' > ')) %}
-				{%- endfor -%}
-				{{ diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
-			</ul>
+			{%- if displayOptions.display_template|default(false) -%}
+				{%- set rawData = dataField.rawData -%}
+				{%- set data = choices|default([])|filter( (id, label) => rawData is iterable ? id in rawData : id == rawData) -%}
+
+				{%- if doCompare -%}
+					{%- set compareRawData = attribute(compareRawData, dataField.fieldType.name)|default(false) -%}
+					<div class="panel-body {{ color }}">
+						<div class="col-md-6 bg-gray-light">
+							{%- if compareRawData -%}
+								{%- set compareData = choices|default([])|filter( (id, label) => compareRawData is iterable ? id in compareRawData : id == compareRawData) -%}
+								{{- displayOptions.display_template|generate_from_template({ data: compareData, dataField: dataField, choices: choices })|raw -}}
+							{%- endif -%}
+						</div>
+						<div class="col-md-6 bg-gray-light">
+							{{- displayOptions.display_template|generate_from_template({ data: data, dataField: dataField, choices: choices })|raw -}}
+						</div>
+					</div>
+				{%- else -%}
+					{{- displayOptions.display_template|generate_from_template({ data: data, dataField: dataField, choices: choices|default([]) })|raw -}}
+				{%- endif -%}
+			{%- else -%}
+				{%- set diffChoice = diff_choice(dataField.rawData, choiceLabels|default([]), choiceValues|default([]), compare, dataField.fieldType.name, compareRawData) -%}
+				{%- if displayOptions.multiple|default(false) -%}
+					<ul>{{ diffChoice|raw }}</ul>
+				{%- else -%}
+					{{ diffChoice|raw }}
+				{%- endif -%}
+			{%- endif -%}
 		</dd>
 	</dl>
 	{{ _self.messages(dataField) }}

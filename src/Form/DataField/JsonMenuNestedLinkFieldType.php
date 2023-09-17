@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
-use EMS\CommonBundle\Json\Decoder;
+use EMS\CommonBundle\Elasticsearch\Response\Response;
 use EMS\CommonBundle\Json\JsonMenuNested;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\DataField;
@@ -10,6 +10,8 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Service\ElasticsearchService;
+use EMS\Helpers\Standard\Json;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -20,6 +22,7 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Environment;
 
 class JsonMenuNestedLinkFieldType extends DataFieldType
 {
@@ -28,7 +31,8 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
         private readonly ElasticaService $elasticaService,
-        private readonly Decoder $decoder
+        private readonly Environment $twig,
+        private readonly LoggerInterface $logger
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
@@ -67,53 +71,17 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     {
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
-        $choices = [];
-        $allowTypes = $options['json_menu_nested_types'];
 
-        if (null !== $contentType = $fieldType->getContentType()) {
-            $env = $contentType->getEnvironment();
-            $index = $env ? $env->getAlias() : null;
-        }
-
-        if (!isset($index)) {
-            return;
-        }
-
-        $search = $this->elasticaService->convertElasticsearchSearch([
-            'index' => $index,
-            'body' => $options['query'],
-        ]);
-
-        $isMigration = $options['migration'] ?? false;
-        $alreadyAssignedUuids = !$isMigration && $options['json_menu_nested_unique'] ?
-            $this->collectAlreadyAssignedJsonUuids($fieldType, $options['raw_data'] ?? []) : [];
-
-        $scroll = $this->elasticaService->scroll($search);
-        foreach ($scroll as $resultSet) {
-            foreach ($resultSet as $result) {
-                $json = $result->getSource()[$options['json_menu_nested_field']] ?? false;
-
-                if (!$json) {
-                    continue;
-                }
-
-                $menu = $this->decoder->jsonMenuNestedDecode($json);
-
-                foreach ($menu as $item) {
-                    if (\in_array($item->getId(), $alreadyAssignedUuids)) {
-                        continue;
-                    }
-
-                    if ((\is_countable($allowTypes) ? \count($allowTypes) : 0) > 0 && !\in_array($item->getType(), $allowTypes)) {
-                        continue;
-                    }
-
-                    $label = \implode(' > ', \array_map(fn (JsonMenuNested $p) => $p->getLabel(), $item->getPath()));
-
-                    $choices[$label] = $item->getId();
-                }
-            }
-        }
+        $choices = $this->buildChoices(
+            $fieldType,
+            jmnQuery: $options['query'],
+            jmnField: $options['json_menu_nested_field'],
+            jmnChoicesTemplate: $options['choices_template'],
+            jmnTypes: $options['json_menu_nested_types'] ?? [],
+            jmnUnique: $options['json_menu_nested_unique'],
+            rawData: $options['raw_data'] ?? [],
+            migration: $options['migration'] ?? false
+        );
 
         $builder->add('value', ChoiceType::class, [
             'label' => ($options['label'] ?? $fieldType->getName()),
@@ -152,6 +120,8 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
                 'json_menu_nested_field' => null,
                 'json_menu_nested_unique' => false,
                 'query' => null,
+                'choices_template' => null,
+                'display_template' => null,
             ])
             ->setNormalizer('json_menu_nested_types', fn (Options $options, $value) => \explode(',', (string) $value))
         ;
@@ -172,6 +142,8 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
             ->add('json_menu_nested_field', TextType::class, ['required' => true])
             ->add('json_menu_nested_unique', CheckboxType::class, ['required' => false])
             ->add('query', CodeEditorType::class, ['required' => false, 'language' => 'ace/mode/json'])
+            ->add('choices_template', CodeEditorType::class, ['required' => false, 'min-lines' => 10, 'language' => 'ace/mode/twig'])
+            ->add('display_template', CodeEditorType::class, ['required' => false, 'min-lines' => 10, 'language' => 'ace/mode/twig'])
         ;
 
         if ($optionsForm->has('mappingOptions')) {
@@ -257,28 +229,103 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     }
 
     /**
+     * @param string[]             $jmnTypes
+     * @param array<string, mixed> $rawData
+     *
+     * @return array<string, string>
+     */
+    private function buildChoices(
+        FieldType $fieldType,
+        ?string $jmnQuery = null,
+        ?string $jmnField = null,
+        ?string $jmnChoicesTemplate = null,
+        array $jmnTypes = [],
+        bool $jmnUnique = false,
+        array $rawData = [],
+        bool $migration = false
+    ): array {
+        if (null === $jmnQuery || null === $jmnField) {
+            return [];
+        }
+
+        $assignedUuids = !$migration && $jmnUnique ? $this->searchAssignedUuids($fieldType, $rawData) : [];
+
+        $index = $fieldType->giveContentType()->giveEnvironment()->getAlias();
+        $jmnMenu = $this->createJsonMenuNested($index, $jmnQuery, $jmnField);
+
+        $items = [];
+        foreach ($jmnMenu->getChildren() as $structure) {
+            foreach ($structure as $item) {
+                if (\in_array($item->getId(), $assignedUuids, true)) {
+                    continue;
+                }
+                if (\count($jmnTypes) > 0 && !\in_array($item->getType(), $jmnTypes, true)) {
+                    continue;
+                }
+                $items[] = $item;
+            }
+        }
+
+        if ($jmnChoicesTemplate) {
+            try {
+                $twigChoicesTemplate = $this->twig->createTemplate($jmnChoicesTemplate, $fieldType->getPath());
+
+                return Json::decode($twigChoicesTemplate->render(['items' => $items]));
+            } catch (\Throwable $error) {
+                $this->logger->error(\sprintf('Render choices template failed: "%s"', $error->getMessage()), [
+                    'trace' => $error->getTraceAsString(),
+                ]);
+            }
+        }
+
+        $choices = [];
+        foreach ($items as $item) {
+            $label = \implode(' > ', \array_map(static fn (JsonMenuNested $p) => $p->getLabel(), $item->getPath()));
+            $choices[$label] = $item->getId();
+        }
+
+        return $choices;
+    }
+
+    private function createJsonMenuNested(string $index, string $jmnQuery, string $jmnField): JsonMenuNested
+    {
+        $search = $this->elasticaService->convertElasticsearchSearch([
+            'size' => 5000,
+            'index' => $index,
+            'body' => $jmnQuery,
+        ]);
+
+        $structures = [];
+
+        $response = Response::fromArray($this->elasticaService->search($search)->getResponse()->getData());
+        foreach ($response->getDocuments() as $document) {
+            $source = $document->getSource();
+            $object = \array_filter($source, static fn ($key) => $key !== $jmnField, ARRAY_FILTER_USE_KEY);
+
+            $structures[] = [
+                'id' => $document->getId(),
+                'type' => $document->getContentType(),
+                'label' => $document->getContentType(),
+                'object' => $object,
+                'children' => Json::decode($source[$jmnField] ?? '{}'),
+            ];
+        }
+
+        return JsonMenuNested::fromStructure($structures);
+    }
+
+    /**
      * @param array<mixed> $rawData
      *
      * @return array<mixed>
      */
-    private function collectAlreadyAssignedJsonUuids(FieldType $fieldType, array $rawData): array
+    private function searchAssignedUuids(FieldType $fieldType, array $rawData): array
     {
         $search = $this->elasticaService->convertElasticsearchSearch([
             'size' => 500,
             'index' => $fieldType->giveContentType()->giveEnvironment()->getAlias(),
             '_source' => $fieldType->getName(),
-            'type' => $fieldType->giveContentType()->getName(),
-            'body' => [
-                'query' => [
-                    'bool' => [
-                        'must' => [
-                            [
-                                'exists' => ['field' => $fieldType->getName()],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
+            'body' => ['query' => ['exists' => ['field' => $fieldType->getName()]]],
         ]);
 
         $uuids = [];
@@ -286,10 +333,9 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         foreach ($scroll as $resultSet) {
             foreach ($resultSet as $result) {
                 $sourceValue = $result->getSource()[$fieldType->getName()] ?? null;
-
                 if ($sourceValue) {
                     $mergeValue = \is_array($sourceValue) ? $sourceValue : [$sourceValue];
-                    $uuids = \array_merge($uuids, $mergeValue);
+                    $uuids = [...$uuids, ...$mergeValue];
                 }
             }
         }

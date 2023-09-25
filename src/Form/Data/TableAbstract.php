@@ -233,9 +233,7 @@ abstract class TableAbstract implements TableInterface
                 ++$counter;
             }
         }
-        $options = [
-            'scrollX' => true,
-        ];
+        $options = [];
 
         if (null !== $columnIndex) {
             $options['order'] = [[$columnIndex, $this->orderDirection]];

@@ -1,8 +1,10 @@
 {%- use '@EMSCore/form/forms.html.twig' -%}
 {% trans_default_domain 'EMSCoreBundle' %}
 
-<table class="table table-condensed table-striped" data-datatable="{{ datatable.frontendOptions|json_encode|e('html_attr') }}" style="width: 100%;">
-    <thead>
+
+<div class="table-responsive">
+    <table class="table table-condensed table-striped" data-datatable="{{ datatable.frontendOptions|json_encode|e('html_attr') }}">
+        <thead>
         <tr role="row">
             {% if datatable.supportsTableActions %}
                 <th class="fit" data-orderable="false" data-name="_checkbox">
@@ -23,8 +25,8 @@
                 <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
             {% endif %}
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         {% for line in datatable %}
             <tr>
                 {% if datatable.supportsTableActions %}
@@ -42,8 +44,9 @@
                 {% endif %}
             </tr>
         {%  endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
 {% if datatable.supportsTableActions %}
     <div class="btn-group">
         {% for action in datatable.tableActions %}

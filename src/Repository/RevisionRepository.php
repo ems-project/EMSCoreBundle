@@ -249,83 +249,10 @@ class RevisionRepository extends EntityRepository
      */
     public function draftCounterGroupedByContentType(array $circles, bool $isAdmin): array
     {
-        $qb = $this->createQueryBuilder('r');
-        $qb->join('r.contentType', 'c');
-        $qb->select('c.id content_type_id', 'count(c.id) counter');
-        $qb->groupBy('c.id');
-
-        $draftConditions = $qb->expr()->andX();
-        $draftConditions->add($qb->expr()->eq('r.draft', ':true'));
-        $draftConditions->add($qb->expr()->isNull('r.endTime'));
-
-        $draftOrAutoSave = $qb->expr()->orX();
-        $draftOrAutoSave->add($draftConditions);
-        $draftOrAutoSave->add($qb->expr()->isNotNull('r.autoSave'));
-
-        $and = $qb->expr()->andX();
-        $and->add($qb->expr()->eq('r.deleted', ':false'));
-        $and->add($draftOrAutoSave);
-        $parameters = [
-                ':false' => false,
-                ':true' => true,
-        ];
-        if (!$isAdmin) {
-            $inCircles = $qb->expr()->orX();
-            $inCircles->add($qb->expr()->isNull('r.circles'));
-            foreach ($circles as $counter => $circle) {
-                $inCircles->add($qb->expr()->like('r.circles', ':circle'.$counter));
-                $parameters['circle'.$counter] = '%'.$circle.'%';
-            }
-            $and->add($inCircles);
-        }
-        $qb->where($and);
-
-        $qb->setParameters($parameters);
-
-        return $qb->getQuery()->getResult();
-    }
-
-    /**
-     * @param string[] $circles
-     *
-     * @return Revision[]
-     */
-    public function findInProgresByContentType(ContentType $contentType, array $circles, bool $isAdmin): array
-    {
-        $parameters = [
-            'contentType' => $contentType,
-            'false' => false,
-            'true' => true,
-        ];
-
-        $qb = $this->createQueryBuilder('r');
-
-        $draftConditions = $qb->expr()->andX();
-        $draftConditions->add($qb->expr()->eq('r.draft', ':true'));
-        $draftConditions->add($qb->expr()->isNull('r.endTime'));
-
-        $draftOrAutoSave = $qb->expr()->orX();
-        $draftOrAutoSave->add($draftConditions);
-        $draftOrAutoSave->add($qb->expr()->isNotNull('r.autoSave'));
-
-        $and = $qb->expr()->andX();
-        $and->add($qb->expr()->eq('r.deleted', ':false'));
-        $and->add($draftOrAutoSave);
-
-        if (!$isAdmin) {
-            $inCircles = $qb->expr()->orX();
-            $inCircles->add($qb->expr()->isNull('r.circles'));
-            foreach ($circles as $counter => $circle) {
-                $inCircles->add($qb->expr()->like('r.circles', ':circle'.$counter));
-                $parameters['circle'.$counter] = '%'.$circle.'%';
-            }
-            $and->add($inCircles);
-        }
-
-        $qb->where($and)
-            ->andWhere($qb->expr()->eq('r.contentType', ':contentType'));
-
-        $qb->setParameters($parameters);
+        $qb = $this->createQueryBuilderDrafts($circles, $isAdmin);
+        $qb
+            ->select('c.id content_type_id', 'count(c.id) counter')
+            ->groupBy('c.id');
 
         return $qb->getQuery()->getResult();
     }
@@ -335,16 +262,12 @@ class RevisionRepository extends EntityRepository
      */
     public function findAllDraftsByContentTypeName(string $contentTypeName): iterable
     {
-        $qb = $this->createQueryBuilder('r');
+        $qb = $this->createQueryBuilderDrafts();
         $qb
-            ->join('r.contentType', 'c')
-            ->andWhere($qb->expr()->isNull('r.endTime'))
-            ->andWhere($qb->expr()->eq('r.draft', $qb->expr()->literal(true)))
-            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
             ->andWhere($qb->expr()->eq('c.name', ':content_type_name'))
             ->setParameter('content_type_name', $contentTypeName);
 
-        foreach ($qb->getQuery()->iterate() as $row) {
+        foreach ($qb->getQuery()->toIterable() as $row) {
             yield $row[0];
         }
     }
@@ -875,50 +798,42 @@ class RevisionRepository extends EntityRepository
         return $qbSelect->getQuery()->execute();
     }
 
-    public function countDraftInProgress(string $searchValue, ?ContentType $context): int
+    /**
+     * @param string[] $circles
+     */
+    public function countDraftInProgress(string $searchValue, ?ContentType $contentType, array $circles = [], bool $isAdmin = false): int
     {
-        $qb = $this->createQueryBuilder('rev');
-        $qb->select('count(rev.id)');
-        $qb->andWhere($qb->expr()->eq('rev.draft', ':true'));
-        $qb->andWhere($qb->expr()->eq('rev.deleted', ':false'));
-        $qb->setParameters([
-            ':true' => true,
-            ':false' => false,
-        ]);
+        $qb = $this->createQueryBuilderDrafts($circles, $isAdmin, $searchValue);
+        $qb->select('count(r.id)');
 
-        if (null !== $context) {
-            $qb->andWhere($qb->expr()->eq('rev.contentType', ':contentType'));
-            $qb->setParameter('contentType', $context);
+        if (null !== $contentType) {
+            $qb->andWhere($qb->expr()->eq('c.id', ':content_type_id'));
+            $qb->setParameter('content_type_id', $contentType->getId());
         }
-        $this->addSearchValueFilter($qb, $searchValue);
 
-        return \intval($qb->getQuery()->getSingleScalarResult());
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
+     * @param string[] $circles
+     *
      * @return Revision[]
      */
-    public function getDraftInProgress(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, ?ContentType $context): array
+    public function getDraftInProgress(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, ?ContentType $contentType, array $circles = [], bool $isAdmin = false): array
     {
-        $qb = $this->createQueryBuilder('rev');
-        $qb->andWhere($qb->expr()->eq('rev.draft', ':true'));
-        $qb->andWhere($qb->expr()->eq('rev.deleted', ':false'));
-        $qb->setParameters([
-            ':true' => true,
-            ':false' => false,
-        ]);
+        $qb = $this->createQueryBuilderDrafts($circles, $isAdmin, $searchValue);
+        $qb
+            ->setFirstResult($from)
+            ->setMaxResults($size);
 
-        if (null !== $context) {
-            $qb->andWhere($qb->expr()->eq('rev.contentType', ':contentType'));
-            $qb->setParameter('contentType', $context);
+        if (null !== $contentType) {
+            $qb->andWhere($qb->expr()->eq('c.id', ':content_type_id'));
+            $qb->setParameter('content_type_id', $contentType->getId());
         }
-        $qb->setFirstResult($from)
-        ->setMaxResults($size);
 
         if (null !== $orderField) {
-            $qb->orderBy(\sprintf('rev.%s', $orderField), $orderDirection);
+            $qb->orderBy(\sprintf('r.%s', $orderField), $orderDirection);
         }
-        $this->addSearchValueFilter($qb, $searchValue);
 
         return $qb->getQuery()->execute();
     }
@@ -961,19 +876,6 @@ class RevisionRepository extends EntityRepository
             'endTime' => $revision->getStartTime(),
             'draft' => false,
         ]);
-    }
-
-    private function addSearchValueFilter(QueryBuilder $qb, string $searchValue): void
-    {
-        if (\strlen($searchValue) > 0) {
-            $or = $qb->expr()->orX(
-                $qb->expr()->like('LOWER(rev.lockBy)', ':term'),
-                $qb->expr()->like('LOWER(rev.autoSaveBy)', ':term'),
-                $qb->expr()->like('LOWER(rev.labelField)', ':term'),
-            );
-            $qb->andWhere($or)
-                ->setParameter(':term', '%'.\strtolower($searchValue).'%');
-        }
     }
 
     /**
@@ -1106,5 +1008,42 @@ class RevisionRepository extends EntityRepository
         foreach ($source->getParameters() as $key => $value) {
             $target->setParameter($key, $value, $source->getParameterType($key));
         }
+    }
+
+    /**
+     * @param string[] $circles
+     */
+    private function createQueryBuilderDrafts(array $circles = [], bool $isAdmin = false, string $searchValue = ''): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->join('r.contentType', 'c')
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
+            ->andWhere($qb->expr()->andX(
+                $qb->expr()->eq('r.draft', $qb->expr()->literal(true)),
+                $qb->expr()->isNull('r.endTime')
+            ));
+
+        if (!$isAdmin) {
+            $inCircles = $qb->expr()->orX();
+            $inCircles->add($qb->expr()->isNull('r.circles'));
+            foreach ($circles as $counter => $circle) {
+                $inCircles->add($qb->expr()->like('r.circles', ':circle'.$counter));
+                $qb->setParameter('circle'.$counter, '%'.$circle.'%');
+            }
+            $qb->andWhere($inCircles);
+        }
+
+        if ('' !== $searchValue) {
+            $qb
+                ->andWhere($qb->expr()->orX(
+                    $qb->expr()->like('LOWER(r.lockBy)', ':term'),
+                    $qb->expr()->like('LOWER(r.autoSaveBy)', ':term'),
+                    $qb->expr()->like('LOWER(r.labelField)', ':term'),
+                ))
+                ->setParameter(':term', '%'.\strtolower($searchValue).'%');
+        }
+
+        return $qb;
     }
 }

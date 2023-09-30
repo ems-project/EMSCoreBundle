@@ -460,7 +460,8 @@ class ContentTypeService implements EntityServiceInterface
             throw new \RuntimeException('Unexpected user type');
         }
         $this->loadEnvironment();
-        $temp = $this->revisionRepository->draftCounterGroupedByContentType($user->getCircles(), $this->authorizationChecker->isGranted('ROLE_ADMIN'));
+        $isAdmin = $this->authorizationChecker->isGranted('ROLE_ADMIN');
+        $temp = $this->revisionRepository->draftCounterGroupedByContentType($user->getCircles(), $isAdmin);
         $counters = [];
         foreach ($temp as $item) {
             $counters[$item['content_type_id']] = $item['counter'];

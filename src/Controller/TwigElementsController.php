@@ -5,8 +5,6 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\UI\Menu;
-use EMS\CoreBundle\Entity\Revision;
-use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -33,19 +31,7 @@ class TwigElementsController extends AbstractController
 
     public function sideMenuAction(): Response
     {
-        $draftCounterGroupedByContentType = [];
-
-        /** @var RevisionRepository $revisionRepository */
-        $revisionRepository = $this->getDoctrine()->getRepository(Revision::class);
-        $user = $this->userService->getCurrentUser();
-
-        $temp = $revisionRepository->draftCounterGroupedByContentType($user->getCircles(), $this->isGranted('ROLE_USER_MANAGEMENT'));
-        foreach ($temp as $item) {
-            $draftCounterGroupedByContentType[$item['content_type_id']] = $item['counter'];
-        }
-
         $status = $this->elasticaService->getHealthStatus();
-
         if ('green' === $status) {
             $status = $this->getAssetExtractorStatus();
         }
@@ -53,7 +39,6 @@ class TwigElementsController extends AbstractController
         return $this->render(
             "@$this->templateNamespace/elements/side-menu.html.twig",
             [
-                'draftCounterGroupedByContentType' => $draftCounterGroupedByContentType,
                 'status' => $status,
                 'menu' => [
                     $this->userService->getSidebarMenu(),

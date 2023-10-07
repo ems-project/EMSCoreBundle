@@ -331,11 +331,13 @@ class EnvironmentService implements EntityServiceInterface
         });
     }
 
-    public function clearCache(): void
+    public function clearCache(): self
     {
         $this->environments = [];
         $this->notSnapshotEnvironments = [];
         $this->environmentsById = [];
+
+        return $this;
     }
 
     public function updateEnvironment(Environment $environment): void

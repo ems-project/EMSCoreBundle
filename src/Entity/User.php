@@ -126,7 +126,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      */
     private array $roles = [];
     /**
-     * @var ?array<string, bool>
+     * @var ?array<string, mixed>
      *
      * @ORM\Column(name="user_options", type="json", nullable=true)
      */
@@ -147,7 +147,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     }
 
     /**
-     * @return array{id: int|string, username:string, displayName:string, roles:array<string>, email:string, circles:array<string>, lastLogin: ?string}
+     * {@inheritDoc}
      */
     public function toArray(): array
     {
@@ -161,6 +161,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
             'lastLogin' => null !== $this->getLastLogin() ? $this->getLastLogin()->format('c') : null,
             'locale' => $this->getLocale(),
             'localePreferred' => $this->getLocalePreferred(),
+            'userOptions' => $this->userOptions,
         ];
     }
 

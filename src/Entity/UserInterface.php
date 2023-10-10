@@ -56,7 +56,16 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
     public function getLastLogin(): ?\DateTime;
 
     /**
-     * @return array{id: int|string, username:string, displayName:string, roles:array<string>, email:string, circles:array<string>, lastLogin: ?string}
+     * @return array{
+     *     id: int|string,
+     *     username:string,
+     *     displayName:string,
+     *     roles:array<string>,
+     *     email:string,
+     *     circles:array<string>,
+     *     lastLogin: ?string,
+     *     userOptions: ?array<string, mixed>
+     * }
      */
     public function toArray(): array;
 }

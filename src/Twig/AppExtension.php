@@ -38,6 +38,7 @@ use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
+use EMS\Helpers\Standard\Color;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\FormError;
@@ -1020,39 +1021,19 @@ class AppExtension extends AbstractExtension
         return false;
     }
 
-    public function relativeLuminance(string $col): float
+    public function relativeLuminance(string $rgb): float
     {
-        $col = \trim($col, '#');
-        if (3 == \strlen($col)) {
-            $col = $col[0].$col[0].$col[1].$col[1].$col[2].$col[2];
-        }
-        $components = [
-            'r' => \hexdec(\substr($col, 0, 2)) / 255,
-            'g' => \hexdec(\substr($col, 2, 2)) / 255,
-            'b' => \hexdec(\substr($col, 4, 2)) / 255,
-        ];
-        foreach ($components as $c => $v) {
-            if ($v <= 0.03928) {
-                $components[$c] = $v / 12.92;
-            } else {
-                $components[$c] = (($v + 0.055) / 1.055) ** 2.4;
-            }
-        }
+        $color = new Color($rgb);
 
-        return ($components['r'] * 0.2126) + ($components['g'] * 0.7152) + ($components['b'] * 0.0722);
+        return $color->relativeLuminance();
     }
 
     public function contrastRatio(string $c1, string $c2): float
     {
-        $y1 = $this->relativeLuminance($c1);
-        $y2 = $this->relativeLuminance($c2);
-        if ($y1 < $y2) {
-            $y3 = $y1;
-            $y1 = $y2;
-            $y2 = $y3;
-        }
+        $color1 = new Color($c1);
+        $color2 = new Color($c2);
 
-        return ($y1 + 0.05) / ($y2 + 0.05);
+        return $color1->contrastRatio($color2);
     }
 
     public function md5(string $value): string

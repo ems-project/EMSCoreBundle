@@ -163,6 +163,7 @@
             <argument type="service" id="ems.service.asset_extractor" />
             <argument type="service" id="emsco.logger" />
             <argument>%ems_core.template_namespace%</argument>
+            <argument>%ems_core.theme_color%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
         </service>

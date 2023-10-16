@@ -7,9 +7,11 @@ use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\FileService;
+use EMS\Helpers\Html\Headers;
 use EMS\Helpers\Standard\Type;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,8 +22,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FileController extends AbstractController
 {
-    public function __construct(private readonly FileService $fileService, private readonly AssetExtractorService $assetExtractorService, private readonly LoggerInterface $logger, private readonly string $templateNamespace)
-    {
+    public function __construct(
+        private readonly FileService $fileService,
+        private readonly AssetExtractorService $assetExtractorService,
+        private readonly LoggerInterface $logger,
+        private readonly string $templateNamespace,
+        private readonly string $themeColor,
+    ) {
     }
 
     public function viewFileAction(string $sha1, Request $request): Response
@@ -51,13 +58,7 @@ class FileController extends AbstractController
 
     public function extractFileContent(Request $request, string $sha1, bool $forced = false): Response
     {
-        if ($request->hasSession()) {
-            $session = $request->getSession();
-
-            if ($session->isStarted()) {
-                $session->save();
-            }
-        }
+        $this->closeSession($request);
 
         try {
             $data = $this->assetExtractorService->extractData($sha1, null, $forced);
@@ -171,6 +172,43 @@ class FileController extends AbstractController
         ]);
     }
 
+    public function icon(Request $request, int $width, int $height, string $background = null): Response
+    {
+        if ($width !== $height) {
+            throw new NotFoundHttpException('File not found');
+        }
+        $this->closeSession($request);
+
+        if ($width > 128) {
+            $image = $this->fileService->generateImage('@EMSCommonBundle/Resources/public/images/ems-logo.png', [
+                EmsFields::ASSET_CONFIG_WIDTH => $width,
+                EmsFields::ASSET_CONFIG_HEIGHT => $height,
+                EmsFields::ASSET_CONFIG_QUALITY => 0,
+                EmsFields::ASSET_CONFIG_BACKGROUND => $background ?? "ems-$this->themeColor",
+                EmsFields::ASSET_CONFIG_RADIUS => $width / 6,
+                EmsFields::ASSET_CONFIG_BORDER_COLOR => '#000000FF',
+            ]);
+        } else {
+            $image = $this->fileService->generateImage('@EMSCommonBundle/Resources/public/images/ems-logo.png', [
+                EmsFields::ASSET_CONFIG_WIDTH => $width,
+                EmsFields::ASSET_CONFIG_HEIGHT => $height,
+                EmsFields::ASSET_CONFIG_QUALITY => 0,
+                EmsFields::ASSET_CONFIG_COLOR => "ems-$this->themeColor",
+            ]);
+        }
+
+        $response = new BinaryFileResponse($image);
+        $response->setCache([
+            'etag' => \hash_file('sha1', $image),
+            'max_age' => 3600,
+            's_maxage' => 36000,
+            'public' => true,
+            'private' => false,
+        ]);
+
+        return new BinaryFileResponse($image);
+    }
+
     public function uploadFileAction(Request $request): Response
     {
         /** @var UploadedFile $file */
@@ -221,6 +259,37 @@ class FileController extends AbstractController
         ]);
     }
 
+    public function browserConfig(): Response
+    {
+        $response = $this->render('@EMSCore/ems-core/browserconfig.xml.twig', [
+            'themeColor' => $this->themeColor,
+        ]);
+        $response->setCache([
+            'max_age' => 3600,
+            's_maxage' => 36000,
+            'public' => true,
+            'private' => false,
+        ]);
+
+        return $response;
+    }
+
+    public function webManifest(): Response
+    {
+        $response = $this->render('@EMSCore/ems-core/site.webmanifest.twig', [
+            'themeColor' => $this->themeColor,
+        ]);
+        $response->setCache([
+            'max_age' => 3600,
+            's_maxage' => 36000,
+            'public' => true,
+            'private' => false,
+        ]);
+        $response->headers->set(Headers::CONTENT_TYPE, 'application/manifest+json');
+
+        return $response;
+    }
+
     private function getUsername(): string
     {
         $userObject = $this->getUser();
@@ -229,5 +298,17 @@ class FileController extends AbstractController
         }
 
         return $userObject->getUsername();
+    }
+
+    private function closeSession(Request $request): void
+    {
+        if (!$request->hasSession()) {
+            return;
+        }
+
+        $session = $request->getSession();
+        if ($session->isStarted()) {
+            $session->save();
+        }
     }
 }

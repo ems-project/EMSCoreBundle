@@ -15,8 +15,9 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <link rel="icon" sizes="128x128" type="image/png" href="{{ asset('images/fav-icon.png', 'emscore') }}" />
-    <link rel="apple-touch-icon" sizes="128x128" type="image/png" href="{{ asset('images/fav-icon.png', 'emscore') }}">
+    <link rel="icon" sizes="128x128" type="image/png" href="{{ path('core-favicon') }}" />
+    <link rel="apple-touch-icon" sizes="128x128" type="image/png" href="{{ path('core-apple-touch-icon') }}">
+    <link rel="manifest" href="{{ path('core-site-webmanifest') }}" />
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">

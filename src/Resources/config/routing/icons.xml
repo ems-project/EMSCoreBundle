@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
+
+  <route id="core-favicon" path="favicon.ico"
+         controller="EMS\CoreBundle\Controller\ContentManagement\FileController::icon"
+         methods="GET|HEAD">
+    <default key="width">128</default>
+    <default key="height">128</default>
+  </route>
+  <route id="core-png-icon" path="{name}-{width}x{height}.png"
+         controller="EMS\CoreBundle\Controller\ContentManagement\FileController::icon"
+         methods="GET|HEAD">
+    <requirement key="width">16|32|48|64|128|150|192|256|512</requirement>
+    <requirement key="height">16|32|48|64|128|150|192|256|512</requirement>
+    <requirement key="name">favicon|android\-chrome|mstile</requirement>
+  </route>
+  <route id="core-apple-touch-icon" path="apple-touch-icon.png"
+         controller="EMS\CoreBundle\Controller\ContentManagement\FileController::icon"
+         methods="GET|HEAD">
+    <default key="width">180</default>
+    <default key="height">180</default>
+  </route>
+  <route id="core-browserconfig" path="browserconfig.xml"
+         controller="EMS\CoreBundle\Controller\ContentManagement\FileController::browserConfig"
+         methods="GET|HEAD">
+    <default key="_format">xml</default>
+  </route>
+  <route id="core-site-webmanifest" path="site.webmanifest"
+         controller="EMS\CoreBundle\Controller\ContentManagement\FileController::webManifest"
+         methods="GET|HEAD">
+    <default key="_format">webmanifest</default>
+  </route>
+</routes>

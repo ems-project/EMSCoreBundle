@@ -1,0 +1,20 @@
+{%- set data = {
+    "name": ems_name|striptags,
+    "short_name": ems_shortname|striptags,
+    "icons": [
+        {
+            "src": path('core-png-icon', {name: 'android-chrome', width: 192, height: 192}),
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": path('core-png-icon', {name: 'android-chrome',width: 512, height: 512}),
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "ems-#{themeColor}"|ems_color.rgb,
+    "background_color": "ems-#{themeColor}"|ems_color.rgb,
+    "display": "standalone"
+} -%}
+{{ data|json_encode|raw }}

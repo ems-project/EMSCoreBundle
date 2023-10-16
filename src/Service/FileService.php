@@ -442,4 +442,12 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
     {
         throw new \RuntimeException('deleteByItemName method not yet implemented');
     }
+
+    /**
+     * @param mixed[] $config
+     */
+    public function generateImage(string $filename, array $config): string
+    {
+        return $this->processor->generateLocalImage($filename, $config);
+    }
 }

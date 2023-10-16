@@ -103,4 +103,5 @@
             prefix="/file"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/images.xml"
             prefix="/images"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/icons.xml"/>
 </routes>

@@ -34,5 +34,11 @@
     <route id="emsco_api_get_document" path="/document"
            controller="EMS\CoreBundle\Controller\Api\Search\SearchController::getDocument"
            methods="POST"/>
+    <route id="emsco_api_aliases_for_content_type" path="/indices-for-content-type"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::getIndicesForContentTypes"
+           methods="POST"/>
+    <route id="emsco_api_filter_stop_words" path="/filter-stop-words"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::filterStopWords"
+           methods="POST"/>
 
 </routes>

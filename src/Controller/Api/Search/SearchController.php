@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Controller\Api\Search;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\Helpers\Standard\Json;
+use EMS\Helpers\Standard\Type;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -103,11 +104,36 @@ class SearchController
         $json = Json::decode((string) $request->getContent());
         $alias = $json['alias'] ?? null;
         if (!\is_string($alias)) {
-            throw new \RuntimeException('Unexpected: index must be a string');
+            throw new \RuntimeException('Unexpected: alias must be a string');
         }
 
         return new JsonResponse([
             'indices' => $this->elasticaService->getIndicesFromAlias($alias),
+        ]);
+    }
+
+    public function getIndicesForContentTypes(Request $request): Response
+    {
+        $json = Json::decode((string) $request->getContent());
+        $aliases = $json['aliases'] ?? null;
+        if (!\is_array($aliases)) {
+            throw new \RuntimeException('Unexpected: aliases must be an array');
+        }
+
+        return new JsonResponse([
+            'indices' => $this->elasticaService->getIndicesForContentTypes($aliases),
+        ]);
+    }
+
+    public function filterStopWords(Request $request): Response
+    {
+        $json = Json::decode((string) $request->getContent());
+        $index = Type::string($json['index']);
+        $analyzer = Type::string($json['analyzer']);
+        $words = Type::array($json['words']);
+
+        return new JsonResponse([
+            'filtered' => $this->elasticaService->filterStopWords($index, $analyzer, $words),
         ]);
     }
 

@@ -1030,7 +1030,12 @@
 	{%- set jmnQuery = displayOptions.query|default(false) -%}
 
 	{%- if jmnField and jmnQuery and dataField.rawData is not null -%}
-		{%- set hits = { index:  dataField.fieldType.contentType.environment.alias, body: jmnQuery}|search.hits.hits -%}
+        {% if displayOptions.environment is not null %}
+            {% set index = displayOptions.environment|emsco_get_environment.alias %}
+        {% else %}
+            {% set index = dataField.fieldType.contentType.environment.alias %}
+        {% endif %}
+		{%- set hits = { index: index, body: jmnQuery}|search.hits.hits -%}
 		{%- set structures = [] -%}
 		{%- for h in hits -%}
 			{% set structures = structures|merge([{

@@ -209,6 +209,7 @@
             <argument type="service" id="form.registry" />
             <argument type="service" id="ems.service.elasticsearch" />
             <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="EMS\CoreBundle\Service\EnvironmentService" />
             <argument type="service" id="twig" />
             <argument type="service" id="emsco.logger" />
             <tag name="ems.form.datafieldtype" alias="json_menu_nested_link" />

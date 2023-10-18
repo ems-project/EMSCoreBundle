@@ -9,7 +9,9 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
+use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
+use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -31,6 +33,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
         private readonly ElasticaService $elasticaService,
+        private readonly EnvironmentService $environmentService,
         private readonly Environment $twig,
         private readonly LoggerInterface $logger
     ) {
@@ -120,6 +123,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
                 'json_menu_nested_field' => null,
                 'json_menu_nested_unique' => false,
                 'query' => null,
+                'environment' => null,
                 'choices_template' => null,
                 'display_template' => null,
             ])
@@ -142,6 +146,11 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
             ->add('json_menu_nested_field', TextType::class, ['required' => true])
             ->add('json_menu_nested_unique', CheckboxType::class, ['required' => false])
             ->add('query', CodeEditorType::class, ['required' => false, 'language' => 'ace/mode/json'])
+            ->add('environment', EnvironmentPickerType::class, [
+                'required' => false,
+                'managedOnly' => false,
+                'userPublishEnvironments' => false,
+            ])
             ->add('choices_template', CodeEditorType::class, ['required' => false, 'min-lines' => 10, 'language' => 'ace/mode/twig'])
             ->add('display_template', CodeEditorType::class, ['required' => false, 'min-lines' => 10, 'language' => 'ace/mode/twig'])
         ;
@@ -250,7 +259,10 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
 
         $assignedUuids = !$migration && $jmnUnique ? $this->searchAssignedUuids($fieldType, $rawData) : [];
 
-        $index = $fieldType->giveContentType()->giveEnvironment()->getAlias();
+        $environmentName = $fieldType->getDisplayOption('environment');
+        $environment = $environmentName ? $this->environmentService->giveByName($environmentName) : null;
+
+        $index = $environment ? $environment->getAlias() : $fieldType->giveContentType()->giveEnvironment()->getAlias();
         $jmnMenu = $this->createJsonMenuNested($index, $jmnQuery, $jmnField);
 
         $items = [];

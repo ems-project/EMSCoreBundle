@@ -72,6 +72,7 @@ class CollectionItemFieldType extends DataFieldType
                         'raw_data' => $options['raw_data'],
                         'disabled_fields' => $options['disabled_fields'],
                         'referrer-ems-id' => $options['referrer-ems-id'],
+                        'locale' => $options['locale'],
                 ], $fieldType->getDisplayOptions());
                 $builder->add($fieldType->getName(), $fieldType->getType(), $options);
                 $builder->get($fieldType->getName())

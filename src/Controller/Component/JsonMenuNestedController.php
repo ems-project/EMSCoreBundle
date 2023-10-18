@@ -222,6 +222,7 @@ class JsonMenuNestedController
             'field_type' => $node->getFieldType(),
             'content_type' => $config->revision->giveContentType(),
             'item' => $item,
+            'locale' => $config->locale,
         ]);
     }
 

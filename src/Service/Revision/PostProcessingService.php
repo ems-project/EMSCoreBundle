@@ -24,6 +24,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Twig\Environment;
+use Twig\Error\SyntaxError;
 
 final class PostProcessingService
 {
@@ -117,8 +118,20 @@ final class PostProcessingService
                             EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getPrevious()->getMessage(),
                         ]);
                     }
+                } elseif ($e instanceof SyntaxError) {
+                    if (!$migration) {
+                        $twigContext = $e->getSourceContext();
+                        $message = \str_replace(null === $twigContext ? '_string_template_' : $twigContext->getName(), 'postProcessing', $e->getMessage());
+                        $form->addError(new FormError($e->getRawMessage()));
+                        $this->logger->warning('service.data.syntax_error', [
+                            '_id' => $context['_id'] ?? null,
+                            'field_name' => $dataField->giveFieldType()->getName(),
+                            'field_display' => isset($fieldType->getDisplayOptions()['label']) && !empty($fieldType->getDisplayOptions()['label']) ? $fieldType->getDisplayOptions()['label'] : $fieldType->getName(),
+                            EmsFields::LOG_ERROR_MESSAGE_FIELD => $message,
+                        ]);
+                    }
                 } else {
-                    $this->logger->warning('service.data.json_parse_post_processing_error', [
+                    $this->logger->warning('service.data.other_post_processing_error', [
                         '_id' => $context['_id'] ?? null,
                         'field_name' => $fieldType->getName(),
                         EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),

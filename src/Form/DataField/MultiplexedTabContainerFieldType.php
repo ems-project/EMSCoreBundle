@@ -135,7 +135,8 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         if (!$fieldType instanceof FieldType) {
             throw new \RuntimeException('Unexpected FieldType type');
         }
-        foreach ($this->getChoices($fieldType) as $label => $value) {
+
+        foreach ($this->getChoices($fieldType, $options['locale']) as $label => $value) {
             $builder->add($value, ContainerFieldType::class, [
                 'metadata' => $fieldType,
                 'label' => $label,
@@ -145,6 +146,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
                 'raw_data' => $options['raw_data'],
                 'disabled_fields' => $options['disabled_fields'],
                 'referrer-ems-id' => $options['referrer-ems-id'],
+                'locale' => $value,
             ]);
 
             $builder->get($value)
@@ -190,7 +192,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     /**
      * @return array<string, string>
      */
-    private function getChoices(FieldType $fieldType): array
+    private function getChoices(FieldType $fieldType, ?string $locale = null): array
     {
         $choices = [];
         $labels = $fieldType->getDisplayOption(self::LABELS_DISPLAY_OPTION) ?? '';
@@ -203,6 +205,11 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
                 $choices[$value] = $labels[$counter++] ?? $value;
             }
         }
+
+        if ($locale && isset($choices[$locale])) {
+            $choices = [...[$locale => $choices[$locale]], ...\array_filter($choices, static fn ($l) => $l !== $locale)];
+        }
+
         $choices = \array_flip($choices);
 
         $localePreferredFirst = $fieldType->getDisplayOption(self::LOCALE_PREFERRED_FIRST_DISPLAY_OPTION);

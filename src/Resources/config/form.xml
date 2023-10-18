@@ -457,5 +457,9 @@
             <argument type="service" id="ems.service.data" />
             <tag name="form.type"/>
         </service>
+
+        <service id="emsco.form_extension.locale_form_extension" class="EMS\CoreBundle\Form\Extension\LocaleFormExtension">
+            <tag name="form.type_extension"/>
+        </service>
     </services>
 </container>

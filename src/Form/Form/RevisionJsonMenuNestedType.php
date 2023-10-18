@@ -48,6 +48,7 @@ class RevisionJsonMenuNestedType extends AbstractType
             'metadata' => $fieldType,
             'error_bubbling' => false,
             'disabled_fields' => $contentType->getDisabledDataFields(),
+            'locale' => $options['locale'],
         ]);
 
         if ($item) {

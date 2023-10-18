@@ -188,7 +188,7 @@
 {%- block jmn_modal_view -%}
     {%- if dataFields -%}
         {%- import "@EMSCore/macros/data-field-type.html.twig" as macros -%}
-        {{ macros.renderDataField(dataFields, rawData, false, []) }}
+        {{ macros.renderDataField(dataFields, rawData, false, [], config.locale) }}
     {%- else -%}
         <p class="text-red">{{ 'view.data.json-menu-nested-json-preview.field-type-not-found'|trans }}</p>
         <pre class="ems-code-editor" data-language="ace/mode/json" data-them="ace/theme/chrome">

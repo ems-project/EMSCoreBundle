@@ -12,6 +12,7 @@ use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CoreBundle\Commands;
+use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
@@ -52,6 +53,10 @@ final class ExtractCommand extends AbstractCommand
     public const OPTION_LOCALE_FIELD = 'locale-field';
     public const OPTION_ENCODING = 'encoding';
     public const OPTION_WITH_BASELINE = 'with-baseline';
+    public const OPTION_MAIL_SUBJECT = 'mail-subject';
+    public const OPTION_MAIL_TO = 'mail-to';
+    public const OPTION_MAIL_CC = 'mail-cc';
+    private const MAIL_TEMPLATE = '@EMSCore/email/xliff/extract.email.html.twig';
 
     protected static $defaultName = Commands::XLIFF_EXTRACT;
     private string $xliffFilename;
@@ -61,6 +66,9 @@ final class ExtractCommand extends AbstractCommand
     private ?string $localeField;
     private string $encoding;
     private bool $withBaseline;
+    private string $mailSubject;
+    private ?string $mailTo;
+    private ?string $mailCC;
 
     public function __construct(
         private readonly ContentTypeService $contentTypeService,
@@ -68,7 +76,8 @@ final class ExtractCommand extends AbstractCommand
         private readonly ElasticaService $elasticaService,
         private readonly XliffService $xliffService,
         private readonly AssetRuntime $assetRuntime,
-        private readonly int $defaultBulkSize
+        private readonly MailerService $mailerService,
+        private readonly int $defaultBulkSize,
     ) {
         parent::__construct();
     }
@@ -89,7 +98,10 @@ final class ExtractCommand extends AbstractCommand
             ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', null)
             ->addOption(self::OPTION_ENCODING, null, InputOption::VALUE_OPTIONAL, 'Encoding used to generate the XLIFF file', 'UTF-8')
             ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field', null)
-            ->addOption(self::OPTION_WITH_BASELINE, null, InputOption::VALUE_NONE, 'The baseline has been checked and can be used to flag field as final');
+            ->addOption(self::OPTION_WITH_BASELINE, null, InputOption::VALUE_NONE, 'The baseline has been checked and can be used to flag field as final')
+            ->addOption(self::OPTION_MAIL_SUBJECT, null, InputOption::VALUE_OPTIONAL, 'Mail subject', 'A new XLIFF has been generated')
+            ->addOption(self::OPTION_MAIL_TO, null, InputOption::VALUE_OPTIONAL, 'A comma seperated list of emails where to send the XLIFF')
+            ->addOption(self::OPTION_MAIL_CC, null, InputOption::VALUE_OPTIONAL, 'A comma seperated list of emails where to send, in carbon copy, the XLIFF');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -113,6 +125,9 @@ final class ExtractCommand extends AbstractCommand
         $this->localeField = $this->getOptionStringNull(self::OPTION_LOCALE_FIELD);
         $this->encoding = $this->getOptionString(self::OPTION_ENCODING);
         $this->withBaseline = $this->getOptionBool(self::OPTION_WITH_BASELINE);
+        $this->mailSubject = $this->getOptionString(self::OPTION_MAIL_SUBJECT);
+        $this->mailTo = $this->getOptionStringNull(self::OPTION_MAIL_TO);
+        $this->mailCC = $this->getOptionStringNull(self::OPTION_MAIL_CC);
 
         if (null === $this->translationField && $this->translationField !== $this->localeField) {
             throw new \RuntimeException(\sprintf('Both %s and %s options must be defined or not defined at all (fields defined with %%locale%% placeholder)', self::OPTION_TRANSLATION_FIELD, self::OPTION_LOCALE_FIELD));
@@ -151,6 +166,7 @@ final class ExtractCommand extends AbstractCommand
         if (!$extractor->saveXML($this->xliffFilename, $this->encoding)) {
             throw new \RuntimeException(\sprintf('Unexpected error while saving the XLIFF to the file %s', $this->xliffFilename));
         }
+        $this->sendEmail($this->xliffFilename);
 
         if (null !== $this->baseUrl) {
             $this->xliffFilename = $this->baseUrl.$this->assetRuntime->assetPath(
@@ -173,5 +189,32 @@ final class ExtractCommand extends AbstractCommand
         $output->writeln('XLIFF file: '.$this->xliffFilename);
 
         return self::EXECUTE_SUCCESS;
+    }
+
+    private function sendEmail(string $xliffFilename): void
+    {
+        $mailTemplate = $this->mailerService->makeMailTemplate(self::MAIL_TEMPLATE);
+        $mailTemplate->setSubjectText($this->mailSubject);
+        if (null !== $this->mailTo) {
+            $split = \explode(',', $this->mailTo);
+            foreach ($split as $email) {
+                $mailTemplate->addTo($email);
+            }
+        }
+        if (null !== $this->mailCC) {
+            $split = \explode(',', $this->mailCC);
+            foreach ($split as $email) {
+                $mailTemplate->addCc($email);
+            }
+        }
+        $mailTemplate->setBodyBlock('xliff_extracted', [
+            'source' => $this->sourceLocale,
+            'target' => $this->targetLocale,
+            'query' => $this->searchQuery,
+            'fields' => $this->fields,
+        ]);
+        $mailTemplate->addAttachment($xliffFilename);
+
+        $this->mailerService->sendMailTemplate($mailTemplate);
     }
 }

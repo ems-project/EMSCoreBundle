@@ -27,6 +27,7 @@ log:
         query_search:
             delete: 'The QuerySearch %name% has been deleted'
         xliff:
+            not_current_revision: 'The revision %revision_id% of the %ouuid% was not the last revision anymore. The translations was not imported.'
             to-many-current-translations: 'The are %counter% translation documents when only one is expected for the translation id %translationId% and the target locale %targetLocale% in the environment %environment%'
         dashboard:
             delete: 'Dashboard %name% has been deleted'

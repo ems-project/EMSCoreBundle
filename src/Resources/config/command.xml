@@ -150,6 +150,7 @@
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems.service.internationalization.xliff"/>
             <argument type="service" id="ems_common.twig.runtime.asset"/>
+            <argument type="service" id="ems_core.core_mail.mailer_service"/>
             <argument>%ems_core.default_bulk_size%</argument>
             <tag name="console.command"/>
         </service>

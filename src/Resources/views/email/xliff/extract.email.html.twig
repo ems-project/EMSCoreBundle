@@ -1,0 +1,29 @@
+{%  block xliff_extracted -%}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width"/>
+    <style>
+        body {
+            margin: 5px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <p>Please find in attachment the XLIFF file.</p>
+    <p>
+        Job arguments:
+        <ul>
+            <li>Source: {{ source }}</li>
+            <li>Target: {{ target }}</li>
+            <li>Fields: {{ fields|join(', ') }}</li>
+            <li>Query:</li>
+        </ul>
+        <pre>{{ query|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+    </p>
+    <p>Regards.</p>
+</body>
+</html>
+{%- endblock xliff_extracted %}

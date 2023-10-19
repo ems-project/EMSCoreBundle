@@ -15,6 +15,13 @@ final class MailTemplate
 
     /** @var array<mixed> */
     private array $to = [];
+    /** @var array<mixed> */
+    private array $cc = [];
+    /** @var array<mixed> */
+    private array $bcc = [];
+    /** @var string[] */
+    private array $attachments = [];
+    private ?string $replyTo = null;
 
     public function __construct(private readonly TemplateWrapper $template, private readonly TranslatorInterface $translator, private readonly string $senderName)
     {
@@ -37,6 +44,44 @@ final class MailTemplate
     public function getTo(): array
     {
         return $this->to;
+    }
+
+    public function addCc(string $email, string $name = null): self
+    {
+        if ($name) {
+            $this->cc[$email] = $name;
+        } else {
+            $this->cc[] = $email;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function getCC(): array
+    {
+        return $this->cc;
+    }
+
+    public function addBCC(string $email, string $name = null): self
+    {
+        if ($name) {
+            $this->bcc[$email] = $name;
+        } else {
+            $this->bcc[] = $email;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function getBCC(): array
+    {
+        return $this->bcc;
     }
 
     public function getSubject(): string
@@ -90,6 +135,42 @@ final class MailTemplate
     public function setBodyHtml(string $html): self
     {
         $this->body = $html;
+
+        return $this;
+    }
+
+    public function addAttachment(string $attachmentFilename): self
+    {
+        $this->attachments[] = $attachmentFilename;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAttachments(): array
+    {
+        return $this->attachments;
+    }
+
+    public function hasReplyTo(): bool
+    {
+        return null !== $this->replyTo;
+    }
+
+    public function getReplyTo(): string
+    {
+        if (null === $this->replyTo) {
+            throw new \RuntimeException('Test if the reply to is defined first with the method MailTemplate::hasReplyTo');
+        }
+
+        return $this->replyTo;
+    }
+
+    public function setReplyTo(string $replyTo): self
+    {
+        $this->replyTo = $replyTo;
 
         return $this;
     }

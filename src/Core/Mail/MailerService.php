@@ -60,8 +60,22 @@ class MailerService
     {
         $email = (new Email())
             ->from($this->from)
-            ->to(...$template->getTo())
             ->subject($template->getSubject());
+        if (\count($template->getTo()) > 0) {
+            $email->to(...$template->getTo());
+        }
+        if (\count($template->getCC()) > 0) {
+            $email->cc(...$template->getCC());
+        }
+        if (\count($template->getBCC()) > 0) {
+            $email->bcc(...$template->getBCC());
+        }
+        if ($template->hasReplyTo()) {
+            $email->replyTo($template->getReplyTo());
+        }
+        foreach ($template->getAttachments() as $file) {
+            $email->attachFromPath($file);
+        }
 
         if ('html' === $type) {
             $email->html($template->getBody());

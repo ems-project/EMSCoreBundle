@@ -13,6 +13,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Exception\XliffException;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Html\HtmlHelper;
 use EMS\Xliff\Xliff\Entity\InsertReport;
@@ -83,10 +84,17 @@ class XliffService
         }
     }
 
-    public function insert(InsertReport $insertReport, InsertionRevision $insertionRevision, ?string $localeField, ?string $translationField, ?Environment $publishAndArchive, string $username = null): Revision
+    public function insert(InsertReport $insertReport, InsertionRevision $insertionRevision, ?string $localeField, ?string $translationField, ?Environment $publishAndArchive, string $username = null, bool $currentRevisionOnly = false): Revision
     {
         $propertyAccessor = PropertyAccessor::createPropertyAccessor();
         $revision = $this->revisionService->getByRevisionId($insertionRevision->getRevisionId());
+        if ($currentRevisionOnly && !$revision->isCurrent()) {
+            $this->logger->warning('log.service.xliff.not_current_revision', [
+                'revision_id' => $insertionRevision->getRevisionId(),
+                'ouuid' => $revision->giveOuuid(),
+            ]);
+            throw new XliffException($insertionRevision, 'The source revision is not more the current revision of the document');
+        }
         $targetLocale = $insertionRevision->getTargetLocale();
         if (null !== $translationField && null !== $localeField) {
             $target = $this->getTargetDocument(

@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Command\Xliff;
 use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Exception\XliffException;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Internationalization\XliffService;
 use EMS\CoreBundle\Service\PublishService;
@@ -28,6 +29,7 @@ final class UpdateCommand extends AbstractCommand
     public const OPTION_TRANSLATION_FIELD = 'translation-field';
     public const OPTION_LOCALE_FIELD = 'locale-field';
     public const OPTION_DRY_RUN = 'dry-run';
+    public const OPTION_CURRENT_REVISION_ONLY = 'current-revision-only';
 
     private string $xliffFilename;
     private ?Environment $publishTo = null;
@@ -35,6 +37,7 @@ final class UpdateCommand extends AbstractCommand
     private ?string $translationField;
     private ?string $localeField;
     private bool $dryRun = false;
+    private bool $currentRevisionOnly = false;
 
     public function __construct(
         private readonly EnvironmentService $environmentService,
@@ -53,7 +56,8 @@ final class UpdateCommand extends AbstractCommand
             ->addOption(self::OPTION_ARCHIVE, null, InputOption::VALUE_NONE, 'If set another revision will be flagged as archived')
             ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', null)
             ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field', null)
-            ->addOption(self::OPTION_DRY_RUN, null, InputOption::VALUE_NONE, 'If set nothing is saved in the database');
+            ->addOption(self::OPTION_DRY_RUN, null, InputOption::VALUE_NONE, 'If set nothing is saved in the database')
+            ->addOption(self::OPTION_CURRENT_REVISION_ONLY, null, InputOption::VALUE_NONE, 'Translations will be updated only is the source revision is still a current revision');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -69,6 +73,7 @@ final class UpdateCommand extends AbstractCommand
         $this->translationField = $this->getOptionStringNull(self::OPTION_TRANSLATION_FIELD);
         $this->localeField = $this->getOptionStringNull(self::OPTION_LOCALE_FIELD);
         $this->dryRun = $this->getOptionBool(self::OPTION_DRY_RUN);
+        $this->currentRevisionOnly = $this->getOptionBool(self::OPTION_CURRENT_REVISION_ONLY);
 
         if ($this->archive && null === $this->publishTo) {
             throw new \RuntimeException(\sprintf('The %s option can be activate only if the %s option is DEFINED', self::OPTION_ARCHIVE, self::OPTION_PUBLISH_TO));
@@ -94,7 +99,12 @@ final class UpdateCommand extends AbstractCommand
                 $this->io->progressAdvance();
                 continue;
             }
-            $revision = $this->xliffService->insert($insertReport, $document, $this->localeField, $this->translationField, $this->publishTo, self::XLIFF_UPLOAD_COMMAND);
+            try {
+                $revision = $this->xliffService->insert($insertReport, $document, $this->localeField, $this->translationField, $this->publishTo, self::XLIFF_UPLOAD_COMMAND, $this->currentRevisionOnly);
+            } catch (XliffException $e) {
+                $output->writeln(\sprintf('Update for %s:%s:%s failed :  %s', $document->getContentType(), $document->getOuuid(), $document->getRevisionId(), $e->getMessage()));
+                continue;
+            }
             if (null !== $this->publishTo) {
                 $this->publishService->publish($revision, $this->publishTo, self::XLIFF_UPLOAD_COMMAND);
             }

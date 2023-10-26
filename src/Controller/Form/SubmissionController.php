@@ -10,18 +10,25 @@ use EMS\CoreBundle\DataTable\Type\FormSubmissionDataTableType;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
+use EMS\SubmissionBundle\Entity\FormSubmission;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\SubmitButton;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ZipStream\Stream;
 
 final class SubmissionController extends AbstractController
 {
+    final public const BUFFER_SIZE = 8192;
+
     public function __construct(
         private readonly FormSubmissionService $formSubmissionService,
         private readonly LoggerInterface $logger,
@@ -88,6 +95,27 @@ final class SubmissionController extends AbstractController
 
             return $this->redirectToRoute('form.submissions');
         }
+    }
+
+    public function downloadAttachment(FormSubmission $formSubmission, string $filename): Response
+    {
+        foreach ($formSubmission->getFiles() as $file) {
+            if ($file->getFilename() !== $filename || null === ($streamRead = $file->getFile())) {
+                continue;
+            }
+            $response = new StreamedResponse(function () use ($streamRead) {
+                $stream = new Stream($streamRead);
+                while (!$stream->eof()) {
+                    echo $stream->read(self::BUFFER_SIZE);
+                }
+                $stream->close();
+            });
+            $response->headers->set('Content-Type', $file->getMimeType());
+            $response->headers->set('Content-Disposition', \sprintf('%s;filename="%s"', HeaderUtils::DISPOSITION_INLINE, $filename));
+
+            return $response;
+        }
+        throw new NotFoundHttpException(\sprintf('Attachment %s not found', $filename));
     }
 
     /**

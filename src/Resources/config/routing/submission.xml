@@ -15,4 +15,8 @@
            methods="GET">
         <requirement key="id">\S+</requirement>
     </route>
+    <route id="form.submissions.attachments.download" path="/attachments/{formSubmission}/{filename}"
+           controller="EMS\CoreBundle\Controller\Form\SubmissionController::downloadAttachment"
+           methods="GET">
+    </route>
 </routes>

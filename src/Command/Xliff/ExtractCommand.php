@@ -193,6 +193,9 @@ final class ExtractCommand extends AbstractCommand
 
     private function sendEmail(string $xliffFilename): void
     {
+        if (null === $this->mailTo && null === $this->mailCC) {
+            return;
+        }
         $mailTemplate = $this->mailerService->makeMailTemplate(self::MAIL_TEMPLATE);
         $mailTemplate->setSubjectText($this->mailSubject);
         if (null !== $this->mailTo) {

@@ -185,7 +185,7 @@
                   <a href="{{ path(routes.USER_PROFILE) }}" class="btn btn-default btn-flat">{{ 'user.profile.title'|trans({}, 'emsco-user') }}</a>
                 </div>
                 <div class="pull-right">
-               		{% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+               		{% if is_granted('IS_IMPERSONATOR') %}
                			<a href="{{ path('emsco_user_index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat">{{ 'user.logout.exit'|trans({}, 'emsco-user') }}</a>
                		{% else %}
                			<a href="{{ path(routes.USER_LOGOUT) }}" class="btn btn-default btn-flat">{{ 'user.logout.submit'|trans({}, 'emsco-user') }}</a>

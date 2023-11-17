@@ -165,7 +165,7 @@ class DataService
             if (null === $token) {
                 throw new \RuntimeException('Unexpected null token');
             }
-            $lockerUsername = $token->getUsername();
+            $lockerUsername = $token->getUserIdentifier();
         } else {
             $lockerUsername = $username;
         }
@@ -454,7 +454,7 @@ class DataService
             if (null === $token) {
                 throw new \RuntimeException('Unexpected null token');
             }
-            $newRevision->setLockBy($token->getUsername());
+            $newRevision->setLockBy($token->getUserIdentifier());
         } else {
             $newRevision->setLockBy('DATA_SERVICE');
         }
@@ -736,7 +736,7 @@ class DataService
             if (null === $token) {
                 throw new \RuntimeException('Unexpected null token');
             }
-            $username = $token->getUsername();
+            $username = $token->getUserIdentifier();
         }
         $this->lockRevision($revision, null, false, $username);
 

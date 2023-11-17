@@ -106,7 +106,7 @@ class UserService implements EntityServiceInterface
         if (null === $token) {
             throw new \RuntimeException('Token is null, could not get the currentUser from token.');
         }
-        $username = $token->getUsername();
+        $username = $token->getUserIdentifier();
         $this->currentUser = $this->getUser($username, $detach);
 
         if (null === $this->currentUser) {

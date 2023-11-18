@@ -10,7 +10,7 @@ use EMS\CoreBundle\Repository\FormSubmissionRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
 use EMS\SubmissionBundle\Entity\FormSubmission;
 use EMS\SubmissionBundle\Request\DatabaseRequest;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -19,12 +19,7 @@ use ZipStream\ZipStream;
 
 final class FormSubmissionService implements EntityServiceInterface
 {
-    /**
-     * FormSubmissionService constructor.
-     *
-     * @param Session<mixed> $session
-     */
-    public function __construct(private readonly FormSubmissionRepository $formSubmissionRepository, private readonly Environment $twig, private readonly Session $session, private readonly TranslatorInterface $translator, private readonly string $templateNamespace)
+    public function __construct(private readonly FormSubmissionRepository $formSubmissionRepository, private readonly Environment $twig, private readonly FlashBagInterface $flashBag, private readonly TranslatorInterface $translator, private readonly string $templateNamespace)
     {
     }
 
@@ -164,8 +159,7 @@ final class FormSubmissionService implements EntityServiceInterface
         }
 
         $formSubmission = $this->getById($id);
-
-        $this->session->getFlashBag()->add('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $formSubmission->getId()], 'EMSCoreBundle'));
+        $this->flashBag->add('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $formSubmission->getId()], 'EMSCoreBundle'));
 
         $formSubmission->process($user->getUsername());
         $this->formSubmissionRepository->save($formSubmission);
@@ -186,8 +180,7 @@ final class FormSubmissionService implements EntityServiceInterface
             $formSubmission = $this->getById($id);
             $formSubmission->process($user->getUsername());
             $this->formSubmissionRepository->persist($formSubmission);
-
-            $this->session->getFlashBag()->add('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $id], 'EMSCoreBundle'));
+            $this->flashBag->add('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $id], 'EMSCoreBundle'));
         }
 
         $this->formSubmissionRepository->flush();

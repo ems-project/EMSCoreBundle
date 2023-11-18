@@ -244,7 +244,6 @@
             <argument type="service" id="ems_common.service.elastica" />
             <argument type="service" id="ems.service.mapping" />
             <argument>%ems_core.instance_id%</argument>
-            <argument type="service" id="session" />
             <argument type="service" id="form.factory" />
             <argument type="service" id="service_container" />
             <argument type="service" id="form.registry" />
@@ -476,7 +475,7 @@
         <service id="ems.form_submission" class="EMS\CoreBundle\Service\Form\Submission\FormSubmissionService">
             <argument type="service" id="ems.repository.form_submission"/>
             <argument type="service" id="twig"/>
-            <argument type="service" id="session"/>
+            <argument type="service" id="session.flash_bag"/>
             <argument type="service" id="translator"/>
             <argument>%ems_core.template_namespace%</argument>
         </service>

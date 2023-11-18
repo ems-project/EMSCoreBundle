@@ -19,7 +19,6 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
@@ -34,7 +33,6 @@ class SorterViewType extends ViewType
         protected Mapping $mapping,
         private readonly ElasticaService $elasticaService,
         LoggerInterface $logger,
-        protected SessionInterface $session,
         protected DataService $dataService,
         protected RouterInterface $router,
         private readonly string $templateNamespace

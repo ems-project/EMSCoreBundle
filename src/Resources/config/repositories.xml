@@ -24,6 +24,9 @@
         <service id="ems.repository.filter" class="EMS\CoreBundle\Repository\FilterRepository">
             <argument type="service" id="doctrine"/>
         </service>
+        <service id="ems.repository.field_type" class="EMS\CoreBundle\Repository\FieldTypeRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
         <service id="ems.repository.notification" alias="EMS\CoreBundle\Repository\NotificationRepository"/>
         <service id="EMS\CoreBundle\Repository\NotificationRepository">
             <argument type="service" id="doctrine"/>

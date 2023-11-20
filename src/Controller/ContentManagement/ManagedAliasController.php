@@ -2,9 +2,9 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Doctrine\ORM\EntityManager;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Form\Form\ManagedAliasType;
+use EMS\CoreBundle\Repository\ManagedAliasRepository;
 use EMS\CoreBundle\Service\AliasService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,8 +15,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ManagedAliasController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly AliasService $aliasService, private readonly string $instanceId, private readonly string $templateNamespace)
-    {
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly AliasService $aliasService,
+        private readonly ManagedAliasRepository $managedAliasRepository,
+        private readonly string $instanceId,
+        private readonly string $templateNamespace
+    ) {
     }
 
     public function addAction(Request $request): Response
@@ -72,14 +77,11 @@ class ManagedAliasController extends AbstractController
         $managedAlias = $this->aliasService->getManagedAlias($id);
 
         if ($managedAlias) {
+            $name = $managedAlias->getName();
             $this->aliasService->removeAlias($managedAlias->getAlias());
-
-            /* @var $em EntityManager */
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($managedAlias);
-            $em->flush();
+            $this->managedAliasRepository->delete($managedAlias);
             $this->logger->notice('log.managed_alias.deleted', [
-                'managed_alias_name' => $managedAlias->getName(),
+                'managed_alias_name' => $name,
             ]);
         }
 
@@ -93,11 +95,7 @@ class ManagedAliasController extends AbstractController
     {
         $managedAlias->setAlias($this->instanceId);
         $this->aliasService->updateAlias($managedAlias->getAlias(), $actions);
-
-        /* @var $em EntityManager */
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($managedAlias);
-        $em->flush();
+        $this->managedAliasRepository->update($managedAlias);
     }
 
     /**

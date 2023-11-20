@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Controller\Views;
 
-use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Response\Response as EmsResponse;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -24,7 +23,7 @@ use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
 use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
-use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -49,6 +48,8 @@ class CriteriaController extends AbstractController
         private readonly ObjectChoiceListFactory $objectChoiceListFactory,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly FormRegistryInterface $formRegistry,
+        private readonly FieldTypeRepository $fieldTypeRepository,
+        private readonly RevisionRepository $revisionRepository,
         private readonly string $templateNamespace)
     {
     }
@@ -221,11 +222,7 @@ class CriteriaController extends AbstractController
 
     public function generateCriteriaTableAction(View $view, Request $request): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var RevisionRepository $revisionRep */
-        $revisionRep = $em->getRepository(Revision::class);
-        $counters = $revisionRep->draftCounterGroupedByContentType([], true);
+        $counters = $this->revisionRepository->draftCounterGroupedByContentType([], true);
 
         foreach ($counters as $counter) {
             if ($counter['content_type_id'] == $view->getContentType()->getId()) {
@@ -1103,14 +1100,8 @@ class CriteriaController extends AbstractController
 
     public function fieldFilterAction(Request $request): JsonResponse
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository(FieldType::class);
-
         /** @var FieldType $field */
-        $field = $repository->find($request->query->get('targetField'));
-
+        $field = $this->fieldTypeRepository->find($request->query->get('targetField'));
         $choices = $field->getDisplayOptions()['choices'];
         $choices = \explode("\n", \str_replace("\r", '', (string) $choices));
         $labels = $field->getDisplayOptions()['labels'];

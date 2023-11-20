@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Controller;
 
-use Doctrine\ORM\EntityManager;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Common\EMSLink;
@@ -17,7 +16,6 @@ use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\Document\DataLinks;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Dashboard;
-use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\ExportDocuments;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
@@ -28,6 +26,7 @@ use EMS\CoreBundle\Form\Form\ExportDocumentsType;
 use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\AggregateOptionService;
 use EMS\CoreBundle\Service\AssetExtractorService;
@@ -68,6 +67,9 @@ class ElasticsearchController extends AbstractController
         private readonly AggregateOptionService $aggregateOptionService,
         private readonly SortOptionService $sortOptionService,
         private readonly DashboardManager $dashboardManager,
+        private readonly ContentTypeRepository $contentTypeRepository,
+        private readonly SearchRepository $searchRepository,
+        private readonly EnvironmentRepository $environmentRepository,
         private readonly int $pagingSize,
         private readonly ?string $healthCheckAllowOrigin,
         private readonly array $elasticsearchCluster,
@@ -178,17 +180,11 @@ class ElasticsearchController extends AbstractController
      */
     public function deleteSearchAction($id): Response
     {
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository(Search::class);
-
-        /** @var ?Search $search */
-        $search = $repository->find($id);
+        $search = $this->searchRepository->find($id);
         if (null === $search) {
             throw $this->createNotFoundException('Preset saved search not found');
         }
-
-        $em->remove($search);
-        $em->flush();
+        $this->searchRepository->remove($search);
 
         return $this->redirectToRoute('elasticsearch.search');
     }
@@ -199,17 +195,11 @@ class ElasticsearchController extends AbstractController
         if (null !== $dashboard) {
             return $this->redirectToRoute(Routes::DASHBOARD, ['name' => $dashboard->getName(), 'q' => $query = $request->query->get('q', '')]);
         }
-
         $query = $request->query->get('q');
-
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository(Search::class);
-
-        /** @var Search|null $search */
-        $search = $repository->findOneBy([
+        $search = $this->searchRepository->findOneBy([
             'default' => true,
         ]);
-        if ($search) {
+        if ($search instanceof Search) {
             /** @var SearchFilter $filter */
             foreach ($search->getFilters() as &$filter) {
                 if (empty($filter->getPattern())) {
@@ -233,44 +223,39 @@ class ElasticsearchController extends AbstractController
 
     public function setDefaultSearchAction(int $id, ?string $contentType): Response
     {
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository(Search::class);
-
-        if ($contentType) {
+        if (null !== $contentType) {
             $contentType = $this->contentTypeService->giveByName($contentType);
-            $searchs = $repository->findBy([
+            $searchs = $this->searchRepository->findBy([
                 'contentType' => $contentType->getId(),
             ]);
             /** @var Search $search */
             foreach ($searchs as $search) {
                 $search->setContentType(null);
-                $em->persist($search);
+                $this->searchRepository->save($search);
             }
 
-            $search = $repository->find($id);
+            $search = $this->searchRepository->find($id);
             if ($search instanceof Search) {
                 $search->setContentType($contentType);
-                $em->persist($search);
-                $em->flush();
+                $this->searchRepository->save($search);
                 $this->logger->notice('log.elasticsearch.default_search_for_content_type', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 ]);
             }
         } else {
-            $searchs = $repository->findBy([
+            $searchs = $this->searchRepository->findBy([
                 'default' => true,
             ]);
             /** @var Search $search */
             foreach ($searchs as $search) {
                 $search->setDefault(false);
-                $em->persist($search);
+                $this->searchRepository->save($search);
             }
-            $search = $repository->find($id);
+            $search = $this->searchRepository->find($id);
 
             if ($search instanceof Search) {
                 $search->setDefault(true);
-                $em->persist($search);
-                $em->flush();
+                $this->searchRepository->save($search);
                 $this->logger->notice('log.elasticsearch.default_search');
             }
         }
@@ -318,13 +303,9 @@ class ElasticsearchController extends AbstractController
 
         $contentTypes = $dataLinks->getContentTypeNames();
 
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
         $search = null;
         if ($searchId) {
-            $searchRepository = $em->getRepository(Search::class);
-            $search = $searchRepository->findOneBy(['id' => $searchId]);
+            $search = $this->searchRepository->findOneBy(['id' => $searchId]);
         }
 
         if (!$search instanceof Search) {
@@ -460,10 +441,7 @@ class ElasticsearchController extends AbstractController
                 foreach ($search->getFilters() as $filter) {
                     $filter->setSearch($search);
                 }
-
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($search);
-                $em->flush();
+                $this->searchRepository->save($search);
 
                 return $this->redirectToRoute('elasticsearch.search', [
                     'searchId' => $search->getId(),
@@ -475,10 +453,8 @@ class ElasticsearchController extends AbstractController
             // Use search from a saved form
             $searchId = $request->query->get('searchId');
             if (null != $searchId) {
-                $em = $this->getDoctrine()->getManager();
-                $repository = $em->getRepository(Search::class);
-                $search = $repository->find($request->query->get('searchId'));
-                if (!$search) {
+                $search = $this->searchRepository->find($request->query->get('searchId'));
+                if (!$search instanceof Search) {
                     $this->createNotFoundException('Preset search not found');
                 }
             }
@@ -522,19 +498,8 @@ class ElasticsearchController extends AbstractController
 
             /** @var Search $search */
             $search = $form->getData();
-
-            /** @var EntityManager $em */
-            $em = $this->getDoctrine()->getManager();
-
-            /** @var ContentTypeRepository $contentTypeRepository */
-            $contentTypeRepository = $em->getRepository(ContentType::class);
-
-            $types = $contentTypeRepository->findAllAsAssociativeArray();
-
-            /** @var EnvironmentRepository $environmentRepository */
-            $environmentRepository = $em->getRepository(Environment::class);
-
-            $environments = $environmentRepository->findAllAsAssociativeArray('alias');
+            $types = $this->contentTypeRepository->findAllAsAssociativeArray();
+            $environments = $this->environmentRepository->findAllAsAssociativeArray('alias');
 
             $esSearch = $this->searchService->generateSearch($search);
             $esSearch->setFrom(($page - 1) * $this->pagingSize);

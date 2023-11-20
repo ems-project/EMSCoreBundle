@@ -27,4 +27,16 @@ class SearchRepository extends ServiceEntityRepository
     {
         return $this->findBy(['user' => $username]);
     }
+
+    public function remove(Search $search): void
+    {
+        $this->_em->remove($search);
+        $this->_em->flush();
+    }
+
+    public function save(Search $search): void
+    {
+        $this->_em->persist($search);
+        $this->_em->flush();
+    }
 }

@@ -37,6 +37,7 @@ class NotificationController extends AbstractController
         private readonly ManagerRegistry $doctrine,
         private readonly NotificationService $notificationService,
         private readonly DashboardManager $dashboardManager,
+        private readonly NotificationRepository $notificationRepository,
         private readonly int $pagingSize,
         private readonly string $templateNamespace)
     {
@@ -114,18 +115,13 @@ class NotificationController extends AbstractController
         if ($reject instanceof ClickableInterface) {
             $treatNotification->setReject($reject->isClicked());
         }
-
-        $em = $this->getDoctrine()->getManager();
-        /** @var NotificationRepository $repositoryNotification */
-        $repositoryNotification = $em->getRepository(Notification::class);
-
         $publishIn = null;
         if (null !== $publishTo = $treatNotification->getPublishTo()) {
             $publishIn = $this->environmentService->getAliasByName($publishTo);
         }
 
         foreach ($treatNotification->getNotifications() as $notificationId => $true) {
-            if (null === $notification = $repositoryNotification->find($notificationId)) {
+            if (null === $notification = $this->notificationRepository->find($notificationId)) {
                 $this->logger->error('log.notification.notification_not_found', [
                     'notification_id' => $notificationId,
                 ]);

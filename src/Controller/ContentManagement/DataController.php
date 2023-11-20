@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
@@ -24,7 +23,10 @@ use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Helper\EmsCoreResponse;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Repository\SearchRepository;
+use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -61,18 +63,18 @@ class DataController extends AbstractController
         private readonly ViewTypes $viewTypes,
         private readonly TwigEnvironment $twig,
         private readonly JobService $jobService,
+        private readonly ContentTypeRepository $contentTypeRepository,
+        private readonly SearchRepository $searchRepository,
+        private readonly RevisionRepository $revisionRepository,
+        private readonly TemplateRepository $templateRepository,
+        private readonly EnvironmentRepository $environmentRepository,
         private readonly string $templateNamespace
     ) {
     }
 
     public function rootAction(string $name): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository(ContentType::class);
-        $contentType = $repository->findOneBy([
+        $contentType = $this->contentTypeRepository->findOneBy([
             'name' => $name,
             'deleted' => false,
         ]);
@@ -81,11 +83,9 @@ class DataController extends AbstractController
             throw new NotFoundHttpException('Content type '.$name.' not found');
         }
 
-        $searchRepository = $em->getRepository(Search::class);
-        $searches = $searchRepository->findBy([
+        $searches = $this->searchRepository->findBy([
             'contentType' => $contentType->getId(),
         ]);
-        /** @var Search $search */
         foreach ($searches as $search) {
             return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::searchAction', [
                 'query' => null,
@@ -115,12 +115,7 @@ class DataController extends AbstractController
 
     public function inMyCirclesAction(string $name): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository(ContentType::class);
-        $contentType = $repository->findOneBy([
+        $contentType = $this->contentTypeRepository->findOneBy([
             'name' => $name,
             'deleted' => false,
         ]);
@@ -391,13 +386,8 @@ class DataController extends AbstractController
 
     public function discardRevisionAction(int $revisionId): RedirectResponse
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var RevisionRepository $repository */
-        $repository = $em->getRepository(Revision::class);
         /** @var Revision|null $revision */
-        $revision = $repository->find($revisionId);
+        $revision = $this->revisionRepository->find($revisionId);
 
         if (null === $revision) {
             throw $this->createNotFoundException('Revision not found');
@@ -436,11 +426,8 @@ class DataController extends AbstractController
         $ouuid = $revision->getOuuid();
 
         $this->dataService->lockRevision($revision);
-
-        $em = $this->getDoctrine()->getManager();
         $revision->setAutoSave(null);
-        $em->persist($revision);
-        $em->flush();
+        $this->revisionRepository->save($revision);
 
         if (null != $ouuid) {
             if ($revision->giveContentType()->isAutoPublish()) {
@@ -467,13 +454,8 @@ class DataController extends AbstractController
 
     public function reindexRevisionAction(int $revisionId, bool $defaultOnly = false): RedirectResponse
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var RevisionRepository $repository */
-        $repository = $em->getRepository(Revision::class);
         /** @var Revision|null $revision */
-        $revision = $repository->find($revisionId);
+        $revision = $this->revisionRepository->find($revisionId);
 
         if (null === $revision) {
             throw $this->createNotFoundException('Revision not found');
@@ -519,11 +501,10 @@ class DataController extends AbstractController
 
     public function customViewJobAction(string $environmentName, int $templateId, string $ouuid, Request $request): Response
     {
-        $em = $this->getDoctrine()->getManager();
         /** @var Template|null $template * */
-        $template = $em->getRepository(Template::class)->find($templateId);
+        $template = $this->templateRepository->find($templateId);
         /** @var Environment|null $env */
-        $env = $em->getRepository(Environment::class)->findOneByName($environmentName);
+        $env = $this->environmentRepository->findOneByName($environmentName);
 
         if (null === $template || null === $env) {
             throw new NotFoundHttpException();
@@ -585,13 +566,10 @@ class DataController extends AbstractController
 
     public function ajaxUpdateAction(int $revisionId, Request $request, PublishService $publishService): Response
     {
-        $em = $this->getDoctrine()->getManager();
         $formErrors = [];
 
-        /** @var RevisionRepository $repository */
-        $repository = $em->getRepository(Revision::class);
         /** @var Revision|null $revision */
-        $revision = $repository->find($revisionId);
+        $revision = $this->revisionRepository->find($revisionId);
 
         if (null === $revision) {
             throw new NotFoundHttpException('Revision not found');
@@ -650,9 +628,7 @@ class DataController extends AbstractController
                 throw new \RuntimeException('Unexpected user object');
             }
             $revision->setAutoSaveBy($user->getUsername());
-
-            $em->persist($revision);
-            $em->flush();
+            $this->revisionRepository->save($revision);
 
             $this->dataService->isValid($form, null, $objectArray);
             $this->dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->giveContentType(), $revision->giveContentType()->getName(), $revision->getOuuid(), false, false);
@@ -868,12 +844,6 @@ class DataController extends AbstractController
         }
 
         if (null != $ouuid && null != $type) {
-            /** @var EntityManager $em */
-            $em = $this->getDoctrine()->getManager();
-
-            /** @var RevisionRepository $repository */
-            $repository = $em->getRepository(Revision::class);
-
             $contentType = $ctService->getByName($type);
 
             if (empty($contentType)) {
@@ -888,7 +858,7 @@ class DataController extends AbstractController
                 ]);
             }
 
-            $revision = $repository->findByOuuidAndContentTypeAndEnvironment($contentType, $ouuid, $contentType->giveEnvironment());
+            $revision = $this->revisionRepository->findByOuuidAndContentTypeAndEnvironment($contentType, $ouuid, $contentType->giveEnvironment());
 
             if (!$revision instanceof Revision) {
                 throw new NotFoundHttpException('Impossible to find this item : '.$ouuid);

@@ -2,10 +2,10 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Form\Form\AnalyzerType;
+use EMS\CoreBundle\Repository\AnalyzerRepository;
 use EMS\CoreBundle\Service\HelperService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,8 +17,12 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class AnalyzerController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly HelperService $helperService, private readonly string $templateNamespace)
-    {
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly HelperService $helperService,
+        private readonly AnalyzerRepository $analyzerRepository,
+        private readonly string $templateNamespace
+    ) {
     }
 
     public function index(): Response
@@ -35,11 +39,8 @@ class AnalyzerController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var EntityManager $em */
-            $em = $this->getDoctrine()->getManager();
             $analyzer = $form->getData();
-            $em->persist($analyzer);
-            $em->flush($analyzer);
+            $this->analyzerRepository->update($analyzer);
 
             $this->logger->notice('log.analyzer.updated', [
                 'analyzer_name' => $analyzer->getName(),
@@ -60,11 +61,7 @@ class AnalyzerController extends AbstractController
     {
         $id = $analyzer->getId();
         $name = $analyzer->getName();
-
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($analyzer);
-        $em->flush();
+        $this->analyzerRepository->delete($analyzer);
 
         $this->logger->notice('log.analyzer.deleted', [
             'analyzer_name' => $name,
@@ -84,12 +81,9 @@ class AnalyzerController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var EntityManager $em */
-            $em = $this->getDoctrine()->getManager();
             $analyzer = $form->getData();
             if ($analyzer instanceof Analyzer) {
-                $em->persist($analyzer);
-                $em->flush($analyzer);
+                $this->analyzerRepository->update($analyzer);
 
                 $this->logger->notice('log.analyzer.created', [
                     'analyzer_name' => $analyzer->getName(),

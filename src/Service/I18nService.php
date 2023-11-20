@@ -148,4 +148,9 @@ class I18nService implements EntityServiceInterface
 
         return \strval($id);
     }
+
+    public function save(I18n $i18n): void
+    {
+        $this->repository->update($i18n);
+    }
 }

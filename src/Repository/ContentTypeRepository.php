@@ -136,4 +136,10 @@ class ContentTypeRepository extends EntityRepository
                 ->setParameter(':term', '%'.$searchValue.'%');
         }
     }
+
+    public function save(ContentType $contentType): void
+    {
+        $this->_em->persist($contentType);
+        $this->_em->flush();
+    }
 }

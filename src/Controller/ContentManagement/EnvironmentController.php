@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Doctrine\ORM\EntityManager;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
@@ -20,7 +19,9 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\CompareEnvironmentFormType;
 use EMS\CoreBundle\Form\Form\EditEnvironmentType;
 use EMS\CoreBundle\Form\Form\RebuildIndexType;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -54,6 +55,10 @@ class EnvironmentController extends AbstractController
         private readonly Mapping $mapping,
         private readonly AliasService $aliasService,
         private readonly JobService $jobService,
+        private readonly RevisionRepository $revisionRepository,
+        private readonly EnvironmentRepository $environmentRepository,
+        private readonly FieldTypeRepository $fieldTypeRepository,
+        private readonly ContentTypeRepository $contentTypeRepository,
         private readonly int $pagingSize,
         private readonly string $instanceId,
         private readonly ?string $circlesObject,
@@ -86,14 +91,8 @@ class EnvironmentController extends AbstractController
                     $alignTo[Type::string($request->query->get('withEnvironment'))] = Type::string($request->query->get('withEnvironment'));
                     $alignTo[Type::string($request->query->get('environment'))] = Type::string($request->query->get('environment'));
                     $revid = $request->request->all('compare_environment_form')['alignWith'];
-
-                    /** @var EntityManager $em */
-                    $em = $this->getDoctrine()->getManager();
-
-                    $repository = $em->getRepository(Revision::class);
-
                     /** @var Revision $revision */
-                    $revision = $repository->findOneBy([
+                    $revision = $this->revisionRepository->findOneBy([
                             'id' => $revid,
                     ]);
 
@@ -202,21 +201,16 @@ class EnvironmentController extends AbstractController
         }
 
         if ($environment && $withEnvironment) {
-            /** @var EntityManager $em */
-            $em = $this->getDoctrine()->getManager();
-            /** @var RevisionRepository $repository */
-            $repository = $em->getRepository(Revision::class);
-
             $env = $this->environmentService->giveByName($environment);
             $withEnvi = $this->environmentService->giveByName($withEnvironment);
 
-            $total = $repository->countDifferencesBetweenEnvironment($env->getId(), $withEnvi->getId(), $contentTypes);
+            $total = $this->revisionRepository->countDifferencesBetweenEnvironment($env->getId(), $withEnvi->getId(), $contentTypes);
             if ($total) {
                 $lastPage = \ceil($total / $paging_size);
                 if ($page > $lastPage) {
                     $page = $lastPage;
                 }
-                $results = $repository->compareEnvironment(
+                $results = $this->revisionRepository->compareEnvironment(
                     $env->getId(),
                     $withEnvi->getId(),
                     $contentTypes,
@@ -232,8 +226,8 @@ class EnvironmentController extends AbstractController
                     $minrevid = \explode('/', (string) $results[$index]['minrevid']); // 1/81522/2017-03-08 14:32:52 => e.id/r.id/r.created
                     $maxrevid = \explode('/', (string) $results[$index]['maxrevid']);
 
-                    $results[$index]['revisionEnvironment'] = $repository->findOneById((int) $minrevid[1]);
-                    $results[$index]['revisionWithEnvironment'] = $repository->findOneById((int) $maxrevid[1]);
+                    $results[$index]['revisionEnvironment'] = $this->revisionRepository->findOneById((int) $minrevid[1]);
+                    $results[$index]['revisionWithEnvironment'] = $this->revisionRepository->findOneById((int) $maxrevid[1]);
 
                     $contentType = $results[$index]['contentType'];
                     if (false === $contentType) {
@@ -297,11 +291,7 @@ class EnvironmentController extends AbstractController
     {
         try {
             if ($this->indexService->hasIndex($name)) {
-                /** @var EntityManager $em */
-                $em = $this->getDoctrine()->getManager();
-
-                $environmentRepository = $em->getRepository(Environment::class);
-                $anotherObject = $environmentRepository->findBy([
+                $anotherObject = $this->environmentRepository->findBy([
                         'name' => $name,
                 ]);
 
@@ -311,9 +301,7 @@ class EnvironmentController extends AbstractController
                     $environment->setAlias($name);
                     // TODO: setCircles
                     $environment->setManaged(false);
-
-                    $em->persist($environment);
-                    $em->flush();
+                    $this->environmentRepository->save($environment);
 
                     $this->logger->notice('log.environment.alias_attached', [
                         'alias' => $name,
@@ -350,12 +338,8 @@ class EnvironmentController extends AbstractController
 
     public function removeAction(int $id): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var EnvironmentRepository $repository */
-        $repository = $em->getRepository(Environment::class);
         /** @var Environment $environment */
-        $environment = $repository->find($id);
+        $environment = $this->environmentRepository->find($id);
 
         if (0 !== $environment->getRevisions()->count()) {
             $this->logger->error('log.environment.not_empty', [
@@ -394,13 +378,10 @@ class EnvironmentController extends AbstractController
             /** @var ContentType $contentType */
             foreach ($environment->getContentTypesHavingThisAsDefault() as $contentType) {
                 $contentType->getFieldType()->setContentType(null);
-                $em->persist($contentType->getFieldType());
-                $em->flush();
-                $em->remove($contentType);
-                $em->flush();
+                $this->fieldTypeRepository->save($contentType->getFieldType());
+                $this->contentTypeRepository->delete($contentType);
             }
-            $em->remove($environment);
-            $em->flush();
+            $this->environmentRepository->delete($environment);
             $this->logger->notice('log.environment.deleted', [
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
             ]);
@@ -441,11 +422,7 @@ class EnvironmentController extends AbstractController
             }
 
             if ($form->isValid()) {
-                /** @var EntityManager $em */
-                $em = $this->getDoctrine()->getManager();
-
-                $environmentRepository = $em->getRepository(Environment::class);
-                $anotherObject = $environmentRepository->findBy([
+                $anotherObject = $this->environmentRepository->findBy([
                         'name' => $environment->getName(),
                 ]);
 
@@ -455,9 +432,7 @@ class EnvironmentController extends AbstractController
                 } else {
                     $environment->setAlias($this->instanceId.$environment->getName());
                     $environment->setManaged(true);
-                    $em = $this->getDoctrine()->getManager();
-                    $em->persist($environment);
-                    $em->flush();
+                    $this->environmentRepository->save($environment);
 
                     $indexName = $environment->getNewIndexName();
                     $this->mapping->createIndex($indexName, $this->environmentService->getIndexAnalysisConfiguration());
@@ -513,14 +488,8 @@ class EnvironmentController extends AbstractController
 
     public function viewAction(int $id): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var EnvironmentRepository $repository */
-        $repository = $em->getRepository(Environment::class);
-
         /** @var Environment|null $environment */
-        $environment = $repository->find($id);
+        $environment = $this->environmentRepository->find($id);
 
         if (null === $environment) {
             throw new NotFoundHttpException('Unknow environment');
@@ -546,13 +515,8 @@ class EnvironmentController extends AbstractController
 
     public function rebuild(int $id, Request $request): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var EnvironmentRepository $repository */
-        $repository = $em->getRepository(Environment::class);
-
         /** @var Environment|null $environment */
-        $environment = $repository->find($id);
+        $environment = $this->environmentRepository->find($id);
 
         if (null === $environment) {
             throw new NotFoundHttpException('Unknow environment');
@@ -602,9 +566,6 @@ class EnvironmentController extends AbstractController
     public function indexAction(Request $request): Response
     {
         try {
-            /** @var EntityManager $em */
-            $em = $this->getDoctrine()->getManager();
-
             $logger = $this->logger;
             $logger->debug('For each environments: start');
 
@@ -655,15 +616,14 @@ class EnvironmentController extends AbstractController
                 if (isset($form['environmentNames']) && \is_array($form['environmentNames'])) {
                     $counter = 0;
                     foreach ($form['environmentNames'] as $name) {
-                        $contentType = $this->environmentService->getByName($name);
-                        if ($contentType) {
-                            $contentType->setOrderKey($counter);
-                            $em->persist($contentType);
+                        $environment = $this->environmentService->getByName($name);
+                        if ($environment) {
+                            $environment->setOrderKey($counter);
+                            $this->environmentRepository->save($environment);
                         }
                         ++$counter;
                     }
 
-                    $em->flush();
                     $this->logger->notice('log.environment.reordered', [
                         EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
                     ]);

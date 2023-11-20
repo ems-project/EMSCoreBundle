@@ -2,9 +2,9 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Doctrine\ORM\EntityManager;
 use EMS\CoreBundle\Entity\Filter;
 use EMS\CoreBundle\Form\Form\FilterType;
+use EMS\CoreBundle\Repository\FilterRepository;
 use EMS\CoreBundle\Service\HelperService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,8 +15,12 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class FilterController extends AbstractController
 {
-    public function __construct(private readonly LoggerInterface $logger, private readonly HelperService $helperService, private readonly string $templateNamespace)
-    {
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly HelperService $helperService,
+        private readonly FilterRepository $filterRepository,
+        private readonly string $templateNamespace,
+    ) {
     }
 
     public function indexAction(): Response
@@ -33,11 +37,8 @@ class FilterController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var EntityManager $em */
-            $em = $this->getDoctrine()->getManager();
             $filter = $form->getData();
-            $em->persist($filter);
-            $em->flush($filter);
+            $this->filterRepository->update($filter);
 
             return $this->redirectToRoute('ems_filter_index', [
             ]);
@@ -50,13 +51,10 @@ class FilterController extends AbstractController
 
     public function deleteAction(Filter $filter): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($filter);
-        $em->flush();
-
+        $name = $filter->getName();
+        $this->filterRepository->delete($filter);
         $this->logger->notice('log.filter.deleted', [
-            'filter_name' => $filter->getName(),
+            'filter_name' => $name,
         ]);
 
         return $this->redirectToRoute('ems_filter_index', [
@@ -71,11 +69,8 @@ class FilterController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var EntityManager $em */
-            $em = $this->getDoctrine()->getManager();
             $filter = $form->getData();
-            $em->persist($filter);
-            $em->flush($filter);
+            $this->filterRepository->update($filter);
 
             return $this->redirectToRoute('ems_filter_index', [
             ]);

@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Controller;
 
-use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
@@ -10,9 +9,9 @@ use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\DataTable\Type\UserDataTableType;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\User;
-use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Form\Form\UserType;
+use EMS\CoreBundle\Repository\AuthTokenRepository;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\UserService;
@@ -29,6 +28,8 @@ class UserController extends AbstractController
         private readonly UserManager $userManager,
         private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGenerator,
         private readonly DataTableFactory $dataTableFactory,
+        private readonly AuthTokenRepository $authTokenRepository,
+        private readonly WysiwygProfileRepository $wysiwygProfileRepository,
         private readonly string $templateNamespace
     ) {
     }
@@ -48,13 +49,7 @@ class UserController extends AbstractController
     public function addUserAction(Request $request): Response
     {
         $user = new User();
-
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var WysiwygProfileRepository $repository */
-        $repository = $em->getRepository(WysiwygProfile::class);
-        $result = $repository->findBy([], ['orderKey' => 'asc'], 1);
+        $result = $this->wysiwygProfileRepository->findBy([], ['orderKey' => 'asc'], 1);
         if (\count($result) > 0) {
             $user->setWysiwygProfile($result[0]);
         }
@@ -116,7 +111,6 @@ class UserController extends AbstractController
         $username = $user->getUsername();
         $displayName = $user->getDisplayName();
         $this->userService->deleteUser($user);
-        $this->getDoctrine()->getManager()->flush();
 
         $this->logger->notice('log.user.deleted', [
             'username_managed' => $username,
@@ -136,9 +130,7 @@ class UserController extends AbstractController
             $user->setEnabled(true);
             $message = 'log.user.enabled';
         }
-
         $this->userService->updateUser($user);
-        $this->getDoctrine()->getManager()->flush();
 
         $this->logger->notice($message, [
             'username_managed' => $user->getUsername(),
@@ -169,11 +161,7 @@ class UserController extends AbstractController
         }
 
         $authToken = new AuthToken($user);
-
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($authToken);
-        $em->flush();
+        $this->authTokenRepository->save($authToken);
 
         // TODO: Hide the key in the logs?
         $this->logger->notice('log.user.api_key', [
@@ -190,11 +178,7 @@ class UserController extends AbstractController
     {
         $user = $this->userService->giveUser($this->userService->getCurrentUser()->getUsername(), false);
         $user->setSidebarCollapse($collapsed);
-
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
+        $this->userService->updateUser($user);
 
         return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
             'success' => true,

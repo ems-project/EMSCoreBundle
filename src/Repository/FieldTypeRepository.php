@@ -4,12 +4,23 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use EMS\CoreBundle\Entity\FieldType;
 
 /**
- * @extends EntityRepository<FieldType>
+ * @extends ServiceEntityRepository<FieldType>
  */
-class FieldTypeRepository extends EntityRepository
+class FieldTypeRepository extends ServiceEntityRepository
 {
+    public function __construct(Registry $registry)
+    {
+        parent::__construct($registry, FieldType::class);
+    }
+
+    public function save(FieldType $field): void
+    {
+        $this->_em->persist($field);
+        $this->_em->flush();
+    }
 }

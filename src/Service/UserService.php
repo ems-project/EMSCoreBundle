@@ -162,6 +162,7 @@ class UserService implements EntityServiceInterface
         /** @var EntityManagerInterface $em */
         $em = $this->doctrine->getManager();
         $em->remove($user);
+        $em->flush();
     }
 
     /**

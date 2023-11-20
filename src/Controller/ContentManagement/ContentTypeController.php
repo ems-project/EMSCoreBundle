@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -23,6 +22,7 @@ use EMS\CoreBundle\Form\Form\EditFieldTypeType;
 use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\Mapping;
 use EMS\Helpers\Standard\Json;
@@ -51,6 +51,9 @@ class ContentTypeController extends AbstractController
         private readonly ContentTypeService $contentTypeService,
         private readonly Mapping $mappingService,
         private readonly FieldTypeManager $fieldTypeManager,
+        private readonly ContentTypeRepository $contentTypeRepository,
+        private readonly EnvironmentRepository $environmentRepository,
+        private readonly FieldTypeRepository $fieldTypeRepository,
         private readonly string $templateNamespace)
     {
     }
@@ -93,11 +96,7 @@ class ContentTypeController extends AbstractController
 
     public function removeAction(int $id): RedirectResponse
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository(ContentType::class);
-        $contentType = $repository->findById($id);
+        $contentType = $this->contentTypeRepository->findById($id);
 
         if (null === $contentType) {
             throw new NotFoundHttpException('Content Type not found');
@@ -105,8 +104,7 @@ class ContentTypeController extends AbstractController
 
         // TODO test if there something published for this content type
         $contentType->setActive(false)->setDeleted(true);
-        $em->persist($contentType);
-        $em->flush();
+        $this->contentTypeRepository->save($contentType);
 
         $this->logger->warning('log.contenttype.deleted', [
             EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
@@ -118,9 +116,6 @@ class ContentTypeController extends AbstractController
 
     public function activateAction(ContentType $contentType): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
         if ($contentType->getDirty()) {
             $this->logger->error('log.contenttype.dirty', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
@@ -131,20 +126,15 @@ class ContentTypeController extends AbstractController
         }
 
         $contentType->setActive(true);
-        $em->persist($contentType);
-        $em->flush();
+        $this->contentTypeRepository->save($contentType);
 
         return $this->redirectToRoute('contenttype.index');
     }
 
     public function disableAction(ContentType $contentType): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
         $contentType->setActive(false);
-        $em->persist($contentType);
-        $em->flush();
+        $this->contentTypeRepository->save($contentType);
 
         return $this->redirectToRoute('contenttype.index');
     }
@@ -159,13 +149,7 @@ class ContentTypeController extends AbstractController
 
     public function addAction(Request $request): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var EnvironmentRepository $environmetRepository */
-        $environmetRepository = $em->getRepository(Environment::class);
-
-        $environments = $environmetRepository->findBy([
+        $environments = $this->environmentRepository->findBy([
             'managed' => true,
         ]);
 
@@ -196,10 +180,7 @@ class ContentTypeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var ContentType $contentTypeAdded */
             $contentTypeAdded = $form->getData();
-            /** @var ContentTypeRepository $contentTypeRepository */
-            $contentTypeRepository = $em->getRepository(ContentType::class);
-
-            $contentTypes = $contentTypeRepository->findBy([
+            $contentTypes = $this->contentTypeRepository->findBy([
                 'name' => $contentTypeAdded->getName(),
                 'deleted' => false,
             ]);
@@ -237,10 +218,9 @@ class ContentTypeController extends AbstractController
             } else {
                 $contentType = $contentTypeAdded;
                 $contentType->setAskForOuuid(false);
-                $contentType->setOrderKey($contentTypeRepository->nextOrderKey());
-                $em->persist($contentType);
+                $contentType->setOrderKey($this->contentTypeRepository->nextOrderKey());
+                $this->contentTypeRepository->save($contentType);
             }
-            $em->flush();
 
             $this->logger->notice('log.contenttype.created', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
@@ -259,13 +239,7 @@ class ContentTypeController extends AbstractController
 
     public function indexAction(Request $request): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository(ContentType::class);
-
-        $contentTypes = $contentTypeRepository->findAll();
+        $contentTypes = $this->contentTypeRepository->findAll();
 
         $builder = $this->createFormBuilder([])
             ->add('reorder', SubmitEmsType::class, [
@@ -296,16 +270,14 @@ class ContentTypeController extends AbstractController
                 $counter = 1;
                 foreach ($form['contentTypeNames'] as $name) {
                     /** @var ContentType $contentType */
-                    $contentType = $contentTypeRepository->findOneBy([
+                    $contentType = $this->contentTypeRepository->findOneBy([
                         'deleted' => false,
                         'name' => $name,
                     ]);
                     $contentType->setOrderKey($counter);
-                    $em->persist($contentType);
+                    $this->contentTypeRepository->save($contentType);
                     ++$counter;
                 }
-
-                $em->flush();
 
                 $this->logger->notice('log.contenttype.reordered', [
                     EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
@@ -322,17 +294,9 @@ class ContentTypeController extends AbstractController
 
     public function unreferencedAction(Request $request): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var EnvironmentRepository $environmetRepository */
-        $environmetRepository = $em->getRepository(Environment::class);
-        /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository(ContentType::class);
-
         if ($request->isMethod('POST')) {
             if (null != $request->get('envId') && null != $request->get('name')) {
-                $defaultEnvironment = $environmetRepository->findOneById($request->get('envId'));
+                $defaultEnvironment = $this->environmentRepository->findOneById($request->get('envId'));
                 if ($defaultEnvironment instanceof Environment) {
                     $contentType = new ContentType();
                     $contentType->setName($request->get('name'));
@@ -341,10 +305,8 @@ class ContentTypeController extends AbstractController
                     $contentType->setEnvironment($defaultEnvironment);
                     $contentType->setActive(true);
                     $contentType->setDirty(false);
-                    $contentType->setOrderKey($contentTypeRepository->countContentType());
-
-                    $em->persist($contentType);
-                    $em->flush();
+                    $contentType->setOrderKey($this->contentTypeRepository->countContentType());
+                    $this->contentTypeRepository->save($contentType);
 
                     $this->logger->warning('log.contenttype.referenced', [
                         EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
@@ -419,11 +381,7 @@ class ContentTypeController extends AbstractController
 
     public function editAction(int $id, Request $request): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository(ContentType::class);
-        $contentType = $repository->findById($id);
+        $contentType = $this->contentTypeRepository->findById($id);
 
         if (null === $contentType) {
             $this->logger->error('log.contenttype.not_found', [
@@ -464,8 +422,7 @@ class ContentTypeController extends AbstractController
                 if (\array_key_exists('saveAndUpdateMapping', $inputContentType)) {
                     $this->contentTypeService->updateMapping($contentType);
                 }
-                $em->persist($contentType);
-                $em->flush();
+                $this->contentTypeRepository->save($contentType);
 
                 if ($contentType->getDirty()) {
                     $this->logger->warning('log.contenttype.dirty', [
@@ -505,11 +462,7 @@ class ContentTypeController extends AbstractController
 
     public function editStructureAction(int $id, Request $request): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var ContentTypeRepository $repository */
-        $repository = $em->getRepository(ContentType::class);
-        $contentType = $repository->findById($id);
+        $contentType = $this->contentTypeRepository->findById($id);
 
         if (null === $contentType) {
             $this->logger->error('log.contenttype.not_found', [
@@ -567,8 +520,7 @@ class ContentTypeController extends AbstractController
             } else {
                 $openModal = $this->fieldTypeManager->handleRequest($contentType->getFieldType(), $inputContentType['fieldType']);
                 $contentType->getFieldType()->updateOrderKeys();
-                $em->persist($contentType);
-                $em->flush();
+                $this->contentTypeRepository->save($contentType);
 
                 return $this->redirectToRoute('contenttype.structure', \array_filter([
                     'id' => $id,
@@ -595,8 +547,6 @@ class ContentTypeController extends AbstractController
      */
     private function treatFieldSubmit(ContentType $contentType, FieldType $field, $action, $subFieldName): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
         $contentType->getFieldType()->setName('source');
 
         if (\in_array($action, ['save', 'saveAndClose'])) {
@@ -632,8 +582,7 @@ class ContentTypeController extends AbstractController
                             $child->setType(SubfieldType::class);
                             $child->setParent($field);
                             $field->addChild($child);
-                            $em->persist($field);
-                            $em->flush();
+                            $this->fieldTypeRepository->save($field);
 
                             $this->logger->notice('log.contenttype.subfield.added', [
                                 'subfield_name' => $subFieldName,

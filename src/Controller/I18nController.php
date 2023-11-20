@@ -59,9 +59,7 @@ class I18nController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($i18n);
-            $em->flush();
+            $this->i18nService->save($i18n);
 
             return $this->redirectToRoute('i18n_index', ['id' => $i18n->getId()]);
         }
@@ -86,11 +84,9 @@ class I18nController extends AbstractController
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
             // renumber array elements
             $i18n->setContent(\array_values($i18n->getContent()));
-            $em->persist($i18n);
-            $em->flush();
+            $this->i18nService->save($i18n);
 
             return $this->redirectToRoute('i18n_index');
         }

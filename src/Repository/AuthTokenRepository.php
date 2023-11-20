@@ -34,4 +34,10 @@ class AuthTokenRepository extends ServiceEntityRepository
 
         return $authToken;
     }
+
+    public function save(AuthToken $authToken): void
+    {
+        $this->_em->persist($authToken);
+        $this->_em->flush();
+    }
 }

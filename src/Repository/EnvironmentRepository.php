@@ -239,4 +239,10 @@ class EnvironmentRepository extends EntityRepository
                 ->setParameter(':term', '%'.$searchValue.'%');
         }
     }
+
+    public function save(Environment $environment): void
+    {
+        $this->_em->persist($environment);
+        $this->_em->flush();
+    }
 }

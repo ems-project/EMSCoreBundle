@@ -73,6 +73,8 @@
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.action" />
             <argument type="service" id="emsco.data_table.factory" />
+            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository" />
+            <argument type="service" id="EMS\CoreBundle\Repository\TemplateRepository" />
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>

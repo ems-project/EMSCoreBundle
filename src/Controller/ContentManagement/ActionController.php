@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
@@ -33,6 +32,8 @@ final class ActionController extends AbstractController
         private readonly LoggerInterface $logger,
         private readonly ActionService $actionService,
         private readonly DataTableFactory $dataTableFactory,
+        private readonly ContentTypeRepository $contentTypeRepository,
+        private readonly TemplateRepository $templateRepository,
         private readonly string $templateNamespace
     ) {
     }
@@ -41,13 +42,7 @@ final class ActionController extends AbstractController
     public function indexAction(string $type): Response
     {
         \trigger_error('Route template.index is now deprecated, use the route ems_core_action_index', E_USER_DEPRECATED);
-
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository(ContentType::class);
-
-        $contentTypes = $contentTypeRepository->findBy([
+        $contentTypes = $this->contentTypeRepository->findBy([
             'deleted' => false,
             'name' => $type,
         ]);
@@ -101,13 +96,7 @@ final class ActionController extends AbstractController
     public function addAction(string $type, Request $request): Response
     {
         \trigger_error('Route template.add is now deprecated, use the route ems_core_action_add', E_USER_DEPRECATED);
-
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var ContentTypeRepository $contentTypeRepository */
-        $contentTypeRepository = $em->getRepository(ContentType::class);
-
-        $contentTypes = $contentTypeRepository->findBy([
+        $contentTypes = $this->contentTypeRepository->findBy([
             'deleted' => false,
             'name' => $type,
         ]);
@@ -131,12 +120,7 @@ final class ActionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $action->setOrderKey($this->actionService->count('', $contentType) + 1);
             $action->setName(Encoder::webalize($action->getName()));
-
-            /** @var EntityManager $em */
-            $em = $this->getDoctrine()->getManager();
-
-            $em->persist($action);
-            $em->flush();
+            $this->templateRepository->save($action);
             $this->logger->notice('log.action.added', [
                 'action_name' => $action->getName(),
             ]);
@@ -162,8 +146,6 @@ final class ActionController extends AbstractController
 
     public function edit(Template $action, Request $request, string $_format): Response
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
         $id = $action->getId();
 
         $form = $this->createForm(ActionType::class, $action, [
@@ -173,9 +155,7 @@ final class ActionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($action);
-            $em->flush();
-
+            $this->templateRepository->save($action);
             $this->logger->notice('log.action.updated', [
                 'action_name' => $action->getName(),
             ]);
@@ -214,13 +194,7 @@ final class ActionController extends AbstractController
     public function removeAction(string $id): RedirectResponse
     {
         \trigger_error('Route template.remove is now deprecated, use the route ems_core_action_delete', E_USER_DEPRECATED);
-
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        /** @var TemplateRepository $templateRepository */
-        $templateRepository = $em->getRepository(Template::class);
-
-        $action = $templateRepository->find($id);
+        $action = $this->templateRepository->find($id);
 
         if (!$action instanceof Template) {
             throw new NotFoundHttpException('Template type not found');

@@ -219,7 +219,6 @@ class ReindexCommand extends EmsCommand
             if (isset($item['index']['error'])) {
                 ++$this->error;
                 $this->logger->warning('log.reindex.revision.error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $item['index']['_type'],
                     EmsFields::LOG_OUUID_FIELD => $item['index']['_id'],
                 ]);
             } else {

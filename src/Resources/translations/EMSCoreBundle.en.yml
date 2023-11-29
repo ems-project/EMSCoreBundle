@@ -195,7 +195,7 @@ log:
     reindex:
         revision:
             deleted_but_referenced: 'The document "%label%" is marked as deleted but is still referenced in %environment%'
-            error: 'En error occurred while indexing the document "%label%"'
+            error: 'En error occurred while indexing the document "%ouuid%"'
     revision_error: 'Error "%error_message%" with the document "%label%"'
     locked_exception_error: 'Document "%label%" is currently locked by %username%'
     privilege_exception_error: 'You don''t have enough privileges to edit this document'

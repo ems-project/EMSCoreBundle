@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  *
  * @ORM\Table(name="field_type")
  *
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\FieldTypeRepository")
+ * @ORM\Entity()
  *
  * @ORM\HasLifecycleCallbacks()
  */

@@ -204,6 +204,10 @@ class RevisionService implements RevisionServiceInterface
 
     public function getByEmsLink(EMSLink $emsLink, ?\DateTimeInterface $dateTime = null): ?Revision
     {
+        if (!$emsLink->isValid()) {
+            return null;
+        }
+
         return $this->get($emsLink->getOuuid(), $emsLink->getContentType(), $dateTime);
     }
 

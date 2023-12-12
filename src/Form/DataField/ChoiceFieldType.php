@@ -17,6 +17,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ChoiceFieldType extends DataFieldType
 {
     private ?int $fakeIndex = null;
+    /** @var array<string, string|int> */
+    private array $choices;
 
     public function getLabel(): string
     {
@@ -63,42 +65,13 @@ class ChoiceFieldType extends DataFieldType
     {
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
-
-        $choices = [];
-        $values = \explode("\n", \str_replace("\r", '', (string) $options['choices']));
-        $labels = \explode("\n", \str_replace("\r", '', (string) $options['labels']));
-
-        foreach ($values as $id => $value) {
-            if ('' != $value) {
-                if (isset($labels[$id]) && !empty($labels[$id])) {
-                    $choices[$labels[$id]] = $value;
-                } else {
-                    $choices[$value] = $value;
-                }
-            }
-        }
-
-        if ($options['linked_collection']) {
-            $idx = 0;
-            if (isset($options['raw_data'][$options['linked_collection']]) && \is_array($options['raw_data'][$options['linked_collection']])) {
-                foreach ($options['raw_data'][$options['linked_collection']] as $idx => $child) {
-                    $choices['#'.$idx.': '.((isset($child[$options['collection_label_field']]) && null !== $child[$options['collection_label_field']]) ? $child[$options['collection_label_field']] : '')] = $idx;
-                }
-                ++$idx;
-            }
-
-            $this->fakeIndex = $idx;
-
-            for ($i = 0; $i < 50; ++$i) {
-                $choices['[ems_hide_input]'.($idx + $i)] = $idx + $i;
-            }
-        }
+        $this->choices = $this->buildChoices($options);
 
         $builder->add('value', ChoiceType::class, [
                 'label' => ($options['label'] ?? $fieldType->getName()),
                 'required' => false,
                 'disabled' => $this->isDisabled($options),
-                'choices' => $choices,
+                'choices' => $this->choices,
                 'empty_data' => $options['multiple'] ? [] : null,
                 'multiple' => $options['multiple'],
                 'expanded' => $options['expanded'],
@@ -198,11 +171,8 @@ class ChoiceFieldType extends DataFieldType
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $value = $data['value'] ?? null;
-
         if (\is_array($value)) {
-            $choices = $fieldType->getDisplayOption('choices', '');
-            $values = \explode("\n", \str_replace("\r", '', (string) $choices));
-            $value = \array_values(\array_filter($values, fn ($v) => \in_array($v, $value)));
+            $value = \array_values(\array_filter($this->choices, fn ($v) => \in_array($v, $value)));
         }
 
         return parent::reverseViewTransform($value, $fieldType);
@@ -248,5 +218,44 @@ class ChoiceFieldType extends DataFieldType
         }
 
         return ['value' => $out];
+    }
+
+    /**
+     * @param  array<string, mixed>      $options
+     * @return array<string, string|int>
+     */
+    private function buildChoices(array $options): array
+    {
+        $choices = [];
+        $values = \explode("\n", \str_replace("\r", '', (string) $options['choices']));
+        $labels = \explode("\n", \str_replace("\r", '', (string) $options['labels']));
+
+        foreach ($values as $id => $value) {
+            if ('' != $value) {
+                if (isset($labels[$id]) && !empty($labels[$id])) {
+                    $choices[$labels[$id]] = $value;
+                } else {
+                    $choices[$value] = $value;
+                }
+            }
+        }
+
+        if (\is_string($options['linked_collection'] ?? null)) {
+            $idx = 0;
+            if (\is_array($options['raw_data'][$options['linked_collection']] ?? null)) {
+                foreach ($options['raw_data'][$options['linked_collection']] as $idx => $child) {
+                    $choices['#'.$idx.': '.((null !== ($child[$options['collection_label_field'] ?? 'label'] ?? null)) ? $child[$options['collection_label_field']] : '')] = $idx;
+                }
+                ++$idx;
+            }
+
+            $this->fakeIndex = $idx;
+
+            for ($i = 0; $i < 50; ++$i) {
+                $choices['[ems_hide_input]'.($idx + $i)] = $idx + $i;
+            }
+        }
+
+        return $choices;
     }
 }

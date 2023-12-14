@@ -50,6 +50,10 @@
 					uploadTab = dialog.definition.getContents( 'upload' ),
 					uploadInitiallyHidden = uploadTab && uploadTab.hidden;
 
+                dialog
+                    .getContentElement('target', 'linkTargetType')
+                    .setValue(emsConfig.hasOwnProperty('urlTargetDefaultBlank') && emsConfig.urlTargetDefaultBlank.includes(typeValue) ? '_blank' : 'notSet');
+
 				if ( typeValue == 'url' || typeValue == 'localPage' || typeValue == 'fileLink' ) {
 					if ( editor.config.linkShowTargetTab )
 						dialog.showPage( 'target' );
@@ -171,6 +175,11 @@
 						title : linkLang.selectContentTypeTitle,
 						'default': localContentTypes[0][1],
 						items : localContentTypes,
+                        onChange: function () {
+                            this.getDialog()
+                                .getContentElement('target', 'linkTargetType')
+                                .setValue(emsConfig.hasOwnProperty('urlTargetDefaultBlank') && emsConfig.urlTargetDefaultBlank.includes(this.getValue()) ? '_blank' : 'notSet');
+                        },
 					    setup: function( data ) {
 					    	if(data.type == 'localPage' &&  data.filter){
 					    		this.setValue( data.filter );

@@ -10,6 +10,7 @@
 /phpunit.xml.dist export-ignore
 /webpack.config.js export-ignore
 /tests export-ignore
+/assets export-ignore
 
 # Set the default behavior, in case people don't have core.autocrlf set.
 * text=auto

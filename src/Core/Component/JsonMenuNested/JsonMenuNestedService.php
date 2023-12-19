@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Core\Component\JsonMenuNested;
 
 use EMS\CommonBundle\Json\JsonMenuNested;
 use EMS\CommonBundle\Json\JsonMenuNestedException;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Component\JsonMenuNested\Config\JsonMenuNestedConfig;
 use EMS\CoreBundle\Core\Component\JsonMenuNested\Config\JsonMenuNestedNode;
 use EMS\CoreBundle\Core\Component\JsonMenuNested\Template\Context\JsonMenuNestedRenderContext;
@@ -22,7 +23,8 @@ class JsonMenuNestedService
     public function __construct(
         private readonly JsonMenuNestedTemplateFactory $jsonMenuNestedTemplateFactory,
         private readonly RevisionService $revisionService,
-        private readonly UserService $userService
+        private readonly UserService $userService,
+        private readonly ElasticaService $elasticaService
     ) {
     }
 
@@ -163,5 +165,6 @@ class JsonMenuNestedService
         (new PropertyAccessor())->setValue($rawData, $path, $structure);
 
         $this->revisionService->updateRawData($config->revision, $rawData, $username);
+        $this->elasticaService->refresh($config->revision->giveContentType()->giveEnvironment()->getAlias());
     }
 }

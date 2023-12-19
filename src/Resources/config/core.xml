@@ -31,6 +31,7 @@
             <argument type="service" id="emsco.core.json_menu_nested.template_factory" />
             <argument type="service" id="ems.service.revision" />
             <argument type="service" id="ems.service.user" />
+            <argument type="service" id="ems_common.service.elastica" />
         </service>
 
         <!-- Media Library -->

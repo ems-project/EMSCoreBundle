@@ -93,7 +93,7 @@ class JobController extends AbstractController
 
     public function startJob(Job $job, Request $request, UserInterface $user): Response
     {
-        if ($job->getUser() != $user->getUsername()) {
+        if ($job->getUser() != $user->getUserIdentifier()) {
             throw new AccessDeniedHttpException();
         }
 
@@ -128,7 +128,7 @@ class JobController extends AbstractController
     {
         $job = $this->jobService->nextJob($tag);
         if (null === $job) {
-            $job = $this->jobService->nextJobScheduled($user->getUsername(), $tag);
+            $job = $this->jobService->nextJobScheduled($user->getUserIdentifier(), $tag);
         }
 
         if (null === $job) {

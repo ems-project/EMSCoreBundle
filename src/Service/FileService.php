@@ -111,7 +111,7 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
         $files = $this->uploadedAssetRepository->findByIds($fileIds);
 
         $response = new StreamedResponse(function () use ($files) {
-            $zip = new ZipStream('archive.zip');
+            $zip = new ZipStream(outputName: 'archive.zip');
             $filenames = [];
 
             foreach ($files as $file) {

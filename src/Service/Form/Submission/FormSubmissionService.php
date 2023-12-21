@@ -62,7 +62,7 @@ final class FormSubmissionService implements EntityServiceInterface
     public function createDownloadForMultiple(array $formSubmissionIds): StreamedResponse
     {
         $response = new StreamedResponse(function () use ($formSubmissionIds) {
-            $zip = new ZipStream('submissionData.zip');
+            $zip = new ZipStream(outputName: 'submissionData.zip');
 
             foreach ($formSubmissionIds as $formSubmissionId) {
                 $formSubmission = $this->getById($formSubmissionId);

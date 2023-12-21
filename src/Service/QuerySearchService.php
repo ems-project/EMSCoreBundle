@@ -211,7 +211,7 @@ final class QuerySearchService implements EntityServiceInterface
         return $querySearch;
     }
 
-    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, string $name = null): EntityInterface
     {
         $querySearch = $this->buildQuerySearch($json);
         if (null !== $name && $querySearch->getName() !== $name) {
@@ -234,7 +234,7 @@ final class QuerySearchService implements EntityServiceInterface
         return $id;
     }
 
-    private function buildQuerySearch(string $json, ?EntityInterface $entity = null): QuerySearch
+    private function buildQuerySearch(string $json, EntityInterface $entity = null): QuerySearch
     {
         $querySearch = QuerySearch::fromJson($json, $entity);
         foreach ($querySearch->getEnvironments() as $environment) {

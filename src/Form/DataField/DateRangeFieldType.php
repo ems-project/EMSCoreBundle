@@ -25,9 +25,6 @@ class DateRangeFieldType extends DataFieldType
         return 'fa fa-calendar-o';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $options = $dataField->giveFieldType()->getOptions();
@@ -53,8 +50,6 @@ class DateRangeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
@@ -94,9 +89,6 @@ class DateRangeFieldType extends DataFieldType
         return $dataField;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function filterSubField(array $data, array $option): array
     {
         if (!$option['mappingOptions']['nested']) {
@@ -116,9 +108,6 @@ class DateRangeFieldType extends DataFieldType
         return parent::filterSubField($data, $option);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function isVirtual(array $option = []): bool
     {
         if (!isset($option['mappingOptions'])) {
@@ -130,9 +119,6 @@ class DateRangeFieldType extends DataFieldType
         return !$nested;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
@@ -200,9 +186,6 @@ class DateRangeFieldType extends DataFieldType
         ]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -237,9 +220,6 @@ class DateRangeFieldType extends DataFieldType
         return $dateFormat;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function generateMapping(FieldType $current): array
     {
         $out = [
@@ -270,9 +250,6 @@ class DateRangeFieldType extends DataFieldType
         return $out;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -289,9 +266,6 @@ class DateRangeFieldType extends DataFieldType
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

@@ -259,7 +259,7 @@ final class RecomputeCommand extends Command
         return 0;
     }
 
-    private function lock(OutputInterface $output, ContentType $contentType, string $query, bool $force = false, bool $ifEmpty = false, ?string $ouuid = null): int
+    private function lock(OutputInterface $output, ContentType $contentType, string $query, bool $force = false, bool $ifEmpty = false, string $ouuid = null): int
     {
         $application = $this->getApplication();
         if (null === $application) {

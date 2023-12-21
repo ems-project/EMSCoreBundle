@@ -48,9 +48,6 @@ class IndexedAssetFieldType extends DataFieldType
         return FileType::class;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -81,9 +78,6 @@ class IndexedAssetFieldType extends DataFieldType
         $resolver->setDefault('imageAssetConfigIdentifier', null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function generateMapping(FieldType $current): array
     {
         $mapping = parent::generateMapping($current);
@@ -106,9 +100,6 @@ class IndexedAssetFieldType extends DataFieldType
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
@@ -136,9 +127,6 @@ class IndexedAssetFieldType extends DataFieldType
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -150,9 +138,6 @@ class IndexedAssetFieldType extends DataFieldType
         return $out;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         if (\is_array($data)) {

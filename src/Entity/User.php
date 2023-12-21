@@ -146,9 +146,6 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         $this->authTokens = new ArrayCollection();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function toArray(): array
     {
         return [
@@ -185,17 +182,11 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         $this->localePreferred = $localePreferred;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getCircles(): array
     {
         return $this->circles ?? [];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function setCircles(array $circles): self
     {
         $this->circles = $circles;
@@ -279,9 +270,6 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         $this->authTokens->removeElement($authToken);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getAuthTokens(): Collection
     {
         return $this->authTokens;

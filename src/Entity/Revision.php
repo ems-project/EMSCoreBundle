@@ -803,7 +803,7 @@ class Revision implements EntityInterface, \Stringable
     /**
      * @param ?string[] $circles
      */
-    public function setCircles(?array $circles = null): self
+    public function setCircles(array $circles = null): self
     {
         $this->circles = $circles ?? [];
 

@@ -36,9 +36,6 @@ class DataLinkFieldType extends DataFieldType
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function postFinalizeTreatment(string $type, string $id, DataField $dataField, mixed $previousData): mixed
     {
         $name = $dataField->giveFieldType()->getName();
@@ -64,9 +61,6 @@ class DataLinkFieldType extends DataFieldType
         return 'Link to data object(s)';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getElasticsearchQuery(DataField $dataField, array $options = []): array
     {
         $opt = [...[
@@ -100,9 +94,6 @@ class DataLinkFieldType extends DataFieldType
         return 'fa fa-sitemap';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -183,9 +174,6 @@ class DataLinkFieldType extends DataFieldType
         $resolver->setDefault('querySearch', null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -202,9 +190,6 @@ class DataLinkFieldType extends DataFieldType
         return 'bypassdatafield';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getChoiceList(FieldType $fieldType, array $choices): array
     {
         /** @var ObjectPickerType $objectPickerType */
@@ -218,15 +203,12 @@ class DataLinkFieldType extends DataFieldType
                     unset($all[$key]);
                 }
             }
-//             return $loader->loadChoiceList()->loadChoices($choices);
+            //             return $loader->loadChoiceList()->loadChoices($choices);
         }
 
         return $all;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -260,9 +242,6 @@ class DataLinkFieldType extends DataFieldType
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         $out = parent::modelTransform($data, $fieldType);
@@ -311,9 +290,6 @@ class DataLinkFieldType extends DataFieldType
         return $out;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -322,8 +298,6 @@ class DataLinkFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param ?array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField

@@ -70,9 +70,6 @@ class TextareaFieldType extends DataFieldType
         $resolver->setDefault('placeholder', null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -95,9 +92,6 @@ class TextareaFieldType extends DataFieldType
         return 'bypassdatafield';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -106,8 +100,6 @@ class TextareaFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField

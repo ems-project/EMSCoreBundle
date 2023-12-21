@@ -145,9 +145,6 @@ class ExportViewType extends ViewType
         return $response;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         try {

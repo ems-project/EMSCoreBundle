@@ -21,17 +21,11 @@ class SubfieldType extends DataFieldType
         return 'fa fa-sitemap';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         return [];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -45,9 +39,6 @@ class SubfieldType extends DataFieldType
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function generateMapping(FieldType $current): array
     {
         $options = $this->elasticsearchService->updateMapping(\array_merge(['type' => 'string'], \array_filter($current->getMappingOptions())));
@@ -57,9 +48,6 @@ class SubfieldType extends DataFieldType
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildObjectArray(DataField $data, array &$out): void
     {
         // do nothing as it's a virtual field

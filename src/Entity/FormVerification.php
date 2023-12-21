@@ -49,7 +49,7 @@ class FormVerification
     public function __construct(/**
      * @ORM\Column(name="value", type="string", length=255)
      */
-    private string $value)
+        private string $value)
     {
         $now = new \DateTimeImmutable();
 

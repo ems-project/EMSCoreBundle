@@ -40,9 +40,6 @@ class IconFieldType extends DataFieldType
         ]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -57,9 +54,6 @@ class IconFieldType extends DataFieldType
         return 'bypassdatafield';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -68,8 +62,6 @@ class IconFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField

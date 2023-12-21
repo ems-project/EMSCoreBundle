@@ -344,7 +344,7 @@ class CrudController extends AbstractController
         return $this->json($users);
     }
 
-    public function index(Request $request, string $name, ?string $ouuid = null, string $replaceOrMerge = 'replace'): Response
+    public function index(Request $request, string $name, string $ouuid = null, string $replaceOrMerge = 'replace'): Response
     {
         $revision = null;
         if (null !== $ouuid) {

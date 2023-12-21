@@ -16,7 +16,7 @@ class ObjectChoiceListFactory extends DefaultChoiceListFactory
     {
     }
 
-    public function createLoader(?string $types = null, bool $loadAll = false, bool $circleOnly = false, bool $withWarning = true, ?string $querySearchName = null): ObjectChoiceLoader
+    public function createLoader(string $types = null, bool $loadAll = false, bool $circleOnly = false, bool $withWarning = true, string $querySearchName = null): ObjectChoiceLoader
     {
         if (null === $types) {
             if ($loadAll && null === $querySearchName) {

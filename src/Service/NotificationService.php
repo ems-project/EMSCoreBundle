@@ -130,7 +130,7 @@ class NotificationService
     /**
      * Call addNotification when click on a request.
      */
-    public function addNotification(Template $template, Revision $revision, Environment $environment, ?string $username = null): ?bool
+    public function addNotification(Template $template, Revision $revision, Environment $environment, string $username = null): ?bool
     {
         $out = false;
         try {
@@ -217,7 +217,7 @@ class NotificationService
     /**
      * @param ?array<string, mixed> $filters
      */
-    public function menuNotification(?array $filters = null): int
+    public function menuNotification(array $filters = null): int
     {
         $contentTypes = null;
         $environments = null;

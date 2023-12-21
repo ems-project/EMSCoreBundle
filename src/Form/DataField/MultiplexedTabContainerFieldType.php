@@ -46,9 +46,6 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -88,9 +85,6 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         $resolver->setDefault(self::ICON_DISPLAY_OPTION, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function generateMapping(FieldType $current): array
     {
         $values = $current->getDisplayOption(self::VALUES_DISPLAY_OPTION);
@@ -107,9 +101,6 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         return $mapping;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function getJsonNames(FieldType $current): array
     {
         $values = $current->getDisplayOption(self::VALUES_DISPLAY_OPTION);
@@ -155,9 +146,6 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function importData(DataField $dataField, float|int|bool|array|string|null $sourceArray, bool $isMigration): array
     {
         parent::importData($dataField, $sourceArray, $isMigration);
@@ -165,17 +153,11 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         return self::getJsonNames($dataField->giveFieldType());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function isVirtual(array $option = []): bool
     {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         if (\is_array($data)) {
@@ -192,7 +174,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     /**
      * @return array<string, string>
      */
-    private function getChoices(FieldType $fieldType, ?string $locale = null): array
+    private function getChoices(FieldType $fieldType, string $locale = null): array
     {
         $choices = [];
         $labels = $fieldType->getDisplayOption(self::LABELS_DISPLAY_OPTION) ?? '';

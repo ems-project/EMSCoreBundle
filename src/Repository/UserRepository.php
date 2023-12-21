@@ -36,7 +36,7 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
     /**
      * @return array{count: int, results: iterable<User>}
      */
-    public function countFindAll(?string $email = null): array
+    public function countFindAll(string $email = null): array
     {
         $qb = $this->createQueryBuilder('u');
 
@@ -89,9 +89,6 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
         return isset($result[0]) && $result[0] instanceof User ? $result[0] : null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function findForRoleAndCircles(string $role, array $circles): array
     {
         $resultSet = $this->createQueryBuilder('u')

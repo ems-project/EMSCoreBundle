@@ -91,7 +91,7 @@ class DataTableFactory
         }
     }
 
-    private function generateAjaxUrl(DataTableTypeInterface $type, ?string $optionsCacheKey = null): string
+    private function generateAjaxUrl(DataTableTypeInterface $type, string $optionsCacheKey = null): string
     {
         return $this->urlGenerator->generate(Routes::DATA_TABLE_AJAX_TABLE, [
             'hash' => $type->getHash(),

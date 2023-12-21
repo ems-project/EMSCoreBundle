@@ -404,7 +404,7 @@ abstract class DataFieldType extends AbstractType
      * @param array<mixed> $rawData
      * @param array<mixed> $parentRawData
      */
-    public static function resolve(array $rawData, array $parentRawData, string $path, ?string $default = null): ?string
+    public static function resolve(array $rawData, array $parentRawData, string $path, string $default = null): ?string
     {
         $current = $rawData;
         if (\strlen($path) && \str_starts_with($path, '.')) {

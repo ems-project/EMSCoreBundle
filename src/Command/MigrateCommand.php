@@ -26,7 +26,7 @@ class MigrateCommand extends AbstractCommand
     private string $elasticsearchIndex;
     private string $contentTypeNameFrom;
     private string $contentTypeNameTo;
-    private int  $scrollSize;
+    private int $scrollSize;
     private string $scrollTimeout;
     private bool $indexInDefaultEnv;
 

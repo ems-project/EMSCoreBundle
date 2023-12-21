@@ -187,7 +187,7 @@ class DashboardManager implements EntityServiceInterface
         return $dashboard;
     }
 
-    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, string $name = null): EntityInterface
     {
         $dashboard = Dashboard::fromJson($json);
         if (null !== $name && $dashboard->getName() !== $name) {

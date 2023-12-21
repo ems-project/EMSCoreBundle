@@ -16,7 +16,7 @@ use Symfony\Component\Form\FormRegistryInterface;
 class FieldTypeManager
 {
     public function __construct(private readonly LoggerInterface $logger,
-                                private readonly FormRegistryInterface $formRegistry)
+        private readonly FormRegistryInterface $formRegistry)
     {
     }
 

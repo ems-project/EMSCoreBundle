@@ -19,7 +19,7 @@ class Menu
     /**
      * @param array<string, mixed> $routeParameters
      */
-    public function addChild(string $getLabel, string $getIcon, string $route, array $routeParameters = [], ?string $color = null): MenuEntry
+    public function addChild(string $getLabel, string $getIcon, string $route, array $routeParameters = [], string $color = null): MenuEntry
     {
         return $this->children[] = new MenuEntry($getLabel, $getIcon, $route, $routeParameters, $color);
     }

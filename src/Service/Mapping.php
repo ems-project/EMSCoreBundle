@@ -148,7 +148,7 @@ class Mapping
     /**
      * @param array<mixed> $body
      */
-    public function createIndex(string $indexName, array $body, ?string $aliasName = null): bool
+    public function createIndex(string $indexName, array $body, string $aliasName = null): bool
     {
         $existsEndpoint = new Exists();
         $existsEndpoint->setIndex($indexName);

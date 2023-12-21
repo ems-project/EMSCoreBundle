@@ -33,9 +33,6 @@ class TimeFieldType extends DataFieldType
         return 'fa fa-clock-o';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
@@ -78,9 +75,6 @@ class TimeFieldType extends DataFieldType
         return $format;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -99,9 +93,6 @@ class TimeFieldType extends DataFieldType
         return '';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $format = static::getFormat($fieldType->getOptions());
@@ -115,9 +106,6 @@ class TimeFieldType extends DataFieldType
         return parent::reverseViewTransform($out, $fieldType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function generateMapping(FieldType $current): array
     {
         return [
@@ -155,7 +143,7 @@ class TimeFieldType extends DataFieldType
 
         $attr['class'] .= ' timepicker';
         $attr['data-show-meridian'] = $options['showMeridian'] ? 'true' : 'false';
-//         $attr['data-provide'] = 'timepicker';
+        //         $attr['data-provide'] = 'timepicker';
         $attr['data-default-time'] = $options['defaultTime'];
         $attr['data-show-seconds'] = $options['showSeconds'];
         $attr['data-explicit-mode'] = $options['explicitMode'];
@@ -172,9 +160,6 @@ class TimeFieldType extends DataFieldType
         return IconTextType::class;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

@@ -26,9 +26,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class AssetFieldType extends DataFieldType
 {
-    /**
-     * {@inheritDoc}
-     */
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, private readonly FileService $fileService)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
@@ -49,9 +46,6 @@ class AssetFieldType extends DataFieldType
         return AssetType::class;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -90,9 +84,6 @@ class AssetFieldType extends DataFieldType
         $view->vars['multiple'] = $options['multiple'];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function generateMapping(FieldType $current): array
     {
         return [
@@ -108,9 +99,6 @@ class AssetFieldType extends DataFieldType
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
@@ -169,9 +157,6 @@ class AssetFieldType extends DataFieldType
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $fieldType = $dataField->getFieldType();
@@ -187,9 +172,6 @@ class AssetFieldType extends DataFieldType
         return $out;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         $out = parent::reverseViewTransform($data, $fieldType);

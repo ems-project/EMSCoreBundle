@@ -67,7 +67,7 @@ final class ScheduleController extends AbstractController
         return $this->edit($request, $schedule, 'html', true, 'log.schedule.created', "@$this->templateNamespace/schedule/add.html.twig");
     }
 
-    public function edit(Request $request, Schedule $schedule, string $_format, bool $create = false, string $logMessage = 'log.schedule.updated', ?string $template = null): Response
+    public function edit(Request $request, Schedule $schedule, string $_format, bool $create = false, string $logMessage = 'log.schedule.updated', string $template = null): Response
     {
         if (null === $template) {
             $template = "@$this->templateNamespace/schedule/edit.html.twig";

@@ -86,9 +86,6 @@ class VersionTagFieldType extends DataFieldType
         ]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -96,17 +93,12 @@ class VersionTagFieldType extends DataFieldType
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         return ['value' => parent::viewTransform($dataField)];
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField

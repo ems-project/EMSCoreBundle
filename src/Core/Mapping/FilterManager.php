@@ -55,7 +55,7 @@ class FilterManager implements EntityServiceInterface
         return $filter;
     }
 
-    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, string $name = null): EntityInterface
     {
         $filter = Filter::fromJson($json);
         if (null !== $name && $filter->getName() !== $name) {

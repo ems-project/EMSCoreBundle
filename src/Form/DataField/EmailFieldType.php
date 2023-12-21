@@ -31,9 +31,6 @@ class EmailFieldType extends DataFieldType
         return 'Email field';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -43,9 +40,6 @@ class EmailFieldType extends DataFieldType
         return $out;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isValid(DataField &$dataField, DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
@@ -63,9 +57,6 @@ class EmailFieldType extends DataFieldType
         return $isValid;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         if (empty($data)) {
@@ -80,17 +71,12 @@ class EmailFieldType extends DataFieldType
         return $out;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         return ['value' => parent::viewTransform($dataField)];
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
@@ -113,9 +99,6 @@ class EmailFieldType extends DataFieldType
         ]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

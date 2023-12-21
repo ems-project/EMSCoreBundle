@@ -59,7 +59,7 @@ class AnalyzerManager implements EntityServiceInterface
         return $analyzer;
     }
 
-    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, string $name = null): EntityInterface
     {
         $analyzer = Analyzer::fromJson($json);
         if (null !== $name && $analyzer->getName() !== $name) {

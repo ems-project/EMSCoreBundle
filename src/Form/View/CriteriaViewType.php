@@ -70,9 +70,6 @@ class CriteriaViewType extends ViewType
         return 'criteria_view';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->logger);

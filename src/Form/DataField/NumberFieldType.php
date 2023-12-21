@@ -35,9 +35,6 @@ class NumberFieldType extends DataFieldType
         ]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isValid(DataField &$dataField, DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
@@ -55,9 +52,6 @@ class NumberFieldType extends DataFieldType
         return $isValid;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -69,9 +63,6 @@ class NumberFieldType extends DataFieldType
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function generateMapping(FieldType $current): array
     {
         return [
@@ -79,23 +70,20 @@ class NumberFieldType extends DataFieldType
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-//         // String specific display options
-//         $optionsForm->get ( 'displayOptions' )->add ( 'choices', TextareaType::class, [
-//                 'required' => false,
-//         ] )->add ( 'labels', TextareaType::class, [
-//                 'required' => false,
-//         ] );
+        //         // String specific display options
+        //         $optionsForm->get ( 'displayOptions' )->add ( 'choices', TextareaType::class, [
+        //                 'required' => false,
+        //         ] )->add ( 'labels', TextareaType::class, [
+        //                 'required' => false,
+        //         ] );
 
-//         // String specific mapping options
-//         $optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
+        //         // String specific mapping options
+        //         $optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
     }
 
     public function getBlockPrefix(): string
@@ -103,9 +91,6 @@ class NumberFieldType extends DataFieldType
         return 'bypassdatafield';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -114,8 +99,6 @@ class NumberFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField

@@ -38,9 +38,6 @@ class JsonMenuLinkFieldType extends DataFieldType
         return 'fa fa-link';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -132,9 +129,6 @@ class JsonMenuLinkFieldType extends DataFieldType
         $resolver->setDefault('query', false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -162,9 +156,6 @@ class JsonMenuLinkFieldType extends DataFieldType
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -179,8 +170,6 @@ class JsonMenuLinkFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
@@ -193,9 +182,6 @@ class JsonMenuLinkFieldType extends DataFieldType
         return parent::reverseViewTransform($value, $fieldType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $temp = parent::viewTransform($dataField);

@@ -126,7 +126,7 @@ class I18nService implements EntityServiceInterface
         return $i18n;
     }
 
-    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, string $name = null): EntityInterface
     {
         $i18n = I18n::fromJson($json);
         if (null !== $name && $i18n->getIdentifier() !== $name) {

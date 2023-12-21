@@ -28,9 +28,6 @@ class NestedFieldType extends DataFieldType
         return 'glyphicon glyphicon-modal-window';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
@@ -85,17 +82,14 @@ class NestedFieldType extends DataFieldType
         $resolver->setDefault('multiple', false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (null == $data->giveFieldType()) {
             $tmp = [];
             /** @var DataField $child */
             foreach ($data->getChildren() as $child) {
-//                 $className = $child->getFieldType()->getType();
-//                 $class = new $className;
+                //                 $className = $child->getFieldType()->getType();
+                //                 $class = new $className;
                 $class = $this->formRegistry->getType($child->giveFieldType()->getType());
 
                 if (\method_exists($class, 'buildObjectArray')) {
@@ -113,18 +107,12 @@ class NestedFieldType extends DataFieldType
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function isContainer(): bool
     {
         /* this kind of compound field may contain children */
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -137,9 +125,6 @@ class NestedFieldType extends DataFieldType
         ]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function generateMapping(FieldType $current): array
     {
         return [

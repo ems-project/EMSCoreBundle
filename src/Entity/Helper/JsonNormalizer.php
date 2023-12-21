@@ -49,8 +49,6 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
     ];
 
     /**
-     * {@inheritDoc}
-     *
      * @param mixed        $object
      * @param array<mixed> $context
      *
@@ -188,17 +186,11 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
         return $object;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supportsNormalization($data, $format = null): bool
     {
         return \is_object($data) && 'json' === $format;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function supportsDenormalization($data, $type, $format = null): bool
     {
         return isset($data['__jsonclass__']) && 'json' === $format;

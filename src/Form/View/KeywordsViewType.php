@@ -54,9 +54,6 @@ class KeywordsViewType extends ViewType
         return 'keywords_view';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         $searchQuery = [

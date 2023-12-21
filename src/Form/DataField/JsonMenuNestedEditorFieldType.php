@@ -52,17 +52,11 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
             ]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function generateMapping(FieldType $current): array
     {
         return [$current->getName() => ['type' => 'text']];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

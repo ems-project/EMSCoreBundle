@@ -129,7 +129,7 @@ final class ChannelService implements EntityServiceInterface
         return $schedule;
     }
 
-    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, string $name = null): EntityInterface
     {
         $channel = Channel::fromJson($json);
         if (null !== $name && $channel->getName() !== $name) {

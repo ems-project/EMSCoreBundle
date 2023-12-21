@@ -54,8 +54,6 @@ class JSONFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param ?array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
@@ -74,9 +72,6 @@ class JSONFieldType extends DataFieldType
         return $dataField;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -89,9 +84,6 @@ class JSONFieldType extends DataFieldType
         return 'bypassdatafield';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isValid(DataField &$dataField, DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
@@ -119,9 +111,6 @@ class JSONFieldType extends DataFieldType
         $resolver->setDefault('prettyPrint', false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function generateMapping(FieldType $current): array
     {
         if (!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])) {
@@ -131,9 +120,6 @@ class JSONFieldType extends DataFieldType
         return [];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

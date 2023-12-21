@@ -61,9 +61,6 @@ class DateTimeFieldType extends DataFieldType
         ]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function generateMapping(FieldType $current): array
     {
         return [
@@ -74,9 +71,6 @@ class DateTimeFieldType extends DataFieldType
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -102,9 +96,6 @@ class DateTimeFieldType extends DataFieldType
         ;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $data = parent::viewTransform($dataField);
@@ -119,8 +110,6 @@ class DateTimeFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField

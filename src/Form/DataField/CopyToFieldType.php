@@ -39,9 +39,6 @@ class CopyToFieldType extends DataFieldType
         // no inputs as it's just an indexing field
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -59,9 +56,6 @@ class CopyToFieldType extends DataFieldType
         $optionsForm->remove('displayOptions');
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildObjectArray(DataField $data, array &$out): void
     {
         // do nothing more than a mapping

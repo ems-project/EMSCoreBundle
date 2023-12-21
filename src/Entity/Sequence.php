@@ -38,7 +38,7 @@ class Sequence
     public function __construct(/**
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
-    private string $name)
+        private string $name)
     {
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');

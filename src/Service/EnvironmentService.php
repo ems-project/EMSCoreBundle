@@ -408,7 +408,7 @@ class EnvironmentService implements EntityServiceInterface
         return $environment;
     }
 
-    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, string $name = null): EntityInterface
     {
         $meta = JsonClass::fromJsonString($json);
         $environment = $meta->jsonDeserialize();

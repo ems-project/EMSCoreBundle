@@ -130,7 +130,7 @@ class CriteriaController extends AbstractController
                                 }
 
                                 $revision = $this->removeCriteriaRevision($view, $rawData, $targetFieldName, $itemToFinalize);
-//                                 $revision = $this->addCriteriaRevision($view, $rawData, $targetFieldName, $itemToFinalize);
+                                //                                 $revision = $this->addCriteriaRevision($view, $rawData, $targetFieldName, $itemToFinalize);
                                 if ($revision) {
                                     $itemToFinalize[$revision->getOuuid()] = $revision;
                                 }
@@ -335,12 +335,12 @@ class CriteriaController extends AbstractController
     {
         $contentType = $view->getContentType();
 
-//        $criteriaField = $contentType->getFieldType();
+        //        $criteriaField = $contentType->getFieldType();
 
         $criteriaFieldName = false;
         if ('internal' == $view->getOptions()['criteriaMode']) {
             $criteriaFieldName = $view->getOptions()['criteriaField'];
-//            $criteriaField = $contentType->getFieldType()->getChildByPath($criteriaFieldName);
+            //            $criteriaField = $contentType->getFieldType()->getChildByPath($criteriaFieldName);
         }
 
         $body = [
@@ -403,12 +403,12 @@ class CriteriaController extends AbstractController
                 ],
             ];
         }
-//        /** @var FieldType $columnField */
-//        $columnField = $criteriaField->getChildByPath($criteriaUpdateConfig->getColumnCriteria());
-//
-//
-//        /** @var FieldType $rowField */
-//        $rowField = $criteriaField->getChildByPath($criteriaUpdateConfig->getRowCriteria());
+        //        /** @var FieldType $columnField */
+        //        $columnField = $criteriaField->getChildByPath($criteriaUpdateConfig->getColumnCriteria());
+        //
+        //
+        //        /** @var FieldType $rowField */
+        //        $rowField = $criteriaField->getChildByPath($criteriaUpdateConfig->getRowCriteria());
 
         $table = [];
         /** @var ObjectChoiceListItem $rowItem */

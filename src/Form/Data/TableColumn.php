@@ -60,7 +60,7 @@ class TableColumn
         $this->attribute = $attribute;
     }
 
-    public function setRoute(string $name, ?\Closure $callback = null, ?string $target = null): void
+    public function setRoute(string $name, \Closure $callback = null, string $target = null): void
     {
         $this->routeName = $name;
         $this->routeParametersCallback = $callback;

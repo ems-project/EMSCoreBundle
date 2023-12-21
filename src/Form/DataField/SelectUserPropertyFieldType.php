@@ -84,9 +84,6 @@ final class SelectUserPropertyFieldType extends DataFieldType
         ;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -118,9 +115,6 @@ final class SelectUserPropertyFieldType extends DataFieldType
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $test = parent::viewTransform($dataField);
@@ -129,8 +123,6 @@ final class SelectUserPropertyFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param ?array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField

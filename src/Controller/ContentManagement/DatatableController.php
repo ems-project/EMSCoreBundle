@@ -29,7 +29,7 @@ final class DatatableController extends AbstractController
     ) {
     }
 
-    public function ajaxData(Request $request, string $hash, ?string $optionsCacheKey = null): Response
+    public function ajaxData(Request $request, string $hash, string $optionsCacheKey = null): Response
     {
         $table = $this->dataTableFactory->createFromHash($hash, $optionsCacheKey);
         $dataTableRequest = DataTableRequest::fromRequest($request);

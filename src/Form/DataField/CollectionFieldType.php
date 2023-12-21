@@ -47,9 +47,6 @@ class CollectionFieldType extends DataFieldType
         return 'fa fa-plus fa-rotate';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
@@ -137,9 +134,6 @@ class CollectionFieldType extends DataFieldType
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isValid(DataField &$dataField, DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
@@ -172,9 +166,6 @@ class CollectionFieldType extends DataFieldType
         return $isValid;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -214,9 +205,6 @@ class CollectionFieldType extends DataFieldType
         $optionsForm->get('restrictionOptions')->remove('mandatory_if');
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -229,9 +217,6 @@ class CollectionFieldType extends DataFieldType
         return 'collectionfieldtype';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function getJsonNames(FieldType $current): array
     {
         return [$current->getName()];
@@ -246,8 +231,6 @@ class CollectionFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
@@ -274,9 +257,6 @@ class CollectionFieldType extends DataFieldType
         return $out;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);

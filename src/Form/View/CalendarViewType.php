@@ -65,9 +65,6 @@ class CalendarViewType extends ViewType
         return 'calendar_view';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         $search = new Search();

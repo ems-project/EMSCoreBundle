@@ -62,7 +62,6 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory implements ConfigF
         return $field ?: throw new \RuntimeException(\vsprintf('Field "%s" not found in "%s" contentType', [$name, $contentType->getName()]));
     }
 
-    /** {@inheritdoc} */
     protected function resolveOptions(array $options): array
     {
         $resolver = new OptionsResolver();

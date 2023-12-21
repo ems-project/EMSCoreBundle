@@ -124,7 +124,7 @@ class RevisionService implements RevisionServiceInterface
         return $this->revisionRepository->deleteOldest($contentType);
     }
 
-    public function display(Revision|Document|string $value, ?string $expression = null): string
+    public function display(Revision|Document|string $value, string $expression = null): string
     {
         if (\is_string($value)) {
             if (null === $object = $this->getByEmsLink(EMSLink::fromText($value))) {
@@ -197,12 +197,12 @@ class RevisionService implements RevisionServiceInterface
         return $this->revisionRepository->findAllDraftsByContentTypeName($contentTypeName);
     }
 
-    public function get(string $ouuid, string $contentType, ?\DateTimeInterface $dateTime = null): ?Revision
+    public function get(string $ouuid, string $contentType, \DateTimeInterface $dateTime = null): ?Revision
     {
         return $this->revisionRepository->findRevision($ouuid, $contentType, $dateTime);
     }
 
-    public function getByEmsLink(EMSLink $emsLink, ?\DateTimeInterface $dateTime = null): ?Revision
+    public function getByEmsLink(EMSLink $emsLink, \DateTimeInterface $dateTime = null): ?Revision
     {
         if (!$emsLink->isValid()) {
             return null;
@@ -281,7 +281,7 @@ class RevisionService implements RevisionServiceInterface
     /**
      * @param array<mixed> $rawData
      */
-    public function create(ContentType $contentType, ?UuidInterface $uuid = null, array $rawData = [], ?string $username = null): Revision
+    public function create(ContentType $contentType, UuidInterface $uuid = null, array $rawData = [], string $username = null): Revision
     {
         return $this->dataService->newDocument($contentType, null === $uuid ? null : $uuid->toString(), $rawData, $username);
     }
@@ -289,7 +289,7 @@ class RevisionService implements RevisionServiceInterface
     /**
      * @param array<mixed> $mergeRawData
      */
-    public function copy(Revision $revision, ?array $mergeRawData = null): void
+    public function copy(Revision $revision, array $mergeRawData = null): void
     {
         $copiedRevision = $revision->clone();
 
@@ -305,7 +305,7 @@ class RevisionService implements RevisionServiceInterface
     /**
      * @param array<mixed> $rawData
      */
-    public function updateRawData(Revision $revision, array $rawData, ?string $username = null, bool $merge = true): Revision
+    public function updateRawData(Revision $revision, array $rawData, string $username = null, bool $merge = true): Revision
     {
         $contentTypeName = $revision->giveContentType()->getName();
         if ($revision->getDraft()) {

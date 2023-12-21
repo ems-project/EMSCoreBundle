@@ -23,9 +23,6 @@ class DateFieldType extends DataFieldType
         return 'fa fa-calendar';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         if (empty($data)) {
@@ -87,9 +84,6 @@ class DateFieldType extends DataFieldType
         return $out;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $data = parent::viewTransform($dataField);
@@ -108,8 +102,6 @@ class DateFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
@@ -131,9 +123,6 @@ class DateFieldType extends DataFieldType
         return 'datefieldtype';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
@@ -212,9 +201,6 @@ class DateFieldType extends DataFieldType
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -283,9 +269,6 @@ class DateFieldType extends DataFieldType
         return $dateFormat;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

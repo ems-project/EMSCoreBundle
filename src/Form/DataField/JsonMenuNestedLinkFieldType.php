@@ -50,9 +50,6 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         return 'fa fa-link';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildObjectArray(DataField $data, array &$out): void
     {
         $fieldType = $data->getFieldType();
@@ -131,9 +128,6 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         ;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -164,9 +158,6 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -181,8 +172,6 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $data
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
@@ -195,9 +184,6 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         return parent::reverseViewTransform($value, $fieldType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $temp = parent::viewTransform($dataField);
@@ -245,9 +231,9 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
      */
     private function buildChoices(
         FieldType $fieldType,
-        ?string $jmnQuery = null,
-        ?string $jmnField = null,
-        ?string $jmnChoicesTemplate = null,
+        string $jmnQuery = null,
+        string $jmnField = null,
+        string $jmnChoicesTemplate = null,
         array $jmnTypes = [],
         bool $jmnUnique = false,
         array $rawData = [],

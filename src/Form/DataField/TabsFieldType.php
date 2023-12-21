@@ -19,17 +19,11 @@ class TabsFieldType extends DataFieldType
         return 'Visual tab container (invisible in Elasticsearch)';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         throw new \Exception('This method should never be called');
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getBlockPrefix(): string
     {
         return 'tabsfieldtype';
@@ -56,25 +50,16 @@ class TabsFieldType extends DataFieldType
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildObjectArray(DataField $data, array &$out): void
     {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function isContainer(): bool
     {
         /* this kind of compound field may contain children */
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -86,25 +71,16 @@ class TabsFieldType extends DataFieldType
         $optionsForm->get('restrictionOptions')->remove('mandatory_if');
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function isVirtual(array $option = []): bool
     {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function getJsonNames(FieldType $current): array
     {
         return [];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function generateMapping(FieldType $current): array
     {
         return [];

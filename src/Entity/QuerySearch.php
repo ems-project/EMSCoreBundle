@@ -79,7 +79,7 @@ class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->environments = new ArrayCollection();
     }
 
-    public static function fromJson(string $json, ?\EMS\CommonBundle\Entity\EntityInterface $querySearch = null): QuerySearch
+    public static function fromJson(string $json, \EMS\CommonBundle\Entity\EntityInterface $querySearch = null): QuerySearch
     {
         $meta = JsonClass::fromJsonString($json);
         $querySearch = $meta->jsonDeserialize($querySearch);

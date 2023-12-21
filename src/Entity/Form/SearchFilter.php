@@ -254,7 +254,7 @@ class SearchFilter implements \JsonSerializable
         return $this->id;
     }
 
-    public function setSearch(?Search $search = null): self
+    public function setSearch(Search $search = null): self
     {
         $this->search = $search;
 

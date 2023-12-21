@@ -126,9 +126,6 @@ $dataField->getRawData()
         return 'hierarchical_view';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         return [];

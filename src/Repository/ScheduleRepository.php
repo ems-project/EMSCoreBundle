@@ -112,7 +112,7 @@ class ScheduleRepository extends ServiceEntityRepository
         }
     }
 
-    public function findNext(?string $tag = null): ?Schedule
+    public function findNext(string $tag = null): ?Schedule
     {
         $qb = $this->createQueryBuilder('schedule');
         $qb

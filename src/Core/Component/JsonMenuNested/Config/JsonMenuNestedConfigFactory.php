@@ -62,7 +62,6 @@ class JsonMenuNestedConfigFactory extends AbstractConfigFactory
         return $config;
     }
 
-    /** {@inheritdoc} */
     protected function resolveOptions(array $options): array
     {
         $resolver = new OptionsResolver();

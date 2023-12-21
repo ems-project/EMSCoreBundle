@@ -160,7 +160,7 @@ final class TaskManager
         return $task;
     }
 
-    public function taskDelete(Task $task, int $revisionId, ?string $comment = null): void
+    public function taskDelete(Task $task, int $revisionId, string $comment = null): void
     {
         $transaction = $this->revisionTransaction(function (Revision $revision) use ($task, $comment) {
             if ($revision->isTaskCurrent($task)) {
@@ -213,7 +213,7 @@ final class TaskManager
         $transaction($revision->getId());
     }
 
-    public function taskValidateRequest(Task $task, int $revisionId, ?string $comment = null): void
+    public function taskValidateRequest(Task $task, int $revisionId, string $comment = null): void
     {
         $transaction = $this->revisionTransaction(function (Revision $revision) use ($task, $comment) {
             $event = $this->createTaskEvent($task, $revision);
@@ -251,7 +251,7 @@ final class TaskManager
         $this->eventDispatcher->dispatch($event, $eventName);
     }
 
-    private function createTaskEvent(Task $task, Revision $revision, ?string $username = null): TaskEvent
+    private function createTaskEvent(Task $task, Revision $revision, string $username = null): TaskEvent
     {
         $username = $username ?: $this->userService->getCurrentUser()->getUsername();
 

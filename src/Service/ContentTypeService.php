@@ -137,7 +137,7 @@ class ContentTypeService implements EntityServiceInterface
         return $environment->getAlias();
     }
 
-    public function updateMapping(ContentType $contentType, ?string $envs = null): void
+    public function updateMapping(ContentType $contentType, string $envs = null): void
     {
         try {
             $body = $this->environmentService->getIndexAnalysisConfiguration();
@@ -613,7 +613,7 @@ class ContentTypeService implements EntityServiceInterface
         return $this->updateFromJson($entity, $json, false, false);
     }
 
-    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, string $name = null): EntityInterface
     {
         $firstEnvironment = null;
         foreach ($this->environmentService->getEnvironments() as $environment) {

@@ -26,7 +26,7 @@ use Ramsey\Uuid\UuidInterface;
  */
 class RevisionRepository extends EntityRepository
 {
-    public function findRevision(string $ouuid, string $contentTypeName, ?\DateTimeInterface $dateTime = null): ?Revision
+    public function findRevision(string $ouuid, string $contentTypeName, \DateTimeInterface $dateTime = null): ?Revision
     {
         $qb = $this->createQueryBuilder('r');
         $qb
@@ -575,7 +575,7 @@ class RevisionRepository extends EntityRepository
         return $this->deleteByQueryBuilder($qb);
     }
 
-    public function lockRevisions(?ContentType $contentType, \DateTime $until, string $by, bool $force = false, ?string $ouuid = null, bool $onlyCurrentRevision = true): int
+    public function lockRevisions(?ContentType $contentType, \DateTime $until, string $by, bool $force = false, string $ouuid = null, bool $onlyCurrentRevision = true): int
     {
         $qbSelect = $this->createQueryBuilder('s');
         $qbSelect
@@ -838,7 +838,7 @@ class RevisionRepository extends EntityRepository
         return $qb->getQuery()->execute();
     }
 
-    public function findLatestVersion(ContentType $contentType, string $versionOuuid, ?Environment $environment = null): ?Revision
+    public function findLatestVersion(ContentType $contentType, string $versionOuuid, Environment $environment = null): ?Revision
     {
         $toField = $contentType->getVersionDateToField();
 

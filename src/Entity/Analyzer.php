@@ -118,7 +118,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
     /**
      * @return array<mixed>
      */
-    public function getOptions(?string $esVersion = null): array
+    public function getOptions(string $esVersion = null): array
     {
         $options = $this->options;
 
@@ -215,7 +215,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
         return $json;
     }
 
-    public static function fromJson(string $json, ?\EMS\CommonBundle\Entity\EntityInterface $filter = null): Analyzer
+    public static function fromJson(string $json, \EMS\CommonBundle\Entity\EntityInterface $filter = null): Analyzer
     {
         $meta = JsonClass::fromJsonString($json);
         $filter = $meta->jsonDeserialize($filter);

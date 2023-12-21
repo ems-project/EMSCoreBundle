@@ -20,8 +20,6 @@ class ObjectChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return array<mixed>
      */
     public function getChoices(): array
@@ -32,8 +30,6 @@ class ObjectChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return array<mixed>
      */
     public function getValues(): array
@@ -55,8 +51,6 @@ class ObjectChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return array<mixed>
      */
     public function getOriginalKeys(): array
@@ -70,8 +64,6 @@ class ObjectChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $choices
      *
      * @return array<mixed>
@@ -84,8 +76,6 @@ class ObjectChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $choices
      *
      * @return array<mixed>

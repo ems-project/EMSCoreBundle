@@ -70,9 +70,6 @@ class ReportViewType extends ViewType
         return 'report_view';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         try {

@@ -26,7 +26,7 @@ class MenuEntry
     /**
      * @param array<string, mixed> $routeParameters
      */
-    public function addChild(string $getLabel, string $getIcon, string $route, array $routeParameters = [], ?string $color = null): MenuEntry
+    public function addChild(string $getLabel, string $getIcon, string $route, array $routeParameters = [], string $color = null): MenuEntry
     {
         return $this->children[] = new MenuEntry($getLabel, $getIcon, $route, $routeParameters, $color);
     }
@@ -87,7 +87,7 @@ class MenuEntry
         return null !== $this->badge;
     }
 
-    public function setBadge(?string $badge, ?string $color = null): void
+    public function setBadge(?string $badge, string $color = null): void
     {
         $this->badge = $badge;
         $this->badgeColor = $color;

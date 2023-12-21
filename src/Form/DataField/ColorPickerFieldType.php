@@ -24,9 +24,6 @@ class ColorPickerFieldType extends DataFieldType
         return 'fa fa-paint-brush';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -41,9 +38,6 @@ class ColorPickerFieldType extends DataFieldType
         return ColorPickerFullType::class;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         $dataField = parent::modelTransform($data, $fieldType);

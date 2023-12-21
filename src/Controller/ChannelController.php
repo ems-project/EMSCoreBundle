@@ -66,7 +66,7 @@ final class ChannelController extends AbstractController
         return $this->edit($request, $channel, "@$this->templateNamespace/channel/add.html.twig");
     }
 
-    public function edit(Request $request, Channel $channel, ?string $view = null): Response
+    public function edit(Request $request, Channel $channel, string $view = null): Response
     {
         if (null === $view) {
             $view = "@$this->templateNamespace/channel/edit.html.twig";

@@ -73,9 +73,6 @@ class CodeFieldType extends DataFieldType
         $resolver->setDefault('required', false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

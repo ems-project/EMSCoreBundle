@@ -11,7 +11,7 @@ use EMS\CoreBundle\Entity\Revision;
 interface RevisionServiceInterface
 {
     /**
-     * @param array{contentType?: ContentType, contentTypeName?: string, lockBy?: string, archived?: bool, endTime?: (null | string), modifiedBefore?: string} $search
+     * @param array{contentType?: ContentType, contentTypeName?: string, lockBy?: string, archived?: bool, endTime?: (string|null), modifiedBefore?: string} $search
      */
     public function search(array $search): Revisions;
 

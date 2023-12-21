@@ -122,7 +122,7 @@ class DataService
         }
     }
 
-    public function unlockRevision(Revision $revision, ?string $lockerUsername = null): void
+    public function unlockRevision(Revision $revision, string $lockerUsername = null): void
     {
         $lockerUsername ??= $this->userService->getCurrentUser()->getUsername();
 
@@ -136,7 +136,7 @@ class DataService
      * @throws PrivilegeException
      * @throws \Exception
      */
-    public function lockRevision(Revision $revision, Environment $publishEnv = null, bool $super = false, ?string $username = null): string
+    public function lockRevision(Revision $revision, Environment $publishEnv = null, bool $super = false, string $username = null): string
     {
         if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
@@ -714,7 +714,7 @@ class DataService
      * @throws \Exception
      * @throws \Throwable
      */
-    public function finalizeDraft(Revision $revision, ?FormInterface &$form = null, ?string $username = null, bool $computeFields = true): Revision
+    public function finalizeDraft(Revision $revision, FormInterface &$form = null, string $username = null, bool $computeFields = true): Revision
     {
         if ($revision->getDeleted()) {
             throw new \Exception('Can not finalized a deleted revision');
@@ -872,7 +872,6 @@ class DataService
      * Parcours all fields and call DataFieldsType postFinalizeTreament function.
      *
      * @param FormInterface<FormInterface> $form
-     * @param mixed                        $previousObjectArray
      */
     public function postFinalizeTreatment(string $type, string $id, FormInterface $form, mixed $previousObjectArray = null): void
     {
@@ -939,7 +938,7 @@ class DataService
      * @throws HasNotCircleException
      * @throws \Throwable
      */
-    public function newDocument(ContentType $contentType, ?string $ouuid = null, ?array $rawData = null, ?string $username = null): Revision
+    public function newDocument(ContentType $contentType, string $ouuid = null, array $rawData = null, string $username = null): Revision
     {
         $this->hasCreateRights($contentType);
         /** @var RevisionRepository $revisionRepository */
@@ -1090,9 +1089,9 @@ class DataService
     {
         $objectArray = $revision->getRawData();
         $labelField = $revision->giveContentType()->getLabelField();
-        if (!empty($labelField) &&
-                isset($objectArray[$labelField]) &&
-                !empty($objectArray[$labelField])) {
+        if (!empty($labelField)
+                && isset($objectArray[$labelField])
+                && !empty($objectArray[$labelField])) {
             $revision->setLabelField($objectArray[$labelField]);
         } else {
             $revision->setLabelField(null);
@@ -1106,7 +1105,7 @@ class DataService
      * @throws OptimisticLockException
      * @throws \Exception
      */
-    public function initNewDraft(string $type, string $ouuid, ?Revision $fromRev = null, ?string $username = null): Revision
+    public function initNewDraft(string $type, string $ouuid, Revision $fromRev = null, string $username = null): Revision
     {
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
@@ -1170,7 +1169,7 @@ class DataService
      * @throws OptimisticLockException
      * @throws PrivilegeException
      */
-    public function discardDraft(Revision $revision, bool $super = false, ?string $username = null): ?int
+    public function discardDraft(Revision $revision, bool $super = false, string $username = null): ?int
     {
         $this->lockRevision($revision, null, $super, $username);
 
@@ -1556,7 +1555,7 @@ class DataService
         return $out;
     }
 
-    public function getEmptyRevision(ContentType $contentType, ?string $user = null): Revision
+    public function getEmptyRevision(ContentType $contentType, string $user = null): Revision
     {
         $now = new \DateTime();
         $until = $now->add(new \DateInterval('PT5M')); // +5 minutes

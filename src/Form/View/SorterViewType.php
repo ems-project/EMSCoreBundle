@@ -92,9 +92,6 @@ class SorterViewType extends ViewType
         return 'sorter_view';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         return [];

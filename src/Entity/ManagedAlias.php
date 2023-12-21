@@ -199,7 +199,7 @@ class ManagedAlias extends JsonDeserializer implements \JsonSerializable, \Strin
         return $json;
     }
 
-    public static function fromJson(string $json, ?EntityInterface $managedAlias = null): ManagedAlias
+    public static function fromJson(string $json, EntityInterface $managedAlias = null): ManagedAlias
     {
         $meta = JsonClass::fromJsonString($json);
         $managedAlias = $meta->jsonDeserialize($managedAlias);

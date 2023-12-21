@@ -104,8 +104,8 @@ final class LockCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($input->getOption(self::OPTION_IF_EMPTY) &&
-            0 !== $this->revisionRepository->findAllLockedRevisions($this->contentType, $this->by)->count()) {
+        if ($input->getOption(self::OPTION_IF_EMPTY)
+            && 0 !== $this->revisionRepository->findAllLockedRevisions($this->contentType, $this->by)->count()) {
             return 0;
         }
 

@@ -18,8 +18,6 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return array<mixed>
      */
     public function getChoices(): array
@@ -30,8 +28,6 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return array<mixed>
      */
     public function getValues(): array
@@ -53,8 +49,6 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return array<mixed>
      */
     public function getOriginalKeys(): array
@@ -68,8 +62,6 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $choices
      *
      * @return array<mixed>
@@ -80,8 +72,6 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array<mixed> $choices
      *
      * @return array<mixed>

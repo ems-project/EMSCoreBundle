@@ -58,9 +58,6 @@ class GalleryViewType extends ViewType
         return 'gallery_view';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         $search = new Search();

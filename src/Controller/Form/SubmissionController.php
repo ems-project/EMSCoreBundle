@@ -11,6 +11,7 @@ use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 use EMS\SubmissionBundle\Entity\FormSubmission;
+use GuzzleHttp\Psr7\Stream;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
@@ -23,7 +24,6 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
-use GuzzleHttp\Psr7\Stream;
 
 final class SubmissionController extends AbstractController
 {

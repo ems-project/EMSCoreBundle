@@ -254,7 +254,7 @@ class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, En
         return $json;
     }
 
-    public static function fromJson(string $json, ?EntityInterface $styleSet = null): WysiwygStylesSet
+    public static function fromJson(string $json, EntityInterface $styleSet = null): WysiwygStylesSet
     {
         $meta = JsonClass::fromJsonString($json);
         $styleSet = $meta->jsonDeserialize($styleSet);

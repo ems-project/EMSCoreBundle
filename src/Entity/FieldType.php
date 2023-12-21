@@ -169,11 +169,11 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function setDataValue(mixed $input, DataField &$dataField): never
     {
         throw new \Exception('Deprecated method');
-//         $type = $this->getType();
-//         /** @var DataFieldType $dataFieldType */
-//         $dataFieldType = new $type;
+        //         $type = $this->getType();
+        //         /** @var DataFieldType $dataFieldType */
+        //         $dataFieldType = new $type;
 
-//         $dataFieldType->setDataValue($input, $dataField, $this->getOptions());
+        //         $dataFieldType->setDataValue($input, $dataField, $this->getOptions());
     }
 
     /**
@@ -545,22 +545,22 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $parent->contentType;
     }
 
-//     /**
-//      * Cette focntion clone casse le CollectionFieldType => impossible d'ajouter un record
-//      */
-//     public function __clone()
-//     {
-//         $this->children = new \Doctrine\Common\Collections\ArrayCollection ();
-//         $this->deleted = $this->deleted;
-//         $this->orderKey = $this->orderKey;
-//         $this->created = null;
-//         $this->modified = null;
-//         $this->description = $this->description;
-//         $this->id = 0;
-//         $this->name = $this->name ;
-//         $this->options = $this->options;
-//         $this->type = $this->type;
-//     }
+    //     /**
+    //      * Cette focntion clone casse le CollectionFieldType => impossible d'ajouter un record
+    //      */
+    //     public function __clone()
+    //     {
+    //         $this->children = new \Doctrine\Common\Collections\ArrayCollection ();
+    //         $this->deleted = $this->deleted;
+    //         $this->orderKey = $this->orderKey;
+    //         $this->created = null;
+    //         $this->modified = null;
+    //         $this->description = $this->description;
+    //         $this->id = 0;
+    //         $this->name = $this->name ;
+    //         $this->options = $this->options;
+    //         $this->type = $this->type;
+    //     }
 
     /**
      * get a child.
@@ -619,7 +619,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         }
     }
 
-    public function setParent(?FieldType $parent = null): self
+    public function setParent(FieldType $parent = null): self
     {
         $this->parent = $parent;
 
@@ -649,7 +649,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      * @param array<mixed>             $newStructure
      * @param array<string, FieldType> $fieldsByIds
      */
-    public function reorderFields(array $newStructure, ?array $fieldsByIds = null): void
+    public function reorderFields(array $newStructure, array $fieldsByIds = null): void
     {
         if (null === $fieldsByIds) {
             $fieldsByIds = $this->listAllFields();

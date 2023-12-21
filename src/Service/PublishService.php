@@ -102,7 +102,7 @@ class PublishService
         }
     }
 
-    public function bulkStart(int $bulkSize, ?LoggerInterface $logger = null): void
+    public function bulkStart(int $bulkSize, LoggerInterface $logger = null): void
     {
         $this->bulker->setSize($bulkSize);
         $this->bulker->setLogger($logger ?? new NullLogger());
@@ -214,7 +214,7 @@ class PublishService
      * @throws NonUniqueResultException
      * @throws DBALException
      */
-    public function publish(Revision $revision, Environment $environment, ?string $commandUser = null, bool $canPublish = false): int
+    public function publish(Revision $revision, Environment $environment, string $commandUser = null, bool $canPublish = false): int
     {
         $logContext = LogRevisionContext::publish($revision, $environment);
         if (null === $commandUser && !$canPublish && !$this->canPublish($revision, $environment)) {
@@ -378,7 +378,7 @@ class PublishService
         }
     }
 
-    private function publishVersion(Revision $revision, Environment $environment, ?string $commandUser = null): void
+    private function publishVersion(Revision $revision, Environment $environment, string $commandUser = null): void
     {
         if (!$revision->hasVersionTags()) {
             return;

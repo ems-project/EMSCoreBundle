@@ -60,9 +60,6 @@ class DataLinkViewType extends ViewType
         ]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         return [];

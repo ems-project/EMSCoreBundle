@@ -128,7 +128,7 @@ class FormManager implements EntityServiceInterface
         return $form;
     }
 
-    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, string $name = null): EntityInterface
     {
         $form = Form::fromJson($json);
         if (null !== $name && $form->getName() !== $name) {

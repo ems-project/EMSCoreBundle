@@ -98,16 +98,10 @@ class FormFieldType extends DataFieldType
         ]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildObjectArray(DataField $data, array &$out): void
     {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -125,33 +119,21 @@ class FormFieldType extends DataFieldType
         ]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function isVirtual(array $option = []): bool
     {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function filterSubField(array $data, array $option): array
     {
         return $data;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function getJsonNames(FieldType $current): array
     {
         return [];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function generateMapping(FieldType $current): array
     {
         return $this->fieldTypeType->generateMapping($this->getReferredFieldType($current));
@@ -184,9 +166,6 @@ class FormFieldType extends DataFieldType
         return $this->formManager->getByName($formName)->getFieldType();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         if (!\is_array($data)) {
@@ -197,9 +176,6 @@ class FormFieldType extends DataFieldType
         return parent::reverseViewTransform(RawDataTransformer::reverseTransform($referredFieldType, $data), $fieldType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function viewTransform(DataField $dataField)
     {
         $rawData = $dataField->getRawData();

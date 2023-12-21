@@ -77,9 +77,6 @@ class JsonMenuEditorFieldType extends DataFieldType
         $resolver->setDefault('nodeTypes', 'node');
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

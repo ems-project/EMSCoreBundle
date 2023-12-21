@@ -38,7 +38,7 @@ class AuthToken
      *
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
-    private UserInterface $user)
+        private UserInterface $user)
     {
         $this->value = \base64_encode(\random_bytes(50));
 

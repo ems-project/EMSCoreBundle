@@ -11,6 +11,7 @@ use EMS\CoreBundle\Service\EntityServiceInterface;
 use EMS\SubmissionBundle\Entity\FormSubmission;
 use EMS\SubmissionBundle\Request\DatabaseRequest;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -164,7 +165,11 @@ final class FormSubmissionService implements EntityServiceInterface
         }
 
         $formSubmission = $this->getById($id);
-        $this->requestStack->getSession()->getFlashBag()->add('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $formSubmission->getId()], 'EMSCoreBundle'));
+        $session = $this->requestStack->getSession();
+        if (!$session instanceof FlashBagAwareSessionInterface) {
+            throw new \RuntimeException('Unexpected non FlashBag aware session');
+        }
+        $session->getFlashBag()->add('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $formSubmission->getId()], 'EMSCoreBundle'));
 
         $formSubmission->process($user->getUsername());
         $this->formSubmissionRepository->save($formSubmission);
@@ -185,7 +190,11 @@ final class FormSubmissionService implements EntityServiceInterface
             $formSubmission = $this->getById($id);
             $formSubmission->process($user->getUsername());
             $this->formSubmissionRepository->persist($formSubmission);
-            $this->requestStack->getSession()->getFlashBag()->add('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $id], 'EMSCoreBundle'));
+            $session = $this->requestStack->getSession();
+            if (!$session instanceof FlashBagAwareSessionInterface) {
+                throw new \RuntimeException('Unexpected non FlashBag aware session');
+            }
+            $session->getFlashBag()->add('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $id], 'EMSCoreBundle'));
         }
 
         $this->formSubmissionRepository->flush();

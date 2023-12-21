@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
-use ZipStream\Stream;
+use GuzzleHttp\Psr7\Stream;
 
 final class SubmissionController extends AbstractController
 {

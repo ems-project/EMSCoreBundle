@@ -61,7 +61,7 @@ class FileController extends AbstractController
         $this->closeSession($request);
 
         try {
-            $data = $this->assetExtractorService->extractData($sha1, null, $forced);
+            $data = $this->assetExtractorService->extractMetaData($sha1, null, $forced);
         } catch (NotFoundException) {
             throw new NotFoundHttpException(\sprintf('Asset %s not found', $sha1));
         }

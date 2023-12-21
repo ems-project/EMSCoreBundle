@@ -3,24 +3,25 @@
 namespace EMS\CoreBundle\Helper\AssetExtractor;
 
 use EMS\Helpers\Standard\Json;
+use EMS\Helpers\Standard\Text;
 
 class ExtractedData
 {
     /**
      * @param array<string, mixed> $source
      */
-    public function __construct(private array $source)
+    public function __construct(private array $source, private readonly int $maxContentSize)
     {
     }
 
-    public static function fromJsonString(string $json): self
+    public static function fromJsonString(string $json, int $maxContentSize): self
     {
-        return new self(Json::decode($json));
+        return new self(Json::decode($json), $maxContentSize);
     }
 
-    public static function fromMetaString(string $metaString): self
+    public static function fromMetaString(string $metaString, int $maxContentSize): self
     {
-        return new self(self::convertMetaStringToArray($metaString));
+        return new self(self::convertMetaStringToArray($metaString), $maxContentSize);
     }
 
     public function getLocale(): ?string
@@ -57,6 +58,11 @@ class ExtractedData
         return (new \DateTimeImmutable())->setTimestamp($parseDate);
     }
 
+    public function getDate(): string
+    {
+        return $this->source['date'] ?? '';
+    }
+
     public function getAuthor(): string
     {
         return \strval($this->source['author'] ?? $this->source['dc:creator'] ?? '');
@@ -74,7 +80,10 @@ class ExtractedData
 
     public function getContent(): string
     {
-        return \strval($this->source['content'] ?? '');
+        $content = \strval($this->source['content'] ?? '');
+        $trimContent = Text::superTrim($content);
+
+        return \mb_substr($trimContent, 0, $this->maxContentSize, 'UTF-8');
     }
 
     public function setContent(string $content): void

@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ConfigParamConverter implements ParamConverterInterface
 {
+    /**
+     * @param ServiceLocator<ConfigFactoryInterface> $configFactories
+     */
     public function __construct(
         private readonly ServiceLocator $configFactories
     ) {

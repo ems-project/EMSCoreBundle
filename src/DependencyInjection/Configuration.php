@@ -32,6 +32,7 @@ class Configuration implements ConfigurationInterface
     final public const PUBLIC_KEY = null;
     final public const ASSET_CONFIG = [];
     final public const TIKA_SERVER = null;
+    final public const TIKA_MAX_CONTENT = 5120;
     final public const SAVE_ASSETS_IN_DB = false;
     final public const DEFAULT_BULK_SIZE = 500;
     final public const CLEAN_JOBS_TIME_STRING = '-7 days';
@@ -72,6 +73,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('private_key')->defaultValue(self::PRIVATE_KEY)->end()
                 ->scalarNode('public_key')->defaultValue(self::PUBLIC_KEY)->end()
                 ->scalarNode('tika_server')->defaultValue(self::TIKA_SERVER)->end()
+                ->scalarNode('tika_max_content')->defaultValue(self::TIKA_MAX_CONTENT)->end()
                 ->scalarNode('elasticsearch_version')->defaultValue('depreacted')->end()
                 ->booleanNode('pre_generated_ouuids')->defaultValue(false)->end()
                 ->arrayNode('template_options')->defaultValue([])->prototype('variable')->end()->end()

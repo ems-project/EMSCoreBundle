@@ -304,11 +304,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function getDisplayOption(string $key, $default = null)
     {
         $options = $this->getDisplayOptions();
-        if (isset($options[$key])) {
-            return $options[$key];
-        }
 
-        return $default;
+        return $options[$key] ?? $default;
     }
 
     public function getDisplayBoolOption(string $key, bool $default): bool
@@ -324,11 +321,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function getMappingOption(string $key, $default = null)
     {
         $options = $this->getMappingOptions();
-        if (isset($options[$key])) {
-            return $options[$key];
-        }
 
-        return $default;
+        return $options[$key] ?? $default;
     }
 
     /**
@@ -337,11 +331,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function getMappingOptions(): array
     {
         $options = $this->getOptions();
-        if (isset($options['mappingOptions'])) {
-            return $options['mappingOptions'];
-        }
 
-        return [];
+        return $options['mappingOptions'] ?? [];
     }
 
     /**
@@ -350,11 +341,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function getRestrictionOptions(): array
     {
         $options = $this->getOptions();
-        if (isset($options['restrictionOptions'])) {
-            return $options['restrictionOptions'];
-        }
 
-        return [];
+        return $options['restrictionOptions'] ?? [];
     }
 
     /**
@@ -363,11 +351,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function getRestrictionOption(string $key, mixed $default = null)
     {
         $options = $this->getRestrictionOptions();
-        if (isset($options[$key])) {
-            return $options[$key];
-        }
 
-        return $default;
+        return $options[$key] ?? $default;
     }
 
     /**
@@ -376,11 +361,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function getMigrationOption(string $key, mixed $default = null)
     {
         $options = $this->getMigrationOptions();
-        if (isset($options[$key])) {
-            return $options[$key];
-        }
 
-        return $default;
+        return $options[$key] ?? $default;
     }
 
     /**
@@ -389,11 +371,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function getMigrationOptions(): array
     {
         $options = $this->getOptions();
-        if (isset($options['migrationOptions'])) {
-            return $options['migrationOptions'];
-        }
 
-        return [];
+        return $options['migrationOptions'] ?? [];
     }
 
     /**
@@ -402,11 +381,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     public function getExtraOptions(): array
     {
         $options = $this->getOptions();
-        if (isset($options['extraOptions'])) {
-            return $options['extraOptions'];
-        }
 
-        return [];
+        return $options['extraOptions'] ?? [];
     }
 
     public function getMinimumRole(): string

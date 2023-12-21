@@ -193,7 +193,7 @@ class FieldTypeManager
                 if (!$child->getDeleted()) {
                     $out = $this->duplicateField($formArray['ems_'.$child->getName()], $child);
                     if (false !== $out) {
-                        if (\is_string($out) && 'first' == \substr($out, 0, 5)) {
+                        if (\is_string($out) && \str_starts_with($out, 'first')) {
                             return \substr($out, 5);
                         }
 

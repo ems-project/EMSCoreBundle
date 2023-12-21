@@ -5,44 +5,44 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="emsco_contenttype_update_from_json" path="/json-update/{contentType}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::updateFromJsonAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::updateFromJson"
            methods="GET|POST"
            format="html"/>
     <route id="contenttype.remove" path="/remove/{id}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::removeAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::remove"
            methods="POST"/>
     <route id="contenttype.activate" path="/activate/{contentType}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::activateAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::activate"
            methods="POST"/>
     <route id="contenttype.desactivate" path="/disable/{contentType}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::disableAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::disable"
            methods="POST"/>
     <route id="contenttype.refreshmapping" path="/refresh-mapping/{id}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::refreshMappingAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::refreshMapping"
            methods="POST"/>
     <route id="contenttype.add" path="/add"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::addAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::add"
            methods="GET|POST"/>
     <route id="contenttype.index" path="/"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::indexAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::index"
            methods="GET|POST"/>
     <route id="contenttype.unreferenced" path="/unreferenced"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::unreferencedAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::unreferenced"
            methods="GET|POST"/>
     <route id="ems_contenttype_field_edit" path="/{contentType}/field/{field}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::editFieldAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::editField"
            methods="GET|POST"/>
     <route id="ems_contenttype_reorder" path="/reorder/{contentType}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::reorderAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::reorder"
            methods="GET|POST"/>
     <route id="contenttype.edit" path="/{id}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::editAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::edit"
            methods="GET|POST"/>
     <route id="contenttype.structure" path="/structure/{id}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::editStructureAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::editStructure"
            methods="GET|POST"/>
     <route id="contenttype.export" path="/export/{contentType}.{_format}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::exportAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::export"
            methods="GET"
            format="json"/>
 

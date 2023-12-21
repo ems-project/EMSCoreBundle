@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="emsco_interface_document_create" path="/{interface}/data/{name}/create/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::createAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::create"
            methods="POST"
            format="json">
         <default key="ouuid" xsi:nil="true"/>
@@ -13,7 +13,7 @@
         <requirement key="interface">api|json</requirement>
     </route>
     <route id="emsco_interface_document_draft" path="/{interface}/data/{name}/draft/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::createAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::create"
            methods="POST"
            format="json">
         <default key="ouuid" xsi:nil="true"/>
@@ -21,7 +21,7 @@
         <requirement key="interface">api|json</requirement>
     </route>
     <route id="emsco_interface_document_get_short" path="/{interface}/data/{name}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::getAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::get"
            methods="GET"
            format="json">
         <default key="ouuid" xsi:nil="true"/>
@@ -29,7 +29,7 @@
         <requirement key="interface">api|json</requirement>
     </route>
     <route id="emsco_interface_document_get" path="/{interface}/data/{name}/get/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::getAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::get"
            methods="GET"
            format="json">
         <default key="ouuid" xsi:nil="true"/>
@@ -37,28 +37,28 @@
         <requirement key="interface">api|json</requirement>
     </route>
     <route id="emsco_interface_document_finalize" path="/{interface}/data/{name}/finalize/{id}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::finalizeAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::finalize"
            methods="POST"
            format="json">
         <default key="interface">api</default>
         <requirement key="interface">api|json</requirement>
     </route>
     <route id="emsco_interface_document_discard" path="/{interface}/data/{name}/discard/{id}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::discardAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::discard"
            methods="POST"
            format="json">
         <default key="interface">api</default>
         <requirement key="interface">api|json</requirement>
     </route>
     <route id="emsco_interface_document_delete" path="/{interface}/data/{name}/delete/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::deleteAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::delete"
            methods="POST"
            format="json">
         <default key="interface">api</default>
         <requirement key="interface">api|json</requirement>
     </route>
     <route id="emsco_interface_document_replace" path="/{interface}/data/{name}/replace/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::replaceAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::replace"
            methods="POST"
            format="json">
         <default key="interface">api</default>
@@ -81,14 +81,14 @@
         <requirement key="interface">api|json</requirement>
     </route>
     <route id="emsco_interface_document_merge" path="/{interface}/data/{name}/merge/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::mergeAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::merge"
            methods="POST"
            format="json">
         <default key="interface">api</default>
         <requirement key="interface">api|json</requirement>
     </route>
     <route id="emsco_interface_test" path="/{interface}/test"
-           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::testAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::test"
            methods="GET"
            format="json">
         <default key="interface">api</default>
@@ -134,7 +134,7 @@
 
     <!--Deprecated routes -->
     <route id="api.test" path="/{interface}/test"
-           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::testAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::test"
            methods="GET"
            format="json">
         <default key="interface">api</default>

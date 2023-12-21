@@ -39,7 +39,7 @@ class FieldHolderType extends AbstractType
             'metadata' => $form->getFieldType(),
             'label' => false,
             'constraints' => [
-                new Callback([$this, 'validate']),
+                new Callback($this->validate(...)),
             ],
         ]);
 

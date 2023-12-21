@@ -69,7 +69,7 @@ class CalendarController extends AbstractController
         }
     }
 
-    public function searchAction(View $view, Request $request): Response
+    public function search(View $view, Request $request): Response
     {
         $search = new Search();
         $form = $this->createForm(SearchFormType::class, $search, [

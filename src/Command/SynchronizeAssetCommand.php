@@ -70,7 +70,7 @@ class SynchronizeAssetCommand extends EmsCommand
             foreach ($hashes as $hash) {
                 try {
                     $this->fileService->synchroniseAsset($hash['hash']);
-                } catch (NotFoundException $e) {
+                } catch (NotFoundException) {
                     $message = \sprintf('File not found %s', $hash['hash']);
                     $output->writeln('');
                     $output->writeln(\sprintf('<comment>%s</comment>', $message));

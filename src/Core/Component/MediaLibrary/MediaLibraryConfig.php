@@ -20,7 +20,7 @@ class MediaLibraryConfig implements ConfigInterface
 
     public int $searchSize = self::DEFAULT_SEARCH_SIZE;
 
-    public const DEFAULT_SEARCH_SIZE = 100;
+    final public const DEFAULT_SEARCH_SIZE = 100;
 
     public function __construct(
         private readonly string $hash,

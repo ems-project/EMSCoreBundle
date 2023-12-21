@@ -92,13 +92,13 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
      */
     protected int $orderKey;
 
-    public const DEFINITION_LANDING_PAGE = 'landing_page';
-    public const DEFINITION_QUICK_SEARCH = 'quick_search';
-    public const DEFINITION_BROWSER_IMAGE = 'browser_image';
-    public const DEFINITION_BROWSER_OBJECT = 'browser_object';
-    public const DEFINITION_BROWSER_FILE = 'browser_file';
+    final public const DEFINITION_LANDING_PAGE = 'landing_page';
+    final public const DEFINITION_QUICK_SEARCH = 'quick_search';
+    final public const DEFINITION_BROWSER_IMAGE = 'browser_image';
+    final public const DEFINITION_BROWSER_OBJECT = 'browser_object';
+    final public const DEFINITION_BROWSER_FILE = 'browser_file';
 
-    public const DEFINITIONS = [
+    final public const DEFINITIONS = [
         self::DEFINITION_QUICK_SEARCH,
         self::DEFINITION_LANDING_PAGE,
         self::DEFINITION_BROWSER_IMAGE,
@@ -106,7 +106,7 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
         self::DEFINITION_BROWSER_FILE,
     ];
 
-    public const DASHBOARD_BROWSERS = [
+    final public const DASHBOARD_BROWSERS = [
         self::DEFINITION_BROWSER_IMAGE,
         self::DEFINITION_BROWSER_OBJECT,
         self::DEFINITION_BROWSER_FILE,

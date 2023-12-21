@@ -10,11 +10,11 @@ use EMS\CoreBundle\Entity\Revision;
 
 class JsonMenuNestedConfig implements ConfigInterface
 {
-    public ?string $template;
-    public ?string $locale;
+    public ?string $template = null;
+    public ?string $locale = null;
     /** @var array<string, mixed> */
     public array $context = [];
-    public ?string $contextBlock;
+    public ?string $contextBlock = null;
     /** @var JsonMenuNestedColumn[] */
     public array $columns = [];
 

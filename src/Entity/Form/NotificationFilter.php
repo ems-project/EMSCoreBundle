@@ -15,7 +15,7 @@ class NotificationFilter
     /** @var Collection<int, Template> */
     public Collection $template;
     /** @var Environment[] */
-    public array $environment;
+    public array $environment = [];
     /** @var Collection<int, ContentType> */
     public Collection $contentType;
 
@@ -23,6 +23,5 @@ class NotificationFilter
     {
         $this->template = new ArrayCollection();
         $this->contentType = new ArrayCollection();
-        $this->environment = [];
     }
 }

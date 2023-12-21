@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormRegistryInterface;
  */
 class FormModelTransformer implements DataTransformerInterface
 {
-    private DataFieldModelTransformer $nestedTransformer;
+    private readonly DataFieldModelTransformer $nestedTransformer;
 
     public function __construct(private readonly FieldType $fieldType, FormRegistryInterface $formRegistry)
     {

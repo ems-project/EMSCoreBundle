@@ -12,7 +12,7 @@ class IndexController extends AbstractController
     {
     }
 
-    public function deleteOrphansIndexesAction(): RedirectResponse
+    public function deleteOrphansIndexes(): RedirectResponse
     {
         $this->indexService->deleteOrphanIndexes();
 

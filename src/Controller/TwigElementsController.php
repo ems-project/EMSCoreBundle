@@ -29,7 +29,7 @@ class TwigElementsController extends AbstractController
     {
     }
 
-    public function sideMenuAction(): Response
+    public function sideMenu(): Response
     {
         $status = $this->elasticaService->getHealthStatus();
         if ('green' === $status) {
@@ -54,7 +54,7 @@ class TwigElementsController extends AbstractController
         );
     }
 
-    public function jobsAction(string $username): Response
+    public function jobs(string $username): Response
     {
         return $this->render(
             "@$this->templateNamespace/elements/jobs-list.html.twig",

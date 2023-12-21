@@ -46,9 +46,9 @@ final class ChannelRegistrar
 
         $baseUrl = \vsprintf('%s://%s%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath()]);
         $defaultSearchConfigOption = (isset($channel->getOptions()['searchConfig']) && '' !== $channel->getOptions()['searchConfig']) ? $channel->getOptions()['searchConfig'] : '{}';
-        $searchConfig = \json_decode($defaultSearchConfigOption, true, 512, JSON_THROW_ON_ERROR);
+        $searchConfig = \json_decode((string) $defaultSearchConfigOption, true, 512, JSON_THROW_ON_ERROR);
         $defaultAttributesOption = (isset($channel->getOptions()['attributes']) && '' !== $channel->getOptions()['attributes']) ? $channel->getOptions()['attributes'] : '{}';
-        $attributes = \json_decode($defaultAttributesOption, true, 512, JSON_THROW_ON_ERROR);
+        $attributes = \json_decode((string) $defaultAttributesOption, true, 512, JSON_THROW_ON_ERROR);
 
         if (!$this->indexService->hasIndex($alias)) {
             $this->logger->warning('log.channel.alias_not_found', [

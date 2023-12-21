@@ -24,7 +24,7 @@ class ManagedAliasController extends AbstractController
     ) {
     }
 
-    public function addAction(Request $request): Response
+    public function add(Request $request): Response
     {
         $managedAlias = new ManagedAlias();
         $form = $this->createForm(ManagedAliasType::class, $managedAlias);
@@ -46,7 +46,7 @@ class ManagedAliasController extends AbstractController
         ]);
     }
 
-    public function editAction(Request $request, int $id): Response
+    public function edit(Request $request, int $id): Response
     {
         $managedAlias = $this->aliasService->getManagedAlias($id);
 
@@ -72,7 +72,7 @@ class ManagedAliasController extends AbstractController
         ]);
     }
 
-    public function removeAction(int $id): Response
+    public function remove(int $id): Response
     {
         $managedAlias = $this->aliasService->getManagedAlias($id);
 

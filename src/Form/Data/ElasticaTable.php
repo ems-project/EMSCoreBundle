@@ -23,7 +23,7 @@ class ElasticaTable extends TableAbstract
     final public const DISPOSITION = 'disposition';
     final public const SHEET_NAME = 'sheet_name';
     private const ROW_CONTEXT = 'row_context';
-    public const PROTECTED = 'protected';
+    final public const PROTECTED = 'protected';
     private ?int $count = null;
     private ?int $totalCount = null;
 

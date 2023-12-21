@@ -9,13 +9,13 @@ use Twig\TemplateWrapper;
 
 class MediaLibraryTemplate
 {
-    private TemplateWrapper $template;
-    private TemplateWrapper $templateElements;
-    private ?TemplateWrapper $configTemplate;
+    private readonly TemplateWrapper $template;
+    private readonly TemplateWrapper $templateElements;
+    private readonly ?TemplateWrapper $configTemplate;
 
-    public const BLOCK_HEADER = 'mediaLibraryHeader';
-    public const BLOCK_FILE_ROW_HEADER = 'mediaLibraryFileRowHeader';
-    public const BLOCK_FILE_ROW = 'mediaLibraryFileRow';
+    final public const BLOCK_HEADER = 'mediaLibraryHeader';
+    final public const BLOCK_FILE_ROW_HEADER = 'mediaLibraryFileRowHeader';
+    final public const BLOCK_FILE_ROW = 'mediaLibraryFileRow';
 
     public function __construct(
         private readonly Environment $twig,

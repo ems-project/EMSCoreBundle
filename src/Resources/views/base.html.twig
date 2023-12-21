@@ -1,6 +1,6 @@
 {%- trans_default_domain 'EMSCoreBundle' -%}
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -124,7 +124,7 @@
 
 		{% if app.user %}
 		  {{ render(controller('EMS\\CoreBundle\\Controller\\ChannelController::menu')) }}
-		  {{ render(controller('EMS\\CoreBundle\\Controller\\NotificationController::menuNotificationAction')) }}
+		  {{ render(controller('EMS\\CoreBundle\\Controller\\NotificationController::menuNotification')) }}
         {% endif %}
 
           <!-- Tasks Menu -->
@@ -206,7 +206,7 @@
   </header>
 
 		{% if app.user %}
-		  	{{ render(controller('EMS\\CoreBundle\\Controller\\TwigElementsController::sideMenuAction')) }}
+		  	{{ render(controller('EMS\\CoreBundle\\Controller\\TwigElementsController::sideMenu')) }}
 		{% else %}
             {% include '@EMSCore/elements/side-menu.html.twig' with {
 				'contentTypes': get_content_types()
@@ -307,7 +307,7 @@
           <h3 class="control-sidebar-heading">Last commands</h3>
           <ul class="control-sidebar-menu" id="commands-log">
               {% if app.user %}
-                  {{ render(controller('EMS\\CoreBundle\\Controller\\TwigElementsController::jobsAction', {
+                  {{ render(controller('EMS\\CoreBundle\\Controller\\TwigElementsController::jobs', {
                       'username' : app.user.username
                   } ) ) }}
               {% endif %}

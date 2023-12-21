@@ -5,10 +5,10 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="emsco_user_index" path="/"
-           controller="EMS\CoreBundle\Controller\UserController::indexAction"
+           controller="EMS\CoreBundle\Controller\UserController::index"
            methods="GET"/>
     <route id="emsco_user_add" path="/add"
-           controller="EMS\CoreBundle\Controller\UserController::addUserAction"
+           controller="EMS\CoreBundle\Controller\UserController::addUser"
            methods="GET|POST"/>
     <route id="emsco_user_edit" path="/edit/{user}"
            controller="EMS\CoreBundle\Controller\UserController::edit"

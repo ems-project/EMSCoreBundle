@@ -38,7 +38,7 @@ final class SubmissionController extends AbstractController
     ) {
     }
 
-    public function indexAction(Request $request, UserInterface $user): Response
+    public function index(Request $request, UserInterface $user): Response
     {
         $table = $this->dataTableFactory->create(FormSubmissionDataTableType::class);
         $form = $this->createForm(TableType::class, $table);

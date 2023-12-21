@@ -88,7 +88,7 @@ class UploadedAsset implements EntityInterface
      *
      * @ORM\Column(name="head_in", type="array", nullable=true)
      */
-    private ?array $headIn;
+    private ?array $headIn = null;
 
     public function __construct()
     {

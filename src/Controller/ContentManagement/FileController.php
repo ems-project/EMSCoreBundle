@@ -31,17 +31,17 @@ class FileController extends AbstractController
     ) {
     }
 
-    public function viewFileAction(string $sha1, Request $request): Response
+    public function viewFile(string $sha1, Request $request): Response
     {
         return $this->fileService->getStreamResponse($sha1, ResponseHeaderBag::DISPOSITION_INLINE, $request);
     }
 
-    public function downloadFileAction(string $sha1, Request $request): Response
+    public function downloadFile(string $sha1, Request $request): Response
     {
         return $this->fileService->getStreamResponse($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
     }
 
-    public function softDeleteFileAction(Request $request, string $id): Response
+    public function softDeleteFile(Request $request, string $id): Response
     {
         if (!$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedException($request->getPathInfo());
@@ -80,7 +80,7 @@ class FileController extends AbstractController
      *
      * @deprecated
      */
-    public function initUploadFileAction(?string $sha1, $size, bool $apiRoute, Request $request): Response
+    public function initUploadFile(?string $sha1, $size, bool $apiRoute, Request $request): Response
     {
         if ($sha1 || $size) {
             @\trigger_error('You should use the routes emsco_file_data_init_upload or emsco_file_api_init_upload which doesn\'t require url parameters', E_USER_DEPRECATED);
@@ -125,7 +125,7 @@ class FileController extends AbstractController
     }
 
     /** @deprecated */
-    public function uploadChunkAction(?string $sha1, ?string $hash, bool $apiRoute, Request $request): Response
+    public function uploadChunk(?string $sha1, ?string $hash, bool $apiRoute, Request $request): Response
     {
         if (null !== $sha1) {
             $hash = $sha1;
@@ -163,7 +163,7 @@ class FileController extends AbstractController
         ]);
     }
 
-    public function indexImagesAction(): Response
+    public function indexImages(): Response
     {
         $images = $this->fileService->getImages();
 
@@ -209,7 +209,7 @@ class FileController extends AbstractController
         return new BinaryFileResponse($image);
     }
 
-    public function uploadFileAction(Request $request): Response
+    public function uploadFile(Request $request): Response
     {
         /** @var UploadedFile $file */
         $file = $request->files->get('upload');
@@ -221,7 +221,7 @@ class FileController extends AbstractController
             if (false === $type) {
                 try {
                     $type = $file->getMimeType();
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     $type = 'application/bin';
                 }
             }

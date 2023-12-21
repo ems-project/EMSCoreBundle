@@ -5,15 +5,15 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="environment_add_managed_alias" path="/add"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::addAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::add"
            methods="GET POST"/>
     <route id="environment_edit_managed_alias" path="/edit/{id}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::editAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::edit"
            methods="GET POST">
         <requirement key="id">\d+</requirement>
     </route>
     <route id="environment_remove_managed_alias" path="/remove/{id}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::removeAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::remove"
            methods="POST">
         <requirement key="id">\d+</requirement>
     </route>

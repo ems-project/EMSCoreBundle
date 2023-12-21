@@ -10,7 +10,7 @@ class ObjectChoiceList implements ChoiceListInterface
     /** @var array<mixed> */
     private array $choices = [];
 
-    public function __construct(private readonly ObjectChoiceCacheService $objectChoiceCacheService, private string $types, private readonly bool $loadAll = false, private bool $circleOnly = false, private bool $withWarning = true, private ?string $querySearchName = null)
+    public function __construct(private readonly ObjectChoiceCacheService $objectChoiceCacheService, private readonly string $types, private readonly bool $loadAll = false, private readonly bool $circleOnly = false, private readonly bool $withWarning = true, private readonly ?string $querySearchName = null)
     {
     }
 

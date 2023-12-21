@@ -72,7 +72,7 @@ class DataController extends AbstractController
     ) {
     }
 
-    public function rootAction(string $name): Response
+    public function root(string $name): Response
     {
         $contentType = $this->contentTypeRepository->findOneBy([
             'name' => $name,
@@ -87,7 +87,7 @@ class DataController extends AbstractController
             'contentType' => $contentType->getId(),
         ]);
         foreach ($searches as $search) {
-            return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::searchAction', [
+            return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::search', [
                 'query' => null,
             ], [
                 'search_form' => $search->jsonSerialize(),
@@ -106,14 +106,14 @@ class DataController extends AbstractController
             $searchForm->setSortOrder($contentType->getSortOrder());
         }
 
-        return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::searchAction', [
+        return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::search', [
             'query' => null,
         ], [
             'search_form' => $searchForm->jsonSerialize(),
         ]);
     }
 
-    public function inMyCirclesAction(string $name): Response
+    public function inMyCircles(string $name): Response
     {
         $contentType = $this->contentTypeRepository->findOneBy([
             'name' => $name,
@@ -156,14 +156,14 @@ class DataController extends AbstractController
 
         $formEncoded = \json_encode($searchForm, JSON_THROW_ON_ERROR);
 
-        return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::searchAction', [
+        return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::search', [
             'query' => null,
         ], [
             'search_form' => \json_decode($formEncoded, true, 512, JSON_THROW_ON_ERROR),
         ]);
     }
 
-    public function trashAction(ContentType $contentType): Response
+    public function trash(ContentType $contentType): Response
     {
         if (!$this->isGranted($contentType->role(ContentTypeRoles::TRASH))) {
             throw $this->createAccessDeniedException('Trash not granted!');
@@ -175,7 +175,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function putBackAction(ContentType $contentType, string $ouuid): RedirectResponse
+    public function putBack(ContentType $contentType, string $ouuid): RedirectResponse
     {
         $revId = $this->dataService->putBack($contentType, $ouuid);
 
@@ -184,7 +184,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function emptyTrashAction(ContentType $contentType, string $ouuid): RedirectResponse
+    public function emptyTrash(ContentType $contentType, string $ouuid): RedirectResponse
     {
         $this->dataService->emptyTrash($contentType, $ouuid);
 
@@ -193,7 +193,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function viewDataAction(string $environmentName, string $type, string $ouuid): Response
+    public function viewData(string $environmentName, string $type, string $ouuid): Response
     {
         $environment = $this->environmentService->getByName($environmentName);
         if (false === $environment) {
@@ -219,7 +219,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function revisionInEnvironmentDataAction(string $type, string $ouuid, string $environment): RedirectResponse
+    public function revisionInEnvironmentData(string $type, string $ouuid, string $environment): RedirectResponse
     {
         $contentType = $this->contentTypeService->getByName($type);
         if (!$contentType instanceof ContentType || $contentType->getDeleted()) {
@@ -259,7 +259,7 @@ class DataController extends AbstractController
         return $response;
     }
 
-    public function duplicateAction(string $environment, string $type, string $ouuid): RedirectResponse
+    public function duplicate(string $environment, string $type, string $ouuid): RedirectResponse
     {
         $contentType = $this->contentTypeService->getByName($type);
         if (false === $contentType) {
@@ -301,7 +301,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function copyAction(string $environment, string $type, string $ouuid, Request $request): RedirectResponse
+    public function copy(string $environment, string $type, string $ouuid, Request $request): RedirectResponse
     {
         $contentType = $this->contentTypeService->getByName($type);
         if (!$contentType) {
@@ -332,7 +332,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function newDraftAction(Request $request, string $type, string $ouuid): RedirectResponse
+    public function newDraft(Request $request, string $type, string $ouuid): RedirectResponse
     {
         return $this->redirectToRoute(Routes::EDIT_REVISION, [
             'revisionId' => $this->dataService->initNewDraft($type, $ouuid)->getId(),
@@ -340,7 +340,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function deleteAction(string $type, string $ouuid): RedirectResponse
+    public function delete(string $type, string $ouuid): RedirectResponse
     {
         $revision = $this->dataService->getNewestRevision($type, $ouuid);
         $contentType = $revision->giveContentType();
@@ -384,7 +384,7 @@ class DataController extends AbstractController
         return $this->dataService->discardDraft($revision);
     }
 
-    public function discardRevisionAction(int $revisionId): RedirectResponse
+    public function discardRevision(int $revisionId): RedirectResponse
     {
         /** @var Revision|null $revision */
         $revision = $this->revisionRepository->find($revisionId);
@@ -405,7 +405,7 @@ class DataController extends AbstractController
 
         if (null != $ouuid && null !== $previousRevisionId && $previousRevisionId > 0) {
             if ($autoPublish) {
-                return $this->reindexRevisionAction($previousRevisionId, true);
+                return $this->reindexRevision($previousRevisionId, true);
             }
 
             return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
@@ -419,7 +419,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function cancelModificationsAction(Revision $revision, PublishService $publishService): RedirectResponse
+    public function cancelModifications(Revision $revision, PublishService $publishService): RedirectResponse
     {
         $contentTypeId = $revision->giveContentType()->getId();
         $type = $revision->giveContentType()->getName();
@@ -452,7 +452,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function reindexRevisionAction(int $revisionId, bool $defaultOnly = false): RedirectResponse
+    public function reindexRevision(int $revisionId, bool $defaultOnly = false): RedirectResponse
     {
         /** @var Revision|null $revision */
         $revision = $this->revisionRepository->find($revisionId);
@@ -488,7 +488,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function customIndexViewAction(View $viewId, bool $public, Request $request): Response
+    public function customIndexView(View $viewId, bool $public, Request $request): Response
     {
         $view = $viewId;
         if ($public && !$view->isPublic()) {
@@ -499,7 +499,7 @@ class DataController extends AbstractController
         return $viewType->generateResponse($view, $request);
     }
 
-    public function customViewJobAction(string $environmentName, int $templateId, string $ouuid, Request $request): Response
+    public function customViewJob(string $environmentName, int $templateId, string $ouuid, Request $request): Response
     {
         /** @var Template|null $template * */
         $template = $this->templateRepository->find($templateId);
@@ -564,7 +564,7 @@ class DataController extends AbstractController
         return $response;
     }
 
-    public function ajaxUpdateAction(int $revisionId, Request $request, PublishService $publishService): Response
+    public function ajaxUpdate(int $revisionId, Request $request, PublishService $publishService): Response
     {
         $formErrors = [];
 
@@ -654,7 +654,7 @@ class DataController extends AbstractController
         return $response;
     }
 
-    public function finalizeDraftAction(Revision $revision): Response
+    public function finalizeDraft(Revision $revision): Response
     {
         $this->dataService->loadDataStructure($revision);
         try {
@@ -708,7 +708,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function duplicateWithJsonContentAction(ContentType $contentType, string $ouuid, Request $request): RedirectResponse
+    public function duplicateWithJsonContent(ContentType $contentType, string $ouuid, Request $request): RedirectResponse
     {
         $content = $request->get('JSON_BODY', null);
         $jsonContent = \json_decode((string) $content, true, 512, JSON_THROW_ON_ERROR);
@@ -717,7 +717,7 @@ class DataController extends AbstractController
         return $this->intNewDocumentFromArray($contentType, $jsonContent);
     }
 
-    public function addFromJsonContentAction(ContentType $contentType, Request $request): RedirectResponse
+    public function addFromJsonContent(ContentType $contentType, Request $request): RedirectResponse
     {
         $content = $request->get('JSON_BODY', null);
         $jsonContent = \json_decode((string) $content, true, 512, JSON_THROW_ON_ERROR);
@@ -762,7 +762,7 @@ class DataController extends AbstractController
         }
     }
 
-    public function addAction(ContentType $contentType, Request $request): Response
+    public function add(ContentType $contentType, Request $request): Response
     {
         if (!$this->isGranted($contentType->role(ContentTypeRoles::CREATE))) {
             throw $this->createAccessDeniedException('Create not granted');
@@ -815,7 +815,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function revertRevisionAction(Revision $revision): Response
+    public function revertRevision(Revision $revision): Response
     {
         $type = $revision->giveContentType()->getName();
         $ouuid = $revision->giveOuuid();
@@ -832,7 +832,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function linkDataAction(string $key, ContentTypeService $ctService): Response
+    public function linkData(string $key, ContentTypeService $ctService): Response
     {
         $category = $type = $ouuid = null;
         $split = \explode(':', $key);

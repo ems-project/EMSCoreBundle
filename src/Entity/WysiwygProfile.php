@@ -17,7 +17,7 @@ use EMS\Helpers\Standard\DateTime;
  *
  * @ORM\HasLifecycleCallbacks()
  */
-class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, EntityInterface
+class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, EntityInterface, \Stringable
 {
     use CreatedModifiedTrait;
     /**

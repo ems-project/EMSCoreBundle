@@ -27,7 +27,7 @@ final class UserManager
         private readonly MailerService $mailerService,
         private readonly UserRepository $userRepository,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
-        private string $fallbackLocale,
+        private readonly string $fallbackLocale,
         private readonly string $templateNamespace
     ) {
     }

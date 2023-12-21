@@ -6,21 +6,21 @@
 
     <!-- Deprecated -->
     <route id="ems.user.index" path="/"
-           controller="EMS\CoreBundle\Controller\UserController::indexAction"
+           controller="EMS\CoreBundle\Controller\UserController::index"
            methods="GET"/>
     <route id="user.add" path="/add"
-           controller="EMS\CoreBundle\Controller\UserController::addUserAction"
+           controller="EMS\CoreBundle\Controller\UserController::addUser"
            methods="GET|POST"/>
     <route id="user.edit" path="/{id}/edit"
-           controller="EMS\CoreBundle\Controller\UserController::editUserAction"
+           controller="EMS\CoreBundle\Controller\UserController::editUser"
            methods="GET|POST"/>
     <route id="user.delete" path="/{id}/delete"
-           controller="EMS\CoreBundle\Controller\UserController::removeUserAction"
+           controller="EMS\CoreBundle\Controller\UserController::removeUser"
            methods="POST"/>
     <route id="user.enabling" path="/{id}/enabling"
            controller="EMS\CoreBundle\Controller\UserController::enabling"
            methods="POST"/>
     <route id="EMS_user_apikey" path="/{username}/apikey"
-           controller="EMS\CoreBundle\Controller\UserController::apiKeyAction"
+           controller="EMS\CoreBundle\Controller\UserController::apiKey"
            methods="POST"/>
 </routes>

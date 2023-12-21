@@ -8,15 +8,15 @@
            controller="EMS\CoreBundle\Controller\DefaultController::documentation"
            methods="GET|HEAD"/>
     <route id="health-check" path="/health_check.{_format}"
-           controller="EMS\CoreBundle\Controller\ElasticsearchController::healthCheckAction"
+           controller="EMS\CoreBundle\Controller\ElasticsearchController::healthCheck"
            methods="GET|POST"
            format="html"/>
     <route id="elasticsearch.status" path="/status.{_format}"
-           controller="EMS\CoreBundle\Controller\ElasticsearchController::statusAction"
+           controller="EMS\CoreBundle\Controller\ElasticsearchController::status"
            methods="GET|POST"
            format="html"/>
     <route id="ems_quick_search" path="/quick-search"
-           controller="EMS\CoreBundle\Controller\ElasticsearchController::quickSearchAction"
+           controller="EMS\CoreBundle\Controller\ElasticsearchController::quickSearch"
            methods="GET"
            format="html"/>
 </routes>

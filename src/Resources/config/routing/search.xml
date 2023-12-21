@@ -11,12 +11,12 @@
            controller="EMS\CoreBundle\Controller\Search\QuerySearchController"
            methods="GET"/>
     <route id="emsco_search_export" path="/search/export/{contentType}"
-           controller="EMS\CoreBundle\Controller\ElasticsearchController::exportAction"
+           controller="EMS\CoreBundle\Controller\ElasticsearchController::export"
            methods="POST"/>
     <route id="ems_search" path="/search"
-           controller="EMS\CoreBundle\Controller\ElasticsearchController::searchAction"
+           controller="EMS\CoreBundle\Controller\ElasticsearchController::search"
            methods="GET|POST"/>
     <route id="elasticsearch.search" path="/search"
-           controller="EMS\CoreBundle\Controller\ElasticsearchController::searchAction"
+           controller="EMS\CoreBundle\Controller\ElasticsearchController::search"
            methods="GET|POST"/>
 </routes>

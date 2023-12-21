@@ -11,8 +11,8 @@ use Twig\TemplateWrapper;
 
 class JsonMenuNestedTemplate
 {
-    private TemplateWrapper $template;
-    private ?TemplateWrapper $configTemplate;
+    private readonly TemplateWrapper $template;
+    private readonly ?TemplateWrapper $configTemplate;
     public JsonMenuNestedTemplateContext $context;
 
     /**

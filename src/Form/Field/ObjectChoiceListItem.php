@@ -15,7 +15,7 @@ class ObjectChoiceListItem implements \Stringable
     private readonly string $value;
     private ?string $group = null;
     private ?string $color = null;
-    private ?string $tooltip;
+    private readonly ?string $tooltip;
 
     public function __construct(Document $document, ?ContentType $contentType)
     {

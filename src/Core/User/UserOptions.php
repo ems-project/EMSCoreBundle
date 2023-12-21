@@ -15,7 +15,7 @@ class UserOptions implements \ArrayAccess
     final public const SIMPLIFIED_UI = 'simplified_ui';
     final public const ALLOWED_CONFIGURE_WYSIWYG = 'allowed_configure_wysiwyg';
     final public const CUSTOM_OPTIONS = 'custom_options';
-    public const ALL_MEMBERS = [self::SIMPLIFIED_UI, self::ALLOWED_CONFIGURE_WYSIWYG, self::CUSTOM_OPTIONS];
+    final public const ALL_MEMBERS = [self::SIMPLIFIED_UI, self::ALLOWED_CONFIGURE_WYSIWYG, self::CUSTOM_OPTIONS];
 
     /**
      * @param array{simplified_ui?: bool, allowed_configure_wysiwyg?: bool, custom_options?: mixed} $data

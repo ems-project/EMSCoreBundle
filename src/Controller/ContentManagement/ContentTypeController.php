@@ -68,7 +68,7 @@ class ContentTypeController extends AbstractController
         return FieldTypeManager::isValidName($name);
     }
 
-    public function updateFromJsonAction(ContentType $contentType, Request $request): Response
+    public function updateFromJson(ContentType $contentType, Request $request): Response
     {
         $jsonUpdate = new ContentTypeJsonUpdate();
         $form = $this->createForm(ContentTypeUpdateType::class, $jsonUpdate);
@@ -94,7 +94,7 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    public function removeAction(int $id): RedirectResponse
+    public function remove(int $id): RedirectResponse
     {
         $contentType = $this->contentTypeRepository->findById($id);
 
@@ -114,7 +114,7 @@ class ContentTypeController extends AbstractController
         return $this->redirectToRoute('contenttype.index');
     }
 
-    public function activateAction(ContentType $contentType): Response
+    public function activate(ContentType $contentType): Response
     {
         if ($contentType->getDirty()) {
             $this->logger->error('log.contenttype.dirty', [
@@ -131,7 +131,7 @@ class ContentTypeController extends AbstractController
         return $this->redirectToRoute('contenttype.index');
     }
 
-    public function disableAction(ContentType $contentType): Response
+    public function disable(ContentType $contentType): Response
     {
         $contentType->setActive(false);
         $this->contentTypeRepository->save($contentType);
@@ -139,7 +139,7 @@ class ContentTypeController extends AbstractController
         return $this->redirectToRoute('contenttype.index');
     }
 
-    public function refreshMappingAction(ContentType $id): Response
+    public function refreshMapping(ContentType $id): Response
     {
         $this->contentTypeService->updateMapping($id);
         $this->contentTypeService->persist($id);
@@ -147,7 +147,7 @@ class ContentTypeController extends AbstractController
         return $this->redirectToRoute('contenttype.index');
     }
 
-    public function addAction(Request $request): Response
+    public function add(Request $request): Response
     {
         $environments = $this->environmentRepository->findBy([
             'managed' => true,
@@ -237,7 +237,7 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    public function indexAction(Request $request): Response
+    public function index(Request $request): Response
     {
         $contentTypes = $this->contentTypeRepository->findAll();
 
@@ -292,7 +292,7 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    public function unreferencedAction(Request $request): Response
+    public function unreferenced(Request $request): Response
     {
         if ($request->isMethod('POST')) {
             if (null != $request->get('envId') && null != $request->get('name')) {
@@ -329,7 +329,7 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    public function editFieldAction(ContentType $contentType, FieldType $field, Request $request): Response
+    public function editField(ContentType $contentType, FieldType $field, Request $request): Response
     {
         $editFieldType = new EditFieldType($field);
 
@@ -357,7 +357,7 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    public function reorderAction(ContentType $contentType, Request $request): Response
+    public function reorder(ContentType $contentType, Request $request): Response
     {
         $data = [];
         $form = $this->createForm(ReorderType::class, $data, [
@@ -379,7 +379,7 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    public function editAction(int $id, Request $request): Response
+    public function edit(int $id, Request $request): Response
     {
         $contentType = $this->contentTypeRepository->findById($id);
 
@@ -460,7 +460,7 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    public function editStructureAction(int $id, Request $request): Response
+    public function editStructure(int $id, Request $request): Response
     {
         $contentType = $this->contentTypeRepository->findById($id);
 
@@ -610,7 +610,7 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    public function exportAction(ContentType $contentType): Response
+    public function export(ContentType $contentType): Response
     {
         $jsonContent = Json::encode($contentType, true);
 

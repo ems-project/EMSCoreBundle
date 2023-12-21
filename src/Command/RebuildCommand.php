@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RebuildCommand extends EmsCommand
 {
-    public const ALL = 'all';
+    final public const ALL = 'all';
     protected static $defaultName = self::COMMAND;
     final public const COMMAND = 'ems:environment:rebuild';
     private bool $signData;

@@ -5,16 +5,16 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="ems_filter_index" path="/"
-           controller="EMS\CoreBundle\Controller\ContentManagement\FilterController::indexAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FilterController::index"
            methods="GET"/>
     <route id="ems_filter_edit" path="/edit/{filter}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\FilterController::editAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FilterController::edit"
            methods="GET|POST"/>
     <route id="ems_filter_delete" path="/delete/{filter}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\FilterController::deleteAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FilterController::delete"
            methods="POST"/>
     <route id="ems_filter_add" path="/add"
-           controller="EMS\CoreBundle\Controller\ContentManagement\FilterController::addAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FilterController::add"
            methods="GET|POST"/>
     <route id="emsco_filter_export" path="/export/{filter}.json"
            controller="EMS\CoreBundle\Controller\ContentManagement\FilterController::export"

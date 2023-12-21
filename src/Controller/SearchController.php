@@ -32,7 +32,7 @@ class SearchController extends AbstractController
     {
     }
 
-    public function indexAction(Request $request): Response
+    public function index(Request $request): Response
     {
         $reorderSortOptionForm = $this->createForm(ReorderType::class);
         $reorderSortOptionForm->handleRequest($request);
@@ -68,7 +68,7 @@ class SearchController extends AbstractController
         ]);
     }
 
-    public function newSortOptionAction(Request $request): Response
+    public function newSortOption(Request $request): Response
     {
         $sortOption = new SortOption();
         $form = $this->createForm(SortOptionType::class, $sortOption, [
@@ -88,7 +88,7 @@ class SearchController extends AbstractController
         ]);
     }
 
-    public function newSearchFieldOptionAction(Request $request): Response
+    public function newSearchFieldOption(Request $request): Response
     {
         $searchFieldOption = new SearchFieldOption();
         $form = $this->createForm(SearchFieldOptionType::class, $searchFieldOption, [
@@ -108,7 +108,7 @@ class SearchController extends AbstractController
         ]);
     }
 
-    public function newAggregateOptionAction(Request $request): Response
+    public function newAggregateOption(Request $request): Response
     {
         $aggregateOption = new AggregateOption();
         $form = $this->createForm(AggregateOptionType::class, $aggregateOption, [
@@ -128,7 +128,7 @@ class SearchController extends AbstractController
         ]);
     }
 
-    public function editSortOptionAction(Request $request, SortOption $sortOption): Response
+    public function editSortOption(Request $request, SortOption $sortOption): Response
     {
         $form = $this->createForm(SortOptionType::class, $sortOption);
         $form->handleRequest($request);
@@ -154,7 +154,7 @@ class SearchController extends AbstractController
         ]);
     }
 
-    public function editSearchFieldOptionAction(Request $request, SearchFieldOption $searchFieldOption): Response
+    public function editSearchFieldOption(Request $request, SearchFieldOption $searchFieldOption): Response
     {
         $form = $this->createForm(SearchFieldOptionType::class, $searchFieldOption);
         $form->handleRequest($request);
@@ -180,7 +180,7 @@ class SearchController extends AbstractController
         ]);
     }
 
-    public function editAggregagteOptionAction(Request $request, AggregateOption $option): Response
+    public function editAggregagteOption(Request $request, AggregateOption $option): Response
     {
         $form = $this->createForm(AggregateOptionType::class, $option);
         $form->handleRequest($request);

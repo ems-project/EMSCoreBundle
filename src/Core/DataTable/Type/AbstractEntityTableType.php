@@ -9,7 +9,7 @@ use EMS\CoreBundle\Service\EntityServiceInterface;
 
 abstract class AbstractEntityTableType extends AbstractTableType
 {
-    public const LOAD_MAX_ROWS = 400;
+    final public const LOAD_MAX_ROWS = 400;
 
     public function __construct(
         private readonly EntityServiceInterface $entityService

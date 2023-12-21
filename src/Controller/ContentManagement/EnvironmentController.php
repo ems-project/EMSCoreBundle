@@ -66,7 +66,7 @@ class EnvironmentController extends AbstractController
     {
     }
 
-    public function alignAction(Request $request): Response
+    public function align(Request $request): Response
     {
         if (!$this->isGranted('ROLE_PUBLISHER')) {
             throw new AccessDeniedHttpException();
@@ -287,7 +287,7 @@ class EnvironmentController extends AbstractController
     /**
      * @param string $name
      */
-    public function attachAction($name): Response
+    public function attach($name): Response
     {
         try {
             if ($this->indexService->hasIndex($name)) {
@@ -325,7 +325,7 @@ class EnvironmentController extends AbstractController
     /**
      * @param string $name
      */
-    public function removeAliasAction($name): Response
+    public function removeAlias($name): Response
     {
         if ($this->aliasService->removeAlias($name)) {
             $this->logger->notice('log.environment.alias_removed', [
@@ -336,7 +336,7 @@ class EnvironmentController extends AbstractController
         return $this->redirectToRoute('environment.index');
     }
 
-    public function removeAction(int $id): Response
+    public function remove(int $id): Response
     {
         /** @var Environment $environment */
         $environment = $this->environmentRepository->find($id);
@@ -395,7 +395,7 @@ class EnvironmentController extends AbstractController
         return \preg_match('/^[a-z][a-z0-9\-_]*$/', $name) && \strlen($name) <= 100;
     }
 
-    public function addAction(Request $request): Response
+    public function add(Request $request): Response
     {
         $environment = new Environment();
 
@@ -457,7 +457,7 @@ class EnvironmentController extends AbstractController
         ]);
     }
 
-    public function editAction(int $id, Request $request): Response
+    public function edit(int $id, Request $request): Response
     {
         try {
             $environment = $this->environmentService->giveById($id);
@@ -486,7 +486,7 @@ class EnvironmentController extends AbstractController
         ]);
     }
 
-    public function viewAction(int $id): Response
+    public function view(int $id): Response
     {
         /** @var Environment|null $environment */
         $environment = $this->environmentRepository->find($id);
@@ -563,7 +563,7 @@ class EnvironmentController extends AbstractController
         ]);
     }
 
-    public function indexAction(Request $request): Response
+    public function index(Request $request): Response
     {
         try {
             $logger = $this->logger;

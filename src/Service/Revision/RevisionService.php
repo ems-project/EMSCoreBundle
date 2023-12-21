@@ -144,7 +144,7 @@ class RevisionService implements RevisionServiceInterface
             ($object instanceof Document) => $object->getSource()
         };
 
-        $expression = $expression ?? $contentType->getFields()[ContentTypeFields::DISPLAY];
+        $expression ??= $contentType->getFields()[ContentTypeFields::DISPLAY];
         $evaluateDisplay = $expression ? $this->expressionService->evaluateToString($expression, [
             'rawData' => $rawData,
             'userLocale' => $this->userManager->getUserLocale(),

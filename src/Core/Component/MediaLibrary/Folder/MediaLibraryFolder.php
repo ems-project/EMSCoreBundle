@@ -22,7 +22,7 @@ class MediaLibraryFolder
     public static function fromDocument(MediaLibraryConfig $config, DocumentInterface $document): self
     {
         $path = $document->getValue($config->fieldPath);
-        $name = \basename($path);
+        $name = \basename((string) $path);
 
         return new self($document, $document->getId(), $name, $path);
     }

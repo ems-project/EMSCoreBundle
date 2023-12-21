@@ -23,14 +23,14 @@ class FilterController extends AbstractController
     ) {
     }
 
-    public function indexAction(): Response
+    public function index(): Response
     {
         return $this->render("@$this->templateNamespace/filter/index.html.twig", [
                 'paging' => $this->helperService->getPagingTool(Filter::class, 'ems_filter_index', 'name'),
         ]);
     }
 
-    public function editAction(Filter $filter, Request $request): Response
+    public function edit(Filter $filter, Request $request): Response
     {
         $form = $this->createForm(FilterType::class, $filter);
 
@@ -49,7 +49,7 @@ class FilterController extends AbstractController
         ]);
     }
 
-    public function deleteAction(Filter $filter): Response
+    public function delete(Filter $filter): Response
     {
         $name = $filter->getName();
         $this->filterRepository->delete($filter);
@@ -61,7 +61,7 @@ class FilterController extends AbstractController
         ]);
     }
 
-    public function addAction(Request $request): Response
+    public function add(Request $request): Response
     {
         $filter = new Filter();
         $form = $this->createForm(FilterType::class, $filter);

@@ -25,7 +25,7 @@ class WysiwygController extends AbstractController
     {
     }
 
-    public function indexAction(Request $request): Response
+    public function index(Request $request): Response
     {
         $data = [];
         $form = $this->createForm(ReorderType::class, $data, [
@@ -77,7 +77,7 @@ class WysiwygController extends AbstractController
         ]);
     }
 
-    public function newProfileAction(Request $request): Response
+    public function newProfile(Request $request): Response
     {
         $profile = new WysiwygProfile();
 
@@ -103,7 +103,7 @@ class WysiwygController extends AbstractController
         ]);
     }
 
-    public function newStylesSetAction(Request $request): Response
+    public function newStylesSet(Request $request): Response
     {
         $stylesSet = new WysiwygStylesSet();
 
@@ -129,7 +129,7 @@ class WysiwygController extends AbstractController
         ]);
     }
 
-    public function editStylesSetAction(Request $request, WysiwygStylesSet $stylesSet): Response
+    public function editStylesSet(Request $request, WysiwygStylesSet $stylesSet): Response
     {
         $form = $this->createForm(WysiwygStylesSetType::class, $stylesSet);
         $form->handleRequest($request);
@@ -159,7 +159,7 @@ class WysiwygController extends AbstractController
         ]);
     }
 
-    public function editProfileAction(Request $request, WysiwygProfile $profile): Response
+    public function editProfile(Request $request, WysiwygProfile $profile): Response
     {
         $form = $this->createForm(WysiwygProfileType::class, $profile);
         $form->handleRequest($request);

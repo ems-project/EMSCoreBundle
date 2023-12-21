@@ -19,16 +19,16 @@
            controller="EMS\CoreBundle\Controller\Views\CriteriaController::align"
            methods="POST"/>
     <route id="emsco_views_criteria_table" path="/criteria/table/{view}"
-           controller="EMS\CoreBundle\Controller\Views\CriteriaController::generateCriteriaTableAction"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::generateCriteriaTable"
            methods="GET|POST"/>
     <route id="emsco_views_criteria_add" path="/criteria/addCriterion/{view}"
-           controller="EMS\CoreBundle\Controller\Views\CriteriaController::addCriteriaAction"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::addCriteria"
            methods="POST"/>
     <route id="emsco_views_criteria_remove" path="/criteria/removeCriterion/{view}"
-           controller="EMS\CoreBundle\Controller\Views\CriteriaController::removeCriteriaAction"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::removeCriteria"
            methods="POST"/>
     <route id="emsco_views_criteria_fieldFilter" path="/criteria/fieldFilter"
-           controller="EMS\CoreBundle\Controller\Views\CriteriaController::fieldFilterAction"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::fieldFilter"
            methods="GET"/>
 
     <route id="views.hierarchical.item" path="/hierarchical/item/{view}/{key}"
@@ -46,15 +46,15 @@
            controller="EMS\CoreBundle\Controller\Views\CriteriaController::align"
            methods="POST"/>
     <route id="views.criteria.table" path="/criteria/table/{view}"
-           controller="EMS\CoreBundle\Controller\Views\CriteriaController::generateCriteriaTableAction"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::generateCriteriaTable"
            methods="GET|POST"/>
     <route id="views.criteria.add" path="/criteria/addCriterion/{view}"
-           controller="EMS\CoreBundle\Controller\Views\CriteriaController::addCriteriaAction"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::addCriteria"
            methods="POST"/>
     <route id="views.criteria.remove" path="/criteria/removeCriterion/{view}"
-           controller="EMS\CoreBundle\Controller\Views\CriteriaController::removeCriteriaAction"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::removeCriteria"
            methods="POST"/>
     <route id="views.criteria.fieldFilter" path="/criteria/fieldFilter"
-           controller="EMS\CoreBundle\Controller\Views\CriteriaController::fieldFilterAction"
+           controller="EMS\CoreBundle\Controller\Views\CriteriaController::fieldFilter"
            methods="GET"/>
 </routes>

@@ -5,16 +5,16 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="ems.file.view" path="/view/{sha1}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::viewFileAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::viewFile"
            methods="GET|HEAD"/>
     <route id="ems_file_view" path="/view/{sha1}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::viewFileAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::viewFile"
            methods="GET|HEAD"/>
     <route id="file.download" path="/{sha1}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::downloadFileAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::downloadFile"
            methods="GET|HEAD"/>
     <route id="ems_file_download" path="/{sha1}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::downloadFileAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::downloadFile"
            methods="GET|HEAD"/>
     <route id="ems_file_extract_forced" path="/extract/forced/{sha1}"
            controller="EMS\CoreBundle\Controller\ContentManagement\FileController::extractFileContentForced"
@@ -25,7 +25,7 @@
            methods="GET|HEAD"
            format="json"/>
     <route id="file.init-upload" path="/init-upload/{sha1}/{size}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::initUploadFileAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::initUploadFile"
            methods="POST"
            format="json">
         <default key="apiRoute">
@@ -33,7 +33,7 @@
         </default>
     </route>
     <route id="emsco_file_data_init_upload" path="/init-upload"
-           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::initUploadFileAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::initUploadFile"
            methods="POST"
            format="json">
 
@@ -44,7 +44,7 @@
         <default key="size" xsi:nil="true"/>
     </route>
     <route id="file.uploadchunk" path="/upload-chunk/{sha1}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::uploadChunkAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::uploadChunk"
            methods="POST"
            format="json">
         <default key="apiRoute">
@@ -53,7 +53,7 @@
         <default key="hash" xsi:nil="true"/>
     </route>
     <route id="emsco_file_data_chunk_upload" path="/chunk/{hash}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::uploadChunkAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::uploadChunk"
            methods="POST"
            format="json">
         <default key="apiRoute">

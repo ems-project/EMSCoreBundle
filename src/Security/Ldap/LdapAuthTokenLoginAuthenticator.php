@@ -22,13 +22,8 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 
 class LdapAuthTokenLoginAuthenticator extends AbstractAuthenticator
 {
-    private AuthTokenRepository $authTokenRepository;
-    private LdapConfig $ldapConfig;
-
-    public function __construct(LdapConfig $ldapConfig, AuthTokenRepository $authTokenRepository)
+    public function __construct(private readonly LdapConfig $ldapConfig, private readonly AuthTokenRepository $authTokenRepository)
     {
-        $this->authTokenRepository = $authTokenRepository;
-        $this->ldapConfig = $ldapConfig;
     }
 
     public function supports(Request $request): ?bool

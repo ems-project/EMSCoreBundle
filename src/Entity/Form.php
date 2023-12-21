@@ -49,7 +49,7 @@ class Form extends JsonDeserializer implements \JsonSerializable, EntityInterfac
      * @ORM\OneToOne(targetEntity="FieldType", cascade={"persist"})
      * @ORM\JoinColumn(name="field_types_id", referencedColumnName="id")
      */
-    protected ?FieldType $fieldType;
+    protected ?FieldType $fieldType = null;
 
     public function __construct()
     {

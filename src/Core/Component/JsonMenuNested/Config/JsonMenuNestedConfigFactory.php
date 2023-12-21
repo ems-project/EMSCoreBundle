@@ -74,9 +74,7 @@ class JsonMenuNestedConfigFactory extends AbstractConfigFactory
                 'template' => null,
                 'locale' => null,
             ])
-            ->setNormalizer('ems_link', function (Options $options, EMSLink|string $value): EMSLink {
-                return \is_string($value) ? EMSLink::fromText($value) : $value;
-            })
+            ->setNormalizer('ems_link', fn (Options $options, EMSLink|string $value): EMSLink => \is_string($value) ? EMSLink::fromText($value) : $value)
             ->setNormalizer('columns', function (Options $options, array $columns): array {
                 $columns = \array_map(static fn (array $column): JsonMenuNestedColumn => new JsonMenuNestedColumn(
                     $column['name'],

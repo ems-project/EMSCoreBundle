@@ -34,8 +34,8 @@ final class UpdateCommand extends AbstractCommand
     private string $xliffFilename;
     private ?Environment $publishTo = null;
     private bool $archive = false;
-    private ?string $translationField;
-    private ?string $localeField;
+    private ?string $translationField = null;
+    private ?string $localeField = null;
     private bool $dryRun = false;
     private bool $currentRevisionOnly = false;
 

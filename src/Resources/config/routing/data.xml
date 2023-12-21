@@ -5,22 +5,22 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="emsco_data_default_search" path="/{name}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::rootAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::root"
            methods="GET"/>
     <route id="emsco_data_search_in_my_circles" path="/in-my-circles/{name}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::inMyCirclesAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::inMyCircles"
            methods="GET"/>
     <route id="emsco_data_put_back" path="/put-back/{contentType}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::putBackAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::putBack"
            methods="POST"/>
     <route id="emsco_data_empty_trash" path="/empty-trash/{contentType}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::emptyTrashAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::emptyTrash"
            methods="POST"/>
     <route id="emsco_data_view" path="/view/{environmentName}/{type}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::viewDataAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::viewData"
            methods="GET"/>
     <route id="emsco_data_revision_in_environment" path="/revisions-in-environment/{environment}/{type}:{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::revisionInEnvironmentDataAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::revisionInEnvironmentData"
            methods="GET">
         <default key="deleted">0</default>
     </route>
@@ -31,28 +31,28 @@
         <default key="compareId">0</default>
     </route>
     <route id="emsco_duplicate_revision" path="/duplicate/{environment}/{type}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::duplicateAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::duplicate"
            methods="POST"/>
     <route id="emsco_data_copy" path="/copy/{environment}/{type}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::copyAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::copy"
            methods="GET"/>
     <route id="emsco_data_new_draft" path="/new-draft/{type}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::newDraftAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::newDraft"
            methods="POST|GET"/>
     <route id="emsco_data_delete" path="/delete/{type}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::deleteAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::delete"
            methods="POST"/>
     <route id="emsco_discard_draft" path="/draft/discard/{revisionId}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::discardRevisionAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::discardRevision"
            methods="POST"/>
     <route id="emsco_data_cancel_modifications" path="/cancel/{revision}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::cancelModificationsAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::cancelModifications"
            methods="POST"/>
     <route id="emsco_data_reindex" path="/revision/re-index/{revisionId}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::reindexRevisionAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::reindexRevision"
            methods="POST"/>
     <route id="emsco_data_private_view" path="/custom-index-view/{viewId}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customIndexViewAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customIndexView"
            methods="GET|POST">
         <default key="public">0</default>
     </route>
@@ -67,43 +67,43 @@
         <default key="_download">0</default>
     </route>
     <route id="emsco_job_custom_view" path="/custom-view-job/{environmentName}/{templateId}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customViewJobAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customViewJob"
            methods="POST"/>
     <route id="emsco_data_ajax_update" path="/revision/{revisionId}.json"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::ajaxUpdateAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::ajaxUpdate"
            methods="POST"
             format="json"/>
     <route id="emsco_data_finalize" path="/draft/finalize/{revision}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::finalizeDraftAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::finalizeDraft"
            methods="POST"/>
 
 
     <route id="emsco_data_default_view" path="/{type}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::rootAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::root"
            methods="GET"/>
     <route id="emsco_data_in_my_circle_view" path="/in-my-circles/{name}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::inMyCirclesAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::inMyCircles"
            methods="GET"/>
     <route id="emsco_data_add" path="/add/{contentType}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::addAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::add"
            methods="GET|POST"/>
     <route id="emsco_data_trash" path="/trash/{contentType}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::trashAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::trash"
            methods="GET|POST"/>
     <route id="emsco_data_duplicate_with_jsoncontent" path="/duplicate-json/{contentType}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::duplicateWithJsonContentAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::duplicateWithJsonContent"
            methods="POST"/>
     <route id="emsco_data_add_from_jsoncontent" path="/add-json/{contentType}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::addFromJsonContentAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::addFromJsonContent"
            methods="POST"/>
     <route id="emsco_data_add" path="/add/{contentType}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::addAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::add"
            methods="GET"/>
     <route id="emsco_data_revert" path="/revisions/revert/{id}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::revertRevisionAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::revertRevision"
            methods="POST"/>
     <route id="emsco_data_link" path="/link/{key}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::linkDataAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::linkData"
            methods="GET"/>
 
     <route id="emsco_data_json_menu_nested_modal_add" path="/json-menu-nested/add/{revision}/{fieldType}"
@@ -131,28 +131,28 @@
 
     <!-- Deprecated routes -->
     <route id="ems_data_default_search" path="/{name}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::rootAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::root"
            methods="GET"/>
     <route id="data.root" path="/{name}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::rootAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::root"
            methods="GET"/>
     <route id="ems_search_in_my_circles" path="/in-my-circles/{name}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::inMyCirclesAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::inMyCircles"
            methods="GET"/>
     <route id="ems_data_trash" path="/trash/{contentType}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::trashAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::trash"
            methods="GET"/>
     <route id="ems_data_put_back" path="/put-back/{contentType}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::putBackAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::putBack"
            methods="POST"/>
     <route id="ems_data_empty_trash" path="/empty-trash/{contentType}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::emptyTrashAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::emptyTrash"
            methods="POST"/>
     <route id="data.view" path="/view/{environmentName}/{type}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::viewDataAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::viewData"
            methods="GET"/>
     <route id="data.revision_in_environment" path="/revisions-in-environment/{environment}/{type}:{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::revisionInEnvironmentDataAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::revisionInEnvironmentData"
            methods="GET">
         <default key="deleted">0</default>
     </route>
@@ -169,30 +169,30 @@
         <default key="compareId">0</default>
     </route>
     <route id="revision.copy" path="/copy/{environment}/{type}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::copyAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::copy"
            methods="GET"/>
     <route id="revision.new-draft" path="/new-draft/{type}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::newDraftAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::newDraft"
            methods="POST"/>
     <route id="object.delete" path="/delete/{type}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::deleteAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::delete"
            methods="POST"/>
     <route id="revision.discard" path="/draft/discard/{revisionId}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::discardRevisionAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::discardRevision"
            methods="POST"/>
     <route id="revision.cancel" path="/cancel/{revision}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::cancelModificationsAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::cancelModifications"
            methods="POST"/>
     <route id="revision.reindex" path="/revision/re-index/{revisionId}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::reindexRevisionAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::reindexRevision"
            methods="POST"/>
     <route id="data.customindexview" path="/custom-index-view/{viewId}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customIndexViewAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customIndexView"
            methods="GET">
         <default key="public">0</default>
     </route>
     <route id="ems_custom_view_protected" path="/custom-index-view/{viewId}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customIndexViewAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customIndexView"
            methods="GET">
         <default key="public">0</default>
     </route>
@@ -209,23 +209,23 @@
         <default key="_download">0</default>
     </route>
     <route id="ems_job_custom_view" path="/custom-view-job/{environmentName}/{templateId}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customViewJobAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::customViewJob"
            methods="POST"/>
     <route id="revision.ajaxupdate" path="/revision/{revisionId}.json"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::ajaxUpdateAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::ajaxUpdate"
            methods="POST">
         <default key="_format">json</default>
     </route>
     <route id="revision.finalize" path="/draft/finalize/{revision}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::finalizeDraftAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::finalizeDraft"
            methods="POST"/>
     <route id="data.add" path="/add/{contentType}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::addAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::add"
            methods="GET|POST"/>
     <route id="revision.revert" path="/revisions/revert/{id}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::revertRevisionAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::revertRevision"
            methods="POST"/>
     <route id="data.link" path="/link/{key}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::linkDataAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::linkData"
            methods="GET"/>
 </routes>

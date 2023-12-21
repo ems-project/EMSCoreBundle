@@ -34,7 +34,7 @@ class UserController extends AbstractController
     ) {
     }
 
-    public function indexAction(Request $request): Response
+    public function index(Request $request): Response
     {
         $table = $this->dataTableFactory->create(UserDataTableType::class);
 
@@ -46,7 +46,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    public function addUserAction(Request $request): Response
+    public function addUser(Request $request): Response
     {
         $user = new User();
         $result = $this->wysiwygProfileRepository->findBy([], ['orderKey' => 'asc'], 1);
@@ -74,7 +74,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    public function editUserAction(User $id, Request $request): Response
+    public function editUser(User $id, Request $request): Response
     {
         return $this->edit($id, $request);
     }
@@ -101,7 +101,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    public function removeUserAction(User $id): Response
+    public function removeUser(User $id): Response
     {
         return $this->delete($id);
     }
@@ -141,11 +141,6 @@ class UserController extends AbstractController
         return $this->redirectToRoute(Routes::USER_INDEX);
     }
 
-    public function apiKeyAction(string $username): Response
-    {
-        return $this->apiKey($username);
-    }
-
     public function apiKey(string $username): Response
     {
         $user = $this->userService->giveUser($username, false);
@@ -174,7 +169,7 @@ class UserController extends AbstractController
         return $this->redirectToRoute(Routes::USER_INDEX);
     }
 
-    public function sidebarCollapseAction(bool $collapsed): Response
+    public function sidebarCollapse(bool $collapsed): Response
     {
         $user = $this->userService->giveUser($this->userService->getCurrentUser()->getUsername(), false);
         $user->setSidebarCollapse($collapsed);

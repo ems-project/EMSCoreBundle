@@ -18,7 +18,7 @@ class I18nController extends AbstractController
     {
     }
 
-    public function indexAction(Request $request): Response
+    public function index(Request $request): Response
     {
         $filters = $request->query->all('i18n_form');
 
@@ -50,7 +50,7 @@ class I18nController extends AbstractController
         ]);
     }
 
-    public function newAction(Request $request): Response
+    public function new(Request $request): Response
     {
         $i18n = new I18n();
         $i18n->setContent([['locale' => '', 'text' => '']]);
@@ -70,7 +70,7 @@ class I18nController extends AbstractController
         ]);
     }
 
-    public function editAction(Request $request, I18n $i18n): Response
+    public function edit(Request $request, I18n $i18n): Response
     {
         if (empty($i18n->getContent())) {
             $i18n->setContent([
@@ -97,7 +97,7 @@ class I18nController extends AbstractController
         ]);
     }
 
-    public function deleteAction(I18n $i18n): Response
+    public function delete(I18n $i18n): Response
     {
         $this->i18nService->delete($i18n);
 

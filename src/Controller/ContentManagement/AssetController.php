@@ -23,7 +23,7 @@ class AssetController extends AbstractController
     {
     }
 
-    public function assetAction(string $hash, string $hash_config, string $filename, Request $request): Response
+    public function asset(string $hash, string $hash_config, string $filename, Request $request): Response
     {
         $this->closeSession($request);
         try {
@@ -33,7 +33,7 @@ class AssetController extends AbstractController
         }
     }
 
-    public function assetProcessorAction(Request $request, string $processor, string $hash): Response
+    public function assetProcessor(Request $request, string $processor, string $hash): Response
     {
         $this->closeSession($request);
         $assetConfig = $this->assetConfig[$processor] ?? [];

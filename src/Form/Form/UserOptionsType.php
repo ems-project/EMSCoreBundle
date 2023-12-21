@@ -22,8 +22,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class UserOptionsType extends AbstractType
 {
-    public const CONTEXT_PROFILE = 'user_profile';
-    public const CONTEXT_USER_MANAGEMENT = 'user_management';
+    final public const CONTEXT_PROFILE = 'user_profile';
+    final public const CONTEXT_USER_MANAGEMENT = 'user_management';
 
     public function __construct(
         private readonly FormManager $formManager,
@@ -61,7 +61,7 @@ class UserOptionsType extends AbstractType
                     'metadata' => $form->getFieldType(),
                     'label' => false,
                     'constraints' => [
-                        new Callback([$this, 'validate']),
+                        new Callback($this->validate(...)),
                     ],
                 ]);
 

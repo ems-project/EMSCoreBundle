@@ -42,7 +42,7 @@ class PublishController extends AbstractController
     {
     }
 
-    public function publishToAction(Revision $revisionId, Environment $envId): Response
+    public function publishTo(Revision $revisionId, Environment $envId): Response
     {
         $revision = $revisionId;
         $environment = $envId;
@@ -65,7 +65,7 @@ class PublishController extends AbstractController
         ]);
     }
 
-    public function unPublishAction(Revision $revisionId, Environment $envId): RedirectResponse
+    public function unPublish(Revision $revisionId, Environment $envId): RedirectResponse
     {
         $contentType = $revisionId->getContentType();
         if (null === $contentType) {

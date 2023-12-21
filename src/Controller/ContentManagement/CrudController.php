@@ -26,7 +26,7 @@ class CrudController extends AbstractController
     {
     }
 
-    public function createAction(?string $ouuid, string $name, Request $request): Response
+    public function create(?string $ouuid, string $name, Request $request): Response
     {
         $contentType = $this->giveContentType($name);
         if (!$contentType->giveEnvironment()->getManaged()) {
@@ -69,7 +69,7 @@ class CrudController extends AbstractController
         ]);
     }
 
-    public function getAction(string $ouuid, string $name): Response
+    public function get(string $ouuid, string $name): Response
     {
         $contentType = $this->giveContentType($name);
         try {
@@ -103,7 +103,7 @@ class CrudController extends AbstractController
     /**
      * @param int $id
      */
-    public function finalizeAction($id, string $name): Response
+    public function finalize($id, string $name): Response
     {
         $contentType = $this->giveContentType($name);
         if (!$contentType->giveEnvironment()->getManaged()) {
@@ -137,7 +137,7 @@ class CrudController extends AbstractController
     /**
      * @param int $id
      */
-    public function discardAction($id, string $name): Response
+    public function discard($id, string $name): Response
     {
         $contentType = $this->giveContentType($name);
         if (!$contentType->giveEnvironment()->getManaged()) {
@@ -174,7 +174,7 @@ class CrudController extends AbstractController
         ]);
     }
 
-    public function deleteAction(string $ouuid, string $name): Response
+    public function delete(string $ouuid, string $name): Response
     {
         $contentType = $this->giveContentType($name);
         $isDeleted = false;
@@ -209,7 +209,7 @@ class CrudController extends AbstractController
         ]);
     }
 
-    public function replaceAction(string $ouuid, string $name, Request $request): Response
+    public function replace(string $ouuid, string $name, Request $request): Response
     {
         $contentType = $this->giveContentType($name);
         if (!$contentType->giveEnvironment()->getManaged()) {
@@ -253,7 +253,7 @@ class CrudController extends AbstractController
         ]);
     }
 
-    public function mergeAction(string $ouuid, string $name, Request $request): Response
+    public function merge(string $ouuid, string $name, Request $request): Response
     {
         $contentType = $this->giveContentType($name);
         if (!$contentType->giveEnvironment()->getManaged()) {
@@ -297,7 +297,7 @@ class CrudController extends AbstractController
         ]);
     }
 
-    public function testAction(): Response
+    public function test(): Response
     {
         return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
                 'success' => true,

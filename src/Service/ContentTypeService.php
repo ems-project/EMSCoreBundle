@@ -675,13 +675,11 @@ class ContentTypeService implements EntityServiceInterface
         }
 
         $versionTags = $contentType->getVersionTags();
-        $versionTagsLabels = \array_map(function (string $versionTag) {
-            return $this->translator->trans(
-                'revision.version_tag',
-                ['%version_tag%' => $versionTag],
-                EMSCoreBundle::TRANS_DOMAIN
-            );
-        }, $versionTags);
+        $versionTagsLabels = \array_map(fn (string $versionTag) => $this->translator->trans(
+            'revision.version_tag',
+            ['%version_tag%' => $versionTag],
+            EMSCoreBundle::TRANS_DOMAIN
+        ), $versionTags);
 
         $emptyLabel = $this->translator->trans('revision.version_tag.empty', [], EMSCoreBundle::TRANS_DOMAIN);
 

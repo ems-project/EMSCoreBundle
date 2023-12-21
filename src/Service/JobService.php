@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class JobService implements EntityServiceInterface
 {
-    private ObjectManager $em;
+    private readonly ObjectManager $em;
 
     public function __construct(
         ManagerRegistry $doctrine,

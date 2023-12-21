@@ -960,7 +960,7 @@ class DataService
                 ]);
                 try {
                     $revision->setRawData(Json::decode($defaultValue));
-                } catch (\Throwable $e) {
+                } catch (\Throwable) {
                     $this->logger->error('service.data.default_value_error', [
                         EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                         EmsFields::LOG_OUUID_FIELD => $ouuid,

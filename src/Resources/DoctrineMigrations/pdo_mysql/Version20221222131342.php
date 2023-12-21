@@ -25,7 +25,7 @@ QUERY;
         $rows = $this->connection->executeQuery($query)->iterateAssociative();
 
         foreach ($rows as $row) {
-            $wrongJson = \json_decode($row['task_planned_ids'], true);
+            $wrongJson = \json_decode((string) $row['task_planned_ids'], true);
             $correctJson = \json_encode(\array_values($wrongJson));
 
             $this->connection->update('revision', ['task_planned_ids' => $correctJson], ['id' => $row['id']]);

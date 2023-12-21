@@ -5,6 +5,6 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="environment.align" path="/align"
-           controller="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::alignAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\EnvironmentController::align"
            methods="GET|POST"/>
 </routes>

@@ -62,13 +62,13 @@ final class ExtractCommand extends AbstractCommand
     private string $xliffFilename;
     private ?string $baseUrl = null;
     private string $xliffVersion;
-    private ?string $translationField;
-    private ?string $localeField;
+    private ?string $translationField = null;
+    private ?string $localeField = null;
     private string $encoding;
     private bool $withBaseline;
     private string $mailSubject;
-    private ?string $mailTo;
-    private ?string $mailCC;
+    private ?string $mailTo = null;
+    private ?string $mailCC = null;
 
     public function __construct(
         private readonly ContentTypeService $contentTypeService,

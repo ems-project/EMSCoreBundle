@@ -20,6 +20,6 @@ abstract class AbstractTableType implements DataTableTypeInterface
 
     public function getHash(): string
     {
-        return Hash::string(\get_class($this));
+        return Hash::string(static::class);
     }
 }

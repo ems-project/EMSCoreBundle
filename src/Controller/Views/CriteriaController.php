@@ -65,7 +65,7 @@ class CriteriaController extends AbstractController
         /** @var CriteriaUpdateConfig $criteriaUpdateConfig */
         $criteriaUpdateConfig = $form->getData();
 
-        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig);
+        $tables = $this->generateCriteriaTableContext($view, $criteriaUpdateConfig);
         $params = \explode(':', Type::string($request->request->get('alignOn')));
 
         $isRowAlign = ('row' == $params[0]);
@@ -113,7 +113,7 @@ class CriteriaController extends AbstractController
                                     $revision = $this->dataService->getNewestRevision($type, $ouuid);
                                 }
 
-                                if ($revision = $this->removeCriteria($filters, $revision, $criteriaField)) {
+                                if ($revision = $this->removeCriteriaFromRevision($filters, $revision, $criteriaField)) {
                                     $itemToFinalize[$toremove->getValue()] = $revision;
                                 }
                             } else {
@@ -167,7 +167,7 @@ class CriteriaController extends AbstractController
                                     $revision = $this->dataService->getNewestRevision($type, $ouuid);
                                 }
 
-                                if ($revision = $this->addCriteria($filters, $revision, $criteriaField)) {
+                                if ($revision = $this->addCriteriaToRevision($filters, $revision, $criteriaField)) {
                                     $itemToFinalize[$toadd->getValue()] = $revision;
                                 }
                             } else {
@@ -220,7 +220,7 @@ class CriteriaController extends AbstractController
         return $authorized;
     }
 
-    public function generateCriteriaTableAction(View $view, Request $request): Response
+    public function generateCriteriaTable(View $view, Request $request): Response
     {
         $counters = $this->revisionRepository->draftCounterGroupedByContentType([], true);
 
@@ -305,7 +305,7 @@ class CriteriaController extends AbstractController
             ]);
         }
 
-        $tables = $this->generateCriteriaTable($view, $criteriaUpdateConfig);
+        $tables = $this->generateCriteriaTableContext($view, $criteriaUpdateConfig);
 
         return $this->render("@$this->templateNamespace/view/custom/criteria_table.html.twig", [
             'table' => $tables['table'],
@@ -331,7 +331,7 @@ class CriteriaController extends AbstractController
      * @throws PerformanceException
      * @throws \Exception
      */
-    public function generateCriteriaTable(View $view, CriteriaUpdateConfig $criteriaUpdateConfig): array
+    private function generateCriteriaTableContext(View $view, CriteriaUpdateConfig $criteriaUpdateConfig): array
     {
         $contentType = $view->getContentType();
 
@@ -485,7 +485,7 @@ class CriteriaController extends AbstractController
         ];
     }
 
-    public function addCriteriaAction(View $view, Request $request): Response
+    public function addCriteria(View $view, Request $request): Response
     {
         $filters = $request->request->all('filters');
         $target = Type::string($request->request->get('target'));
@@ -532,7 +532,7 @@ class CriteriaController extends AbstractController
             }
 
             try {
-                if ($revision = $this->addCriteria($filters, $revision, $criteriaField)) {
+                if ($revision = $this->addCriteriaToRevision($filters, $revision, $criteriaField)) {
                     $this->dataService->finalizeDraft($revision);
                 }
             } catch (LockedException) {
@@ -712,7 +712,7 @@ class CriteriaController extends AbstractController
      *
      * @throws \Exception
      */
-    public function addCriteria(array $filters, Revision $revision, string $criteriaField): false|Revision
+    private function addCriteriaToRevision(array $filters, Revision $revision, string $criteriaField): false|Revision
     {
         $rawData = $revision->getRawData();
         if (!isset($rawData[$criteriaField])) {
@@ -779,7 +779,7 @@ class CriteriaController extends AbstractController
         return false;
     }
 
-    public function removeCriteriaAction(View $view, Request $request): Response
+    public function removeCriteria(View $view, Request $request): Response
     {
         $filters = $request->request->all('filters');
         $target = Type::string($request->request->get('target'));
@@ -811,7 +811,7 @@ class CriteriaController extends AbstractController
             }
 
             try {
-                if ($revision = $this->removeCriteria($filters, $revision, $criteriaField)) {
+                if ($revision = $this->removeCriteriaFromRevision($filters, $revision, $criteriaField)) {
                     $this->dataService->finalizeDraft($revision);
                 }
             } catch (LockedException) {
@@ -969,7 +969,7 @@ class CriteriaController extends AbstractController
      *
      * @throws \Exception
      */
-    public function removeCriteria(array $filters, Revision $revision, string $criteriaField): false|Revision
+    private function removeCriteriaFromRevision(array $filters, Revision $revision, string $criteriaField): false|Revision
     {
         $rawData = $revision->getRawData();
         if (!isset($rawData[$criteriaField])) {
@@ -1098,7 +1098,7 @@ class CriteriaController extends AbstractController
         return false;
     }
 
-    public function fieldFilterAction(Request $request): JsonResponse
+    public function fieldFilter(Request $request): JsonResponse
     {
         /** @var FieldType $field */
         $field = $this->fieldTypeRepository->find($request->query->get('targetField'));
@@ -1115,7 +1115,7 @@ class CriteriaController extends AbstractController
 
         foreach ($choices as $idx => $choice) {
             $label = $labels[$idx] ?? $choice;
-            if (!$request->query->get('q') || \stristr($choice, $request->query->get('q')) || \stristr($label, $request->query->get('q'))) {
+            if (!$request->query->get('q') || \stristr($choice, (string) $request->query->get('q')) || \stristr($label, (string) $request->query->get('q'))) {
                 $out['items'][] = [
                     'id' => $choice,
                     'text' => $label,

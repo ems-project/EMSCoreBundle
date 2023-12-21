@@ -66,8 +66,6 @@
             prefix="/profile"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/log.xml"
             prefix="/admin/log"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/template-deprecated.xml"
-            prefix="/template"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/i18n.xml"
             prefix="/i18n"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/environment.xml"

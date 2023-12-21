@@ -5,32 +5,32 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="notification.ajaxnotification" path="/add/{objectId}.json"
-           controller="EMS\CoreBundle\Controller\NotificationController::ajaxNotificationAction"
+           controller="EMS\CoreBundle\Controller\NotificationController::ajaxNotification"
            methods="POST"/>
     <route id="notification.cancel" path="/cancel/{notification}"
-           controller="EMS\CoreBundle\Controller\NotificationController::cancelNotificationsAction"
+           controller="EMS\CoreBundle\Controller\NotificationController::cancelNotifications"
            methods="POST"/>
     <route id="notification.acknowledge" path="/acknowledge/{notification}"
-           controller="EMS\CoreBundle\Controller\NotificationController::acknowledgeNotificationsAction"
+           controller="EMS\CoreBundle\Controller\NotificationController::acknowledgeNotifications"
            methods="POST"/>
     <route id="notification.treat" path="/treat"
-           controller="EMS\CoreBundle\Controller\NotificationController::treatNotificationsAction"
+           controller="EMS\CoreBundle\Controller\NotificationController::treatNotifications"
            methods="POST"/>
     <route id="notification.menu" path="/menu"
-           controller="EMS\CoreBundle\Controller\NotificationController::menuNotificationAction"
+           controller="EMS\CoreBundle\Controller\NotificationController::menuNotification"
            methods="GET|POST"/>
     <route id="notifications.list" path="/list"
-           controller="EMS\CoreBundle\Controller\NotificationController::listNotificationsAction"
+           controller="EMS\CoreBundle\Controller\NotificationController::listNotifications"
            methods="GET|POST">
         <default key="folder">inbox</default>
     </route>
     <route id="notifications.inbox" path="/inbox"
-           controller="EMS\CoreBundle\Controller\NotificationController::listNotificationsAction"
+           controller="EMS\CoreBundle\Controller\NotificationController::listNotifications"
            methods="GET|POST">
         <default key="folder">inbox</default>
     </route>
     <route id="notifications.sent" path="/sent"
-           controller="EMS\CoreBundle\Controller\NotificationController::listNotificationsAction"
+           controller="EMS\CoreBundle\Controller\NotificationController::listNotifications"
            methods="GET|POST">
         <default key="folder">sent</default>
     </route>

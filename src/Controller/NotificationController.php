@@ -43,7 +43,7 @@ class NotificationController extends AbstractController
     {
     }
 
-    public function ajaxNotificationAction(Request $request): Response
+    public function ajaxNotification(Request $request): Response
     {
         $em = $this->doctrine->getManager();
 
@@ -85,21 +85,21 @@ class NotificationController extends AbstractController
         ]);
     }
 
-    public function cancelNotificationsAction(Notification $notification): Response
+    public function cancelNotifications(Notification $notification): Response
     {
         $this->notificationService->setStatus($notification, 'cancelled');
 
         return $this->redirectToRoute('notifications.sent');
     }
 
-    public function acknowledgeNotificationsAction(Notification $notification): Response
+    public function acknowledgeNotifications(Notification $notification): Response
     {
         $this->notificationService->setStatus($notification, 'acknowledged');
 
         return $this->redirectToRoute('notifications.inbox');
     }
 
-    public function treatNotificationsAction(Request $request): Response
+    public function treatNotifications(Request $request): Response
     {
         $treatNotification = new TreatNotifications();
         $form = $this->createForm(TreatNotificationsType::class, $treatNotification, [
@@ -144,7 +144,7 @@ class NotificationController extends AbstractController
         return $this->redirectToRoute('notifications.inbox');
     }
 
-    public function menuNotificationAction(): Response
+    public function menuNotification(): Response
     {
         return $this->render("@$this->templateNamespace/notification/menu.html.twig", [
             'counter' => $this->notificationService->menuNotification(),
@@ -152,7 +152,7 @@ class NotificationController extends AbstractController
         ]);
     }
 
-    public function listNotificationsAction(string $folder, Request $request): Response
+    public function listNotifications(string $folder, Request $request): Response
     {
         $filters = $request->query->all('notification_form');
 

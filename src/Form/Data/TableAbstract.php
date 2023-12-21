@@ -27,7 +27,7 @@ abstract class TableAbstract implements TableInterface
     private array $reordered = [];
     /** @var TableColumn[] */
     private array $columns = [];
-    private TableItemActionCollection $itemActionCollection;
+    private readonly TableItemActionCollection $itemActionCollection;
     /** @var TableAction[] */
     private array $tableActions = [];
     private ?string $orderField = null;

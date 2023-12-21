@@ -5,24 +5,24 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="ems_search_options_index" path="/"
-           controller="EMS\CoreBundle\Controller\SearchController::indexAction"
+           controller="EMS\CoreBundle\Controller\SearchController::index"
            methods="GET|POST"/>
     <route id="ems_search_sort_option_new" path="/sort/new"
-           controller="EMS\CoreBundle\Controller\SearchController::newSortOptionAction"
+           controller="EMS\CoreBundle\Controller\SearchController::newSortOption"
            methods="GET|POST"/>
     <route id="ems_search_field_option_new" path="/search-field/new"
-           controller="EMS\CoreBundle\Controller\SearchController::newSearchFieldOptionAction"
+           controller="EMS\CoreBundle\Controller\SearchController::newSearchFieldOption"
            methods="GET|POST"/>
     <route id="ems_search_aggregate_option_new" path="/aggregate/new"
-           controller="EMS\CoreBundle\Controller\SearchController::newAggregateOptionAction"
+           controller="EMS\CoreBundle\Controller\SearchController::newAggregateOption"
            methods="GET|POST"/>
     <route id="ems_search_sort_option_edit" path="/sort/{id}"
-           controller="EMS\CoreBundle\Controller\SearchController::editSortOptionAction"
+           controller="EMS\CoreBundle\Controller\SearchController::editSortOption"
            methods="GET|POST"/>
     <route id="ems_search_field_option_edit" path="/search-field/{id}"
-           controller="EMS\CoreBundle\Controller\SearchController::editSearchFieldOptionAction"
+           controller="EMS\CoreBundle\Controller\SearchController::editSearchFieldOption"
            methods="GET|POST"/>
     <route id="ems_search_aggregate_option_edit" path="/aggregate/{id}"
-           controller="EMS\CoreBundle\Controller\SearchController::editAggregagteOptionAction"
+           controller="EMS\CoreBundle\Controller\SearchController::editAggregagteOption"
            methods="GET|POST"/>
 </routes>

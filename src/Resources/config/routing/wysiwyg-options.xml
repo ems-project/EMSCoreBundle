@@ -5,18 +5,18 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="ems_wysiwyg_index" path="/"
-           controller="EMS\CoreBundle\Controller\WysiwygController::indexAction"
+           controller="EMS\CoreBundle\Controller\WysiwygController::index"
            methods="GET|POST"/>
     <route id="ems_wysiwyg_profile_new" path="/profile/new"
-           controller="EMS\CoreBundle\Controller\WysiwygController::newProfileAction"
+           controller="EMS\CoreBundle\Controller\WysiwygController::newProfile"
            methods="GET|POST"/>
     <route id="ems_wysiwyg_styles_set_new" path="/styles-set/new"
-           controller="EMS\CoreBundle\Controller\WysiwygController::newStylesSetAction"
+           controller="EMS\CoreBundle\Controller\WysiwygController::newStylesSet"
            methods="GET|POST"/>
     <route id="ems_wysiwyg_styles_set_edit" path="/styles-set/{id}"
-           controller="EMS\CoreBundle\Controller\WysiwygController::editStylesSetAction"
+           controller="EMS\CoreBundle\Controller\WysiwygController::editStylesSet"
            methods="GET|POST"/>
     <route id="ems_wysiwyg_profile_edit" path="/profile/{id}"
-           controller="EMS\CoreBundle\Controller\WysiwygController::editProfileAction"
+           controller="EMS\CoreBundle\Controller\WysiwygController::editProfile"
            methods="GET|POST"/>
 </routes>

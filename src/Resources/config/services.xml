@@ -475,7 +475,7 @@
         <service id="ems.form_submission" class="EMS\CoreBundle\Service\Form\Submission\FormSubmissionService">
             <argument type="service" id="ems.repository.form_submission"/>
             <argument type="service" id="twig"/>
-            <argument type="service" id="session.flash_bag"/>
+            <argument type="service" id="request_stack"/>
             <argument type="service" id="translator"/>
             <argument>%ems_core.template_namespace%</argument>
         </service>

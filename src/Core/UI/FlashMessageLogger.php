@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Core\UI;
 use EMS\CoreBundle\EMSCoreBundle;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
+use Monolog\LogRecord;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -18,11 +19,9 @@ final class FlashMessageLogger extends AbstractProcessingHandler
         parent::__construct(Logger::NOTICE);
     }
 
-    /**
-     * @param array{level: int, level_name: string, message: string, context: array<mixed>} $record
-     */
-    protected function write(array $record): void
+    protected function write(LogRecord $record): void
     {
+        $logArray = $record->toArray();
         if (null === $currentRequest = $this->requestStack->getCurrentRequest()) {
             return;
         }
@@ -30,24 +29,24 @@ final class FlashMessageLogger extends AbstractProcessingHandler
         $headers = $currentRequest->headers;
         $logLevel = $headers->has('x-log-level') ? (int) $headers->get('x-log-level') : Logger::NOTICE;
 
-        if ($record['level'] < $logLevel) {
+        if ($logArray['level'] < $logLevel) {
             return;
         }
 
-        if (true === ($record['context']['noFlash'] ?? false)) {
+        if (true === ($logArray['context']['noFlash'] ?? false)) {
             return;
         }
 
         // TODO: remove the translator when all logger have been migrated to the localized logger
         $parameters = [];
-        foreach ($record['context'] as $key => &$value) {
+        foreach ($logArray['context'] as $key => &$value) {
             $parameters['%'.$key.'%'] = $value;
         }
 
-        $message = $this->translator->trans($record['message'], $parameters, EMSCoreBundle::TRANS_DOMAIN);
+        $message = $this->translator->trans($logArray['message'], $parameters, EMSCoreBundle::TRANS_DOMAIN);
 
         /** @var Session $session */
         $session = $currentRequest->getSession();
-        $session->getFlashBag()->add(\strtolower($record['level_name']), $message);
+        $session->getFlashBag()->add(\strtolower($logArray['level_name']), $message);
     }
 }

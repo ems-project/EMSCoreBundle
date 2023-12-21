@@ -21,8 +21,16 @@ class AssetExtractorService implements CacheWarmerInterface
     private const META_EP = '/meta';
     private ?TikaWrapper $wrapper = null;
 
-    public function __construct(private readonly RestClientService $rest, private readonly LoggerInterface $logger, private readonly Registry $doctrine, private readonly FileService $fileService, private readonly ?string $tikaServer, private readonly string $projectDir, private readonly ?string $tikaDownloadUrl)
-    {
+    public function __construct(
+        private readonly RestClientService $rest,
+        private readonly LoggerInterface $logger,
+        private readonly Registry $doctrine,
+        private readonly FileService $fileService,
+        private readonly ?string $tikaServer,
+        private readonly string $projectDir,
+        private readonly ?string $tikaDownloadUrl,
+        private readonly int $tikaMaxContent = 5120,
+    ) {
     }
 
     private function getTikaWrapper(): TikaWrapper
@@ -99,7 +107,7 @@ class AssetExtractorService implements CacheWarmerInterface
         ]);
 
         if ($cacheData instanceof CacheAssetExtractor) {
-            return new ExtractedData($cacheData->getData() ?? []);
+            return new ExtractedData($cacheData->getData() ?? [], $this->tikaMaxContent);
         }
 
         if ((null === $file) || !\file_exists($file)) {
@@ -120,7 +128,7 @@ class AssetExtractorService implements CacheWarmerInterface
                 'max_size' => '3 MB',
             ]);
 
-            return new ExtractedData([]);
+            return new ExtractedData([], $this->tikaMaxContent);
         }
 
         $canBePersisted = true;
@@ -134,7 +142,7 @@ class AssetExtractorService implements CacheWarmerInterface
                         'Accept' => 'application/json',
                     ],
                 ]);
-                $out = ExtractedData::fromJsonString($result->getBody()->__toString());
+                $out = ExtractedData::fromJsonString($result->getBody()->__toString(), $this->tikaMaxContent);
 
                 $result = $client->put(self::CONTENT_EP, [
                     'body' => $body,
@@ -154,7 +162,7 @@ class AssetExtractorService implements CacheWarmerInterface
             }
         } else {
             try {
-                $out = ExtractedData::fromMetaString($this->getTikaWrapper()->getMetadata($file));
+                $out = ExtractedData::fromMetaString($this->getTikaWrapper()->getMetadata($file), $this->tikaMaxContent);
                 if (!$out->hasContent()) {
                     $text = $this->getTikaWrapper()->getText($file);
                     if (!\mb_check_encoding($text)) {
@@ -164,7 +172,7 @@ class AssetExtractorService implements CacheWarmerInterface
                     $out->setContent($text ?? '');
                 }
                 if (!empty($out->getLocale())) {
-                    $out->setLocale(AssetExtractorService::cleanString($this->getTikaWrapper()->getLanguage($file)));
+                    $out->setLocale(self::cleanString($this->getTikaWrapper()->getLanguage($file)));
                 }
             } catch (\Exception $e) {
                 $this->logger->error('service.asset_extractor.extract_error', [
@@ -194,7 +202,7 @@ class AssetExtractorService implements CacheWarmerInterface
             }
         }
 
-        return $out ?? new ExtractedData([]);
+        return $out ?? new ExtractedData([], $this->tikaMaxContent);
     }
 
     private static function cleanString(string $string): string
@@ -233,7 +241,7 @@ class AssetExtractorService implements CacheWarmerInterface
                     'Accept' => 'application/json',
                 ],
             ]);
-            $meta = ExtractedData::fromJsonString($result->getBody()->__toString());
+            $meta = ExtractedData::fromJsonString($result->getBody()->__toString(), $this->tikaMaxContent);
         } else {
             $filename = \tempnam(\sys_get_temp_dir(), 'guess_locale');
             if (false === $filename) {
@@ -242,7 +250,7 @@ class AssetExtractorService implements CacheWarmerInterface
             if (false === \file_put_contents($filename, $text)) {
                 throw new \RuntimeException('Unexpected false result on file_put_contents');
             }
-            $meta = ExtractedData::fromMetaString($this->getTikaWrapper()->getMetadata($filename));
+            $meta = ExtractedData::fromMetaString($this->getTikaWrapper()->getMetadata($filename), $this->tikaMaxContent);
         }
 
         return $meta;

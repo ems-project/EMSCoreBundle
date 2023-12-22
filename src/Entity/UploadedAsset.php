@@ -66,7 +66,7 @@ class UploadedAsset implements EntityInterface
     /**
      * @ORM\Column(name="uploaded", type="bigint")
      */
-    private int|string|null $uploaded = null;
+    private string|null $uploaded = null;
 
     /**
      * @ORM\Column(name="hash_algo", type="string", length=32, options={"default" : "sha1"})
@@ -240,7 +240,7 @@ class UploadedAsset implements EntityInterface
 
     public function setUploaded(int $uploaded): UploadedAsset
     {
-        $this->uploaded = $uploaded;
+        $this->uploaded = (string) $uploaded;
 
         return $this;
     }

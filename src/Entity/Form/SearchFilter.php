@@ -18,7 +18,7 @@ class SearchFilter implements \JsonSerializable
      *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id;
+    private string $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Search", inversedBy="filters")
@@ -50,7 +50,7 @@ class SearchFilter implements \JsonSerializable
     /**
      * @ORM\Column(name="boost", type="decimal", scale=2, nullable=true)
      */
-    public ?float $boost = null;
+    public ?string $boost = null;
 
     public function __construct()
     {
@@ -239,19 +239,19 @@ class SearchFilter implements \JsonSerializable
 
     public function getBoost(): ?float
     {
-        return $this->boost;
+        return (float) $this->boost;
     }
 
     public function setBoost(?float $boost): self
     {
-        $this->boost = $boost;
+        $this->boost = (string) $boost;
 
         return $this;
     }
 
     public function getId(): int
     {
-        return $this->id;
+        return (int) $this->id;
     }
 
     public function setSearch(?Search $search = null): self

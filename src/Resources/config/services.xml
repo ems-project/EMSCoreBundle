@@ -26,9 +26,6 @@
             <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" priority="110" />
             <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" />
         </service>
-        <service id="emsco.event_listener.migration" class="EMS\CoreBundle\EventListener\MigrationEventSubscriber">
-            <tag name="doctrine.event_subscriber" connection="default" />
-        </service>
 
         <!-- core service -->
         <service id="ems.dashboard.manager" class="EMS\CoreBundle\Core\Dashboard\DashboardManager">

@@ -30,15 +30,13 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 {
     use CreatedModifiedTrait;
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="bigint")
      *
      * @ORM\Id
      *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    protected string $id;
 
     /**
      * @ORM\Column(name="name", type="string", length=100)
@@ -288,7 +286,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      */
     public function getId()
     {
-        return $this->id;
+        return (int) $this->id;
     }
 
     /**

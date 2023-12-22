@@ -23,7 +23,7 @@ class Search implements \JsonSerializable
      *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $id;
+    private string $id;
 
     /**
      * @var Collection<int, SearchFilter>
@@ -111,14 +111,9 @@ class Search implements \JsonSerializable
         return $out;
     }
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
-        return $this->id;
+        return (int) $this->id;
     }
 
     /**

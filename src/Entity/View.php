@@ -4,80 +4,26 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\Helpers\Standard\DateTime;
 
-/**
- * @ORM\Table(name="view")
- *
- * @ORM\Entity()
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class View extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     use CreatedModifiedTrait;
-    /**
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected int $id;
+    use IdentifierIntegerTrait;
 
-    /**
-     * @ORM\Column(name="name", type="string", length=255)
-     */
     protected string $name;
-
-    /**
-     * @ORM\Column(name="type", type="string", length=255)
-     */
     protected string $type;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="label", type="string", length=255)
-     */
-    protected $label = '';
-
-    /**
-     * @ORM\Column(name="icon", type="string", length=255, nullable=true)
-     */
+    protected string $label = '';
     protected ?string $icon = null;
-
-    /**
-     * @var array<mixed>
-     *
-     * @ORM\Column(name="options", type="json", nullable=true)
-     */
+    /** @var array<mixed> */
     protected ?array $options = null;
-
-    /**
-     * @ORM\Column(name="order_key", type="integer")
-     */
     protected int $orderKey = 0;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="ContentType", inversedBy="views")
-     *
-     * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
-     */
     protected ContentType $contentType;
-
-    /**
-     * @ORM\Column(name="public", type="boolean", options={"default" : 0})
-     */
     protected bool $public = false;
-
-    /**
-     * @ORM\Column(name="role", type="string", length=100, nullable=true)
-     */
     protected ?string $role = null;
 
     public function __construct()
@@ -93,11 +39,6 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
             $this->modified = DateTime::create('now');
             $this->orderKey = 0;
         }
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
     }
 
     public function setName(string $name): View

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="EMS\CoreBundle\Entity\Revision" table="revision" repository-class="EMS\CoreBundle\Repository\RevisionRepository">
+
+    <unique-constraints>
+      <unique-constraint name="tuple_index" columns="end_time,ouuid"/>
+    </unique-constraints>
+
+    <id name="id" type="integer" column="id">
+      <generator/>
+    </id>
+    <field name="autoSaveAt" column="auto_save_at" type="datetime" nullable="true"/>
+    <field name="archived" type="boolean">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="deleted" type="boolean"/>
+    <field name="version" type="integer" version="true"/>
+    <field name="startTime" column="start_time" type="datetime"/>
+    <field name="endTime" column="end_time" type="datetime" nullable="true"/>
+    <field name="ouuid" length="255"  nullable="true"/>
+    <field name="draft" type="boolean"/>
+    <field name="finalizedBy" column="finalized_by" length="255" nullable="true"/>
+    <field name="finalizedDate" column="finalized_date" type="datetime" nullable="true"/>
+    <field name="archivedBy" column="archived_by" length="255" nullable="true"/>
+    <field name="deletedBy" column="deleted_by" length="255" nullable="true"/>
+    <field name="lockBy" column="lock_by" length="255" nullable="true"/>
+    <field name="autoSaveBy" column="auto_save_by" length="255" nullable="true"/>
+    <field name="lockUntil" column="lock_until" type="datetime" nullable="true"/>
+    <field name="rawData" column="raw_data" type="json" nullable="true"/>
+    <field name="autoSave" column="auto_save" type="json" nullable="true"/>
+    <field name="circles" type="simple_array" nullable="true"/>
+    <field name="labelField" column="labelField" type="text" nullable="true"/>
+    <field name="sha1" type="string" nullable="true"/>
+    <field name="versionUuid" column="version_uuid" type="uuid" nullable="true"/>
+    <field name="versionTag" column="version_tag" nullable="true"/>
+    <field name="draftSaveDate" column="draft_save_date" type="datetime" nullable="true"/>
+    <field name="taskPlannedIds" type="json" nullable="true"/>
+    <field name="taskApprovedIds" type="json" nullable="true"/>
+
+    <many-to-one field="contentType" target-entity="EMS\CoreBundle\Entity\ContentType">
+      <join-column name="content_type_id"/>
+    </many-to-one>
+    <many-to-many field="environments" target-entity="EMS\CoreBundle\Entity\Environment" inversed-by="revisions">
+      <order-by>
+        <order-by-field name="orderKey"/>
+      </order-by>
+      <cascade>
+        <cascade-persist/>
+      </cascade>
+      <join-table name="environment_revision">
+        <join-columns>
+          <join-column name="revision_id" on-delete="CASCADE" />
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="environment_id" on-delete="CASCADE" />
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+    <one-to-many field="notifications" target-entity="EMS\CoreBundle\Entity\Notification" mapped-by="revision">
+      <order-by>
+        <order-by-field name="created"/>
+      </order-by>
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+    </one-to-many>
+    <one-to-many field="releases" target-entity="EMS\CoreBundle\Entity\ReleaseRevision" mapped-by="revision">
+      <cascade>
+        <cascade-remove/>
+      </cascade>
+    </one-to-many>
+    <many-to-one field="taskCurrent" target-entity="EMS\CoreBundle\Entity\Task">
+      <join-column name="task_current_id" nullable="true"/>
+    </many-to-one>
+
+    <field name="created" type="datetime"/>
+    <field name="modified" type="datetime"/>
+    <lifecycle-callbacks>
+      <lifecycle-callback type="prePersist" method="updateModified" />
+      <lifecycle-callback type="preUpdate" method="updateModified" />
+      <lifecycle-callback type="prePersist" method="checkLock"/>
+      <lifecycle-callback type="preUpdate" method="checkLock"/>
+    </lifecycle-callbacks>
+  </entity>
+</doctrine-mapping>

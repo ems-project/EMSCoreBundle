@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="EMS\CoreBundle\Entity\Environment" table="environment" repository-class="EMS\CoreBundle\Repository\EnvironmentRepository">
+
+    <id name="id" type="integer" column="id">
+      <generator/>
+    </id>
+
+    <field name="name" length="255" unique="true"/>
+    <field name="label" length="255" nullable="true"/>
+    <field name="alias" length="255"/>
+    <field name="color" length="50" nullable="true"/>
+    <field name="baseUrl" column="baseUrl" length="1024" nullable="true"/>
+    <field name="managed" type="boolean"/>
+    <field name="snapshot" type="boolean">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="circles" type="json" nullable="true"/>
+    <field name="inDefaultSearch" column="in_default_search" type="boolean" nullable="true"/>
+    <field name="orderKey" column="order_key" type="integer" nullable="true"/>
+    <field name="updateReferrers" column="update_referrers" type="boolean">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="templatePublication" column="template_publication" type="text" nullable="true"/>
+    <field name="rolePublish" column="role_publish" length="100" nullable="true"/>
+
+    <many-to-many field="revisions" target-entity="EMS\CoreBundle\Entity\Revision" mapped-by="environments"/>
+    <one-to-many field="contentTypesHavingThisAsDefault" target-entity="EMS\CoreBundle\Entity\ContentType" mapped-by="environment">
+      <cascade>
+        <cascade-remove/>
+      </cascade>
+    </one-to-many>
+
+    <field name="created" type="datetime"/>
+    <field name="modified" type="datetime"/>
+    <lifecycle-callbacks>
+      <lifecycle-callback type="prePersist" method="updateModified" />
+      <lifecycle-callback type="preUpdate" method="updateModified" />
+    </lifecycle-callbacks>
+  </entity>
+</doctrine-mapping>

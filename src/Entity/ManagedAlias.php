@@ -2,68 +2,28 @@
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Validator\Constraints as EMSAssert;
 use EMS\Helpers\Standard\DateTime;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- * Managed Alias.
- *
- * @ORM\Table(name="managed_alias")
- *
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\ManagedAliasRepository")
- *
- * @ORM\HasLifecycleCallbacks()
- */
 #[UniqueEntity(fields: ['name'], message: 'Name already exists!')]
 class ManagedAlias extends JsonDeserializer implements \JsonSerializable, \Stringable, EntityInterface
 {
     use CreatedModifiedTrait;
-    /**
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    use IdentifierIntegerTrait;
 
-    /**
-     * @EMSAssert\AliasName()
-     *
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
-     */
+    /** @EMSAssert\AliasName() */
     protected string $name;
-
-    /**
-     * @ORM\Column(name="label", type="string", length=255, nullable=true)
-     */
     protected ?string $label = null;
-
-    /**
-     * @ORM\Column(name="alias", type="string", length=255, unique=true)
-     */
     private ?string $alias = null;
-
-    /**
-     * @var array<mixed>
-     */
+    /** @var array<mixed> */
     private array $indexes = [];
-
     private ?int $total = null;
-
-    /**
-     * @ORM\Column(name="color", type="string", length=50, nullable=true)
-     */
     protected ?string $color = null;
-
-    /**
-     * @ORM\Column(name="extra", type="text", nullable=true)
-     */
     protected ?string $extra = null;
 
     public function __construct()
@@ -75,11 +35,6 @@ class ManagedAlias extends JsonDeserializer implements \JsonSerializable, \Strin
     public function __toString(): string
     {
         return $this->name;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
     }
 
     public function getName(): string

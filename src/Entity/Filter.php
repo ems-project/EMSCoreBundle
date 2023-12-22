@@ -2,81 +2,32 @@
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\Field\FilterOptionsType;
 use EMS\Helpers\Standard\DateTime;
 
-/**
- * Analyzer.
- *
- * @ORM\Table(name="filter")
- *
- * @ORM\Entity()
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     use CreatedModifiedTrait;
-    /**
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    use IdentifierIntegerTrait;
 
-    /**
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
-     */
     protected string $name = '';
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="dirty", type="boolean")
-     */
+    /** @var bool */
     protected $dirty = true;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="label", type="string", length=255)
-     */
+    /** @var string */
     protected $label;
-
-    /**
-     * @var array<mixed>
-     *
-     * @ORM\Column(name="options", type="json")
-     */
+    /** @var array<mixed> */
     protected array $options = [];
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="order_key", type="integer", nullable=true)
-     */
+    /** @var int */
     protected $orderKey;
 
     public function __construct()
     {
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
-    }
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     public function setName(string $name): Filter

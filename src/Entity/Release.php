@@ -6,20 +6,15 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-/**
- * @ORM\Table(name="release_entity")
- *
- * @ORM\Entity()
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class Release implements EntityInterface
 {
+    use IdentifierIntegerTrait;
+
     final public const WIP_STATUS = 'wip';
     final public const READY_STATUS = 'ready';
     final public const APPLIED_STATUS = 'applied';
@@ -27,59 +22,17 @@ class Release implements EntityInterface
     final public const SCHEDULED_STATUS = 'scheduled';
     final public const ROLLBACKED_STATUS = 'rollbacked';
 
-    /**
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @ORM\Column(name="execution_date", type="datetime", nullable=true)
-     */
     private ?\DateTime $executionDate = null;
-
-    /**
-     * @ORM\Column(name="status", type="string", length=20)
-     */
     private string $status = Release::WIP_STATUS;
-
-    /**
-     * @ORM\Column(name="name", type="string", length=255)
-     */
     private string $name;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Environment")
-     *
-     * @ORM\JoinColumn(name="environment_source_id", referencedColumnName="id")
-     */
     private Environment $environmentSource;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Environment")
-     *
-     * @ORM\JoinColumn(name="environment_target_id", referencedColumnName="id")
-     */
     private Environment $environmentTarget;
-
-    /**
-     * @var Collection<int, ReleaseRevision>
-     *
-     * @ORM\OneToMany(targetEntity="ReleaseRevision", mappedBy="release", cascade={"persist", "remove"})
-     */
+    /** @var Collection<int, ReleaseRevision> */
     private Collection $revisions;
 
     public function __construct()
     {
         $this->revisions = new ArrayCollection();
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
     }
 
     public function getName(): string

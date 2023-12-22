@@ -2,55 +2,20 @@
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Service\Mapping;
 use EMS\Helpers\Standard\DateTime;
 
-/**
- * DataField.
- *
- * @ORM\Table(name="aggregate_option")
- *
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\AggregateOptionRepository")
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class AggregateOption
 {
     use CreatedModifiedTrait;
-    /**
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    use IdentifierIntegerTrait;
 
-    /**
-     * @ORM\Column(name="name", type="string", length=255)
-     */
     private string $name;
-
-    /**
-     * @ORM\Column(name="config", type="text", nullable=true)
-     */
     private string $config;
-
-    /**
-     * @ORM\Column(name="template", type="text", nullable=true)
-     */
     private string $template;
-
-    /**
-     * @ORM\Column(name="orderKey", type="integer")
-     */
     private int $orderKey = 0;
-
-    /**
-     * @ORM\Column(name="icon", type="text", length=255, nullable=true)
-     */
     private string $icon;
 
     public function __construct()
@@ -102,16 +67,6 @@ class AggregateOption
 		</a>
 	{% endif %}
 {% endif %}';
-    }
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**

@@ -2,110 +2,32 @@
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\Helpers\Standard\DateTime;
 
-/**
- * DataField.
- *
- * @ORM\Table(name="wysiwyg_styles_set")
- *
- * @ORM\Entity()
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     use CreatedModifiedTrait;
-    /**
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    use IdentifierIntegerTrait;
 
-    /**
-     * @ORM\Column(name="name", type="string", length=255)
-     */
     protected string $name = '';
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="config", type="text", nullable=true)
-     */
-    protected $config;
-
-    /**
-     * @ORM\Column(name="orderKey", type="integer")
-     */
+    protected string $config = '{}';
     protected int $orderKey = 0;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="format_tags", type="string", length=255, nullable=true)
-     */
-    protected $formatTags = 'p;h1;h2;h3;h4;h5;h6;pre;address;div';
-
-    /**
-     * @ORM\Column(name="table_default_css", type="string", length=255, nullable=false, options={"default" : "table table-bordered"})
-     */
+    protected ?string $formatTags = 'p;h1;h2;h3;h4;h5;h6;pre;address;div';
     protected string $tableDefaultCss = 'table table-border';
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="content_css", type="string", length=2048, nullable=true)
-     */
-    protected $contentCss;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="content_js", type="string", length=2048, nullable=true)
-     */
-    protected $contentJs;
-
-    /**
-     * @var array<string, mixed>|null
-     *
-     * @ORM\Column(name="assets", type="json", nullable=true)
-     */
-    protected $assets;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="save_dir", type="string", length=2048, nullable=true)
-     */
-    protected $saveDir;
+    protected ?string $contentCss = null;
+    protected ?string $contentJs = null;
+    /** @var ?array<string, mixed> */
+    protected ?array $assets;
+    protected ?string $saveDir = null;
 
     public function __construct()
     {
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
-    }
-
-    /******************************************************************
-     *
-     * Generated functions
-     *
-     *******************************************************************/
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     public function setName(string $name): WysiwygStylesSet
@@ -120,26 +42,14 @@ class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, En
         return $this->name;
     }
 
-    /**
-     * Set config.
-     *
-     * @param string $config
-     *
-     * @return WysiwygStylesSet
-     */
-    public function setConfig($config)
+    public function setConfig(string $config): self
     {
         $this->config = $config;
 
         return $this;
     }
 
-    /**
-     * Get config.
-     *
-     * @return string
-     */
-    public function getConfig()
+    public function getConfig(): string
     {
         return $this->config;
     }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="EMS\CoreBundle\Entity\ReleaseRevision" table="release_revision">
+
+    <id name="id" type="integer" column="id">
+      <generator/>
+    </id>
+
+    <field name="revisionOuuid" column="revision_ouuid" length="255"/>
+
+    <many-to-one field="release" target-entity="EMS\CoreBundle\Entity\Release" inversed-by="revisions">
+      <join-column name="release_id"/>
+    </many-to-one>
+    <many-to-one field="revision" target-entity="EMS\CoreBundle\Entity\Revision" inversed-by="releases">
+      <join-column name="revision_id"/>
+    </many-to-one>
+    <many-to-one field="revisionBeforePublish" target-entity="EMS\CoreBundle\Entity\Revision">
+      <join-column name="revision_before_publish_id"/>
+    </many-to-one>
+    <many-to-one field="contentType" target-entity="EMS\CoreBundle\Entity\ContentType">
+      <join-column name="content_type_id"/>
+    </many-to-one>
+
+  </entity>
+</doctrine-mapping>

@@ -6,69 +6,25 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\Helpers\Standard\DateTime;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-/**
- * @ORM\Table(name="query_search")
- *
- * @ORM\Entity()
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     use CreatedModifiedTrait;
-    /**
-     * @ORM\Id
-     *
-     * @ORM\Column(type="uuid", unique=true)
-     *
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     *
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     */
+
     private UuidInterface $id;
-
-    /**
-     * @ORM\Column(name="label", type="string", length=255)
-     */
     protected string $label;
-
-    /**
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
-     */
     protected string $name = '';
-
-    /**
-     * @var Collection <int,Environment>
-     *
-     * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
-     *
-     * @ORM\JoinTable(name="environment_query_search",
-     *      joinColumns={@ORM\JoinColumn(name="query_search_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="environment_id", referencedColumnName="id")}
-     *      )
-     */
+    /** @var Collection <int,Environment> */
     protected Collection $environments;
-
-    /**
-     * @var array<string, mixed>
-     *
-     * @ORM\Column(name="options", type="json", nullable=true)
-     */
+    /** @var array<string, mixed> */
     protected array $options = ['query' => '{}'];
-
-    /**
-     * @ORM\Column(name="order_key", type="integer")
-     */
     protected int $orderKey = 9999;
 
     public function __construct()

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="EMS\CoreBundle\Entity\Job" table="job" repository-class="EMS\CoreBundle\Repository\JobRepository">
+
+    <id name="id" type="integer" column="id">
+      <generator/>
+    </id>
+
+    <field name="status" type="text" nullable="true"/>
+    <field name="output" type="text" nullable="true"/>
+    <field name="done" type="boolean"/>
+    <field name="started" type="boolean"/>
+    <field name="progress" type="integer"/>
+    <field name="user" column="username" length="255" nullable="true"/>
+    <field name="command" length="2000" nullable="true"/>
+    <field name="tag" length="255" nullable="true"/>
+
+    <field name="created" type="datetime"/>
+    <field name="modified" type="datetime"/>
+    <lifecycle-callbacks>
+      <lifecycle-callback type="prePersist" method="updateModified" />
+      <lifecycle-callback type="preUpdate" method="updateModified" />
+    </lifecycle-callbacks>
+  </entity>
+</doctrine-mapping>

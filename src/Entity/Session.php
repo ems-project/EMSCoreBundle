@@ -2,37 +2,13 @@
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
-/**
- * @ORM\Table(name="session")
- *
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SessionRepository")
- */
 class Session
 {
-    /**
-     * @ORM\Column(name="id", type="string", length=128, nullable=false)
-     *
-     * @ORM\Id
-     */
     private ?string $id = null;
 
-    /**
-     * @var resource
-     *
-     * @ORM\Column(name="data", type="blob", nullable=false)
-     */
+    /** @var resource */
     private $data;
-
-    /**
-     * @ORM\Column(name="time", type="integer", options={"unsigned":true})
-     */
     private ?int $time = null;
-
-    /**
-     * @ORM\Column(name="lifetime", type="integer")
-     */
     private ?int $lifetime = null;
 
     public function getId(): string

@@ -4,85 +4,26 @@ namespace EMS\CoreBundle\Entity\Form;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Entity\ContentType;
 
-/**
- * Search.
- *
- * @ORM\Table(name="search")
- *
- * @ORM\Entity()
- */
 class Search implements \JsonSerializable
 {
-    /**
-     * @ORM\Column(name="id", type="bigint")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private string $id;
+    use IdentifierIntegerTrait;
 
-    /**
-     * @var Collection<int, SearchFilter>
-     *
-     * @ORM\OneToMany(targetEntity="SearchFilter", mappedBy="search", cascade={"persist", "remove"})
-     */
+    /** @var Collection<int, SearchFilter> */
     public Collection $filters;
-
-    /**
-     * @ORM\Column(name="username", type="string", length=100)
-     */
     private string $user;
-
-    /**
-     * @var string[]
-     *
-     * @ORM\Column(name="environments", type="json")
-     */
+    /** @var string[] */
     public array $environments = [];
-
-    /**
-     * @var string[]
-     *
-     * @ORM\Column(name="contentTypes", type="json")
-     */
+    /** @var string[] */
     public array $contentTypes = [];
-
-    /**
-     * @ORM\Column(name="name", type="string", length=100)
-     */
     private string $name;
-
-    /**
-     * @ORM\Column(name="default_search", type="boolean", options={"default" : false})
-     */
     private bool $default = false;
-
-    /**
-     * @ORM\OneToOne(targetEntity="EMS\CoreBundle\Entity\ContentType", cascade={})
-     *
-     * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
-     */
     private ?ContentType $contentType = null;
-
-    /**
-     * @ORM\Column(name="sort_by", type="string", length=100, nullable=true)
-     */
     public ?string $sortBy = null;
-
-    /**
-     * @ORM\Column(name="sort_order", type="string", length=100, nullable=true)
-     */
     public ?string $sortOrder = null;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="minimum_should_match", type="integer", options={"default" : 1})
-     */
+    /** @var int */
     protected $minimumShouldMatch = 1;
 
     public function __construct()
@@ -109,11 +50,6 @@ class Search implements \JsonSerializable
         }
 
         return $out;
-    }
-
-    public function getId(): int
-    {
-        return (int) $this->id;
     }
 
     /**

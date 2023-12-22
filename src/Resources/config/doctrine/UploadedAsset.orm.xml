@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="EMS\CoreBundle\Entity\UploadedAsset" table="uploaded_asset"
+          repository-class="EMS\CoreBundle\Repository\UploadedAssetRepository">
+
+    <id name="id" type="integer" column="id">
+      <generator/>
+    </id>
+
+    <field name="status" length="64" nullable="true"/>
+    <field name="sha1" length="128"/>
+    <field name="name" length="1024"/>
+    <field name="type" length="1024"/>
+    <field name="user" column="username" length="255"/>
+    <field name="available" type="boolean"/>
+    <field name="size" type="bigint"/>
+    <field name="uploaded" type="bigint"/>
+    <field name="hashAlgo" column="hash_algo" length="32">
+      <options>
+        <option name="default">sha1</option>
+      </options>
+    </field>
+    <field name="hidden" type="boolean">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="headLast" column="head_last" type="datetime" nullable="true"/>
+    <field name="headIn" column="head_in" type="json" nullable="true"/>
+
+    <field name="created" type="datetime"/>
+    <field name="modified" type="datetime"/>
+    <lifecycle-callbacks>
+      <lifecycle-callback type="prePersist" method="updateModified"/>
+      <lifecycle-callback type="preUpdate" method="updateModified"/>
+    </lifecycle-callbacks>
+  </entity>
+</doctrine-mapping>

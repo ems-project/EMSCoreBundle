@@ -2,74 +2,25 @@
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\Helpers\Standard\DateTime;
 
-/**
- * @ORM\Table(name="sort_option")
- *
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SortOptionRepository")
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class SortOption
 {
     use CreatedModifiedTrait;
-    /**
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    use IdentifierIntegerTrait;
 
-    /**
-     * @ORM\Column(name="name", type="string", length=255)
-     */
     private string $name;
-
-    /**
-     * @ORM\Column(name="field", type="text", length=255)
-     */
     private string $field;
-
-    /**
-     * @ORM\Column(name="orderKey", type="integer")
-     */
     private int $orderKey = 0;
-
-    /**
-     * @ORM\Column(name="inverted", type="boolean")
-     */
     private bool $inverted;
-
-    /**
-     * @ORM\Column(name="icon", type="text", length=255, nullable=true)
-     */
     private ?string $icon = null;
 
     public function __construct()
     {
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
-    }
-
-    /******************************************************************
-     *
-     * Generated functions
-     *
-     *******************************************************************/
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="EMS\CoreBundle\Entity\User" table="`user`">
+
+    <id name="id" type="integer" column="id">
+      <generator/>
+    </id>
+
+    <field name="circles" type="json" nullable="true"/>
+    <field name="displayName" length="255" nullable="true"/>
+    <field name="layoutBoxed" column="layout_boxed" type="boolean"/>
+    <field name="emailNotification" column="email_notification" type="boolean"/>
+    <field name="sidebarMini" column="sidebar_mini" type="boolean"/>
+    <field name="sidebarCollapse" column="sidebar_collapse" type="boolean"/>
+    <field name="locale">
+      <options>
+        <option name="default">en</option>
+      </options>
+    </field>
+    <field name="localePreferred" column="locale_preferred" nullable="true"/>
+    <field name="username" length="180"/>
+    <field name="usernameCanonical" column="username_canonical" length="180" unique="true"/>
+    <field name="email" length="180"/>
+    <field name="emailCanonical" column="email_canonical" length="180" unique="true"/>
+    <field name="enabled" type="boolean"/>
+    <field name="salt" nullable="true"/>
+    <field name="password"/>
+    <field name="lastLogin" column="last_login" type="datetime" nullable="true"/>
+    <field name="confirmationToken" column="confirmation_token" length="180" nullable="true" unique="true"/>
+    <field name="passwordRequestedAt" column="password_requested_at" type="datetime" nullable="true"/>
+    <field name="roles" type="json"/>
+    <field name="userOptions" column="user_options" type="json" nullable="true"/>
+
+    <many-to-one field="wysiwygProfile" target-entity="EMS\CoreBundle\Entity\WysiwygProfile">
+      <join-column name="wysiwyg_profile_id"/>
+    </many-to-one>
+    <one-to-many field="authTokens" target-entity="EMS\CoreBundle\Entity\AuthToken" mapped-by="user">
+      <cascade>
+        <cascade-remove/>
+      </cascade>
+      <order-by>
+        <order-by-field name="created"/>
+      </order-by>
+    </one-to-many>
+
+    <field name="created" type="datetime"/>
+    <field name="modified" type="datetime"/>
+    <lifecycle-callbacks>
+      <lifecycle-callback type="prePersist" method="updateModified" />
+      <lifecycle-callback type="preUpdate" method="updateModified" />
+    </lifecycle-callbacks>
+  </entity>
+</doctrine-mapping>

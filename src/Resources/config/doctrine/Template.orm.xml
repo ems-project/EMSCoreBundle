@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="EMS\CoreBundle\Entity\Template" table="template" repository-class="EMS\CoreBundle\Repository\TemplateRepository">
+
+    <id name="id" type="integer" column="id">
+      <generator/>
+    </id>
+
+    <field name="name" length="255"/>
+    <field name="label" length="255"/>
+    <field name="icon" length="255" nullable="true"/>
+    <field name="body" type="text" nullable="true"/>
+    <field name="header" type="text" nullable="true"/>
+    <field name="editWithWysiwyg" column="edit_with_wysiwyg" type="boolean"/>
+    <field name="renderOption" column="render_option" />
+    <field name="orderKey" column="orderKey" type="integer"/>
+    <field name="accumulateInOneFile" column="accumulate_in_one_file" type="boolean"/>
+    <field name="preview" type="boolean"/>
+    <field name="mimeType" column="mime_type" nullable="true"/>
+    <field name="filename" type="text" nullable="true"/>
+    <field name="extension" nullable="true"/>
+    <field name="active" type="boolean"/>
+    <field name="role"/>
+    <field name="roleTo" column="role_to"/>
+    <field name="roleCc" column="role_cc"/>
+    <field name="circlesTo" column="circles_to" type="json" nullable="true"/>
+    <field name="responseTemplate" column="response_template" type="text" nullable="true"/>
+    <field name="emailContentType" column="email_content_type" nullable="true"/>
+    <field name="allowOrigin" column="allow_origin" nullable="true"/>
+    <field name="disposition" length="20" nullable="true"/>
+    <field name="orientation" length="20" nullable="true"/>
+    <field name="size" length="20" nullable="true"/>
+    <field name="public" type="boolean">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="spreadsheet" type="boolean">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="tag" length="255" nullable="true"/>
+
+    <many-to-one field="contentType" target-entity="EMS\CoreBundle\Entity\ContentType" inversed-by="templates">
+      <join-column name="content_type_id"/>
+    </many-to-one>
+    <many-to-many field="environments" target-entity="EMS\CoreBundle\Entity\Environment">
+      <cascade>
+        <cascade-persist/>
+      </cascade>
+      <join-table name="environment_template">
+        <join-columns>
+          <join-column name="template_id" />
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="environment_id"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+
+    <field name="created" type="datetime"/>
+    <field name="modified" type="datetime"/>
+    <lifecycle-callbacks>
+      <lifecycle-callback type="prePersist" method="updateModified" />
+      <lifecycle-callback type="preUpdate" method="updateModified" />
+
+      <lifecycle-callback type="prePersist" method="updateOrder" />
+      <lifecycle-callback type="preUpdate" method="updateOrder" />
+    </lifecycle-callbacks>
+  </entity>
+</doctrine-mapping>

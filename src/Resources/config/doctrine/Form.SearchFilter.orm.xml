@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="EMS\CoreBundle\Entity\Form\SearchFilter" table="search_filter" repository-class="EMS\CoreBundle\Repository\SearchFilterRepository">
+
+    <id name="id" type="bigint" column="id">
+      <generator/>
+    </id>
+
+    <field name="pattern" length="200" nullable="true"/>
+    <field name="field" length="100" nullable="true"/>
+    <field name="booleanClause" column="boolean_clause" length="20" nullable="true"/>
+    <field name="operator" length="50"/>
+    <field name="boost" type="decimal" scale="2" nullable="true"/>
+
+    <many-to-one field="search" target-entity="EMS\CoreBundle\Entity\Form\Search" inversed-by="filters">
+      <join-column name="search_id"/>
+    </many-to-one>
+
+
+
+  </entity>
+</doctrine-mapping>

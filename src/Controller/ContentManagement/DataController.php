@@ -506,7 +506,7 @@ class DataController extends AbstractController
         /** @var Environment|null $env */
         $env = $this->environmentRepository->findOneByName($environmentName);
 
-        if (null === $template || null === $env) {
+        if (null === $template || !$env) {
             throw new NotFoundHttpException();
         }
 

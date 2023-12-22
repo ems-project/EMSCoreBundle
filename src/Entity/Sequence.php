@@ -2,66 +2,27 @@
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\Helpers\Standard\DateTime;
 
-/**
- * @ORM\Table(name="sequence")
- *
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\SequenceRepository")
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class Sequence
 {
     use CreatedModifiedTrait;
-    /**
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    use IdentifierIntegerTrait;
 
-    /**
-     * @ORM\Column(name="value", type="integer", nullable=false)
-     */
     private int $value = 1;
-
-    /**
-     * @ORM\Version @ORM\Column(name="version", type="integer", nullable=false)
-     */
     private int $version = 0;
 
-    public function __construct(/**
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
-     */
-        private string $name)
+    public function __construct(private string $name)
     {
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
     }
 
-    /**
-     * @ORM\PrePersist
-     *
-     * @ORM\PreUpdate
-     */
     public function updateVersion(): void
     {
         ++$this->version;
-    }
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**

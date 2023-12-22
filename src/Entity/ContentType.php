@@ -4,8 +4,8 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Core\ContentType\ContentTypeFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\ContentType\ContentTypeSettings;
@@ -19,243 +19,69 @@ use EMS\Helpers\Standard\DateTime;
 use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
 
-/**
- * @ORM\Table(name="content_type")
- *
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\ContentTypeRepository")
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class ContentType extends JsonDeserializer implements \JsonSerializable, EntityInterface, \Stringable
 {
     use CreatedModifiedTrait;
-    /**
-     * @ORM\Column(name="id", type="bigint")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected string $id;
+    use IdentifierIntegerTrait;
 
-    /**
-     * @ORM\Column(name="name", type="string", length=100)
-     */
     protected string $name = '';
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="pluralName", type="string", length=100)
-     */
+    /** @var string */
     protected $pluralName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="singularName", type="string", length=100)
-     */
+    /** @var string */
     protected $singularName;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="icon", type="string", length=100, nullable=true)
-     */
+    /** @var string|null */
     protected $icon;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="text", nullable=true)
-     */
+    /** @var string */
     protected $description;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="indexTwig", type="text", nullable=true)
-     */
+    /** @var string */
     protected $indexTwig;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="extra", type="text", nullable=true)
-     */
+    /** @var string */
     protected $extra;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="lockBy", type="string", length=100, nullable=true)
-     */
+    /** @var string */
     protected $lockBy;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="lockUntil", type="datetime", nullable=true)
-     */
+    /** @var \DateTime */
     protected $lockUntil;
-
-    /**
-     * @ORM\Column(name="deleted", type="boolean")
-     */
     protected bool $deleted = false;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="ask_for_ouuid", type="boolean")
-     */
+    /** @var bool */
     protected $askForOuuid;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="dirty", type="boolean")
-     */
+    /** @var bool */
     protected $dirty = true;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="color", type="string", length=50, nullable=true)
-     */
+    /** @var string */
     protected $color;
-
-    /**
-     * @ORM\OneToOne(targetEntity="FieldType", cascade={"persist"})
-     *
-     * @ORM\JoinColumn(name="field_types_id", referencedColumnName="id")
-     *
-     * @var ?FieldType
-     */
+    /** @var ?FieldType */
     protected $fieldType;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="referer_field_name", type="string", length=100, nullable=true)
-     */
+    /** @var string */
     protected $refererFieldName;
-
-    /**
-     * @ORM\Column(name="sort_order", type="string", length=4, nullable=true, options={"default" : "asc"})
-     */
     protected ?string $sortOrder = null;
-
-    /**
-     * @ORM\Column(name="orderKey", type="integer")
-     */
     protected int $orderKey = 0;
-
-    /**
-     * @ORM\Column(name="rootContentType", type="boolean")
-     */
     protected bool $rootContentType = true;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="edit_twig_with_wysiwyg", type="boolean")
-     */
+    /** @var bool */
     protected $editTwigWithWysiwyg = true;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="web_content", type="boolean", options={"default" : 1})
-     */
+    /** @var bool */
     protected $webContent = true;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="auto_publish", type="boolean", options={"default" : 0})
-     */
+    /** @var bool */
     protected $autoPublish = false;
-
-    /**
-     * @ORM\Column(name="active", type="boolean")
-     */
     protected bool $active = false;
-
-    /**
-     * @var Environment|null
-     *
-     * @ORM\ManyToOne(targetEntity="Environment", inversedBy="contentTypesHavingThisAsDefault")
-     *
-     * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
-     */
+    /** @var Environment|null */
     protected $environment;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Template", mappedBy="contentType", cascade={"persist", "remove"})
-     *
-     * @ORM\OrderBy({"orderKey" = "ASC"})
-     *
-     * @var Collection<int, Template>
-     */
+    /** @var Collection<int, Template> */
     protected $templates;
-
-    /**
-     * @ORM\OneToMany(targetEntity="View", mappedBy="contentType", cascade={"persist", "remove"})
-     *
-     * @ORM\OrderBy({"orderKey" = "ASC"})
-     *
-     * @var Collection<int, View>
-     */
+    /** @var Collection<int, View> */
     protected $views;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="default_value", type="text", nullable=true)
-     */
+    /** @var string */
     public $defaultValue;
-
-    /**
-     * @var ?string[]
-     *
-     * @ORM\Column(name="version_tags", type="json", nullable=true)
-     */
+    /** @var ?string[] */
     protected ?array $versionTags = [];
-
-    /**
-     * @var ?array<string, bool>
-     *
-     * @ORM\Column(name="version_options", type="json", nullable=true)
-     */
+    /** @var ?array<string, bool> */
     protected ?array $versionOptions = [];
-
-    /**
-     * @var ?array<string, ?string>
-     *
-     * @ORM\Column(name="version_fields", type="json", nullable=true)
-     */
+    /** @var ?array<string, ?string> */
     protected ?array $versionFields = [];
-
-    /**
-     * @var array<string, string>
-     *
-     * @ORM\Column(name="roles", type="json", nullable=true)
-     */
+    /** @var array<string, string> */
     protected array $roles = [];
-
-    /**
-     * @var array<string, ?string>
-     *
-     * @ORM\Column(name="fields", type="json", nullable=true)
-     */
+    /** @var array<string, ?string> */
     protected array $fields = [];
-
-    /**
-     * @var array<string, bool>
-     *
-     * @ORM\Column(name="settings", type="json", nullable=true)
-     */
+    /** @var array<string, bool> */
     protected ?array $settings = null;
 
     public function __construct()
@@ -277,16 +103,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function __toString(): string
     {
         return $this->name;
-    }
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return (int) $this->id;
     }
 
     /**

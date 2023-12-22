@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="EMS\CoreBundle\Entity\FieldType" table="field_type">
+
+    <id name="id" type="integer" column="id">
+      <generator/>
+    </id>
+
+    <field name="type" length="255"/>
+    <field name="name" length="255"/>
+    <field name="deleted" type="boolean"/>
+    <field name="description" type="text" nullable="true"/>
+    <field name="options" type="json" nullable="true"/>
+    <field name="orderKey" column="orderKey" type="integer"/>
+
+    <one-to-one field="contentType" target-entity="EMS\CoreBundle\Entity\ContentType">
+      <join-column name="content_type_id"/>
+    </one-to-one>
+    <many-to-one field="parent" target-entity="EMS\CoreBundle\Entity\FieldType" inversed-by="children">
+      <cascade>
+        <cascade-persist/>
+      </cascade>
+      <join-column name="parent_id"/>
+    </many-to-one>
+    <one-to-many field="children" target-entity="EMS\CoreBundle\Entity\FieldType" mapped-by="parent">
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+      <order-by>
+        <order-by-field name="orderKey"/>
+      </order-by>
+    </one-to-many>
+
+    <field name="created" type="datetime"/>
+    <field name="modified" type="datetime"/>
+    <lifecycle-callbacks>
+      <lifecycle-callback type="prePersist" method="updateModified" />
+      <lifecycle-callback type="preUpdate" method="updateModified" />
+    </lifecycle-callbacks>
+  </entity>
+</doctrine-mapping>

@@ -4,92 +4,30 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CoreBundle\Core\Dashboard\DashboardOptions;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\Helpers\Standard\DateTime;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-/**
- * @ORM\Table(name="dashboard", uniqueConstraints={@ORM\UniqueConstraint(name="definition_uniq", columns={"definition"})})
- *
- * @ORM\Entity()
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     use CreatedModifiedTrait;
-    /**
-     * @ORM\Id
-     *
-     * @ORM\Column(type="uuid", unique=true)
-     *
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     *
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     */
+
     private UuidInterface $id;
-
-    /**
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
-     */
     protected string $name;
-
-    /**
-     * @ORM\Column(name="icon", type="text", length=255)
-     */
     protected string $icon;
-
-    /**
-     * @ORM\Column(name="label", type="string", length=255)
-     */
     protected string $label;
-
-    /**
-     * @ORM\Column(name="sidebar_menu", type="boolean", options={"default" : 1})
-     */
     protected bool $sidebarMenu = true;
-
-    /**
-     * @ORM\Column(name="notification_menu", type="boolean", options={"default" : 0})
-     */
     protected bool $notificationMenu = false;
-
-    /**
-     * @ORM\Column(name="definition", type="string", nullable=true)
-     */
     protected ?string $definition = null;
-
-    /**
-     * @ORM\Column(name="type", type="string", length=2048)
-     */
     protected string $type;
-
-    /**
-     * @ORM\Column(name="role", type="string", length=100)
-     */
     protected string $role;
-
-    /**
-     * @ORM\Column(name="color", type="string", length=50, nullable=true)
-     */
     protected ?string $color = null;
-
-    /**
-     * @var array<string, mixed>
-     *
-     * @ORM\Column(name="options", type="json", nullable=true)
-     */
+    /** @var array<string, mixed> */
     protected array $options = [];
-
-    /**
-     * @ORM\Column(name="order_key", type="integer")
-     */
     protected int $orderKey;
 
     final public const DEFINITION_LANDING_PAGE = 'landing_page';

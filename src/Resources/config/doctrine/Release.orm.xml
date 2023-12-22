@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="EMS\CoreBundle\Entity\Release" table="release_entity">
+
+    <id name="id" type="integer" column="id">
+      <generator/>
+    </id>
+
+    <field name="executionDate" column="execution_date" type="datetime" nullable="true"/>
+    <field name="status" length="20"/>
+    <field name="name" length="255"/>
+
+    <many-to-one field="environmentSource" target-entity="EMS\CoreBundle\Entity\Environment">
+      <join-column name="environment_source_id"/>
+    </many-to-one>
+    <many-to-one field="environmentTarget" target-entity="EMS\CoreBundle\Entity\Environment">
+      <join-column name="environment_target_id"/>
+    </many-to-one>
+    <one-to-many field="revisions" target-entity="EMS\CoreBundle\Entity\ReleaseRevision" mapped-by="release">
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+    </one-to-many>
+
+  </entity>
+</doctrine-mapping>

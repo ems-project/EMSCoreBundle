@@ -4,188 +4,48 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\Helpers\Standard\DateTime;
-use EMS\Helpers\Standard\Type;
 
-/**
- * @ORM\Table(name="template")
- *
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\TemplateRepository")
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class Template extends JsonDeserializer implements \JsonSerializable, EntityInterface, \Stringable
 {
     use CreatedModifiedTrait;
-    /**
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected ?int $id = null;
+    use IdentifierIntegerTrait;
 
-    /**
-     * @ORM\Column(name="name", type="string", length=255)
-     */
     protected string $name = '';
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="label", type="string", length=255)
-     */
-    protected $label = '';
-
-    /**
-     * @ORM\Column(name="icon", type="string", length=255, nullable=true)
-     */
+    protected string $label = '';
     protected ?string $icon = null;
-
-    /**
-     * @ORM\Column(name="body", type="text", nullable=true)
-     */
     protected ?string $body = null;
-
-    /**
-     * @ORM\Column(name="header", type="text", nullable=true)
-     */
     protected ?string $header = null;
-
-    /**
-     * @ORM\Column(name="edit_with_wysiwyg", type="boolean")
-     */
     protected bool $editWithWysiwyg = false;
-
-    /**
-     * @ORM\Column(name="render_option", type="string")
-     */
     protected string $renderOption = '';
-
-    /**
-     * @ORM\Column(name="orderKey", type="integer")
-     */
     protected int $orderKey = 0;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="ContentType", inversedBy="templates")
-     *
-     * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
-     */
     protected ?ContentType $contentType = null;
-
-    /**
-     * @ORM\Column(name="accumulate_in_one_file", type="boolean")
-     */
     protected bool $accumulateInOneFile = false;
-
-    /**
-     * @ORM\Column(name="preview", type="boolean")
-     */
     protected bool $preview = false;
-
-    /**
-     * @ORM\Column(name="mime_type", type="string", nullable=true)
-     */
     protected ?string $mimeType = null;
-
-    /**
-     * @ORM\Column(name="filename", type="text", nullable=true)
-     */
     protected ?string $filename = null;
-
-    /**
-     * @ORM\Column(name="extension", type="string", nullable=true)
-     */
     protected ?string $extension = null;
-
-    /**
-     * @ORM\Column(name="active", type="boolean")
-     */
     protected bool $active = false;
-
-    /**
-     * @ORM\Column(name="role", type="string")
-     */
     protected string $role = 'not-defined';
-
-    /**
-     * @var Collection<int, Environment>
-     *
-     * @ORM\ManyToMany(targetEntity="Environment", cascade={"persist"})
-     *
-     * @ORM\JoinTable(name="environment_template",
-     *      joinColumns={@ORM\JoinColumn(name="template_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="environment_id", referencedColumnName="id")}
-     *      )
-     */
+    /** @var Collection<int, Environment> */
     protected Collection $environments;
-
-    /**
-     * @ORM\Column(name="role_to", type="string")
-     */
     protected string $roleTo = 'not-defined';
-
-    /**
-     * @ORM\Column(name="role_cc", type="string")
-     */
     protected string $roleCc = 'not-defined';
-
-    /**
-     * @var ?string[]
-     *
-     * @ORM\Column(name="circles_to", type="json", nullable=true)
-     */
+    /** @var ?string[] */
     protected ?array $circlesTo = null;
-
-    /**
-     * @ORM\Column(name="response_template", type="text", nullable=true)
-     */
     protected ?string $responseTemplate = null;
-
-    /**
-     * @ORM\Column(name="email_content_type", type="string", nullable=true)
-     */
     protected ?string $emailContentType = null;
-
-    /**
-     * @ORM\Column(name="allow_origin", type="string", nullable=true)
-     */
     protected ?string $allowOrigin = null;
-
-    /**
-     * @ORM\Column(name="disposition", type="string", length=20, nullable=true)
-     */
     protected ?string $disposition = null;
-
-    /**
-     * @ORM\Column(name="orientation", type="string", length=20, nullable=true)
-     */
     protected ?string $orientation = null;
-
-    /**
-     * @ORM\Column(name="size", type="string", length=20, nullable=true)
-     */
     protected ?string $size = null;
-
-    /**
-     * @ORM\Column(name="public", type="boolean", options={"default" : 0})
-     */
     protected bool $public = false;
-
-    /**
-     * @ORM\Column(name="spreadsheet", type="boolean", options={"default": false})
-     */
     protected bool $spreadsheet = false;
-
-    /**
-     * @ORM\Column(name="tag", type="string", length=255, nullable=true)
-     */
     protected ?string $tag = null;
 
     public function __construct()
@@ -196,21 +56,11 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         $this->modified = DateTime::create('now');
     }
 
-    /**
-     * @ORM\PrePersist
-     *
-     * @ORM\PreUpdate
-     */
     public function updateOrder(): void
     {
         if (!isset($this->orderKey)) {
             $this->orderKey = 0;
         }
-    }
-
-    public function getId(): int
-    {
-        return Type::integer($this->id);
     }
 
     public function setName(?string $name): self

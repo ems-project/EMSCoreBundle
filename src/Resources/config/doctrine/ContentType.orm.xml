@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="EMS\CoreBundle\Entity\ContentType" table="content_type" repository-class="EMS\CoreBundle\Repository\ContentTypeRepository">
+
+    <id name="id" type="bigint" column="id">
+      <generator/>
+    </id>
+
+    <field name="name" length="100"/>
+    <field name="pluralName" column="pluralName" length="100"/>
+    <field name="singularName" column="singularName" length="100"/>
+    <field name="icon" length="100" nullable="true"/>
+    <field name="description" type="text" nullable="true"/>
+    <field name="indexTwig" column="indexTwig" type="text" nullable="true"/>
+    <field name="extra" type="text" nullable="true"/>
+    <field name="lockBy" column="lockBy" length="100" nullable="true"/>
+    <field name="lockUntil" column="lockUntil" type="datetime" nullable="true"/>
+    <field name="deleted" type="boolean"/>
+    <field name="askForOuuid" column="ask_for_ouuid" type="boolean"/>
+    <field name="dirty" type="boolean"/>
+    <field name="color" length="50" nullable="true"/>
+    <field name="refererFieldName" column="referer_field_name" length="100" nullable="true"/>
+    <field name="sortOrder" column="sort_order" length="4" nullable="true">
+      <options>
+        <option name="default">asc</option>
+      </options>
+    </field>
+    <field name="orderKey" column="orderKey" type="integer"/>
+    <field name="rootContentType" column="rootContentType" type="boolean"/>
+    <field name="editTwigWithWysiwyg" column="edit_twig_with_wysiwyg" type="boolean"/>
+    <field name="webContent" column="web_content" type="boolean">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
+    <field name="autoPublish" column="auto_publish" type="boolean">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="active" type="boolean"/>
+    <field name="defaultValue" column="default_value" type="text" nullable="true"/>
+    <field name="versionTags" column="version_tags" type="json" nullable="true"/>
+    <field name="versionOptions" column="version_options" type="json" nullable="true"/>
+    <field name="versionFields" column="version_fields" type="json" nullable="true"/>
+    <field name="roles" type="json" nullable="true"/>
+    <field name="fields" type="json" nullable="true"/>
+    <field name="settings" type="json" nullable="true"/>
+
+    <one-to-one field="fieldType" target-entity="EMS\CoreBundle\Entity\FieldType">
+      <cascade>
+        <cascade-persist/>
+      </cascade>
+      <join-column name="field_types_id"/>
+    </one-to-one>
+    <many-to-one field="environment" target-entity="EMS\CoreBundle\Entity\Environment" inversed-by="contentTypesHavingThisAsDefault">
+      <cascade>
+        <cascade-remove/>
+      </cascade>
+      <join-column name="environment_id"/>
+    </many-to-one>
+    <one-to-many field="templates" target-entity="EMS\CoreBundle\Entity\Template" mapped-by="contentType">
+      <order-by>
+        <order-by-field name="orderKey"/>
+      </order-by>
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+    </one-to-many>
+    <one-to-many field="views" target-entity="EMS\CoreBundle\Entity\View" mapped-by="contentType">
+      <order-by>
+        <order-by-field name="orderKey"/>
+      </order-by>
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+    </one-to-many>
+
+    <field name="created" type="datetime"/>
+    <field name="modified" type="datetime"/>
+    <lifecycle-callbacks>
+      <lifecycle-callback type="prePersist" method="updateModified" />
+      <lifecycle-callback type="preUpdate" method="updateModified" />
+    </lifecycle-callbacks>
+  </entity>
+</doctrine-mapping>

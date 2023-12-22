@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Core\Revision\Task\TaskLog;
@@ -14,64 +13,19 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * @ORM\Table(name="task")
- *
- * @ORM\Entity()
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class Task implements EntityInterface
 {
     use CreatedModifiedTrait;
 
-    /**
-     * @ORM\Id
-     *
-     * @ORM\Column(type="uuid", unique=true)
-     */
     private UuidInterface $id;
-
-    /**
-     * @ORM\Column(name="title", type="string", length=255)
-     */
     private string $title;
-
-    /**
-     * @ORM\Column(name="status", type="string", length=25)
-     */
     private string $status = self::STATUS_PLANNED;
-
-    /**
-     * @ORM\Column(name="delay", type="integer")
-     */
     private int $delay;
-
-    /**
-     * @ORM\Column(name="deadline", type="datetime_immutable", nullable=true)
-     */
     private ?\DateTimeInterface $deadline = null;
-
-    /**
-     * @ORM\Column(name="assignee", type="text")
-     */
     private string $assignee;
-
-    /**
-     * @ORM\Column(name="description", type="text", nullable=true)
-     */
     private ?string $description = null;
-
-    /**
-     * @var array<mixed>
-     *
-     * @ORM\Column(name="logs", type="json")
-     */
+    /** @var array<mixed> */
     private array $logs;
-
-    /**
-     * @ORM\Column(name="created_by", type="text")
-     */
     private string $createdBy;
 
     final public const STATUS_PROGRESS = 'progress';

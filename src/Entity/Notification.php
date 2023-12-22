@@ -2,91 +2,28 @@
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\Helpers\Standard\DateTime;
 
-/**
- * @ORM\Table(name="notification")
- *
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\NotificationRepository")
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class Notification implements \Stringable
 {
     use CreatedModifiedTrait;
+    use IdentifierIntegerTrait;
+
     final public const PENDING = 'pending';
     final public const IN_TRANSIT = 'in-transit';
 
-    /**
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Template")
-     *
-     * @ORM\JoinColumn(name="template_id", referencedColumnName="id")
-     */
     private ?Template $template = null;
-
-    /**
-     * @ORM\Column(name="username", type="string", length=100)
-     */
     private string $username;
-
-    /**
-     * @ORM\Column(name="status", type="string", length=20)
-     */
     private string $status;
-
-    /**
-     * @ORM\Column(name="sent_timestamp", type="datetime")
-     */
     private ?\DateTime $sentTimestamp = null;
-
-    /**
-     * @ORM\Column(name="response_text", type="text", nullable=true)
-     */
     private ?string $responseText = null;
-
-    /**
-     * @ORM\Column(name="response_timestamp", type="datetime", nullable=true)
-     */
     private ?\DateTime $responseTimestamp = null;
-
-    /**
-     * @ORM\Column(name="response_by", type="string", length=100, nullable=true)
-     */
     private string $responseBy;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Revision", inversedBy="notifications")
-     *
-     * @ORM\JoinColumn(name="revision_id", referencedColumnName="id")
-     */
     private ?Revision $revision = null;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Environment")
-     *
-     * @ORM\JoinColumn(name="environment_id", referencedColumnName="id")
-     */
     private ?Environment $environment = null;
-
-    /**
-     * @ORM\Column(name="emailed", type="datetime", nullable=true)
-     */
     private \DateTime $emailed;
-
-    /**
-     * @ORM\Column(name="response_emailed", type="datetime", nullable=true)
-     */
     private \DateTime $responseEmailed;
 
     private int $counter = 0;
@@ -100,16 +37,6 @@ class Notification implements \Stringable
     public function __toString(): string
     {
         return $this->getTemplate()->getName().'#'.$this->id;
-    }
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**

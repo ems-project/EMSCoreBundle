@@ -4,72 +4,26 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Validator\Constraints as EMSAssert;
 use EMS\Helpers\Standard\DateTime;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-/**
- * @ORM\Table(name="schedule")
- *
- * @ORM\Entity()
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     use CreatedModifiedTrait;
-    /**
-     * @ORM\Id
-     *
-     * @ORM\Column(type="uuid", unique=true)
-     *
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     *
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     */
+
     private UuidInterface $id;
-
-    /**
-     * @ORM\Column(name="name", type="string", length=255)
-     */
     protected string $name = '';
-
-    /**
-     * @EMSAssert\Cron()
-     *
-     * @ORM\Column(name="cron", type="string", length=255)
-     */
+    /** @EMSAssert\Cron() */
     protected string $cron = '';
-
-    /**
-     * @ORM\Column(name="command", type="string", length=2000, nullable=true)
-     */
     protected ?string $command = null;
-
-    /**
-     * @ORM\Column(name="previous_run", type="datetime", nullable=true)
-     */
     private ?\Datetime $previousRun = null;
-
-    /**
-     * @ORM\Column(name="next_run", type="datetime")
-     */
     private \Datetime $nextRun;
-
-    /**
-     * @ORM\Column(name="order_key", type="integer")
-     */
     protected int $orderKey = 0;
-
-    /**
-     * @ORM\Column(name="tag", type="string", length=255, nullable=true)
-     */
     protected ?string $tag = null;
 
     public function __construct()

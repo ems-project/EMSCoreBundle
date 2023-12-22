@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="EMS\CoreBundle\Entity\Form\Search" table="search">
+
+    <id name="id" type="bigint" column="id">
+      <generator/>
+    </id>
+
+    <field name="user" column="username" length="100"/>
+    <field name="environments" type="json"/>
+    <field name="contentTypes" column="contenttypes" type="json"/>
+    <field name="name" length="100"/>
+    <field name="default" column="default_search" type="boolean">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="sortBy" column="sort_by" length="100" nullable="true"/>
+    <field name="sortOrder" column="sort_order" length="100" nullable="true"/>
+    <field name="minimumShouldMatch" column="minimum_should_match" type="integer">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
+
+    <one-to-many field="filters" target-entity="EMS\CoreBundle\Entity\Form\SearchFilter" mapped-by="search">
+      <cascade>
+        <cascade-persist/>
+        <cascade-remove/>
+      </cascade>
+    </one-to-many>
+    <one-to-one field="contentType" target-entity="EMS\CoreBundle\Entity\ContentType">
+      <join-column name="content_type_id"/>
+    </one-to-one>
+
+
+
+  </entity>
+</doctrine-mapping>

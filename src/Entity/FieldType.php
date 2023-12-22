@@ -4,8 +4,8 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
@@ -13,95 +13,29 @@ use EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType;
 use EMS\Helpers\Standard\DateTime;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * FieldType.
- *
- * @ORM\Table(name="field_type")
- *
- * @ORM\Entity()
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class FieldType extends JsonDeserializer implements \JsonSerializable
 {
     use CreatedModifiedTrait;
+    use IdentifierIntegerTrait;
+
     final public const DISPLAY_OPTIONS = 'displayOptions';
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
 
-    /**
-     * @var class-string<DataFieldType>
-     *
-     * @ORM\Column(name="type", type="string", length=255)
-     */
+    /** @var class-string<DataFieldType> */
     protected string $type;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
-     */
+    /** @var string */
     protected $name;
-
-    /**
-     * @ORM\OneToOne(targetEntity="ContentType")
-     *
-     * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
-     */
     protected ?ContentType $contentType = null;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="deleted", type="boolean")
-     */
+    /** @var bool */
     protected $deleted = false;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="text", nullable=true)
-     */
+    /** @var string */
     protected $description;
-
-    /**
-     * @var array<mixed>|null
-     *
-     * @ORM\Column(name="options", type="json", nullable=true)
-     */
+    /** @var array<mixed>|null */
     protected array|null $options = [];
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="orderKey", type="integer")
-     */
+    /** @var int */
     protected $orderKey = 0;
-
-    /**
-     * @var ?FieldType
-     *
-     * @ORM\ManyToOne(targetEntity="FieldType", inversedBy="children", cascade={"persist"})
-     *
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
-     */
+    /** @var ?FieldType */
     protected ?FieldType $parent = null;
-
-    /**
-     * @var Collection<int, FieldType>
-     *
-     * @ORM\OneToMany(targetEntity="FieldType", mappedBy="parent", cascade={"persist", "remove"})
-     *
-     * @ORM\OrderBy({"orderKey" = "ASC"})
-     */
+    /** @var Collection<int, FieldType> */
     protected Collection $children;
 
     public function __construct()
@@ -123,16 +57,6 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         foreach ($this->children as $child) {
             $child->updateAncestorReferences(null, $this);
         }
-    }
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     public function updateOrderKeys(): void

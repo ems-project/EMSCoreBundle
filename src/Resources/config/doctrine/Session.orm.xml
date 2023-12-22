@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="EMS\CoreBundle\Entity\Session" table="session" repository-class="EMS\CoreBundle\Repository\SessionRepository">
+
+    <id name="id" type="string" column="id" length="128"/>
+
+    <field name="data" type="blob"/>
+    <field name="time" type="integer">
+      <options>
+        <option name="unsigned">true</option>
+      </options>
+    </field>
+    <field name="lifetime" type="integer"/>
+
+  </entity>
+</doctrine-mapping>

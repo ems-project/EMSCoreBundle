@@ -4,51 +4,22 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\HolderFieldType;
 use EMS\Helpers\Standard\DateTime;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-/**
- * @ORM\Table(name="form")
- * @ORM\Entity()
- * @ORM\HasLifecycleCallbacks()
- */
 class Form extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     use CreatedModifiedTrait;
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     */
+
     private UuidInterface $id;
-
-    /**
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
-     */
     protected string $name;
-
-    /**
-     * @ORM\Column(name="label", type="string", length=255)
-     */
     protected string $label;
-
-    /**
-     * @ORM\Column(name="order_key", type="integer")
-     */
     protected int $orderKey;
-
-    /**
-     * @ORM\OneToOne(targetEntity="FieldType", cascade={"persist"})
-     * @ORM\JoinColumn(name="field_types_id", referencedColumnName="id")
-     */
     protected ?FieldType $fieldType = null;
 
     public function __construct()

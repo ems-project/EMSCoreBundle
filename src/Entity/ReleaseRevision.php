@@ -4,63 +4,17 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 
-/**
- * @ORM\Table(name="release_revision")
- *
- * @ORM\Entity()
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class ReleaseRevision implements EntityInterface
 {
-    /**
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    use IdentifierIntegerTrait;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Release", inversedBy="revisions")
-     *
-     * @ORM\JoinColumn(name="release_id", referencedColumnName="id")
-     */
     private Release $release;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Revision", inversedBy="releases")
-     *
-     * @ORM\JoinColumn(name="revision_id", referencedColumnName="id", nullable=true)
-     */
     private ?Revision $revision = null;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Revision")
-     *
-     * @ORM\JoinColumn(name="revision_before_publish_id", referencedColumnName="id", nullable=true)
-     */
     private ?Revision $revisionBeforePublish = null;
-
-    /**
-     * @ORM\Column(name="revision_ouuid", type="string", length=255)
-     */
     private string $revisionOuuid;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="ContentType")
-     *
-     * @ORM\JoinColumn(name="content_type_id", referencedColumnName="id")
-     */
     private ContentType $contentType;
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
 
     public function getRevisionOuuid(): string
     {

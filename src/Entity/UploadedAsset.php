@@ -2,92 +2,28 @@
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
+use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\Helpers\Standard\DateTime;
 
-/**
- * DataField.
- *
- * @ORM\Table(name="uploaded_asset")
- *
- * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\UploadedAssetRepository")
- *
- * @ORM\HasLifecycleCallbacks()
- */
 class UploadedAsset implements EntityInterface
 {
     use CreatedModifiedTrait;
-    /**
-     * @ORM\Column(name="id", type="integer")
-     *
-     * @ORM\Id
-     *
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    use IdentifierIntegerTrait;
 
-    /**
-     * @ORM\Column(name="status", type="string", length=64, nullable=true)
-     */
     private ?string $status = null;
-
-    /**
-     * @ORM\Column(name="sha1", type="string", length=128)
-     */
     private string $sha1;
-
-    /**
-     * @ORM\Column(name="name", type="string", length=1024)
-     */
     private string $name = '';
-
-    /**
-     * @ORM\Column(name="type", type="string", length=1024)
-     */
     private string $type;
-
-    /**
-     * @ORM\Column(name="username", type="string", length=255)
-     */
     private string $user;
-
-    /**
-     * @ORM\Column(name="available", type="boolean")
-     */
     private bool $available;
-
-    /**
-     * @ORM\Column(name="size", type="bigint")
-     */
-    private int|string|null $size = null;
-
-    /**
-     * @ORM\Column(name="uploaded", type="bigint")
-     */
-    private string|null $uploaded = null;
-
-    /**
-     * @ORM\Column(name="hash_algo", type="string", length=32, options={"default" : "sha1"})
-     */
+    private ?string $size = null;
+    private ?string $uploaded = null;
     private ?string $hashAlgo = null;
-
-    /**
-     * @ORM\Column(name="hidden", type="boolean", options={"default" : 0})
-     */
     private bool $hidden = false;
-
-    /**
-     * @ORM\Column(name="head_last", type="datetime", nullable=true)
-     */
     private ?\DateTime $headLast = null;
-
-    /**
-     * @var string[]|null
-     *
-     * @ORM\Column(name="head_in", type="json", nullable=true)
-     */
+    /** @var ?string[] */
     private ?array $headIn = null;
 
     public function __construct()
@@ -111,16 +47,6 @@ class UploadedAsset implements EntityInterface
             'uploaded' => $this->getUploaded(),
             'user' => $this->getUser(),
         ];
-    }
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     public function setStatus(?string $status): self
@@ -228,14 +154,14 @@ class UploadedAsset implements EntityInterface
 
     public function setSize(int $size): UploadedAsset
     {
-        $this->size = $size;
+        $this->size = (string) $size;
 
         return $this;
     }
 
     public function getSize(): int
     {
-        return \intval($this->size);
+        return (int) $this->size;
     }
 
     public function setUploaded(int $uploaded): UploadedAsset
@@ -247,7 +173,7 @@ class UploadedAsset implements EntityInterface
 
     public function getUploaded(): int
     {
-        return \intval($this->uploaded);
+        return (int) $this->uploaded;
     }
 
     /**

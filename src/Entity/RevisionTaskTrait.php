@@ -4,29 +4,14 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 trait RevisionTaskTrait
 {
-    /**
-     * @ORM\ManyToOne(targetEntity="EMS\CoreBundle\Entity\Task")
-     *
-     * @ORM\JoinColumn(name="task_current_id", referencedColumnName="id", nullable=true)
-     */
     private ?Task $taskCurrent = null;
 
-    /**
-     * @var string[]|null
-     *
-     * @ORM\Column(name="task_planned_ids", type="json", nullable=true)
-     */
+    /** @var string[]|null */
     private ?array $taskPlannedIds = [];
 
-    /**
-     * @var string[]|null
-     *
-     * @ORM\Column(name="task_approved_ids", type="json", nullable=true)
-     */
+    /** @var string[]|null */
     private ?array $taskApprovedIds = [];
 
     public function tasksEnabled(): bool

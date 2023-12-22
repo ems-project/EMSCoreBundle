@@ -10,7 +10,7 @@ class CantBeFinalizedException extends ElasticmsException implements \Stringable
     {
         if (null === $revision) {
             $message = 'This revision can not be finalized';
-        } elseif (null !== $revision->getId()) {
+        } elseif ($revision->hasId()) {
             $message = \sprintf('The revision %s of the document %s:%s can not be finalized', $revision->getId(), $revision->giveContentType()->getName(), $revision->getOuuid());
         } else {
             $message = \sprintf('A new revision for the document %s:%s can not be finalized', $revision->giveContentType()->getName(), $revision->getOuuid());

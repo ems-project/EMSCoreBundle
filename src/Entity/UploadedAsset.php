@@ -86,7 +86,7 @@ class UploadedAsset implements EntityInterface
     /**
      * @var string[]|null
      *
-     * @ORM\Column(name="head_in", type="array", nullable=true)
+     * @ORM\Column(name="head_in", type="json", nullable=true)
      */
     private ?array $headIn;
 

@@ -122,7 +122,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     /**
      * @var string[]
      *
-     * @ORM\Column(name="roles", type="array")
+     * @ORM\Column(name="roles", type="json")
      */
     private array $roles = [];
     /**

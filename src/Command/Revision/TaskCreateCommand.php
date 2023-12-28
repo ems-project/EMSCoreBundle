@@ -16,11 +16,16 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\Helpers\Standard\Json;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::REVISION_TASK_CREATE,
+    hidden: false
+)]
 final class TaskCreateCommand extends AbstractCommand
 {
     private Environment $environment;
@@ -44,8 +49,6 @@ final class TaskCreateCommand extends AbstractCommand
     public const OPTION_SCROLL_SIZE = 'scroll-size';
     public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
     public const OPTION_SEARCH_QUERY = 'search-query';
-
-    protected static $defaultName = Commands::REVISION_TASK_CREATE;
 
     public function __construct(
         private readonly RevisionSearcher $revisionSearcher,

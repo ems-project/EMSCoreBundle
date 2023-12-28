@@ -11,14 +11,19 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Standard\Json;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::REVISION_DELETE,
+    description: 'Delete all/oldest revisions for content type(s).',
+    hidden: false
+)]
 class DeleteCommand extends AbstractCommand
 {
-    protected static $defaultName = Commands::REVISION_DELETE;
     private const ARGUMENT_CONTENT_TYPES = 'content-types';
     private const OPTION_MODE = 'mode';
     private const OPTION_QUERY = 'query';
@@ -45,7 +50,6 @@ class DeleteCommand extends AbstractCommand
     protected function configure(): void
     {
         $this
-            ->setDescription('Delete all/oldest revisions for content type(s)')
             ->addArgument(self::ARGUMENT_CONTENT_TYPES, InputArgument::IS_ARRAY, 'contentType names or "all"')
             ->addOption(self::OPTION_MODE, null, InputOption::VALUE_REQUIRED, 'mode for deletion [all,oldest,by-query]', 'all')
             ->addOption(self::OPTION_QUERY, null, InputOption::VALUE_OPTIONAL, 'query to use in by-query mode')

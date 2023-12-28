@@ -11,18 +11,22 @@ use EMS\CoreBundle\Core\Revision\Search\RevisionSearcher;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::REVISION_ARCHIVE,
+    description: 'Archive documents for a given content type.',
+    hidden: false
+)]
 final class ArchiveCommand extends AbstractCommand
 {
     private ContentType $contentType;
     private string $searchQuery;
     private ?\DateTimeInterface $modifiedBefore = null;
-
-    protected static $defaultName = Commands::REVISION_ARCHIVE;
     private const USER = 'SYSTEM_ARCHIVE';
 
     public const ARGUMENT_CONTENT_TYPE = 'content-type';

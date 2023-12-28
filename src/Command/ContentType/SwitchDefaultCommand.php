@@ -8,14 +8,19 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::CONTENT_TYPE_SWITCH_DEFAULT_ENV,
+    description: 'Switch the default environment for a given content type.',
+    hidden: false
+)]
 class SwitchDefaultCommand extends AbstractCommand
 {
     final public const CONTENT_TYPE_SWITCH_DEFAULT_ENV_USERNAME = 'CONTENT_TYPE_SWITCH_DEFAULT_ENV_USERNAME';
-    protected static $defaultName = Commands::CONTENT_TYPE_SWITCH_DEFAULT_ENV;
 
     private ContentType $contentType;
     private Environment $target;
@@ -31,7 +36,6 @@ class SwitchDefaultCommand extends AbstractCommand
     protected function configure(): void
     {
         $this
-            ->setDescription('Switch the default environment for a given content type')
             ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'ContentType')
             ->addArgument(self::ARGUMENT_TARGET_ENVIRONMENT, InputArgument::REQUIRED, 'Target environment');
     }

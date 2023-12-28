@@ -4,27 +4,29 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Asset;
 
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Service\FileService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+    name: Commands::ASSET_HEAD,
+    description: 'Loop over all known uploaded assets and update the seen information if the file is connected.',
+    hidden: false,
+    aliases: ['ems:asset:head']
+)]
 final class HeadAssetCommand extends Command
 {
-    protected static $defaultName = 'ems:asset:head';
     private SymfonyStyle $io;
 
     public function __construct(protected LoggerInterface $logger, protected FileService $fileService)
     {
         parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription('Loop over all known uploaded assets and update the seen information if the file is connected');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void

@@ -2,17 +2,23 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\AliasService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::MANAGED_ALIAS_ALIGN,
+    description: 'Align a managed alias to another.',
+    hidden: false,
+    aliases: ['ems:managedalias:align']
+)]
 class AlignManagedAliases extends Command
 {
-    protected static $defaultName = 'ems:managedalias:align';
-
     public function __construct(protected LoggerInterface $logger, protected AliasService $aliasService)
     {
         parent::__construct();
@@ -20,7 +26,7 @@ class AlignManagedAliases extends Command
 
     protected function configure(): void
     {
-        $this->setDescription('Align a managed alias to another')
+        $this
             ->addArgument(
                 'source',
                 InputArgument::REQUIRED,

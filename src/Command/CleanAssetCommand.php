@@ -4,28 +4,29 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\FileService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::ASSET_CLEAN,
+    description: 'Unreference useless assets (no files are deleted from storages).',
+    hidden: false,
+    aliases: ['ems:asset:clean']
+)]
 class CleanAssetCommand extends EmsCommand
 {
-    protected static $defaultName = 'ems:asset:clean';
-
     public function __construct(protected LoggerInterface $logger, protected Registry $doctrine, protected FileService $fileService)
     {
         parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription('Unreference useless assets (no files are deleted from storages)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

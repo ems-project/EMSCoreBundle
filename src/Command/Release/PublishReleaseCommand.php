@@ -7,21 +7,20 @@ namespace EMS\CoreBundle\Command\Release;
 use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\ReleaseService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::RELEASE_PUBLISH,
+    description: 'Publish scheduled releases.',
+    hidden: false
+)]
 class PublishReleaseCommand extends AbstractCommand
 {
-    protected static $defaultName = Commands::RELEASE_PUBLISH;
-
     public function __construct(private readonly ReleaseService $releaseService)
     {
         parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription('Publish scheduled releases');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void

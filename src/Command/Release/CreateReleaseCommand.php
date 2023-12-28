@@ -20,15 +20,19 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\ReleaseService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Standard\Json;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::RELEASE_CREATE,
+    description: 'Add documents for a given contenttype in a release.',
+    hidden: false
+)]
 class CreateReleaseCommand extends AbstractCommand
 {
-    protected static $defaultName = Commands::RELEASE_CREATE;
-
     private ContentType $contentType;
     private Environment $target;
     /** @var array<mixed> */
@@ -46,7 +50,6 @@ class CreateReleaseCommand extends AbstractCommand
     protected function configure(): void
     {
         $this
-            ->setDescription('Add documents for a given contenttype in a release')
             ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'ContentType')
             ->addArgument(self::ARGUMENT_TARGET, InputArgument::REQUIRED, 'Target managed alias name')
             ->addOption(self::OPTION_QUERY, null, InputOption::VALUE_OPTIONAL, 'ES query', '{}');

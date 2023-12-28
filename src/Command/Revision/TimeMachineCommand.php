@@ -8,21 +8,27 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ObjectManager;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Common\Standard\DateTime;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+    name: Commands::REVISIONS_TIME_MACHINE,
+    description: 'Revert to a copy of the revision wich was the current one for a given timestamp.',
+    hidden: false,
+    aliases: ['ems:revision:time-machine']
+)]
 final class TimeMachineCommand extends Command
 {
     private SymfonyStyle $style;
     private readonly ObjectManager $em;
-
-    protected static $defaultName = 'ems:revision:time-machine';
 
     private const SYSTEM_TIME_MACHINE = 'SYSTEM_TIME_MACHINE';
     public const RESULT_NOT_FOUND = 1;

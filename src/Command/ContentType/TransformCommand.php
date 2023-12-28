@@ -11,11 +11,16 @@ use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformerInterface;
 use EMS\CoreBundle\Core\Revision\Search\RevisionSearcher;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::CONTENT_TYPE_TRANSFORM,
+    hidden: false
+)]
 final class TransformCommand extends AbstractCommand
 {
     private ContentType $contentType;
@@ -28,8 +33,6 @@ final class TransformCommand extends AbstractCommand
     public const OPTION_SEARCH_QUERY = 'search-query';
     public const OPTION_DRY_RUN = 'dry-run';
     public const OPTION_USER = 'user';
-
-    protected static $defaultName = Commands::CONTENT_TYPE_TRANSFORM;
 
     public function __construct(
         private readonly RevisionSearcher $revisionSearcher,

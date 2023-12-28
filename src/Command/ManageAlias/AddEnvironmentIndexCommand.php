@@ -9,18 +9,22 @@ use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\ManagedAlias\ManagedAliasManager;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::MANAGED_ALIAS_ADD_ENVIRONMENT,
+    description: 'Add an environment\'s index to a managed alias.',
+    hidden: false
+)]
 final class AddEnvironmentIndexCommand extends AbstractCommand
 {
     public const ARGUMENT_MANAGED_ALIAS_NAME = 'managed-alias-name';
     public const ARGUMENT_ENVIRONMENT_NAME = 'environment-name';
     public const OPTION_CLEAR_ALIAS = 'clear-alias';
-
-    protected static $defaultName = Commands::MANAGED_ALIAS_ADD_ENVIRONMENT;
     private string $managedAliasName;
     private string $environmentName;
     private bool $clearAlias;

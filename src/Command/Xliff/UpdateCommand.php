@@ -14,15 +14,20 @@ use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Xliff\Xliff\Entity\InsertReport;
 use EMS\Xliff\Xliff\Inserter;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::XLIFF_UPDATE,
+    description: 'Update documents from a given XLIFF file.',
+    hidden: false
+)]
 final class UpdateCommand extends AbstractCommand
 {
     private const XLIFF_UPLOAD_COMMAND = 'XLIFF_UPLOAD_COMMAND';
-    protected static $defaultName = Commands::XLIFF_UPDATE;
     public const ARGUMENT_XLIFF_FILE = 'xliff-file';
     public const OPTION_PUBLISH_TO = 'publish-to';
     public const OPTION_ARCHIVE = 'archive';

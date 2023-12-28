@@ -6,11 +6,37 @@ namespace EMS\CoreBundle;
 
 final class Commands
 {
+    public const ASSET_SYNCHRONIZE = 'emsco:asset:synchronize';
+    public const ASSET_EXTRACT = 'emsco:asset:extract';
+    public const ASSET_CLEAN = 'emsco:asset:clean';
+    public const ASSET_HEAD = 'emsco:asset:head';
     public const CONTENT_TYPE_TRANSFORM = 'emsco:contenttype:transform';
     public const CONTENT_TYPE_SWITCH_DEFAULT_ENV = 'emsco:contenttype:switch-default-env';
+    public const CONTENT_TYPE_RECOMPUTE = 'emsco:contenttype:recompute';
+    public const CONTENT_TYPE_CLEAN = 'emsco:contenttype:clean';
+    public const CONTENT_TYPE_ACTIVATE = 'emsco:contenttype:activate';
+    public const CONTENT_TYPE_MIGRATE = 'emsco:contenttype:migrate';
+    public const CONTENT_TYPE_LOCK = 'emsco:contenttype:lock';
+    public const CONTENT_TYPE_IMPORT = 'emsco:contenttype:import';
+    public const CONTENT_TYPE_EXPORT = 'emsco:contenttype:export';
+    public const DELETE_ORPHANS = 'emsco:delete:orphans';
 
     public const ENVIRONMENT_ALIGN = 'emsco:environment:align';
     public const ENVIRONMENT_UNPUBLISH = 'emsco:environment:unpublish';
+    public const ENVIRONMENT_CREATE = 'emsco:environment:create';
+    public const ENVIRONMENT_REINDEX = 'emsco:environment:reindex';
+    public const ENVIRONMENT_LIST = 'emsco:environment:list';
+    public const ENVIRONMENT_UPDATE_META_FIELD = 'emsco:environment:update-meta-field';
+    public const ENVIRONMENT_REBUILD = 'emsco:environment:rebuild';
+    public const JOB_RUN = 'emsco:job:run';
+
+    public const MANAGED_ALIAS_CREATE = 'emsco:managed-alias:create';
+    public const MANAGED_ALIAS_ADD_ENVIRONMENT = 'emsco:managed-alias:add-environment';
+    public const MANAGED_ALIAS_LIST = 'emsco:managed-alias:list';
+    public const MANAGED_ALIAS_ALIGN = 'emsco:managed-alias:align';
+    public const MANAGED_ALIAS_CHECK = 'emsco:managed-alias:check';
+    public const NOTIFICATION_BULK_ACTION = 'emsco:notification:bulk-action';
+    public const NOTIFICATION_SEND = 'emsco:notification:send';
 
     public const RELEASE_PUBLISH = 'emsco:release:publish';
     public const RELEASE_CREATE = 'emsco:release:create';
@@ -20,6 +46,11 @@ final class Commands
     public const REVISION_DELETE = 'emsco:revision:delete';
     public const REVISION_TASK_CREATE = 'emsco:revision:task:create';
     public const REVISION_DISCARD_DRAFT = 'emsco:revision:discard-draft';
+    public const REVISIONS_UNLOCK = 'emsco:revisions:unlock';
+    public const REVISIONS_INDEX_FILE_FIELDS = 'emsco:revisions:index-file-fields';
+    public const REVISIONS_TIME_MACHINE = 'emsco:revisions:time-machine';
+    public const SUBMISSIONS_EMAIL = 'emsco:submissions:email';
+    public const SUBMISSIONS_REMOVE_EXPIRED = 'emsco:submissions:remove-expired';
 
     public const USER_ACTIVATE = 'emsco:user:activate';
     public const USER_CHANGE_PASSWORD = 'emsco:user:change-password';
@@ -31,7 +62,4 @@ final class Commands
 
     public const XLIFF_EXTRACT = 'emsco:xliff:extract';
     public const XLIFF_UPDATE = 'emsco:xliff:update';
-
-    public const MANAGED_ALIAS_CREATE = 'ems:managed-alias:create';
-    public const MANAGED_ALIAS_ADD_ENVIRONMENT = 'emsco:managed-alias:add-environment';
 }

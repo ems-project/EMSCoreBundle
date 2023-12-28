@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,15 +17,18 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+    name: Commands::REVISIONS_UNLOCK,
+    description: 'Unlock all content-types revisions.',
+    hidden: false,
+    aliases: ['ems:revisions:unlock']
+)]
 final class UnlockRevisionsCommand extends Command
 {
     private ?SymfonyStyle $io = null;
     private ?string $user = null;
     private ?ContentType $contentType = null;
     private ?bool $all = null;
-
-    public const name = 'ems:revisions:unlock';
-    protected static $defaultName = self::name;
 
     private const ARGUMENT_USER = 'user';
     private const ARGUMENT_CONTENT_TYPE = 'contentType';
@@ -38,7 +43,6 @@ final class UnlockRevisionsCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setDescription('Unlock all content-types revisions.')
             ->addArgument(
                 self::ARGUMENT_USER,
                 InputArgument::REQUIRED,

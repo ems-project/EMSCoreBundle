@@ -19,12 +19,17 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Internationalization\XliffService;
 use EMS\Helpers\Standard\Json;
 use EMS\Xliff\Xliff\Extractor;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+#[AsCommand(
+    name: Commands::XLIFF_EXTRACT,
+    hidden: false
+)]
 final class ExtractCommand extends AbstractCommand
 {
     private string $sourceLocale;
@@ -57,8 +62,6 @@ final class ExtractCommand extends AbstractCommand
     public const OPTION_MAIL_TO = 'mail-to';
     public const OPTION_MAIL_CC = 'mail-cc';
     private const MAIL_TEMPLATE = '@EMSCore/email/xliff/extract.email.html.twig';
-
-    protected static $defaultName = Commands::XLIFF_EXTRACT;
     private string $xliffFilename;
     private ?string $baseUrl = null;
     private string $xliffVersion;

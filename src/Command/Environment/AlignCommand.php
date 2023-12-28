@@ -6,11 +6,17 @@ namespace EMS\CoreBundle\Command\Environment;
 
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Environment;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::ENVIRONMENT_ALIGN,
+    description: 'Align an environment from another one.',
+    hidden: false
+)]
 class AlignCommand extends AbstractEnvironmentCommand
 {
     private Environment $source;
@@ -23,8 +29,6 @@ class AlignCommand extends AbstractEnvironmentCommand
     final public const OPTION_PUBLICATION_TEMPLATE = 'publication-template';
 
     private const LOCK_USER = 'SYSTEM_ALIGN';
-
-    protected static $defaultName = Commands::ENVIRONMENT_ALIGN;
 
     /** @var array<string, int> */
     private array $counters = [
@@ -44,7 +48,6 @@ class AlignCommand extends AbstractEnvironmentCommand
     protected function configure(): void
     {
         $this
-            ->setDescription('Align an environment from another one')
             ->addArgument(self::ARGUMENT_SOURCE, InputArgument::REQUIRED, 'Environment source name')
             ->addArgument(self::ARGUMENT_TARGET, InputArgument::REQUIRED, 'Environment target name')
             ->addOption(self::OPTION_SNAPSHOT, null, InputOption::VALUE_NONE, 'If set, the target environment will be tagged as a snapshot after the alignment')

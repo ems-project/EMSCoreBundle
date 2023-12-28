@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Command;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ObjectManager;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -14,16 +15,21 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Mapping;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::ENVIRONMENT_REBUILD,
+    description: 'Rebuild an environment in a brand new index.',
+    hidden: false,
+    aliases: ['ems:environment:rebuild']
+)]
 class RebuildCommand extends EmsCommand
 {
     final public const ALL = 'all';
-    protected static $defaultName = self::COMMAND;
-    final public const COMMAND = 'ems:environment:rebuild';
     private bool $signData;
     private int $bulkSize;
     private ObjectManager $em;
@@ -37,7 +43,7 @@ class RebuildCommand extends EmsCommand
 
     protected function configure(): void
     {
-        $this->setDescription('Rebuild an environment in a brand new index')
+        $this
             ->addArgument(
                 'name',
                 InputArgument::OPTIONAL,

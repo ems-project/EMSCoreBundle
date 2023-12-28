@@ -8,9 +8,11 @@ use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,6 +20,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+    name: Commands::CONTENT_TYPE_LOCK,
+    description: 'Lock a content type.',
+    hidden: false,
+    aliases: ['ems:contenttype:lock']
+)]
 final class LockCommand extends Command
 {
     private string $by;
@@ -37,9 +45,6 @@ final class LockCommand extends Command
 
     public const RESULT_SUCCESS = 0;
 
-    public const name = 'ems:contenttype:lock';
-    protected static $defaultName = self::name;
-
     public function __construct(private readonly ContentTypeRepository $contentTypeRepository, private readonly ElasticaService $elasticaService, private readonly RevisionRepository $revisionRepository)
     {
         parent::__construct();
@@ -48,7 +53,6 @@ final class LockCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setDescription('Lock a content type')
             ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'content type to recompute')
             ->addArgument(self::ARGUMENT_TIME, InputArgument::REQUIRED, 'lock until (+1day, +5min, now)')
             ->addOption(self::OPTION_QUERY, null, InputOption::VALUE_OPTIONAL, 'ES query', '{}')

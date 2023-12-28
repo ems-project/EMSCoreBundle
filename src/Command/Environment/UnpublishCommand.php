@@ -6,10 +6,16 @@ namespace EMS\CoreBundle\Command\Environment;
 
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Environment;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::ENVIRONMENT_UNPUBLISH,
+    description: 'Unpublish revision from an environment.',
+    hidden: false
+)]
 final class UnpublishCommand extends AbstractEnvironmentCommand
 {
     private Environment $environment;
@@ -21,12 +27,9 @@ final class UnpublishCommand extends AbstractEnvironmentCommand
 
     private const LOCK_USER = 'SYSTEM_UNPUBLISH';
 
-    protected static $defaultName = Commands::ENVIRONMENT_UNPUBLISH;
-
     protected function configure(): void
     {
         $this
-            ->setDescription('Unpublish revision from an environment')
             ->addArgument(self::ARGUMENT_ENVIRONMENT, InputArgument::REQUIRED, 'Environment name')
         ;
 

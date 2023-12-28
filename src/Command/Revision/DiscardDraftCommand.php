@@ -9,18 +9,23 @@ use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::REVISION_DISCARD_DRAFT,
+    description: 'Discard drafts for content types.',
+    hidden: false
+)]
 class DiscardDraftCommand extends AbstractCommand
 {
     private const ARGUMENT_CONTENT_TYPES = 'content-types';
     private const OPTION_FORCE = 'force';
     private const OPTION_OLDER = 'older';
     private const DISCARD_DRAFT_COMMAND_USER = 'DISCARD_DRAFT_COMMAND_USER';
-    protected static $defaultName = Commands::REVISION_DISCARD_DRAFT;
     /**
      * @var string[]
      */
@@ -35,7 +40,7 @@ class DiscardDraftCommand extends AbstractCommand
 
     protected function configure(): void
     {
-        $this->setDescription('Discard drafts for content types')
+        $this
             ->addArgument(self::ARGUMENT_CONTENT_TYPES, InputArgument::IS_ARRAY, 'ContentType names')
             ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'Also discard drafts with auto-saved content')
             ->addOption(self::OPTION_OLDER, null, InputOption::VALUE_REQUIRED, 'Discard revision that are older than this  (time format)', '-5minutes');

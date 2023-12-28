@@ -6,6 +6,7 @@ use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Twig\AssetRuntime;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -13,6 +14,7 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\TemplateService;
 use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,9 +23,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Error\Error;
 
+#[AsCommand(
+    name: Commands::CONTENT_TYPE_EXPORT,
+    description: 'Export a search result of a content type to a specific format.',
+    hidden: false,
+    aliases: ['ems:contenttype:export']
+)]
 class ExportDocumentsCommand extends EmsCommand
 {
-    protected static $defaultName = 'ems:contenttype:export';
     final public const OUTPUT_FILE_ARGUMENT = 'outputFile';
 
     public function __construct(protected LoggerInterface $logger, protected TemplateService $templateService, protected DataService $dataService, protected ContentTypeService $contentTypeService, protected EnvironmentService $environmentService, protected AssetRuntime $runtime, private readonly ElasticaService $elasticaService, protected string $instanceId)
@@ -33,7 +40,7 @@ class ExportDocumentsCommand extends EmsCommand
 
     protected function configure(): void
     {
-        $this->setDescription('Export a search result of a content type to a specific format')
+        $this
             ->addArgument(
                 'contentTypeName',
                 InputArgument::REQUIRED,

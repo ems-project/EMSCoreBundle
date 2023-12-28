@@ -5,19 +5,25 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Notification;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Service\NotificationService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::NOTIFICATION_SEND,
+    description: 'Send all notifications and notification\'s responses emails.',
+    hidden: false,
+    aliases: ['ems:notification:send']
+)]
 final class SendAllCommand extends Command
 {
-    protected static $defaultName = 'ems:notification:send';
-
     public function __construct(private readonly Registry $doctrine, private readonly NotificationService $notificationService, private readonly string $notificationPendingTimeout)
     {
         parent::__construct();
@@ -25,7 +31,7 @@ final class SendAllCommand extends Command
 
     protected function configure(): void
     {
-        $this->setDescription('Send all notifications and notification\'s responses emails')
+        $this
             ->addOption(
                 'dry-run',
                 null,

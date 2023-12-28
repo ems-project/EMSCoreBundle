@@ -5,17 +5,20 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\User;
 
 use EMS\CoreBundle\Commands;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(
+    name: Commands::USER_PROMOTE,
+    description: 'Promotes a user by adding a role.',
+    hidden: false
+)]
 class PromoteUserCommand extends RoleCommand
 {
-    protected static $defaultName = Commands::USER_PROMOTE;
-
     protected function configure(): void
     {
         parent::configure();
 
         $this
-            ->setDescription('Promotes a user by adding a role')
             ->setHelp(<<<'EOT'
 The <info>emsco:user:promote</info> command promotes a user by adding a role
 

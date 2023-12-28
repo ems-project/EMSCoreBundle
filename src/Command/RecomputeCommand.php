@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Command;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
@@ -19,6 +20,7 @@ use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -28,9 +30,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Form\FormFactoryInterface;
 
+#[AsCommand(
+    name: Commands::CONTENT_TYPE_RECOMPUTE,
+    description: 'Recompute a content type.',
+    hidden: false,
+    aliases: ['ems:contenttype:recompute']
+)]
 final class RecomputeCommand extends Command
 {
-    protected static $defaultName = 'ems:contenttype:recompute';
     private ContentType $contentType;
     private bool $optionDeep;
     private bool $forceFlag;
@@ -72,7 +79,7 @@ final class RecomputeCommand extends Command
 
     protected function configure(): void
     {
-        $this->setDescription('Recompute a content type')
+        $this
             ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'content type to recompute')
             ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
             ->addOption(self::OPTION_MISSING, null, InputOption::VALUE_NONE, 'will recompute the objects that are missing in their default environment only')

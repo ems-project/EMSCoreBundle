@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\ContentTypeService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,9 +18,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+    name: Commands::CONTENT_TYPE_ACTIVATE,
+    description: 'Activate a content type.',
+    hidden: false,
+    aliases: ['ems:contenttype:activate']
+)]
 class ActivateContentTypeCommand extends Command
 {
-    protected static $defaultName = 'ems:contenttype:activate';
     private ?SymfonyStyle $io = null;
     private ?bool $deactivate = null;
 

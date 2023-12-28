@@ -11,11 +11,17 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Standard\Json;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::REVISION_COPY,
+    description: 'Copy revisions from search query.',
+    hidden: false
+)]
 final class CopyCommand extends AbstractCommand
 {
     private Environment $environment;
@@ -29,8 +35,6 @@ final class CopyCommand extends AbstractCommand
     public const OPTION_SCROLL_SIZE = 'scroll-size';
     public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
 
-    protected static $defaultName = Commands::REVISION_COPY;
-
     public function __construct(
         private readonly RevisionSearcher $revisionSearcher,
         private readonly EnvironmentService $environmentService,
@@ -42,7 +46,6 @@ final class CopyCommand extends AbstractCommand
     protected function configure(): void
     {
         $this
-            ->setDescription('Copy revisions from search query')
             ->addArgument(self::ARGUMENT_ENVIRONMENT, InputArgument::REQUIRED, 'environment name')
             ->addArgument(self::ARGUMENT_SEARCH_QUERY, InputArgument::REQUIRED, 'search query')
             ->addArgument(self::ARGUMENT_MERGE_RAW_DATA, InputArgument::OPTIONAL, 'json merge raw data')

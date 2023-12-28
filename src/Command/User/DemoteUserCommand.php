@@ -5,17 +5,20 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\User;
 
 use EMS\CoreBundle\Commands;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(
+    name: Commands::USER_DEMOTE,
+    description: 'Demote a user by removing a role.',
+    hidden: false
+)]
 class DemoteUserCommand extends RoleCommand
 {
-    protected static $defaultName = Commands::USER_DEMOTE;
-
     protected function configure(): void
     {
         parent::configure();
 
         $this
-            ->setDescription('Demote a user by removing a role')
             ->setHelp(<<<'EOT'
 The <info>emsco:user:demote</info> command demotes a user by removing a role
 

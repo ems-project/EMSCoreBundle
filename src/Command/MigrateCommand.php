@@ -14,15 +14,20 @@ use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Service\DocumentService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::CONTENT_TYPE_MIGRATE,
+    description: 'Migrate a content type from an elasticsearch index.',
+    hidden: false,
+    aliases: ['ems:contenttype:migrate']
+)]
 class MigrateCommand extends AbstractCommand
 {
-    protected static $defaultName = 'ems:contenttype:migrate';
-
     private string $elasticsearchIndex;
     private string $contentTypeNameFrom;
     private string $contentTypeNameTo;
@@ -75,7 +80,6 @@ class MigrateCommand extends AbstractCommand
     protected function configure(): void
     {
         $this
-            ->setDescription('Migrate a content type from an elasticsearch index')
             ->addArgument(
                 self::ARGUMENT_ELASTICSEARCH_INDEX,
                 InputArgument::REQUIRED,

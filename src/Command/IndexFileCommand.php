@@ -6,12 +6,14 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,9 +22,14 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
+#[AsCommand(
+    name: Commands::REVISIONS_INDEX_FILE_FIELDS,
+    description: 'Migrate an ingested file field from an elasticsearch index.',
+    hidden: false,
+    aliases: ['ems:revisions:index-file-fields']
+)]
 class IndexFileCommand extends EmsCommand
 {
-    protected static $defaultName = 'ems:revisions:index-file-fields';
     /** @var string */
     private const SYSTEM_USERNAME = 'SYSTEM_FILE_INDEXER';
     /** @var string */
@@ -37,7 +44,7 @@ class IndexFileCommand extends EmsCommand
 
     protected function configure(): void
     {
-        $this->setDescription('Migrate an ingested file field from an elasticsearch index')
+        $this
             ->addArgument(
                 'contentType',
                 InputArgument::REQUIRED,

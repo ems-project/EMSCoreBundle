@@ -2,9 +2,11 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,10 +14,14 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+    name: Commands::ENVIRONMENT_CREATE,
+    description: 'Create a new environment.',
+    hidden: false,
+    aliases: ['ems:environment:create']
+)]
 class CreateEnvironmentCommand extends Command
 {
-    protected static $defaultName = 'ems:environment:create';
-
     private ?SymfonyStyle $io = null;
 
     final public const ARGUMENT_ENV_NAME = 'name';
@@ -30,7 +36,6 @@ class CreateEnvironmentCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setDescription('Create a new environment')
             ->addArgument(
                 self::ARGUMENT_ENV_NAME,
                 InputArgument::REQUIRED,

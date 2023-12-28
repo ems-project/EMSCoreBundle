@@ -8,10 +8,12 @@ use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,9 +21,14 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+    name: Commands::NOTIFICATION_BULK_ACTION,
+    description: 'Bulk all notifications actions for the passed query.',
+    hidden: false,
+    aliases: ['ems:notification:bulk-action']
+)]
 final class BulkActionCommand extends Command
 {
-    protected static $defaultName = 'ems:notification:bulk-action';
     private const CONTENT_TYPE_NAME = 'contentTypeName';
     private SymfonyStyle $io;
 
@@ -37,7 +44,7 @@ final class BulkActionCommand extends Command
 
     protected function configure(): void
     {
-        $this->setDescription('Bulk all notifications actions for the passed query')
+        $this
             ->addArgument(self::CONTENT_TYPE_NAME, InputArgument::REQUIRED, 'Content type name')
             ->addArgument('actionName', InputArgument::REQUIRED, 'Notification action name')
             ->addArgument('query', InputArgument::REQUIRED, 'ES query')

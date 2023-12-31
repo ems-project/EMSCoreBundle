@@ -1,68 +1,68 @@
 {
-	"name" : "elasticms/core-bundle",
-	"description" : "The elasticms core bundle",
-	"type" : "symfony-bundle",
-	"keywords" : [
-		"elasticms"
-	],
-	"license" : "MIT",
-	"authors" : [
-		{
-			"name" : "EMS Community",
-			"homepage" : "https://github.com/ems-project/EMSFormBundle/contributors"
-		}
-	],
-	"minimum-stability": "RC",
-	"require" : {
-		"php": "^8.1",
-		"ext-libxml": "*",
-		"ext-openssl": "*",
-		"ext-simplexml": "*",
-		"ext-soap": "*",
-		"caxy/php-htmldiff": "^0.1",
-		"doctrine/annotations": "^1.14",
-		"doctrine/doctrine-bundle": "^2.8",
-		"doctrine/doctrine-migrations-bundle": "^3.2",
-		"dragonmantank/cron-expression": "^3.1",
-		"elasticms/submission-bundle": "~5.12.0",
-		"elasticms/xliff": "~5.12.0",
-		"guzzlehttp/guzzle": "^6.3",
-		"maennchen/zipstream-php": "^2.4",
-		"ocramius/doctrine-batch-utils": "^2.5",
-		"ramsey/uuid-doctrine": "^1.8",
-		"sensio/framework-extra-bundle": "^6.2",
-		"sensiolabs/ansi-to-html": "^1.1",
-		"symfony/asset": "^5.4",
-		"symfony/cache": "^5.4",
-		"symfony/form": "^5.4",
-		"symfony/ldap": "^5.4",
-		"symfony/mailer": "^5.4",
-		"symfony/monolog-bridge": "^5.4",
-		"symfony/security-bundle": "^5.4",
-		"symfony/twig-bundle": "^5.4",
-		"symfony/ux-twig-component": "^2.6",
-		"symfony/validator": "^5.4",
-		"symfony/web-link": "^5.4"
-	},
-	"require-dev" : {
-		"symfony/test-pack": "^1.0",
-		"symfony/yaml": "^5.4"
-	},
-	"autoload" : {
-		"psr-4" : {
-			"EMS\\CoreBundle\\" : "src/"
-		}
-	},
-	"autoload-dev" : {
-		"psr-4" : {
-			"EMS\\CoreBundle\\Tests\\" : "tests/"
-		}
-	},
-	"config": {
-		"lock": false,
-		"sort-packages": true
-	},
-	"scripts": {
-		"phpunit": "phpunit"
-	}
+  "name": "elasticms/core-bundle",
+  "description": "The elasticms core bundle",
+  "type": "symfony-bundle",
+  "keywords": [
+    "elasticms"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "EMS Community",
+      "homepage": "https://github.com/ems-project/EMSFormBundle/contributors"
+    }
+  ],
+  "minimum-stability": "RC",
+  "require": {
+    "php": "^8.2",
+    "ext-libxml": "*",
+    "ext-openssl": "*",
+    "ext-simplexml": "*",
+    "ext-soap": "*",
+    "caxy/php-htmldiff": "^0.1",
+    "doctrine/annotations": "^1.14",
+    "doctrine/doctrine-bundle": "^2.11",
+    "doctrine/doctrine-migrations-bundle": "^3.2",
+    "dragonmantank/cron-expression": "^3.3",
+    "elasticms/submission-bundle": "6.0.*",
+    "elasticms/xliff": "6.0.*",
+    "guzzlehttp/guzzle": "^7.8",
+    "maennchen/zipstream-php": "^3.0",
+    "ocramius/doctrine-batch-utils": "^2.5",
+    "ramsey/uuid-doctrine": "^1.8",
+    "sensio/framework-extra-bundle": "^6.2",
+    "sensiolabs/ansi-to-html": "^1.2",
+    "symfony/asset": "6.4.*",
+    "symfony/cache": "6.4.*",
+    "symfony/form": "6.4.*",
+    "symfony/ldap": "6.4.*",
+    "symfony/mailer": "6.4.*",
+    "symfony/monolog-bridge": "6.4.*",
+    "symfony/security-bundle": "6.4.*",
+    "symfony/twig-bundle": "6.4.*",
+    "symfony/ux-twig-component": "^2.13",
+    "symfony/validator": "6.4.*",
+    "symfony/web-link": "6.4.*"
+  },
+  "require-dev": {
+    "symfony/test-pack": "^1.0",
+    "symfony/yaml": "6.4.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "EMS\\CoreBundle\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "EMS\\CoreBundle\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "lock": false,
+    "sort-packages": true
+  },
+  "scripts": {
+    "phpunit": "phpunit"
+  }
 }

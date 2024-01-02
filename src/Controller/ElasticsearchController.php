@@ -422,7 +422,7 @@ class ElasticsearchController extends AbstractController
             $search->setEnvironments($this->environmentService->getEnvironmentNames());
 
             if ('POST' == $request->getMethod()) {
-                $request->request->set('search_form', $request->query->get('search_form'));
+                $request->request->set('search_form', $request->query->all('search_form'));
 
                 $form = $this->createForm(SearchFormType::class, $search);
 
@@ -474,7 +474,7 @@ class ElasticsearchController extends AbstractController
             }
 
             // Form treatment after the "Save" button has been pressed (= ask for a name to save the search preset)
-            if ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('save', $request->query->all('search_form'))) {
+            if ($form->isSubmitted() && $form->isValid() && \array_key_exists('save', $request->query->all('search_form'))) {
                 $form = $this->createFormBuilder($search)
                     ->add('name', TextType::class)
                     ->add('save_search', SubmitEmsType::class, [
@@ -489,7 +489,7 @@ class ElasticsearchController extends AbstractController
                 return $this->render("@$this->templateNamespace/elasticsearch/save-search.html.twig", [
                     'form' => $form->createView(),
                 ]);
-            } elseif ($form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('delete', $request->query->all('search_form'))) {
+            } elseif ($form->isSubmitted() && $form->isValid() && \array_key_exists('delete', $request->query->all('search_form'))) {
                 // Form treatment after the "Delete" button has been pressed (to delete a previous saved search preset)
 
                 $this->logger->notice('log.elasticsearch.search_deleted', [
@@ -539,7 +539,7 @@ class ElasticsearchController extends AbstractController
             $currentFilters->remove('search_form[_token]');
 
             // Form treatment after the "Export results" button has been pressed (= ask for a "content type" <-> "template" mapping)
-            if (null !== $response && $form->isSubmitted() && $form->isValid() && $request->query->get('search_form') && \array_key_exists('exportResults', $request->query->all('search_form'))) {
+            if (null !== $response && $form->isSubmitted() && $form->isValid() && \array_key_exists('exportResults', $request->query->all('search_form'))) {
                 $exportForms = [];
                 $contentTypes = $this->getAllContentType($response);
                 foreach ($contentTypes as $name) {

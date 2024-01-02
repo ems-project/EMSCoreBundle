@@ -610,7 +610,7 @@ class DataController extends AbstractController
             $request->getSession()->getBag('flashes')->clear();
 
             /**little trick to reorder collection*/
-            $requestRevision = $request->request->get('revision');
+            $requestRevision = $request->request->all('revision');
             $this->reorderCollection($requestRevision);
             $request->request->set('revision', $requestRevision);
             /**end little trick to reorder collection*/

@@ -96,8 +96,8 @@ class GalleryViewType extends ViewType
 
         return [
             'view' => $view,
-            'field' => $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['imageField']),
-            'imageAssetConfigIdentifier' => $view->getContentType()->getFieldType()->__get('ems_'.$view->getOptions()['imageAssetConfigIdentifier']),
+            'field' => $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['imageField']),
+            'imageAssetConfigIdentifier' => $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['imageAssetConfigIdentifier']),
             'contentType' => $view->getContentType(),
             'environment' => $view->getContentType()->getEnvironment(),
             'form' => $form->createView(),

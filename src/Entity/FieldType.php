@@ -445,37 +445,14 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $parent->contentType;
     }
 
-    //     /**
-    //      * Cette focntion clone casse le CollectionFieldType => impossible d'ajouter un record
-    //      */
-    //     public function __clone()
-    //     {
-    //         $this->children = new \Doctrine\Common\Collections\ArrayCollection ();
-    //         $this->deleted = $this->deleted;
-    //         $this->orderKey = $this->orderKey;
-    //         $this->created = null;
-    //         $this->modified = null;
-    //         $this->description = $this->description;
-    //         $this->id = 0;
-    //         $this->name = $this->name ;
-    //         $this->options = $this->options;
-    //         $this->type = $this->type;
-    //     }
-
-    /**
-     * get a child.
-     *
-     * @throws \Exception
-     *
-     * @deprecated Use FieldType->get($key)
-     */
-    public function __get(string $key): ?FieldType
+    public function get(string $key): FieldType
     {
         if (!\str_starts_with($key, 'ems_')) {
             throw new \Exception('unprotected ems get with key '.$key);
         } else {
             $key = \substr($key, 4);
         }
+
         /** @var FieldType $fieldType */
         foreach ($this->getChildren() as $fieldType) {
             if (!$fieldType->getDeleted() && 0 == \strcmp($key, $fieldType->getName())) {
@@ -483,40 +460,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
             }
         }
 
-        return null;
-    }
-
-    public function get(string $key): FieldType
-    {
-        if (null === $fieldType = $this->__get($key)) {
-            throw new \RuntimeException(\sprintf('Field type for key "%s" not found', $key));
-        }
-
-        return $fieldType;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function __set(string $key, mixed $input): void
-    {
-        if (!\str_starts_with($key, 'ems_')) {
-            throw new \Exception('unprotected ems set with key '.$key);
-        } else {
-            $key = \substr($key, 4);
-        }
-        $found = false;
-        /** @var FieldType $child */
-        foreach ($this->children as &$child) {
-            if (!$child->getDeleted() && 0 == \strcmp($key, $child->getName())) {
-                $found = true;
-                $child = $input;
-                break;
-            }
-        }
-        if (!$found) {
-            $this->children->add($input);
-        }
+        throw new \RuntimeException(\sprintf('Field type for key "%s" not found', $key));
     }
 
     public function setParent(FieldType $parent = null): self

@@ -112,9 +112,10 @@ class FieldTypeType extends AbstractType
                 if (!$field->getDeleted() && ($options['editSubfields'] || SubfieldType::class === $field->getType())) {
                     $childFound = true;
                     $builder->add('ems_'.$field->getName(), FieldTypeType::class, [
-                            'data' => $field,
-                            'container' => true,
-                            'editSubfields' => $options['editSubfields'],
+                        'data' => $field,
+                        'container' => true,
+                        'mapped' => false,
+                        'editSubfields' => $options['editSubfields'],
                     ]);
                 }
             }

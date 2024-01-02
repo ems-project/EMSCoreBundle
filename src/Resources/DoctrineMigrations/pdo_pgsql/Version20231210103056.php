@@ -60,7 +60,7 @@ final class Version20231210103056 extends AbstractMigration
         while ($userRow = $userRoles->fetchAssociative()) {
             $this->addSql('UPDATE "user" SET roles = :roles WHERE id = :id', [
                 'id' => $userRow['id'],
-                'roles' => \serialize(\json_decode($userRow['roles'])),
+                'roles' => \serialize(\json_decode((string) $userRow['roles'])),
             ]);
         }
 
@@ -68,7 +68,7 @@ final class Version20231210103056 extends AbstractMigration
         while ($uploadAsset = $uploadAssets->fetchAssociative()) {
             $this->addSql('UPDATE uploaded_asset SET head_in = :head_in WHERE id = :id', [
                 'id' => $uploadAsset['id'],
-                'head_in' => \serialize(\json_decode($uploadAsset['head_in'])),
+                'head_in' => \serialize(\json_decode((string) $uploadAsset['head_in'])),
             ]);
         }
     }

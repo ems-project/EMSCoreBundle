@@ -21,7 +21,7 @@ class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, En
     protected ?string $contentCss = null;
     protected ?string $contentJs = null;
     /** @var ?array<string, mixed> */
-    protected ?array $assets;
+    protected ?array $assets = null;
     protected ?string $saveDir = null;
 
     public function __construct()

@@ -9,15 +9,15 @@ use Ramsey\Uuid\UuidInterface;
 
 class FormVerification
 {
-    private UuidInterface $id;
+    private readonly UuidInterface $id;
 
-    private string $code;
-    private \DateTimeImmutable $created;
+    private readonly string $code;
+    private readonly \DateTimeImmutable $created;
     private \DateTimeImmutable $expirationDate;
 
     private const EXPIRATION_TIME = '+3 hours';
 
-    public function __construct(private string $value)
+    public function __construct(private readonly string $value)
     {
         $now = new \DateTimeImmutable();
 

@@ -16,7 +16,7 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
 {
     use CreatedModifiedTrait;
 
-    private UuidInterface $id;
+    private readonly UuidInterface $id;
     protected string $name;
     protected string $icon;
     protected string $label;

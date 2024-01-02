@@ -16,7 +16,7 @@ class Form extends JsonDeserializer implements \JsonSerializable, EntityInterfac
 {
     use CreatedModifiedTrait;
 
-    private UuidInterface $id;
+    private readonly UuidInterface $id;
     protected string $name;
     protected string $label;
     protected int $orderKey;

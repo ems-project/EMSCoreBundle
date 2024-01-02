@@ -17,7 +17,7 @@ class Task implements EntityInterface
 {
     use CreatedModifiedTrait;
 
-    private UuidInterface $id;
+    private readonly UuidInterface $id;
     private string $title;
     private string $status = self::STATUS_PLANNED;
     private int $delay;
@@ -26,7 +26,6 @@ class Task implements EntityInterface
     private ?string $description = null;
     /** @var array<mixed> */
     private array $logs;
-    private string $createdBy;
 
     final public const STATUS_PROGRESS = 'progress';
     final public const STATUS_PLANNED = 'planned';
@@ -42,12 +41,11 @@ class Task implements EntityInterface
         self::STATUS_APPROVED => ['icon' => 'fa fa-check', 'bg' => 'green', 'text' => 'success', 'label' => 'success'],
     ];
 
-    public function __construct(string $username)
+    public function __construct(private string $createdBy)
     {
         $this->id = Uuid::uuid4();
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
-        $this->createdBy = $username;
     }
 
     public function addLog(TaskLog $taskLog): void

@@ -232,6 +232,7 @@
             <argument type="service" id="ems.service.elasticsearch" />
             <argument type="service" id="ems_common.service.elastica" />
             <argument>%ems_core.instance_id%</argument>
+            <argument>%ems_core.dynamic_mapping%</argument>
         </service>
         <service id="EMS\CoreBundle\Service\DataService" class="EMS\CoreBundle\Service\DataService">
             <argument type="service" id="doctrine" />

@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Form\DataField;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -182,11 +183,11 @@ class ChoiceFieldType extends DataFieldType
                     if (\is_string($item) || \is_integer($item)) {
                         $out[] = $item;
                     } else {
-                        $dataField->addMessage('Was not able to import the data : '.\json_encode($item, JSON_THROW_ON_ERROR));
+                        $dataField->addMessage('Was not able to import the data : '.Json::encode($item));
                     }
                 }
             } else {
-                $dataField->addMessage('Was not able to import the data : '.\json_encode($out));
+                $dataField->addMessage('Was not able to import the data : '.Json::encode($out));
                 $out = [];
             }
         } else { // not mutiple
@@ -196,9 +197,9 @@ class ChoiceFieldType extends DataFieldType
                 $out = $temp;
             } elseif (\is_array($temp) && null != $temp && (\is_string(\array_values($temp)[0]) || \is_integer(\array_values($temp)[0]))) {
                 $out = \array_values($temp)[0];
-                $dataField->addMessage('Only the first item has been imported : '.\json_encode($temp, JSON_THROW_ON_ERROR));
+                $dataField->addMessage('Only the first item has been imported : '.Json::encode($temp));
             } else {
-                $dataField->addMessage('Was not able to import the data : '.\json_encode($temp, JSON_THROW_ON_ERROR));
+                $dataField->addMessage('Was not able to import the data : '.Json::encode($temp));
                 $out = [];
             }
         }

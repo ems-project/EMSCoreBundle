@@ -13,6 +13,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -70,8 +71,9 @@ final class BulkActionCommand extends Command
         }
 
         $rawQuery = \strval($input->getArgument('query'));
-        $query = \json_decode($rawQuery, true);
-        if (\json_last_error() > 0) {
+        try {
+            $query = Json::decode($rawQuery);
+        } catch (\Throwable) {
             throw new \RuntimeException(\sprintf('Invalid json query %s', $rawQuery));
         }
 

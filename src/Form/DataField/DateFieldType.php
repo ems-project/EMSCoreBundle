@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Form\DataField;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\Helpers\Standard\DateTime;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -48,7 +49,7 @@ class DateFieldType extends DataFieldType
             return parent::modelTransform($dates, $fieldType);
         }
         $out = parent::modelTransform(null, $fieldType);
-        $out->addMessage('Was not able to import:'.\json_encode($data, JSON_THROW_ON_ERROR));
+        $out->addMessage('Was not able to import:'.Json::encode($data));
 
         return $out;
     }

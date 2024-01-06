@@ -2,12 +2,12 @@
 
 namespace EMS\CoreBundle\Controller;
 
-use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CoreBundle\Entity\Form\I18nFilter;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Form\Form\I18nFormType;
 use EMS\CoreBundle\Form\Form\I18nType;
 use EMS\CoreBundle\Service\I18nService;
+use EMS\Helpers\Standard\Type;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

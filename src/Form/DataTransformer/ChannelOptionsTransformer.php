@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\DataTransformer;
 
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Form\DataTransformerInterface;
 
 /**
@@ -37,11 +38,6 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
      */
     private function jsonFormat(array $value, string $attribute): string
     {
-        $defaultFormatted = (isset($value[$attribute]) && '' !== $value[$attribute]) ? $value[$attribute] : '{}';
-        $formatted = \json_decode((string) $defaultFormatted, true, 512, JSON_THROW_ON_ERROR);
-
-        return (null !== $formatted && \json_encode($formatted, JSON_PRETTY_PRINT))
-            ? \json_encode($formatted, JSON_PRETTY_PRINT)
-            : '{}';
+        return Json::prettyPrint($value[$attribute] ?? '{}');
     }
 }

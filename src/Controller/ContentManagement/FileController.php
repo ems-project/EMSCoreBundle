@@ -8,6 +8,7 @@ use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\FileService;
 use EMS\Helpers\Html\Headers;
+use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -91,7 +92,7 @@ class FileController extends AbstractController
             throw new \RuntimeException('Unexpected body content');
         }
 
-        $params = \json_decode($requestContent, true, 512, JSON_THROW_ON_ERROR);
+        $params = Json::decode($requestContent);
         $name = $params['name'] ?? 'upload.bin';
         $type = $params['type'] ?? 'application/bin';
         $hash = $params['hash'] ?? $sha1;

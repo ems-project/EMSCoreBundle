@@ -43,7 +43,7 @@ service:
         hash_mismatch: 'Hash mismatch in %environment% for the document "%label%"'
         hash_missing: 'Hash missing in %environment% for document "%label%"'
         integrity_failed: 'Issue in %environment% while checking integrity of the document "%label%": %error_message%'
-        json_parse_post_processing_error: 'Error to JSON parse the result of the post processing script of field %field_name% (|json_encode|raw): %template%'
+        json_parse_post_processing_error: 'Error to JSON parse the result of the post processing script of field %field_name% (|json_encode|raw): %error_message%'
         syntax_error: 'Syntax error with field %field_name%: %error_message%'
         other_post_processing_error: 'The postprocessing of the field %field_name% faced an issue: %error_message%'
         not_a_draft: 'The document "%label%" is already finalized'

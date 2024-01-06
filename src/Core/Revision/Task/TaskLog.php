@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Task;
 
-use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CoreBundle\Entity\Task;
+use EMS\Helpers\Standard\DateTime;
 
 final class TaskLog
 {

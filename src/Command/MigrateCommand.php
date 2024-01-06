@@ -4,7 +4,6 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Common\Command\AbstractCommand;
-use EMS\CommonBundle\Common\Standard\DateTime;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Command\Revision\ArchiveCommand;
 use EMS\CoreBundle\Commands;
@@ -14,6 +13,7 @@ use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Service\DocumentService;
+use EMS\Helpers\Standard\DateTime;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

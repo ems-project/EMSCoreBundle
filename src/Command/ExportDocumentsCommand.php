@@ -150,10 +150,7 @@ class ExportDocumentsCommand extends EmsCommand
         if (!\is_string($query)) {
             throw new \RuntimeException('Unexpected query argument');
         }
-        $body = \json_decode($query, true);
-        if (\json_last_error() > 0) {
-            throw new \RuntimeException(\sprintf('Invalid json passed! %s', \json_last_error_msg()));
-        }
+        $body = Json::decode($query);
 
         if (isset($body['sort'])) {
             unset($body['sort']);

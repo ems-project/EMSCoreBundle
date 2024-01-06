@@ -19,6 +19,7 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
+use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -123,8 +124,9 @@ final class RecomputeCommand extends Command
 
         if (null !== $input->getOption(self::OPTION_QUERY)) {
             $this->query = \strval($input->getOption('query'));
-            \json_decode($this->query, true);
-            if (\json_last_error() > 0) {
+            try {
+                Json::decode($this->query);
+            } catch (\Throwable) {
                 throw new \RuntimeException(\sprintf('Invalid json query %s', $this->query));
             }
         }

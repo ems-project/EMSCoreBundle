@@ -9,6 +9,7 @@ use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\SubfieldType;
 use EMS\CoreBundle\Form\Field\FieldTypePickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -178,7 +179,7 @@ class FieldTypeType extends AbstractType
 
         $dataFieldType->buildObjectArray($dataField, $out);
 
-        $this->logger->debug('Builded', [\json_encode($out, JSON_THROW_ON_ERROR)]);
+        $this->logger->debug('Builded', [Json::encode($out)]);
 
         /** @var DataField $child */
         foreach ($dataField->getChildren() as $child) {

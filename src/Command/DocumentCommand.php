@@ -10,6 +10,7 @@ use EMS\CoreBundle\Helper\Archive;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\DocumentService;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -193,7 +194,7 @@ class DocumentCommand extends Command
                 $progress->advance();
                 continue;
             }
-            $rawData = \json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+            $rawData = Json::decode($content);
             $ouuid = \basename($file->getFilename(), '.json');
             if ($replaceBusinessKey) {
                 $dataLink = $this->dataService->getDataLink($this->contentType->getName(), $ouuid);

@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Form\DataField;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\ColorPickerFullType;
+use EMS\Helpers\Standard\Json;
 
 /**
  * Defined a Container content type.
@@ -42,7 +43,7 @@ class ColorPickerFieldType extends DataFieldType
     {
         $dataField = parent::modelTransform($data, $fieldType);
         if (null !== $data && !\is_string($data)) {
-            $dataField->addMessage('Not able to import data from the database:'.\json_encode($data, JSON_THROW_ON_ERROR));
+            $dataField->addMessage('Not able to import data from the database:'.Json::encode($data));
             $dataField->setRawData(null);
         }
 

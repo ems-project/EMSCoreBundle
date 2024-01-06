@@ -13,6 +13,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Mapping;
 use EMS\CoreBundle\Service\SearchService;
+use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -164,7 +165,7 @@ $dataField->getRawData()
 
         if ($form->isSubmitted()) {
             $data = $form->getData();
-            $structure = \json_decode((string) $data['structure'], true, 512, JSON_THROW_ON_ERROR);
+            $structure = Json::decode((string) $data['structure']);
 
             $this->reorder($view->getOptions()['parent'], $view, $structure);
 

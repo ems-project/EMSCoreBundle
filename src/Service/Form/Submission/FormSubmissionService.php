@@ -8,6 +8,7 @@ use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\FormSubmissionRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
+use EMS\Helpers\Standard\Json;
 use EMS\SubmissionBundle\Entity\FormSubmission;
 use EMS\SubmissionBundle\Request\DatabaseRequest;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -69,7 +70,7 @@ final class FormSubmissionService implements EntityServiceInterface
                 $formSubmission = $this->getById($formSubmissionId);
                 $data = $formSubmission->getData();
 
-                $rawJson = \json_encode($data, JSON_UNESCAPED_UNICODE);
+                $rawJson = Json::encode($data, false, true);
                 if (\is_string($rawJson)) {
                     $zip->addFile($formSubmissionId.'/data.json', $rawJson);
                 }

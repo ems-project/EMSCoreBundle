@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Form\DataField;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -22,7 +23,7 @@ class ComputedFieldType extends DataFieldType
     {
         if (!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])) {
             try {
-                $mapping = \json_decode((string) $current->getMappingOptions()['mappingOptions'], true, 512, JSON_THROW_ON_ERROR);
+                $mapping = Json::mixedDecode((string) $current->getMappingOptions()['mappingOptions']);
 
                 return [$current->getName() => $this->elasticsearchService->updateMapping($mapping)];
             } catch (\Exception) {
@@ -95,7 +96,7 @@ class ComputedFieldType extends DataFieldType
     {
         $out = parent::viewTransform($dataField);
 
-        return ['value' => \json_encode($out, JSON_THROW_ON_ERROR)];
+        return ['value' => Json::encode($out)];
     }
 
     /**
@@ -105,7 +106,7 @@ class ComputedFieldType extends DataFieldType
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
         try {
-            $value = \json_decode((string) $data['value'], null, 512, JSON_THROW_ON_ERROR);
+            $value = Json::mixedDecode((string) $data['value']);
             $dataField->setRawData($value);
         } catch (\Exception) {
             $dataField->setRawData(null);

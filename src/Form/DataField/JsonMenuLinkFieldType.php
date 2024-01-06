@@ -11,6 +11,7 @@ use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ContentTypePickerType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\ElasticsearchService;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -197,11 +198,11 @@ class JsonMenuLinkFieldType extends DataFieldType
                 if (\is_string($item) || \is_integer($item)) {
                     $out[] = $item;
                 } else {
-                    $dataField->addMessage('Was not able to import the data : '.\json_encode($item, JSON_THROW_ON_ERROR));
+                    $dataField->addMessage('Was not able to import the data : '.Json::encode($item));
                 }
             }
         } else {
-            $dataField->addMessage('Was not able to import the data : '.\json_encode($out));
+            $dataField->addMessage('Was not able to import the data : '.Json::encode($out));
             $out = [];
         }
 

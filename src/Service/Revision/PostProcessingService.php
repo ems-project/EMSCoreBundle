@@ -90,20 +90,19 @@ final class PostProcessingService
                 $out = \trim($out);
 
                 if (\strlen($out) > 0) {
-                    $json = \json_decode($out, true);
-                    $meg = \json_last_error_msg();
-                    if (0 == \strcasecmp($meg, 'No error')) {
+                    try {
+                        $json = Json::decode($out);
                         if (null === $fieldType->getParent()) {
                             $objectArray = $json;
                         } else {
                             $objectArray[$fieldType->getName()] = $json;
                         }
                         $found = true;
-                    } else {
+                    } catch (\Throwable $e) {
                         $this->logger->warning('service.data.json_parse_post_processing_error', [
                             '_id' => $context['_id'] ?? null,
                             'field_name' => $dataField->giveFieldType()->getName(),
-                            EmsFields::LOG_ERROR_MESSAGE_FIELD => $out,
+                            EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                         ]);
                     }
                 }
@@ -151,7 +150,7 @@ final class PostProcessingService
                     if (!$fieldType->getDisplayOptions()['json']) {
                         $out = \trim($out);
                     } elseif (Json::isJson($out)) {
-                        $out = \json_decode($out, true, 512, JSON_THROW_ON_ERROR);
+                        $out = Json::mixedDecode($out);
                     } else {
                         if (0 !== \strlen(\trim($out))) {
                             throw new \RuntimeException(\sprintf('None parsable output in "%s"', $path));
@@ -256,6 +255,6 @@ final class PostProcessingService
             }
         }
 
-        $objectArray[$fieldType->getName()] = \json_encode($jsonMenuNested->toArrayStructure(), JSON_THROW_ON_ERROR);
+        $objectArray[$fieldType->getName()] = Json::encode($jsonMenuNested->toArrayStructure());
     }
 }

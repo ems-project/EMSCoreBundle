@@ -367,7 +367,7 @@ class ContentTypeController extends AbstractController
 
         if ($form->isSubmitted()) {
             $data = $form->getData();
-            $structure = \json_decode((string) $data['items'], true, 512, JSON_THROW_ON_ERROR);
+            $structure = Json::decode((string) $data['items']);
             $this->contentTypeService->reorderFields($contentType, $structure);
 
             return $this->redirectToRoute('contenttype.edit', ['id' => $contentType->getId()]);

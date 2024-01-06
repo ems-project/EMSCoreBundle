@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Form\DataField;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -66,7 +67,7 @@ class EmailFieldType extends DataFieldType
             return parent::modelTransform($data, $fieldType);
         }
         $out = parent::modelTransform(null, $fieldType);
-        $out->addMessage('ems was not able to import the data: '.\json_encode($data, JSON_THROW_ON_ERROR));
+        $out->addMessage('ems was not able to import the data: '.Json::encode($data));
 
         return $out;
     }

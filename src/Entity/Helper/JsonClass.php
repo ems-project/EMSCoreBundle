@@ -25,7 +25,7 @@ class JsonClass implements \JsonSerializable
 
     public static function fromJsonString(string $jsonString): self
     {
-        $arguments = \json_decode($jsonString, true, 512, JSON_THROW_ON_ERROR);
+        $arguments = Json::decode($jsonString);
 
         return new self(
             $arguments[self::PROPERTIES_INDEX],

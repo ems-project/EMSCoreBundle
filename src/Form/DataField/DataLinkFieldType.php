@@ -9,6 +9,7 @@ use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\QuerySearchPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -254,14 +255,14 @@ class DataLinkFieldType extends DataFieldType
                     if (\is_string($item)) {
                         $temp[] = $item;
                     } else {
-                        $out->addMessage('Some data was not able to be imported: '.\json_encode($item, JSON_THROW_ON_ERROR));
+                        $out->addMessage('Some data was not able to be imported: '.Json::encode($item));
                     }
                 }
             } elseif (\is_string($data)) {
                 $temp[] = $data;
                 $out->addMessage('Data converted into array');
             } else {
-                $out->addMessage('Data was not able to be imported: '.\json_encode($data, JSON_THROW_ON_ERROR));
+                $out->addMessage('Data was not able to be imported: '.Json::encode($data));
             }
             $out->setRawData($temp);
         } else {
@@ -283,7 +284,7 @@ class DataLinkFieldType extends DataFieldType
                 }
             } else {
                 $out->setRawData(null);
-                $out->addMessage('Data was not able to be imported: '.\json_encode($data, JSON_THROW_ON_ERROR));
+                $out->addMessage('Data was not able to be imported: '.Json::encode($data));
             }
         }
 

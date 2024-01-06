@@ -7,6 +7,7 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\DataField\Options\SubOptionsType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -181,7 +182,7 @@ class DateRangeFieldType extends DataFieldType
                 'icon' => $options['icon'],
                 'attr' => [
                     'class' => 'ems_daterangepicker',
-                    'data-display-option' => \json_encode($fieldType->getDisplayOptions(), JSON_THROW_ON_ERROR),
+                    'data-display-option' => Json::encode($fieldType->getDisplayOptions()),
                 ],
         ]);
     }

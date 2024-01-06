@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Service;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CoreBundle\Form\Data\ElasticaTable;
+use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
@@ -102,8 +103,9 @@ final class DatatableService
      */
     private function parsePersistedConfig(string $jsonConfig): array
     {
-        $parameters = \json_decode($jsonConfig, true, 512, JSON_THROW_ON_ERROR);
-        if (!\is_array($parameters)) {
+        try {
+            $parameters = Json::decode($jsonConfig);
+        } catch (\Throwable) {
             throw new \RuntimeException('Unexpected JSON config');
         }
 

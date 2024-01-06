@@ -6,6 +6,7 @@ use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Service\Mapping;
 use EMS\Helpers\Standard\DateTime;
+use EMS\Helpers\Standard\Json;
 
 class AggregateOption
 {
@@ -160,7 +161,7 @@ class AggregateOption
             }
         };
 
-        $json = \json_decode($this->config, true, 512, JSON_THROW_ON_ERROR);
+        $json = Json::decode($this->config);
         $recursiveCheck($json);
 
         return $json;

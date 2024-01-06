@@ -7,6 +7,7 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
+use EMS\Helpers\Standard\Json;
 
 final class Version20231210131505 extends AbstractMigration
 {
@@ -26,7 +27,7 @@ final class Version20231210131505 extends AbstractMigration
         while ($userRow = $users->fetchAssociative()) {
             $this->addSql('UPDATE user SET roles = :roles WHERE id = :id', [
                 'id' => $userRow['id'],
-                'roles' => \json_encode(\unserialize($userRow['roles'])),
+                'roles' => Json::encode(\unserialize($userRow['roles'])),
             ]);
         }
 
@@ -34,7 +35,7 @@ final class Version20231210131505 extends AbstractMigration
         while ($uploadAsset = $uploadAssets->fetchAssociative()) {
             $this->addSql('UPDATE uploaded_asset SET head_in = :head_in WHERE id = :id', [
                 'id' => $uploadAsset['id'],
-                'head_in' => \json_encode(\unserialize($uploadAsset['head_in'])),
+                'head_in' => Json::encode(\unserialize($uploadAsset['head_in'])),
             ]);
         }
 

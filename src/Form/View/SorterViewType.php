@@ -11,6 +11,7 @@ use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
 use EMS\CoreBundle\Form\Nature\ReorderType;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Mapping;
+use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -109,9 +110,9 @@ class SorterViewType extends ViewType
             $renderQuery = '{}';
         }
 
-        $boby = \json_decode($renderQuery, true, 512, JSON_THROW_ON_ERROR);
+        $body = Json::decode($renderQuery);
 
-        $boby['sort'] = [
+        $body['sort'] = [
                 $view->getOptions()['field'] => [
                         'order' => 'asc',
                         'missing' => '_last',
@@ -121,7 +122,7 @@ class SorterViewType extends ViewType
         $searchQuery = [
                 'index' => $view->getContentType()->giveEnvironment()->getAlias(),
                 'type' => $view->getContentType()->getName(),
-                'body' => $boby,
+                'body' => $body,
         ];
 
         $searchQuery['size'] = self::SEARCH_SIZE;

@@ -12,6 +12,7 @@ use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -97,8 +98,9 @@ final class LockCommand extends Command
 
         if (null !== $input->getOption(self::OPTION_QUERY)) {
             $this->query = \strval($input->getOption('query'));
-            \json_decode($this->query, true);
-            if (\json_last_error() > 0) {
+            try {
+                Json::decode($this->query);
+            } catch (\Throwable) {
                 throw new \RuntimeException(\sprintf('Invalid json query %s', $this->query));
             }
         }
@@ -113,8 +115,8 @@ final class LockCommand extends Command
             return 0;
         }
 
-        $query = \json_decode($this->query, true, 512, JSON_THROW_ON_ERROR);
-        if ((\is_countable($query) ? \count($query) : 0) > 0) {
+        $query = Json::decode($this->query);
+        if (!empty($query)) {
             $search = $this->elasticaService->convertElasticsearchSearch([
                 'index' => (null !== $this->contentType->getEnvironment()) ? $this->contentType->getEnvironment()->getAlias() : '',
                 '_source' => false,

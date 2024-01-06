@@ -3,7 +3,6 @@
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
-use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
@@ -31,6 +30,7 @@ use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\Mapping;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
+use EMS\Helpers\Standard\Type;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;

@@ -35,6 +35,7 @@ use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
+use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -154,12 +155,12 @@ class DataController extends AbstractController
             $searchForm->addFilter($filter);
         }
 
-        $formEncoded = \json_encode($searchForm, JSON_THROW_ON_ERROR);
+        $formEncoded = Json::encode($searchForm);
 
         return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::search', [
             'query' => null,
         ], [
-            'search_form' => \json_decode($formEncoded, true, 512, JSON_THROW_ON_ERROR),
+            'search_form' => Json::decode($formEncoded),
         ]);
     }
 
@@ -710,8 +711,8 @@ class DataController extends AbstractController
 
     public function duplicateWithJsonContent(ContentType $contentType, string $ouuid, Request $request): RedirectResponse
     {
-        $content = $request->get('JSON_BODY', null);
-        $jsonContent = \json_decode((string) $content, true, 512, JSON_THROW_ON_ERROR);
+        $content = $request->get('JSON_BODY');
+        $jsonContent = Json::decode((string) $content);
         $jsonContent = \array_merge($this->dataService->getNewestRevision($contentType->getName(), $ouuid)->getRawData(), $jsonContent);
 
         return $this->intNewDocumentFromArray($contentType, $jsonContent);
@@ -719,9 +720,10 @@ class DataController extends AbstractController
 
     public function addFromJsonContent(ContentType $contentType, Request $request): RedirectResponse
     {
-        $content = $request->get('JSON_BODY', null);
-        $jsonContent = \json_decode((string) $content, true, 512, JSON_THROW_ON_ERROR);
-        if (null === $jsonContent) {
+        try {
+            $content = $request->get('JSON_BODY');
+            $jsonContent = Json::decode((string) $content);
+        } catch (\Throwable) {
             $this->logger->error('log.data.revision.add_from_json_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,

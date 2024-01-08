@@ -3,7 +3,7 @@
 		{% if notifications|length <= 0  %}
 			<p>{{ 'No result for this filters combinaison'|trans }}: <a href="{{ path('notifications.inbox') }}">{{ 'reset filters' }}</a></p>
 		{% else %}
-				
+
 		<div class="table-responsive">
 		<table class="table table-condensed table-striped">
 			<tbody>
@@ -28,7 +28,7 @@
 							&nbsp;&nbsp;&nbsp;<i class="{{notification.template.icon}}"></i> {{ notification.template.label }}
 						</label>
 					</td>
-					<td>{{ notification.username|displayname }}</td>
+					<td>{{ notification.username|emsco_display_name }}</td>
 					<td>{{ notification.created|date|date(date_time_format) }}</td>
 					<td>
 						<span class="badge bg-{{ notification.environment.color|raw }}">{{ notification.environment.name }}</span>
@@ -52,7 +52,7 @@
 					&nbsp;
 					</td>
 					<td>
-						{{ (notification.revision.contentType.name~':'~notification.revision.ouuid)|data_link(notification.revision.id)|raw }}
+						{{ (notification.revision.contentType.name~':'~notification.revision.ouuid)|emsco_data_link(notification.revision.id)|raw }}
 
 					<td>
 						<div class="btn-group">
@@ -67,21 +67,21 @@
 								'currentTemplate': notification.template
 							}%}
 	                    </div>
-	         
+
 					</td>
 				</tr>
 			{% endfor %}
 		</table>
 		</div>
 	<div class="">
-		<div class="btn-group">					
+		<div class="btn-group">
 			<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#treatNotificationsModal">
 			  <i class="fa fa-gear"></i> Treat selection
 			</button>
 		</div>
 		{% endif %}
 	</div>
-	
+
 
 
 	<!-- Modal -->
@@ -98,7 +98,7 @@
       		{{ form_row(treatform.publishTo) }}
 	      </div>
 	      <div class="modal-footer">
-	      
+
 			<div class="btn-group">
               	{{ form_widget(treatform.accept, { 'attr': { 'disabled': true } }) }}
               	{{ form_widget(treatform.reject) }}
@@ -107,6 +107,6 @@
 	    </div>
 	  </div>
 	</div>
-		
+
 	{{ form_widget(treatform.notifications) }}
 {{ form_end(treatform) }}

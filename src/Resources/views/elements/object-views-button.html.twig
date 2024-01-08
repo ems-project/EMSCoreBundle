@@ -13,9 +13,9 @@
 				{% for template in contentType.templates %}
 					{%  if currentTemplate is not defined or template != currentTemplate %}
 					{%if template.role == "not-defined" or is_granted(template.role) and (template.environments is empty or environment in template.environments or template.isEnvironmentExist(environment.name)) %}
-					
+
 						{% if template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXTERNALLINK') %}
-							{% set link = template.body|generate_from_template({
+							{% set link = template.body|emsco_generate_from_template({
 									environment: environment,
 									contentType: contentType,
 									object: object,
@@ -30,7 +30,7 @@
 
 						{% elseif template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::RAW_HTML') %}
 							{%- if (is_granted(template.role)) or template.role == "not-defined" -%}
-								{%- set rawHTML = template.body|generate_from_template({
+								{%- set rawHTML = template.body|emsco_generate_from_template({
 									environment: environment,
 									contentType: contentType,
 									object: object,
@@ -39,7 +39,7 @@
 								{%- if rawHTML != '' -%}<li>{{ rawHTML|raw  }}</li>{%- endif -%}
 							{%- endif -%}
 						{% elseif template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::NOTIFICATION') %}
-							{% if ( is_granted(template.role) and ((attribute(source, contentType.circlesField) is not defined) or (source and attribute(source, contentType.circlesField)|in_my_circles) or (environment.circles|in_my_circles and is_granted('ROLE_PUBLISHER')) ) ) %}
+							{% if ( is_granted(template.role) and ((attribute(source, contentType.circlesField) is not defined) or (source and attribute(source, contentType.circlesField)|emsco_in_my_circles) or (environment.circles|emsco_in_my_circles and is_granted('ROLE_PUBLISHER')) ) ) %}
 								<li><a href='#' class="request_notification" onclick="requestNotification(this, {{template.id}}, '{{environment.name}}', '{{contentType.id}}' , '{{ouuid}}'); return false;" href="#" data-url="{{ path('notification.ajaxnotification', {'objectId' : ouuid}) }}">
 									<i class="{{ template.icon|raw }}"></i>
 									{{ template.label }}
@@ -65,11 +65,11 @@
 								<i class="{{ template.icon|raw }}"></i>
 								{{ template.label }}
 							</a></li>
-						{% endif %}						
-							
-					
-					{% endif %}	
-					{% endif %}					
+						{% endif %}
+
+
+					{% endif %}
+					{% endif %}
 				{% endfor %}
 				{% if is_granted('ROLE_COPY_PASTE') %}
 					<li>
@@ -104,6 +104,6 @@
 			<i class="{{ 'views.elements.object-views-button.raw-view-icon-class'|trans }}"></i>
 			{{ 'views.elements.object-views-button.raw-view'|trans }}
 		</a>
-{% endif %}	
-	
+{% endif %}
+
 

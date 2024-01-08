@@ -396,7 +396,7 @@
 				</div>
 			</div>
 			<div class="clearfix visible-sm-block visible-xs-block"></div>
-			<div class="{% if is_super() %}col-md-3 col-xs-8{% else %}col-md-4 col-xs-10{% endif %}">
+			<div class="{% if emsco_is_super() %}col-md-3 col-xs-8{% else %}col-md-4 col-xs-10{% endif %}">
 				<div class="form-group">
 					<div class="visible-xs-block visible-sm-block">
 						{{ form_label(form.pattern) }}
@@ -404,7 +404,7 @@
 					{{- form_widget(form.pattern) -}}
 				</div>
 			</div>
-			{% if is_super() %}
+			{% if emsco_is_super() %}
 				<div class="col-md-1 col-xs-2">
 					<div class="form-group">
 						<div class="visible-xs-block visible-sm-block">
@@ -893,7 +893,7 @@
 				</span>
 		</div>
 		<ol class="json_menu_sortable vertical not-collapsible">
-			{% set children =  form.vars.data.rawData |default('[]')|json_decode %}
+			{% set children =  form.vars.data.rawData |default('[]')|ems_json_decode %}
 			{{ block('json_menu_editor_fieldtype_node') }}
 		</ol>
 		<div class="input-group">
@@ -1430,7 +1430,7 @@
 			<div class="form-group col-xs-6 col-sm-12">
 					<div class="control-label visible-xs-block">&nbsp;
 					</div>
-					{% if not form|firstInArray(form.parent.children)  %}
+					{% if not form|ems_first_in_array(form.parent.children)  %}
 						<a class="btn btn-danger btn-remove form-control" href="#">
 							<i class="fa fa-trash"></i>
 						</a>

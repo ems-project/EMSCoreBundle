@@ -19,9 +19,9 @@
 			'btnType': 'primary',
 			'icon': 'pencil' }%}
 	{% endif %}
-	{% if draft %} 	
+	{% if draft %}
 		{% if is_granted(instance.contentType.roles.edit) %}
-			{% if not  instance.contentType.circlesField or attribute(instance.rawData, instance.contentType.circlesField) is not defined or attribute(instance.rawData, instance.contentType.circlesField)|in_my_circles %}
+			{% if not  instance.contentType.circlesField or attribute(instance.rawData, instance.contentType.circlesField) is not defined or attribute(instance.rawData, instance.contentType.circlesField)|emsco_in_my_circles %}
 				<div class="btn-group">
 					{% include '@EMSCore/elements/get-button.html.twig' with {
 						'url': path('emsco_edit_revision', {'revisionId': revisionId, 'item': app.request.get('item') }),
@@ -82,7 +82,7 @@
 
 
 	   	{% if is_granted(instance.contentType.roles.edit) %}
-	   		{% if not  instance.contentType.circlesField or attribute(object._source,instance.contentType.circlesField) is not defined or attribute(object._source,instance.contentType.circlesField)|in_my_circles %}
+	   		{% if not  instance.contentType.circlesField or attribute(object._source,instance.contentType.circlesField) is not defined or attribute(object._source,instance.contentType.circlesField)|emsco_in_my_circles %}
 
 
 				<div class="btn-group">
@@ -152,7 +152,7 @@
 				</div>
 			{% endif %}
 		{% endif %}
-			
+
 			</div>
 			<div class="btn-group{% if vertical is defined and vertical %}-vertical{% endif %}">
 				{% if environmentsRevision.publish|length > 0 %}
@@ -185,7 +185,7 @@
 				</div>
 			  {% endif %}
 
-			{% if is_super() and environmentsRevision.environments|length > 0 %}
+			{% if emsco_is_super() and environmentsRevision.environments|length > 0 %}
 				<div class="btn-group">
 					<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 						<span class="sr-only">{{ 'views.elements.revision-toolbar-html.other-environment-actions'|trans }}</span>

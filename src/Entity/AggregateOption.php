@@ -36,7 +36,7 @@ class AggregateOption
 		{% set facettedSearch = currentFilters.all|merge({\'search_form\': search_form}) %}
 		<a href="{{ path(paginationPath, facettedSearch) }}" class="btn btn-block btn-social btn-default">
 			<i class="fa fa-user"></i>
-			{{ index.key|displayname }}
+			{{ index.key|emsco_display_name }}
 			<span class=" badge pull-right">{{ index.doc_count }}</span>
 		</a>
 	{% endfor %}
@@ -55,7 +55,7 @@ class AggregateOption
 		{% set facettedSearch = currentFilters.all|merge({\'search_form\': search_form}) %}
 		<a href="{{ path(paginationPath, facettedSearch) }}" class="btn btn-block btn-social btn-default">
 			<i class="fa fa-remove"></i>
-			Remove facet "{{ aggregation.buckets[0].key|displayname }}"
+			Remove facet "{{ aggregation.buckets[0].key|emsco_display_name }}"
 		</a>
 	{% else %}
 		{% set filters = currentFilters.all.search_form.filters|merge({ (1000+id) : {\'operator\': \'term\', \'booleanClause\': \'must\', \'field\': fieldName, \'pattern\': aggregation.buckets[0].key, \'boost\': \'\'}}) %}
@@ -63,7 +63,7 @@ class AggregateOption
 		{% set facettedSearch = currentFilters.all|merge({\'search_form\': search_form}) %}
 		<a href="{{ path(paginationPath, facettedSearch) }}" class="btn btn-block btn-social btn-default">
 			<i class="fa fa-user"></i>
-			{{ aggregation.buckets[0].key|displayname }}
+			{{ aggregation.buckets[0].key|emsco_display_name }}
 			<span class=" badge pull-right">{{ aggregation.buckets[0].doc_count }}</span>
 		</a>
 	{% endif %}

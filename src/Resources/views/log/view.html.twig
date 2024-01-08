@@ -9,14 +9,14 @@
             {% if log.username|default(false) %}
                 <dl>
                     <dt>{{ 'log.view.user'|trans }}</dt>
-                    {%  set displayName = log.username|displayname %}
+                    {%  set displayName = log.username|emsco_display_name %}
                     <dd>{{ displayName }}{% if log.username != displayName%} ({{ log.username }}){% endif %}</dd>
                 </dl>
             {% endif %}
             {% if log.impersonator|default(false) %}
                 <dl>
                     <dt>{{ 'log.view.impersonator'|trans }}</dt>
-                    {%  set displayName = log.impersonator|displayname %}
+                    {%  set displayName = log.impersonator|emsco_display_name %}
                     <dd>{{ displayName }}{% if log.impersonator != displayName%} ({{ log.impersonator }}){% endif %}</dd>
                 </dl>
             {% endif %}

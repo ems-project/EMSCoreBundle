@@ -39,8 +39,8 @@
 
 {%- set type_filters = [] -%}
 {%- set all_types = false %}
-{%- if get_content_types()|length > 0 -%}
-    {%- for contentType in get_content_types()|filter(contentType => contentType.webContent) -%}
+{%- if emsco_get_content_types()|length > 0 -%}
+    {%- for contentType in emsco_get_content_types()|filter(contentType => contentType.webContent) -%}
         {%- if all_types  -%}
             {% set all_types = all_types~','~contentType.name -%}
         {%- else %}
@@ -209,7 +209,7 @@
 		  	{{ render(controller('EMS\\CoreBundle\\Controller\\TwigElementsController::sideMenu')) }}
 		{% else %}
             {% include '@EMSCore/elements/side-menu.html.twig' with {
-				'contentTypes': get_content_types()
+				'contentTypes': emsco_get_content_types()
 			} %}
         {% endif %}
   <!-- Content Wrapper. Contains page content -->

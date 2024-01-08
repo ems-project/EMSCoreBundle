@@ -1,5 +1,5 @@
 {% trans_default_domain 'emsco-twigs' %}
-{{ form_start(form) }}	
+{{ form_start(form) }}
 	<div class="box ">
 		<div id="searchFormBoxBody" class="collapse {% if openSearchForm is defined and openSearchForm %}in{% endif %}" aria-expanded="{% if openSearchForm is not defined or not openSearchForm %}false{%else%}true{% endif %}">
 			<div class="box-body" >
@@ -42,12 +42,12 @@
 										<label class="control-label">Operator</label>
 									</div>
 								</div>
-								<div class="{% if is_super() %}col-md-3{% else %}col-md-4{% endif %}">
+								<div class="{% if emsco_is_super() %}col-md-3{% else %}col-md-4{% endif %}">
 									<div class="form-group">
 										<label class="control-label">Pattern</label>
 									</div>
 								</div>
-                                {% if is_super() %}
+                                {% if emsco_is_super() %}
 									<div class="col-md-1">
 										<div class="form-group">
 											<label class="control-label">Boost</label>
@@ -59,9 +59,9 @@
 										<label class="control-label">&nbsp;</label>
 									</div>
 								</div>
-								
+
 								{{- form_errors(form) -}}
-							</div>  
+							</div>
 					{{ form_widget(form.filters) }}
 				</div>
 				<div class="row">
@@ -72,14 +72,14 @@
 					{% endif %}
 				</div>
 			</div>
-				
+
 			<div class="box-footer">
 				<div class="form-group">
 					<div class="btn-group pull-right">
 						<a class="btn btn-primary" href="#" id="add-search-filter-button"><i class="fa fa-plus"></i> Add filter</a>
 						{% if form.search is defined %}
 							{{ form_widget(form.search) }}
-						{% endif %}						
+						{% endif %}
 						{% if form.applyFilters is defined %}
 							{{ form_widget(form.applyFilters) }}
 						{% endif %}
@@ -120,7 +120,7 @@
 								'class': 'btn'
 							}%}
 						{% endif %}
-						
+
 						{% if form.save is defined %}
 							{{ form_widget(form.save) }}
 						{% endif %}

@@ -1,7 +1,7 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 {% for child in parent.children|filter(child => not child.deleted) %}
 
-       	<li id="{{ child.id }}" class="{% if not (child.type~'::isContainer')|call_user_func %}mjs-nestedSortable-no-nesting{% endif %}">
+       	<li id="{{ child.id }}" class="{% if not (child.type~'::isContainer')|emsco_call_user_func %}mjs-nestedSortable-no-nesting{% endif %}">
         		<div class="box-header">
 					<b>{{ child.name }}</b> {{ child.type }}
 
@@ -14,7 +14,7 @@
                         {% endif %}
 					</div>
         		</div>
-        		{% if (child.type~'::isContainer')|call_user_func and child.children|length > 0  %}
+        		{% if (child.type~'::isContainer')|emsco_call_user_func and child.children|length > 0  %}
         			<ol>
                         {% include "@EMSCore/contenttype/reorder_item.html.twig" with {
                     		parent: child

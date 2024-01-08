@@ -20,7 +20,7 @@
 				<tr>
 					<td class="" nowrap="nowrap">
 						<i class="{{notification.template.icon}}"></i> {{ notification.template.label }}
-						
+
 					</td>
 					<td>{{ notification.responseBy }}</td>
 					<td>{{ notification.responseTimestamp|date|date(date_time_format) }}</td>
@@ -29,12 +29,12 @@
 					</td>
 					<td>
 					{% if notification.responseText|length > 0 %}
-						
+
 						<!-- Button trigger modal -->
 						<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#showRejectedMessageModal_{{ loop.index }}">
 							<i class="fa fa-commenting-o"></i>
 						</button>
-						
+
 						<!-- Modal -->
 						<div class="modal fade" id="showRejectedMessageModal_{{ loop.index }}" tabindex="-1" role="dialog" aria-labelledby="showRejectedMessageModal_{{ loop.index }}_Label">
 						  <div class="modal-dialog" role="document">
@@ -59,8 +59,8 @@
 					&nbsp;
 					</td>
 					<td>
-						{{ (notification.revision.contentType.name~':'~notification.revision.ouuid)|data_link(notification.revision.id)|raw }}
-	
+						{{ (notification.revision.contentType.name~':'~notification.revision.ouuid)|emsco_data_link(notification.revision.id)|raw }}
+
 					<td>
 						<div class="btn-group">
                             {% include '@EMSCore/elements/post-button.html.twig' with {

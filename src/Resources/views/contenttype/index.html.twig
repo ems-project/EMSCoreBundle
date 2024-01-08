@@ -1,7 +1,7 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}List all content types{% endblock %}
-{% block pagetitle %}List all content types{% endblock %} 
+{% block pagetitle %}List all content types{% endblock %}
 
 
 {% block body %}
@@ -17,17 +17,17 @@
 					<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#content_type_modal_reorder">
 						<i class="fa fa-reorder"></i> {{ 'Reorder'|trans }}
 					</button>
-					
-					
+
+
 				</div>
-				
+
 			<div class="modal fade" id="content_type_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="myModalReorder">
 			  <div class="modal-dialog" role="document">
 			    <div class="modal-content">
 			      <div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			        <h4 class="modal-title" id="myModalReorderLabel">
-						<strong>Reorder Content Types</strong>	
+						<strong>Reorder Content Types</strong>
 					</h4>
 			      </div>
 			      {{ form_start(form) }}
@@ -40,7 +40,7 @@
 			      				{{ form_row( child ) }}
 			      			</li>
 			      		{% endfor %}
-					</ul>	
+					</ul>
 				  </div>
 			      <div class="modal-footer">
 			      	<div class="btn-group">
@@ -48,10 +48,10 @@
 				        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
 			      	</div>
 			      </div>
-			      {{ form_end(form) }}	
+			      {{ form_end(form) }}
 			    </div>
 			  </div>
-			</div>	
+			</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -69,7 +69,7 @@
 							<th class="text-center" style="width: 30px">Active</th>
 							<th>Action</th>
 						</tr>
-						{% for contentType in get_content_types() %}
+						{% for contentType in emsco_get_content_types() %}
 							<tr class="text-{{ contentType.color }}">
 								<td class="text-center">{{ loop.index }}.</td>
 								<td class="text-center"><i class="{% if contentType.icon %}{{ contentType.icon }}{% else %}fa fa-book{% endif %}"></i></td>
@@ -80,7 +80,7 @@
 								<td class="text-center">{% if contentType.dirty %}<i class="fa fa-warning"></i>{% endif %}</td>
 								<td class="text-center">{% if contentType.active %}<i class="fa fa-check"></i>{% endif %}</td>
 								<td>
-								
+
 									<div class="btn-group">
                                         {% include '@EMSCore/elements/get-button.html.twig' with {
                                             'url':  path('contenttype.edit', {'id': contentType.id}),
@@ -137,8 +137,8 @@
 											'icon': 'trash'
 										}%}
 				                    </div>
-								
-              
+
+
 								</td>
 							</tr>
 						{% endfor %}
@@ -151,5 +151,5 @@
 		</div>
 	</div>
 </div>
-{% endblock %} 
+{% endblock %}
 

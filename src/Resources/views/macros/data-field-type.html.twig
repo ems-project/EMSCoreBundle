@@ -248,7 +248,7 @@
 					{{ dataField.fieldType.displayOptions.label }}
 				{% else %}
 				{% endif %}
-				{% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 				{% if collapsible %}
                     <div class="pull-right">
                         <div class="btn-group toggle-group" role="group">
@@ -546,12 +546,12 @@
 {% block EMS_CoreBundle_Form_DataField_DataLinkFieldType %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
+			<dt>{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
 		<dd>
-            {{ diff_data_link(dataField.rawData, compare, dataField.fieldType.name, compareRawData) }}
+            {{ emsco_diff_data_link(dataField.rawData, compare, dataField.fieldType.name, compareRawData) }}
 		</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
@@ -560,7 +560,7 @@
 {% block EMS_CoreBundle_Form_DataField_SelectFieldType %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
+			<dt>{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
@@ -568,7 +568,7 @@
             {% set labels = dataField.fieldType.displayOptions.labels|replace({"\r":''})|split('\n') %}
             {% set choices = dataField.fieldType.displayOptions.choices|replace({"\r":''})|split('\n') %}
 			<ul>
-            	{{ diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
+            	{{ emsco_diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
 			</ul>
 
 		</dd>
@@ -579,21 +579,21 @@
 {% block EMS_CoreBundle_Form_DataField_OuuidFieldType %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
+			<dt>{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
-		<dd>{{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
+		<dd>{{ emsco_diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
 {% endblock %}
 
 {% block EMS_CoreBundle_Form_DataField_ComputedFieldType %}
 	{% set doCompare = compare and dataField.rawData|json_encode is not same as( (attribute(compareRawData, dataField.fieldType.name) is defined?attribute(compareRawData, dataField.fieldType.name):null)|json_encode  )  %}
-    {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
+    {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
+			<dt>{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
@@ -601,20 +601,20 @@
             {% if dataField.fieldType.displayOptions.displayTemplate is defined and dataField.fieldType.displayOptions.displayTemplate %}
             	{% if doCompare  %}
 					<div class="panel-body {{ color }}">
-						<div class="col-md-6">{% if attribute(compareRawData, dataField.fieldType.name) is defined %}{{ dataField.fieldType.displayOptions.displayTemplate|generate_from_template({data: attribute(compareRawData, dataField.fieldType.name), dataField: dataField})|raw }}{% endif %}</div>
-						<div class="col-md-6">{{ dataField.fieldType.displayOptions.displayTemplate|generate_from_template({data: dataField.rawData, dataField: dataField})|raw }}</div>
+						<div class="col-md-6">{% if attribute(compareRawData, dataField.fieldType.name) is defined %}{{ dataField.fieldType.displayOptions.displayTemplate|emsco_generate_from_template({data: attribute(compareRawData, dataField.fieldType.name), dataField: dataField})|raw }}{% endif %}</div>
+						<div class="col-md-6">{{ dataField.fieldType.displayOptions.displayTemplate|emsco_generate_from_template({data: dataField.rawData, dataField: dataField})|raw }}</div>
 					</div>
                 {% else %}
-                    {{ dataField.fieldType.displayOptions.displayTemplate|generate_from_template({data: dataField.rawData, dataField: dataField})|raw }}
+                    {{ dataField.fieldType.displayOptions.displayTemplate|emsco_generate_from_template({data: dataField.rawData, dataField: dataField})|raw }}
                 {% endif %}
 			{% else %}
 				<div class="panel panel-default">
 					<div class="panel-body {{ color }}">
 						{% if doCompare  %}
-							<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|get_string(dataField.fieldType.name)|internal_links }}</pre>
-							<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|internal_links }}</pre>
+							<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|emsco_get_string(dataField.fieldType.name)|emsco_internal_links }}</pre>
+							<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|emsco_internal_links }}</pre>
 						{% else %}
-							<pre class="ems-code-editor" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|internal_links }}</pre>
+							<pre class="ems-code-editor" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|emsco_internal_links }}</pre>
 						{% endif %}
 					</div>
 				</div>
@@ -627,11 +627,11 @@
 {% block EMS_CoreBundle_Form_DataField_TextStringFieldType %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
+			<dt>{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
-		<dd>{{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
+		<dd>{{ emsco_diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
 {% endblock %}
@@ -640,7 +640,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -648,7 +648,7 @@
 		<dd>
 			<div class="panel panel-default">
 				<div class="panel-body">
-                    {{ diff(dataField.rawData, attribute(compareRawData, dataField.fieldType.name)|default(null), compare, true, false)|nl2br }}
+                    {{ emsco_diff(dataField.rawData, attribute(compareRawData, dataField.fieldType.name)|default(null), compare, true, false)|nl2br }}
 				</div>
 			</div>
 		</dd>
@@ -658,11 +658,11 @@
 
 {% block EMS_CoreBundle_Form_DataField_JSONFieldType %}
     {% set doCompare = compare and dataField.rawData|json_encode is not same as( (attribute(compareRawData, dataField.fieldType.name) is defined?attribute(compareRawData, dataField.fieldType.name):null)|json_encode )  %}
-    {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
+    {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
     <dl>
         <dt>
             {% if dataField.fieldType.displayOptions.label is defined %}
-                {{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+                {{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
             {% else %}
                 {{ dataField.fieldType.name }}
             {% endif %}
@@ -671,14 +671,14 @@
             <div class="panel panel-default">
                 <div class="panel-body {{ color }}">
                     {% if doCompare  %}
-                        <pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|get_string(dataField.fieldType.name)|internal_links }}</pre>
-                        <pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|internal_links }}</pre>
+                        <pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|emsco_get_string(dataField.fieldType.name)|emsco_internal_links }}</pre>
+                        <pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|emsco_internal_links }}</pre>
                     {% else %}
                         <pre class="ems-code-editor" data-language="ace/mode/json" data-them="ace/theme/chrome">
 							{%- if dataField.fieldType.displayOptions.prettyPrint|default(false) -%}
-								{{- dataField.rawData|json_encode(constant('JSON_PRETTY_PRINT'))|internal_links -}}
+								{{- dataField.rawData|json_encode(constant('JSON_PRETTY_PRINT'))|emsco_internal_links -}}
 							{%- else -%}
-								{{ dataField.rawData|json_encode|internal_links }}
+								{{ dataField.rawData|json_encode|emsco_internal_links }}
 							{%- endif -%}
 						</pre>
                     {% endif %}
@@ -690,19 +690,19 @@
 {% endblock %}
 
 {% block EMS_CoreBundle_Form_DataField_WysiwygFieldType %}
-    {% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
-	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
+    {% set doCompare = compare and dataField.rawData is not same as( compareRawData|emsco_get_string(dataField.fieldType.name) )  %}
+	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
 		<dt class="{{ color }}">
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
 		<dd>
 			<div class="panel panel-default">
-				{% set panelBody = diff_html(dataField.rawData, compare, dataField.fieldType.name, compareRawData) %}
+				{% set panelBody = emsco_diff_html(dataField.rawData, compare, dataField.fieldType.name, compareRawData) %}
 				{% if dataField.rawData and dataField.fieldType.displayOptions.styles_set_preview|default(false) %}
 					{% set displayOptions = dataField.fieldType.displayOptions %}
 					{% set iframeUrl = path('emsco_wysiwyg_styleset_iframe', {
@@ -722,12 +722,12 @@
 {% endblock %}
 
 {% block EMS_CoreBundle_Form_DataField_CodeFieldType %}
-    {% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
-    {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
+    {% set doCompare = compare and dataField.rawData is not same as( compareRawData|emsco_get_string(dataField.fieldType.name) )  %}
+    {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -736,7 +736,7 @@
 			<div class="panel panel-default">
 				<div class="panel-body {{ color }}">
 					{% if doCompare  %}
-						<pre class="ems-code-editor col-md-6" data-language="{{ dataField.fieldType.displayOptions.language }}" data-them="{{ dataField.fieldType.displayOptions.theme }}" {% if dataField.fieldType.displayOptions.height %}style="height: {{ dataField.fieldType.displayOptions.height }}px;"{% endif %}>{{ compareRawData|get_string(dataField.fieldType.name) }}</pre>
+						<pre class="ems-code-editor col-md-6" data-language="{{ dataField.fieldType.displayOptions.language }}" data-them="{{ dataField.fieldType.displayOptions.theme }}" {% if dataField.fieldType.displayOptions.height %}style="height: {{ dataField.fieldType.displayOptions.height }}px;"{% endif %}>{{ compareRawData|emsco_get_string(dataField.fieldType.name) }}</pre>
 						<pre class="ems-code-editor col-md-6" data-language="{{ dataField.fieldType.displayOptions.language }}" data-them="{{ dataField.fieldType.displayOptions.theme }}" {% if dataField.fieldType.displayOptions.height %}style="height: {{ dataField.fieldType.displayOptions.height }}px;"{% endif %}>{{ dataField.rawData }}</pre>
 					{% else %}
 						<pre class="ems-code-editor" data-language="{{ dataField.fieldType.displayOptions.language }}" data-them="{{ dataField.fieldType.displayOptions.theme }}" {% if dataField.fieldType.displayOptions.height %}style="height: {{ dataField.fieldType.displayOptions.height }}px;"{% endif %}>{{ dataField.rawData }}</pre>
@@ -777,12 +777,12 @@
 {% endblock %}
 
 {% block EMS_CoreBundle_Form_DataField_JsonMenuEditorFieldType %}
-	{% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
-	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
+	{% set doCompare = compare and dataField.rawData is not same as( compareRawData|emsco_get_string(dataField.fieldType.name) )  %}
+	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -791,8 +791,8 @@
 			<div class="panel panel-default">
 				<div class="panel-body {{ color }}">
 					{% if doCompare  %}
-						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|get_string(dataField.fieldType.name)|json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
-						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|emsco_get_string(dataField.fieldType.name)|ems_json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|ems_json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
 					{% else %}
 						{% set jsonMenuItems = dataField.rawData|default('{}')|ems_json_menu_decode.structure %}
 						<div class="json_menu_editor_fieldtype_widget collapsible-container">
@@ -815,12 +815,12 @@
 {% endblock %}
 
 {% block EMS_CoreBundle_Form_DataField_JsonMenuNestedEditorFieldType %}
-	{% set doCompare = compare and dataField.rawData is not same as( compareRawData|get_string(dataField.fieldType.name) )  %}
-	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
+	{% set doCompare = compare and dataField.rawData is not same as( compareRawData|emsco_get_string(dataField.fieldType.name) )  %}
+	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -829,8 +829,8 @@
 			<div class="panel panel-default">
 				<div class="panel-body {{ color }}">
 					{% if doCompare  %}
-						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|get_string(dataField.fieldType.name)|json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
-						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|emsco_get_string(dataField.fieldType.name)|ems_json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|ems_json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
 					{% else %}
 						{{ emsco_json_menu_nested({
 							'id': ('preview-nested-' ~ dataField.fieldType.id),
@@ -849,7 +849,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -884,13 +884,13 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
 		<dd>
-            {{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+            {{ emsco_diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
@@ -900,13 +900,13 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
 		<dd>
-            {{ diff_icon(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+            {{ emsco_diff_icon(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
@@ -916,13 +916,13 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
 		<dd>
-            {{ diff_color(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+            {{ emsco_diff_color(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
@@ -935,7 +935,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -944,7 +944,7 @@
             {% set labels = dataField.fieldType.displayOptions.labels|replace({"\r":''})|split('\n') %}
             {% set choices = dataField.fieldType.displayOptions.choices|replace({"\r":''})|split('\n') %}
 
-            {{ diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
+            {{ emsco_diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
 		</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
@@ -954,7 +954,7 @@
     <dl>
 		<dt class="">
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -980,7 +980,7 @@
 
 
 
-				{{ diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
+				{{ emsco_diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
 			</ul>
 		</dd>
 	</dl>
@@ -991,7 +991,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -1019,7 +1019,7 @@
 					{% endfor %}
 				{% endif %}
 
-				{{ diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
+				{{ emsco_diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
 			</ul>
 		</dd>
 	</dl>
@@ -1028,7 +1028,7 @@
 
 {% block EMS_CoreBundle_Form_DataField_JsonMenuNestedLinkFieldType %}
 	{%- set doCompare = compare and dataField.rawData|json_encode is not same as( (attribute(compareRawData, dataField.fieldType.name) is defined?attribute(compareRawData, dataField.fieldType.name):null)|json_encode  )  -%}
-	{%- set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' -%}
+	{%- set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' -%}
 	{%- set displayOptions = dataField.fieldType.options.displayOptions -%}
 	{%- set jmnField = displayOptions.json_menu_nested_field|default(false) -%}
 	{%- set jmnQuery = displayOptions.query|default(false) -%}
@@ -1047,7 +1047,7 @@
 				'type': h._source._contenttype,
 				'label': h._source._contenttype,
 				'object': h._source|filter((v, k) => k != jmnField),
-				'children': attribute(h._source, jmnField)|default('{}')|json_decode
+				'children': attribute(h._source, jmnField)|default('{}')|ems_json_decode
 			}]) %}
 		{%- endfor -%}
 		{%- set jmnMenu = structures|json_encode|ems_json_menu_nested_decode -%}
@@ -1057,7 +1057,7 @@
 		{%- endfor -%}
 
 		{% if displayOptions.choices_template|default(false) %}
-			{% set choices = displayOptions.choices_template|generate_from_template({ 'items': items })|json_decode %}
+			{% set choices = displayOptions.choices_template|emsco_generate_from_template({ 'items': items })|ems_json_decode %}
 		{% else %}
 			{%- set choices = [] -%}
 			{%- for item in items -%}
@@ -1072,7 +1072,7 @@
 	<dl>
 		<dt>
 			{%- if displayOptions.label is defined -%}
-				{{- displayOptions.label -}}{%- if is_super() -%}({{- dataField.fieldType.name -}}){%- endif -%}
+				{{- displayOptions.label -}}{%- if emsco_is_super() -%}({{- dataField.fieldType.name -}}){%- endif -%}
 			{%- else -%}
 				{{- dataField.fieldType.name-}}
 			{%- endif -%}
@@ -1088,18 +1088,18 @@
 						<div class="col-md-6 bg-gray-light">
 							{%- if compareRawData -%}
 								{%- set compareData = choices|default([])|filter( (id, label) => compareRawData is iterable ? id in compareRawData : id == compareRawData) -%}
-								{{- displayOptions.display_template|generate_from_template({ data: compareData, dataField: dataField, choices: choices })|raw -}}
+								{{- displayOptions.display_template|emsco_generate_from_template({ data: compareData, dataField: dataField, choices: choices })|raw -}}
 							{%- endif -%}
 						</div>
 						<div class="col-md-6 bg-gray-light">
-							{{- displayOptions.display_template|generate_from_template({ data: data, dataField: dataField, choices: choices })|raw -}}
+							{{- displayOptions.display_template|emsco_generate_from_template({ data: data, dataField: dataField, choices: choices })|raw -}}
 						</div>
 					</div>
 				{%- else -%}
-					{{- displayOptions.display_template|generate_from_template({ data: data, dataField: dataField, choices: choices|default([]) })|raw -}}
+					{{- displayOptions.display_template|emsco_generate_from_template({ data: data, dataField: dataField, choices: choices|default([]) })|raw -}}
 				{%- endif -%}
 			{%- else -%}
-				{%- set diffChoice = diff_choice(dataField.rawData, choiceLabels|default([]), choiceValues|default([]), compare, dataField.fieldType.name, compareRawData) -%}
+				{%- set diffChoice = emsco_diff_choice(dataField.rawData, choiceLabels|default([]), choiceValues|default([]), compare, dataField.fieldType.name, compareRawData) -%}
 				{%- if displayOptions.multiple|default(false) -%}
 					<ul>{{ diffChoice|raw }}</ul>
 				{%- else -%}
@@ -1117,13 +1117,13 @@
 	<dl>
 		<dt class="{{ color }}">
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
 		</dt>
 		<dd>
-            {{ diff_boolean(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+            {{ emsco_diff_boolean(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 			{% if dataField.fieldType.displayOptions.question_label is defined and dataField.fieldType.displayOptions.question_label %}
 				{{ dataField.fieldType.displayOptions.question_label }}
 			{% endif %}
@@ -1136,13 +1136,13 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
 		</dt>
 		<dd>
-            {{ diff_raw(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+            {{ emsco_diff_raw(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
@@ -1152,13 +1152,13 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
 		</dt>
 		<dd>
-            {{ diff_raw(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
+            {{ emsco_diff_raw(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
@@ -1168,14 +1168,14 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
 		</dt>
 		<dd>
 			<ul>
-				{{ diff_date(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.displayOptions.displayFormat|convertJavascriptDateFormat, false, dataField.fieldType.mappingOptions.format|default('yyyy/MM/dd')|convertJavaDateFormat) }}
+				{{ emsco_diff_date(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.displayOptions.displayFormat|emsco_convert_javascript_date_format, false, dataField.fieldType.mappingOptions.format|default('yyyy/MM/dd')|emsco_convert_java_date_format) }}
 			</ul>
 		</dd>
 	</dl>
@@ -1186,14 +1186,14 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
 		</dt>
 		<dd>
 			<ul>
-				{{ diff_date(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.displayOption('parseFormat', 'd/m/Y H:i:s')) }}
+				{{ emsco_diff_date(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.displayOption('parseFormat', 'd/m/Y H:i:s')) }}
 			</ul>
 		</dd>
 	</dl>
@@ -1204,7 +1204,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
@@ -1229,19 +1229,19 @@
                         {% set child = null %}
 					{% endif %}
 				{% endif %}
-				{#{% set child = (dataField.fieldType.mappingOptions.nested ? (attribute(compareRawData, dataField.fieldType.name) is defined ? attribute(compareRawData, dataField.fieldType.name) : null ) : compareRawData, dataField.fieldType.displayOptions.locale.format|convertJavascriptDateRangeFormat) %}#}
+				{#{% set child = (dataField.fieldType.mappingOptions.nested ? (attribute(compareRawData, dataField.fieldType.name) is defined ? attribute(compareRawData, dataField.fieldType.name) : null ) : compareRawData, dataField.fieldType.displayOptions.locale.format|emsco_convert_javascript_date_range_format) %}#}
 
 
                 {% if dateFrom %}
 					<li>
 						<b>From </b>
-                        {{ diff_date(dateFrom, compare, dataField.fieldType.mappingOptions.fromDateMachineName, child, dataField.fieldType.displayOptions.locale.format|convertJavascriptDateRangeFormat, false, constant('\\DateTime::ISO8601')) }}
+                        {{ emsco_diff_date(dateFrom, compare, dataField.fieldType.mappingOptions.fromDateMachineName, child, dataField.fieldType.displayOptions.locale.format|emsco_convert_javascript_date_range_format, false, constant('\\DateTime::ISO8601')) }}
 					</li>
 				{% endif %}
 				{% if dateTo %}
 					<li>
 						<b>To </b>
-                        {{ diff_date(dateTo, compare, dataField.fieldType.mappingOptions.toDateMachineName, child, dataField.fieldType.displayOptions.locale.format|convertJavascriptDateRangeFormat, false, constant('\\DateTime::ISO8601')) }}
+                        {{ emsco_diff_date(dateTo, compare, dataField.fieldType.mappingOptions.toDateMachineName, child, dataField.fieldType.displayOptions.locale.format|emsco_convert_javascript_date_range_format, false, constant('\\DateTime::ISO8601')) }}
 					</li>
 				{% endif %}
 				{% if dateFrom and dateTo %}
@@ -1249,12 +1249,12 @@
 						<b>Duration </b>
 						{% if compare %}
 							{% if attribute(child, dataField.fieldType.mappingOptions.fromDateMachineName) is defined and attribute(child, dataField.fieldType.mappingOptions.toDateMachineName) is defined %}
-                                {{ diff(dateFrom|date_difference(dateTo, dataField.fieldType.displayOptions.timePicker), attribute(child, dataField.fieldType.mappingOptions.fromDateMachineName)|date_difference(attribute(child, dataField.fieldType.mappingOptions.toDateMachineName), dataField.fieldType.displayOptions.timePicker), compare, true) }}
+                                {{ emsco_diff(dateFrom|emsco_date_difference(dateTo, dataField.fieldType.displayOptions.timePicker), attribute(child, dataField.fieldType.mappingOptions.fromDateMachineName)|date_difference(attribute(child, dataField.fieldType.mappingOptions.toDateMachineName), dataField.fieldType.displayOptions.timePicker), compare, true) }}
 							{% else %}
-								<span class="text-green"><ins class="diffmod">{{ dateFrom|date_difference(dateTo, dataField.fieldType.displayOptions.timePicker) }}</ins></span>
+								<span class="text-green"><ins class="diffmod">{{ dateFrom|emsco_date_difference(dateTo, dataField.fieldType.displayOptions.timePicker) }}</ins></span>
 							{% endif %}
 						{% else %}
-							{{ dateFrom|date_difference(dateTo, dataField.fieldType.displayOptions.timePicker) }}
+							{{ dateFrom|emsco_date_difference(dateTo, dataField.fieldType.displayOptions.timePicker) }}
 						{% endif %}
 					</li>
 				{% endif %}
@@ -1268,7 +1268,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
@@ -1277,10 +1277,10 @@
 			{% if dataField.fieldType.displayOptions.multiple|default(false) %}
 				{% set choices = dataField.fieldType.rawData|default([]) %}
 				<ul>
-					{{ diff_choice(dataField.rawData, choices, choices, compare, dataField.fieldType.name, compareRawData) }}
+					{{ emsco_diff_choice(dataField.rawData, choices, choices, compare, dataField.fieldType.name, compareRawData) }}
 				</ul>
 			{% else %}
-				{{ diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData) }}
+				{{ emsco_diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData) }}
 			{% endif %}
 		</dd>
 	</dl>
@@ -1291,13 +1291,13 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
 		</dt>
 		<dd>
-            {{ diff_time(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.options|getTimeFieldTimeFormat, dataField.fieldType.mappingOptions.format|convertJavaDateFormat) }}
+            {{ emsco_diff_time(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.options|emsco_time_field_time_format, dataField.fieldType.mappingOptions.format|emsco_convert_java_date_format) }}
 		</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
@@ -1307,7 +1307,7 @@
 	<dl>
 		<dt>
 			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if is_super() %}({{ dataField.fieldType.name }}){% endif %}
+				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 			{% else %}
 				{{ dataField.fieldType.name }}
 			{% endif %}
@@ -1318,7 +1318,7 @@
 			{% else %}
 				{% set translateRaw = 'revision.version_tag.empty'|trans %}
 			{% endif %}
-			{{ diff_text(translateRaw, false, dataField.fieldType.name, compareRawData)|raw }}
+			{{ emsco_diff_text(translateRaw, false, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
@@ -1334,7 +1334,7 @@
     {% else %}
         <div class="panel panel-warning">
             <div class="panel-heading">
-                {{ dataField.fieldType.displayOptions.label|default(dataField.fieldType.name) }}{% if is_super() %} ({{ dataField.fieldType.name }}){% endif %}
+                {{ dataField.fieldType.displayOptions.label|default(dataField.fieldType.name) }}{% if emsco_is_super() %} ({{ dataField.fieldType.name }}){% endif %}
             </div>
             <div class="panel-body">
                 {{ errorMessage|default('view.macros.data-field-type.form.not-defined')|trans }}

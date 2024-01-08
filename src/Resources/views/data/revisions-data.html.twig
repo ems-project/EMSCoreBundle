@@ -99,7 +99,7 @@
 				{% endif %}
 
 				{% if is_granted(ctRoles.delete) %}
-					{% if not  revision.contentType.circlesField or attribute(object._source, revision.contentType.circlesField) is not defined or attribute(object._source, revision.contentType.circlesField)|in_my_circles %}
+					{% if not  revision.contentType.circlesField or attribute(object._source, revision.contentType.circlesField) is not defined or attribute(object._source, revision.contentType.circlesField)|emsco_in_my_circles %}
 						{% include '@EMSCore/elements/post-button.html.twig' with {
 							'url':  path('object.delete', {'type': revision.contentType.name, 'ouuid': revision.ouuid} ),
 							'label': 'Delete all revisions',
@@ -169,7 +169,7 @@
 	{% if revision.finalizedBy %}
 		<hr>
 		<strong><i class="fa fa-user margin-r-5"></i> {{ 'views.data.revisions-data-html.finalized-by'|trans }}</strong>
-		<p class="text-muted">{{ revision.finalizedBy|displayname }}</p>
+		<p class="text-muted">{{ revision.finalizedBy|emsco_display_name }}</p>
 	{% endif %}
 	{% if revision.finalizedDate %}
 		<hr>
@@ -184,7 +184,7 @@
 	{% if revision.lockby %}
 		<hr>
 		<strong><i class="fa fa-user margin-r-5"></i> {{ 'views.data.revisions-data-html.modified-by'|trans }}</strong>
-		<p class="text-muted">{{ revision.lockby|displayname }}</p>
+		<p class="text-muted">{{ revision.lockby|emsco_display_name }}</p>
 	{% endif %}
 
 	{% if revision.notifications|length > 0 %}
@@ -207,7 +207,7 @@
 			<hr>
 			<strong><i class=" {% if circleContentType.icon %}{{ circleContentType.icon }}{% else %}fa fa-circle-o{% endif %} margin-r-5"></i> {{ circleContentType.pluralName }}</strong>
 			<p class="text-muted">
-				{% for circle in revision.circles %}{{ circle|data_link|raw }} {% endfor %}
+				{% for circle in revision.circles %}{{ circle|emsco_data_link|raw }} {% endfor %}
 			</p>
 		{% endif %}
 	{% endif %}
@@ -307,7 +307,7 @@
 			{% else %}
 				<div class="btn-group">
 					{% for obj in referrerResponse.getDocuments %}
-						{{ obj.emsId|data_link|raw }}
+						{{ obj.emsId|emsco_data_link|raw }}
 					{% endfor %}
 				</div>
 			{% endif %}
@@ -333,7 +333,7 @@
 						<th style="width: 10px">{{ 'views.data.revisions-data-html.revisions.th.id'|trans }}</th>
 						<th>{{ 'views.data.revisions-data-html.revisions.th.date'|trans }}</th>
 						<th>{{ 'views.data.revisions-data-html.revisions.th.finalize'|trans }}</th>
-						{% if is_super() %}
+						{% if emsco_is_super() %}
 							<th>{{ 'views.data.revisions-data-html.revisions.th.locked'|trans }}</th>
 							<th>{{ 'views.data.revisions-data-html.revisions.th.autosave'|trans }}</th>
 						{% endif %}
@@ -347,13 +347,13 @@
 							<td>{{ rev.created|date|date(date_time_format) }}</td>
 							<td>
 								{% if rev.finalizedBy %}
-									by {{ rev.finalizedBy|displayname }} <br>
+									by {{ rev.finalizedBy|emsco_display_name }} <br>
 									{% if rev.finalizedDate %}
 										on {{ rev.finalizedDate|date(date_time_format) }}
 									{% endif %}
 								{% endif %}
 							</td>
-							{% if is_super() %}
+							{% if emsco_is_super() %}
 								<td>
 									{% if rev.lockUntil and rev.lockUntil > date('now') %}
 										by {{ rev.lockBy }} <br>
@@ -362,7 +362,7 @@
 								</td>
 								<td>
 									{% if rev.autoSave %}
-										by {{ rev.autoSaveBy|displayname  }} <br>
+										by {{ rev.autoSaveBy|emsco_display_name  }} <br>
 										on {{ rev.autoSaveAt|date(date_time_format) }}
 									{% endif %}
 								</td>

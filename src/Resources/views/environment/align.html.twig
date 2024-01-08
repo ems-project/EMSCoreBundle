@@ -1,7 +1,7 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ 'Align Environments'|trans }}{% endblock %}
-{% block pagetitle %}{{ 'Align Environments'|trans }}{% endblock %} 
+{% block pagetitle %}{{ 'Align Environments'|trans }}{% endblock %}
 {% block breadcrumb %}
 	<ol class="breadcrumb">
 		<li><i class="fa fa-database"></i> {{ 'Environments'|trans }}</li>
@@ -33,7 +33,7 @@
         	</div>
         </div>
         <!-- /.box-body -->
-        
+
       <div class="box-header with-border">
         <h3 class="box-title">{{ 'Filters' | trans }}</h3>
       </div>
@@ -55,9 +55,9 @@
 	<div class="col-md-12">
 		<div class="box">
       <div class="box-header">
-      
-      	{% set fromInMyCircles = environments[environment].circles|in_my_circles %}
-      	{% set toInMyCircles = environments[withEnvironment].circles|in_my_circles %}
+
+      	{% set fromInMyCircles = environments[environment].circles|emsco_in_my_circles %}
+      	{% set toInMyCircles = environments[withEnvironment].circles|emsco_in_my_circles %}
 
         <h3 class="box-title">Compare "{{ environment }}" and "{{ withEnvironment }}"</h3> <small>{{ total }} difference(s)</small>
 
@@ -135,7 +135,7 @@
         					{{ maxrev[2]|date(date_time_format) }}
         					({{ maxrev[1] }})
         				{% endif %}
-        			{% endif %}	
+        			{% endif %}
               {% if item.objectEnvironment %}
                   {% include '@EMSCore/elements/object-toolbar.html.twig' with {
                   'object':  item.objectEnvironment,
@@ -148,7 +148,7 @@
                           <span class="label label-default"><i class="{{ notification.template.icon }}"></i> {{ notification.template.label }}</span>
                       {% endif %}
               {% endfor %}
-              {% endif %} 
+              {% endif %}
               </td>
               <td>
         				{% if minrev[0] == withEnv.id %}
@@ -254,4 +254,4 @@
 {% include '@EMSCore/app/menu.html.twig' with {
     'item':  'environment-align'
 }%}
-{% endblock %}	
+{% endblock %}

@@ -1,7 +1,7 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
-{% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %} 
+{% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
 {# {% block subtitle %}<!-- TODO -->{% endblock %} #}
 
 
@@ -9,11 +9,11 @@
 
 <div class="row">
 	{% for keyword in keywords %}
-		{{ view.options.template|generate_from_template({keyword: keyword})|raw }}
+		{{ view.options.template|emsco_generate_from_template({keyword: keyword})|raw }}
 	{% endfor %}
 </div>
 
 {% include '@EMSCore/app/menu.html.twig' with {
 	'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
 }%}
-{% endblock %}	
+{% endblock %}

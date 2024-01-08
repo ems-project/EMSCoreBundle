@@ -6,21 +6,21 @@
 {% block pagetitle %}
 	<i class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
 	{{ block('title') }}
-{% endblock %} 
+{% endblock %}
 
-{% block subtitle %}{% endblock %} 
+{% block subtitle %}{% endblock %}
 
 
 {% block extraheader %}
 	{% if template.header is defined and template.body %}
-		{{ template.header|generate_from_template({
+		{{ template.header|emsco_generate_from_template({
 				environment: environment,
 				contentType: contentType,
 				object: object,
 				source: object.source
 			})|raw }}
 	{% endif %}
-{% endblock %} 
+{% endblock %}
 
 
 
@@ -34,7 +34,7 @@
 			</div>
 			<div class="box-body">
 				{% if template.renderOption in [constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EMBED'), constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT'), constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::PDF')] %}
-					{{ template.body|generate_from_template({
+					{{ template.body|emsco_generate_from_template({
 						environment: environment,
 						contentType: contentType,
 						object: object,
@@ -45,7 +45,7 @@
 
 				{% if template.filename and template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EXPORT') %}
 					<br/><br/>
-					{{ template.filename|generate_from_template({
+					{{ template.filename|emsco_generate_from_template({
 						environment: environment,
 						contentType: contentType,
 						object: object,
@@ -60,7 +60,7 @@
 					'contentType': contentType,
 					'recursiveView': true
 				}%}
-				
+
 				<div class="btn-toolbar pull-right" role="toolbar" >
 					<div class="btn-group">
 						{% if template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::PDF') %}
@@ -96,4 +96,4 @@
 {% include '@EMSCore/app/menu.html.twig' with {
 	'item':  'data-index-' ~ contentType.id
 }%}
-{% endblock %}	
+{% endblock %}

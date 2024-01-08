@@ -84,21 +84,21 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFunction('emsco_cant_be_finalized', $this->cantBeFinalized(...)),
-            new TwigFunction('sequence', $this->getSequenceNextValue(...)),
-            new TwigFunction('diff_text', $this->diffText(...), ['is_safe' => ['html']]),
-            new TwigFunction('diff', $this->diff(...), ['is_safe' => ['html']]),
-            new TwigFunction('diff_html', $this->diffHtml(...), ['is_safe' => ['html']]),
-            new TwigFunction('diff_icon', $this->diffIcon(...), ['is_safe' => ['html']]),
-            new TwigFunction('diff_raw', $this->diffRaw(...), ['is_safe' => ['html']]),
-            new TwigFunction('diff_color', $this->diffColor(...), ['is_safe' => ['html']]),
-            new TwigFunction('diff_boolean', $this->diffBoolean(...), ['is_safe' => ['html']]),
-            new TwigFunction('diff_choice', $this->diffChoice(...), ['is_safe' => ['html']]),
-            new TwigFunction('diff_data_link', $this->diffDataLink(...), ['is_safe' => ['html']]),
-            new TwigFunction('diff_date', $this->diffDate(...), ['is_safe' => ['html']]),
-            new TwigFunction('diff_time', $this->diffTime(...), ['is_safe' => ['html']]),
-            new TwigFunction('is_super', $this->isSuper(...)),
+            new TwigFunction('emsco_sequence', $this->getSequenceNextValue(...)),
+            new TwigFunction('emsco_diff_text', $this->diffText(...), ['is_safe' => ['html']]),
+            new TwigFunction('emsco_diff', $this->diff(...), ['is_safe' => ['html']]),
+            new TwigFunction('emsco_diff_html', $this->diffHtml(...), ['is_safe' => ['html']]),
+            new TwigFunction('emsco_diff_icon', $this->diffIcon(...), ['is_safe' => ['html']]),
+            new TwigFunction('emsco_diff_raw', $this->diffRaw(...), ['is_safe' => ['html']]),
+            new TwigFunction('emsco_diff_color', $this->diffColor(...), ['is_safe' => ['html']]),
+            new TwigFunction('emsco_diff_boolean', $this->diffBoolean(...), ['is_safe' => ['html']]),
+            new TwigFunction('emsco_diff_choice', $this->diffChoice(...), ['is_safe' => ['html']]),
+            new TwigFunction('emsco_diff_data_link', $this->diffDataLink(...), ['is_safe' => ['html']]),
+            new TwigFunction('emsco_diff_date', $this->diffDate(...), ['is_safe' => ['html']]),
+            new TwigFunction('emsco_diff_time', $this->diffTime(...), ['is_safe' => ['html']]),
+            new TwigFunction('emsco_is_super', $this->isSuper(...)),
             new TwigFunction('emsco_asset_path', $this->assetPath(...), ['is_safe' => ['html']]),
-            new TwigFunction('call_user_func', $this->callUserFunc(...)),
+            new TwigFunction('emsco_call_user_func', $this->callUserFunc(...)),
             new TwigFunction('emsco_generate_email', $this->generateEmailMessage(...)),
             new TwigFunction('emsco_send_email', $this->sendEmail(...)),
             new TwigFunction('emsco_users_enabled', [UserRuntime::class, 'getUsersEnabled']),
@@ -122,53 +122,55 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_get_form', [FormRuntime::class, 'getFormByName']),
             new TwigFunction('emsco_form', [FormRuntime::class, 'handleForm']),
             new TwigFunction('emsco_get_data_field', [FormRuntime::class, 'getDataField']),
+            new TwigFunction('emsco_get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
             // deprecated
             new TwigFunction('cant_be_finalized', $this->cantBeFinalized(...), ['deprecated' => true, 'alternative' => 'emsco_cant_be_finalized']),
             new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames'], ['deprecated' => true, 'alternative' => 'emsco_get_default_environment_names']),
             new TwigFunction('get_content_types', [ContentTypeRuntime::class, 'getContentTypes'], ['deprecated' => true, 'alternative' => 'emsco_get_content_types']),
+            new TwigFunction('sequence', $this->getSequenceNextValue(...), ['deprecated' => true, 'alternative' => 'emsco_sequence']),
+            new TwigFunction('diff_text', $this->diffText(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_diff_text']),
+            new TwigFunction('diff', $this->diff(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_diff']),
+            new TwigFunction('diff_html', $this->diffHtml(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_diff_html']),
+            new TwigFunction('diff_icon', $this->diffIcon(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_diff_icon']),
+            new TwigFunction('diff_raw', $this->diffRaw(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_diff_raw']),
+            new TwigFunction('diff_color', $this->diffColor(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_diff_color']),
+            new TwigFunction('diff_boolean', $this->diffBoolean(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_diff_boolean']),
+            new TwigFunction('diff_choice', $this->diffChoice(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_diff_choice']),
+            new TwigFunction('diff_data_link', $this->diffDataLink(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_diff_data_link']),
+            new TwigFunction('diff_date', $this->diffDate(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_diff_date']),
+            new TwigFunction('diff_time', $this->diffTime(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_diff_time']),
+            new TwigFunction('is_super', $this->isSuper(...), ['deprecated' => true, 'alternative' => 'emsco_is_super']),
+            new TwigFunction('call_user_func', $this->callUserFunc(...), ['deprecated' => true, 'alternative' => 'emsco_call_user_func']),
         ];
     }
 
     public function getFilters(): array
     {
         return [
-            new TwigFilter('inArray', $this->inArray(...)),
-            new TwigFilter('firstInArray', $this->firstInArray(...)),
-            new TwigFilter('md5', $this->md5(...)),
-            new TwigFilter('convertJavaDateFormat', $this->convertJavaDateFormat(...)),
-            new TwigFilter('convertJavascriptDateFormat', $this->convertJavascriptDateFormat(...)),
-            new TwigFilter('convertJavascriptDateRangeFormat', $this->convertJavascriptDateRangeFormat(...)),
-            new TwigFilter('getTimeFieldTimeFormat', $this->getTimeFieldTimeFormat(...)),
-            new TwigFilter('soapRequest', $this->soapRequest(...)),
-            new TwigFilter('luma', $this->relativeLuminance(...)),
-            new TwigFilter('contrastratio', $this->contrastRatio(...)),
-            new TwigFilter('all_granted', $this->allGranted(...)),
-            new TwigFilter('one_granted', $this->oneGranted(...)),
-            new TwigFilter('in_my_circles', $this->inMyCircles(...)),
-            new TwigFilter('data_link', $this->dataLink(...), ['is_safe' => ['html']]),
+            new TwigFilter('emsco_convert_java_date_format', $this->convertJavaDateFormat(...)),
+            new TwigFilter('emsco_convert_javascript_date_format', $this->convertJavascriptDateFormat(...)),
+            new TwigFilter('emsco_convert_javascript_date_range_format', $this->convertJavascriptDateRangeFormat(...)),
+            new TwigFilter('emsco_time_field_time_format', $this->getTimeFieldTimeFormat(...)),
+            new TwigFilter('emsco_soap_request', $this->soapRequest(...)),
+            new TwigFilter('emsco_all_granted', $this->allGranted(...)),
+            new TwigFilter('emsco_one_granted', $this->oneGranted(...)),
+            new TwigFilter('emsco_in_my_circles', $this->inMyCircles(...)),
+            new TwigFilter('emsco_data_link', $this->dataLink(...), ['is_safe' => ['html']]),
             new TwigFilter('emsco_get_environment', [EnvironmentRuntime::class, 'getEnvironment']),
-            new TwigFilter('generate_from_template', $this->generateFromTemplate(...)),
-            new TwigFilter('objectChoiceLoader', $this->objectChoiceLoader(...)),
-            new TwigFilter('groupedObjectLoader', $this->groupedObjectLoader(...)),
-            new TwigFilter('propertyPath', $this->propertyPath(...)),
-            new TwigFilter('is_super', $this->isSuper(...)),
-            new TwigFilter('i18n', [I18nRuntime::class, 'i18n']),
-            new TwigFilter('internal_links', $this->internalLinks(...)),
-            new TwigFilter('src_path', $this->srcPath(...)),
-            new TwigFilter('get_user', $this->getUser(...)),
-            new TwigFilter('displayname', $this->displayName(...)),
-            new TwigFilter('date_difference', $this->dateDifference(...)),
-            new TwigFilter('debug', $this->debug(...)),
-            new TwigFilter('search', $this->deprecatedSearch(...), ['deprecated' => true, 'alternative' => 'emsco_search']),
+            new TwigFilter('emsco_generate_from_template', $this->generateFromTemplate(...)),
+            new TwigFilter('emsco_object_choice_loader', $this->objectChoiceLoader(...)),
+            new TwigFilter('emsco_grouped_object_loader', $this->groupedObjectLoader(...)),
+            new TwigFilter('emsco_property_path', $this->propertyPath(...)),
+            new TwigFilter('emsco_i18n', [I18nRuntime::class, 'i18n']),
+            new TwigFilter('emsco_internal_links', $this->internalLinks(...)),
+            new TwigFilter('emsco_get_user', $this->getUser(...)),
+            new TwigFilter('emsco_display_name', $this->displayName(...)),
+            new TwigFilter('emsco_date_difference', $this->dateDifference(...)),
+            new TwigFilter('emsco_debug', $this->debug(...)),
             new TwigFilter('emsco_search', $this->search(...)),
-            new TwigFilter('call_user_func', $this->callUserFunc(...)),
-            new TwigFilter('merge_recursive', $this->arrayMergeRecursive(...)),
-            new TwigFilter('array_intersect', $this->arrayIntersect(...)),
-            new TwigFilter('get_string', $this->getString(...)),
-            new TwigFilter('get_file', $this->getFile(...)),
-            new TwigFilter('get_field_by_path', $this->getFieldByPath(...)),
-            new TwigFilter('json_decode', [TextRuntime::class, 'jsonDecode'], ['deprecated' => true, 'alternative' => 'ems_json_decode']),
-            new TwigFilter('get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
+            new TwigFilter('emsco_call_user_func', $this->callUserFunc(...)),
+            new TwigFilter('emsco_get_string', $this->getString(...)),
+            new TwigFilter('emsco_get_field_by_path', $this->getFieldByPath(...)),
             new TwigFilter('emsco_document_info', [RevisionRuntime::class, 'getDocumentInfo']),
             new TwigFilter('emsco_documents_info', [RevisionRuntime::class, 'getDocumentsInfo']),
             new TwigFilter('emsco_display', [RevisionRuntime::class, 'display']),
@@ -186,6 +188,34 @@ class AppExtension extends AbstractExtension
             new TwigFilter('get_environment', [EnvironmentRuntime::class, 'getEnvironment'], ['deprecated' => true, 'alternative' => 'emsco_get_environment']),
             new TwigFilter('get_content_type', [ContentTypeRuntime::class, 'getContentType'], ['deprecated' => true, 'alternative' => 'emsco_get_contentType']),
             new TwigFilter('data_label', $this->dataLabel(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_display']),
+            new TwigFilter('json_decode', [TextRuntime::class, 'jsonDecode'], ['deprecated' => true, 'alternative' => 'ems_json_decode']),
+            new TwigFilter('search', $this->deprecatedSearch(...), ['deprecated' => true, 'alternative' => 'emsco_search']),
+            new TwigFilter('convertJavaDateFormat', $this->convertJavaDateFormat(...), ['deprecated' => true, 'alternative' => 'emsco_convert_java_date_format']),
+            new TwigFilter('convertJavascriptDateFormat', $this->convertJavascriptDateFormat(...), ['deprecated' => true, 'alternative' => 'emsco_convert_javascript_date_format']),
+            new TwigFilter('convertJavascriptDateRangeFormat', $this->convertJavascriptDateRangeFormat(...), ['deprecated' => true, 'alternative' => 'emsco_convert_javascript_date_range_format']),
+            new TwigFilter('getTimeFieldTimeFormat', $this->getTimeFieldTimeFormat(...), ['deprecated' => true, 'alternative' => 'emsco_time_field_time_format']),
+            new TwigFilter('soapRequest', $this->soapRequest(...), ['deprecated' => true, 'alternative' => 'emsco_soap_request']),
+            new TwigFilter('all_granted', $this->allGranted(...), ['deprecated' => true, 'alternative' => 'emsco_all_granted']),
+            new TwigFilter('one_granted', $this->oneGranted(...), ['deprecated' => true, 'alternative' => 'emsco_one_granted']),
+            new TwigFilter('in_my_circles', $this->inMyCircles(...), ['deprecated' => true, 'alternative' => 'emsco_in_my_circles']),
+            new TwigFilter('data_link', $this->dataLink(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_data_link']),
+            new TwigFilter('is_super', $this->isSuper(...), ['deprecated' => true]),
+            new TwigFilter('generate_from_template', $this->generateFromTemplate(...), ['deprecated' => true, 'alternative' => 'emsco_generate_from_template']),
+            new TwigFilter('objectChoiceLoader', $this->objectChoiceLoader(...), ['deprecated' => true, 'alternative' => 'emsco_object_choice_loader']),
+            new TwigFilter('groupedObjectLoader', $this->groupedObjectLoader(...), ['deprecated' => true, 'alternative' => 'emsco_grouped_object_loader']),
+            new TwigFilter('propertyPath', $this->propertyPath(...), ['deprecated' => true, 'alternative' => 'emsco_property_path']),
+            new TwigFilter('i18n', [I18nRuntime::class, 'i18n'], ['deprecated' => true, 'alternative' => 'emsco_i18n']),
+            new TwigFilter('internal_links', $this->internalLinks(...), ['deprecated' => true, 'alternative' => 'emsco_internal_links']),
+            new TwigFilter('src_path', $this->srcPath(...), ['deprecated' => true]),
+            new TwigFilter('get_user', $this->getUser(...), ['deprecated' => true, 'alternative' => 'emsco_get_user']),
+            new TwigFilter('displayname', $this->displayName(...), ['deprecated' => true, 'alternative' => 'emsco_display_name']),
+            new TwigFilter('date_difference', $this->dateDifference(...), ['deprecated' => true, 'alternative' => 'emsco_date_difference']),
+            new TwigFilter('debug', $this->debug(...), ['deprecated' => true, 'alternative' => 'emsco_debug']),
+            new TwigFilter('call_user_func', $this->callUserFunc(...), ['deprecated' => true, 'alternative' => 'emsco_call_user_func']),
+            new TwigFilter('get_string', $this->getString(...), ['deprecated' => true, 'alternative' => 'emsco_get_string']),
+            new TwigFilter('get_file', $this->getFile(...), ['deprecated' => true]),
+            new TwigFilter('get_field_by_path', $this->getFieldByPath(...), ['deprecated' => true, 'alternative' => 'emsco_get_field_by_path']),
+            new TwigFilter('get_revision_id', [RevisionRuntime::class, 'getRevisionId'], ['deprecated' => true, 'alternative' => 'emsco_get_revision_id']),
         ];
     }
 
@@ -632,27 +662,6 @@ class AppExtension extends AbstractExtension
         return $repo->nextValue($name);
     }
 
-    /**
-     * @param array<mixed> $array1
-     * @param array<mixed> $array2
-     *
-     * @return array<mixed>
-     */
-    public function arrayIntersect(array $array1, array $array2): array
-    {
-        return \array_intersect($array1, $array2);
-    }
-
-    /**
-     * @param array<mixed> ...$arrays
-     *
-     * @return array<mixed>
-     */
-    public function arrayMergeRecursive(array ...$arrays): array
-    {
-        return \array_merge_recursive($arrays);
-    }
-
     public function cantBeFinalized(string $message = '', int $code = 0, \Throwable $previous = null): never
     {
         throw new CantBeFinalizedException($message, $code, $previous);
@@ -1007,33 +1016,12 @@ class AppExtension extends AbstractExtension
         return false;
     }
 
-    public function relativeLuminance(string $rgb): float
-    {
-        $color = new Color($rgb);
-
-        return $color->relativeLuminance();
-    }
-
-    public function contrastRatio(string $c1, string $c2): float
+    private function contrastRatio(string $c1, string $c2): float
     {
         $color1 = new Color($c1);
         $color2 = new Color($c2);
 
         return $color1->contrastRatio($color2);
-    }
-
-    public function md5(string $value): string
-    {
-        return \md5($value);
-    }
-
-    /**
-     * @deprecated
-     * @see https://twig.symfony.com/doc/1.x/functions/dump.html
-     */
-    public function dump(): void
-    {
-        \trigger_error('dump is now integrated by default in twig 1.5', E_USER_DEPRECATED);
     }
 
     public function convertJavaDateFormat(string $format): string
@@ -1057,22 +1045,6 @@ class AppExtension extends AbstractExtension
     public function getTimeFieldTimeFormat(array $options): string
     {
         return TimeFieldType::getFormat($options);
-    }
-
-    /**
-     * @param array<mixed> $haystack
-     */
-    public function inArray(mixed $needle, array $haystack): bool
-    {
-        return false !== \array_search($needle, $haystack);
-    }
-
-    /**
-     * @param array<mixed> $haystack
-     */
-    public function firstInArray(mixed $needle, array $haystack): bool
-    {
-        return 0 === \array_search($needle, $haystack);
     }
 
     /**

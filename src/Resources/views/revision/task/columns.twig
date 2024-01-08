@@ -17,8 +17,8 @@
         {{- 'revision.version_tag.empty'|trans -}}
     {%- endif -%}
 {%- endblock -%}
-{%- block requester -%}{{- data.taskCurrent.createdBy|displayname -}}{%- endblock -%}
-{%- block assignee -%}{{- data.taskCurrent.assignee|displayname -}}{%- endblock -%}
+{%- block requester -%}{{- data.taskCurrent.createdBy|emsco_display_name -}}{%- endblock -%}
+{%- block assignee -%}{{- data.taskCurrent.assignee|emsco_display_name -}}{%- endblock -%}
 
 {% block status %}
     <i class="{{ data.taskCurrent.statusIcon }}"></i>

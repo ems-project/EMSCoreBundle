@@ -16,7 +16,7 @@
 							{% if document %}
 								<li class="list-group-item ui-sortable-handle">
 									<i class="glyphicon glyphicon-move"></i>
-									{{ document.emsId|data_link }}
+									{{ document.emsId|emsco_data_link }}
 									{{ form_widget(attribute(form.items, document.id)) }}
 								</li>
 							{% endif %}
@@ -32,4 +32,4 @@
 			</div>
 		</div>
 	</div>
-{% endblock %} 
+{% endblock %}

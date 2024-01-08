@@ -13,7 +13,7 @@
     {%- set value = attribute(line.data, column.attribute)|default([]) -%}
     {%- if value is iterable and column.valid(line.data) -%}
         {%- for link in value -%}
-            {{- link|data_link|raw -}}
+            {{- link|emsco_data_link|raw -}}
             {%- if not loop.last -%}
                 &nbsp;
             {%- endif -%}
@@ -96,7 +96,7 @@
     {%- set value = attribute(line.data, column.attribute)|default(false) -%}
     {%- if value and column.valid(line.data)  -%}
         {{- block('emsco_form_table_column_data_label_prefix') -}}
-        {{- value|format_bytes -}}
+        {{- value|ems_format_bytes -}}
         {{- block('emsco_form_table_column_data_label_suffix') -}}
     {%- endif -%}
 {% endblock emsco_form_table_column_data_value_bytes %}
@@ -127,7 +127,7 @@
 {% block emsco_form_table_column_data_value_user %}
     {%- set value = attribute(line.data, column.attribute)|default('') -%}
     {% if column.valid(line.data) %}
-        {%- set displayname = value|displayname  -%}
+        {%- set displayname = value|emsco_display_name  -%}
         {{- block('emsco_form_table_column_data_label_prefix') -}}
         {{- displayname -}}
         {{- block('emsco_form_table_column_data_label_suffix') -}}
@@ -136,7 +136,7 @@
 
 {% block emsco_form_table_column_data_user %}
     {%- set value = attribute(line.data, column.attribute)|default('') -%}
-    {%- set displayname = value|displayname -%}
+    {%- set displayname = value|emsco_display_name -%}
     <td data-search="{{ value }} {{ displayname }}">
         {{- block(column.tableDataValueBlock()) -}}
     </td>

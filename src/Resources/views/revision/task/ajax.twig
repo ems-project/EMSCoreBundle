@@ -4,7 +4,7 @@
     <div id="revision-tasks-content">
         {% if revision.isLockedFor(app.user.userIdentifier) %}
             <div class="revision-tasks-info">{{- 'task.info.locked'|trans({
-                '%user%': revision.lockBy|displayname,
+                '%user%': revision.lockBy|emsco_display_name,
                 '%time%': revision.lockUntil.format(date_time_format)
             }) -}}</div>
         {% elseif revision.hasTasks == false %}
@@ -78,7 +78,7 @@
                             <span id="task-deadline {{ taskCurrent.deadline.timestamp < 'now'|date('U') ? 'task-deadline-red' }}">
                                 <i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{ taskCurrent.deadline.format(date_format) }}
                             </span>
-                            <span>{{ 'task.assigned_to'|trans }}<strong>{{ taskCurrent.assignee|displayname }}</strong></span>
+                            <span>{{ 'task.assigned_to'|trans }}<strong>{{ taskCurrent.assignee|emsco_display_name }}</strong></span>
                         </div>
                         <div><span class="task-current-status label label-{{ taskCurrent.statusLabel }}">{{ "task.status.#{taskCurrent.status}"|trans }}</span></div>
                     </div>
@@ -135,7 +135,7 @@
                     <div>
                         <div class="tasks-item-title">{{ task.title }}</div>
                         <div id="task-info">
-                            <span>{{ 'task.assigned_to'|trans }}<strong>{{ task.assignee|displayname }}</strong></span>
+                            <span>{{ 'task.assigned_to'|trans }}<strong>{{ task.assignee|emsco_display_name }}</strong></span>
                         </div>
                         {% if isCurrent|default(false) %}
                             <div><span class="task-current-status label label-{{ task.statusLabel }}">{{ "task.status.#{task.status}"|trans }}</span></div>
@@ -162,7 +162,7 @@
                     <i class="task-icon {{ task.statusIcon }}"></i>
                     <div>
                         <div class="tasks-item-title">{{ task.title }}</div>
-                        <div>{{ 'task.assigned_to'|trans }} <strong>{{ task.assignee|displayname }}</strong></div>
+                        <div>{{ 'task.assigned_to'|trans }} <strong>{{ task.assignee|emsco_display_name }}</strong></div>
                     </div>
                 </div>
             </div>
@@ -231,11 +231,11 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <div class="mb-1"><strong>{{ 'task.field.assignee'|trans }}</strong></div>
-                            <div>{{ task.assignee|displayname }}</div>
+                            <div>{{ task.assignee|emsco_display_name }}</div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <div class="mb-1"><strong>{{ 'task.field.requester'|trans }}</strong></div>
-                            <div>{{ task.createdBy|displayname }}</div>
+                            <div>{{ task.createdBy|emsco_display_name }}</div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <div class="mb-1"><strong>{{ 'task.field.deadline'|trans }}</strong></div>
@@ -313,8 +313,8 @@
                     <span class="time"><i class="fa fa-clock-o"></i> {{ log.date.format(date_time_format) }}</span>
                     <h3 class="timeline-header bg-info">
                         {{ "task.status.history.#{log.status}"|trans({
-                            '%user%': "<strong>#{log.username|displayname}</strong>",
-                            '%assignee%': "<strong>#{log.assignee|displayname}</strong>"
+                            '%user%': "<strong>#{log.username|emsco_display_name}</strong>",
+                            '%assignee%': "<strong>#{log.assignee|emsco_display_name}</strong>"
                         })|raw }}
                     </h3>
                     {% if log.comment %}<div class="timeline-body bg-gray-light">{{ log.comment }}</div>{% endif %}
@@ -327,7 +327,7 @@
                                 {% endif %}
                                 {% if null != log.taskAssignee %}
                                     <dt>{{ 'task.field.assignee'|trans }}</dt>
-                                    <dd>{{ log.taskAssignee|displayname }}</dd>
+                                    <dd>{{ log.taskAssignee|emsco_display_name }}</dd>
                                 {% endif %}
                                 {% if null != log.taskDeadline %}
                                     <dt>{{ 'task.field.deadline'|trans }}</dt>

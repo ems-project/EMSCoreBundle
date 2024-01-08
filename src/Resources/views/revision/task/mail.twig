@@ -6,13 +6,13 @@
 
 {% block mail_assignee_changed %}
     {{ block('_printHello') }}
-    <p>The task "{{ task.title }}" is now assigned to {{ task.assignee|displayname }}.</p>
+    <p>The task "{{ task.title }}" is now assigned to {{ task.assignee|emsco_display_name }}.</p>
     {{ block('_printInfo') }}
 {% endblock %}
 
 {% block mail_deleted %}
      {{ block('_printHello') }}
-    <p>The task "{{ task.title }}" has been deleted, by {{ app.user.userIdentifier|displayname }}</p>
+    <p>The task "{{ task.title }}" has been deleted, by {{ app.user.userIdentifier|emsco_display_name }}</p>
     <p><strong>Comment:</strong><br/><p>{{ comment|nl2br }}</p></p>
     <hr />
     {{ block('_printInfo') }}
@@ -29,7 +29,7 @@
     <p>The task "{{ task.title }}" has been send for validation.</p>
     {% if task.getLatestCompleted != null %}
         <p>
-            <strong>{{ task.getLatestCompleted.username|displayname }}, commented:</strong> <br/>
+            <strong>{{ task.getLatestCompleted.username|emsco_display_name }}, commented:</strong> <br/>
             {{ task.getLatestCompleted.comment }}
         </p>
     {% endif %}
@@ -41,7 +41,7 @@
     <p>The task "{{ task.title }}" has been rejected.</p>
     {% if task.getLatestRejection != null %}
         <p>
-            <strong>{{ task.getLatestRejection.username|displayname }}, commented:</strong> <br/>
+            <strong>{{ task.getLatestRejection.username|emsco_display_name }}, commented:</strong> <br/>
             {{ task.getLatestRejection.comment }}
         </p>
     {% endif %}
@@ -53,7 +53,7 @@
     <p>The task "{{ task.title }}" has been approved.</p>
     {% if task.getLatestApproved != null and task.getLatestApproved.comment != null %}
         <p>
-            <strong>{{ task.getLatestApproved.username|displayname }}, commented:</strong> <br/>
+            <strong>{{ task.getLatestApproved.username|emsco_display_name }}, commented:</strong> <br/>
             {{ task.getLatestApproved.comment }}
         </p>
     {% endif %}
@@ -80,8 +80,8 @@
 {% block _printTask %}
     <p>
         <strong>title:&nbsp;</strong>{{ task.title }}<br/>
-        <strong>assignee:&nbsp;</strong>{{ task.assignee|displayname }}<br/>
-        <strong>requester:&nbsp;</strong>{{ task.createdBy|displayname }}<br/>
+        <strong>assignee:&nbsp;</strong>{{ task.assignee|emsco_display_name }}<br/>
+        <strong>requester:&nbsp;</strong>{{ task.createdBy|emsco_display_name }}<br/>
         {% if task.hasDeadline %}<strong>deadline:&nbsp;</strong>{{ task.deadline.format(date_format) }}<br/>{% endif %}
         {% if task.hasDescription %}
             <strong>description:&nbsp;</strong><br/>

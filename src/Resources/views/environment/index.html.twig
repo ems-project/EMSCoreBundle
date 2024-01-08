@@ -90,7 +90,7 @@
                                     <th>{{ 'view.environment.index.action_label'|trans }}</th>
                                 </tr>
                                 {% for environment in environments %}
-                                    {{ "Environmen's info"|debug({name: environment.name}) }}
+                                    {{ "Environmen's info"|emsco_debug({name: environment.name}) }}
                                     {% if environment.managed %}
                                         <tr>
                                             <td class="text-center">{{ loop.index }}.</td>

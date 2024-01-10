@@ -1034,7 +1034,7 @@
 	{%- set jmnQuery = displayOptions.query|default(false) -%}
 
 	{%- if jmnField and jmnQuery and dataField.rawData is not null -%}
-        {% if displayOptions.environment is not null %}
+        {% if displayOptions.environment|default(null) is not null %}
             {% set index = displayOptions.environment|emsco_get_environment.alias %}
         {% else %}
             {% set index = dataField.fieldType.contentType.environment.alias %}

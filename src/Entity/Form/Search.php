@@ -88,6 +88,7 @@ class Search implements \JsonSerializable
     public function __construct()
     {
         $this->filters = new ArrayCollection();
+        $this->filters->add(new SearchFilter());
     }
 
     /**

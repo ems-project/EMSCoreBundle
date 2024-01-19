@@ -664,7 +664,7 @@ class AppExtension extends AbstractExtension
      */
     public function arrayMergeRecursive(array ...$arrays): array
     {
-        return \array_merge_recursive($arrays);
+        return \array_merge_recursive(...$arrays);
     }
 
     public function cantBeFinalized(string $message = '', int $code = 0, \Throwable $previous = null): never

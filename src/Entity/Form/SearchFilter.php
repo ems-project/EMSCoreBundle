@@ -86,7 +86,7 @@ class SearchFilter implements \JsonSerializable
                             $field ?: '_all' => [
                                 'query' => $this->pattern ?? '',
                                 'operator' => 'AND',
-                                'boost' => $this->boost ?? 1,
+                                'boost' => $this->boost ?? '1.0',
                             ],
                         ],
                     ];
@@ -111,7 +111,7 @@ class SearchFilter implements \JsonSerializable
                                 $field ?? '_all' => [
                                 'query' => $this->pattern ?: '',
                                 'operator' => 'OR',
-                                'boost' => $this->boost ?? 1,
+                                'boost' => $this->boost ?? '1.0',
                                 ],
                         ],
                     ];
@@ -121,7 +121,7 @@ class SearchFilter implements \JsonSerializable
                         'query_string' => [
                             'query' => $this->pattern ?? '*',
                             'default_operator' => 'AND',
-                            'boost' => $this->boost ?? 1,
+                            'boost' => $this->boost ?? '1.0',
                         ],
                     ];
                     if (!empty($field)) {
@@ -133,7 +133,7 @@ class SearchFilter implements \JsonSerializable
                         'query_string' => [
                             'query' => $this->pattern ?? '*',
                             'default_operator' => 'OR',
-                            'boost' => $this->boost ?? 1,
+                            'boost' => $this->boost ?? '1.0',
                         ],
                     ];
                     if (!empty($field)) {
@@ -145,7 +145,7 @@ class SearchFilter implements \JsonSerializable
                         'term' => [
                             $field ?: '_all' => [
                                 'value' => $this->pattern ?? '*',
-                                'boost' => $this->boost ?? 1,
+                                'boost' => $this->boost ?? '1.0',
                             ],
                         ],
                     ];
@@ -244,7 +244,7 @@ class SearchFilter implements \JsonSerializable
 
     public function setBoost(?float $boost): self
     {
-        $this->boost = (string) $boost;
+        $this->boost = $boost ? (string) $boost : null;
 
         return $this;
     }

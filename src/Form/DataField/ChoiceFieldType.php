@@ -18,8 +18,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ChoiceFieldType extends DataFieldType
 {
     private ?int $fakeIndex = null;
-    /** @var array<string, string|int> */
-    private array $choices;
 
     public function getLabel(): string
     {
@@ -63,13 +61,13 @@ class ChoiceFieldType extends DataFieldType
     {
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
-        $this->choices = $this->buildChoices($options);
+        $choices = $this->buildChoices($options);
 
         $builder->add('value', ChoiceType::class, [
                 'label' => ($options['label'] ?? $fieldType->getName()),
                 'required' => false,
                 'disabled' => $this->isDisabled($options),
-                'choices' => $this->choices,
+                'choices' => $choices,
                 'empty_data' => $options['multiple'] ? [] : null,
                 'multiple' => $options['multiple'],
                 'expanded' => $options['expanded'],
@@ -162,7 +160,9 @@ class ChoiceFieldType extends DataFieldType
     {
         $value = $data['value'] ?? null;
         if (\is_array($value)) {
-            $value = \array_values(\array_filter($this->choices, fn ($v) => \in_array($v, $value)));
+            $choices = $fieldType->getDisplayOption('choices', '');
+            $values = \explode("\n", \str_replace("\r", '', (string) $choices));
+            $value = \array_values(\array_filter($values, static fn ($v) => \in_array($v, $value, true)));
         }
 
         return parent::reverseViewTransform($value, $fieldType);

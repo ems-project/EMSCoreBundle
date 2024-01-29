@@ -9,7 +9,7 @@ use Ramsey\Uuid\UuidInterface;
 
 class FormVerification
 {
-    private readonly UuidInterface $id;
+    private UuidInterface $id;
 
     private readonly string $code;
     private readonly \DateTimeImmutable $created;

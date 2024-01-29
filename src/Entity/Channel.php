@@ -15,7 +15,7 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
 {
     use CreatedModifiedTrait;
 
-    private readonly UuidInterface $id;
+    private UuidInterface $id;
     protected string $name = '';
     /** @var string */
     protected $alias;

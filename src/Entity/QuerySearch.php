@@ -18,7 +18,7 @@ class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityI
 {
     use CreatedModifiedTrait;
 
-    private readonly UuidInterface $id;
+    private UuidInterface $id;
     protected string $label;
     protected string $name = '';
     /** @var Collection <int,Environment> */

@@ -17,7 +17,7 @@ class Task implements EntityInterface
 {
     use CreatedModifiedTrait;
 
-    private readonly UuidInterface $id;
+    private UuidInterface $id;
     private string $title;
     private string $status = self::STATUS_PLANNED;
     private int $delay;

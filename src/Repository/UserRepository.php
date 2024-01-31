@@ -91,13 +91,13 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
 
     public function findForRoleAndCircles(string $role, array $circles): array
     {
-        $resultSet = $this->createQueryBuilder('u')
-            ->where('u.roles like :role')
-            ->andWhere('u.enabled = :enabled')
-            ->setParameters([
-                    'role' => '%"'.$role.'"%',
-                    'enabled' => true,
-            ])->getQuery()->getResult();
+        $qb = $this->createQueryBuilder('u');
+        $resultSet = $qb
+            ->andWhere($qb->expr()->eq('u.enabled', $qb->expr()->literal(true)))
+            ->getQuery()
+            ->getResult();
+
+        $resultSet = \array_filter($resultSet, static fn (User $user) => \in_array($role, $user->getRoles()));
 
         if (!empty($circles)) {
             /** @var UserInterface $user */

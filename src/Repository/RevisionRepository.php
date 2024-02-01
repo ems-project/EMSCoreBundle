@@ -524,7 +524,7 @@ class RevisionRepository extends EntityRepository
         return (int) $qb->getQuery()->execute();
     }
 
-    public function deleteOldest(ContentType $contentType): int
+    public function deleteOldest(ContentType $contentType, ?string $ouuid): int
     {
         $conn = $this->_em->getConnection();
 
@@ -543,6 +543,10 @@ class RevisionRepository extends EntityRepository
             ->andWhere($qbSelect->expr()->lt('r.start_time', 'sub.minStartTime'))
             ->andWhere($qbSelect->expr()->eq('c.id', ':content_type_id'))
             ->setParameter('content_type_id', $contentType->getId());
+        if (null !== $ouuid) {
+            $qbSelect->andWhere($qbSelect->expr()->eq('r.ouuid', ':ouuid'))
+                ->setParameter('ouuid', $ouuid);
+        }
 
         return $this->deleteByQueryBuilder($qbSelect);
     }

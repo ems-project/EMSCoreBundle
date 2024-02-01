@@ -27,6 +27,7 @@ class DeleteCommand extends AbstractCommand
     private const ARGUMENT_CONTENT_TYPES = 'content-types';
     private const OPTION_MODE = 'mode';
     private const OPTION_QUERY = 'query';
+    private const OPTION_OUUID = 'ouuid';
 
     private const MODE_ALL = 'all';
     private const MODE_BY_QUERY = 'by-query';
@@ -53,6 +54,7 @@ class DeleteCommand extends AbstractCommand
             ->addArgument(self::ARGUMENT_CONTENT_TYPES, InputArgument::IS_ARRAY, 'contentType names or "all"')
             ->addOption(self::OPTION_MODE, null, InputOption::VALUE_REQUIRED, 'mode for deletion [all,oldest,by-query]', 'all')
             ->addOption(self::OPTION_QUERY, null, InputOption::VALUE_OPTIONAL, 'query to use in by-query mode')
+            ->addOption(self::OPTION_OUUID, null, InputOption::VALUE_OPTIONAL, 'OUUID of the document to delete')
         ;
     }
 
@@ -78,8 +80,20 @@ class DeleteCommand extends AbstractCommand
     {
         $this->io->title('EMSCO - Revision - Delete');
 
+        $queryJson = $this->getOptionStringNull(self::OPTION_QUERY);
+        $ouuid = $this->getOptionStringNull(self::OPTION_OUUID);
         if (self::MODE_BY_QUERY === $this->mode) {
-            return $this->deleteByQuery();
+            if (null !== $ouuid) {
+                throw new \RuntimeException(\sprintf('The %s option is forbidden in %s mode', self::OPTION_OUUID, $this->mode));
+            }
+            if (null === $queryJson) {
+                throw new \RuntimeException(\sprintf('The %s option is required in %s mode', self::OPTION_QUERY, $this->mode));
+            }
+
+            return $this->deleteByQuery($queryJson);
+        }
+        if (null !== $queryJson) {
+            throw new \RuntimeException(\sprintf('The %s option is forbidden in %s mode', self::OPTION_QUERY, $this->mode));
         }
 
         $this->io->note(\sprintf('Selected "%s" contentType(s)', \implode(',', $this->contentTypeNames)));
@@ -89,11 +103,14 @@ class DeleteCommand extends AbstractCommand
             $this->io->section(\sprintf('Content Type: %s', $contentTypeName));
 
             if (self::MODE_ALL === $this->mode) {
+                if (null !== $ouuid) {
+                    throw new \RuntimeException(\sprintf('The %s option is forbidden in %s mode', self::OPTION_OUUID, $this->mode));
+                }
                 $this->publishService->unpublishByContentType($contentType);
                 $result = $this->revisionService->deleteByContentType($contentType);
                 $results[] = \sprintf('Deleted all %d "%s" revisions', $result, $contentTypeName);
             } elseif (self::MODE_OLDEST === $this->mode) {
-                $result = $this->revisionService->deleteOldest($contentType);
+                $result = $this->revisionService->deleteOldest($contentType, $ouuid);
                 $results[] = \sprintf('Deleted oldest %d "%s" revisions', $result, $contentTypeName);
             }
         }
@@ -105,12 +122,8 @@ class DeleteCommand extends AbstractCommand
         return parent::EXECUTE_SUCCESS;
     }
 
-    private function deleteByQuery(): int
+    private function deleteByQuery(string $queryJson): int
     {
-        $queryJson = $this->getOptionStringNull(self::OPTION_QUERY);
-        if (null === $queryJson) {
-            throw new \RuntimeException(\sprintf('The %s option is required in %s mode', self::OPTION_QUERY, $this->mode));
-        }
         $search = $this->elasticaService->convertElasticsearchSearch(Json::decode($queryJson));
         $this->io->progressStart($this->elasticaService->count($search));
         $scroll = $this->elasticaService->scroll($search);

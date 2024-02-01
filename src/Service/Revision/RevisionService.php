@@ -119,9 +119,9 @@ class RevisionService implements RevisionServiceInterface
         return $this->revisionRepository->deleteByOuuids($ouuids);
     }
 
-    public function deleteOldest(ContentType $contentType): int
+    public function deleteOldest(ContentType $contentType, ?string $ouuid): int
     {
-        return $this->revisionRepository->deleteOldest($contentType);
+        return $this->revisionRepository->deleteOldest($contentType, $ouuid);
     }
 
     public function display(Revision|Document|string $value, string $expression = null): string

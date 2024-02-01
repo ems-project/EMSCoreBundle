@@ -160,9 +160,8 @@ class ChoiceFieldType extends DataFieldType
     {
         $value = $data['value'] ?? null;
         if (\is_array($value)) {
-            $choices = $fieldType->getDisplayOption('choices', '');
-            $values = \explode("\n", \str_replace("\r", '', (string) $choices));
-            $value = \array_values(\array_filter($values, static fn ($v) => \in_array($v, $value, true)));
+            $choices = $this->buildChoices($fieldType->getDisplayOptions());
+            $value = \array_values(\array_filter($value, static fn ($v) => \in_array($v, $choices, true)));
         }
 
         return parent::reverseViewTransform($value, $fieldType);

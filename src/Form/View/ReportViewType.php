@@ -82,6 +82,7 @@ class ReportViewType extends ViewType
                     'environment' => $view->getContentType()->getEnvironment(),
             ]);
         } catch (\Exception $e) {
+            $this->logger->error($e->getMessage(), ['view' => $view->getName(), 'option' => 'body']);
             $renderQuery = '{}';
         }
 
@@ -106,6 +107,7 @@ class ReportViewType extends ViewType
                 'result' => $resultSet->getResponse()->getData(),
             ]);
         } catch (\Exception $e) {
+            $this->logger->error($e->getMessage(), ['view' => $view->getName(), 'option' => 'template']);
             $render = 'Something went wrong with the template of the view '.$view->getLabel().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
         }
         try {
@@ -115,7 +117,8 @@ class ReportViewType extends ViewType
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $resultSet->getResponse()->getData(),
             ]);
-        } catch (\Exception) {
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage(), ['view' => $view->getName(), 'option' => 'javascript']);
             $javascript = '';
         }
         try {
@@ -125,7 +128,8 @@ class ReportViewType extends ViewType
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $resultSet->getResponse()->getData(),
             ]);
-        } catch (\Exception) {
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage(), ['view' => $view->getName(), 'option' => 'header']);
             $header = '';
         }
 

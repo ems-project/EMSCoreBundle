@@ -1,3 +1,9 @@
+out-of-sync:
+    modal:
+        reload-page: 'Reload page'
+        please-reload: 'Please reload the page.'
+        something-wrong: 'There is something wrong with this application.'
+        title: 'Out of sync'
 __views:
     elements:
         revision-toolbar-html:

@@ -40,6 +40,12 @@ final class LdapCoreUserFactory
      */
     private static function getExtraField(array $extraFields, ?string $field): ?string
     {
-        return $field ? $extraFields[$field] : null;
+        $extraFieldValue = $field ? $extraFields[$field] : null;
+
+        if (\is_array($extraFieldValue) && 1 === \count($extraFieldValue)) {
+            $extraFieldValue = \array_values($extraFieldValue)[0];
+        }
+
+        return $extraFieldValue;
     }
 }

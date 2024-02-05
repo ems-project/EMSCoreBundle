@@ -120,20 +120,31 @@ class IndexedAssetFieldType extends DataFieldType
     private function testDataField(DataField $dataField): void
     {
         $raw = $dataField->getRawData();
-
         if (!\is_array($raw) || empty($raw) || empty($raw['sha1'])) {
             $restrictionOptions = $dataField->giveFieldType()->getRestrictionOptions();
-
             if (isset($restrictionOptions['mandatory']) && $restrictionOptions['mandatory']) {
                 $dataField->addMessage('This entry is required');
             }
             $dataField->setRawData(null);
-        } elseif (!$this->fileService->head($raw['sha1'])) {
-            $dataField->addMessage('File not found on the server try to re-upload it');
-        } else {
-            $raw['filesize'] = $this->fileService->getSize($raw['sha1']);
-            $dataField->setRawData($raw);
+
+            return;
         }
+        if (!$this->fileService->head($raw['sha1'])) {
+            $dataField->addMessage('File not found on the server try to re-upload it');
+
+            return;
+        }
+
+        $raw['filesize'] = $this->fileService->getSize($raw['sha1']);
+        if (isset($raw['_date'])) {
+            $date = \strtotime((string) $raw['_date']);
+            if (false !== $date) {
+                $raw['_date'] = \date('c', $date);
+            } else {
+                $dataField->addMessage(\sprintf('Wrong date format for %s, use the ISO 8601 standard e.g. 1977-02-09T16:19:21+00:00', (string) $raw['_date']));
+            }
+        }
+        $dataField->setRawData($raw);
     }
 
     /**

@@ -96,7 +96,7 @@ class AssetExtractorService implements CacheWarmerInterface
         return $this->extractMetaData($hash, $file, $forced)->getSource();
     }
 
-    public function extractMetaData(string $hash, string $file = null, bool $forced = false): ExtractedData
+    public function extractMetaData(string $hash, string $file = null, bool $forced = false, string $filename = null): ExtractedData
     {
         $manager = $this->doctrine->getManager();
         $repository = $manager->getRepository(CacheAssetExtractor::class);
@@ -152,8 +152,9 @@ class AssetExtractorService implements CacheWarmerInterface
                 ]);
                 $out->setContent($result->getBody()->__toString());
             } catch (\Exception $e) {
-                $this->logger->error('service.asset_extractor.extract_error', [
+                $this->logger->warning('service.asset_extractor.extract_error', [
                     'file_hash' => $hash,
+                    'filename' => $filename ?? $hash,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                     'tika' => 'server',
@@ -175,8 +176,9 @@ class AssetExtractorService implements CacheWarmerInterface
                     $out->setLocale(self::cleanString($this->getTikaWrapper()->getLanguage($file)));
                 }
             } catch (\Exception $e) {
-                $this->logger->error('service.asset_extractor.extract_error', [
+                $this->logger->warning('service.asset_extractor.extract_error', [
                     'file_hash' => $hash,
+                    'filename' => $filename ?? $hash,
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                     'tika' => 'jar',

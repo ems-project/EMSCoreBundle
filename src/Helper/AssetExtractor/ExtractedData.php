@@ -7,11 +7,14 @@ use EMS\Helpers\Standard\Text;
 
 class ExtractedData
 {
+    private bool $empty;
+
     /**
      * @param array<string, mixed> $source
      */
     public function __construct(private array $source, private readonly int $maxContentSize)
     {
+        $this->empty = empty($source);
     }
 
     public static function fromJsonString(string $json, int $maxContentSize): self
@@ -120,5 +123,10 @@ class ExtractedData
         );
 
         return \array_combine($matches[1], $matches[2]);
+    }
+
+    public function isEmpty(): bool
+    {
+        return $this->empty;
     }
 }

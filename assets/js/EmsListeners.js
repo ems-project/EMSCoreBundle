@@ -404,10 +404,12 @@ export default class EmsListeners {
                 $(contentInput).val(response.content);
                 $(titleInput).val(response.title);
             })
-            .fail(function() {
-                const modal = $('#modal-notifications');
-                $(modal.find('.modal-body')).html('Something went wrong while extrating information from file');
-                modal.modal('show');
+            .fail(function(response) {
+                if (!response || !Array.isArray(response.warning) || 1 !== response.warning.length) {
+                    const modal = $('#modal-notifications');
+                    $(modal.find('.modal-body')).html('Something went wrong while extracting information from file');
+                    modal.modal('show');
+                }
             })
             .always(function() {
                 $(progressText).html('');

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Twig\Components;
 
-use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryConfig;
-use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryConfigFactory;
-use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryTemplate;
-use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryTemplateFactory;
+use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig;
+use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfigFactory;
+use EMS\CoreBundle\Core\Component\MediaLibrary\Template\MediaLibraryTemplate;
+use EMS\CoreBundle\Core\Component\MediaLibrary\Template\MediaLibraryTemplateFactory;
 use Symfony\UX\TwigComponent\Attribute\ExposeInTemplate;
 use Symfony\UX\TwigComponent\Attribute\PreMount;
 
@@ -23,6 +23,8 @@ final class MediaLibraryComponent
     public string $hash;
     #[ExposeInTemplate('id')]
     public string $id;
+    #[ExposeInTemplate('config')]
+    public MediaLibraryConfig $config;
     #[ExposeInTemplate('template')]
     public MediaLibraryTemplate $template;
 
@@ -36,11 +38,11 @@ final class MediaLibraryComponent
     {
         /** @var MediaLibraryConfig $config */
         $config = $this->mediaLibraryConfigFactory->createFromOptions($options);
-        $template = $this->templateFactory->create($config);
 
         $this->hash = $config->getHash();
         $this->id = $config->getId();
-        $this->template = $template;
+        $this->config = $config;
+        $this->template = $this->templateFactory->create($config);
 
         return [];
     }

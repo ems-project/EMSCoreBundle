@@ -136,7 +136,7 @@ class DataService
      * @throws PrivilegeException
      * @throws \Exception
      */
-    public function lockRevision(Revision $revision, Environment $publishEnv = null, bool $super = false, ?string $username = null): string
+    public function lockRevision(Revision $revision, Environment $publishEnv = null, bool $super = false, ?string $username = null, ?\DateTime $lockTime = null): string
     {
         if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
@@ -181,12 +181,9 @@ class DataService
 
         $revision->setLockBy($lockerUsername);
 
-        if ($username) {
-            // lock by a console script
-            $revision->setLockUntil(new \DateTime('+30 seconds'));
-        } else {
-            $revision->setLockUntil(new \DateTime($this->lockTime));
-        }
+        $lockTime ??= $username ? new \DateTime('+30 seconds') : new \DateTime($this->lockTime);
+        $revision->setLockUntil($lockTime);
+
         $em->flush();
 
         return $lockerUsername;

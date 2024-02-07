@@ -62,6 +62,24 @@
     </route>
 
     <!-- Media library -->
+    <route id="emsco.media_library.header" path="/media-lib/{hash}/header/{folderId}"
+         controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::getHeader"
+         methods="GET">
+      <requirement key="hash">.*</requirement>
+      <default key="folderId" xsi:nil="true"/>
+    </route>
+    <route id="emsco.media_library.file.rename" path="/media-lib/{hash}/file/{fileId}/rename"
+           controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::renameFile"
+           methods="GET|POST">
+      <requirement key="hash">.*</requirement>
+      <requirement key="fileId">.*</requirement>
+    </route>
+    <route id="emsco.media_library.files.delete" path="/media-lib/{hash}/files/delete/{folderId}"
+           controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::deleteFiles"
+           methods="POST">
+      <requirement key="hash">.*</requirement>
+      <default key="folderId" xsi:nil="true"/>
+    </route>
     <route id="emsco.media_library.files" path="/media-lib/{hash}/files/{folderId}"
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::getFiles"
            methods="GET">
@@ -72,6 +90,12 @@
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::getFolders"
            methods="GET">
         <requirement key="hash">.*</requirement>
+    </route>
+    <route id="emsco.media_library.folder.rename" path="/media-lib/{hash}/folder/{folderId}/rename"
+           controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::renameFolder"
+           methods="GET|POST">
+        <requirement key="hash">.*</requirement>
+        <requirement key="folderId">.*</requirement>
     </route>
     <route id="emsco.media_library.add_folder" path="/media-lib/{hash}/add-folder/{folderId}"
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::addFolder"

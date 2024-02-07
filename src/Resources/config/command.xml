@@ -86,6 +86,13 @@
             <tag name="console.command"/>
         </service>
 
+        <!-- EMS Media Library -->
+        <service id="emsco.command.media_library.rename_folder" class="EMS\CoreBundle\Command\MediaLibrary\RenameFolderCommand">
+            <argument type="service" id="emsco.core.media_library.config_factory"/>
+            <argument type="service" id="emsco.core.media_library"/>
+            <tag name="console.command"/>
+        </service>
+
         <!-- EMS notification -->
         <service id="ems.command.notification.bulk_action" class="EMS\CoreBundle\Command\Notification\BulkActionCommand">
             <argument type="service" id="ems.service.notification"/>

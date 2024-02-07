@@ -9,7 +9,7 @@ use EMS\CommonBundle\Json\JsonMenuNestedException;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Component\JsonMenuNested\Config\JsonMenuNestedConfig;
 use EMS\CoreBundle\Core\Component\JsonMenuNested\Config\JsonMenuNestedNode;
-use EMS\CoreBundle\Core\Component\JsonMenuNested\Template\Context\JsonMenuNestedRenderContext;
+use EMS\CoreBundle\Core\Component\JsonMenuNested\Template\JsonMenuNestedRenderContext;
 use EMS\CoreBundle\Core\Component\JsonMenuNested\Template\JsonMenuNestedTemplateFactory;
 use EMS\CoreBundle\Core\UI\Modal\Modal;
 use EMS\CoreBundle\Service\Revision\RevisionService;

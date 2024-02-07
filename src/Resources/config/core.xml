@@ -35,24 +35,30 @@
         </service>
 
         <!-- Media Library -->
-        <service id="emsco.core.media_library.request.param_converter" class="EMS\CoreBundle\Core\Component\MediaLibrary\Request\MediaLibraryParamConverter">
-            <tag name="request.param_converter" converter="emsco.media_library_request" />
-        </service>
         <service id="emsco.core.media_library" class="EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryService">
             <argument type="service" id="ems_common.service.elastica" />
             <argument type="service" id="ems.service.revision" />
             <argument type="service" id="EMS\CoreBundle\Service\DataService" />
+            <argument type="service" id="EMS\CoreBundle\Service\JobService"/>
             <argument type="service" id="ems.service.file" />
-            <argument type="service" id="router" />
             <argument type="service" id="emsco.core.media_library.template_factory" />
+            <argument type="service" id="emsco.core.media_library.file_factory" />
+            <argument type="service" id="emsco.core.media_library.folder_factory" />
+        </service>
+        <service id="emsco.core.media_library.file_factory" class="EMS\CoreBundle\Core\Component\MediaLibrary\File\MediaLibraryFileFactory">
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="router"/>
+        </service>
+        <service id="emsco.core.media_library.folder_factory" class="EMS\CoreBundle\Core\Component\MediaLibrary\Folder\MediaLibraryFolderFactory">
+            <argument type="service" id="ems_common.service.elastica" />
         </service>
         <service id="emsco.core.media_library.config_factory"
-                 class="EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryConfigFactory"
+                 class="EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfigFactory"
                  parent="emsco.config.abstract_config_factory">
             <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
-            <tag name="emsco.config.factory" config="EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryConfig" />
+            <tag name="emsco.config.factory" config="EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig" />
         </service>
-        <service id="emsco.core.media_library.template_factory" class="EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryTemplateFactory">
+        <service id="emsco.core.media_library.template_factory" class="EMS\CoreBundle\Core\Component\MediaLibrary\Template\MediaLibraryTemplateFactory">
             <argument type="service" id="twig" />
             <argument>%ems_core.template_namespace%</argument>
         </service>

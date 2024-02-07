@@ -21,6 +21,8 @@ final class Commands
     public const REVISION_TASK_CREATE = 'emsco:revision:task:create';
     public const REVISION_DISCARD_DRAFT = 'emsco:revision:discard-draft';
 
+    public const MEDIA_LIB_RENAME_FOLDER = 'emsco:medialibrary:rename-folder';
+
     public const USER_ACTIVATE = 'emsco:user:activate';
     public const USER_CHANGE_PASSWORD = 'emsco:user:change-password';
     public const USER_CREATE = 'emsco:user:create';

@@ -5,10 +5,19 @@ media_library:
             title: 'Add folder'
             submit: Create
             cancel: Cancel
+        rename:
+            title: 'Rename folder'
+            info: | 
+                Folder renaming in progress.
+                Please wait...
     file:
         load_more: 'Loading more files ...'
         add:
             title: Upload
+        delete:
+            title: 'Delete file'
+        rename:
+            title: 'Rename file'
 
 json_menu_nested:
     error:

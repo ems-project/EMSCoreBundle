@@ -10,7 +10,6 @@ use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig;
 use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfigFactory;
 use EMS\CoreBundle\Core\Component\MediaLibrary\Folder\MediaLibraryFolder;
-use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryDocument;
 use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryService;
 use MonorepoBuilderPrefix202311\Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -19,19 +18,17 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: Commands::MEDIA_LIB_RENAME_FOLDER,
-    description: 'Rename media library folder',
+    name: Commands::MEDIA_LIB_FOLDER_DELETE,
+    description: 'Delete media library folder',
     hidden: false
 )]
-class RenameFolderCommand extends AbstractCommand
+class FolderDeleteCommand extends AbstractCommand
 {
     private MediaLibraryFolder $folder;
     private MediaLibraryConfig $config;
-    private string $folderName;
     private string $username;
 
     public const ARGUMENT_FOLDER_ID = 'folder-id';
-    public const ARGUMENT_FOLDER_NAME = 'folder-name';
     public const OPTION_HASH = 'hash';
     public const OPTION_USERNAME = 'username';
 
@@ -46,7 +43,6 @@ class RenameFolderCommand extends AbstractCommand
     {
         $this
             ->addArgument(self::ARGUMENT_FOLDER_ID, InputArgument::REQUIRED)
-            ->addArgument(self::ARGUMENT_FOLDER_NAME, InputArgument::REQUIRED)
             ->addOption(self::OPTION_HASH, null, InputOption::VALUE_REQUIRED, 'media config hash')
             ->addOption(self::OPTION_USERNAME, null, InputOption::VALUE_REQUIRED, 'media config hash')
         ;
@@ -55,7 +51,7 @@ class RenameFolderCommand extends AbstractCommand
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
-        $this->io->title('EMS - Media Library - Rename folder');
+        $this->io->title('EMS - Media Library - Delete folder');
 
         $hash = $this->getOptionString(self::OPTION_HASH);
         $folderId = $this->getArgumentString(self::ARGUMENT_FOLDER_ID);
@@ -66,37 +62,34 @@ class RenameFolderCommand extends AbstractCommand
         $this->config = $config;
         $this->folder = $this->mediaLibraryService->getFolder($config, $folderId);
         $this->username = $this->getOptionString(self::OPTION_USERNAME);
-        $this->folderName = $this->getArgumentString(self::ARGUMENT_FOLDER_NAME);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $jobOutput = $output instanceof JobOutput ? $output : null;
 
-        $from = $this->folder->getPath()->getValue();
-        $to = $this->folder->getPath()->setName($this->folderName)->getValue();
-        $this->io->info(\sprintf('Start renaming from "%s" to "%s"', $from, $to));
-
-        $totalChildren = $this->mediaLibraryService->countByPath($this->config, $from);
-        $children = $this->mediaLibraryService->findByPath($this->config, $from);
+        $path = $this->folder->getPath()->getValue();
+        $totalChildren = $this->mediaLibraryService->countByPath($this->config, $path);
+        $children = $this->mediaLibraryService->findByPath($this->config, $path);
 
         $this->io->info(\sprintf('Found %d children to renaming', $totalChildren));
 
-        $progressBar = $this->io->createProgressBar($totalChildren + 1);
+        $total = $totalChildren + 1;
         $processed = 0;
+        $progressBar = $this->io->createProgressBar($total);
 
         foreach ($children as $child) {
-            $this->rename($child, $from, $to);
+            $this->mediaLibraryService->deleteDocument($child, $this->username);
 
             ++$processed;
-            $percentage = (int) (($processed / $totalChildren) * 100);
+            $percentage = (int) (($processed / $total) * 100);
 
             $jobOutput?->progress($percentage);
             $progressBar->advance();
         }
 
-        $this->io->info('Renaming folder');
-        $this->rename($this->folder, $from, $to);
+        $this->io->info('Deleting folder');
+        $this->mediaLibraryService->deleteDocument($this->folder, $this->username);
 
         $jobOutput?->progress(100);
         $progressBar->finish();
@@ -104,13 +97,5 @@ class RenameFolderCommand extends AbstractCommand
         $this->mediaLibraryService->refresh($this->config);
 
         return self::EXECUTE_SUCCESS;
-    }
-
-    public function rename(MediaLibraryDocument $document, string $from, string $to): void
-    {
-        $renamedPath = $document->getPath()->move($from, $to);
-        $document->setPath($renamedPath);
-
-        $this->mediaLibraryService->updateDocument($document, $this->username);
     }
 }

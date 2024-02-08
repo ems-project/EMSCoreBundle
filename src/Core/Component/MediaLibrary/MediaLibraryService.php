@@ -83,7 +83,7 @@ class MediaLibraryService
     public function deleteFiles(MediaLibraryConfig $config, array $fileIds): bool
     {
         foreach ($this->fileFactory->createFromArray($config, $fileIds) as $mediaFile) {
-            $this->dataService->delete($mediaFile->document->getContentType(), $mediaFile->document->getOuuid());
+            $this->deleteDocument($mediaFile);
         }
 
         return true;
@@ -171,7 +171,26 @@ class MediaLibraryService
         return $componentModal;
     }
 
-    public function jobRenameFolder(MediaLibraryConfig $config, UserInterface $user, MediaLibraryFolder $folder): Job
+    public function jobFolderDelete(MediaLibraryConfig $config, UserInterface $user, MediaLibraryFolder $folder): Job
+    {
+        $revision = $this->getRevision($folder);
+        if ($revision->isLocked()) {
+            throw new MediaLibraryException('media_library.locked');
+        }
+
+        $this->revisionService->lock($revision, $user, new \DateTime('+1 hour'));
+
+        $command = \vsprintf('%s --hash=%s --username=%s -- %s', [
+            Commands::MEDIA_LIB_FOLDER_DELETE,
+            $config->getHash(),
+            $user->getUserIdentifier(),
+            $folder->id,
+        ]);
+
+        return $this->jobService->createCommand($user, $command);
+    }
+
+    public function jobFolderRename(MediaLibraryConfig $config, UserInterface $user, MediaLibraryFolder $folder): Job
     {
         $revision = $this->getRevision($folder);
         if ($revision->isLocked()) {
@@ -181,7 +200,7 @@ class MediaLibraryService
         $this->revisionService->lock($revision, $user, new \DateTime('+1 hour'));
 
         $command = \vsprintf("%s --hash=%s --username=%s -- %s '%s'", [
-            Commands::MEDIA_LIB_RENAME_FOLDER,
+            Commands::MEDIA_LIB_FOLDER_RENAME,
             $config->getHash(),
             $user->getUserIdentifier(),
             $folder->id,
@@ -241,6 +260,12 @@ class MediaLibraryService
             rawData: $document->getSource(true),
             username: $username
         );
+    }
+
+    public function deleteDocument(MediaLibraryDocument $mediaDocument, ?string $username = null): void
+    {
+        $document = $mediaDocument->document;
+        $this->dataService->delete($document->getContentType(), $document->getOuuid(), $username);
     }
 
     public function refresh(MediaLibraryConfig $config): void

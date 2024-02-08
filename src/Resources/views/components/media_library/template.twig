@@ -12,6 +12,7 @@
             {{- template.block('media_lib_button_file_rename', _context)|raw -}}
             {{- template.block('media_lib_button_file_delete', _context)|raw -}}
         {%- elseif mediaFolder is defined -%}
+            {{- template.block('media_lib_button_folder_delete', _context)|raw -}}
             {{- template.block('media_lib_button_folder_rename', _context)|raw -}}
         {%- endif -%}
         {{- template.block('media_lib_breadcrumb', _context)|raw -}}
@@ -55,6 +56,12 @@
         <i class="fa fa-folder" aria-hidden="true"></i> {{- buttonLabel|default('media_library.folder.add.title'|trans) -}}
     </button>
 {%- endblock media_lib_button_folder_add -%}
+
+{%- block media_lib_button_folder_delete -%}
+    <button class="btn btn-sm btn-default btn-folder-delete" data-id="{{- mediaFolder.id -}}" data-modal-size="md">
+        <i class="fa fa-remove" aria-hidden="true"></i> {{- buttonLabel|default('media_library.folder.delete.title'|trans) -}}
+    </button>
+{%- endblock media_lib_button_folder_delete -%}
 
 {%- block media_lib_button_folder_rename -%}
     <button class="btn btn-sm btn-default btn-folder-rename" data-id="{{- mediaFolder.id -}}">
@@ -107,10 +114,13 @@
 
 {%- block media_lib_modal_footer -%}
     <div class="pull-right">
-        {% if form is defined  %}
-            <button id="ajax-modal-submit" class="btn btn-sm btn-primary"><i class="fa fa-save"></i>&nbsp;Save</button>
+        {% if form is defined %}
+            <button id="ajax-modal-submit" class="{{ html_classes('btn btn-sm', submitClass|default('btn-primary')) }}">
+                <i class="{{ html_classes('fa', submitIcon|default('fa-save')) }}"></i>
+                {{ submitLabel|default('media_library.submit'|trans) }}
+            </button>
         {% endif %}
-        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">{{ 'media_library.cancel'|trans }}</button>
     </div>
 {%- endblock media_lib_modal_footer -%}
 

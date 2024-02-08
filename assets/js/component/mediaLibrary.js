@@ -65,6 +65,7 @@ export default class MediaLibrary {
             if (classList.contains('btn-file-rename')) this._onClickButtonFileRename(event.target);
             if (classList.contains('btn-home')) this._onClickButtonHome(event.target);
             if (classList.contains('btn-folder-add')) this._onClickButtonFolderAdd();
+            if (classList.contains('btn-folder-delete')) this._onClickButtonFolderDelete(event.target);
             if (classList.contains('btn-folder-rename')) this._onClickButtonFolderRename(event.target);
             if (classList.contains('breadcrumb-item')) this._onClickBreadcrumbItem(event.target);
         }
@@ -133,6 +134,34 @@ export default class MediaLibrary {
                 this.loading(true);
                 this._getFolders(json.path).then(() => this.loading(false));
             }
+        });
+    }
+    _onClickButtonFolderDelete(button) {
+        const folderId = button.dataset.id;
+        const modalSize = button.dataset.modalSize ?? 'sm';
+
+        ajaxModal.load({ url: `${this.#pathPrefix}/folder/${folderId}/delete`, size: modalSize }, (json) => {
+            if (!json.hasOwnProperty('success') || json.success === false) return;
+            if (!json.hasOwnProperty('jobId')) return;
+
+            let jobProgressBar = new ProgressBar('progress-' + json.jobId, {
+                label: 'Deleting folder',
+                value: 100,
+                showPercentage: false,
+            });
+
+            ajaxModal.getBodyElement().append(jobProgressBar.element());
+            this.loading(true);
+
+            Promise.allSettled([
+                this._startJob(json.jobId),
+                this._jobPolling(json.jobId, jobProgressBar)
+            ])
+                .then(() => this._onClickButtonHome())
+                .then(() => this._getFolders())
+                .then(() => setTimeout(() => {}, 1000))
+                .then(() => ajaxModal.close())
+            ;
         });
     }
     _onClickButtonFolderRename(button) {

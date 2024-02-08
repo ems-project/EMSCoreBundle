@@ -8,6 +8,7 @@ use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig;
 use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryService;
 use EMS\CoreBundle\Core\UI\AjaxModal;
 use EMS\CoreBundle\Core\UI\AjaxService;
+use EMS\CoreBundle\Core\UI\Modal\ModalMessageType;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -144,7 +145,7 @@ class MediaLibraryController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $job = $this->mediaLibraryService->jobRenameFolder($config, $user, $folder);
+            $job = $this->mediaLibraryService->jobFolderRename($config, $user, $folder);
             $this->flashBag($request)->clear();
 
             return new JsonResponse([
@@ -152,7 +153,7 @@ class MediaLibraryController
                 'jobId' => $job->getId(),
                 'modalBody' => '',
                 'modalMessages' => [
-                    ['info' => $this->translator->trans('media_library.folder.rename.info', [], EMSCoreBundle::TRANS_COMPONENT)],
+                    ['info' => $this->translator->trans('media_library.folder.rename.job_info', [], EMSCoreBundle::TRANS_COMPONENT)],
                 ],
             ]);
         }
@@ -161,9 +162,49 @@ class MediaLibraryController
             'type' => 'rename',
             'title' => $this->translator->trans('media_library.folder.rename.title', [], EMSCoreBundle::TRANS_COMPONENT),
             'form' => $form->createView(),
+            'submitIcon' => 'fa-pencil',
+            'submitLabel' => $this->translator->trans('media_library.folder.rename.submit', [], EMSCoreBundle::TRANS_COMPONENT),
         ]);
 
         return new JsonResponse($modal->render());
+    }
+
+    public function deleteFolder(MediaLibraryConfig $config, Request $request, UserInterface $user, string $folderId): JsonResponse
+    {
+        $folder = $this->mediaLibraryService->getFolder($config, $folderId);
+
+        $form = $this->formFactory->createBuilder(FormType::class, $folder)->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $job = $this->mediaLibraryService->jobFolderDelete($config, $user, $folder);
+            $this->flashBag($request)->clear();
+
+            return new JsonResponse([
+                'success' => true,
+                'jobId' => $job->getId(),
+                'modalBody' => '',
+                'modalMessages' => [
+                    ['info' => $this->translator->trans('media_library.folder.delete.job_info', [], EMSCoreBundle::TRANS_COMPONENT)],
+                ],
+            ]);
+        }
+
+        $componentModal = $this->mediaLibraryService->modal($config, [
+            'type' => 'delete',
+            'title' => $this->translator->trans('media_library.folder.delete.title', [], EMSCoreBundle::TRANS_COMPONENT),
+            'form' => $form->createView(),
+            'submitIcon' => 'fa-remove',
+            'submitClass' => 'btn-outline-danger',
+            'submitLabel' => $this->translator->trans('media_library.folder.delete.submit', [], EMSCoreBundle::TRANS_COMPONENT),
+        ]);
+
+        $componentModal->modal->addMessage(
+            ModalMessageType::Warning,
+            $this->translator->trans('media_library.folder.delete.warning', [], EMSCoreBundle::TRANS_COMPONENT)
+        );
+
+        return new JsonResponse($componentModal->render());
     }
 
     public function deleteFiles(MediaLibraryConfig $config, Request $request): JsonResponse

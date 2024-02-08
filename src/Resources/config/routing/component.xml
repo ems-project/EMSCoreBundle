@@ -91,6 +91,12 @@
            methods="GET">
         <requirement key="hash">.*</requirement>
     </route>
+    <route id="emsco.media_library.folder.delete" path="/media-lib/{hash}/folder/{folderId}/delete"
+           controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::deleteFolder"
+           methods="GET|POST">
+        <requirement key="hash">.*</requirement>
+        <requirement key="folderId">.*</requirement>
+    </route>
     <route id="emsco.media_library.folder.rename" path="/media-lib/{hash}/folder/{folderId}/rename"
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::renameFolder"
            methods="GET|POST">

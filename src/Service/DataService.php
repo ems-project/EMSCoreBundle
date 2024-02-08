@@ -1219,7 +1219,7 @@ class DataService
         return $hasPreviousRevision;
     }
 
-    public function delete(string $type, string $ouuid): void
+    public function delete(string $type, string $ouuid, ?string $username = null): void
     {
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
@@ -1243,9 +1243,11 @@ class DataService
                 'contentType' => $contentTypes[0],
         ]);
 
+        $username ??= $this->userService->getCurrentUser()->getUsername();
+
         /** @var Revision $revision */
         foreach ($revisions as $revision) {
-            $this->lockRevision($revision);
+            $this->lockRevision(revision: $revision, username: $username);
 
             /** @var Environment $environment */
             foreach ($revision->getEnvironments() as $environment) {
@@ -1268,7 +1270,7 @@ class DataService
                 $revision->removeEnvironment($environment);
             }
             $revision->setDeleted(true);
-            $revision->setDeletedBy($this->userService->getCurrentUser()->getUsername());
+            $revision->setDeletedBy($username);
 
             if (null === $revision->getEndTime()) {
                 $this->auditLogger->notice('log.revision.deleted', LogRevisionContext::delete($revision));

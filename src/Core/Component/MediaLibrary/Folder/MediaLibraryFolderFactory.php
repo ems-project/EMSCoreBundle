@@ -8,43 +8,42 @@ use Elastica\Query\Term;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
-use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryConfig;
+use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig;
+use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryPath;
 
 class MediaLibraryFolderFactory
 {
-    public function __construct(
-        private readonly ElasticaService $elasticaService,
-        private readonly MediaLibraryConfig $config)
+    public function __construct(private readonly ElasticaService $elasticaService)
     {
     }
 
-    public function create(string $ouuid): MediaLibraryFolder
+    public function create(MediaLibraryConfig $config, string $ouuid): MediaLibraryFolder
     {
-        $index = $this->config->contentType->giveEnvironment()->getAlias();
-        $document = $this->elasticaService->getDocument($index, $this->config->contentType->getName(), $ouuid);
+        $index = $config->contentType->giveEnvironment()->getAlias();
+        $document = $this->elasticaService->getDocument($index, $config->contentType->getName(), $ouuid);
 
-        return $this->createFromDocument($document);
+        return $this->createFromDocument($config, $document);
     }
 
-    private function createFromDocument(DocumentInterface $document): MediaLibraryFolder
+    private function createFromDocument(MediaLibraryConfig $config, DocumentInterface $document): MediaLibraryFolder
     {
-        $folder = MediaLibraryFolder::fromDocument($this->config, $document);
+        $folder = new MediaLibraryFolder($document, $config);
 
-        if ($parentPath = $folder->getParentPath()) {
-            $parentDocument = $this->searchParent($parentPath);
-            $folder->setParent($this->createFromDocument($parentDocument));
+        if ($parentPath = $folder->getPath()->parent()) {
+            $parentDocument = $this->searchParent($config, $parentPath);
+            $folder->setParent($this->createFromDocument($config, $parentDocument));
         }
 
         return $folder;
     }
 
-    private function searchParent(string $path): DocumentInterface
+    private function searchParent(MediaLibraryConfig $config, MediaLibraryPath $path): DocumentInterface
     {
         $query = $this->elasticaService->getBoolQuery();
-        $query->addMust((new Term())->setTerm($this->config->fieldPath, $path));
+        $query->addMust((new Term())->setTerm($config->fieldPath, $path->getValue()));
 
-        $search = new Search([$this->config->contentType->giveEnvironment()->getAlias()], $query);
-        $search->setContentTypes([$this->config->contentType->getName()]);
+        $search = new Search([$config->contentType->giveEnvironment()->getAlias()], $query);
+        $search->setContentTypes([$config->contentType->getName()]);
 
         return $this->elasticaService->singleSearch($search);
     }

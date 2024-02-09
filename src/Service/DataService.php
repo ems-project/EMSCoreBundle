@@ -136,7 +136,7 @@ class DataService
      * @throws PrivilegeException
      * @throws \Exception
      */
-    public function lockRevision(Revision $revision, Environment $publishEnv = null, bool $super = false, string $username = null): string
+    public function lockRevision(Revision $revision, Environment $publishEnv = null, bool $super = false, string $username = null, ?\DateTime $lockTime = null): string
     {
         if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
@@ -181,12 +181,9 @@ class DataService
 
         $revision->setLockBy($lockerUsername);
 
-        if ($username) {
-            // lock by a console script
-            $revision->setLockUntil(new \DateTime('+30 seconds'));
-        } else {
-            $revision->setLockUntil(new \DateTime($this->lockTime));
-        }
+        $lockTime ??= $username ? new \DateTime('+30 seconds') : new \DateTime($this->lockTime);
+        $revision->setLockUntil($lockTime);
+
         $em->flush();
 
         return $lockerUsername;
@@ -1221,7 +1218,7 @@ class DataService
         return $hasPreviousRevision;
     }
 
-    public function delete(string $type, string $ouuid): void
+    public function delete(string $type, string $ouuid, ?string $username = null): void
     {
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
@@ -1245,9 +1242,11 @@ class DataService
                 'contentType' => $contentTypes[0],
         ]);
 
+        $username ??= $this->userService->getCurrentUser()->getUsername();
+
         /** @var Revision $revision */
         foreach ($revisions as $revision) {
-            $this->lockRevision($revision);
+            $this->lockRevision(revision: $revision, username: $username);
 
             /** @var Environment $environment */
             foreach ($revision->getEnvironments() as $environment) {
@@ -1270,7 +1269,7 @@ class DataService
                 $revision->removeEnvironment($environment);
             }
             $revision->setDeleted(true);
-            $revision->setDeletedBy($this->userService->getCurrentUser()->getUsername());
+            $revision->setDeletedBy($username);
 
             if (null === $revision->getEndTime()) {
                 $this->auditLogger->notice('log.revision.deleted', LogRevisionContext::delete($revision));

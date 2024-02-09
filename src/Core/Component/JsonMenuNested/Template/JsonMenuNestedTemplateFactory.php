@@ -20,6 +20,6 @@ class JsonMenuNestedTemplateFactory
      */
     public function create(JsonMenuNestedConfig $config, array $context = []): JsonMenuNestedTemplate
     {
-        return new JsonMenuNestedTemplate($config, $this->twig, $this->templateNamespace, $context);
+        return new JsonMenuNestedTemplate($this->twig, $config, $this->templateNamespace, $context);
     }
 }

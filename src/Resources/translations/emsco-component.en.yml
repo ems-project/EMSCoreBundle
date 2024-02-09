@@ -1,14 +1,35 @@
 media_library:
     home: Home
+    submit: Save
+    cancel: Cancel
     folder:
         add:
             title: 'Add folder'
             submit: Create
             cancel: Cancel
+        delete:
+            title: 'Delete folder'
+            submit: Confirm
+            warning: |
+                Are you sure you want to delete this folder? 
+                This action will also remove any subfolders and files within.
+            job_info: |
+                Folder removing in progress.
+                Please wait...
+        rename:
+            title: 'Rename folder'
+            submit: Rename
+            job_info: | 
+                Folder renaming in progress.
+                Please wait...
     file:
         load_more: 'Loading more files ...'
         add:
             title: Upload
+        delete:
+            title: 'Delete file'
+        rename:
+            title: 'Rename file'
 
 json_menu_nested:
     error:

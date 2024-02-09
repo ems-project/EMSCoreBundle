@@ -4,16 +4,20 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_job_status" path="/status/{job}"
+    <route id="emsco_job_status" path="/status/{job}.{_format}"
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::jobStatus"
            methods="GET"
-           format="html"/>
+           format="html">
+        <requirement key="_format">html|json</requirement>
+    </route>
     <route id="emsco_job_start" path="/start/{job}"
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::startJob"
            methods="POST"
            format="html"/>
-    <route id="job.status" path="/status/{job}"
+    <route id="job.status" path="/status/{job}.{_format}"
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::jobStatus"
            methods="GET"
-           format="html"/>
+           format="html">
+        <requirement key="_format">html|json</requirement>
+    </route>
 </routes>

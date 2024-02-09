@@ -1,11 +1,9 @@
 {% trans_default_domain 'emsco-component' %}
+{# @var template \EMS\CoreBundle\Core\Component\MediaLibrary\Template\MediaLibraryTemplate #}
+{# @var config \EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig #}
 
-{% use '@EMSCore/components/media_library/elements.html.twig' %}
-
-<div class="media-lib" id="{{ id }}" data-hash="{{ hash }}">
-    <div class="media-nav-bar">
-        {{ template.renderHeader|raw }}
-    </div>
+<div class="media-lib" id="{{ config.id }}" data-hash="{{ hash }}">
+    <div class="media-nav-bar"></div>
     <div class="media-lib-content">
         <div class="media-lib-left-column">
             <div class="media-lib-folders">
@@ -16,11 +14,14 @@
             <div class="media-lib-files">
                 <ul class="media-lib-list-uploads"></ul>
                 <ul class="media-lib-list-files"></ul>
-                {{ block('loadMore') }}
+                <div class="media-lib-load-more">
+                    <i class="fa fa-refresh fa-spin fa-2x fa-fw"></i>
+                    <span>{{ 'media_library.file.load_more'|trans }}</span>
+                </div>
             </div>
         </div>
     </div>
     <div class="media-lib-footer">
-        {{ template.block('mediaLibraryFooter')|raw }}
+        {{ template.block('media_lib_footer', _context)|raw }}
     </div>
 </div>

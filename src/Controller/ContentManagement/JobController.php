@@ -12,6 +12,7 @@ use Psr\Log\LoggerInterface;
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 use SensioLabs\AnsiConverter\Theme\Theme;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\JsonResponse as SymfonyJsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,11 +49,22 @@ class JobController extends AbstractController
         ]);
     }
 
-    public function jobStatus(Job $job): Response
+    public function jobStatus(Request $request, Job $job): Response
     {
         $encoder = new Encoder();
-        $theme = new Theme();
-        $converter = new AnsiToHtmlConverter($theme);
+        $converter = new AnsiToHtmlConverter(new Theme());
+
+        if ('json' === $request->getRequestFormat() || 'json' === $request->getContentType()) {
+            $output = $request->query->getBoolean('output');
+
+            return new JsonResponse([
+                'status' => $job->getStatus(),
+                'progress' => $job->getProgress(),
+                'done' => $job->getDone(),
+                'started' => $job->getStarted(),
+                'output' => $output ? $encoder->encodeUrl($converter->convert($job->getOutput())) : null,
+            ]);
+        }
 
         return $this->render("@$this->templateNamespace/job/status.html.twig", [
             'job' => $job,

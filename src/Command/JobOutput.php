@@ -24,6 +24,14 @@ class JobOutput extends Output
         parent::setVerbosity(self::JOB_VERBOSITY);
     }
 
+    public function progress(int $progress): void
+    {
+        $job = $this->jobRepository->findById($this->jobId);
+        $job->setProgress($progress);
+
+        $this->jobRepository->save($job);
+    }
+
     public function doWrite(string $message, bool $newline): void
     {
         $job = $this->jobRepository->findById($this->jobId);

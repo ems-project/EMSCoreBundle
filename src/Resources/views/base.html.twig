@@ -276,12 +276,14 @@
 
   <!-- Main Footer -->
   <footer class="main-footer no-print">
-    <!-- To the right -->
-    <div class="pull-right">
-        {{ 'core.version'|trans({ '%core%': ems_version('core'), '%symfony%': ems_version('symfony') }, 'emsco-core') }}
-    </div>
-    <!-- Default to the left -->
-    <a href="http://www.elasticms.eu/">elastic<b>ms</b></a>
+    {% if app.user %}
+        <!-- To the right -->
+        <div class="pull-right">
+            {{ 'core.version'|trans({ '%core%': ems_version('core'), '%symfony%': ems_version('symfony') }, 'emsco-core') }}
+        </div>
+        <!-- Default to the left -->
+        <a href="http://www.elasticms.eu/">elastic<b>ms</b></a>
+    {% endif %}
   </footer>
 
   <!-- Control Sidebar -->

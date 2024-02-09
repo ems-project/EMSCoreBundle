@@ -34,6 +34,10 @@ class AjaxModal {
         };
     }
 
+    getBodyElement() {
+        return this.modal.querySelector('.ajax-modal-body');
+    }
+
     close() {
         this.$modal.modal('hide');
     }
@@ -105,7 +109,10 @@ class AjaxModal {
                 this.ajaxReady(json, response.url, callback);
                 this.stateReady();
             }) : Promise.reject(response);
-        }).catch(() => { this.printMessage('error', 'Error loading ...'); });
+        }).catch((e) => {
+            this.printMessage('error', 'Error loading ...');
+            throw e
+        });
     }
 
     submitForm(url, callback)
@@ -122,7 +129,10 @@ class AjaxModal {
                 this.ajaxReady(json, response.url, callback);
                 this.stateReady();
             }) : Promise.reject(response);
-        }).catch(() => { this.printMessage('error', 'Error loading ...'); });
+        }).catch((e) => {
+            this.printMessage('error', 'Error loading ...');
+            throw e
+        });
     }
 
     ajaxReady(json, url, callback) {
@@ -185,13 +195,16 @@ class AjaxModal {
             case 'error':
                 messageClass = 'alert-danger';
                 break;
+            case 'info':
+                messageClass = 'alert-info';
+                break;
             default:
                 messageClass = 'alert-success';
         }
 
         this.modal.querySelector('.ajax-modal-body').insertAdjacentHTML(
             'afterbegin',
-            '<div class="alert '+ messageClass +'" role="alert">' + message +'</div>'
+            '<div class="alert '+ messageClass +'" role="alert">' + message.replace(/\n/g, '<br>') +'</div>'
         );
     }
 }

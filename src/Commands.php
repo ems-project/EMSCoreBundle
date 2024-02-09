@@ -52,6 +52,9 @@ final class Commands
     public const SUBMISSIONS_EMAIL = 'emsco:submissions:email';
     public const SUBMISSIONS_REMOVE_EXPIRED = 'emsco:submissions:remove-expired';
 
+    public const MEDIA_LIB_FOLDER_DELETE = 'emsco:medialib:folder-delete';
+    public const MEDIA_LIB_FOLDER_RENAME = 'emsco:medialib:folder-rename';
+
     public const USER_ACTIVATE = 'emsco:user:activate';
     public const USER_CHANGE_PASSWORD = 'emsco:user:change-password';
     public const USER_CREATE = 'emsco:user:create';

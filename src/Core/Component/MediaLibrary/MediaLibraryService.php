@@ -51,7 +51,7 @@ class MediaLibraryService
     /**
      * @param array{ filename: string, filesize: int, mimetype?: string, sha1: string } $file
      */
-    public function createFile(MediaLibraryConfig $config, array $file, ?MediaLibraryFolder $folder = null): bool
+    public function createFile(MediaLibraryConfig $config, array $file, MediaLibraryFolder $folder = null): bool
     {
         $path = $folder ? $folder->getPath()->getValue().'/' : '/';
         $file['mimetype'] ??= $this->getMimeType($file['sha1']);
@@ -65,7 +65,7 @@ class MediaLibraryService
         return null !== $createdUuid;
     }
 
-    public function createFolder(MediaLibraryConfig $config, string $folderName, ?MediaLibraryFolder $parentFolder = null): ?MediaLibraryFolder
+    public function createFolder(MediaLibraryConfig $config, string $folderName, MediaLibraryFolder $parentFolder = null): ?MediaLibraryFolder
     {
         $path = $parentFolder ? $parentFolder->getPath()->getValue().'/' : '/';
 
@@ -103,7 +103,7 @@ class MediaLibraryService
      *     rows?: string
      * }
      */
-    public function getFiles(MediaLibraryConfig $config, int $from, ?MediaLibraryFolder $folder = null): array
+    public function getFiles(MediaLibraryConfig $config, int $from, MediaLibraryFolder $folder = null): array
     {
         $path = $folder ? $folder->getPath()->getValue().'/' : '/';
 
@@ -251,7 +251,7 @@ class MediaLibraryService
         return 0 === $form->getErrors(true)->count() ? $uuid->toString() : null;
     }
 
-    public function updateDocument(MediaLibraryDocument $mediaDocument, ?string $username = null): void
+    public function updateDocument(MediaLibraryDocument $mediaDocument, string $username = null): void
     {
         $document = $mediaDocument->document;
 
@@ -262,7 +262,7 @@ class MediaLibraryService
         );
     }
 
-    public function deleteDocument(MediaLibraryDocument $mediaDocument, ?string $username = null): void
+    public function deleteDocument(MediaLibraryDocument $mediaDocument, string $username = null): void
     {
         $document = $mediaDocument->document;
         $this->dataService->delete($document->getContentType(), $document->getOuuid(), $username);

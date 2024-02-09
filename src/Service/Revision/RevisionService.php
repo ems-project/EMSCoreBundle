@@ -227,7 +227,7 @@ class RevisionService implements RevisionServiceInterface
         return $this->get($ouuid, $contentType);
     }
 
-    public function lock(Revision $revision, ?UserInterface $user = null, ?\DateTime $lockTime = null): Revision
+    public function lock(Revision $revision, UserInterface $user = null, \DateTime $lockTime = null): Revision
     {
         $this->dataService->lockRevision(
             revision: $revision,
@@ -335,7 +335,7 @@ class RevisionService implements RevisionServiceInterface
     /**
      * @param array<mixed> $rawData
      */
-    public function updateRawDataByEmsLink(EMSLink $emsLink, array $rawData, bool $merge = true, ?string $username = null): Revision
+    public function updateRawDataByEmsLink(EMSLink $emsLink, array $rawData, bool $merge = true, string $username = null): Revision
     {
         $draft = $this->dataService->initNewDraft(
             type: $emsLink->getContentType(),

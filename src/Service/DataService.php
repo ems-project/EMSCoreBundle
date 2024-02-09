@@ -136,7 +136,7 @@ class DataService
      * @throws PrivilegeException
      * @throws \Exception
      */
-    public function lockRevision(Revision $revision, Environment $publishEnv = null, bool $super = false, string $username = null, ?\DateTime $lockTime = null): string
+    public function lockRevision(Revision $revision, Environment $publishEnv = null, bool $super = false, string $username = null, \DateTime $lockTime = null): string
     {
         if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
@@ -1218,7 +1218,7 @@ class DataService
         return $hasPreviousRevision;
     }
 
-    public function delete(string $type, string $ouuid, ?string $username = null): void
+    public function delete(string $type, string $ouuid, string $username = null): void
     {
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();

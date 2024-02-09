@@ -34,7 +34,7 @@ class MediaLibraryController
     ) {
     }
 
-    public function getHeader(MediaLibraryConfig $config, Request $request, ?string $folderId = null): JsonResponse
+    public function getHeader(MediaLibraryConfig $config, Request $request, string $folderId = null): JsonResponse
     {
         return new JsonResponse([
             'header' => $this->mediaLibraryService->renderHeader(

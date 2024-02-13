@@ -26,8 +26,11 @@ class LdapFormLoginAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
-    public function __construct(private readonly LdapConfig $ldapConfig, private readonly UrlGeneratorInterface $urlGenerator)
-    {
+    public function __construct(
+        private readonly LdapConfig $ldapConfig,
+        private readonly LdapUserProvider $ldapUserProvider,
+        private readonly UrlGeneratorInterface $urlGenerator
+    ) {
     }
 
     public function supports(Request $request): bool
@@ -49,7 +52,9 @@ class LdapFormLoginAuthenticator extends AbstractLoginFormAuthenticator
         $request->getSession()->set(Security::LAST_USERNAME, $username);
 
         return new Passport(
-            new UserBadge($username),
+            new UserBadge($username, function ($userIdentifier) {
+                return $this->ldapUserProvider->loadUserByIdentifier($userIdentifier);
+            }),
             new PasswordCredentials($password),
             [
                 new CsrfTokenBadge('authenticate', $csrfToken),

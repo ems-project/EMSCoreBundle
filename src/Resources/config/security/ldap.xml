@@ -18,6 +18,7 @@
 
         <service id="emsco.security.authenticator.form_login_ldap" class="EMS\CoreBundle\Security\Ldap\LdapFormLoginAuthenticator">
             <argument type="service" id="ems_core.security.ldap.config" />
+            <argument type="service" id="emsco.security.provider.user_ldap" />
             <argument type="service" id="router" />
         </service>
 

@@ -26,16 +26,6 @@ class MediaLibraryFileFactory
         return $this->createFromDocument($config, $document);
     }
 
-    /**
-     * @param string[] $fileIds
-     *
-     * @return MediaLibraryFile[]
-     */
-    public function createFromArray(MediaLibraryConfig $config, array $fileIds): array
-    {
-        return \array_map(fn (string $ouuid) => $this->create($config, $ouuid), $fileIds);
-    }
-
     public function createFromDocument(MediaLibraryConfig $config, DocumentInterface $document): MediaLibraryFile
     {
         return new MediaLibraryFile($document, $config, $this->urlGenerator);

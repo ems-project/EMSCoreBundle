@@ -77,18 +77,6 @@ class MediaLibraryService
         return $createdUuid ? $this->getFolder($config, $createdUuid) : null;
     }
 
-    /**
-     * @param string[] $fileIds
-     */
-    public function deleteFiles(MediaLibraryConfig $config, array $fileIds): bool
-    {
-        foreach ($this->fileFactory->createFromArray($config, $fileIds) as $mediaFile) {
-            $this->deleteDocument($mediaFile);
-        }
-
-        return true;
-    }
-
     public function getFile(MediaLibraryConfig $config, string $ouuid): MediaLibraryFile
     {
         return $this->fileFactory->create($config, $ouuid);
@@ -116,7 +104,7 @@ class MediaLibraryService
         return \array_filter([
             'totalRows' => $findFiles['total_documents'],
             'remaining' => ($from + $findFiles['total_documents'] < $findFiles['total']),
-            'header' => 0 === $from ? $this->renderHeader($config, $folder) : null,
+            'header' => 0 === $from ? $this->renderHeader(config: $config, folder: $folder) : null,
             'rowHeader' => 0 === $from ? $template->block('media_lib_file_row_header') : null,
             'rows' => $template->block('media_lib_file_rows'),
         ]);
@@ -210,19 +198,16 @@ class MediaLibraryService
         return $this->jobService->createCommand($user, $command);
     }
 
-    /**
-     * @param string[] $fileIds
-     */
-    public function renderHeader(MediaLibraryConfig $config, MediaLibraryFolder|string|null $folder, array $fileIds = []): string
+    public function renderHeader(MediaLibraryConfig $config, MediaLibraryFolder|string|null $folder = null, MediaLibraryFile|string|null $file = null, int $selectionFiles = 0): string
     {
         $mediaFolder = \is_string($folder) ? $this->getFolder($config, $folder) : $folder;
-        $mediaFiles = $this->fileFactory->createFromArray($config, $fileIds);
+        $mediaFile = \is_string($file) ? $this->getFile($config, $file) : $file;
 
         $template = $this->templateFactory->create($config, \array_filter([
             'mediaFolder' => $mediaFolder,
-            'mediaFile' => 1 === \count($mediaFiles) ? $mediaFiles[0] : null,
-            'mediaFiles' => \count($mediaFiles) > 1 ? $mediaFiles : null,
-        ]));
+            'mediaFile' => $mediaFile,
+            'selectionFiles' => $selectionFiles,
+        ], static fn ($v) => null !== $v));
 
         return $template->block('media_lib_header');
     }

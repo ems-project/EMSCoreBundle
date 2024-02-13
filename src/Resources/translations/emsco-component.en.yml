@@ -13,9 +13,7 @@ media_library:
             warning: |
                 Are you sure you want to delete this folder? 
                 This action will also remove any subfolders and files within.
-            job_info: |
-                Folder removing in progress.
-                Please wait...
+            job_info: 'Folder removing in progress. Please wait...'
         rename:
             title: 'Rename folder'
             submit: Rename
@@ -30,6 +28,12 @@ media_library:
             title: 'Delete file'
         rename:
             title: 'Rename file'
+    files:
+        delete:
+            title: 'Delete %count% files'
+            submit: Confirm
+            warning: 'Are you sure you want to delete the %count% selected files?'
+            info: 'Removing %count% files. Please wait...'
 
 json_menu_nested:
     error:

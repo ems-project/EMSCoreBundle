@@ -11,6 +11,8 @@
         {%- if mediaFile is defined -%}
             {{- template.block('media_lib_button_file_rename', _context)|raw -}}
             {{- template.block('media_lib_button_file_delete', _context)|raw -}}
+        {%- elseif selectionFiles > 0 -%}
+            {{- template.block('media_lib_button_files_delete', _context)|raw -}}
         {%- elseif mediaFolder is defined -%}
             {{- template.block('media_lib_button_folder_delete', _context)|raw -}}
             {{- template.block('media_lib_button_folder_rename', _context)|raw -}}
@@ -21,9 +23,11 @@
 
 {%- block media_lib_file_row_header -%}
     <li>
-        <div>Name</div>
-        <div>Type</div>
-        <div class="text-right">Size</div>
+        <div class="media-lib-item-container">
+            <div>Name</div>
+            <div>Type</div>
+            <div class="text-right">Size</div>
+        </div>
     </li>
 {%- endblock media_lib_file_row_header -%}
 
@@ -35,9 +39,11 @@
 
 {%- block media_lib_file_row -%}
     <li class="media-lib-item" data-id="{{- mediaFile.id -}}">
-        <div><a href="{{- mediaFile.urlView -}}" download="{{- mediaFile.name -}}" data-ems-id="{{- mediaFile.emsId -}}">{{- mediaFile.name -}}</a></div>
-        <div>{{- mediaFile.file.mimetype|trans({}, 'emsco-mimetypes') -}}</div>
-        <div class="text-right">{{- mediaFile.file.filesize|format_bytes -}}</div>
+        <div class="media-lib-item-container">
+            <div><a href="{{- mediaFile.urlView -}}" download="{{- mediaFile.name -}}" data-ems-id="{{- mediaFile.emsId -}}">{{- mediaFile.name -}}</a></div>
+            <div>{{- mediaFile.file.mimetype|trans({}, 'emsco-mimetypes') -}}</div>
+            <div class="text-right">{{- mediaFile.file.filesize|format_bytes -}}</div>
+        </div>
     </li>
 {%- endblock media_lib_file_row -%}
 
@@ -81,9 +87,14 @@
     </button>
 {%- endblock media_lib_button_file_delete -%}
 
+{%- block media_lib_button_files_delete -%}
+    <button class="btn btn-sm btn-default btn-files-delete" data-modal-size="md">
+        <i class="fa fa-remove" aria-hidden="true"></i> {{- buttonLabel|default('media_library.files.delete.title'|trans({ '%count%': selectionFiles })) -}}
+    </button>
+{%- endblock media_lib_button_files_delete -%}
+
 {%- block media_lib_button_upload -%}
-    <input type="file" id="media-lib-upload-{{- id -}}" class="file-uploader-input" multiple="multiple">
-    <label class="btn btn-sm btn-default" for="media-lib-upload-{{- id -}}">
+    <label class="btn btn-sm btn-default btn-file-upload" for="media-lib-upload-{{- id -}}">
         <i class="fa fa-upload"></i> {{- buttonLabel|default('media_library.file.add.title'|trans) -}}
     </label>
 {%- endblock media_lib_button_upload -%}
@@ -107,6 +118,12 @@
 {%- endblock media_lib_modal_title -%}
 
 {%- block media_lib_modal_body -%}
+    {% if confirmMessage is defined %}
+        <div class="alert alert-warning" role="alert">{{ confirmMessage|nl2br }}</div>
+    {% endif %}
+    {% if infoMessage is defined %}
+        <div class="alert alert-info" role="alert">{{ infoMessage|nl2br }}</div>
+    {% endif %}
     {%- if form is defined -%}
         {{- form(form) -}}
     {%- endif -%}
@@ -123,7 +140,3 @@
         <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">{{ 'media_library.cancel'|trans }}</button>
     </div>
 {%- endblock media_lib_modal_footer -%}
-
-
-
-

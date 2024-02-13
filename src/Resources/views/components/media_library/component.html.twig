@@ -3,6 +3,7 @@
 {# @var config \EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig #}
 
 <div class="media-lib" id="{{ config.id }}" data-hash="{{ hash }}">
+    <input type="file" id="media-lib-upload-{{- id -}}" class="file-uploader-input" multiple="multiple">
     <div class="media-nav-bar"></div>
     <div class="media-lib-content">
         <div class="media-lib-left-column">

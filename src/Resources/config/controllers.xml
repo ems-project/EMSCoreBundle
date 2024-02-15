@@ -230,7 +230,6 @@
         <service id="EMS\CoreBundle\Controller\ContentManagement\ReleaseController" public="true">
             <argument type="service" id="logger" />
             <argument type="service" id="ems.service.release" />
-            <argument type="service" id="ems.service.release_revision" />
             <argument type="service" id="emsco.data_table.factory" />
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>

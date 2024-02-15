@@ -1,7 +1,14 @@
 {% extends '@EMSCore/base.html.twig' %}
 {% trans_default_domain 'EMSCoreBundle' %}
 
-{% block title %}{{ 'release.revision.index.title'|trans }}{% endblock %}
+{% block title %}
+    {%- if type == 'publish' -%}
+        {{- 'release.revision.index.publish'|trans -}}
+    {%- elseif type == 'unpublish' -%}
+        {{- 'release.revision.index.unpublish'|trans -}}
+    {%- endif -%}
+{% endblock %}
+
 {% block pagetitle %}{{ block('title') }}{% endblock %}
 
 {% block breadcrumb %}
@@ -12,12 +19,6 @@
 {% endblock %}
 
 {% block body %}
-	{%  set toolbar %}
-
-	{%  endset %}
-
 	{% form_theme form '@EMSCore/form/forms.html.twig' %}
-	{{ form(form, {
-		toolbar: toolbar
-	}) }}
+	{{ form(form) }}
 {% endblock %}

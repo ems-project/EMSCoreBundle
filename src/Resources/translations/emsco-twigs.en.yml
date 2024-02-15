@@ -233,7 +233,7 @@ release:
         publish: Publish
         unpublish: Unpublish
         revision: '%date% finalized by %user%'
-        missing-revision: 'The document %ouuid% is no more available in %environment%'
+        missing-revision: 'The document "%label%" is no more available in %environment%'
         not-applicable: 'not applicable'
         still_in_target: 'Still released in %target%'
         no_more_in_target: 'This revision has been unpublished from %target%'

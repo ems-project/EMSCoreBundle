@@ -37,7 +37,9 @@ class ReleaseOverviewDataTableType extends AbstractEntityTableType
             ->addCondition(new Terms('status', [Release::APPLIED_STATUS, Release::SCHEDULED_STATUS, Release::READY_STATUS]));
         $table->addItemGetAction(Routes::RELEASE_EDIT, 'release.actions.edit', 'pencil')
             ->addCondition(new Terms('status', [Release::WIP_STATUS]));
-        $table->addItemGetAction(Routes::RELEASE_ADD_REVISIONS, 'release.actions.add_revisions', 'plus')
+        $table->addItemGetAction(Routes::RELEASE_ADD_REVISIONS, 'release.actions.add_publish', 'plus', ['type' => 'publish'])
+            ->addCondition(new Terms('status', [Release::WIP_STATUS]));
+        $table->addItemGetAction(Routes::RELEASE_ADD_REVISIONS, 'release.actions.add_unpublish', 'minus', ['type' => 'unpublish'])
             ->addCondition(new Terms('status', [Release::WIP_STATUS]));
         $table->addItemGetAction(Routes::RELEASE_SET_STATUS, 'release.actions.set_status_ready', 'play', ['status' => Release::READY_STATUS])
             ->addCondition(new Terms('status', [Release::WIP_STATUS]))

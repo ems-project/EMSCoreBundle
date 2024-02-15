@@ -16,6 +16,15 @@ class ReleaseRevision implements EntityInterface
     private string $revisionOuuid;
     private ContentType $contentType;
 
+    public static function createFromRevision(Revision $revision): self
+    {
+        $releaseRevision = new self();
+        $releaseRevision->setContentType($revision->giveContentType());
+        $releaseRevision->setRevisionOuuid($revision->giveOuuid());
+
+        return $releaseRevision;
+    }
+
     public function getRevisionOuuid(): string
     {
         return $this->revisionOuuid;

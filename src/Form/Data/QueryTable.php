@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
+use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\QueryServiceInterface;
 
 class QueryTable extends TableAbstract
@@ -11,6 +12,8 @@ class QueryTable extends TableAbstract
     private bool $loadAll;
     private bool $massAction = true;
     private string $idField = 'id';
+    private ?int $count = null;
+    private ?int $totalCount = null;
 
     /**
      * @param mixed $context
@@ -49,6 +52,13 @@ class QueryTable extends TableAbstract
         return $this->idField;
     }
 
+    public function resetIterator(DataTableRequest $dataTableRequest): void
+    {
+        parent::resetIterator($dataTableRequest);
+        $this->totalCount = null;
+        $this->count = null;
+    }
+
     /**
      * @return \Traversable<string, QueryRow>
      */
@@ -65,12 +75,20 @@ class QueryTable extends TableAbstract
 
     public function count(): int
     {
-        return $this->service->countQuery($this->getSearchValue(), $this->context);
+        if (null === $this->count) {
+            $this->count = $this->service->countQuery($this->getSearchValue(), $this->context);
+        }
+
+        return $this->count;
     }
 
     public function totalCount(): int
     {
-        return $this->service->countQuery('', $this->context);
+        if (null === $this->totalCount) {
+            $this->totalCount = $this->service->countQuery('', $this->context);
+        }
+
+        return $this->totalCount;
     }
 
     public function supportsTableActions(): bool

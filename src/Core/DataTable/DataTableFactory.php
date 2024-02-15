@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\DataTable;
 
 use EMS\CoreBundle\Core\DataTable\Type\AbstractEntityTableType;
+use EMS\CoreBundle\Core\DataTable\Type\AbstractQueryTableType;
 use EMS\CoreBundle\Core\DataTable\Type\DataTableTypeCollection;
 use EMS\CoreBundle\Core\DataTable\Type\DataTableTypeInterface;
 use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\QueryTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Routes;
 use EMS\Helpers\Standard\Hash;
@@ -59,6 +61,7 @@ class DataTableFactory
 
         return match (true) {
             $type instanceof AbstractEntityTableType => $this->buildEntityTable($type, $ajaxUrl, $options),
+            $type instanceof AbstractQueryTableType => $this->buildQueryTable($type, $ajaxUrl, $options),
             default => throw new \RuntimeException('Unknown dataTableType')
         };
     }
@@ -71,6 +74,25 @@ class DataTableFactory
         $table = new EntityTable(
             $this->templateNamespace,
             $type->getEntityService(),
+            $ajaxUrl,
+            $type->getContext($options),
+            $type->getLoadMaxRows()
+        );
+
+        $type->build($table);
+
+        return $table;
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    private function buildQueryTable(AbstractQueryTableType $type, string $ajaxUrl, array $options = []): QueryTable
+    {
+        $table = new QueryTable(
+            $this->templateNamespace,
+            $type->getQueryService(),
+            $type->getQueryName(),
             $ajaxUrl,
             $type->getContext($options),
             $type->getLoadMaxRows()

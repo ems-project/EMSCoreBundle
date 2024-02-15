@@ -36,7 +36,8 @@ class ReleasePickDataTableType extends AbstractEntityTableType
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.status', 'status', "@$this->templateNamespace/release/columns/revisions.html.twig"));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', "@$this->templateNamespace/release/columns/revisions.html.twig"))->setCellClass('text-right');
 
-        $table->addItemPostAction(Routes::DATA_ADD_REVISION_TO_RELEASE, 'data.actions.add_to_release', 'plus', 'data.actions.add_to_release_confirm', ['revision' => $revision->getId()])->setButtonType('primary');
+        $table->addItemPostAction(Routes::DATA_ADD_REVISION_TO_RELEASE, 'data.actions.add_to_release_publish', 'plus', 'data.actions.add_to_release_confirm', ['revision' => $revision->getId(), 'type' => 'publish'])->setButtonType('primary');
+        $table->addItemPostAction(Routes::DATA_ADD_REVISION_TO_RELEASE, 'data.actions.add_to_release_unpublish', 'minus', 'data.actions.add_to_release_confirm', ['revision' => $revision->getId(), 'type' => 'unpublish'])->setButtonType('default');
     }
 
     public function getRoles(): array

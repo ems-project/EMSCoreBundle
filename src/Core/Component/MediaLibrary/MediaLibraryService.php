@@ -198,7 +198,7 @@ class MediaLibraryService
         return $this->jobService->createCommand($user, $command);
     }
 
-    public function renderHeader(MediaLibraryConfig $config, MediaLibraryFolder|string|null $folder = null, MediaLibraryFile|string|null $file = null, int $selectionFiles = 0): string
+    public function renderHeader(MediaLibraryConfig $config, MediaLibraryFolder|string $folder = null, MediaLibraryFile|string $file = null, int $selectionFiles = 0): string
     {
         $mediaFolder = \is_string($folder) ? $this->getFolder($config, $folder) : $folder;
         $mediaFile = \is_string($file) ? $this->getFile($config, $file) : $file;

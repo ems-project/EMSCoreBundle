@@ -125,9 +125,11 @@
     <route id="emsco_pick_a_release" path="/pick-a-release/{revision}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ReleaseController::pickRelease"
            methods="GET|POST"/>
-    <route id="emsco_data_add_revision_to_release" path="/add-to-release/{revision}/{release}"
+    <route id="emsco_data_add_revision_to_release" path="/add-to-release/{type}/{revision}/{release}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ReleaseController::addRevisionById"
-           methods="POST"/>
+           methods="POST">
+        <requirement key="type">publish|unpublish</requirement>
+    </route>
 
     <!-- Deprecated routes -->
     <route id="ems_data_default_search" path="/{name}"

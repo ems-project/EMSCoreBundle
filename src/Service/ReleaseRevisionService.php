@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service;
 
 use EMS\CommonBundle\Entity\EntityInterface;
-use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
@@ -21,9 +20,8 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
         private readonly ReleaseRevisionRepository $releaseRevisionRepository,
         private readonly RevisionRepository $revisionRepository,
         private readonly LoggerInterface $logger,
-        private readonly ContentTypeService $contentTypeService,
-        private readonly UserService $userService)
-    {
+        private readonly ContentTypeService $contentTypeService
+    ) {
     }
 
     public function isQuerySortable(): bool
@@ -46,9 +44,10 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
         if (!$context instanceof Release) {
             throw new \RuntimeException('Unexpected release object');
         }
-        $contentTypes = $this->getContentTypeWithPublishRole();
+        $contentTypes = $this->contentTypeService->getAllGrantedForPublication();
+        $contentTypeNames = \array_map(static fn (ContentType $contentType) => $contentType->getName(), $contentTypes);
 
-        return $this->revisionRepository->getAvailableRevisionsForRelease($from, $size, $context, $contentTypes, $orderField, $orderDirection, $searchValue);
+        return $this->revisionRepository->getAvailableRevisionsForRelease($from, $size, $context, $contentTypeNames, $orderField, $orderDirection, $searchValue);
     }
 
     public function getEntityName(): string
@@ -72,9 +71,10 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
         if (!$context instanceof Release) {
             throw new \RuntimeException('Unexpected release object');
         }
-        $contentTypes = $this->getContentTypeWithPublishRole();
+        $contentTypes = $this->contentTypeService->getAllGrantedForPublication();
+        $contentTypeNames = \array_map(static fn (ContentType $contentType) => $contentType->getName(), $contentTypes);
 
-        return $this->revisionRepository->countAvailableRevisionsForRelease($context, $contentTypes, $searchValue);
+        return $this->revisionRepository->countAvailableRevisionsForRelease($context, $contentTypeNames, $searchValue);
     }
 
     public function findToRemove(Release $release, string $ouuid, ContentType $contentType): ReleaseRevision
@@ -124,21 +124,6 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
     public function getByIds(array $ids): array
     {
         return $this->releaseRevisionRepository->getByIds($ids);
-    }
-
-    /**
-     * @return string[]
-     */
-    private function getContentTypeWithPublishRole(): array
-    {
-        $contentTypes = [];
-        foreach ($this->contentTypeService->getAll() as $contentType) {
-            if (!$contentType->getDeleted() && $this->userService->isGrantedRole($contentType->role(ContentTypeRoles::PUBLISH))) {
-                $contentTypes[] = $contentType->getName();
-            }
-        }
-
-        return $contentTypes;
     }
 
     public function getByItemName(string $name): ?EntityInterface

@@ -22,15 +22,16 @@
     <route id="emsco_release_set_status" path="/{release}/set-status/{status}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ReleaseController::changeStatus"
            methods="GET|POST"/>
-    <route id="emsco_release_add_revision" path="/{release}/add-revision/{emsLinkToAdd}"
+    <route id="emsco_release_add_revision" path="/{release}/add-revision/{type}/{emsLinkToAdd}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ReleaseController::addRevision"
-           methods="POST"/>
-    <route id="emsco_release_add_revisions" path="/{release}/add-revisions"
+           methods="POST">
+        <requirement key="type">publish|unpublish</requirement>
+    </route>
+    <route id="emsco_release_add_revisions" path="/{release}/add-revisions/{type}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ReleaseController::addRevisions"
-           methods="GET|POST"/>
-    <route id="emsco_release_ajax_data_table_non_member_revision" path="/{release}/non-member-datatable.json"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ReleaseController::ajaxReleaseTableNonMemberRevisions"
-           methods="GET"/>
+           methods="GET|POST">
+        <requirement key="type">publish|unpublish</requirement>
+    </route>
     <route id="emsco_release_publish" path="/{release}/publish"
            controller="EMS\CoreBundle\Controller\ContentManagement\ReleaseController::releasePublish"
            methods="POST"/>

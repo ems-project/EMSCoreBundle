@@ -2,14 +2,16 @@
 
 {% block label %}
     {% if data.revision %}
-        {{ data.revision.label }}
+        {{ data.revision|emsco_display }}
     {% else %}
         {% set info = data.emsId|emsco_document_info %}
-        {% set release = info.getRevision(data.release.environmentSource.name) %}
-        {% if release %}
-            {{ release.label }}
+        {% set revisionSource = info.getRevision(data.release.environmentSource.name) %}
+        {% set revisionTarget = info.getRevision(data.release.environmentTarget.name) %}
+
+        {% if revisionTarget %}
+            {{ revisionTarget|emsco_display }}
         {% else %}
-            {{ 'release.release-revisison.missing-revision'|trans({'%ouuid%': data.revisionOuuid, '%environment%': data.release.environmentSource.label}) }}
+            {{ 'release.release-revisison.missing-revision'|trans({'%label%': revisionSource|emsco_display, '%environment%': data.release.environmentTarget.name}) }}
         {% endif %}
     {% endif %}
 {% endblock label %}
@@ -25,8 +27,12 @@
         </a>
     {% else %}
         {% set info = data.emsId|emsco_document_info %}
-        {% set revision = info.getRevision(data.release.environmentSource.name) %}
-        {% if revision %}
+        {% set revisionTarget = info.getRevision(data.release.environmentTarget.name) %}
+        {% if revisionTarget %}
+            <a href="{{ path('emsco_view_revisions', {ouuid: data.revisionOuuid, type: data.contentType.name, revisionId: revisionTarget.id}) }}">
+                {{ 'release.release-revisison.revision'|trans({ '%date%' : revisionTarget.created|date(date_time_format) ,'%user%' : revisionTarget.finalizedBy|default('')|displayname }) }}
+            </a>
+        {% else %}
             {{ 'release.release-revisison.revision-not-applicable'|trans }}
         {% endif %}
     {% endif %}
@@ -59,7 +65,9 @@
         {% set revision = info.getRevision(data.release.environmentTarget) %}
         {% set stil_in_target = (data.revision.id is same as (revision.id)) %}
     {% else %}
-        {% set stil_in_target = true %}
+        {% set info = data.emsId|emsco_document_info %}
+        {% set revisionTarget = info.getRevision(data.release.environmentTarget.name) %}
+        {% set stil_in_target = (revisionTarget ? true : false) %}
     {% endif %}
     {%  if stil_in_target %}
         <i class="fa fa-check-square"><span class="sr-only"</span>{{ 'release.release-revisison.still_in_target'|trans({'%target%': data.release.environmentTarget.label}) }}</i>

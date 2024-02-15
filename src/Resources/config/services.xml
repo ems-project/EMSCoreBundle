@@ -197,6 +197,11 @@
             <argument>%ems_core.template_namespace%</argument>
             <tag name="twig.runtime"/>
         </service>
+        <service id="emsco.core.revision.query.published_revisions" class="EMS\CoreBundle\Core\Revision\Query\PublishedRevisionsQueryService">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
+            <argument type="service" id="ems.service.revision" />
+        </service>
 
         <service id="ems.log.manager" class="EMS\CoreBundle\Core\Log\LogManager">
             <argument type="service" id="ems.repository.log"/>
@@ -467,7 +472,6 @@
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.contenttype"/>
-            <argument type="service" id="ems.service.user"/>
             <tag name="kernel.event_listener" event="EMS\CoreBundle\Event\RevisionFinalizeDraftEvent" method="finalizeDraftEvent" priority="0" />
         </service>
         <service id="ems.form_submission" class="EMS\CoreBundle\Service\Form\Submission\FormSubmissionService">

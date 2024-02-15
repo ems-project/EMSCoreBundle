@@ -33,11 +33,17 @@
 			<div class="box-footer">
 				<div class="btn-group">
 					{% include '@EMSCore/elements/get-button.html.twig' with {
-						'url':  path('emsco_release_add_revisions', {'release': release.id} ),
-						'label': 'release.actions.add_revisions'|trans,
+						'url':  path('emsco_release_add_revisions', {'release': release.id, 'type': 'publish' } ),
+						'label': 'release.actions.add_publish'|trans,
 						'icon': 'plus',
 						'btnType': 'primary',
 					}%}
+                    {% include '@EMSCore/elements/get-button.html.twig' with {
+                        'url':  path('emsco_release_add_revisions', {'release': release.id, 'type': 'unpublish' } ),
+                        'label': 'release.actions.add_unpublish'|trans,
+                        'icon': 'minus',
+                        'btnType': 'default',
+                    }%}
 					{% if release.revisions|length > 0 %}
 						{% include '@EMSCore/elements/post-button.html.twig' with {
 							'url': path('emsco_release_set_status', {'release': release.id, 'status': 'ready'}),

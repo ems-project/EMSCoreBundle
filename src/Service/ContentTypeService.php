@@ -239,6 +239,26 @@ class ContentTypeService implements EntityServiceInterface
         return \array_keys($out);
     }
 
+    /**
+     * @return ContentType[]
+     */
+    public function getAllGrantedForPublication(): array
+    {
+        $contentTypes = [];
+        foreach ($this->getAll() as $contentType) {
+            if ($contentType->getDeleted()) {
+                continue;
+            }
+
+            $publishRole = $contentType->role(ContentTypeRoles::PUBLISH);
+            if ($this->authorizationChecker->isGranted($publishRole)) {
+                $contentTypes[] = $contentType;
+            }
+        }
+
+        return $contentTypes;
+    }
+
     public function getAllAliases(): string
     {
         $this->loadEnvironment();

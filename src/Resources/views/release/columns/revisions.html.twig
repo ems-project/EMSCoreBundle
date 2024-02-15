@@ -1,49 +1,46 @@
-{% use "bootstrap_3_layout.html.twig" %}{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain 'EMSCoreBundle' %}
 
-       
+{% block publish_label %}{{ data.emsLink|emsco_display }}{% endblock %}
+{% block unpublish_label %}{{ data.label }}{% endblock %}
+
 {% block minrevid %}
     {% set release = app.request.get('release') %}
     {% set minrev = data.minrevid|split('/') %}
     {% set maxrev = data.maxrevid|split('/') %}
 
     {% if minrev[0] == release.environmentSource.id %}
-        {{ '%date% Finalized by %user%'|trans({ '%date%' : minrev[2]|date(date_time_format) ,'%user%' : minrev[3] }) }}     
+        {{ '%date% Finalized by %user%'|trans({ '%date%' : minrev[2]|date(date_time_format) ,'%user%' : minrev[3] }) }}
     {% elseif maxrev[0] == release.environmentSource.id %}
-        {{ '%date% Finalized by %user%'|trans({ '%date%' : maxrev[2]|date(date_time_format) ,'%user%' : maxrev[3] }) }}  
+        {{ '%date% Finalized by %user%'|trans({ '%date%' : maxrev[2]|date(date_time_format) ,'%user%' : maxrev[3] }) }}
     {% else %}
         {{ 'no revision in %env%'|trans({ '%env%' : release.environmentSource.name }) }}
     {% endif %}
 {% endblock minrevid %}
 
-
 {% block environmentSource %}
     {{ data.environmentSource.label }}
 {% endblock environmentSource %}
-
 
 {% block status %}
     {{ ('release.status.'~data.status)|trans }}
 {% endblock status %}
 
-
 {% block environmentTarget %}
     {{ data.environmentTarget.label }}
 {% endblock environmentTarget %}
 
-
 {% block docs_count %}
     {{ data.revisions|length }}
 {% endblock docs_count %}
-
 
 {% block maxrevid %}
     {% set release = app.request.get('release') %}
     {% set minrev = data.minrevid|split('/') %}
     {% set maxrev = data.maxrevid|split('/') %}
     {% if maxrev[0] == release.environmentTarget.id %}
-        {{ '%date% Finalized by %user%'|trans({ '%date%' : maxrev[2]|date(date_time_format) ,'%user%' : maxrev[3] }) }}  
+        {{ '%date% Finalized by %user%'|trans({ '%date%' : maxrev[2]|date(date_time_format) ,'%user%' : maxrev[3] }) }}
     {% elseif minrev[0] == release.environmentTarget.id %}
-        {{ '%date% Finalized by %user%'|trans({ '%date%' : minrev[2]|date(date_time_format) ,'%user%' : minrev[3] }) }}     
+        {{ '%date% Finalized by %user%'|trans({ '%date%' : minrev[2]|date(date_time_format) ,'%user%' : minrev[3] }) }}
     {% else %}
         {{ 'no revision in %env%'|trans({ '%env%' : release.environmentTarget.name }) }}
     {% endif %}
@@ -53,24 +50,23 @@
     {% set release = app.request.get('release') %}
     {% set minrev = data.minrevid|split('/') %}
     {% set maxrev = data.maxrevid|split('/') %}
-  
+
     {% if minrev[0] == release.environmentSource.id %}
-        {{ '%date% Finalized by %user%'|trans({ '%date%' : minrev[2]|date(date_time_format) ,'%user%' : minrev[3] }) }}     
+        {{ '%date% Finalized by %user%'|trans({ '%date%' : minrev[2]|date(date_time_format) ,'%user%' : minrev[3] }) }}
     {% elseif maxrev[0] == release.environmentSource.id %}
-        {{ '%date% Finalized by %user%'|trans({ '%date%' : maxrev[2]|date(date_time_format) ,'%user%' : maxrev[3] }) }}  
+        {{ '%date% Finalized by %user%'|trans({ '%date%' : maxrev[2]|date(date_time_format) ,'%user%' : maxrev[3] }) }}
     {% else %}
         {{ 'Unpublish in %env%'|trans({ '%env%' : release.environmentTarget.name }) }}
     {% endif %}
 {% endblock minrevidstatus %}
 
-
 {% block maxrevidstatus  %}
     {% set release = app.request.get('release') %}
     {% set maxrev = data.maxrevid|split('/') %}
     {% set minrev = data.minrevid|split('/') %}
-           
+
     {% if maxrev[0] == release.environmentTarget.id %}
-        {{ '%date% Finalized by %user%'|trans({ '%date%' : maxrev[2]|date(date_time_format) ,'%user%' : maxrev[3] }) }}  
+        {{ '%date% Finalized by %user%'|trans({ '%date%' : maxrev[2]|date(date_time_format) ,'%user%' : maxrev[3] }) }}
     {% elseif minrev[0] == release.environmentTarget.id %}
         {{ '%date% Finalized by %user%'|trans({ '%date%' : minrev[2]|date(date_time_format) ,'%user%' : minrev[3] }) }}
     {% else %}
@@ -82,3 +78,22 @@
         {{ 'replace by revision %date%'|trans({ '%date%' : maxrev[2]|date(date_time_format) }) }}
     {% endif %}
 {% endblock maxrevidstatus  %}
+
+{% block unpublish_source %}
+    <div style="width: 250px">
+        {{ '%date% Finalized by %user%'|trans({
+            '%date%': data.default_finalized_date|date(date_time_format),
+            '%user%': data.default_finalized_by
+        }) }}
+    </div>
+{% endblock unpublish_source %}
+
+{% block unpublish_target %}
+    <div style="width: 250px">
+        {{ '%date% Finalized by %user%'|trans({
+            '%date%': data.published_finalized_date|date(date_time_format),
+            '%user%': data.published_finalized_by
+        }) }}
+    </div>
+{% endblock unpublish_target %}
+

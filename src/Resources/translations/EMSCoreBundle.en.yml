@@ -126,6 +126,7 @@ log:
             reindex_failed_in: 'The document "%label%" has encountered an exception during its reindexing in %environment%'
             added_to_release: 'Document "%label%" has been added to release "%release%"'
             can_not_add_draft_in_release: 'Revision in draft mode can not be added to a release'
+            document_not_in_target: 'Document "%label%" is not published in target environment "%target%"'
             document_already_in_release_but_updated: 'Document "%label%" has been updated with a new revision in release "%release%"'
             already_in_release: 'This revision of document "%label%" was already in release "%release%"'
     elasticsearch:
@@ -526,7 +527,8 @@ data:
     custom-view:
         pagetitle: 'View %name% of the %contentType% "%label%" as indexed in %environment%'
     actions:
-        add_to_release: 'Add to release'
+        add_to_release_publish: 'Add to release for publication'
+        add_to_release_unpublish: 'Add to release for unpublish'
         add_to_release_confirm: 'Do you confirm ?'
 field_type:
     textarea:
@@ -603,14 +605,15 @@ query_search:
     menu: QuerySearch
 release:
     actions:
-        add_revisions: 'Add documents'
+        add_publish: 'Add documents for publication'
+        add_unpublish: 'Add documents for unpublish'
         delete: Delete
         delete_confirm: 'Delete the Release?'
         delete_selected: 'Delete selected'
         delete_selected_confirm: 'Delete all selected Releases?'
         edit: Edit
-        publish_release: 'Publish now'
-        publish_confirm: 'Publish the release?'
+        publish_release: 'Release now'
+        publish_confirm: 'Do you confirm ?'
         set_status_canceled: 'Cancel release'
         set_status_ready: 'Validate release'
         set_status_wip: 'Rework release'
@@ -634,11 +637,11 @@ release:
     menu: Releases
     revision:
         actions:
-            add: 'Add document'
             add_confirm: 'Do you confirm ?'
             remove: 'Remove documents'
         action:
-            add: 'Add document to release'
+            publish: 'Add document for publication'
+            unpublish: 'Add document for unpublish'
         index:
             column:
                 CT: 'Content Type'
@@ -652,7 +655,8 @@ release:
                 not-applicable: 'not applicable'
                 still_in_target: 'Still in %target%'
                 compare: Compare
-            title: 'List of documents available for release'
+            publish: 'List of documents available for publication'
+            unpublish: 'List of documents available for unpublish'
         menu: 'Add documents'
         view:
             title: 'Release''s documents'

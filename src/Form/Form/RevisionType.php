@@ -69,7 +69,7 @@ class RevisionType extends AbstractType
                             '%environment%' => \implode(', ', $publishedEnvironmentLabels->toArray()),
                         ],
                         'attr' => ['class' => 'btn btn-primary btn-sm'],
-                        'icon' => 'glyphicon glyphicon-open',
+                        'icon' => 'fa fa-upload',
                     ]);
                 } else {
                     $builder->add('save', SubmitEmsType::class, [
@@ -121,7 +121,7 @@ class RevisionType extends AbstractType
                     'attr' => [
                         'class' => 'btn btn-primary btn-sm ',
                     ],
-                    'icon' => 'glyphicon glyphicon-open',
+                    'icon' => 'fa fa-upload',
                 ]);
             }
         }

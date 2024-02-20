@@ -79,19 +79,19 @@ class DateTimeFieldType extends DataFieldType
         $optionsForm->get('displayOptions')
             ->add('displayFormat', TextType::class, [
                 'required' => false,
-                'attr' => ['placeholder' => '(JS) D/MM/YYYY HH:mm:ss'],
+                'attr' => ['placeholder' => 'dd/MM/yyyy HH:mm'],
             ])
             ->add('parseFormat', TextType::class, [
                 'required' => false,
-                'attr' => ['placeholder' => '(PHP) d/m/Y H:i:s'],
+                'attr' => ['placeholder' => '(PHP) d/m/Y H:i'],
             ])
             ->add('daysOfWeekDisabled', TextType::class, [
                 'required' => false,
-                'attr' => ['placeholder' => 'i.e. 0,6'],
+                'attr' => ['placeholder' => 'e.g. 0,6'],
             ])
             ->add('hoursDisabled', TextType::class, [
                 'required' => false,
-                'attr' => ['placeholder' => 'i.e. 0,24'],
+                'attr' => ['placeholder' => 'e.g. 0,23'],
             ])
         ;
     }
@@ -105,7 +105,12 @@ class DateTimeFieldType extends DataFieldType
             $dateTime = \DateTimeImmutable::createFromFormat(\DateTimeImmutable::ATOM, $data);
             $fieldType = $dataField->getFieldType();
             $parseFormat = (null !== $fieldType) ? $fieldType->getDisplayOption('parseFormat') : null;
-            $value = $dateTime ? $dateTime->format($parseFormat ?? \DateTimeImmutable::ATOM) : null;
+            if ($dateTime instanceof \DateTimeInterface) {
+                $value = $dateTime->format($parseFormat ?? 'd/m/Y H:i:s');
+            } else {
+                $dataField->addMessage(\sprintf('Invalid parse format %s for date string: %s', $parseFormat ?? 'd/m/Y H:i:s', $data));
+                $value = $data;
+            }
         }
 
         return ['value' => $value];
@@ -133,7 +138,7 @@ class DateTimeFieldType extends DataFieldType
 
         if (false === $dateTime) {
             $dataField = parent::reverseViewTransform($value, $fieldType);
-            $dataField->addMessage(\sprintf('Invalid parse format %s or ATOM for date string: %s', $parseFormat, $value));
+            $dataField->addMessage(\sprintf('Invalid parse format %s for date string: %s', $parseFormat, $value));
 
             return $dataField;
         }

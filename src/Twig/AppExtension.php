@@ -409,16 +409,21 @@ class AppExtension extends AbstractExtension
         $formatedA = [];
 
         foreach ($a as $item) {
-            if ($item instanceof \DateTime) {
-                $date = $item;
-            } elseif ($internalFormat) {
-                $date = \DateTime::createFromFormat($internalFormat, $item);
-            } else {
-                $date = new \DateTime($item);
+            try {
+                if ($item instanceof \DateTime) {
+                    $date = $item;
+                } elseif ($internalFormat) {
+                    $date = \DateTime::createFromFormat($internalFormat, $item);
+                } else {
+                    $date = new \DateTime($item);
+                }
+            } catch (\Throwable) {
+                $date = null;
             }
 
-            if (false === $date) {
-                throw new \RuntimeException('Unexpected date format');
+            if (!$date instanceof \DateTimeInterface) {
+                $out .= '<'.$tag.' class="text-red">'.\htmlentities($item).'</'.$tag.'>';
+                continue;
             }
 
             $value = $date->format($format1);

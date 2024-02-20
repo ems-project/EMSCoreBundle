@@ -32,11 +32,11 @@ class DateRangeFieldType extends DataFieldType
         $rawData = $dataField->getRawData();
 
         if (\is_array($rawData) && !empty($dataField->getRawData())) {
-            $dateFrom = \DateTime::createFromFormat(\DateTimeInterface::ISO8601, $rawData[$options['mappingOptions']['fromDateMachineName']]);
-            $dateTo = \DateTime::createFromFormat(\DateTimeInterface::ISO8601, $rawData[$options['mappingOptions']['toDateMachineName']]);
+            $dateFrom = \DateTime::createFromFormat(\DateTimeInterface::ATOM, $rawData[$options['mappingOptions']['fromDateMachineName']] ?? null);
+            $dateTo = \DateTime::createFromFormat(\DateTimeInterface::ATOM, $rawData[$options['mappingOptions']['toDateMachineName']] ?? null);
 
             if ($dateFrom && $dateTo) {
-                $displayFormat = DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
+                $displayFormat = $options['displayOptions']['locale']['parseFormat'] ?? DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
 
                 return ['value' => $dateFrom->format($displayFormat).' - '.$dateTo->format($displayFormat)];
             }
@@ -59,11 +59,11 @@ class DateRangeFieldType extends DataFieldType
         $input = $data['value'];
         $options = $fieldType->getOptions();
 
-        $format = DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
+        $format = $options['displayOptions']['locale']['parseFormat'] ?? DateRangeFieldType::convertJavascriptDateRangeFormat($options['displayOptions']['locale']['format']);
 
         $inputs = \explode(' - ', (string) $input);
 
-        if (2 == \count($inputs)) {
+        if (2 === \count($inputs)) {
             $convertedDates = [];
 
             $fromConverted = \DateTime::createFromFormat($format, $inputs[0]);
@@ -71,7 +71,7 @@ class DateRangeFieldType extends DataFieldType
                 if (!$options['displayOptions']['timePicker']) {
                     $fromConverted->setTime(0, 0, 0);
                 }
-                $convertedDates[$options['mappingOptions']['fromDateMachineName']] = $fromConverted->format(\DateTime::ISO8601);
+                $convertedDates[$options['mappingOptions']['fromDateMachineName']] = $fromConverted->format(\DateTime::ATOM);
             }
 
             $toConverted = \DateTime::createFromFormat($format, $inputs[1]);
@@ -79,7 +79,7 @@ class DateRangeFieldType extends DataFieldType
                 if (!$options['displayOptions']['timePicker']) {
                     $toConverted->setTime(23, 59, 59);
                 }
-                $convertedDates[$options['mappingOptions']['toDateMachineName']] = $toConverted->format(\DateTime::ISO8601);
+                $convertedDates[$options['mappingOptions']['toDateMachineName']] = $toConverted->format(\DateTime::ATOM);
             }
 
             $dataField->setRawData($convertedDates);
@@ -287,8 +287,12 @@ class DateRangeFieldType extends DataFieldType
         $optionsForm->get('displayOptions')->get('locale')->add('format', TextType::class, [
                 'required' => false,
                 'attr' => [
-                    'placeholder' => 'i.e. DD/MM/YYYY HH:mm',
+                    'placeholder' => 'i.e. dd/MM/yyyy HH:mm',
                 ],
+        ]);
+        $optionsForm->get('displayOptions')->get('locale')->add('parseFormat', TextType::class, [
+            'required' => false,
+            'attr' => ['placeholder' => '(PHP) d/m/Y H:i'],
         ]);
         $optionsForm->get('displayOptions')->get('locale')->add('firstDay', IntegerType::class, [
                 'required' => false,

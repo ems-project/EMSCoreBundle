@@ -30,7 +30,7 @@ class TimeFieldType extends DataFieldType
 
     public static function getIcon(): string
     {
-        return 'fa fa-clock-o';
+        return 'fa fa-clock';
     }
 
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
@@ -96,6 +96,7 @@ class TimeFieldType extends DataFieldType
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $format = static::getFormat($fieldType->getOptions());
+        \dump($format);
         $converted = !\is_array($data) ? \DateTime::createFromFormat($format, \strval($data)) : false;
         if ($converted) {
             $out = $converted->format($this::STOREFORMAT);
@@ -185,12 +186,13 @@ class TimeFieldType extends DataFieldType
         ]);
         $optionsForm->get('displayOptions')->add('defaultTime', TextType::class, [
                 'required' => false,
-                 'label' => 'Default time (empty: current time, \'11:23\': specific time, \'false\': do not set a default time)',
+                 'label' => 'Default time (Deprecated)',
         ]);
         $optionsForm->get('displayOptions')->add('showSeconds', CheckboxType::class, [
                 'required' => false,
         ]);
         $optionsForm->get('displayOptions')->add('explicitMode', CheckboxType::class, [
+                'label' => 'Explicit mode (Deprecated)',
                 'required' => false,
         ]);
     }

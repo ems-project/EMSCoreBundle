@@ -109,7 +109,7 @@ class FolderRenameCommand extends AbstractCommand
 
     public function rename(MediaLibraryDocument $document, string $from, string $to): void
     {
-        $renamedPath = $document->getPath()->move($from, $to);
+        $renamedPath = $document->getPath()->renamePrefix($from, $to);
         $document->setPath($renamedPath);
 
         $this->mediaLibraryService->updateDocument($document, $this->username);

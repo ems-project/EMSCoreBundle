@@ -12,6 +12,8 @@ export default class MediaLibrary {
     #activeFolderHeader = '';
     #loadedFiles = 0;
     #selectionLastFile = null;
+    #dragCounter = 0;
+    #dragFiles = [];
 
     constructor (element, options) {
         this.id = element.id;
@@ -35,26 +37,32 @@ export default class MediaLibrary {
     _init() {
         this.loading(true);
         this._addEventListeners();
-        this._initDropArea(this.#elements.files);
         this._initInfiniteScrollFiles(this.#elements.files, this.#elements.loadMoreFiles);
 
         Promise
             .allSettled([this._getFolders(), this._getFiles()])
             .then(() => this.loading(false));
     }
-
+    isLoading() {
+        return this.element.classList.contains('loading');
+    }
     loading(flag) {
         const buttons = this.element.querySelectorAll('button');
         const uploadButton = (this.#elements.inputUpload) ?
             this.#elements.header.querySelector(`label[for="${this.#elements.inputUpload.id}"]`) : false;
 
         if (flag) {
+            this.element.classList.add('loading');
             buttons.forEach(button => button.disabled = true);
             if (uploadButton) uploadButton.setAttribute('disabled', 'disabled');
         } else {
+            this.element.classList.remove('loading');
             buttons.forEach(button => button.disabled = false);
             if (uploadButton) uploadButton.removeAttribute('disabled');
         }
+    }
+    getFolders() {
+        return this.#elements.listFolders.querySelectorAll('.media-lib-folder');
     }
     getSelectionFiles() {
         return this.#elements.listFiles.querySelectorAll('.active');
@@ -64,15 +72,18 @@ export default class MediaLibrary {
         document.onkeyup = (event) => { if (event.shiftKey) this.#selectionLastFile = null; }
 
         this.element.onclick = (event) => {
+            if (this.isLoading()) return;
+
             let classList = event.target.classList;
 
-            if (classList.contains('media-lib-item')) this._onClickFile(event.target, event);
+            if (classList.contains('media-lib-file')) this._onClickFile(event.target, event);
             if (classList.contains('media-lib-folder')) this._onClickFolder(event.target);
 
             if (classList.contains('btn-file-upload')) this.#elements.inputUpload.click();
             if (classList.contains('btn-file-rename')) this._onClickButtonFileRename(event.target);
             if (classList.contains('btn-file-delete')) this._onClickButtonFileDelete(event.target);
             if (classList.contains('btn-files-delete')) this._onClickButtonFilesDelete(event.target)
+            if (classList.contains('btn-files-move')) this._onClickButtonFilesMove(event.target)
 
             if (classList.contains('btn-folder-add')) this._onClickButtonFolderAdd();
             if (classList.contains('btn-folder-delete')) this._onClickButtonFolderDelete(event.target);
@@ -81,17 +92,24 @@ export default class MediaLibrary {
             if (classList.contains('btn-home')) this._onClickButtonHome(event.target);
             if (classList.contains('breadcrumb-item')) this._onClickBreadcrumbItem(event.target);
 
-            const keepSelection = ['media-lib-item', 'btn-file-rename', 'btn-file-delete', 'btn-files-delete'];
+            const keepSelection = ['media-lib-file', 'btn-file-rename', 'btn-file-delete', 'btn-files-delete', 'btn-files-move'];
             if (!keepSelection.some(className => classList.contains(className))) {
                 this._selectFilesReset();
             }
         }
-
         this.element.onchange = (event) => {
+            if (this.isLoading()) return;
+
             if (event.target.classList.contains('file-uploader-input')) {
                 this._uploadFiles(Array.from(event.target.files));
             }
         }
+
+        ['dragenter', 'dragover', 'dragleave', 'drop', 'dragend'].forEach((dragEvent) => {
+            if (this.isLoading()) return;
+
+            this.#elements.files.addEventListener(dragEvent, (event) => this._onDragUpload(event));
+        });
     }
 
     _onClickFile(item, event) {
@@ -100,10 +118,9 @@ export default class MediaLibrary {
         const fileId = selection.length === 1 ? item.dataset.id : null;
         this._getHeader(fileId).then(() => { this.loading(false); });
     }
-
     _onClickButtonFileRename(button) {
         const fileId = button.dataset.id;
-        const fileRow = this.#elements.listFiles.querySelector(`[data-id='${fileId}']`);
+        const fileRow = this.#elements.listFiles.querySelector(`.media-lib-file[data-id='${fileId}']`);
 
         ajaxModal.load({ url: `${this.#pathPrefix}/file/${fileId}/rename`, size: 'sm'}, (json) => {
             if (!json.hasOwnProperty('success') || json.success === false) return;
@@ -117,12 +134,12 @@ export default class MediaLibrary {
     }
     _onClickButtonFileDelete(button) {
         const fileId = button.dataset.id;
-        const fileRow = this.#elements.listFiles.querySelector(`[data-id='${fileId}']`);
+        const fileRow = this.#elements.listFiles.querySelector(`.media-lib-file[data-id='${fileId}']`);
 
         this._post(`/file/${fileId}/delete`).then((json) => {
             if (!json.hasOwnProperty('success') || json.success === false) return;
 
-            fileRow.remove();
+            fileRow.closest('li').remove();
             this._selectFilesReset();
             this.loading(false);
         });
@@ -153,7 +170,50 @@ export default class MediaLibrary {
                     return this._post(`/file/${fileRow.dataset.id}/delete`).then(() => {
                         if (!json.hasOwnProperty('success') || json.success === false) return;
 
-                        fileRow.remove();
+                        fileRow.closest('li').remove();
+                        progressBar
+                            .progress(Math.round((++processed / selection.length) * 100))
+                            .style('success');
+                    });
+                }))
+                .then(() => this._selectFilesReset())
+                .then(() => this.loading(false))
+                .then(() => new Promise(resolve => setTimeout(resolve, 2000)))
+                .then(() => ajaxModal.close())
+            ;
+        });
+    }
+    _onClickButtonFilesMove(button, targetId) {
+        const selection = this.getSelectionFiles();
+        if (selection.length === 0) return;
+
+        const path = this.#activeFolderId ? `/move-files/${this.#activeFolderId}` : '/move-files';
+        const query = new URLSearchParams({ 'selectionFiles': selection.length.toString() });
+        if (targetId) query.append('targetId', targetId);
+        const modalSize = button.dataset.modalSize ?? 'sm';
+
+        ajaxModal.load({ url: this.#pathPrefix + path + '?' + query.toString(), size: modalSize }, (json) => {
+            if (!json.hasOwnProperty('success') || json.success === false) return;
+            if (!json.hasOwnProperty('targetFolderId')) return;
+
+            let processed = 0;
+            const progressBar = new ProgressBar('progress-move-files', {
+                label: (1 === selection.length ? 'Moving file' : 'Moving files'),
+                value: 100,
+                showPercentage: true,
+            });
+
+            ajaxModal.getBodyElement().append(progressBar.element());
+            this.loading(true);
+
+            Promise
+                .allSettled(Array.from(selection).map(fileRow => {
+                    return this._post(`/file/${fileRow.dataset.id}/move`, {
+                        targetFolderId: json.targetFolderId
+                    }).then(() => {
+                        if (!json.hasOwnProperty('success') || json.success === false) return;
+
+                        fileRow.closest('li').remove();
                         progressBar
                             .progress(Math.round((++processed / selection.length) * 100))
                             .style('success');
@@ -167,18 +227,18 @@ export default class MediaLibrary {
         });
     }
 
-    _onClickFolder(button) {
+    _onClickFolder(folder) {
         this.loading(true);
-        this.#elements.listFolders.querySelectorAll('button')
-            .forEach((li) => li.classList.remove('active'));
 
-        button.classList.add('active');
-        let parentLi = button.parentNode;
-        if (parentLi && parentLi.classList.contains('media-lib-folder-children')) {
-            parentLi.classList.toggle('open');
+        this.getFolders().forEach((f) => f.classList.remove('active'));
+        folder.classList.add('active');
+
+        let folderItem = folder.closest('li');
+        if (folderItem && folderItem.classList.contains('has-children')) {
+            folderItem.classList.toggle('open');
         }
 
-        this.#activeFolderId = button.dataset.id;
+        this.#activeFolderId = folder.dataset.id;
         this._getFiles().then(() => this.loading(false));
     }
     _onClickButtonFolderAdd() {
@@ -256,8 +316,8 @@ export default class MediaLibrary {
     _onClickBreadcrumbItem(item) {
         let id = item.dataset.id;
         if (id) {
-            let folderButton = this.#elements.listFolders.querySelector(`button[data-id="${id}"]`);
-            this._onClickFolder(folderButton);
+            let folder = this.#elements.listFolders.querySelector(`.media-lib-folder[data-id="${id}"]`);
+            this._onClickFolder(folder);
         } else {
             this._onClickButtonHome();
         }
@@ -291,8 +351,8 @@ export default class MediaLibrary {
     }
     _getFolders(openPath) {
         this.#elements.listFolders.innerHTML = '';
-        return this._get('/folders').then((folders) => {
-            this._appendFolderItems(folders, this.#elements.listFolders);
+        return this._get('/folders').then((json) => {
+            this._appendFolderItems(json);
             if (openPath) { this._openPath(openPath); }
         });
     }
@@ -300,18 +360,17 @@ export default class MediaLibrary {
         let currentPath = '';
         path.split('/').filter(f => f !== '').forEach((folderName) => {
             currentPath += `/${folderName}`;
+            let parentFolder = document.querySelector(`.media-lib-folder[data-path="${currentPath}"]`);
+            let parentLi = parentFolder ? parentFolder.closest('li') : null;
 
-            let parentButton = document.querySelector(`button[data-path="${currentPath}"]`);
-            let parentLi = parentButton ? parentButton.parentNode : null;
-
-            if (parentLi && parentLi.classList.contains('media-lib-folder-children')) {
+            if (parentLi && parentLi.classList.contains('has-children')) {
                 parentLi.classList.add('open');
             }
         });
 
         if ('' !== currentPath) {
-            let button = document.querySelector(`button[data-path="${currentPath}"]`);
-            if (button) this._onClickFolder(button);
+            let folder = document.querySelector(`.media-lib-folder[data-path="${currentPath}"]`);
+            if (folder) this._onClickFolder(folder);
         }
     }
 
@@ -330,26 +389,68 @@ export default class MediaLibrary {
             this.#elements.loadMoreFiles.classList.remove('show-load-more');
         }
     }
-    _appendFolderItems(folders, list) {
-        Object.values(folders).forEach(folder => {
-            let buttonFolder = document.createElement("button");
-            buttonFolder.textContent = folder.name;
-            buttonFolder.dataset.id = folder.id;
-            buttonFolder.dataset.path = folder.path;
-            buttonFolder.classList.add('media-lib-folder');
+    _appendFolderItems(json) {
+        this.#elements.listFolders.innerHTML = json.folders;
 
-            let liFolder = document.createElement("li");
-            liFolder.appendChild(buttonFolder);
-
-            if (folder.hasOwnProperty('children')) {
-                let ulChildren = document.createElement('ul');
-                this._appendFolderItems(folder.children, ulChildren);
-                liFolder.appendChild(ulChildren);
-                liFolder.classList.add('media-lib-folder-children');
-            }
-
-            list.appendChild(liFolder);
+        this.getFolders().forEach((folder) => {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((dragEvent) => {
+                folder.addEventListener(dragEvent, (event) => this._onDragFolder(event));
+            });
         });
+    }
+
+    _onDragUpload(event) {
+        if (this.#dragFiles.length > 0) return;
+
+        if ('dragend' === event.type) this.#dragCounter = 0;
+        if ('dragover' === event.type) event.preventDefault();
+        if ('dragenter' === event.type) {
+            this.#dragCounter++;
+            this.#elements.files.classList.add('media-lib-drop-area');
+            this._selectFilesReset();
+        }
+        if ('dragleave' === event.type) {
+            this.#dragCounter--;
+            if (0 === this.#dragCounter) this.#elements.files.classList.remove('media-lib-drop-area');
+        }
+        if ('drop' === event.type) {
+            event.preventDefault();
+            this.#dragCounter = 0;
+            this.#elements.files.classList.remove('media-lib-drop-area');
+
+            const files = event.target.files || event.dataTransfer.files;
+            this._uploadFiles(Array.from(files));
+        }
+    }
+    _onDragFolder(event) {
+        if (this.#dragFiles.length === 0) return;
+        if (event.target.dataset.id === this.#activeFolderId) return;
+
+        if ('dragover' === event.type) event.preventDefault();
+        if ('dragenter' === event.type) {
+            this.getFolders().forEach((f) => f.classList.remove('media-lib-drop-area'));
+            event.target.classList.add('media-lib-drop-area');
+        }
+        if ('dragleave' === event.type) {
+            event.target.classList.remove('media-lib-drop-area');
+        }
+        if ('drop' === event.type) {
+            event.preventDefault();
+            event.target.classList.remove('media-lib-drop-area');
+            const folderId = event.target.dataset.id;
+            const moveButton = this.#elements.header.querySelector('.btn-files-move');
+
+            this._onClickButtonFilesMove(moveButton, folderId);
+        }
+    }
+    _onDragFile(event) {
+        if (event.type === 'dragstart') {
+            this.#dragFiles = this.getSelectionFiles();
+        }
+        if (event.type === 'dragend') {
+            this.#dragFiles = [];
+            this._selectFilesReset();
+        }
     }
 
     _uploadFiles(files) {
@@ -421,28 +522,6 @@ export default class MediaLibrary {
         });
     }
 
-    _initDropArea(dropArea)  {
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-            }, false);
-        });
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropArea.addEventListener(eventName, () => {
-                this._selectFilesReset();
-                dropArea.classList.add('media-lib-drop-area')
-            }, false);
-        });
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, () => dropArea.classList.remove('media-lib-drop-area'), false);
-        });
-
-        dropArea.addEventListener('drop', () => {
-            const files = event.target.files || event.dataTransfer.files;
-            this._uploadFiles(Array.from(files));
-        }, false);
-    }
     _initInfiniteScrollFiles(scrollArea, divLoadMore) {
         const options = {
             root: scrollArea,
@@ -462,29 +541,41 @@ export default class MediaLibrary {
         observer.observe(divLoadMore);
     }
 
+    _selectFile(item) {
+        item.classList.add('active');
+        item.draggable = true;
+        ['dragstart', 'dragend'].forEach((dragEvent) => {
+            item.addEventListener(dragEvent, (event) => this._onDragFile(event));
+        });
+    }
     _selectFiles(item, event) {
-        let files = this.#elements.listFiles.querySelectorAll('.media-lib-item');
-
         if (event.shiftKey && this.#selectionLastFile !== null) {
+            let files = this.#elements.listFiles.querySelectorAll('.media-lib-file');
             let start = Array.from(files).indexOf(item);
             let end = Array.from(files).indexOf(this.#selectionLastFile);
             if (start > end) [start, end] = [end, start];
 
             files.forEach((f, index) => {
-                if (index >= start && index <= end) f.classList.add('active')
+                if (index >= start && index <= end) this._selectFile(f);
             });
         } else {
-            files.forEach((f) => f.classList.remove('active'));
-            item.classList.add('active')
+            this._selectFilesReset(false);
+            this._selectFile(item);
         }
 
         this.#selectionLastFile = item;
 
         return this.getSelectionFiles();
     }
-    _selectFilesReset() {
-        this.#elements.header.innerHTML = this.#activeFolderHeader;
-        this.#elements.listFiles.querySelectorAll('.media-lib-item').forEach((f) => f.classList.remove('active'));
+    _selectFilesReset(refreshHeader = true) {
+        if (true === refreshHeader) this.#elements.header.innerHTML = this.#activeFolderHeader;
+        this.getSelectionFiles().forEach((file) => {
+            file.classList.remove('active');
+            file.draggable = false;
+            ['dragstart', 'dragend'].forEach((dragEvent) => {
+                file.removeEventListener(dragEvent, (event) => this._onDragFile(event));
+            });
+        });
     }
 
     async _jobPolling(jobId, jobProgressBar) {

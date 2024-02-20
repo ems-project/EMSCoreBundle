@@ -2,6 +2,7 @@
 {# @var template \EMS\CoreBundle\Core\Component\MediaLibrary\Template\MediaLibraryTemplate #}
 {# @var config \EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig #}
 {# @var mediaFile \EMS\CoreBundle\Core\Component\MediaLibrary\File\MediaLibraryFile #}
+{# @var mediaFolder \EMS\CoreBundle\Core\Component\MediaLibrary\Folder\MediaLibraryFolder #}
 
 {%- block media_lib_header -%}
     <div class="media-lib-container">
@@ -10,8 +11,10 @@
         {{- template.block('media_lib_button_upload', _context)|raw -}}
         {%- if mediaFile is defined -%}
             {{- template.block('media_lib_button_file_rename', _context)|raw -}}
+            {{- template.block('media_lib_button_files_move', _context)|raw -}}
             {{- template.block('media_lib_button_file_delete', _context)|raw -}}
         {%- elseif selectionFiles > 0 -%}
+            {{- template.block('media_lib_button_files_move', _context)|raw -}}
             {{- template.block('media_lib_button_files_delete', _context)|raw -}}
         {%- elseif mediaFolder is defined -%}
             {{- template.block('media_lib_button_folder_delete', _context)|raw -}}
@@ -21,15 +24,21 @@
     </div>
 {%- endblock media_lib_header -%}
 
-{%- block media_lib_file_row_header -%}
+{%- block media_lib_file_header_row -%}
     <li>
-        <div class="media-lib-item-container">
-            <div>Name</div>
-            <div>Type</div>
-            <div class="text-right">Size</div>
+        <div class="media-lib-container">
+            <div class="media-lib-file-header">
+                {{- template.block('media_lib_file_header', _context)|raw -}}
+            </div>
         </div>
     </li>
-{%- endblock media_lib_file_row_header -%}
+{%- endblock media_lib_file_header_row -%}
+
+{%- block media_lib_file_header -%}
+    <div>Name</div>
+    <div>Type</div>
+    <div class="text-right">Size</div>
+{%- endblock media_lib_file_header -%}
 
 {%- block media_lib_file_rows -%}
     {%- for mediaFile in mediaFiles|default([]) -%}
@@ -38,14 +47,47 @@
 {%- endblock media_lib_file_rows -%}
 
 {%- block media_lib_file_row -%}
-    <li class="media-lib-item" data-id="{{- mediaFile.id -}}">
-        <div class="media-lib-item-container">
-            <div><a href="{{- mediaFile.urlView -}}" download="{{- mediaFile.name -}}" data-ems-id="{{- mediaFile.emsId -}}">{{- mediaFile.name -}}</a></div>
-            <div>{{- mediaFile.file.mimetype|trans({}, 'emsco-mimetypes') -}}</div>
-            <div class="text-right">{{- mediaFile.file.filesize|format_bytes -}}</div>
+    <li>
+        <div class="media-lib-container">
+            <div class="media-lib-file" data-id="{{- mediaFile.id -}}">
+                {{- template.block('media_lib_file', _context)|raw -}}
+            </div>
         </div>
     </li>
 {%- endblock media_lib_file_row -%}
+
+{% block media_lib_file %}
+    <div><a href="{{- mediaFile.urlView -}}" download="{{- mediaFile.name -}}" data-ems-id="{{- mediaFile.emsId -}}">{{- mediaFile.name -}}</a></div>
+    <div>{{- mediaFile.file.mimetype|trans({}, 'emsco-mimetypes') -}}</div>
+    <div class="text-right">{{- mediaFile.file.filesize|format_bytes -}}</div>
+{% endblock media_lib_file %}
+
+{% block media_lib_folder_rows %}
+    {% for item in structure %}
+        {% set folder = item.folder %}
+        {% set children = item.children|default([]) %}
+        {{- template.block('media_lib_folder_row', _context)|raw -}}
+    {% endfor %}
+{% endblock media_lib_folder_rows %}
+
+{% block media_lib_folder_row %}
+    <li class="{{ html_classes({ 'has-children': children|length > 0 }) }}">
+        <div class="media-lib-container">
+            <div class="media-lib-folder" data-id="{{ folder.id }}" data-path="{{ folder.path }}">
+                {{- template.block('media_lib_folder', _context)|raw -}}
+            </div>
+        </div>
+        {% if children|length > 0 %}
+            <ul>
+                {% with { 'structure': children } %}{{ template.block('media_lib_folder_rows', _context)|raw }}{% endwith %}
+            </ul>
+        {% endif %}
+    </li>
+{% endblock media_lib_folder_row %}
+
+{% block media_lib_folder %}
+    <div>{{ folder.name }}</div>
+{% endblock media_lib_folder %}
 
 {%- block media_lib_footer -%}
     <div class="media-lib-container"></div>
@@ -92,6 +134,12 @@
         <i class="fa fa-remove" aria-hidden="true"></i> {{- buttonLabel|default('media_library.files.delete.title'|trans({ '%count%': selectionFiles })) -}}
     </button>
 {%- endblock media_lib_button_files_delete -%}
+
+{%- block media_lib_button_files_move -%}
+    <button class="btn btn-sm btn-default btn-files-move" data-modal-size="md">
+        <i class="fa fa-location-arrow" aria-hidden="true"></i> {{- buttonLabel|default('media_library.files.move.title'|trans({ '%count%': selectionFiles })) -}}
+    </button>
+{%- endblock media_lib_button_files_move -%}
 
 {%- block media_lib_button_upload -%}
     <label class="btn btn-sm btn-default btn-file-upload" for="media-lib-upload-{{- id -}}">

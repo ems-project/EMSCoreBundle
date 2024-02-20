@@ -91,7 +91,7 @@ class MediaLibraryService
      *     rows?: string
      * }
      */
-    public function getFiles(MediaLibraryConfig $config, int $from, ?MediaLibraryFolder $folder = null): array
+    public function renderFiles(MediaLibraryConfig $config, int $from, ?MediaLibraryFolder $folder = null): array
     {
         $path = $folder ? $folder->getPath()->getValue().'/' : '/';
 
@@ -105,9 +105,17 @@ class MediaLibraryService
             'totalRows' => $findFiles['total_documents'],
             'remaining' => ($from + $findFiles['total_documents'] < $findFiles['total']),
             'header' => 0 === $from ? $this->renderHeader(config: $config, folder: $folder) : null,
-            'rowHeader' => 0 === $from ? $template->block('media_lib_file_row_header') : null,
+            'rowHeader' => 0 === $from ? $template->block('media_lib_file_header_row') : null,
             'rows' => $template->block('media_lib_file_rows'),
         ]);
+    }
+
+    public function renderFolders(MediaLibraryConfig $config): string
+    {
+        $folders = $this->getFolders($config);
+        $template = $this->templateFactory->create($config, ['structure' => $folders->getStructure()]);
+
+        return $template->block('media_lib_folder_rows');
     }
 
     public function getFolder(MediaLibraryConfig $config, string $ouuid): MediaLibraryFolder
@@ -115,10 +123,7 @@ class MediaLibraryService
         return $this->folderFactory->create($config, $ouuid);
     }
 
-    /**
-     * @return array<string, array{ id: string, name: string, path: string, children: array<string, mixed> }>
-     */
-    public function getFolders(MediaLibraryConfig $config): array
+    public function getFolders(MediaLibraryConfig $config): MediaLibraryFolders
     {
         $query = $this->elasticaService->getBoolQuery();
         $query->addMustNot((new Nested())->setPath($config->fieldFile)->setQuery(new Exists($config->fieldFile)));
@@ -133,7 +138,7 @@ class MediaLibraryService
             }
         }
 
-        return $folders->getStructure();
+        return $folders;
     }
 
     private function getRevision(MediaLibraryDocument $mediaLibraryDocument): Revision
@@ -202,6 +207,10 @@ class MediaLibraryService
     {
         $mediaFolder = \is_string($folder) ? $this->getFolder($config, $folder) : $folder;
         $mediaFile = \is_string($file) ? $this->getFile($config, $file) : $file;
+
+        if ($mediaFile) {
+            $selectionFiles = 1;
+        }
 
         $template = $this->templateFactory->create($config, \array_filter([
             'mediaFolder' => $mediaFolder,

@@ -11,13 +11,13 @@ media_library:
             title: 'Delete folder'
             submit: Confirm
             warning: |
-                Are you sure you want to delete this folder? 
+                Are you sure you want to delete this folder?
                 This action will also remove any subfolders and files within.
             job_info: 'Folder removing in progress. Please wait...'
         rename:
             title: 'Rename folder'
             submit: Rename
-            job_info: | 
+            job_info: |
                 Folder renaming in progress.
                 Please wait...
     file:
@@ -34,6 +34,16 @@ media_library:
             submit: Confirm
             warning: 'Are you sure you want to delete the %count% selected files?'
             info: 'Removing %count% files. Please wait...'
+        move:
+            title: '{1} Move file |]1,Inf[ Move %count% files'
+            submit: Move
+            info: 'Current location: "%path%"'
+            success: |
+                {1}Moving the selected file from "%from%" to "%to%"
+                Please wait...
+                |]1,Inf[ Moving %count% files from "%from%" to "%to%"
+                Please wait...
+            select_folder: 'Select new location:'
 
 json_menu_nested:
     error:

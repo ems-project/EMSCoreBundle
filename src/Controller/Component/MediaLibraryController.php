@@ -45,17 +45,22 @@ class MediaLibraryController
                 folder: $query->has('folderId') ? $query->get('folderId') : null,
                 file: $query->has('fileId') ? $query->get('fileId') : null,
                 selectionFiles: $query->has('selectionFiles') ? $query->getInt('selectionFiles') : 0,
+                searchValue: $query->get('search')
             ),
         ]);
     }
 
     public function getFiles(MediaLibraryConfig $config, Request $request): JsonResponse
     {
-        $from = $request->query->getInt('from');
         $folderId = $request->get('folderId');
         $folder = $folderId ? $this->mediaLibraryService->getFolder($config, $folderId) : null;
 
-        return new JsonResponse($this->mediaLibraryService->renderFiles($config, $from, $folder));
+        return new JsonResponse($this->mediaLibraryService->renderFiles(
+            config: $config,
+            from: $request->query->getInt('from'),
+            folder: $folder,
+            searchValue: $request->get('search')
+        ));
     }
 
     public function getFolders(MediaLibraryConfig $config): JsonResponse

@@ -22,6 +22,9 @@
         {%- endif -%}
         {{- template.block('media_lib_breadcrumb', _context)|raw -}}
     </div>
+    <div class="media-lib-container">
+        {{- template.block('media_lib_search_box', _context)|raw -}}
+    </div>
 {%- endblock media_lib_header -%}
 
 {%- block media_lib_file_header_row -%}
@@ -160,6 +163,17 @@
         {%- endif -%}
     </ul>
 {%- endblock media_lib_breadcrumb -%}
+
+{% block media_lib_search_box %}
+    <label for="media-lib-search-{{- id -}}" class="sr-only">Media library search</label>
+    <input id="media-lib-search-{{- id -}}"
+           class="{{ html_classes('media-lib-search form-control form-control-sm', {
+               'active': searchValue|default('')|length > 0
+           }) }}"
+           type="text"
+           value="{{ searchValue|default('') }}"
+           placeholder="Search ...">
+{% endblock media_lib_search_box %}
 
 {%- block media_lib_modal_title -%}
     {{- title -}}

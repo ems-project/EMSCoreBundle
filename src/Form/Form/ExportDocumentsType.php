@@ -49,7 +49,7 @@ class ExportDocumentsType extends AbstractType
             ->add('export', SubmitEmsType::class, [
                 'label' => 'Export '.$data->getContentType()->getPluralName(),
                 'attr' => ['class' => 'btn btn-primary btn-sm '],
-                'icon' => 'glyphicon glyphicon-export',
+                'icon' => 'fa fa-archive',
             ]);
     }
 }

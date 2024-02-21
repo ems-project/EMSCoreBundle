@@ -113,15 +113,15 @@ class SearchFormType extends AbstractType
             ]);
 
             $builder->add('search', SubmitEmsType::class, [
-                    'attr' => [
-                            'class' => 'btn btn-primary btn-md',
-                    ],
-                    'icon' => 'fa fa-search',
+                'attr' => [
+                        'class' => 'btn btn-primary btn-md',
+                ],
+                'icon' => 'fa fa-search',
             ])->add('exportResults', SubmitEmsType::class, [
-                    'attr' => [
-                            'class' => 'btn btn-primary btn-sm',
-                    ],
-                    'icon' => 'glyphicon glyphicon-export',
+                'attr' => [
+                    'class' => 'btn btn-primary btn-sm',
+                ],
+                'icon' => 'fa fa-archive',
             ])->add('environments', EnvironmentPickerType::class, [
                 'multiple' => true,
                 'required' => false,
@@ -133,10 +133,10 @@ class SearchFormType extends AbstractType
             ]);
             if (!$options['savedSearch']) {
                 $builder->add('save', SubmitEmsType::class, [
-                        'attr' => [
-                                'class' => 'btn btn-primary btn-md',
-                        ],
-                        'icon' => 'fa fa-save',
+                    'attr' => [
+                            'class' => 'btn btn-primary btn-md',
+                    ],
+                    'icon' => 'fa fa-save',
                 ]);
             }
         }

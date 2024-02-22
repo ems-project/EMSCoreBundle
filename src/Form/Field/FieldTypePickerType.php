@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Form\Field;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FieldTypePickerType extends SelectPickerType
+class FieldTypePickerType extends Select2Type
 {
     /** @var array<string, DataFieldType> */
     private array $dataFieldTypes = [];

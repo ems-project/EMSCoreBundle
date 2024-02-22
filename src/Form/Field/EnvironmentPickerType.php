@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\Field;
 
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Form\DataTransformer\EntityNameModelTransformer;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -10,17 +11,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EnvironmentPickerType extends ChoiceType
 {
-    /** @var array<mixed> */
-    private array $choices = [];
-
-    public function __construct(private readonly EnvironmentService $service)
+    public function __construct(private readonly EnvironmentService $environmentService)
     {
         parent::__construct();
-    }
-
-    public function getBlockPrefix(): string
-    {
-        return 'selectpicker';
     }
 
     /**
@@ -29,43 +22,39 @@ class EnvironmentPickerType extends ChoiceType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $keys = [];
-
+        $choices = [];
         if ($options['userPublishEnvironments']) {
-            $environments = $this->service->getUserPublishEnvironments()->toArray();
+            $environments = $this->environmentService->getUserPublishEnvironments()->toArray();
         } else {
-            $environments = $this->service->getEnvironments();
+            $environments = $this->environmentService->getEnvironments();
         }
 
-        foreach ($environments as $env) {
-            if (($env->getManaged() || !$options['managedOnly']) && !\in_array($env->getName(), $options['ignore'])) {
-                $keys[] = $env->getName();
-                $this->choices[$env->getName()] = $env;
+        foreach ($environments as $environment) {
+            if (($environment->getManaged() || !$options['managedOnly']) && !\in_array($environment->getName(), $options['ignore'])) {
+                $choices[] = $environment;
             }
         }
-        $options['choices'] = $keys;
+        $options['choices'] = $choices;
+        $builder->addModelTransformer(new EntityNameModelTransformer($this->environmentService, $options['multiple']));
         parent::buildForm($builder, $options);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $this->choices = [];
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'choices' => [],
             'attr' => [
-                    'data-live-search' => false,
+                'class' => 'select2',
             ],
-            'choice_attr' => function ($category, $key, $index) {
-                /** @var Environment $dataFieldType */
-                $dataFieldType = $this->choices[$index];
+            'choice_label' => fn (Environment $value) => \sprintf('<i class="fa fa-square text-%s"></i>&nbsp;%s', $value->getColor(), $value->getLabel()),
+            'choice_value' => function ($value) {
+                if ($value instanceof Environment) {
+                    return $value->getName();
+                }
 
-                return [
-                        'data-content' => '<span class="text-'.$dataFieldType->getColor().'"><i class="fa fa-square"></i>&nbsp;&nbsp;'.$dataFieldType->getLabel().'</span>',
-                ];
+                return $value;
             },
-            'choice_value' => fn ($value) => $value,
             'multiple' => false,
             'managedOnly' => true,
             'userPublishEnvironments' => true,

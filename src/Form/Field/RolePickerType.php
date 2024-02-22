@@ -7,7 +7,7 @@ use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RolePickerType extends SelectPickerType
+class RolePickerType extends Select2Type
 {
     public function __construct(private readonly UserService $userService)
     {

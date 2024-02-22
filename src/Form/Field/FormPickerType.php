@@ -6,23 +6,16 @@ namespace EMS\CoreBundle\Form\Field;
 
 use EMS\CoreBundle\Core\Form\FormManager;
 use EMS\CoreBundle\Entity\Form;
+use EMS\CoreBundle\Form\DataTransformer\EntityNameModelTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FormPickerType extends ChoiceType
 {
-    /** @var array<string, Form> */
-    private array $choices = [];
-
     public function __construct(private readonly FormManager $formManager)
     {
         parent::__construct();
-    }
-
-    public function getBlockPrefix(): string
-    {
-        return 'selectpicker';
     }
 
     /**
@@ -31,38 +24,28 @@ class FormPickerType extends ChoiceType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $keys = [];
-        foreach ($this->formManager->getAll() as $forn) {
-            $keys[$forn->getLabel()] = $forn->getName();
-            $this->choices[$forn->getName()] = $forn;
-        }
-        $options['choices'] = $keys;
+        $options['choices'] = $this->formManager->getAll();
+        $builder->addModelTransformer(new EntityNameModelTransformer($this->formManager, $options['multiple']));
         parent::buildForm($builder, $options);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $this->choices = [];
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'choices' => [],
             'attr' => [
-                    'data-live-search' => false,
+                'class' => 'select2',
             ],
-            'choice_attr' => function ($category, $key, $index) {
-                /** @var Form $dataFieldType */
-                $dataFieldType = $this->choices[$index];
+            'choice_label' => fn (Form $form) => \sprintf('<span><i class="fa fa-keyboard-o"></i>&nbsp;%s', $form->getLabel()),
+            'choice_value' => function ($value) {
+                if ($value instanceof Form) {
+                    return $value->getName();
+                }
 
-                return [
-                        'data-content' => '<span><i class="fa fa-square"></i>&nbsp;&nbsp;'.$dataFieldType->getLabel().'</span>',
-                ];
+                return $value;
             },
-            'choice_value' => fn ($value) => $value,
             'multiple' => false,
-            'managedOnly' => true,
-            'userPublishEnvironments' => true,
-            'ignore' => [],
             'choice_translation_domain' => false,
         ]);
     }

@@ -9,7 +9,7 @@ use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class DashboardPickerType extends SelectPickerType
+class DashboardPickerType extends Select2Type
 {
     public function __construct(private readonly DashboardService $dashboardService, private readonly TranslatorInterface $translator)
     {

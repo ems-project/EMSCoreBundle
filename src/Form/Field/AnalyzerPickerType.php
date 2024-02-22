@@ -6,7 +6,7 @@ use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Repository\AnalyzerRepository;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AnalyzerPickerType extends SelectPickerType
+class AnalyzerPickerType extends Select2Type
 {
     public function __construct(private readonly AnalyzerRepository $repository)
     {

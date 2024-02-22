@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Form\Field;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class WysiwygStylesSetPickerType extends SelectPickerType
+class WysiwygStylesSetPickerType extends Select2Type
 {
     public function __construct(private readonly WysiwygStylesSetService $stylesSetService)
     {

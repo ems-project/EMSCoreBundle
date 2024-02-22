@@ -6,7 +6,7 @@ use EMS\CoreBundle\Form\Factory\ContentTypeFieldChoiceListFactory;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ContentTypeFieldPickerType extends SelectPickerType
+class ContentTypeFieldPickerType extends Select2Type
 {
     private readonly ContentTypeFieldChoiceListFactory $choiceListFactory;
 

@@ -1,52 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Field;
 
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Form\DataTransformer\EntityNameModelTransformer;
 use EMS\CoreBundle\Service\ContentTypeService;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContentTypePickerType extends ChoiceType
 {
-    /** @var array<mixed> */
-    private array $choices = [];
-
-    public function __construct(private readonly ContentTypeService $service)
+    public function __construct(private readonly ContentTypeService $contentTypeService)
     {
         parent::__construct();
     }
 
-    public function getBlockPrefix(): string
+    /**
+     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param array<string, mixed>                       $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        return 'selectpicker';
+        $options['choices'] = $this->contentTypeService->getAll();
+        $builder->addModelTransformer(new EntityNameModelTransformer($this->contentTypeService, $options['multiple']));
+        parent::buildForm($builder, $options);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $this->choices = [];
-        $keys = [];
-        /** @var ContentType $choice */
-        foreach ($this->service->getAll() as $choice) {
-            $keys[] = $choice->getName();
-            $this->choices[$choice->getName()] = $choice;
-        }
         parent::configureOptions($resolver);
 
         $resolver->setDefaults([
-            'choices' => $keys,
             'attr' => [
-                    'data-live-search' => false,
+                'class' => 'select2',
             ],
-            'choice_attr' => function ($category, $key, $index) {
-                /** @var ContentType $contentType */
-                $contentType = $this->choices[$index];
+            'choice_label' => fn (ContentType $contentType) => \sprintf('<span class="text-%s"><i class="%s"></i>&nbsp;%s', $contentType->getColor(), $contentType->getIcon() ?? 'fa fa-book', $contentType->getPluralName()),
+            'choice_value' => function ($value) {
+                if ($value instanceof ContentType) {
+                    return $value->getName();
+                }
 
-                return [
-                        'data-content' => '<span class="text-'.$contentType->getColor().'"><i class="'.(empty($contentType->getIcon()) ? ' fa fa-book' : $contentType->getIcon()).'"></i>&nbsp;&nbsp;'.$contentType->getPluralName().'</span>',
-                ];
+                return $value;
             },
-            'choice_value' => fn ($value) => $value,
             'multiple' => false,
             'choice_translation_domain' => false,
         ]);

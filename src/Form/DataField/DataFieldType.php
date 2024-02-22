@@ -7,8 +7,8 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\DataField\Options\OptionsType;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
-use EMS\CoreBundle\Form\Field\SelectPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
+use EMS\Helpers\Standard\Text;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -152,7 +152,7 @@ abstract class DataFieldType extends AbstractType
     {
         return [
             'displayOptions' => [
-                'label' => SelectPickerType::humanize($name),
+                'label' => Text::humanize($name),
                 'class' => 'col-md-12',
             ],
             'mappingOptions' => [

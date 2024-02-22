@@ -81,11 +81,9 @@ class SearchFormType extends AbstractType
                 $builder->add('sortBy', ChoiceType::class, [
                     'required' => false,
                     'choices' => $sortFields,
-                    'choice_attr' => fn ($category, $key, $index) => [
-                        'data-content' => '<span class=""><i class="'.($sortFieldIcons[$index] ?: 'fa fa-square').'"></i>&nbsp;&nbsp;'.$key.'</span>',
-                    ],
+                    'choice_label' => fn ($value, $label) => \sprintf('<span><i class="%s"></i>&nbsp;%s</span>', $sortFieldIcons[$value], $label),
                     'attr' => [
-                        'class' => 'selectpicker',
+                        'class' => 'select2',
                     ],
                 ]);
             }
@@ -95,11 +93,9 @@ class SearchFormType extends AbstractType
                     'Ascending' => 'asc',
                     'Descending' => 'desc',
                 ],
-                'choice_attr' => fn ($category, $key, $index) => [
-                    'data-content' => '<span class=""><i class="fa fa-sort-'.$index.'"></i>&nbsp;&nbsp;'.$key.'</span>',
-                ],
+                'choice_label' => fn ($value, $label) => \sprintf('<span class=""><i class="fa fa-sort-%s"></i>&nbsp;%s</span>', $value, $label),
                 'attr' => [
-                    'class' => 'selectpicker',
+                    'class' => 'select2',
                 ],
                 'required' => false,
             ]);

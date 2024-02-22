@@ -2,9 +2,10 @@
 
 namespace EMS\CoreBundle\Form\Field;
 
+use EMS\Helpers\Standard\Text;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ColorPickerType extends SelectPickerType
+class ColorPickerType extends Select2Type
 {
     /** @var array<string, ?string> */
     private array $choices = [
@@ -36,7 +37,7 @@ class ColorPickerType extends SelectPickerType
                     'data-live-search' => true,
             ],
             'choice_attr' => fn ($category, $key, $index) => [
-                    'data-content' => "<div class='text-".$category."'><i class='fa fa-square'></i>&nbsp;&nbsp;".static::humanize($key).'</div>',
+                    'data-content' => "<div class='text-".$category."'><i class='fa fa-square'></i>&nbsp;&nbsp;".Text::humanize($key).'</div>',
             ],
             'choice_value' => fn ($value) => $value,
         ]);

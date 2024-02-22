@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Form\Field;
 use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ViewTypePickerType extends SelectPickerType
+class ViewTypePickerType extends Select2Type
 {
     public function __construct(private readonly ViewTypes $viewTypes)
     {

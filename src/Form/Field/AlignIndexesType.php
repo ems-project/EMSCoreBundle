@@ -6,7 +6,7 @@ use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Service\AliasService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AlignIndexesType extends SelectPickerType
+class AlignIndexesType extends Select2Type
 {
     public function __construct(private readonly AliasService $aliasService)
     {

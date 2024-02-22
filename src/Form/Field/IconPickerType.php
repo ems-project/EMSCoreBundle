@@ -5,7 +5,7 @@ namespace EMS\CoreBundle\Form\Field;
 use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class IconPickerType extends SelectPickerType
+class IconPickerType extends Select2Type
 {
     /**
      * @var array<string, array<string, string>|null>

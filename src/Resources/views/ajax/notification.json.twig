@@ -1,14 +1,14 @@
 {
    "acknowledged": true,
-   	{% set notice = app.session.flashbag.get('notice')  %}
+   	{% set notice = app.request.hasSession(true) ? app.session.flashbag.get('notice') : false %}
 	{% if notice %}
 		"notice": {{ notice|json_encode|raw }},
 	{% endif %}
-	{% set warning = app.session.flashbag.get('warning')  %}
+	{% set warning = app.request.hasSession(true) ? app.session.flashbag.get('warning') : false  %}
 	{% if warning %}
 		"warning": {{ warning|json_encode|raw }},
 	{% endif %}
-	{% set error = app.session.flashbag.get('error')  %}
+	{% set error = app.request.hasSession(true) ? app.session.flashbag.get('error') : false  %}
 	{% if error %}
 		"error": {{ error|json_encode|raw }},
 	{% endif %}

@@ -45,6 +45,10 @@ final class FlashMessageLogger extends AbstractProcessingHandler
 
         $message = $this->translator->trans($logArray['message'], $parameters, EMSCoreBundle::TRANS_DOMAIN);
 
+        if (!$currentRequest->hasSession(true)) {
+            return;
+        }
+
         /** @var Session $session */
         $session = $currentRequest->getSession();
         $session->getFlashBag()->add(\strtolower($logArray['level_name']), $message);

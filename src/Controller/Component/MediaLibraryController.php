@@ -10,6 +10,7 @@ use EMS\CoreBundle\Core\UI\AjaxModal;
 use EMS\CoreBundle\Core\UI\AjaxService;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\Helpers\Standard\Json;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormFactory;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -43,22 +45,27 @@ class MediaLibraryController
                 folder: $query->has('folderId') ? $query->get('folderId') : null,
                 file: $query->has('fileId') ? $query->get('fileId') : null,
                 selectionFiles: $query->has('selectionFiles') ? $query->getInt('selectionFiles') : 0,
+                searchValue: $query->get('search')
             ),
         ]);
     }
 
     public function getFiles(MediaLibraryConfig $config, Request $request): JsonResponse
     {
-        $from = $request->query->getInt('from');
         $folderId = $request->get('folderId');
         $folder = $folderId ? $this->mediaLibraryService->getFolder($config, $folderId) : null;
 
-        return new JsonResponse($this->mediaLibraryService->getFiles($config, $from, $folder));
+        return new JsonResponse($this->mediaLibraryService->renderFiles(
+            config: $config,
+            from: $request->query->getInt('from'),
+            folder: $folder,
+            searchValue: $request->get('search')
+        ));
     }
 
     public function getFolders(MediaLibraryConfig $config): JsonResponse
     {
-        return new JsonResponse($this->mediaLibraryService->getFolders($config));
+        return new JsonResponse(['folders' => $this->mediaLibraryService->renderFolders($config)]);
     }
 
     public function addFolder(MediaLibraryConfig $config, Request $request): JsonResponse
@@ -248,6 +255,90 @@ class MediaLibraryController
             'submitIcon' => 'fa-remove',
             'submitClass' => 'btn-outline-danger',
             'submitLabel' => $this->translator->trans('media_library.files.delete.submit', [], EMSCoreBundle::TRANS_COMPONENT),
+        ]);
+
+        return new JsonResponse($componentModal->render());
+    }
+
+    public function moveFile(MediaLibraryConfig $config, Request $request, string $fileId): JsonResponse
+    {
+        $data = Json::decode($request->getContent());
+        $mediaFile = $this->mediaLibraryService->getFile($config, $fileId);
+
+        $targetFolderId = $data['targetFolderId'] ?? null;
+        if (!isset($targetFolderId)) {
+            throw new \RuntimeException('Missing target folder id');
+        }
+
+        if ('home' === $targetFolderId) {
+            $movePath = $mediaFile->getPath()->move('/');
+        } else {
+            $targetFolder = $this->mediaLibraryService->getFolder($config, $targetFolderId);
+            $movePath = $mediaFile->getPath()->move($targetFolder->getPath()->getValue());
+        }
+
+        $mediaFile->setPath($movePath);
+        $this->mediaLibraryService->updateDocument($mediaFile);
+
+        $this->flashBag($request)->clear();
+
+        return new JsonResponse(['success' => true]);
+    }
+
+    public function moveFiles(MediaLibraryConfig $config, Request $request): JsonResponse
+    {
+        $selectionFiles = $request->query->getInt('selectionFiles');
+        $folderId = $request->get('folderId');
+        $folder = $folderId ? $this->mediaLibraryService->getFolder($config, $folderId) : null;
+        $currentPath = ($folder ? $folder->getPath()->getLabel() : 'Home');
+
+        $componentModal = $this->mediaLibraryService->modal($config, [
+            'type' => 'move_files',
+            'title' => $this->translator->trans('media_library.files.move.title', ['%count%' => $selectionFiles], EMSCoreBundle::TRANS_COMPONENT),
+        ]);
+
+        $folders = $this->mediaLibraryService->getFolders($config)->getChoices();
+        $choices = \array_filter($folders, static fn ($folderId) => $folderId !== ($folder->id ?? 'home'));
+        $targetId = $request->query->get('targetId');
+        $targetFolder = $targetId ? $this->mediaLibraryService->getFolder($config, $targetId) : null;
+
+        $formData = ['target' => $targetFolder?->id];
+        $form = $this->formFactory->createBuilder(FormType::class, $formData)->getForm();
+        $form
+            ->add('target', ChoiceType::class, [
+                'constraints' => [new Assert\NotBlank()],
+                'label' => 'media_library.files.move.select_folder',
+                'translation_domain' => EMSCoreBundle::TRANS_COMPONENT,
+                'choice_translation_domain' => false,
+                'attr' => ['class' => 'select2'],
+                'choices' => $choices,
+                'required' => true,
+            ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->flashBag($request)->clear();
+            $targetId = $form->getData()['target'];
+            $targetFolder = 'home' !== $targetId ? $this->mediaLibraryService->getFolder($config, $targetId) : null;
+
+            $componentModal->modal->data['success'] = true;
+            $componentModal->modal->data['targetFolderId'] = $targetFolder->id ?? 'home';
+            $componentModal->template->context->append([
+                'infoMessage' => $this->translator->trans('media_library.files.move.success', [
+                    '%count%' => $selectionFiles,
+                    '%from%' => $currentPath,
+                    '%to%' => $targetFolder ? $targetFolder->getPath()->getLabel() : 'Home',
+                ], EMSCoreBundle::TRANS_COMPONENT),
+            ]);
+
+            return new JsonResponse($componentModal->render());
+        }
+
+        $componentModal->template->context->append([
+            'infoMessage' => $this->translator->trans('media_library.files.move.info', ['%path%' => $currentPath], EMSCoreBundle::TRANS_COMPONENT),
+            'form' => $form->createView(),
+            'submitIcon' => 'fa-location-arrow',
+            'submitLabel' => $this->translator->trans('media_library.files.move.submit', [], EMSCoreBundle::TRANS_COMPONENT),
         ]);
 
         return new JsonResponse($componentModal->render());

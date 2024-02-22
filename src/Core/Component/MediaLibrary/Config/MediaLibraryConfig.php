@@ -14,6 +14,8 @@ class MediaLibraryConfig implements ConfigInterface
     public array $defaultValue = [];
     /** @var array<mixed> */
     public array $searchQuery = [];
+    /** @var array<mixed> */
+    public array $searchFileQuery = [];
     public ?string $template = null;
     /** @var array<string, mixed> */
     public array $context = [];
@@ -21,6 +23,21 @@ class MediaLibraryConfig implements ConfigInterface
     public int $searchSize = self::DEFAULT_SEARCH_SIZE;
 
     final public const DEFAULT_SEARCH_SIZE = 100;
+    public const DEFAULT_SEARCH_FILE_QUERY = [
+        'bool' => [
+            'minimum_should_match' => 1,
+            'should' => [
+                ['multi_match' => [
+                    'fields' => ['live_search', 'live_search._2gram', 'live_search._3gram'],
+                    'query' => '%query%',
+                    'operator' => 'and',
+                    'type' => 'bool_prefix',
+                ]],
+                ['query_string' => ['default_field' => '_all', 'query' => '%query%']],
+                ['wildcard' => ['_all' => ['value' => '%query%']]],
+            ],
+        ],
+    ];
 
     public function __construct(
         private readonly string $hash,

@@ -1,29 +1,41 @@
 div.media-lib {
-  --color-light: #F8F8F8;
-  --color-dark: #333333;
-  --color-active: #00A7E2;
-  --color-active-light: #e2f7ff;
-  --color-border: #d7d7d7;
+  --color-active: #337AB7;
+  --color-link: #337AB7;
+  --color-icon: #666666;
+  --color-text: #333333;
+  --color-border: #D7D7D7;
+  --background-active: #E2F7FF;
+  --background-hover: #F5F5F5;
+  --background-white: #FFFFFF;
+  --background-light: #F5F5F5;
+  --background-dark: #D2D6DE;
 
   display: flex;
   flex-direction: column;
+  background-color: var(--background-light);
   border: solid 1px var(--color-border);
-  color: var(--color-dark);
-
-  .media-lib-container {
-    background-color: #f5f5f5;
-  }
+  color: var(--color-text);
+  user-select: none;
 
   button[disabled], label[disabled] {
     opacity: 100%;
+  }
+
+  &.loading {
     cursor: progress;
   }
 
   .btn {
+    color: var(--color-text);
     border-color: var(--color-border);
-    & i { margin-right: 4px; }
-    &.btn-default { background-color: #FFFFFF; }
+    & i { margin-right: 4px; color: var(--color-icon) }
+    &.btn-default { background-color: var(--background-white); }
     &:focus, &:active:focus { outline: none; }
+  }
+
+  a {
+    color: var(--color-link);
+    &:hover { text-decoration: underline; }
   }
 
   ul {
@@ -37,12 +49,19 @@ div.media-lib {
     border-bottom: 1px solid var(--color-border);
     display: flex;
     align-items: center;
-    padding: 0 8px;
+    justify-content: space-between;
 
-    .media-lib-container  {
+    .media-lib-container {
+      padding: 8px;
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+    }
+
+    input.media-lib-search {
+      border-color: var(--color-border);
+      &:focus { outline: none; border-color: var(--color-border); }
+      &.active { border: 1px solid var(--color-active); }
     }
 
     ul.media-lib-list-breadcrumb {
@@ -50,7 +69,7 @@ div.media-lib {
       flex-direction: row;
       flex-wrap: wrap;
       align-items: center;
-      background-color: #FFFFFF;
+      background-color: var(--background-white);
       border: 1px solid var(--color-border);
       border-radius: 3px;
       padding: 0 10px;
@@ -61,19 +80,57 @@ div.media-lib {
         line-height: 1.5;
         font-size: 12px;
         background-color: transparent;
-        color: $brand-primary;
+        color: var(--color-link);
 
-        &:hover {
-          text-decoration: underline;
-        }
+        &:hover { text-decoration: underline; }
       }
 
       li:not(:last-child)::after {
         content: "\f101 ";
-        color: #777777;
         font-family: "FontAwesome", serif;
       }
     }
+  }
+
+  div.media-lib-folder > *, div.media-lib-file > * { pointer-events: none; }
+  div.media-lib-folder a, div.media-lib-file a { pointer-events: auto; }
+  div.media-lib-drop-area div.media-lib-file a { pointer-events: none; }
+
+  div.media-lib-folder, div.media-lib-file, div.media-lib-file-header {
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 7px 8px;
+    border: 1px solid transparent;
+    > * { flex: 1; }
+  }
+
+  div.media-lib-file{
+    &:hover { background-color: var(--background-hover); }
+    &.active {
+      border-color: var(--color-active);
+      background-color: var(--background-active);
+      &:hover { background-color: var(--background-active); }
+    }
+  }
+
+  div.media-lib-folder {
+    &:hover { background-color: var(--background-hover); }
+    &::before {
+      content: "\f07b";
+      font-weight: normal;
+      color: var(--color-icon);
+      font-family: "FontAwesome", serif;
+      margin-right: 8px;
+    }
+    &.active {
+      color: var(--color-active);
+      &::before { color: var(--color-active); }
+    }
+  }
+
+  div.media-lib-drop-area {
+    border: 1px solid var(--color-active);
+    background-color: var(--background-active);
   }
 
   div.media-lib-content {
@@ -90,7 +147,7 @@ div.media-lib {
       min-width: 20%;
       max-width: 50%;
       flex-shrink: 0;
-      background-color: #d2d6de;
+      background-color: var(--background-dark);
       border-right: solid 1px var(--color-border);
 
       div.media-lib-folders {
@@ -98,76 +155,31 @@ div.media-lib {
         overflow-x: hidden;
 
         ul.media-lib-list-folders {
-          li {
-            display: flex;
-            flex-direction: column;
-            background-color: #f5f5f5;
+          display: flex;
+          flex-direction: column;
 
-            button.media-lib-folder {
-              background-color: #f5f5f5;
-              border: 0;
-              text-align: left;
-              color: #333;
-              padding: 8px;
-
-              &::before {
-                content: "\f07b";
-                font-weight: normal;
-                color: #777;
-                font-family: "FontAwesome", serif;
-                margin-right: 8px;
-              }
-
-              &.active, &:hover {
-                color: $brand-primary;
-
-                &::before {
-                  color: $brand-primary;
-                }
-              }
-            }
-
-            ul {
-              display: none;
-              padding-left: 8px;
-              width: auto;
-            }
-
-            &.media-lib-folder-children {
-              & > button.media-lib-folder::after {
-                content: "\f104";
-                color: #777777;
-                font-family: "FontAwesome", serif;
-                float: right;
-              }
-            }
-
-            &.media-lib-folder-children.open {
-              & > button.media-lib-folder::before {
-                content: "\f07c";
-              }
-
-              & > button.media-lib-folder::after {
-                content: "\f107";
-              }
-
-              & > ul {
-                display: block;
-              }
-            }
+          ul {
+            display: none;
+            padding-left: 8px;
+            width: auto;
           }
 
-          & > li {
-            & > button.media-lib-folder {
-              border-bottom: 1px solid var(--color-border);
-              background-color: #FFFFFF;
+          li {
+            text-align: left;
+            background-color: var(--background-white);
 
-              &:hover {
-                background-color: #d9edf7;
-              }
+            &.has-children  > div.media-lib-container > div.media-lib-folder::after {
+              content: "\f104";
+              font-family: "FontAwesome", serif;
+              float: right;
+            }
+            &.open {
+              & > div.media-lib-container > div.media-lib-folder::before { content: "\f07c"; }
+              & > div.media-lib-container > div.media-lib-folder::after { content: "\f107"; }
+              & > ul { display: block; }
             }
 
-            & > ul {
+            div.media-lib-container {
               border-bottom: 1px solid var(--color-border);
             }
           }
@@ -180,16 +192,11 @@ div.media-lib {
       flex-direction: column;
       width: 80%;
       flex-grow: 1;
-      background-color: #FFF;
+      background-color: var(--background-white);
 
       div.media-lib-files {
         overflow-y: auto;
         height: 100%;
-
-        &.media-lib-drop-area {
-            border: 1px solid var(--color-active);
-            background-color: var(--color-active-light);
-        }
 
         ul.media-lib-list-uploads {
           width: 100%;
@@ -198,10 +205,10 @@ div.media-lib {
             display: flex;
             flex-direction: column;
             padding: 8px;
-            background-color: #f5f5f5;
+            background-color: var(--background-light);
 
             div.core-js-progress {
-              background: #FFFFFF;
+              background: var(--background-white);
               padding: 8px;
               border-radius: 3px;
               border: 1px solid var(--color-border);
@@ -213,51 +220,29 @@ div.media-lib {
           display: flex;
           flex-direction: column;
 
-          li {
+          div.media-lib-file-header { font-weight: bold; }
+          div.media-lib-container {
             border-bottom: 1px dashed var(--color-border);
-
-            &:first-child { font-weight: bold; }
-            a:hover { text-decoration: underline; }
-
-            &.media-lib-item {
-              & > * { pointer-events: none; user-select: none; }
-              & a { pointer-events: auto; }
-
-              &:hover { background-color: var(--color-light); }
-              &.active > div.media-lib-item-container {
-                border: 1px solid var(--color-active);
-                background-color: var(--color-active-light);
-              }
-            }
-
-            div.media-lib-item-container {
-              display: flex;
-              flex-wrap: nowrap;
-              padding: 7px 16px;
-              border: 1px solid transparent;
-              > div { flex: 1; }
-            }
           }
         }
       }
     }
 
     div.media-lib-load-more {
-        &.show-load-more { display: flex; }
-        display: none;
-        color: #777777;
-        justify-content: center;
-        align-items: center;
-        column-gap: 8px;
-        padding: 16px 16px 64px 16px;
-        font-weight: bold;
+      &.show-load-more { display: flex; }
+      display: none;
+      justify-content: center;
+      align-items: center;
+      column-gap: 8px;
+      padding: 16px 16px 64px 16px;
+      font-weight: bold;
     }
   }
 
   div.media-lib-footer {
     flex-shrink: 0;
     & > div {
-      border-top: 1px solid #DCDCDC;
+      border-top: 1px solid var(--color-border);
       padding: 8px;
       height: 100%;
       min-height: 30px;

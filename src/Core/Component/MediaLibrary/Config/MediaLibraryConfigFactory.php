@@ -29,6 +29,7 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
      *   defaultValue: array<mixed>,
      *   searchSize: int,
      *   searchQuery: array<mixed>,
+     *   searchFileQuery: array<mixed>,
      * } $options
      */
     public function create(string $hash, array $options): MediaLibraryConfig
@@ -48,6 +49,7 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
         $config->defaultValue = $options['defaultValue'];
         $config->searchSize = $options['searchSize'];
         $config->searchQuery = $options['searchQuery'];
+        $config->searchFileQuery = $options['searchFileQuery'];
         $config->template = $options['template'];
         $config->context = $options['context'];
 
@@ -74,6 +76,7 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
                 'defaultValue' => [],
                 'searchSize' => MediaLibraryConfig::DEFAULT_SEARCH_SIZE,
                 'searchQuery' => [],
+                'searchFileQuery' => MediaLibraryConfig::DEFAULT_SEARCH_FILE_QUERY,
                 'context' => [],
                 'template' => null,
             ])
@@ -86,6 +89,7 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
             ])
             ->setAllowedTypes('defaultValue', 'array')
             ->setAllowedTypes('searchQuery', 'array')
+            ->setAllowedTypes('searchFileQuery', 'array')
             ->setAllowedTypes('searchSize', 'int')
             ->setAllowedTypes('context', 'array');
 

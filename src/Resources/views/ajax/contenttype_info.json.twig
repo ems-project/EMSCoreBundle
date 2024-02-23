@@ -1,8 +1,0 @@
-{% extends '@EMSCore/ajax/notification.json.twig' %}
-
-{% block body %}
-	"singular_name": "{{ contentType.singularName }}",
-	"plural_name": "{{ contentType.pluralName }}",
-	"default_alias": "{{ contentType.environment.alias }}",
-	"default_name": "{{ contentType.environment.name }}",
-{% endblock %} 

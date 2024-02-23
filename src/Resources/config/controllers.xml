@@ -114,7 +114,7 @@
             <argument type="service" id="ems.service.user" />
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems.service.contenttype" />
-            <argument>%ems_core.template_namespace%</argument>
+            <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
         </service>
@@ -134,6 +134,7 @@
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
             <argument type="service" id="EMS\CoreBundle\Repository\TemplateRepository" />
             <argument type="service" id="EMS\CoreBundle\Repository\EnvironmentRepository" />
+            <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
@@ -176,6 +177,9 @@
             <argument type="service" id="ems.service.file" />
             <argument type="service" id="ems.service.asset_extractor" />
             <argument type="service" id="emsco.logger" />
+            <argument type="service" id="ems_core.core_ui.flash_message_logger" />
+            <argument type="service" id="EMS\CommonBundle\Twig\AssetRuntime" />
+            <argument>%ems_core.asset_config%</argument>
             <argument>%ems_core.template_namespace%</argument>
             <argument>%ems_core.theme_color%</argument>
             <call method="setContainer"/>
@@ -241,6 +245,7 @@
             <argument type="service" id="ems.view.manager" />
             <argument type="service" id="emsco.data_table.factory" />
             <argument type="service" id="logger"/>
+            <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
@@ -293,6 +298,7 @@
             <argument type="service" id="ems.schedule.manager" />
             <argument type="service" id="logger"/>
             <argument type="service" id="emsco.data_table.factory" />
+            <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
@@ -319,6 +325,7 @@
             <argument type="service" id="ems_common.service.spreadsheet_generator_service" />
             <argument type="service" id="logger" />
             <argument type="service" id="twig" />
+            <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <argument>%ems_core.template_namespace%</argument>
         </service>
         <service id="EMS\CoreBundle\Controller\Revision\Action\ActionImportController" public="true">
@@ -419,7 +426,7 @@
             <argument type="service" id="ems_common.service.elastica" />
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems.service.search" />
-            <argument>%ems_core.template_namespace%</argument>
+            <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -434,6 +441,7 @@
             <argument type="service" id="form.registry" />
             <argument type="service" id="ems.repository.field_type" />
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
+            <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
@@ -525,6 +533,7 @@
             <argument type="service" id="ems.service.notification"/>
             <argument type="service" id="ems.dashboard.manager"/>
             <argument type="service" id="EMS\CoreBundle\Repository\NotificationRepository"/>
+            <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <argument>%ems_core.paging_size%</argument>
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
@@ -586,6 +595,7 @@
             <argument type="service" id="emsco.data_table.factory"/>
             <argument type="service" id="ems.repository.auth_token" />
             <argument type="service" id="ems.repository.wysiwyg_profile" />
+            <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>

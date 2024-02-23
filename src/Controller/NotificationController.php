@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Controller;
 
 use Doctrine\Persistence\ManagerRegistry;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
+use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\NotificationFilter;
@@ -38,6 +39,7 @@ class NotificationController extends AbstractController
         private readonly NotificationService $notificationService,
         private readonly DashboardManager $dashboardManager,
         private readonly NotificationRepository $notificationRepository,
+        private readonly FlashMessageLogger $flashMessageLogger,
         private readonly int $pagingSize,
         private readonly string $templateNamespace)
     {
@@ -80,7 +82,7 @@ class NotificationController extends AbstractController
 
         $success = $this->notificationService->addNotification($ct->getActionById(\intval($templateId)), $revision, $env);
 
-        return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
+        return $this->flashMessageLogger->buildJsonResponse([
                 'success' => $success,
         ]);
     }

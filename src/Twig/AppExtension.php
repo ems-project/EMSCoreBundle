@@ -956,7 +956,7 @@ class AppExtension extends AbstractExtension
         );
     }
 
-    public function propertyPath(FormError $error): string
+    public static function propertyPath(FormError $error): string
     {
         $parent = $error->getOrigin();
         $out = '';

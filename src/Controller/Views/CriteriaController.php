@@ -8,6 +8,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
+use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Form\CriteriaUpdateConfig;
@@ -50,6 +51,7 @@ class CriteriaController extends AbstractController
         private readonly FormRegistryInterface $formRegistry,
         private readonly FieldTypeRepository $fieldTypeRepository,
         private readonly RevisionRepository $revisionRepository,
+        private readonly FlashMessageLogger $flashMessageLogger,
         private readonly string $templateNamespace)
     {
     }
@@ -513,7 +515,7 @@ class CriteriaController extends AbstractController
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 ]);
 
-                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
+                return $this->flashMessageLogger->buildJsonResponse([
                         'success' => false,
                 ]);
             }
@@ -526,7 +528,7 @@ class CriteriaController extends AbstractController
                     'count' => 0,
                 ]);
 
-                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
+                return $this->flashMessageLogger->buildJsonResponse([
                         'success' => false,
                 ]);
             }
@@ -548,7 +550,7 @@ class CriteriaController extends AbstractController
                     'locked_by' => $revision->getLockBy(),
                 ]);
 
-                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
+                return $this->flashMessageLogger->buildJsonResponse([
                         'success' => false,
                 ]);
             }
@@ -570,7 +572,7 @@ class CriteriaController extends AbstractController
             }
         }
 
-        return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
+        return $this->flashMessageLogger->buildJsonResponse([
                 'success' => true,
         ]);
     }
@@ -805,7 +807,7 @@ class CriteriaController extends AbstractController
                     'count' => 0,
                 ]);
 
-                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
+                return $this->flashMessageLogger->buildJsonResponse([
                         'success' => false,
                 ]);
             }
@@ -827,7 +829,7 @@ class CriteriaController extends AbstractController
                     'locked_by' => $revision->getLockBy(),
                 ]);
 
-                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
+                return $this->flashMessageLogger->buildJsonResponse([
                         'success' => false,
                 ]);
             }
@@ -849,7 +851,7 @@ class CriteriaController extends AbstractController
             }
         }
 
-        return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
+        return $this->flashMessageLogger->buildJsonResponse([
             'success' => true,
         ]);
     }

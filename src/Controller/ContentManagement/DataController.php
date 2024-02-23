@@ -7,6 +7,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
+use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -35,6 +36,7 @@ use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
+use EMS\CoreBundle\Twig\AppExtension;
 use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -69,6 +71,7 @@ class DataController extends AbstractController
         private readonly RevisionRepository $revisionRepository,
         private readonly TemplateRepository $templateRepository,
         private readonly EnvironmentRepository $environmentRepository,
+        private readonly FlashMessageLogger $flashMessageLogger,
         private readonly string $templateNamespace
     ) {
     }
@@ -557,7 +560,7 @@ class DataController extends AbstractController
             ]);
         }
 
-        $response = $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
+        $response = $this->flashMessageLogger->buildJsonResponse([
             'success' => $success,
         ]);
         $response->headers->set('Content-Type', 'application/json');
@@ -584,7 +587,7 @@ class DataController extends AbstractController
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
             ]);
 
-            $response = $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
+            $response = $this->flashMessageLogger->buildJsonResponse([
                 'success' => false,
             ]);
             $response->headers->set('Content-Type', 'application/json');
@@ -646,9 +649,18 @@ class DataController extends AbstractController
             }
         }
 
-        $response = $this->render("@$this->templateNamespace/data/ajax-revision.json.twig", [
+        $serialisedFormErrors = [];
+        /** @var FormError $error */
+        foreach ($formErrors as $error) {
+            $serialisedFormErrors[] = [
+                'propertyPath' => AppExtension::propertyPath($error),
+                'message' => $error->getMessage(),
+            ];
+        }
+
+        $response = $this->flashMessageLogger->buildJsonResponse([
             'success' => true,
-            'formErrors' => $formErrors,
+            'formErrors' => $serialisedFormErrors,
         ]);
         $response->headers->set('Content-Type', 'application/json');
 

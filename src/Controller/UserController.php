@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\DataTable\Type\UserDataTableType;
 use EMS\CoreBundle\Entity\AuthToken;
@@ -30,6 +31,7 @@ class UserController extends AbstractController
         private readonly DataTableFactory $dataTableFactory,
         private readonly AuthTokenRepository $authTokenRepository,
         private readonly WysiwygProfileRepository $wysiwygProfileRepository,
+        private readonly FlashMessageLogger $flashMessageLogger,
         private readonly string $templateNamespace
     ) {
     }
@@ -175,7 +177,7 @@ class UserController extends AbstractController
         $user->setSidebarCollapse($collapsed);
         $this->userService->updateUser($user);
 
-        return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
+        return $this->flashMessageLogger->buildJsonResponse([
             'success' => true,
         ]);
     }

@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller\Job;
 
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Job\ScheduleManager;
+use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\DataTable\Type\JobScheduleDataTableType;
 use EMS\CoreBundle\Entity\Schedule;
 use EMS\CoreBundle\Form\Data\EntityTable;
@@ -25,6 +26,7 @@ final class ScheduleController extends AbstractController
         private readonly ScheduleManager $scheduleManager,
         private readonly LoggerInterface $logger,
         private readonly DataTableFactory $dataTableFactory,
+        private readonly FlashMessageLogger $flashMessageLogger,
         private readonly string $templateNamespace
     ) {
     }
@@ -84,7 +86,7 @@ final class ScheduleController extends AbstractController
             ]);
 
             if ('json' === $_format) {
-                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
+                return $this->flashMessageLogger->buildJsonResponse([
                     'success' => true,
                 ]);
             }

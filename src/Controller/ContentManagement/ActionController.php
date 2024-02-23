@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeActionDataTableType;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
@@ -32,6 +33,7 @@ final class ActionController extends AbstractController
         private readonly ActionService $actionService,
         private readonly DataTableFactory $dataTableFactory,
         private readonly TemplateRepository $templateRepository,
+        private readonly FlashMessageLogger $flashMessageLogger,
         private readonly string $templateNamespace
     ) {
     }
@@ -119,7 +121,7 @@ final class ActionController extends AbstractController
             ]);
 
             if ('json' === $_format) {
-                return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
+                return $this->flashMessageLogger->buildJsonResponse([
                     'success' => true,
                 ]);
             }
@@ -136,7 +138,7 @@ final class ActionController extends AbstractController
                 }
             }
 
-            return $this->render("@$this->templateNamespace/ajax/notification.json.twig", [
+            return $this->flashMessageLogger->buildJsonResponse([
                 'success' => $form->isValid(),
             ]);
         }

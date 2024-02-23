@@ -1,9 +1,0 @@
-{% extends '@EMSCore/ajax/notification.json.twig' %}
-
-{% block body %}
-	"content": {{ (data.content)|json_encode|raw }},
-	"author": {{ data.author|json_encode|raw }},
-	"date": {{ data.date|json_encode|raw }},
-	"language": {{ data.locale|json_encode|raw }},
-	"title": {{ data.title|json_encode|raw }},
-{% endblock %}

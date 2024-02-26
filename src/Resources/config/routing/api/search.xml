@@ -28,6 +28,9 @@
     <route id="emsco_api_indices_from_alias" path="/indices-from-alias"
            controller="EMS\CoreBundle\Controller\Api\Search\SearchController::getIndicesFromAlias"
            methods="POST"/>
+    <route id="emsco_api_indices_from_aliases" path="/indices-from-aliases"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::getIndicesFromAliases"
+           methods="POST"/>
     <route id="emsco_api_aliases_from_index" path="/aliases-from-index"
            controller="EMS\CoreBundle\Controller\Api\Search\SearchController::getAliasesFromIndex"
            methods="POST"/>

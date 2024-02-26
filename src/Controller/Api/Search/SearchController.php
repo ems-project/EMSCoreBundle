@@ -112,6 +112,19 @@ class SearchController
         ]);
     }
 
+    public function getIndicesFromAliases(Request $request): Response
+    {
+        $json = Json::decode((string) $request->getContent());
+        $aliases = $json['aliases'] ?? null;
+        if (!\is_array($aliases)) {
+            throw new \RuntimeException('Unexpected: aliases must be an array of strings');
+        }
+
+        return new JsonResponse([
+            'indices' => $this->elasticaService->getIndicesFromAliases($aliases),
+        ]);
+    }
+
     public function getIndicesForContentTypes(Request $request): Response
     {
         $json = Json::decode((string) $request->getContent());

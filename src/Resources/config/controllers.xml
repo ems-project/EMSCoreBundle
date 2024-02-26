@@ -180,7 +180,6 @@
             <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <argument type="service" id="EMS\CommonBundle\Twig\AssetRuntime" />
             <argument>%ems_core.asset_config%</argument>
-            <argument>%ems_core.template_namespace%</argument>
             <argument>%ems_core.theme_color%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>

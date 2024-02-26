@@ -1,7 +1,0 @@
-[{% for image in images %}
-	{
-		"image": {{path('ems_file_view', {sha1: image.sha1, name:image.name , type: image.type})|json_encode|raw}},
-		"thumb": {{path('ems_file_view', {sha1: image.sha1, name:image.name , type: image.type})|json_encode|raw}},
-		"folder": {{ image.user|json_encode|raw }}
-	}{% if not loop.last %},{% endif %}{% endfor %}
-]

@@ -95,7 +95,7 @@ class DetailController extends AbstractController
 
         $searchForm = new Search();
         $searchForm->setContentTypes($this->contentTypeService->getAllNames());
-        $searchForm->setEnvironments([$defaultEnvironment->getName()]);
+        $searchForm->setEnvironments($this->contentTypeService->getAllDefaultEnvironmentNames());
         $searchForm->setSortBy('_uid');
         $searchForm->setSortOrder('asc');
 
@@ -108,16 +108,23 @@ class DetailController extends AbstractController
         $filter = new SearchFilter();
         $filter->setBooleanClause('should');
         $filter->setField($contentType->getRefererFieldName());
-        $filter->setPattern(\sprintf('"%s:%s"', $type, $ouuid));
-        $filter->setOperator('match_and');
+        $filter->setPattern(\sprintf('%s\\:%s', $type, $ouuid));
+        $filter->setOperator('query_and');
+        $searchForm->addFilter($filter);
+
+        $filter = new SearchFilter();
+        $filter->setBooleanClause('should');
+        $filter->setField($contentType->getRefererFieldName());
+        $filter->setPattern(\sprintf('object\\:%s\\:%s', $type, $ouuid));
+        $filter->setOperator('query_and');
         $searchForm->addFilter($filter);
 
         if (null !== $versionOuuid = $revision->getVersionUuid()) {
             $filterVersion = new SearchFilter();
             $filterVersion->setBooleanClause('should');
             $filterVersion->setField($contentType->getRefererFieldName());
-            $filterVersion->setPattern(\sprintf('"%s:%s"', $type, $versionOuuid));
-            $filterVersion->setOperator('match_and');
+            $filterVersion->setPattern(\sprintf('%s\\:%s', $type, $versionOuuid));
+            $filterVersion->setOperator('query_and');
             $searchForm->addFilter($filterVersion);
         }
 
@@ -157,7 +164,7 @@ class DetailController extends AbstractController
             'dataFields' => $dataFields,
             'compareData' => $compareData,
             'compareId' => $compareId,
-            'referrersForm' => $searchForm,
+            'referrersForm' => $searchForm->jsonSerialize(),
             'auditCount' => isset($auditTable) ? $auditTable->count() : false,
             'auditTable' => isset($auditTableForm) ? $auditTableForm->createView() : null,
         ]);

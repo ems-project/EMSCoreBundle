@@ -79,6 +79,9 @@
             <argument type="service" id="ems.service.contenttype"/>
             <argument type="service" id="ems.content_type.view_types" />
         </service>
+        <service id="emsco.core.content_type.field_type.service" class="EMS\CoreBundle\Core\ContentType\FieldType\FieldTypeService">
+            <argument type="service" id="ems.repository.field_type" />
+        </service>
         <service id="ems_core.core_content_type_transformer.content_transformer" class="EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformer">
             <argument type="service" id="ems_core.core_content_type_transformer.content_transformers"/>
             <argument type="service" id="ems.service.data"/>

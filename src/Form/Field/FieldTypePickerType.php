@@ -29,15 +29,12 @@ class FieldTypePickerType extends Select2Type
     {
         $resolver->setDefaults([
             'choices' => \array_keys($this->dataFieldTypes),
-            'attr' => [
-                    'data-live-search' => true,
-            ],
-            'choice_attr' => function ($category, $key, $index) {
-                $dataFieldType = $this->dataFieldTypes[$index];
+            'choice_label' => function ($value) {
+                $dataFieldType = $this->dataFieldTypes[$value];
+                $icon = $dataFieldType->getIcon();
+                $label = $dataFieldType->getLabel();
 
-                return [
-                    'data-content' => '<div class="text-'.$category.'"><i class="'.$dataFieldType->getIcon().'"></i>&nbsp;&nbsp;'.$dataFieldType->getLabel().'</div>',
-                ];
+                return "<i class=\"$icon\"></i>&nbsp;$label";
             },
             'choice_value' => fn ($value) => $value,
         ]);

@@ -123,6 +123,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_form', [FormRuntime::class, 'handleForm']),
             new TwigFunction('emsco_get_data_field', [FormRuntime::class, 'getDataField']),
             new TwigFunction('emsco_get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
+            new TwigFunction('emsco_search', $this->search(...)),
             // deprecated
             new TwigFunction('cant_be_finalized', $this->cantBeFinalized(...), ['deprecated' => true, 'alternative' => 'emsco_cant_be_finalized']),
             new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames'], ['deprecated' => true, 'alternative' => 'emsco_get_default_environment_names']),
@@ -186,7 +187,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('url_generator', Encoder::webalize(...), ['deprecated' => true, 'alternative' => 'ems_webalize']),
             new TwigFilter('emsco_webalize', Encoder::webalize(...), ['deprecated' => true, 'alternative' => 'ems_webalize']),
             new TwigFilter('get_environment', [EnvironmentRuntime::class, 'getEnvironment'], ['deprecated' => true, 'alternative' => 'emsco_get_environment']),
-            new TwigFilter('get_content_type', [ContentTypeRuntime::class, 'getContentType'], ['deprecated' => true, 'alternative' => 'emsco_get_contentType']),
+            new TwigFilter('get_content_type', [ContentTypeRuntime::class, 'getContentType'], ['deprecated' => true, 'alternative' => 'emsco_get_content_type']),
             new TwigFilter('data_label', $this->dataLabel(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_display']),
             new TwigFilter('json_decode', [TextRuntime::class, 'jsonDecode'], ['deprecated' => true, 'alternative' => 'ems_json_decode']),
             new TwigFilter('search', $this->deprecatedSearch(...), ['deprecated' => true, 'alternative' => 'emsco_search']),
@@ -695,16 +696,22 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param string[]          $indexes
-     * @param array<mixed>      $body
-     * @param string[]          $contentTypes
-     * @param array<mixed>|null $sort
-     * @param string[]|null     $sources
+     * @param string|string[]     $indexes
+     * @param string|array<mixed> $body
+     * @param string|string[]     $contentTypes
+     * @param array<mixed>|null   $sort
+     * @param string[]|null       $sources
      */
-    public function search(array $indexes, array $body = [], array $contentTypes = [], int $size = null, int $from = 0, array $sort = null, array $sources = null): ResultSet
+    public function search(string|array $indexes, string|array $body = [], string|array $contentTypes = [], int $size = null, int $from = 0, array $sort = null, array $sources = null): ResultSet
     {
+        if (\is_string($contentTypes)) {
+            $contentTypes = [$contentTypes];
+        }
         $query = $this->elasticaService->filterByContentTypes(null, $contentTypes);
 
+        if (\is_string($body)) {
+            $body = Json::decode($body);
+        }
         $boolQuery = $this->elasticaService->getBoolQuery();
         if (!empty($body) && $query instanceof $boolQuery) {
             $query->addMust($body);
@@ -715,7 +722,7 @@ class AppExtension extends AbstractExtension
             $query = $boolQuery;
             $query->addMust($body);
         }
-        $search = new CommonSearch($indexes, $query);
+        $search = new CommonSearch(\is_array($indexes) ? $indexes : [$indexes], $query);
         if (null !== $size) {
             $search->setSize($size);
         }

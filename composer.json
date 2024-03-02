@@ -29,6 +29,7 @@
     "maennchen/zipstream-php": "^3.0",
     "ocramius/doctrine-batch-utils": "^2.5",
     "ramsey/uuid-doctrine": "^1.8",
+    "scssphp/scssphp": "^1.12",
     "sensiolabs/ansi-to-html": "^1.2",
     "symfony/asset": "6.4.*",
     "symfony/cache": "6.4.*",

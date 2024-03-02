@@ -7,6 +7,12 @@
     <route id="emsco_wysiwyg_styleset_iframe" path="/styleset/iframe/{name}/{language}"
            controller="EMS\CoreBundle\Controller\Wysiwyg\StylesetController::iframe"
            methods="GET"/>
+    <route id="emsco_wysiwyg_styleset_prefixed_css" path="/styleset/prefixed-css/{name}.css"
+           controller="EMS\CoreBundle\Controller\Wysiwyg\StylesetController::prefixedCSS"
+           methods="GET"/>
+    <route id="emsco_wysiwyg_styleset_all_prefixed_css" path="/styleset/all-prefixed-css.css"
+           controller="EMS\CoreBundle\Controller\Wysiwyg\StylesetController::allPrefixedCSS"
+           methods="GET"/>
 
     <route id="emsco_wysiwyg_ajax_paste" path="/ajax/{wysiwygProfileId}/paste"
            controller="EMS\CoreBundle\Controller\Wysiwyg\AjaxPasteController"

@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\Helpers\Standard\DateTime;
@@ -173,5 +174,42 @@ class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, En
         }
 
         return $styleSet;
+    }
+
+    public function hasCSS(): bool
+    {
+        if (null === $this->contentCss || '' === $this->contentCss || !\is_string($this->assets[EmsFields::CONTENT_FILE_HASH_FIELD] ?? null)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function giveContentCss(): string
+    {
+        if (null === $this->contentCss) {
+            throw new \RuntimeException('Unexpected null Content CSS');
+        }
+
+        return $this->contentCss;
+    }
+
+    public function giveAssetsHash(): string
+    {
+        $hash = $this->assets[EmsFields::CONTENT_FILE_HASH_FIELD] ?? null;
+        if (!\is_string($hash)) {
+            throw new \RuntimeException('Unexpected non string assets hash');
+        }
+
+        return $hash;
+    }
+
+    public function getCssEtag(): string
+    {
+        return \sha1(\implode('/', [
+            $this->getName(),
+            $this->giveContentCss(),
+            $this->giveAssetsHash(),
+        ]));
     }
 }

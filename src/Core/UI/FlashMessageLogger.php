@@ -84,6 +84,7 @@ final class FlashMessageLogger extends AbstractProcessingHandler
                 $response[$level] = $session->getFlashBag()->get($level);
             }
         }
+        $response = \array_filter($response);
         $response['acknowledged'] = true;
         $response = \array_merge($response, $extra);
         $response['success'] ??= true;

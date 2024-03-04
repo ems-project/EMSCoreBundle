@@ -49,7 +49,11 @@ final class FlashMessageLogger extends AbstractProcessingHandler
 
         /** @var Session $session */
         $session = $currentRequest->getSession();
-        $session->getFlashBag()->add(\strtolower($record->level->getName()), $message);
+        $level = \strtolower($record->level->getName());
+        if (\in_array($message, $session->getFlashBag()->peek($level))) {
+            return;
+        }
+        $session->getFlashBag()->add($level, $message);
     }
 
     /**

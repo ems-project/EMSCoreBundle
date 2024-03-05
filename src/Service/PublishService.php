@@ -389,11 +389,7 @@ class PublishService
         }
 
         $contentType = $revision->giveContentType();
-
-        $selectedVersionTag = null;
-        if ($contentType->hasVersionTagField()) {
-            $selectedVersionTag = $revision->getRawData()[$contentType->getVersionTagField()] ?? null;
-        }
+        $selectedVersionTag = $revision->getVersionNextTag();
 
         if (null === $selectedVersionTag) {
             return;

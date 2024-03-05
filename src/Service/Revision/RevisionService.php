@@ -18,6 +18,7 @@ use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Exception\NotFoundException;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -198,7 +199,16 @@ class RevisionService implements RevisionServiceInterface
         return $this->revisionRepository->findAllDraftsByContentTypeName($contentTypeName);
     }
 
-    public function get(string $ouuid, string $contentType, ?\DateTimeInterface $dateTime = null): ?Revision
+    public function give(string $ouuid, ?string $contentType = null, ?\DateTimeInterface $dateTime = null): Revision
+    {
+        if (null === $revision = $this->get($ouuid, $contentType, $dateTime)) {
+            throw NotFoundException::revisionForOuuid($ouuid);
+        }
+
+        return $revision;
+    }
+
+    public function get(string $ouuid, ?string $contentType = null, ?\DateTimeInterface $dateTime = null): ?Revision
     {
         return $this->revisionRepository->findRevision($ouuid, $contentType, $dateTime);
     }

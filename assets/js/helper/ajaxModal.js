@@ -82,7 +82,7 @@ class AjaxModal {
             });
     }
 
-    load(options, callback)
+    load(options, callback, errorCallback = null)
     {
         let dialog = this.modal.querySelector('.modal-dialog');
         dialog.classList.remove('modal-xs', 'modal-sm', 'modal-md', 'modal-lg');
@@ -106,16 +106,20 @@ class AjaxModal {
 
         fetch(options.url, fetchOptions).then((response) => {
             return response.ok ? response.json().then((json) => {
-                this.ajaxReady(json, response.url, callback);
+                this.ajaxReady(json, response.url, callback, errorCallback);
                 this.stateReady();
             }) : Promise.reject(response);
-        }).catch((e) => {
-            this.printMessage('error', 'Error loading ...');
-            throw e
+        }).catch((error) => {
+            if (typeof errorCallback === 'function') {
+                errorCallback(error);
+            } else {
+                this.printMessage('error', 'Error loading ...');
+                throw error;
+            }
         });
     }
 
-    submitForm(url, callback)
+    submitForm(url, callback, errorCallback = null)
     {
         for (let i in CKEDITOR.instances) {
             if(CKEDITOR.instances.hasOwnProperty(i)) { CKEDITOR.instances[i].updateElement(); }
@@ -129,13 +133,17 @@ class AjaxModal {
                 this.ajaxReady(json, response.url, callback);
                 this.stateReady();
             }) : Promise.reject(response);
-        }).catch((e) => {
-            this.printMessage('error', 'Error loading ...');
-            throw e
+        }).catch((error) => {
+            if (typeof errorCallback === 'function') {
+                errorCallback(error);
+            } else {
+                this.printMessage('error', 'Error loading ...');
+                throw error;
+            }
         });
     }
 
-    ajaxReady(json, url, callback) {
+    ajaxReady(json, url, callback, errorCallback = null) {
         if (json.hasOwnProperty('modalClose') && json.modalClose === true) {
             if (typeof callback === 'function') { callback(json, this.modal); }
             this.$modal.modal('hide');
@@ -168,7 +176,7 @@ class AjaxModal {
         let modelForm = this.modal.querySelector('form');
         if (modelForm) {
             modelForm.addEventListener('submit', (event) => {
-                ajaxModal.submitForm(url, callback);
+                ajaxModal.submitForm(url, callback, errorCallback);
                 event.preventDefault();
             });
         }
@@ -176,7 +184,7 @@ class AjaxModal {
         let btnAjaxSubmit = this.modal.querySelector('#ajax-modal-submit');
         if (btnAjaxSubmit) {
             btnAjaxSubmit.addEventListener('click', () => {
-                ajaxModal.submitForm(url, callback);
+                ajaxModal.submitForm(url, callback, errorCallback);
             });
             document.addEventListener('keydown', this.onKeyDown);
         }

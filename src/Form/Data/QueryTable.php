@@ -15,11 +15,14 @@ class QueryTable extends TableAbstract
     private ?int $count = null;
     private ?int $totalCount = null;
 
-    /**
-     * @param mixed $context
-     */
-    public function __construct(private readonly string $templateNamespace, private readonly QueryServiceInterface $service, private readonly string $queryName, string $ajaxUrl, private $context = null, int $loadAllMaxRow = 400)
-    {
+    public function __construct(
+        public readonly string $templateNamespace,
+        private readonly QueryServiceInterface $service,
+        private readonly string $queryName,
+        string $ajaxUrl,
+        private readonly mixed $context = null,
+        int $loadAllMaxRow = 400
+    ) {
         if ($this->count() > $loadAllMaxRow) {
             parent::__construct($ajaxUrl, 0, 0);
             $this->loadAll = false;

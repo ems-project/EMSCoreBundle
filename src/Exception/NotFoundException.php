@@ -9,7 +9,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class NotFoundException extends NotFoundHttpException
 {
-    public static function revisionByOuuid(DocumentInterface $document): self
+    public static function revisionForOuuid(string $ouuid): self
+    {
+        return new self(\sprintf('Revision with "%s" not found', $ouuid));
+    }
+
+    public static function revisionForDocument(DocumentInterface $document): self
     {
         return new self(\sprintf(
             'revision with id "%s" for content type "%s" not found!',

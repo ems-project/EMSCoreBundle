@@ -51,7 +51,8 @@ final class TaskCreateCommand extends AbstractCommand
         private readonly RevisionSearcher $revisionSearcher,
         private readonly EnvironmentService $environmentService,
         private readonly UserService $userService,
-        private readonly TaskManager $taskManager
+        private readonly TaskManager $taskManager,
+        private readonly string $coreDateFormat
     ) {
         parent::__construct();
     }
@@ -81,7 +82,7 @@ final class TaskCreateCommand extends AbstractCommand
         $this->environment = $this->environmentService->giveByName($environmentName);
 
         $this->task = Json::decode($this->getOptionString(self::OPTION_TASK));
-        $this->requester = $this->getOptionString(self::OPTION_REQUESTER, self::OPTION_REQUESTER);
+        $this->requester = $this->getOptionString(self::OPTION_REQUESTER, self::DEFAULT_REQUESTER);
         $this->fieldAssignee = $this->getOptionStringNull(self::OPTION_FIELD_ASSIGNEE);
         $this->fieldDeadline = $this->getOptionStringNull(self::OPTION_FIELD_DEADLINE);
         $this->notPublished = $this->getOptionStringNull(self::OPTION_NOT_PUBLISHED);
@@ -137,10 +138,11 @@ final class TaskCreateCommand extends AbstractCommand
             return;
         }
 
-        $taskDTO = new TaskDTO();
+        $taskDTO = new TaskDTO($this->coreDateFormat);
         $taskDTO->title = $this->task['title'];
         $taskDTO->assignee = $this->task['assignee'];
         $taskDTO->description = $this->task['description'] ?? null;
+        $taskDTO->delay = 1;
 
         if (null !== $this->fieldAssignee && $document->has($this->fieldAssignee)) {
             $assignee = $document->get($this->fieldAssignee);
@@ -151,8 +153,7 @@ final class TaskCreateCommand extends AbstractCommand
         }
 
         if (null !== $this->fieldDeadline && $document->has($this->fieldDeadline)) {
-            $deadline = DateTime::create($document->get($this->fieldDeadline));
-            $taskDTO->deadline = $deadline->format('d/m/Y');
+            $taskDTO->deadline = DateTime::create($document->get($this->fieldDeadline));
         }
 
         $this->taskManager->taskCreateFromRevision($taskDTO, $revision, $this->requester);

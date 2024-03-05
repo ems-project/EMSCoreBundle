@@ -6,5 +6,8 @@ namespace EMS\CoreBundle\Form\Data;
 
 interface TableRowInterface
 {
-    public function getData(): object;
+    /**
+     * @return object|array<mixed>
+     */
+    public function getData(): object|array;
 }

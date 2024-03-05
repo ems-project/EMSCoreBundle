@@ -63,6 +63,8 @@
             <argument type="service" id="router" />
             <argument type="service" id="Psr\Cache\CacheItemPoolInterface" />
             <argument type="service" id="security.helper" />
+            <argument type="service" id="form.factory" />
+            <argument type="service" id="request_stack" />
             <argument>%ems_core.template_namespace%</argument>
         </service>
         <service id="ems.service.datatable" alias="EMS\CoreBundle\Service\DatatableService"/>
@@ -125,18 +127,21 @@
 
         <service id="emsco.revision.task.manager" class="EMS\CoreBundle\Core\Revision\Task\TaskManager">
             <argument type="service" id="ems.repository.task" />
-            <argument type="service" id="emsco.revision.task.table_service" />
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems.service.user" />
             <argument type="service" id="event_dispatcher" />
             <argument type="service" id="logger" />
-            <argument>%ems_core.template_namespace%</argument>
         </service>
-        <service id="emsco.revision.task.table_service" class="EMS\CoreBundle\Core\Revision\Task\Table\TaskTableService">
-            <argument type="service" id="ems.repository.task" />
-            <argument>%ems_core.template_namespace%</argument>
+        <service id="emsco.revision.task.data_table.query_service" class="EMS\CoreBundle\Core\Revision\Task\DataTable\TasksDataTableQueryService">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="ems.service.user" />
+            <argument type="service" id="ems.service.revision" />
         </service>
+      <service id="emsco.revision.task.filter_type" class="EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType">
+        <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
+        <tag name="form.type" />
+      </service>
         <service id="emsco.revision.task.handle_type" class="EMS\CoreBundle\Form\Revision\Task\RevisionTaskHandleType">
             <argument type="service" id="security.authorization_checker" />
             <tag name="form.type" />

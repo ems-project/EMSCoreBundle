@@ -38,7 +38,7 @@ class ReleaseRevisionsUnpublishDataTableType extends AbstractQueryTableType
         $table->setSelected($release->getRevisionsOuuids());
 
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.label', 'unpublish_label', $template));
-        $table->addColumn('release.revision.index.column.CT', 'content_type_name');
+        $table->addColumn('release.revision.index.column.CT', 'content_type_label');
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'unpublish_source', $template));
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'unpublish_target', $template));
 

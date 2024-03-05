@@ -8,7 +8,6 @@ use Doctrine\DBAL\Query\QueryBuilder as DBALQueryBuilder;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use EMS\CommonBundle\Common\EMSLink;
@@ -26,16 +25,21 @@ use Ramsey\Uuid\UuidInterface;
  */
 class RevisionRepository extends EntityRepository
 {
-    public function findRevision(string $ouuid, string $contentTypeName, ?\DateTimeInterface $dateTime = null): ?Revision
+    public function findRevision(string $ouuid, ?string $contentTypeName = null, ?\DateTimeInterface $dateTime = null): ?Revision
     {
         $qb = $this->createQueryBuilder('r');
         $qb
             ->join('r.contentType', 'c')
-            ->andWhere($qb->expr()->eq('c.name', ':content_type_name'))
             ->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))
-            ->setParameters(['ouuid' => $ouuid, 'content_type_name' => $contentTypeName])
+            ->setParameter('ouuid', $ouuid)
             ->orderBy('r.startTime', 'DESC')
             ->setMaxResults(1);
+
+        if ($contentTypeName) {
+            $qb
+                ->andWhere($qb->expr()->eq('c.name', ':content_type_name'))
+                ->setParameter('content_type_name', $contentTypeName);
+        }
 
         if (null === $dateTime) {
             $qb->andWhere($qb->expr()->isNull('r.endTime'));
@@ -50,27 +54,6 @@ class RevisionRepository extends EntityRepository
         $result = $qb->getQuery()->getResult();
 
         return isset($result[0]) && $result[0] instanceof Revision ? $result[0] : null;
-    }
-
-    public function findLatestByOuuid(string $ouuid): ?Revision
-    {
-        $qb = $this->createQueryBuilder('r');
-        $qb
-            ->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))
-            ->setMaxResults(1)
-            ->setParameters(['ouuid' => $ouuid])
-            ->orderBy('r.startTime', 'DESC');
-
-        try {
-            $result = $qb->getQuery()->getSingleResult();
-            if (!$result instanceof Revision) {
-                throw new \RuntimeException('Unexpected revision object');
-            }
-
-            return $result;
-        } catch (NoResultException) {
-            return null;
-        }
     }
 
     /**

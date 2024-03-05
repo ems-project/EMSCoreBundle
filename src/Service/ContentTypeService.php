@@ -688,7 +688,7 @@ class ContentTypeService implements EntityServiceInterface
     /**
      * @return array<string, ?string>
      */
-    public function getVersionTags(ContentType $contentType): array
+    public function getVersionTagsByContentType(ContentType $contentType): array
     {
         if (!$contentType->hasVersionTags()) {
             return [];
@@ -706,6 +706,21 @@ class ContentTypeService implements EntityServiceInterface
         $emptyLabel = $this->translator->trans('revision.version_tag.empty', [], EMSCoreBundle::TRANS_DOMAIN);
 
         return [$emptyLabel => null] + \array_combine($versionTagsLabels, $versionTags);
+    }
+
+    /**
+     * @return array<string, string|null>
+     */
+    public function getVersionTags(): array
+    {
+        $versionTags = [];
+        foreach ($this->getAll() as $contentType) {
+            if ($contentType->isActive()) {
+                $versionTags = [...$versionTags, ...$this->getVersionTagsByContentType($contentType)];
+            }
+        }
+
+        return \array_unique($versionTags);
     }
 
     public function deleteByItemName(string $name): string

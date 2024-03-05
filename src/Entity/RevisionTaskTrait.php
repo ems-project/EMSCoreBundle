@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Core\Revision\Task\TaskStatus;
 
 trait RevisionTaskTrait
 {
@@ -38,11 +39,21 @@ trait RevisionTaskTrait
     {
         if (null === $this->taskCurrent) {
             $this->taskCurrent = $task;
-        } elseif (Task::STATUS_PLANNED === $task->getStatus()) {
+        } elseif ($task->isStatus(TaskStatus::PLANNED)) {
             $this->taskPlannedIds[] = $task->getId();
-        } elseif (Task::STATUS_APPROVED === $task->getStatus()) {
+        } elseif ($task->isStatus(TaskStatus::APPROVED)) {
             $this->taskApprovedIds[] = $task->getId();
         }
+    }
+
+    public function hasTask(Task $task): bool
+    {
+        return match (true) {
+            $this->taskCurrent?->getId() === $task->getId() => true,
+            \in_array($task->getId(), $this->getTaskPlannedIds(), true) => true,
+            \in_array($task->getId(), $this->getTaskApprovedIds(), true) => true,
+            default => false
+        };
     }
 
     public function taskCurrentReplace(Task $newTaskCurrent): bool
@@ -58,11 +69,18 @@ trait RevisionTaskTrait
         return true;
     }
 
-    public function clearTasks(): void
+    public function tasksClear(): void
     {
         $this->taskCurrent = null;
         $this->taskPlannedIds = [];
         $this->taskApprovedIds = [];
+    }
+
+    public function tasksRollback(Revision $revision): void
+    {
+        $this->taskCurrent = $revision->taskCurrent;
+        $this->taskPlannedIds = $revision->taskPlannedIds;
+        $this->taskApprovedIds = $revision->taskApprovedIds;
     }
 
     public function deleteTaskPlanned(Task $task): void
@@ -132,10 +150,8 @@ trait RevisionTaskTrait
         }
 
         $taskPlannedIds = $this->getTaskPlannedIds();
-        $nextPlannedId = \array_shift($taskPlannedIds);
-        $this->taskPlannedIds = $taskPlannedIds;
 
-        return $nextPlannedId;
+        return \array_shift($taskPlannedIds);
     }
 
     public function hasTasks(bool $includeApproved = true): bool
@@ -176,6 +192,10 @@ trait RevisionTaskTrait
     public function setTaskCurrent(?Task $task): void
     {
         $this->taskCurrent = $task;
+
+        if ($task) {
+            $this->deleteTaskPlanned($task);
+        }
     }
 
     /**

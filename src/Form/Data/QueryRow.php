@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Data;
 
-class QueryRow
+class QueryRow implements TableRowInterface
 {
     /**
      * @param mixed[] $data

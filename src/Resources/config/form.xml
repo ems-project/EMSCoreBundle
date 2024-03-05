@@ -440,7 +440,11 @@
             <argument type="service" id="ems.service.environment" />
             <tag name="form.type"/>
         </service>
-        <service id="ems_core.form_revision_task.filters" class="EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType">
+        <service id="emsco.form.revision.task.filters" class="EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType">
+            <tag name="form.type"/>
+        </service>
+        <service id="emsco.form.revision.task" class="EMS\CoreBundle\Form\Revision\Task\RevisionTaskType">
+            <argument type="string">%ems_core.datepicker_format%</argument>
             <tag name="form.type"/>
         </service>
         <service id="ems_core.form.user" class="EMS\CoreBundle\Form\Form\UserOptionsType">

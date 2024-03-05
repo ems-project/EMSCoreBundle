@@ -76,7 +76,7 @@ class VersionTagFieldType extends DataFieldType
         if (0 === $countEnvironments) {
             $choices = $this->contentTypeService->getVersionDefault($contentType);
         } else {
-            $choices = $this->contentTypeService->getVersionTags($contentType);
+            $choices = $this->contentTypeService->getVersionTagsByContentType($contentType);
         }
 
         $builder->add('value', ChoiceType::class, [

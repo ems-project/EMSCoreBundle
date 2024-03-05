@@ -2,50 +2,53 @@
 
 {%- block title -%}
     <a href="#" class="task-modal"
-        data-url="{{ path('ems_core_task_ajax_modal_task', { 'revisionId': data.id, 'taskId': data.taskCurrent.id }) }}"
-        data-title="Task: {{ data.taskCurrent.title }}">
-        {{ data.taskCurrent.title }}
+       data-url="{{ path('emsco_task_ajax_modal_task', { 'revisionOuuid': data.revision_ouuid, 'taskId': data.task_id }) }}"
+       data-title="Task: {{ data.task_title }}">
+        {{ data.task_title }}
     </a>
 {%- endblock -%}
 
-{%- block label -%}{{ data|emsco_display }}{%- endblock -%}
+{%- block label -%}{{ data.revision_label }}{%- endblock -%}
 
-{%- block version_tag -%}
-    {%- if data.versionTagField -%}
-        {{- 'revision.version_tag'|trans({'%version_tag%': data.versionTagField}) -}}
+{%- block version_next_tag -%}
+    {%- if data.revision_version_next_tag -%}
+        {{- 'revision.version_tag'|trans({ '%version_tag%': data.revision_version_next_tag }) -}}
     {%- else -%}
         {{- 'revision.version_tag.empty'|trans -}}
     {%- endif -%}
 {%- endblock -%}
-{%- block requester -%}{{- data.taskCurrent.createdBy|displayname -}}{%- endblock -%}
-{%- block assignee -%}{{- data.taskCurrent.assignee|displayname -}}{%- endblock -%}
+
+{%- block requester -%}{{- data.task_requester|displayname -}}{%- endblock -%}
+
+{%- block assignee -%}{{- data.task_assignee|displayname -}}{%- endblock -%}
 
 {% block status %}
-    <i class="{{ data.taskCurrent.statusIcon }}"></i>
-    <span class="text-{{- data.taskCurrent.statusText -}}">{{ "task.status.#{data.taskCurrent.status}"|trans }}</span>
+    <i class="{{ data.task_status_class_icon }}"></i>
+    <span class="{{- data.task_status_class_text -}}">{{ "task.status.#{data.task_status}"|trans }}</span>
 {% endblock %}
 
 {%- block deadline -%}
-    <td data-order="{{ data.taskCurrent.hasDeadline ? data.taskCurrent.deadline.timestamp : 0 }}">
-        {%- if data.taskCurrent.hasDeadline -%}
-            {%- set deadline = data.taskCurrent.deadline.format(date_format) -%}
-            {%- if data.taskCurrent.deadline.timestamp < date('now').timestamp -%}
-                <span class="text-danger"><strong>{{ deadline }}</strong></span>
+    {% if data.task_deadline != null %}
+        <td data-order="{{ data.task_deadline|date('U') }}">
+            {%- if data.task_deadline|date('U') < date('now').timestamp -%}
+                <span class="text-danger"><strong>{{ data.task_deadline|date(date_format) }}</strong></span>
             {%- else -%}
-                {{ deadline }}
+                {{  data.task_deadline|date(date_format) }}
             {%- endif -%}
-        {%- endif -%}
-    </td>
+        </td>
+    {% else %}
+        <td data-order="{{ data.task_delay }}">{{ "task.delay_days"|trans({ '%number%': data.task_delay }) }}</td>
+    {% endif %}
 {%- endblock -%}
 
-{%- block modified -%}<td data-order="{{ data.taskCurrent.modified.timestamp }}">{{ data.taskCurrent.modified.format(date_time_format) -}}</td>{%- endblock -%}
+{%- block modified -%}<td data-order="{{ data.task_modified|date('U') }}">{{ data.task_modified -}}</td>{%- endblock -%}
 
 {%- block actions -%}
     <div class="btn-group">
-        <a class="btn btn-sm btn-default" href="{{ path('data.revisions', { 'type': data.giveContentType.name, 'ouuid': data.ouuid }) }}">
+        <a class="btn btn-sm btn-default" href="{{ path('data.revisions', { 'type': data.content_type_name, 'ouuid': data.revision_ouuid }) }}">
             <i class="fa fa-file" aria-hidden="true"></i> {{ 'task.dashboard.action.go_revision'|trans }}
         </a>
-        <a class="btn btn-sm btn-default" href="{{ path('revision.new-draft', { 'type': data.giveContentType.name, 'ouuid': data.ouuid }) }}">
+        <a class="btn btn-sm btn-default" href="{{ path('revision.new-draft', { 'type': data.content_type_name, 'ouuid': data.revision_ouuid }) }}">
             <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'task.dashboard.action.edit_revision'|trans }}
         </a>
     </div>

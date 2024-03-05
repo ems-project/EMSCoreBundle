@@ -738,11 +738,12 @@ task:
         success: 'Task "%title%" successfully created.'
         title: 'Add a new task'
     dashboard:
+        search_warning: 'More than %count% tasks, search on document title is impossible.'
         action:
             edit_revision: 'Edit revision'
             go_revision: Revision
         column:
-            version_tag: 'New version'
+            version_next_tag: 'New version'
             actions: Actions
             assignee: Assignee
             deadline: Deadline
@@ -772,6 +773,7 @@ task:
         hide: 'Hide finished tasks (%number%)'
         show: 'Show finished tasks (%number%)'
     close: Close
+    delay_days: '%number% days'
     history: History
     in_progress: 'This task is '
     planned:
@@ -789,7 +791,7 @@ task:
         rejected: 'Rejected task "%title%" for "%document%"'
         updated: 'Update task "%title%" for "%document%"'
     status:
-        approved: Approved
+        approved: Finished
         completed: Completed
         history:
             approved: '%user% approved the task'
@@ -804,7 +806,7 @@ task:
         rejected: Rejected
     title: Tasks
     update:
-        submit: 'Edit task'
+        submit: 'Save task'
         success: 'Task "%title%" successfully updated.'
         tab:
             history: History
@@ -819,9 +821,9 @@ task:
     filters: Filters
     filter:
         status: Statuses
-        version: Versions
         assignee: Assignees
         requester: Requesters
+        version_next_tag: New versions
         submit: Search
         reset: Clear
 uploaded-file:

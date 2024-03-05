@@ -70,6 +70,7 @@
             <argument type="service" id="ems.service.environment"/>
             <argument type="service" id="ems.service.user"/>
             <argument type="service" id="emsco.revision.task.manager"/>
+            <argument>%ems_core.date_format%</argument>
             <tag name="console.command"/>
         </service>
         <!-- EMSCO release -->

@@ -13,6 +13,7 @@ class Routes
     final public const DISCARD_DRAFT = 'emsco_discard_draft';
     final public const DRAFT_IN_PROGRESS = 'emsco_draft_in_progress';
     final public const DATA_TABLE_AJAX_TABLE = 'emsco_datatable_ajax_table';
+    final public const DATA_TABLE_AJAX_TABLE_EXPORT = 'emsco_datatable_ajax_table_export';
     final public const DASHBOARD_ADMIN_INDEX = 'emsco_dashboard_admin_index';
     final public const DASHBOARD_ADMIN_ADD = 'emsco_dashboard_admin_add';
     final public const DASHBOARD_ADMIN_EDIT = 'emsco_dashboard_admin_edit';

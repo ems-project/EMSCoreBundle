@@ -422,7 +422,7 @@ form:
             too_many_documents: 'This content type have to much document (%total%) to be reorder them all in once'
     wysiwyg_style_set:
         table_default_css:
-            title: 'Default Table class attribute'
+            title: 'Default Table class attribute (deprecated)'
     header:
         checkbo:
             select-all: 'Select all'

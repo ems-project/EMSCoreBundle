@@ -27,14 +27,6 @@ abstract class AbstractQueryTableType extends AbstractTableType
         return $this->queryService;
     }
 
-    /**
-     * @param array<mixed> $options
-     */
-    public function getContext(array $options): mixed
-    {
-        return null;
-    }
-
     public function getLoadMaxRows(): int
     {
         return self::LOAD_MAX_ROWS;

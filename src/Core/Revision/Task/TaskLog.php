@@ -58,7 +58,7 @@ final class TaskLog
     public static function logNewAssignee(Task $task, string $username): self
     {
         $log = new self($task->getAssignee(), $username);
-        $log->status = Task::STATUS_PROGRESS;
+        $log->status = TaskStatus::PROGRESS->value;
 
         return $log;
     }
@@ -113,9 +113,12 @@ final class TaskLog
             return 'fa fa-pencil bg-gray';
         }
 
-        $style = Task::STYLES[$this->status] ?? null;
+        $status = TaskStatus::tryFrom($this->status);
+        if ($status) {
+            return \sprintf('%s bg-%s', $status->getCssClassIcon(), $status->getColor());
+        }
 
-        return $style ? \sprintf('%s bg-%s', $style['icon'], $style['bg']) : 'fa fa-dot-circle-o bg-gray';
+        return 'fa fa-dot-circle-o bg-gray';
     }
 
     public function getStatus(): string
@@ -144,7 +147,7 @@ final class TaskLog
             'date' => $this->date->format(\DATE_ATOM),
             'task_title' => $this->taskTitle,
             'task_assignee' => $this->taskAssignee,
-            'task_deadline' => $this->taskDeadline ? $this->taskDeadline->format(\DATE_ATOM) : null,
+            'task_deadline' => $this->taskDeadline?->format(\DATE_ATOM),
             'task_description' => $this->taskDescription,
         ]);
     }

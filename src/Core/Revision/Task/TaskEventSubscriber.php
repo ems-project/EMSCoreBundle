@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Revision\Task;
 
 use EMS\CoreBundle\Core\Mail\MailerService;
-use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Repository\TaskRepository;
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -77,14 +76,14 @@ final class TaskEventSubscriber implements EventSubscriberInterface
             $this->sendMail($event, 'deleted', $event->task->getCreatedBy());
         }
 
-        if ($event->isTaskCurrent()) {
+        if ($event->task->isStatus(TaskStatus::PROGRESS)) {
             $this->sendMail($event, 'deleted', $event->task->getAssignee());
         }
     }
 
     public function onTaskStatusProgress(TaskEvent $event): void
     {
-        $this->updateStatus($event, Task::STATUS_PROGRESS);
+        $this->updateStatus($event, TaskStatus::PROGRESS);
 
         if ($event->isTaskCurrent()) {
             $this->sendMail($event, 'created', $event->task->getAssignee());
@@ -93,12 +92,12 @@ final class TaskEventSubscriber implements EventSubscriberInterface
 
     public function onTaskStatusPlanned(TaskEvent $event): void
     {
-        $this->updateStatus($event, Task::STATUS_PLANNED);
+        $this->updateStatus($event, TaskStatus::PLANNED);
     }
 
     public function onTaskStatusCompleted(TaskEvent $event): void
     {
-        $this->updateStatus($event, Task::STATUS_COMPLETED);
+        $this->updateStatus($event, TaskStatus::COMPLETED);
 
         if ($event->isTaskCurrent()) {
             $this->sendMail($event, 'completed', $event->task->getCreatedBy());
@@ -107,7 +106,7 @@ final class TaskEventSubscriber implements EventSubscriberInterface
 
     public function onTaskStatusRejected(TaskEvent $event): void
     {
-        $this->updateStatus($event, Task::STATUS_REJECTED);
+        $this->updateStatus($event, TaskStatus::REJECTED);
 
         if ($event->isTaskCurrent()) {
             $this->sendMail($event, 'rejected', $event->task->getAssignee());
@@ -116,17 +115,17 @@ final class TaskEventSubscriber implements EventSubscriberInterface
 
     public function onTaskStatusApproved(TaskEvent $event): void
     {
-        $this->updateStatus($event, Task::STATUS_APPROVED);
+        $this->updateStatus($event, TaskStatus::APPROVED);
 
         if ($event->isTaskCurrent()) {
             $this->sendMail($event, 'approved', $event->task->getAssignee());
         }
     }
 
-    private function updateStatus(TaskEvent $event, string $status): void
+    private function updateStatus(TaskEvent $event, TaskStatus $status): void
     {
         $task = $event->task;
-        $task->setStatus($status);
+        $task->setStatus($status->value);
 
         $task->addLog(TaskLog::logStatusUpdate($event->task, $event->username, $event->comment));
         $this->taskRepository->save($task);

@@ -6,6 +6,7 @@
 
     <id name="id" type="uuid" column="id"/>
 
+    <field name="revisionOuuid" column="revision_ouuid" length="255"/>
     <field name="title" length="255"/>
     <field name="status" length="25"/>
     <field name="delay" type="integer">

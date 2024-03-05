@@ -10,6 +10,13 @@
         <default key="optionsCacheKey" xsi:nil="true" />
     </route>
 
+  <route id="emsco_datatable_ajax_table_export" path="/ajax/table/export/{format}/{hash}/{optionsCacheKey}"
+         controller="EMS\CoreBundle\Controller\ContentManagement\DatatableController::ajaxExport"
+         methods="GET">
+    <requirement key="format">excel|csv</requirement>
+    <default key="optionsCacheKey" xsi:nil="true" />
+  </route>
+
     <route id="ems_core_datatable_ajax_elastica" path="/ajax/{hashConfig}.json"
            controller="EMS\CoreBundle\Controller\ContentManagement\DatatableController::ajaxElastica"
            methods="GET|HEAD"/>

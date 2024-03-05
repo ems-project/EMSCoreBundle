@@ -4,41 +4,22 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems_core_task_ajax_datatable" path="/tasks/dashboard/{tab}.json"
-           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxDataTable"
-           methods="GET|POST">
-        <requirement key="tab">user|requester|manager</requirement>
-        <default key="tab">user</default>
-    </route>
-    <route id="ems_core_task_ajax_datatable_csv" path="/tasks/dashboard/{tab}.csv"
-           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxDataTableCSV"
-           methods="GET">
-        <requirement key="tab">user|requester|manager</requirement>
-        <default key="tab">user</default>
-    </route>
-    <route id="ems_core_task_ajax_datatable_excel" path="/tasks/dashboard/{tab}-excel"
-           controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxDataTableExcel"
-           methods="GET">
-        <requirement key="tab">user|requester|manager</requirement>
-        <default key="tab">user</default>
-    </route>
-
-    <route id="ems_core_task_ajax_tasks" path="/data/revisions/{revisionId}/tasks"
+    <route id="emsco_task_ajax_tasks" path="/data/revisions/{revisionOuuid}/tasks"
            controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxGetTasks"
            methods="GET|POST"/>
-    <route id="ems_core_task_ajax_modal_task" path="/data/revisions/{revisionId}/task-modal/{taskId}"
+    <route id="emsco_task_ajax_modal_task" path="/data/revisions/{revisionOuuid}/task-modal/{taskId}"
            controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalTask"
            methods="GET"/>
-    <route id="ems_core_task_ajax_modal_create" path="/data/revisions/{revisionId}/create-modal"
+    <route id="emsco_task_ajax_modal_create" path="/data/revisions/{revisionOuuid}/create-modal"
            controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalCreate"
            methods="GET|POST"/>
-    <route id="ems_core_task_ajax_modal_update" path="/data/revisions/{revisionId}/update-modal/{taskId}"
+    <route id="emsco_task_ajax_modal_update" path="/data/revisions/{revisionOuuid}/update-modal/{taskId}"
            controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalUpdate"
            methods="GET|POST"/>
-    <route id="ems_core_task_ajax_delete" path="/data/revisions/{revisionId}/delete/{taskId}"
+    <route id="emsco_task_ajax_delete" path="/data/revisions/{revisionOuuid}/delete/{taskId}"
            controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxModalDelete"
            methods="GET|POST"/>
-    <route id="ems_core_task_ajax_reorder" path="/data/revisions/{revisionId}/reorder"
+    <route id="emsco_task_ajax_reorder" path="/data/revisions/{revisionOuuid}/reorder"
            controller="EMS\CoreBundle\Controller\Revision\TaskController::ajaxReorder"
            methods="POST"/>
 </routes>

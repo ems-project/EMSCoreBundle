@@ -53,7 +53,10 @@ div#revision-tabs {
 
   div#tab_tasks {
     padding: 0 0 15px;
-    a.tasks-item { color: #666;}
+    a.tasks-item-view {
+      color: #666;
+      & > * { pointer-events: none; }
+    }
 
     div.revision-tasks-title { font-weight: bold; font-size: 14px; }
     div#revision-task-active {

@@ -36,6 +36,6 @@ class ContentTypeRuntime implements RuntimeExtensionInterface
     {
         $contentType = $this->contentTypeService->giveByName($contentTypeName);
 
-        return $this->contentTypeService->getVersionTags($contentType);
+        return $this->contentTypeService->getVersionTagsByContentType($contentType);
     }
 }

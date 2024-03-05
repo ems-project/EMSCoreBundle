@@ -32,7 +32,7 @@ class PublishedRevisionsQueryService implements QueryServiceInterface
 
     public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
-        $results = $this->createQueryBuilder($context)
+        $qb = $this->createQueryBuilder($context)
             ->addSelect("CONCAT(c.name, ':', p.ouuid) AS ems_link")
             ->addSelect('c.name as content_type_name')
             ->addSelect('c.singularname as content_type_label')
@@ -43,8 +43,14 @@ class PublishedRevisionsQueryService implements QueryServiceInterface
             ->addSelect('p.finalized_date as published_finalized_date')
             ->addSelect('r.finalized_by as default_finalized_by')
             ->addSelect('r.finalized_date as default_finalized_date')
-            ->executeQuery()
-            ->fetchAllAssociative();
+            ->setFirstResult($from)
+            ->setMaxResults($size);
+
+        if ('content_type_label' === $orderField) {
+            $qb->orderBy('c.singularname', $orderDirection);
+        }
+
+        $results = $qb->executeQuery()->fetchAllAssociative();
 
         foreach ($results as &$result) {
             [$contentTypeName, $ouuid] = [$result['content_type_name'], $result['ouuid']];

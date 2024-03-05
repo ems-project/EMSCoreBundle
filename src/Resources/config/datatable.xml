@@ -58,6 +58,11 @@
             <argument type="service" id="ems.service.user" />
             <tag name="emsco.datatable" />
         </service>
+        <service id="emsco.data_table.revision.tasks" class="EMS\CoreBundle\DataTable\Type\Revision\RevisionTasksDataTableType">
+            <argument type="service" id="emsco.revision.task.data_table.query_service" />
+            <argument type="service" id="ems.repository.task" />
+            <tag name="emsco.datatable" />
+        </service>
         <service id="emsco.data_table.channel" class="EMS\CoreBundle\DataTable\Type\ChannelDataTableType">
             <argument type="service" id="ems.service.channel"/>
             <tag name="emsco.datatable" />

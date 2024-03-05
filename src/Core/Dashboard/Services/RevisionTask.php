@@ -4,47 +4,41 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Dashboard\Services;
 
-use EMS\CoreBundle\Core\Revision\Task\Table\TaskTableFilters;
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\Core\Revision\Task\DataTable\TasksDataTableContext;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
+use EMS\CoreBundle\DataTable\Type\Revision\RevisionTasksDataTableType;
 use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Form\Form\TableType;
-use EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
 
 final class RevisionTask implements DashboardInterface
 {
-    public function __construct(private readonly Environment $twig, private readonly RouterInterface $router, private readonly RequestStack $requestStack, private readonly FormFactoryInterface $formFactory, private readonly TaskManager $taskManager, private readonly string $templateNamespace)
-    {
+    public function __construct(
+        private readonly Environment $twig,
+        private readonly RequestStack $requestStack,
+        private readonly FormFactoryInterface $formFactory,
+        private readonly TaskManager $taskManager,
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly string $templateNamespace
+    ) {
     }
 
     public function getResponse(Dashboard $dashboard): Response
     {
-        /** @var Request $request */
         $request = $this->requestStack->getCurrentRequest();
-        $tab = $request->get('tab', 'user');
-        $tabs = $this->taskManager->getDashboardTabs();
+        $tab = $request?->get('tab', TasksDataTableContext::TAB_USER);
+        $tabs = $this->getDashboardTabs();
 
         if (!\in_array($tab, $tabs, true)) {
             throw new NotFoundHttpException(\sprintf('Could not find tab %s', $tab));
         }
 
-        $filters = new TaskTableFilters();
-        $formFilters = $this->formFactory->create(RevisionTaskFiltersType::class, $filters, ['tab' => $tab]);
-        $formFilters->handleRequest($request);
-        $queryFilter = $request->query->all(RevisionTaskFiltersType::NAME);
-
-        $tableUrl = $this->router->generate('ems_core_task_ajax_datatable', [
-            'tab' => $tab,
-            RevisionTaskFiltersType::NAME => $queryFilter,
-        ]);
-        $table = $this->taskManager->getTable($tableUrl, $tab, $filters, false);
-
+        $table = $this->dataTableFactory->create(RevisionTasksDataTableType::class, ['tab' => $tab]);
         $form = $this->formFactory->create(TableType::class, $table);
         $form->handleRequest($request);
 
@@ -53,7 +47,20 @@ final class RevisionTask implements DashboardInterface
             'formTable' => $form->createView(),
             'currentTab' => $tab,
             'tabs' => $tabs,
-            'filterForm' => $table->count() > 0 || \count($queryFilter) > 0 ? $formFilters->createView() : null,
+            'filterForm' => $table->getFilterForm()?->createView(),
+            'loadMaxRows' => RevisionTasksDataTableType::LOAD_MAX_ROWS,
         ])));
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getDashboardTabs(): array
+    {
+        return \array_filter([
+            TasksDataTableContext::TAB_USER,
+            TasksDataTableContext::TAB_REQUESTER,
+            $this->taskManager->isTaskManager() ? TasksDataTableContext::TAB_MANAGER : null,
+        ]);
     }
 }

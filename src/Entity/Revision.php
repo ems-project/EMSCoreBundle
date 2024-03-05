@@ -56,6 +56,7 @@ class Revision implements EntityInterface, \Stringable
     private ?bool $allFieldsAreThere = false;
     private ?UuidInterface $versionUuid = null;
     private ?string $versionTag = null;
+    private ?string $versionNextTag = null;
     private ?\DateTime $draftSaveDate = null;
     /** @var Collection<int, ReleaseRevision> */
     private Collection $releases;
@@ -770,6 +771,11 @@ class Revision implements EntityInterface, \Stringable
         return $this->versionTag;
     }
 
+    public function getVersionNextTag(): ?string
+    {
+        return $this->versionNextTag;
+    }
+
     /**
      * Called on initNewDraft or updateMetaFieldCommand.
      */
@@ -785,6 +791,7 @@ class Revision implements EntityInterface, \Stringable
         }
 
         $this->setVersionTag($this->rawData[Mapping::VERSION_TAG] ?? $this->getVersionTagDefault());
+        $this->updateVersionNextTag();
 
         if (null === $this->getVersionDate('from') && null === $this->getVersionDate('to')) {
             if ($this->hasOuuid()) {
@@ -815,9 +822,14 @@ class Revision implements EntityInterface, \Stringable
     {
         $versionTags = $this->contentType ? $this->contentType->getVersionTags() : [];
 
-        if (\in_array($versionTag, $versionTags)) {
+        if (\in_array($versionTag, $versionTags, true)) {
             $this->versionTag = $versionTag;
         }
+    }
+
+    public function updateVersionNextTag(): void
+    {
+        $this->versionNextTag = $this->getVersionTagField();
     }
 
     public function setVersionDate(string $field, \DateTimeInterface $date): void

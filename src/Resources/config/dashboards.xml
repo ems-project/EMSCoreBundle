@@ -25,10 +25,10 @@
         </service>
         <service id="ems_core.dashboard.revision_task" class="EMS\CoreBundle\Core\Dashboard\Services\RevisionTask">
             <argument type="service" id="twig" />
-            <argument type="service" id="router" />
             <argument type="service" id="request_stack" />
             <argument type="service" id="form.factory" />
             <argument type="service" id="emsco.revision.task.manager" />
+            <argument type="service" id="emsco.data_table.factory" />
             <argument>%ems_core.template_namespace%</argument>
             <tag name="ems.dashboard" alias="revision_task" />
         </service>

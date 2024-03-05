@@ -20,17 +20,6 @@ export default class RevisionTask {
                 e.preventDefault();
                 ajaxModal.load({ url: e.target.dataset.url, title: e.target.dataset.title});
             }
-            if (e.target.classList.contains('btn-task-change-owner-modal')) {
-                e.preventDefault();
-                ajaxModal.load(
-                    { url: e.target.dataset.url, title: e.target.dataset.title},
-                    (json) => {
-                        if (json.hasOwnProperty('modalSuccess') && json.modalSuccess === true) {
-                            window.location.reload();
-                        }
-                    }
-                );
-            }
         });
     }
     loadTasks() {
@@ -53,16 +42,14 @@ export default class RevisionTask {
     _addClickListeners() {
         this.tasksTab.addEventListener('click', (event) => {
             const target = event.target;
+            const classList = target.classList;
 
-            if (target.classList.contains('btn-task-modal')) this._onClickButtonTaskCreateOrUpdate(target);
-            if (target.classList.contains('btn-task-handle')) this._onClickButtonHandle(target);
+            if (classList.contains('btn-task-modal')) this._onClickButtonTaskCreateOrUpdate(target);
+            if (classList.contains('btn-task-handle')) this._onClickButtonHandle(target);
+            if (classList.contains('tasks-item-view')) this._onClickTaskItem(event, target);
             if (target.id === 'btn-tasks-reorder') this._onClickButtonTaskReorder(target);
             if (target.id === 'btn-tasks-approved') this._onClickButtonTasksApproved(event, target);
 
-            const closestTasksItem = target.closest('.tasks-item');
-            if (closestTasksItem || target.classList.contains('tasks-item')) {
-                this._onClickTaskItem(event, closestTasksItem ?? target);
-            }
         }, true);
         document.addEventListener('click', (event) => {
             const target = event.target;
@@ -74,25 +61,26 @@ export default class RevisionTask {
             if (json.hasOwnProperty('modalSuccess') && json.modalSuccess) {
                 this.loadTasks();
             }
-        });
+        }, () => location.reload());
     }
     _onClickButtonTaskDelete(button) {
         ajaxModal.load({ url: button.dataset.url, title: button.dataset.title}, (json) => {
             if (json.hasOwnProperty('modalSuccess') && json.modalSuccess) {
                 this.loadTasks();
             }
-        });
+        }, () => location.reload());
     }
     _onClickButtonHandle(button) {
         let formData = new FormData(this.tasksTab.querySelector("form"));
         formData.set('handle', button.dataset.type);
 
         fetch(this.revisionTasks.dataset.url, {method: "POST", body: formData})
-            .then((response) => response.json())
+            .then((response) => response.ok ? response.json() : Promise.reject(response))
             .then((json) => {
                 if (json.hasOwnProperty('success') && json.success) this.loadTasks();
                 if (json.hasOwnProperty('tab')) this._updateTab(json.tab);
-            });
+            })
+            .catch(() => location.reload());
     }
     _onClickButtonTaskReorder(button) {
         this.tasksTab.classList.add('reorder');
@@ -129,7 +117,10 @@ export default class RevisionTask {
                 method: "POST",
                 headers: { 'Content-Type': 'application/json'},
                 body: JSON.stringify({taskIds: taskIds})
-            }).finally(() => finishReorder());
+            })
+                .then((response) => response.ok ? response.json() : Promise.reject(response))
+                .then(() => finishReorder())
+                .catch(() => location.reload());
         }
     }
     _onClickButtonTasksApproved(event, button) {
@@ -148,8 +139,8 @@ export default class RevisionTask {
             button.dataset.toggle = 'true';
         }
     }
-    _onClickTaskItem(event, link) {
+    _onClickTaskItem(event, target) {
         event.preventDefault();
-        ajaxModal.load({ url: link.dataset.url, title: link.dataset.title});
+        ajaxModal.load({ url: target.dataset.url, title: target.dataset.title});
     }
 }

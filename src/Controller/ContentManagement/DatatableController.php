@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\Core\DataTable\DataTableFormat;
 use EMS\CoreBundle\Core\DataTable\TableExporter;
 use EMS\CoreBundle\Core\DataTable\TableRenderer;
 use EMS\CoreBundle\Form\Data\ElasticaTable;
@@ -39,6 +40,19 @@ final class DatatableController extends AbstractController
             'dataTableRequest' => $dataTableRequest,
             'table' => $table,
         ], new JsonResponse());
+    }
+
+    public function ajaxExport(Request $request, string $format, string $hash, string $optionsCacheKey = null): Response
+    {
+        $table = $this->dataTableFactory->createFromHash($hash, $optionsCacheKey, DataTableFormat::from($format));
+        $dataTableRequest = DataTableRequest::fromRequest($request);
+        $table->resetIterator($dataTableRequest);
+
+        return match ($format) {
+            'excel' => $this->tableExporter->exportExcel($table),
+            'csv' => $this->tableExporter->exportCSV($table),
+            default => throw new \RuntimeException('Invalid format')
+        };
     }
 
     public function ajaxElastica(Request $request, string $hashConfig): Response

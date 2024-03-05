@@ -6,10 +6,6 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\QueryBuilder;
-use EMS\CoreBundle\Core\Revision\Task\Table\TaskTableContext;
-use EMS\CoreBundle\Core\Revision\Task\Table\TaskTableService;
-use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
@@ -33,93 +29,6 @@ final class TaskRepository extends ServiceEntityRepository
             ->setParameter('approved_ids', $revision->getTaskApprovedIds());
 
         return \intval($qb->getQuery()->getSingleScalarResult());
-    }
-
-    public function countTable(string $searchValue, TaskTableContext $context): int
-    {
-        $qb = $this->getTableQueryBuilder($searchValue, $context);
-        $qb->select('count(r.id)');
-
-        return (int) $qb->getQuery()->getSingleScalarResult();
-    }
-
-    /**
-     * @return Revision[]
-     */
-    public function findTable(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, TaskTableContext $context): array
-    {
-        $qb = $this->getTableQueryBuilder($searchValue, $context);
-        $qb
-            ->setFirstResult($from)
-            ->setMaxResults($size);
-
-        if ($orderField && \array_key_exists($orderField, $context->columns)) {
-            $qb->orderBy($context->columns[$orderField], $orderDirection);
-        }
-
-        return $qb->getQuery()->execute();
-    }
-
-    private function getTableQueryBuilder(string $searchValue, TaskTableContext $context): QueryBuilder
-    {
-        $qb = $this->_em->createQueryBuilder();
-        $qb
-            ->select('r', 't')
-            ->from(Revision::class, 'r')
-            ->join('r.taskCurrent', 't')
-            ->where('r.endTime is null')
-            ->andWhere($qb->expr()->eq('r.deleted', ':false'))
-            ->setParameter(':false', false);
-
-        switch ($context->tab) {
-            case TaskManager::TAB_USER:
-                $qb
-                    ->andWhere($qb->expr()->eq('t.assignee', ':username'))
-                    ->setParameter('username', $context->user->getUsername());
-                break;
-            case TaskManager::TAB_REQUESTER:
-                $qb
-                    ->andWhere($qb->expr()->eq('t.createdBy', ':username'))
-                    ->setParameter('username', $context->user->getUsername());
-                break;
-        }
-
-        if (\strlen($searchValue) > 0) {
-            $or = $qb->expr()->orX();
-
-            foreach ($context->columns as $col) {
-                if (!\in_array($col, ['t.deadline', 't.modified'])) {
-                    $or->add($qb->expr()->like($col, ':term'));
-                }
-            }
-            if ($or->count() > 0) {
-                $qb->andWhere($or)->setParameter(':term', '%'.$searchValue.'%');
-            }
-        }
-
-        foreach ($context->filters->all() as $name => $value) {
-            if (isset(TaskTableService::COLUMNS[$name]['mapping'])) {
-                $qb
-                    ->andWhere($qb->expr()->in(TaskTableService::COLUMNS[$name]['mapping'], ':filter_'.$name))
-                    ->setParameter('filter_'.$name, $value);
-            }
-        }
-
-        return $qb;
-    }
-
-    public function findTaskById(string $id): Task
-    {
-        $qb = $this->createQueryBuilder('t');
-        $qb
-            ->andWhere($qb->expr()->eq('t.id', ':id'))
-            ->setParameter('id', $id);
-
-        if (null === $task = $qb->getQuery()->getOneOrNullResult()) {
-            throw new \RuntimeException(\sprintf('Task with id "%s" not found!', $id));
-        }
-
-        return $task;
     }
 
     public function hasVersionedContentType(): bool

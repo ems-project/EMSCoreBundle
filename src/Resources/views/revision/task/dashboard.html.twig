@@ -38,6 +38,11 @@
     <div class="tab-content">
         <div class="tab-pane active" id="{{ currentTab }}">
             {{ block('filters') }}
+
+            {% if table.count > loadMaxRows %}
+                <div class="alert alert-warning" role="alert">{{ 'task.dashboard.search_warning'|trans({ '%count%': loadMaxRows }) }}</div>
+            {% endif %}
+
             {% form_theme formTable '@EMSCore/form/forms.html.twig' %}
             {{ form(formTable) }}
             {% if table.count > 0 %}
@@ -46,8 +51,9 @@
                         Export <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a href="{{ path('ems_core_task_ajax_datatable_excel', routeParams|merge({'tab': currentTab}) ) }}">Excel</a></li>
-                        <li><a href="{{ path('ems_core_task_ajax_datatable_csv', routeParams|merge({'tab': currentTab}) ) }}">CSV</a></li>
+                        {% for exportFormat, exportUrl in table.exportUrls %}
+                            <li><a href="{{ exportUrl }}">{{ exportFormat }}</a></li>
+                        {% endfor %}
                     </ul>
                 </div>
             {% endif %}
@@ -63,21 +69,19 @@
                 <div class="row">
                     {{ form_start(filterForm) }}
                     {{ form_row(filterForm.status, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.status'|trans }) }}
-                    {% if filterForm.version is defined %}
-                        {{ form_row(filterForm.version, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.version'|trans  }) }}
-                    {% endif %}
                     {% if filterForm.assignee is defined %}
                         {{ form_row(filterForm.assignee, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.assignee'|trans  }) }}
                     {% endif %}
                     {% if filterForm.requester is defined %}
                         {{ form_row(filterForm.requester, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.requester'|trans  }) }}
                     {% endif %}
+                    {% if filterForm.versionNextTag is defined %}
+                        {{ form_row(filterForm.versionNextTag, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.version_next_tag'|trans  }) }}
+                    {% endif %}
                     <div class="col-md-12">
                         <input type="hidden" name="tab" value="{{ currentTab }}" />
                         <div class="btn-group">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-search" aria-hidden="true"></i>  {{ 'task.filter.submit'|trans }}
-                            </button>
+                            {{ form_widget(filterForm.submit, { 'attr': { 'class': 'btn btn-primary' } }) }}
                             <a href="{{ path(route, app.request.get('_route_params')|merge({ 'tab': currentTab }) ) }}"  class="btn btn-default">
                                 <i class="fa fa-remove" aria-hidden="true"></i>  {{ 'task.filter.reset'|trans }}
                             </a>

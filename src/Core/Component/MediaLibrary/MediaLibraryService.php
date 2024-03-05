@@ -151,7 +151,7 @@ class MediaLibraryService
         $revision = $this->revisionService->getCurrentRevisionForDocument($document);
 
         if (null === $revision) {
-            throw NotFoundException::revisionByOuuid($document);
+            throw NotFoundException::revisionForDocument($document);
         }
 
         return $revision;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Revision\Task;
 
+use EMS\CoreBundle\Core\Revision\Task\TaskStatus;
 use EMS\CoreBundle\Entity\Task;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
@@ -31,7 +32,7 @@ class RevisionTaskHandleType extends AbstractType
         /** @var UserInterface $user */
         $user = $options['user'];
 
-        if ($task->isStatus(Task::STATUS_PROGRESS, Task::STATUS_REJECTED) && $task->isAssignee($user)) {
+        if ($task->isStatus(TaskStatus::PROGRESS, TaskStatus::REJECTED) && $task->isAssignee($user)) {
             $builder
                 ->add('comment', TextareaType::class, [
                     'attr' => ['rows' => 4],
@@ -40,7 +41,7 @@ class RevisionTaskHandleType extends AbstractType
                 ->add('send', ButtonType::class);
         }
 
-        if ($task->isStatus(Task::STATUS_COMPLETED)
+        if ($task->isStatus(TaskStatus::COMPLETED)
             && ($task->isRequester($user) || $this->security->isGranted('ROLE_TASK_MANAGER'))) {
             $builder
                 ->add('comment', TextareaType::class, [

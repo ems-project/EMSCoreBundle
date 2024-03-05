@@ -34,10 +34,11 @@
     <field name="autoSave" column="auto_save" type="json" nullable="true"/>
     <field name="circles" type="simple_array" nullable="true"/>
     <field name="labelField" column="labelField" type="text" nullable="true"/>
-    <field name="sha1" type="string" nullable="true"/>
+    <field name="sha1" nullable="true"/>
     <field name="versionUuid" column="version_uuid" type="uuid" nullable="true"/>
     <field name="versionTag" column="version_tag" nullable="true"/>
     <field name="draftSaveDate" column="draft_save_date" type="datetime" nullable="true"/>
+    <field name="versionNextTag" column="version_next_tag" nullable="true"/>
     <field name="taskPlannedIds" type="json" nullable="true"/>
     <field name="taskApprovedIds" type="json" nullable="true"/>
 

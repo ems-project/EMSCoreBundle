@@ -781,7 +781,6 @@ task:
     close: Close
     delay_days: '%number% days'
     history: History
-    in_progress: 'This task is '
     planned:
         title: 'Planned tasks'
     info:
@@ -808,7 +807,7 @@ task:
             rejected: '%user% rejected the task'
             updated: '%user% updated the task'
         planned: Planned
-        progress: 'In progress'
+        progress: Active
         rejected: Rejected
     title: Tasks
     update:
@@ -1129,6 +1128,8 @@ Environments: Environments
     '': 'All environments have to be re-builded each times that the filters configuration is updated.'
 'List filters': 'List filters'
 Add: Add
+show: Show
+hide: Hide
 'Asset options': 'Asset options'
 'Hash signature': 'Hash signature'
 'Extract content': 'Extract content'

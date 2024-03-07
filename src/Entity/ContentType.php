@@ -81,7 +81,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected array $roles = [];
     /** @var array<string, ?string> */
     protected array $fields = [];
-    /** @var array<string, bool> */
+    /** @var array<string, bool|string[]> */
     protected ?array $settings = null;
 
     public function __construct()
@@ -1038,12 +1038,12 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 
     public function tasksEnabled(): bool
     {
-        return $this->getSettings()[ContentTypeSettings::TASKS_ENABLED] ?? false;
+        return $this->getSettings()->getSettingBool(ContentTypeSettings::TASKS_ENABLED);
     }
 
     public function hideRevisionSidebarEnabled(): bool
     {
-        return $this->getSettings()[ContentTypeSettings::HIDE_REVISION_SIDEBAR] ?? false;
+        return $this->getSettings()->getSettingBool(ContentTypeSettings::HIDE_REVISION_SIDEBAR);
     }
 
     public function getSettings(): ContentTypeSettings

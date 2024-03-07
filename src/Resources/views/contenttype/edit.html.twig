@@ -1,7 +1,7 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Edit "{{ contentType.singularName }}"  content type{% endblock %}
-{% block pagetitle %}Edit "{{ contentType.singularName }}" content type{% endblock %} 
+{% block pagetitle %}Edit "{{ contentType.singularName }}" content type{% endblock %}
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
@@ -87,45 +87,31 @@
                             {{ form_row(form.defaultValue) }}
                         {% endif %}
                         {{ form_row(form.extra) }}
-                    </div>
 
+                        {% if mapping %}
+                            {% embed "@EMSCore/core/panel.html.twig" with { icon: 'fa fa-sliders', id: 'mapping-info'} %}
+                                {% block title %}Mapping{% endblock title %}
+                                {% block body %}
+                                    <pre class="ems-code-editor" data-language="ace/mode/json"
+                                         data-them="ace/theme/chrome">{{ mapping|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                                {% endblock body %}
+                            {% endembed  %}
+                        {% endif %}
 
-                    {% if mapping %}
-                        <div class="col-md-8">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">
-                                        <i class="fa fa-sliders"></i> Mapping
-                                        <a class="toggle-button pull-right" role="button" data-toggle="collapse"
-                                           href="#mapping-info" aria-expanded="false" aria-controls="mapping-info"
-                                           data-toggle-contain="Hide <i class=&quot;fa fa-chevron-down&quot;></i>">
-                                            Show <i class="fa fa-chevron-right"></i>
-                                        </a>
-                                    </h3>
+                        {% embed "@EMSCore/core/panel.html.twig" with { icon: 'fa fa-ticket', id: 'tasks'} %}
+                            {% block title %}Tasks{% endblock title %}
+                            {% block body %}
+                                <div class="row">
+                                    <div class="col-md-2">{{ form_row(form.settings.tasks_enabled) }}</div>
+                                    <div class="col-md-8">{{ form_row(form.settings.tasks_titles) }}</div>
                                 </div>
+                            {% endblock body %}
+                        {% endembed  %}
 
-                                <div class="panel-body collapse" id="mapping-info">
-								<pre class="ems-code-editor" data-language="ace/mode/json"
-                                     data-them="ace/theme/chrome">{{ mapping|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    <div class="col-md-8">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">
-                                    <i class="fa fa-tags"></i> Versioning
-                                    <a class="toggle-button pull-right" role="button" data-toggle="collapse"
-                                       href="#versioning" aria-expanded="false" aria-controls="mapping-info"
-                                       data-toggle-contain="Hide <i class=&quot;fa fa-chevron-down&quot;></i>">
-                                        Show <i class="fa fa-chevron-right"></i>
-                                    </a>
-                                </h3>
-                            </div>
-                            {% if form.versionFields is defined %}
-                                <div class="panel-body collapse" id="versioning">
+                        {% if form.versionFields is defined %}
+                            {% embed "@EMSCore/core/panel.html.twig" with { icon: 'fa fa-tags', id: 'versioning'} %}
+                                {% block title %}Versioning{% endblock title %}
+                                {% block body %}
                                     <div class="row">
                                         {% for versionField in form.versionFields %}
                                             <div class="col-md-4">{{ form_row(versionField) }}</div>
@@ -133,11 +119,10 @@
                                         <div class="col-md-4">{{ form_row(form.versionTags) }}</div>
                                         <div class="col-md-8">{{ form_row(form.versionOptions) }}</div>
                                     </div>
-                                </div>
-                            {% endif %}
-                        </div>
+                                {% endblock body %}
+                            {% endembed  %}
+                        {% endif %}
                     </div>
-
                     <div class="col-md-8">
                         <table class="table table-hover">
                             <thead>
@@ -146,11 +131,9 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for settingField in form.settings %}
                                 <tr>
-                                    <td>{{ form_widget(settingField) }}</td>
+                                    <td>{{ form_widget(form.settings.hide_revision_sidebar) }}</td>
                                 </tr>
-                            {% endfor %}
                             </tbody>
                         </table>
                     </div>

@@ -29,6 +29,7 @@ class RevisionRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('r');
         $qb
+            ->addSelect('c')
             ->join('r.contentType', 'c')
             ->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))
             ->setParameter('ouuid', $ouuid)

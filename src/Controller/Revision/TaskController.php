@@ -102,7 +102,9 @@ final class TaskController extends AbstractController
             $ajaxModal = $this->getAjaxModal();
             $revision = $this->revisionService->give($revisionOuuid);
 
-            $form = $this->createForm(RevisionTaskType::class, $taskDTO);
+            $form = $this->createForm(RevisionTaskType::class, $taskDTO, [
+                'content_type' => $revision->giveContentType(),
+            ]);
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
@@ -140,6 +142,7 @@ final class TaskController extends AbstractController
 
             $form = $this->createForm(RevisionTaskType::class, $taskDTO, [
                 'task_status' => TaskStatus::from($task->getStatus()),
+                'content_type' => $revision->giveContentType(),
             ]);
             $form->handleRequest($request);
 

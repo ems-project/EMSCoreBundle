@@ -65,12 +65,17 @@
             <argument type="service" id="ems.service.index"/>
             <tag name="console.command"/>
         </service>
-        <service id="emsco.command.revision.task.create" class="EMS\CoreBundle\Command\Revision\TaskCreateCommand">
+        <service id="emsco.command.revision.task.create" class="EMS\CoreBundle\Command\Revision\Task\TaskCreateCommand">
             <argument type="service" id="ems_core.core_revision_search.revision_searcher"/>
             <argument type="service" id="ems.service.environment"/>
             <argument type="service" id="ems.service.user"/>
             <argument type="service" id="emsco.revision.task.manager"/>
             <argument>%ems_core.date_format%</argument>
+            <tag name="console.command"/>
+        </service>
+        <service id="emsco.command.revision.task.notification_mail" class="EMS\CoreBundle\Command\Revision\Task\TaskNotificationMailCommand">
+            <argument type="service" id="emsco.revision.task.manager"/>
+            <argument type="service" id="emsco.revision.task.mailer"/>
             <tag name="console.command"/>
         </service>
         <!-- EMSCO release -->

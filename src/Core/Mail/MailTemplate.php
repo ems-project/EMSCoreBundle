@@ -104,6 +104,17 @@ final class MailTemplate
         return $this;
     }
 
+    /**
+     * @param array<mixed> $context
+     */
+    public function setSubjectBlock(string $block, array $context = []): self
+    {
+        $context['_senderName'] = $this->senderName;
+        $this->subject = $this->template->renderBlock($block, $context);
+
+        return $this;
+    }
+
     public function setSubjectText(string $text): self
     {
         $this->subject = $text;

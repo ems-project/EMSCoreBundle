@@ -1,97 +1,50 @@
-{% block mail_created %}
-    {{ block('_printHello') }}
-    <p>A new task has been assigned to you.</p>
-    {{ block('_printInfo') }}
-{% endblock %}
+{% trans_default_domain 'EMSCoreBundle' %}
 
-{% block mail_assignee_changed %}
-    {{ block('_printHello') }}
-    <p>The task "{{ task.title }}" is now assigned to {{ task.assignee|emsco_display_name }}.</p>
-    {{ block('_printInfo') }}
-{% endblock %}
+{% block task_event_mail_subject %}
+    {{ "task.mail.#{type}.subject"|trans({
+        '%title%': task.title,
+        '%document%': revision|emsco_display
+    })|raw }}
+{% endblock task_event_mail_subject %}
 
-{% block mail_deleted %}
-     {{ block('_printHello') }}
-    <p>The task "{{ task.title }}" has been deleted, by {{ app.user.userIdentifier|emsco_display_name }}</p>
-    <p><strong>Comment:</strong><br/><p>{{ comment|nl2br }}</p></p>
-    <hr />
-    {{ block('_printInfo') }}
-{% endblock %}
-
-{% block mail_updated %}
-    {{ block('_printHello') }}
-    <p>The task "{{ task.title }}" has been updated.</p>
-    {{ block('_printInfo') }}
-{% endblock %}
-
-{% block mail_completed %}
-    {{ block('_printHello') }}
-    <p>The task "{{ task.title }}" has been send for validation.</p>
-    {% if task.getLatestCompleted != null %}
-        <p>
-            <strong>{{ task.getLatestCompleted.username|emsco_display_name }}, commented:</strong> <br/>
-            {{ task.getLatestCompleted.comment }}
-        </p>
-    {% endif %}
-    {{ block('_printInfo') }}
-{% endblock %}
-
-{% block mail_rejected %}
-    {{ block('_printHello') }}
-    <p>The task "{{ task.title }}" has been rejected.</p>
-    {% if task.getLatestRejection != null %}
-        <p>
-            <strong>{{ task.getLatestRejection.username|emsco_display_name }}, commented:</strong> <br/>
-            {{ task.getLatestRejection.comment }}
-        </p>
-    {% endif %}
-    {{ block('_printInfo') }}
-{% endblock %}
-
-{% block mail_approved %}
-    {{ block('_printHello') }}
-    <p>The task "{{ task.title }}" has been approved.</p>
-    {% if task.getLatestApproved != null and task.getLatestApproved.comment != null %}
-        <p>
-            <strong>{{ task.getLatestApproved.username|emsco_display_name }}, commented:</strong> <br/>
-            {{ task.getLatestApproved.comment }}
-        </p>
-    {% endif %}
-    {{ block('_printInfo') }}
-{% endblock %}
-
-{% block _printInfo %}
-    {{ block('_printDocument') }}
-    {{ block('_printTask') }}
-    {{ block('_printFooter') }}
-{% endblock %}
-
-{% block _printHello %}
-    <p>Hello {{ receiver.displayname }},</p>
-{% endblock %}
-
-{% block _printDocument %}
-    {% set path = path('data.revisions', { 'type': revision.giveContentType.name, 'ouuid': revision.ouuid })  %}
+{% block task_event_mail_body %}
+    <p>From « {{ senderUsername|displayname }} » ,</p>
+    <p>Greetings {{ receiver.displayname }},</p>
+    <p>This task has been: {{ action }} {{ senderRole ? "by #{senderRole}" }}</p>
     <p>
-        In {{ revision.giveContentType.singularName }} : <a href="{{ backendUrl|default('') }}{{ path }}" target="_blank"><strong>{{ revision.label }}</strong></a><br/>
+        {% if task.hasDeadline %}<strong>deadline:</strong>{{ task.deadline.format(date_format) }}<br/>{% endif %}
+        <strong>title:</strong> {{ task.title }}<br/>
+        <strong>assignee:&nbsp;</strong>{{ task.assignee|displayname }}<br/>
+        <strong>creator:&nbsp;</strong>{{ task.createdBy|displayname }}<br/>
+        {% if task.hasDescription %}<strong>description:</strong><br/>{{ task.description|nl2br }}{% endif %}
     </p>
-{% endblock %}
+    {% if comment %}<p><strong>comment:</strong><br/>{{ comment|nl2br }}</p>{% endif %}
+    <p>Link to document: <a href="{{ documentUrl }}" target="_blank"><strong>{{ revision|emsco_display }}</strong></a></p>
+    <p>Kind regards</p>
+{% endblock task_event_mail_body  %}
 
-{% block _printTask %}
-    <p>
-        <strong>title:&nbsp;</strong>{{ task.title }}<br/>
-        <strong>assignee:&nbsp;</strong>{{ task.assignee|emsco_display_name }}<br/>
-        <strong>requester:&nbsp;</strong>{{ task.createdBy|emsco_display_name }}<br/>
-        {% if task.hasDeadline %}<strong>deadline:&nbsp;</strong>{{ task.deadline.format(date_format) }}<br/>{% endif %}
-        {% if task.hasDescription %}
-            <strong>description:&nbsp;</strong><br/>
-            {{ task.description|nl2br }}
-        {% endif %}
-    </p>
-{% endblock %}
+{% block task_notification_mail_subject %}
+    {{ subject|raw }}
+{% endblock task_notification_mail_subject %}
 
-{% block _printFooter %}
-    <br />
-    <hr />
-    <p>Regards,<br>{{ _senderName }}</p>
-{% endblock %}
+{% block task_notification_mail_body  %}
+    <p>Greetings {{ receiver.displayname }},</p>
+
+    <p>Below, you'll find the list of task that are overdue or active</p>
+
+    <ul>
+        {% for revision in revisions[0:limit] %}
+            {% set task = revision.taskCurrent %}
+            <li>
+                <p>
+                    {{ "task.status.#{task.status}"|trans }}: {{ task.title }} (deadline: {{ task.deadline.format(date_format) }})<br/>
+                    Link to document: <a href="{{ attribute(documentUrls, revision.ouuid) }}" target="_blank"><strong>{{ revision|emsco_display }}</strong></a>
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <p>Please process them urgently within two days</p>
+
+    <p>Kind regards</p>
+{% endblock task_notification_mail_body  %}

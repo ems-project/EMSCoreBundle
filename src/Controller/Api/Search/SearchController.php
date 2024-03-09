@@ -150,6 +150,18 @@ class SearchController
         ]);
     }
 
+    public function analyze(Request $request): Response
+    {
+        $json = Json::decode((string) $request->getContent());
+        $index = null === $json['index'] ? null : Type::string($json['index']);
+        $text = Type::string($json['text']);
+        $parameters = Type::array($json['parameters']);
+
+        return new JsonResponse([
+            'tokens' => $this->elasticaService->analyze($text, $parameters, $index)->jsonSerialize(),
+        ]);
+    }
+
     public function getDocument(Request $request): Response
     {
         $json = Json::decode((string) $request->getContent());

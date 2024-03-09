@@ -11,6 +11,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CoreBundle\Core\Revision\Task\TaskStatus;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Release;
@@ -676,6 +677,37 @@ class RevisionRepository extends EntityRepository
     public function unlockAllRevisions(string $by): int
     {
         return $this->unlockRevisions(null, $by);
+    }
+
+    /**
+     * @return Revision[]
+     */
+    public function findAllWithCurrentTask(\DateTimeInterface $deadline = null, TaskStatus ...$status): array
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->addSelect('r', 't')
+            ->join('r.taskCurrent', 't')
+            ->andWhere($qb->expr()->isNotNull('r.taskCurrent'))
+            ->andWhere($qb->expr()->isNull('r.endTime'))
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
+            ->orderBy('t.deadline, t.status')
+        ;
+
+        if ($deadline) {
+            $qb
+                ->andWhere($qb->expr()->gte('t.deadline', ':deadline'))
+                ->setParameter('deadline', $deadline->format(\DATE_ATOM));
+        }
+
+        if (\count($status) > 0) {
+            $statuses = \array_map(static fn (TaskStatus $s) => $s->value, $status);
+            $qb
+                ->andWhere($qb->expr()->in('t.status', ':status'))
+                ->setParameter('status', $statuses, ArrayParameterType::STRING);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

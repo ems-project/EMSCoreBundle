@@ -128,6 +128,15 @@
             <argument>%ems_core.default_bulk_size%</argument>
         </service>
 
+        <service id="emsco.revision.task.mailer" class="EMS\CoreBundle\Core\Revision\Task\TaskMailer">
+          <argument type="service" id="ems_core.core_mail.mailer_service" />
+          <argument type="service" id="emsco.revision.task.manager" />
+          <argument type="service" id="ems.service.user" />
+          <argument type="service" id="router.default" />
+          <argument type="service" id="translator" />
+          <argument>%ems_core.url_user%</argument>
+          <argument>%ems_core.template_namespace%</argument>
+        </service>
         <service id="emsco.revision.task.manager" class="EMS\CoreBundle\Core\Revision\Task\TaskManager">
             <argument type="service" id="ems.repository.task" />
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
@@ -150,11 +159,8 @@
             <tag name="form.type" />
         </service>
         <service id="emsco.revision.task.event_subscriber" class="EMS\CoreBundle\Core\Revision\Task\TaskEventSubscriber">
-            <argument type="service" id="ems.repository.task"/>
-            <argument type="service" id="ems_core.core_mail.mailer_service"/>
-            <argument type="service" id="ems.service.user"/>
-            <argument>%ems_core.url_user%</argument>
-            <argument>%ems_core.template_namespace%</argument>
+            <argument type="service" id="emsco.revision.task.manager"/>
+            <argument type="service" id="emsco.revision.task.mailer"/>
             <tag name="kernel.event_subscriber" />
         </service>
 
@@ -529,6 +535,6 @@
         <service id="EMS\CoreBundle\Service\NotificationService" alias="ems.service.notification" />
         <service id="EMS\CoreBundle\Service\HelperService" alias="ems.service.helper" />
         <service id="EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory" alias="ems.form.factories.objectChoiceListFactory" />
-        <service id="EMS\CoreBundle\Core\Revision\Task\TaskManager" alias="ems_core.core_revision_task.task_manager" />
+        <service id="EMS\CoreBundle\Core\Revision\Task\TaskManager" alias="emsco.revision.task.manager" />
     </services>
 </container>

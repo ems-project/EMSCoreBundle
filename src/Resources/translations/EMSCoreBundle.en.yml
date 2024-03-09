@@ -788,13 +788,27 @@ task:
         empty: 'No tasks for this document'
         locked: 'Revision locked by %user% until %time%'
     mail:
-        approved: 'Approved task "%title%" for "%document%"'
-        assignee_changed: 'Assignee changed task "%title%" for "%document%"'
-        completed: 'Ready for validation, task "%title%" for "%document%"'
-        created: 'New task "%title%" for "%document%"'
-        deleted: 'Deleted task "%title%" for "%document%"'
-        rejected: 'Rejected task "%title%" for "%document%"'
-        updated: 'Update task "%title%" for "%document%"'
+        approved:
+            subject: 'Approved task "%title%" for "%document%"'
+            action: 'approved'
+        assignee_changed:
+            subject: 'Assignee changed task "%title%" for "%document%"'
+            action: 'changed assignee'
+        completed:
+            subject: 'Ready for validation, task "%title%" for "%document%"'
+            action: 'completed'
+        created:
+            subject: 'New task "%title%" for "%document%"'
+            action: 'created'
+        deleted:
+            subject: 'Deleted task "%title%" for "%document%"'
+            action: 'deleted'
+        rejected:
+            subject: 'Rejected task "%title%" for "%document%"'
+            action: 'rejected'
+        updated:
+            subject: 'Update task "%title%" for "%document%"'
+            action: 'updated'
     status:
         approved: Finished
         completed: Completed

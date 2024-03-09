@@ -45,6 +45,7 @@ final class Commands
     public const REVISION_COPY = 'emsco:revision:copy';
     public const REVISION_DELETE = 'emsco:revision:delete';
     public const REVISION_TASK_CREATE = 'emsco:revision:task:create';
+    public const REVISION_TASK_NOTIFICATION_MAIL = 'emsco:revision:task:notification-mail';
     public const REVISION_DISCARD_DRAFT = 'emsco:revision:discard-draft';
     public const REVISIONS_UNLOCK = 'emsco:revisions:unlock';
     public const REVISIONS_INDEX_FILE_FIELDS = 'emsco:revisions:index-file-fields';

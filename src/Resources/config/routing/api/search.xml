@@ -43,5 +43,8 @@
     <route id="emsco_api_filter_stop_words" path="/filter-stop-words"
            controller="EMS\CoreBundle\Controller\Api\Search\SearchController::filterStopWords"
            methods="POST"/>
+    <route id="emsco_api_analyze" path="/analyze"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::analyze"
+           methods="POST"/>
 
 </routes>

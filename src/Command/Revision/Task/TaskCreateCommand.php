@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Command\Revision;
+namespace EMS\CoreBundle\Command\Revision\Task;
 
 use Elastica\Document;
 use EMS\CommonBundle\Common\Command\AbstractCommand;

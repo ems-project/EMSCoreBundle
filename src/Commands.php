@@ -19,6 +19,7 @@ final class Commands
     public const REVISION_COPY = 'emsco:revision:copy';
     public const REVISION_DELETE = 'emsco:revision:delete';
     public const REVISION_TASK_CREATE = 'emsco:revision:task:create';
+    public const REVISION_TASK_NOTIFICATION_MAIL = 'emsco:revision:task:notification-mail';
     public const REVISION_DISCARD_DRAFT = 'emsco:revision:discard-draft';
 
     public const MEDIA_LIB_FOLDER_DELETE = 'emsco:medialib:folder-delete';

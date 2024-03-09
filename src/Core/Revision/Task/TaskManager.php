@@ -6,8 +6,11 @@ namespace EMS\CoreBundle\Core\Revision\Task;
 
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
+use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TaskRepository;
+use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
@@ -43,6 +46,30 @@ final class TaskManager
         }
 
         return $task;
+    }
+
+    /**
+     * @return Revision[]
+     */
+    public function getRevisionsWithCurrentTask(?\DateTimeInterface $deadline = null): array
+    {
+        $statuses = [TaskStatus::PROGRESS, TaskStatus::REJECTED, TaskStatus::COMPLETED];
+
+        return $this->revisionRepository->findAllWithCurrentTask($deadline, ...$statuses);
+    }
+
+    /**
+     * @return array<string, User>
+     */
+    public function getTaskManagers(): array
+    {
+        $users = $this->userService->findUsersWithRoles([Roles::ROLE_TASK_MANAGER]);
+
+        return \array_reduce($users, static function ($carry, User $user) {
+            $carry[$user->getUsername()] = $user;
+
+            return $carry;
+        }, []);
     }
 
     public function getTasksPlanned(Revision $revision): TaskCollection
@@ -86,9 +113,13 @@ final class TaskManager
         return $task->getCreatedBy() === $user->getUsername();
     }
 
-    public function isTaskManager(): bool
+    public function isTaskManager(?UserInterface $user = null): bool
     {
-        return $this->userService->isGrantedRole('ROLE_TASK_MANAGER');
+        if ($user) {
+            return $user->hasRole(Roles::ROLE_TASK_MANAGER);
+        }
+
+        return $this->userService->isGrantedRole(Roles::ROLE_TASK_MANAGER);
     }
 
     public function taskCreate(TaskDTO $taskDTO, Revision $revision): Task
@@ -132,7 +163,7 @@ final class TaskManager
             $this->taskRepository->delete($task);
 
             $event = $this->createTaskEvent($task, $revision);
-            $event->comment = $comment;
+            $event->setComment($comment);
             $this->dispatchEvent($event, TaskEvent::DELETE);
         });
         $transaction($revision);
@@ -149,12 +180,17 @@ final class TaskManager
         $transaction($revision);
     }
 
+    public function taskSave(Task $task): void
+    {
+        $this->taskRepository->save($task);
+    }
+
     public function taskValidate(Revision $revision, bool $approve, ?string $comment): void
     {
         $transaction = $this->revisionTransaction(function (Revision $revision) use ($approve, $comment) {
             $task = $revision->getTaskCurrent();
             $event = $this->createTaskEvent($task, $revision);
-            $event->comment = $comment;
+            $event->setComment($comment);
 
             if ($approve) {
                 $this->dispatchEvent($event, TaskEvent::APPROVED);
@@ -174,7 +210,7 @@ final class TaskManager
     {
         $transaction = $this->revisionTransaction(function (Revision $revision) use ($task, $comment) {
             $event = $this->createTaskEvent($task, $revision);
-            $event->comment = $comment;
+            $event->setComment($comment);
 
             if ($task->isRequester($this->userService->getCurrentUser())) {
                 $this->dispatchEvent($event, TaskEvent::APPROVED);

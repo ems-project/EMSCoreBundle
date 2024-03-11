@@ -26,7 +26,7 @@ class ManagedAliasType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /* @var $data ManagedAlias */
+        /** @var ManagedAlias $data */
         $data = $builder->getData();
 
         $builder

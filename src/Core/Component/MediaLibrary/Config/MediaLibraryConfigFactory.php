@@ -56,13 +56,6 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
         return $config;
     }
 
-    private function getField(ContentType $contentType, string $name): FieldType
-    {
-        $field = $contentType->getFieldType()->getChildByName($name);
-
-        return $field ?: throw new \RuntimeException(\vsprintf('Field "%s" not found in "%s" contentType', [$name, $contentType->getName()]));
-    }
-
     protected function resolveOptions(array $options): array
     {
         $resolver = new OptionsResolver();
@@ -97,5 +90,12 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
         $resolved = $resolver->resolve($options);
 
         return $resolved;
+    }
+
+    private function getField(ContentType $contentType, string $name): FieldType
+    {
+        $field = $contentType->getFieldType()->getChildByName($name);
+
+        return $field ?: throw new \RuntimeException(\vsprintf('Field "%s" not found in "%s" contentType', [$name, $contentType->getName()]));
     }
 }

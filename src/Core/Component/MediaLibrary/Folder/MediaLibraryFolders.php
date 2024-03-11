@@ -66,6 +66,11 @@ class MediaLibraryFolders
         return $structure;
     }
 
+    private function createStructurePath(MediaLibraryPath $path): PropertyPath
+    {
+        return new PropertyPath(\sprintf('[%s]', \implode('][children][', $path->value)));
+    }
+
     /**
      * @return MediaLibraryFolder[]
      */
@@ -75,10 +80,5 @@ class MediaLibraryFolders
         \ksort($folders);
 
         return $folders;
-    }
-
-    private function createStructurePath(MediaLibraryPath $path): PropertyPath
-    {
-        return new PropertyPath(\sprintf('[%s]', \implode('][children][', $path->value)));
     }
 }

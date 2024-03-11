@@ -93,14 +93,14 @@
         </service>
 
         <!-- EMS Media Library -->
-        <service id="emsco.command.media_lib.folder.delete" class="EMS\CoreBundle\Command\MediaLibrary\FolderDeleteCommand">
+        <service id="emsco.command.media_lib" class="EMS\CoreBundle\Command\MediaLibrary\AbstractMediaLibraryCommand" abstract="true">
             <argument type="service" id="emsco.core.media_library.config_factory"/>
             <argument type="service" id="emsco.core.media_library"/>
+        </service>
+        <service id="emsco.command.media_lib.folder.delete" class="EMS\CoreBundle\Command\MediaLibrary\MediaLibraryFolderDeleteCommand" parent="emsco.command.media_lib">
             <tag name="console.command"/>
         </service>
-        <service id="emsco.command.media_lib.folder.rename" class="EMS\CoreBundle\Command\MediaLibrary\FolderRenameCommand">
-            <argument type="service" id="emsco.core.media_library.config_factory"/>
-            <argument type="service" id="emsco.core.media_library"/>
+        <service id="emsco.command.media_lib.folder.rename" class="EMS\CoreBundle\Command\MediaLibrary\MediaLibraryFolderRenameCommand" parent="emsco.command.media_lib">
             <tag name="console.command"/>
         </service>
 

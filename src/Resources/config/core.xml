@@ -41,6 +41,7 @@
             <argument type="service" id="EMS\CoreBundle\Service\DataService" />
             <argument type="service" id="EMS\CoreBundle\Service\JobService"/>
             <argument type="service" id="ems.service.file" />
+            <argument type="service" id="emsco.core.media_library.config_factory" />
             <argument type="service" id="emsco.core.media_library.template_factory" />
             <argument type="service" id="emsco.core.media_library.file_factory" />
             <argument type="service" id="emsco.core.media_library.folder_factory" />
@@ -57,6 +58,9 @@
                  parent="emsco.config.abstract_config_factory">
             <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
             <tag name="emsco.config.factory" config="EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig" />
+            <call method="setRequestStack">
+                <argument type="service" id="request_stack" />
+            </call>
         </service>
         <service id="emsco.core.media_library.template_factory" class="EMS\CoreBundle\Core\Component\MediaLibrary\Template\MediaLibraryTemplateFactory">
             <argument type="service" id="twig" />

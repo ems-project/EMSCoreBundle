@@ -9,20 +9,6 @@ use EMS\CoreBundle\Entity\ContentType;
 
 class MediaLibraryConfig implements ConfigInterface
 {
-    public ?string $fieldPathOrder = null;
-    /** @var array<mixed> */
-    public array $defaultValue = [];
-    /** @var array<mixed> */
-    public array $searchQuery = [];
-    /** @var array<mixed> */
-    public array $searchFileQuery = [];
-    public ?string $template = null;
-    /** @var array<string, mixed> */
-    public array $context = [];
-
-    public int $searchSize = self::DEFAULT_SEARCH_SIZE;
-
-    final public const DEFAULT_SEARCH_SIZE = 100;
     public const DEFAULT_SEARCH_FILE_QUERY = [
         'bool' => [
             'minimum_should_match' => 1,
@@ -38,6 +24,18 @@ class MediaLibraryConfig implements ConfigInterface
             ],
         ],
     ];
+    public const DEFAULT_SEARCH_SIZE = 100;
+    /** @var array<string, mixed> */
+    public array $context = [];
+    /** @var array<mixed> */
+    public array $defaultValue = [];
+    public ?string $fieldPathOrder = null;
+    /** @var array<mixed> */
+    public array $searchFileQuery = [];
+    /** @var array<mixed> */
+    public array $searchQuery = [];
+    public int $searchSize = self::DEFAULT_SEARCH_SIZE;
+    public ?string $template = null;
 
     public function __construct(
         private readonly string $hash,
@@ -49,13 +47,13 @@ class MediaLibraryConfig implements ConfigInterface
     ) {
     }
 
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
     public function getHash(): string
     {
         return $this->hash;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 }

@@ -9,8 +9,8 @@ use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig;
 
 class MediaLibraryDocument
 {
-    public string $id;
     public string $emsId;
+    public string $id;
     public string $path;
 
     public function __construct(
@@ -22,14 +22,14 @@ class MediaLibraryDocument
         $this->path = $document->getValue($config->fieldPath);
     }
 
-    public function getPath(): MediaLibraryPath
-    {
-        return MediaLibraryPath::fromString($this->path);
-    }
-
     public function getName(): string
     {
         return $this->getPath()->getName();
+    }
+
+    public function getPath(): MediaLibraryPath
+    {
+        return MediaLibraryPath::fromString($this->path);
     }
 
     public function setName(string $name): void

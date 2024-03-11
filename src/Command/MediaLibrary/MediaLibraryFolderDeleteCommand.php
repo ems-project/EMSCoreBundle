@@ -49,8 +49,8 @@ class MediaLibraryFolderDeleteCommand extends AbstractMediaLibraryCommand
         $jobOutput = $output instanceof JobOutput ? $output : null;
 
         $path = $this->folder->getPath()->getValue();
-        $totalChildren = $this->mediaLibraryService->countByPath($path);
-        $children = $this->mediaLibraryService->findByPath($path);
+        $totalChildren = $this->mediaLibraryService->countChildren($path);
+        $children = $this->mediaLibraryService->findChildrenByPath($path);
 
         $this->io->info(\sprintf('Found %d children to renaming', $totalChildren));
 

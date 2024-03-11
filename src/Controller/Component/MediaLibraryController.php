@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Component;
 
+use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryDocumentDTO;
 use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryService;
 use EMS\CoreBundle\Core\UI\AjaxModal;
 use EMS\CoreBundle\Core\UI\AjaxService;
 use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Form\Form\MediaLibrary\MediaLibraryDocumentFormType;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -56,15 +58,12 @@ class MediaLibraryController
         $folderId = $request->get('folderId');
         $parentFolder = $folderId ? $this->mediaLibraryService->getFolder($folderId) : null;
 
-        $form = $this->formFactory->createBuilder(FormType::class, [])
-            ->add('folder_name', TextType::class, ['constraints' => [new NotBlank()]])
-            ->getForm();
-
+        $documentDTO = MediaLibraryDocumentDTO::newFolder($parentFolder);
+        $form = $this->formFactory->create(MediaLibraryDocumentFormType::class, $documentDTO);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $folderName = (string) $form->get('folder_name')->getData();
-            $folder = $this->mediaLibraryService->createFolder($folderName, $parentFolder);
+            $folder = $this->mediaLibraryService->createFolder($documentDTO);
 
             if ($folder) {
                 $this->flashBag($request)->clear();
@@ -310,12 +309,12 @@ class MediaLibraryController
     {
         $folder = $this->mediaLibraryService->getFolder($folderId);
 
-        $form = $this->formFactory->createBuilder(FormType::class, $folder)
-            ->add('name', TextType::class, ['constraints' => [new NotBlank()]])
-            ->getForm();
+        $documentDTO = MediaLibraryDocumentDTO::updateFolder($folder);
+        $form = $this->formFactory->create(MediaLibraryDocumentFormType::class, $documentDTO);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $folder->setName($documentDTO->getName());
             $job = $this->mediaLibraryService->jobFolderRename($user, $folder);
             $this->flashBag($request)->clear();
 

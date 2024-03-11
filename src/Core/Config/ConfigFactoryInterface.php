@@ -10,4 +10,6 @@ interface ConfigFactoryInterface
     public function createFromOptions(array $options): ConfigInterface;
 
     public function createFromHash(string $hash): ConfigInterface;
+
+    public function createFromRequest(): ConfigInterface;
 }

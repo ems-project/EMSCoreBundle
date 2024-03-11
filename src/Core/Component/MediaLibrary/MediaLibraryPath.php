@@ -20,14 +20,9 @@ class MediaLibraryPath implements \Countable
         return new self(\array_filter(\explode('/', $path)));
     }
 
-    public function getValue(): string
+    public function count(): int
     {
-        return '/'.\implode('/', $this->value);
-    }
-
-    public function getLabel(): string
-    {
-        return \implode(' / ', $this->value);
+        return \count($this->value);
     }
 
     public function getFolderValue(): string
@@ -35,9 +30,9 @@ class MediaLibraryPath implements \Countable
         return $this->parent()?->getValue().'/';
     }
 
-    public function count(): int
+    public function getLabel(): string
     {
-        return \count($this->value);
+        return \implode(' / ', $this->value);
     }
 
     public function getName(): string
@@ -45,12 +40,9 @@ class MediaLibraryPath implements \Countable
         return \basename($this->getValue());
     }
 
-    public function setName(string $name): self
+    public function getValue(): string
     {
-        $path = $this->value;
-        \array_pop($path);
-
-        return new self([...$path, $name]);
+        return '/'.\implode('/', $this->value);
     }
 
     public function move(string $location): self
@@ -60,6 +52,14 @@ class MediaLibraryPath implements \Countable
         return new self([...$locationPath->value, $this->getName()]);
     }
 
+    public function parent(): ?self
+    {
+        $path = $this->value;
+        \array_pop($path);
+
+        return $path ? new self($path) : null;
+    }
+
     public function renamePrefix(string $from, string $to): self
     {
         $newPath = u($this->getValue())->trimPrefix($from)->prepend($to)->toString();
@@ -67,11 +67,11 @@ class MediaLibraryPath implements \Countable
         return self::fromString($newPath);
     }
 
-    public function parent(): ?self
+    public function setName(string $name): self
     {
         $path = $this->value;
         \array_pop($path);
 
-        return $path ? new self($path) : null;
+        return new self([...$path, $name]);
     }
 }

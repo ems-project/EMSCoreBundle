@@ -7,11 +7,23 @@ namespace EMS\CoreBundle\Core\Config;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\Helpers\Standard\Json;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class AbstractConfigFactory implements ConfigFactoryInterface
 {
     private ?StorageManager $storageManager = null;
+    private ?RequestStack $requestStack = null;
+
+    public function setRequestStack(?RequestStack $requestStack): void
+    {
+        $this->requestStack = $requestStack;
+    }
+
+    /**
+     * @param array<mixed> $options
+     */
+    abstract protected function create(string $hash, array $options): ConfigInterface;
 
     /**
      * @param array<mixed> $options
@@ -20,10 +32,12 @@ abstract class AbstractConfigFactory implements ConfigFactoryInterface
      */
     abstract protected function resolveOptions(array $options): array;
 
-    /**
-     * @param array<mixed> $options
-     */
-    abstract protected function create(string $hash, array $options): ConfigInterface;
+    public function createFromHash(string $hash): ConfigInterface
+    {
+        $options = $this->getOptions($hash);
+
+        return $this->createFromOptions($options);
+    }
 
     public function createFromOptions(array $options): ConfigInterface
     {
@@ -33,11 +47,22 @@ abstract class AbstractConfigFactory implements ConfigFactoryInterface
         return $this->create($hash, $resolvedOptions);
     }
 
-    public function createFromHash(string $hash): ConfigInterface
+    public function createFromRequest(): ConfigInterface
     {
-        $options = $this->getOptions($hash);
+        if (null === $this->requestStack) {
+            throw new \RuntimeException('Request stack not injected');
+        }
 
-        return $this->createFromOptions($options);
+        if (null === $request = $this->requestStack->getCurrentRequest()) {
+            throw new \RuntimeException('No current request');
+        }
+
+        $hash = $request->attributes->getAlnum('hash');
+        if (!\is_string($hash)) {
+            throw new \RuntimeException('Could not find request hash attribute on request');
+        }
+
+        return $this->createFromHash($hash);
     }
 
     public function getStorageManager(): StorageManager

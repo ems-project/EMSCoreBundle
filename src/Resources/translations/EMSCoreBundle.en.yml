@@ -896,6 +896,7 @@ user:
             enabled: Enabled
             id: 'User ID'
             lastLogin: 'Last Login'
+            expirationDate: 'Expiration Date'
             roles: Roles
             username: Username
             locale_preferred: 'Locale preferred'

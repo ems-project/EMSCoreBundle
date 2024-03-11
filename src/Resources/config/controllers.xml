@@ -598,6 +598,7 @@
             <argument type="service" id="ems.repository.wysiwyg_profile" />
             <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <argument>%ems_core.template_namespace%</argument>
+            <argument>%ems_core.date_time_format%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>

@@ -28,6 +28,7 @@
     <field name="salt" nullable="true"/>
     <field name="password"/>
     <field name="lastLogin" column="last_login" type="datetime" nullable="true"/>
+    <field name="expirationDate" column="expiration_date" type="datetime" nullable="true"/>
     <field name="confirmationToken" column="confirmation_token" length="180" nullable="true" unique="true"/>
     <field name="passwordRequestedAt" column="password_requested_at" type="datetime" nullable="true"/>
     <field name="roles" type="json"/>

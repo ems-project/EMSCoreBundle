@@ -37,6 +37,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     private ?string $password = null;
     private ?string $plainPassword = null;
     private ?\DateTime $lastLogin = null;
+    private ?\DateTime $expirationDate = null;
     private ?string $confirmationToken = null;
     private ?\DateTime $passwordRequestedAt = null;
     /** @var string[] */
@@ -67,11 +68,23 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
             'roles' => $this->getRoles(),
             'email' => $this->getEmail(),
             'circles' => $this->getCircles(),
-            'lastLogin' => null !== $this->getLastLogin() ? $this->getLastLogin()->format('c') : null,
+            'lastLogin' => $this->getLastLogin()?->format('c'),
+            'expirationDate' => $this->getExpirationDate()?->format('c'),
             'locale' => $this->getLocale(),
             'localePreferred' => $this->getLocalePreferred(),
             'userOptions' => $this->userOptions,
         ];
+    }
+
+    public function isExpired(): bool
+    {
+        if (null === $this->expirationDate) {
+            return false;
+        }
+
+        $now = new \DateTime('now');
+
+        return $now > $this->expirationDate;
     }
 
     public function getLocale(): string
@@ -97,6 +110,16 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     public function getCircles(): array
     {
         return $this->circles ?? [];
+    }
+
+    public function getExpirationDate(): ?\DateTime
+    {
+        return $this->expirationDate;
+    }
+
+    public function setExpirationDate(\DateTime $time = null): void
+    {
+        $this->expirationDate = $time;
     }
 
     public function setCircles(array $circles): self
@@ -246,6 +269,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
             $this->id,
             $this->email,
             $this->emailCanonical,
+            $this->expirationDate,
         ]);
     }
 

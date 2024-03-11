@@ -55,6 +55,8 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
 
     public function getLastLogin(): ?\DateTime;
 
+    public function getExpirationDate(): ?\DateTimeInterface;
+
     public function hasRole(string $role): bool;
 
     /**
@@ -66,6 +68,7 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
      *     email:string,
      *     circles:array<string>,
      *     lastLogin: ?string,
+     *     expirationDate: ?string,
      *     userOptions: ?array<string, mixed>
      * }
      */

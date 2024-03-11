@@ -66,5 +66,10 @@
             <argument type="service" id="twig" />
             <argument>%ems_core.template_namespace%</argument>
         </service>
+        <service id="emsco.core.media_library.validator.document_dto" class="EMS\CoreBundle\Validator\Constraints\MediaLibrary\DocumentDTOValidator">
+            <argument type="service" id="emsco.core.media_library"/>
+            <tag name="validator.constraint_validator" />
+        </service>
+
     </services>
 </container>

@@ -112,6 +112,10 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      */
     private ?\DateTime $lastLogin = null;
     /**
+     * @ORM\Column(name="expiration_date", type="datetime", nullable=true)
+     */
+    private ?\DateTime $expirationDate = null;
+    /**
      * @ORM\Column(name="confirmation_token", type="string", length=180, unique=true, nullable=true)
      */
     private ?string $confirmationToken = null;
@@ -158,11 +162,23 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
             'roles' => $this->getRoles(),
             'email' => $this->getEmail(),
             'circles' => $this->getCircles(),
-            'lastLogin' => null !== $this->getLastLogin() ? $this->getLastLogin()->format('c') : null,
+            'lastLogin' => $this->getLastLogin()?->format('c'),
+            'expirationDate' => $this->getExpirationDate()?->format('c'),
             'locale' => $this->getLocale(),
             'localePreferred' => $this->getLocalePreferred(),
             'userOptions' => $this->userOptions,
         ];
+    }
+
+    public function isExpired(): bool
+    {
+        if (null === $this->expirationDate) {
+            return false;
+        }
+
+        $now = new \DateTime('now');
+
+        return $now > $this->expirationDate;
     }
 
     public function getLocale(): string
@@ -191,6 +207,16 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     public function getCircles(): array
     {
         return $this->circles ?? [];
+    }
+
+    public function getExpirationDate(): ?\DateTime
+    {
+        return $this->expirationDate;
+    }
+
+    public function setExpirationDate(?\DateTime $time = null): void
+    {
+        $this->expirationDate = $time;
     }
 
     /**
@@ -346,6 +372,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
             $this->id,
             $this->email,
             $this->emailCanonical,
+            $this->expirationDate,
         ]);
     }
 

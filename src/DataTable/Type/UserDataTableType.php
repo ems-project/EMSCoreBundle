@@ -40,6 +40,7 @@ class UserDataTableType extends AbstractEntityTableType
         $table->addColumnDefinition(new BoolTableColumn('user.index.column.enabled', 'enabled'));
         $table->addColumnDefinition(new RolesTableColumn('user.index.column.roles', 'roles'));
         $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.lastLogin', 'lastLogin'));
+        $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.expirationDate', 'expirationDate'));
 
         $table->addDynamicItemGetAction(Routes::USER_EDIT, 'user.action.edit', 'pencil', ['user' => 'id']);
         $table->addDynamicItemGetAction('homepage', 'user.action.switch', 'user-secret', ['_switch_user' => 'username']);

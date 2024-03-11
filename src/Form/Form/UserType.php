@@ -15,6 +15,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -62,6 +63,15 @@ final class UserType extends AbstractType
         }
 
         $builder
+            ->add('expirationDate', DateTimeType::class, [
+                'required' => false,
+                'date_widget' => 'single_text',
+                'input' => 'datetime',
+                'attr' => [
+                    'class' => 'datetime-picker',
+                    'data-date-format' => 'D/MM/YYYY HH:mm:ss',
+                ],
+            ])
             ->add('emailNotification', CheckboxType::class, [
                 'required' => false,
             ])

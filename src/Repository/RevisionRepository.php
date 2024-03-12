@@ -682,7 +682,7 @@ class RevisionRepository extends EntityRepository
     /**
      * @return Revision[]
      */
-    public function findAllWithCurrentTask(\DateTimeInterface $deadline = null, TaskStatus ...$status): array
+    public function findAllWithCurrentTask(\DateTimeImmutable $deadlineStart = null, \DateTimeImmutable $deadlineEnd = null, TaskStatus ...$status): array
     {
         $qb = $this->createQueryBuilder('r');
         $qb
@@ -694,10 +694,16 @@ class RevisionRepository extends EntityRepository
             ->orderBy('t.deadline, t.status')
         ;
 
-        if ($deadline) {
+        if ($deadlineStart) {
             $qb
-                ->andWhere($qb->expr()->gte('t.deadline', ':deadline'))
-                ->setParameter('deadline', $deadline->format(\DATE_ATOM));
+                ->andWhere($qb->expr()->gte('t.deadline', ':deadline_start'))
+                ->setParameter('deadline_start', $deadlineStart->setTime(0, 0)->format(\DATE_ATOM));
+        }
+
+        if ($deadlineEnd) {
+            $qb
+                ->andWhere($qb->expr()->lte('t.deadline', ':deadline_end'))
+                ->setParameter('deadline_end', $deadlineEnd->setTime(23, 59, 59)->format(\DATE_ATOM));
         }
 
         if (\count($status) > 0) {
@@ -964,7 +970,8 @@ class RevisionRepository extends EntityRepository
     private function deleteByQueryBuilder(DBALQueryBuilder $queryBuilder): int
     {
         $conn = $this->_em->getConnection();
-        $revisionIds = $queryBuilder->addSelect('r.id')->getSQL();
+        $revisionIds = $queryBuilder->select('r.id')->getSQL();
+        $revisionOuuids = $queryBuilder->select('r.ouuid')->getSQL();
 
         $qbDeleteNotifications = $conn->createQueryBuilder();
         $qbDeleteNotifications
@@ -973,6 +980,24 @@ class RevisionRepository extends EntityRepository
         $this->copyParameters($qbDeleteNotifications, $queryBuilder);
 
         $qbDeleteNotifications->executeStatement();
+
+        $qbUpdateRevisions = $conn->createQueryBuilder();
+        $qbUpdateRevisions
+            ->update('revision')
+            ->set('task_current_id', 'null')
+            ->set('task_planned_ids', 'null')
+            ->set('task_approved_ids', 'null')
+            ->andWhere($qbUpdateRevisions->expr()->in('id', $revisionIds));
+        $this->copyParameters($qbUpdateRevisions, $queryBuilder);
+
+        $qbUpdateRevisions->executeStatement();
+
+        $qbDeleteTasks = $conn->createQueryBuilder();
+        $qbDeleteTasks
+            ->delete('task')
+            ->andWhere($qbDeleteTasks->expr()->in('revision_ouuid', $revisionOuuids));
+        $this->copyParameters($qbDeleteTasks, $queryBuilder);
+        $qbDeleteTasks->executeStatement();
 
         $qbDelete = $conn->createQueryBuilder();
         $qbDelete

@@ -51,11 +51,11 @@ final class TaskManager
     /**
      * @return Revision[]
      */
-    public function getRevisionsWithCurrentTask(\DateTimeInterface $deadline = null): array
+    public function getRevisionsWithCurrentTask(\DateTimeImmutable $deadlineStart = null, \DateTimeImmutable $deadlineEnd = null): array
     {
         $statuses = [TaskStatus::PROGRESS, TaskStatus::REJECTED, TaskStatus::COMPLETED];
 
-        return $this->revisionRepository->findAllWithCurrentTask($deadline, ...$statuses);
+        return $this->revisionRepository->findAllWithCurrentTask($deadlineStart, $deadlineEnd, ...$statuses);
     }
 
     /**
@@ -167,6 +167,15 @@ final class TaskManager
             $this->dispatchEvent($event, TaskEvent::DELETE);
         });
         $transaction($revision);
+    }
+
+    public function tasksDeleteByRevision(Revision $revision): void
+    {
+        $tasks = $this->taskRepository->findBy(['revisionOuuid' => $revision->getOuuid()]);
+
+        foreach ($tasks as $task) {
+            $this->taskRepository->delete($task);
+        }
     }
 
     public function taskUpdate(Task $task, TaskDTO $taskDTO, Revision $revision): void

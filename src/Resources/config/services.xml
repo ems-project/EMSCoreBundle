@@ -26,6 +26,11 @@
             <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" priority="110" />
             <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" />
         </service>
+        <service id="emsco.event_listener.revision_listener" class="EMS\CoreBundle\EventListener\RevisionDoctrineListener">
+            <argument type="service" id="emsco.revision.task.manager" />
+            <tag name="doctrine.orm.entity_listener" event="preRemove" entity="EMS\CoreBundle\Entity\Revision" lazy="true" entity_manager="default" method="preRemoveRevision"/>
+            <tag name="doctrine.orm.entity_listener" event="postRemove" entity="EMS\CoreBundle\Entity\Revision" lazy="true" entity_manager="default" method="postRemoveRevision"/>
+        </service>
 
         <!-- core service -->
         <service id="ems.dashboard.manager" class="EMS\CoreBundle\Core\Dashboard\DashboardManager">

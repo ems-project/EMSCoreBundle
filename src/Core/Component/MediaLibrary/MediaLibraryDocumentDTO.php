@@ -37,7 +37,7 @@ class MediaLibraryDocumentDTO
         return $dto;
     }
 
-    public function getName(): string
+    public function giveName(): string
     {
         return Type::string($this->name);
     }

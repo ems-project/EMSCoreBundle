@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Security\Provider;
 
 use EMS\CoreBundle\Repository\AuthTokenRepository;
+use Symfony\Component\Security\Core\Exception\AccountExpiredException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -23,6 +24,10 @@ class UserApiProvider implements UserProviderInterface
 
         if (null === $user) {
             throw new UserNotFoundException($identifier);
+        }
+
+        if ($user->isExpired()) {
+            throw new AccountExpiredException(\sprintf('The account "%s" is expired', $user->getUserIdentifier()));
         }
 
         return $user;

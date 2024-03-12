@@ -51,11 +51,11 @@ final class TaskManager
     /**
      * @return Revision[]
      */
-    public function getRevisionsWithCurrentTask(?\DateTimeInterface $deadline = null): array
+    public function getRevisionsWithCurrentTask(?\DateTimeImmutable $deadlineStart = null, ?\DateTimeImmutable $deadlineEnd = null): array
     {
         $statuses = [TaskStatus::PROGRESS, TaskStatus::REJECTED, TaskStatus::COMPLETED];
 
-        return $this->revisionRepository->findAllWithCurrentTask($deadline, ...$statuses);
+        return $this->revisionRepository->findAllWithCurrentTask($deadlineStart, $deadlineEnd, ...$statuses);
     }
 
     /**

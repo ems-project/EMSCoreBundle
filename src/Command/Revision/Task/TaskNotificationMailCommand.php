@@ -18,12 +18,14 @@ final class TaskNotificationMailCommand extends AbstractCommand
     private string $subject;
     private bool $includeTasksManagers;
     private int $limit;
-    private ?\DateTimeInterface $deadline = null;
+    private ?\DateTimeImmutable $deadlineStart = null;
+    private ?\DateTimeImmutable $deadlineEnd = null;
 
     protected static $defaultName = Commands::REVISION_TASK_NOTIFICATION_MAIL;
     private const OPTION_SUBJECT = 'subject';
     private const OPTION_INCLUDE_TASK_MANAGERS = 'include-task-managers';
-    private const OPTION_DEADLINE = 'deadline';
+    private const OPTION_DEADLINE_START = 'deadline-start';
+    private const OPTION_DEADLINE_END = 'deadline-end';
     private const OPTION_LIMIT = 'limit';
 
     public function __construct(
@@ -38,7 +40,8 @@ final class TaskNotificationMailCommand extends AbstractCommand
         $this
             ->setDescription('Send notification mail for tasks')
             ->addOption(self::OPTION_SUBJECT, null, InputOption::VALUE_REQUIRED, 'Set mail subject', 'notification tasks')
-            ->addOption(self::OPTION_DEADLINE, null, InputOption::VALUE_REQUIRED, 'Example "-1 days"')
+            ->addOption(self::OPTION_DEADLINE_START, null, InputOption::VALUE_REQUIRED, 'Start deadline from now "-1 days"')
+            ->addOption(self::OPTION_DEADLINE_END, null, InputOption::VALUE_REQUIRED, 'End deadline from now "+1 days"')
             ->addOption(self::OPTION_INCLUDE_TASK_MANAGERS, null, InputOption::VALUE_NONE, 'Include task managers')
             ->addOption(self::OPTION_LIMIT, null, InputOption::VALUE_REQUIRED, 'limit the results inside mail', 10)
         ;
@@ -54,15 +57,21 @@ final class TaskNotificationMailCommand extends AbstractCommand
         $this->includeTasksManagers = $this->getOptionBool(self::OPTION_INCLUDE_TASK_MANAGERS);
         $this->limit = $this->getOptionInt(self::OPTION_LIMIT);
 
-        if ($deadline = $this->getOptionStringNull(self::OPTION_DEADLINE)) {
-            $this->deadline = (new \DateTimeImmutable())->modify($deadline);
+        if ($deadlineStart = $this->getOptionStringNull(self::OPTION_DEADLINE_START)) {
+            $this->deadlineStart = (new \DateTimeImmutable())->modify($deadlineStart);
+        }
+        if ($deadlineEnd = $this->getOptionStringNull(self::OPTION_DEADLINE_END)) {
+            $this->deadlineEnd = (new \DateTimeImmutable())->modify($deadlineEnd);
         }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $revisionsByReceiver = [];
-        $revisionsWithCurrentTask = $this->taskManager->getRevisionsWithCurrentTask($this->deadline);
+        $revisionsWithCurrentTask = $this->taskManager->getRevisionsWithCurrentTask(
+            deadlineStart: $this->deadlineStart,
+            deadlineEnd: $this->deadlineEnd
+        );
         $taskManagers = $this->taskManager->getTaskManagers();
 
         foreach ($revisionsWithCurrentTask as $revision) {

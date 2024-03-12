@@ -169,6 +169,15 @@ final class TaskManager
         $transaction($revision);
     }
 
+    public function tasksDeleteByRevision(Revision $revision): void
+    {
+        $tasks = $this->taskRepository->findBy(['revisionOuuid' => $revision->getOuuid()]);
+
+        foreach ($tasks as $task) {
+            $this->taskRepository->delete($task);
+        }
+    }
+
     public function taskUpdate(Task $task, TaskDTO $taskDTO, Revision $revision): void
     {
         $transaction = $this->revisionTransaction(function (Revision $revision) use ($task, $taskDTO) {

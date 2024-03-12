@@ -970,7 +970,8 @@ class RevisionRepository extends EntityRepository
     private function deleteByQueryBuilder(DBALQueryBuilder $queryBuilder): int
     {
         $conn = $this->_em->getConnection();
-        $revisionIds = $queryBuilder->addSelect('r.id')->getSQL();
+        $revisionIds = $queryBuilder->select('r.id')->getSQL();
+        $revisionOuuids = $queryBuilder->select('r.ouuid')->getSQL();
 
         $qbDeleteNotifications = $conn->createQueryBuilder();
         $qbDeleteNotifications
@@ -979,6 +980,24 @@ class RevisionRepository extends EntityRepository
         $this->copyParameters($qbDeleteNotifications, $queryBuilder);
 
         $qbDeleteNotifications->executeStatement();
+
+        $qbUpdateRevisions = $conn->createQueryBuilder();
+        $qbUpdateRevisions
+            ->update('revision')
+            ->set('task_current_id', 'null')
+            ->set('task_planned_ids', 'null')
+            ->set('task_approved_ids', 'null')
+            ->andWhere($qbUpdateRevisions->expr()->in('id', $revisionIds));
+        $this->copyParameters($qbUpdateRevisions, $queryBuilder);
+
+        $qbUpdateRevisions->executeStatement();
+
+        $qbDeleteTasks = $conn->createQueryBuilder();
+        $qbDeleteTasks
+            ->delete('task')
+            ->andWhere($qbDeleteTasks->expr()->in('revision_ouuid', $revisionOuuids));
+        $this->copyParameters($qbDeleteTasks, $queryBuilder);
+        $qbDeleteTasks->executeStatement();
 
         $qbDelete = $conn->createQueryBuilder();
         $qbDelete

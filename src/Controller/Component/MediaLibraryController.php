@@ -314,7 +314,7 @@ class MediaLibraryController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $folder->setName($documentDTO->getName());
+            $folder->setName($documentDTO->giveName());
             $job = $this->mediaLibraryService->jobFolderRename($user, $folder);
             $this->flashBag($request)->clear();
 

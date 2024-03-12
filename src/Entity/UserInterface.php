@@ -59,6 +59,8 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
 
     public function hasRole(string $role): bool;
 
+    public function isExpired(): bool;
+
     /**
      * @return array{
      *     id: int|string,

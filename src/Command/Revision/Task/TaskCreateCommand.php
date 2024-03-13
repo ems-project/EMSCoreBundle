@@ -133,7 +133,9 @@ final class TaskCreateCommand extends AbstractCommand
             return;
         }
 
-        if ($revision->hasTasks(false)) {
+        if ($revision->hasEndTime()
+            || null !== $revision->getVersionDate('to')
+            || $revision->hasTasks(false)) {
             return;
         }
 

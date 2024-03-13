@@ -349,6 +349,11 @@ class Revision implements EntityInterface, \Stringable
         return $this;
     }
 
+    public function isDraft(): bool
+    {
+        return $this->draft;
+    }
+
     public function getDraft(): bool
     {
         return $this->draft;

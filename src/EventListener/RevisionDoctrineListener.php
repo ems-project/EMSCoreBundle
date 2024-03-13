@@ -15,11 +15,15 @@ class RevisionDoctrineListener
 
     public function preRemoveRevision(Revision $revision): void
     {
-        $revision->tasksClear();
+        if (!$revision->isDraft()) {
+            $revision->tasksClear();
+        }
     }
 
     public function postRemoveRevision(Revision $revision): void
     {
-        $this->taskManager->tasksDeleteByRevision($revision);
+        if (!$revision->isDraft()) {
+            $this->taskManager->tasksDeleteByRevision($revision);
+        }
     }
 }

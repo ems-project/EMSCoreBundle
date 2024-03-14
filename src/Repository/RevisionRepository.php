@@ -252,9 +252,7 @@ class RevisionRepository extends EntityRepository
             ->andWhere($qb->expr()->eq('c.name', ':content_type_name'))
             ->setParameter('content_type_name', $contentTypeName);
 
-        foreach ($qb->getQuery()->toIterable() as $row) {
-            yield $row[0];
-        }
+        yield from $qb->getQuery()->toIterable();
     }
 
     /**

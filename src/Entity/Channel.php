@@ -168,9 +168,9 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
 
     public function getEntryPath(): ?string
     {
-        $entryPath = $this->getOptions()['entryPath'];
+        $entryPath = $this->getOptions()['entryPath'] ?? null;
 
-        if (!\is_string($entryPath) || 0 === \strlen($entryPath)) {
+        if (!\is_string($entryPath) || '' === $entryPath) {
             return null;
         }
         if (!\str_starts_with($entryPath, '/')) {

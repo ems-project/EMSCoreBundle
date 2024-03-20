@@ -70,8 +70,8 @@ class MailerService
         if (\count($template->getBCC()) > 0) {
             $email->bcc(...$template->getBCC());
         }
-        if ($template->hasReplyTo()) {
-            $email->replyTo($template->getReplyTo());
+        if (\count($template->getReplyTo()) > 0) {
+            $email->replyTo(...$template->getReplyTo());
         }
         foreach ($template->getAttachments() as $file) {
             $email->attachFromPath($file);

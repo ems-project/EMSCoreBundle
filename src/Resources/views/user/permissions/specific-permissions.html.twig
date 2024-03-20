@@ -1,0 +1,67 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block pagetitle %}{{ 'view.user.specific_permissions.titles.specific_permissions'|trans({'%content_type_singular_name%': contentType.name}) }}{% endblock %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path("user.permissions") }}"><i class="fa fa-cubes"></i>{{ 'view.user.specific_permissions.breadcrumb.permission_overview'|trans }}</a></li>
+        <li class="active">{{ 'view.user.specific_permissions.breadcrumb.specific_role'|trans }}</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+                <div class="box-header with-border">
+                    <i class="fa fa-sitemap"></i>
+                    <h3 class="box-title">{{ 'view.user.specific_permissions.titles.permissions_overview'|trans }}</h3>
+                </div>
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-striped">
+                            <tbody>
+                            <tr>
+                                <th class="text-center" style="width: 10px">{{ 'view.user.permissions.table_headers.content_type'|trans }}</th>
+                                <th class="text-center" style="width: 20px">{{ 'view.user.permissions.table_headers.icon'|trans }}</th>
+                                <th>{{ 'view.user.permissions.table_headers.view'|trans }}</th>
+                                <th>{{ 'view.user.permissions.table_headers.create'|trans }}</th>
+                                <th>{{ 'view.user.permissions.table_headers.edit'|trans }}</th>
+                                <th>{{ 'view.user.permissions.table_headers.publish'|trans }}</th>
+                                <th>{{ 'view.user.permissions.table_headers.delete'|trans }}</th>
+                                <th>{{ 'view.user.permissions.table_headers.trash'|trans }}</th>
+                                <th>{{ 'view.user.permissions.table_headers.archive'|trans }}</th>
+                                <th>{{ 'view.user.permissions.table_headers.show_link_create'|trans }}</th>
+                                <th>{{ 'view.user.permissions.table_headers.show_link_search'|trans }}</th>
+                            </tr>
+                                <tr class="text-{{ contentType.color }}">
+                                    <td class="text-center">{{ contentType.name }}</td>
+                                    <td class="text-center"><i class="{{ contentType.icon|default('fa fa-book') }}"></i></td>
+                                    {% for role in [contentType.roles.view, contentType.roles.create, contentType.roles.edit, contentType.roles.publish, contentType.roles.delete, contentType.roles.trash, contentType.roles.archive, contentType.roles.show_link_create, contentType.roles.show_link_search] %}
+                                    <td class="{{ html_classes({'text-muted': role == 'not-defined'}) }} ">
+                                        {{ role|trans }}
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <i class="fa fa-group"></i>
+                    <h3 class="box-title">{{ 'view.user.specific_permissions.titles.specific_roles'|trans }}</h3>
+                </div>
+                    <ol class="vertical" id="root-list" data-nested-max-level="15" data-nested-is-tree="true">
+                            {% include "@EMSCore/user/permissions/specific-permissions-field.html.twig" %}
+                    </ol>
+            </div>
+        </div>
+    </div>
+{% endblock %}

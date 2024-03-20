@@ -7,6 +7,12 @@
     <route id="emsco_user_index" path="/"
            controller="EMS\CoreBundle\Controller\UserController::index"
            methods="GET"/>
+    <route id="user.permissions" path="/permissions"
+           controller="EMS\CoreBundle\Controller\UserController::contentTypePermissions"
+           methods="GET"/>
+    <route id="permissions.view" path="/permissions/{contentType}"
+           controller="EMS\CoreBundle\Controller\UserController::contentTypeFieldsPermissions"
+           methods="GET|POST"/>
     <route id="emsco_user_add" path="/add"
            controller="EMS\CoreBundle\Controller\UserController::addUser"
            methods="GET|POST"/>
@@ -26,5 +32,4 @@
            controller="EMS\CoreBundle\Controller\UserController::spreadsheetExport"
            methods="GET"
            format="csv|xlsx"/>
-
 </routes>

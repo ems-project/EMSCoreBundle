@@ -1,0 +1,20 @@
+{% trans_default_domain 'EMSCoreBundle' %}
+
+<ul class="list-group">
+    {% set displayedParents = [] %}
+    {% for child in children %}
+        {% set parent = child.getParent() %}
+        {% if parent is not null and parent not in displayedParents %}
+            {% set displayedParents = displayedParents|merge([parent]) %}
+            <li class="list-group-item">
+                {{ parent.getDisplayOptionsLabel() ?? 'Source' }}
+            </li>
+        {% endif %}
+        <li class="list-group-item">
+            {{ child.getParent() is not null ? (child.getParent().getDisplayOptionsLabel() ?? 'Source') ~ ' > ' : '' }}{{ child.getDisplayOptionsLabel() }}
+            <div class="pull-right">
+                <span class="badge badge-primary">{{ child.getFieldType().getRestrictionOption('minimum_role')|trans }}</span>
+            </div>
+        </li>
+    {% endfor %}
+</ul>

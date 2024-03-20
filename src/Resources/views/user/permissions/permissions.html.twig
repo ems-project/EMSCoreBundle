@@ -1,0 +1,134 @@
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block pagetitle %}
+    {{ 'view.user.permissions.page_title'|trans }}
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+                <div class="box-header with-border">
+                    <i class="fa fa-sitemap"></i>
+                    <h3 class="box-title">{{ 'view.user.permissions.titles.content_type_permissions'|trans }}</h3>
+                </div>
+                <div class="box-body">
+                    {% if contentTypes is empty %}
+                        <p>No content type. Nothing to display.</p>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table table-condensed table-striped">
+                                <tbody>
+                                <tr>
+                                    <th class="text-center" style="width: 10px">{{ 'view.user.permissions.table_headers.content_type'|trans }}</th>
+                                    <th class="text-center" style="width: 20px">{{ 'view.user.permissions.table_headers.icon'|trans }}</th>
+                                    <th>{{ 'view.user.permissions.table_headers.view'|trans }}</th>
+                                    <th>{{ 'view.user.permissions.table_headers.create'|trans }}</th>
+                                    <th>{{ 'view.user.permissions.table_headers.edit'|trans }}</th>
+                                    <th>{{ 'view.user.permissions.table_headers.publish'|trans }}</th>
+                                    <th>{{ 'view.user.permissions.table_headers.delete'|trans }}</th>
+                                    <th>{{ 'view.user.permissions.table_headers.trash'|trans }}</th>
+                                    <th>{{ 'view.user.permissions.table_headers.archive'|trans }}</th>
+                                    <th>{{ 'view.user.permissions.table_headers.show_link_create'|trans }}</th>
+                                    <th>{{ 'view.user.permissions.table_headers.show_link_search'|trans }}</th>
+                                    <th>{{ 'view.user.permissions.table_headers.specific_roles'|trans }}</th>
+                                </tr>
+                                {% for contentType in contentTypes %}
+                                    <tr class="text-{{ contentType.color }}">
+                                        <td class="text-center">{{ contentType.name }}</td>
+                                        <td class="text-center"><i class="{% if contentType.icon %}{{ contentType.icon }}{% else %}fa fa-book{% endif %}"></i></td>
+                                        {% for role in ['view', 'create', 'edit', 'publish', 'delete', 'trash', 'archive', 'show_link_create', 'show_link_search'] %}
+                                            <td class="{{ html_classes({'text-muted': contentType.roles[role] == 'not-defined'}) }} ">
+                                                {{ contentType.roles[role]|trans }}
+                                            </td>
+                                        {% endfor %}
+                                        <td>
+                                            <div class="btn-group">
+                                                {% if contentTypeCounts[contentType.id] != 0 %}
+                                                    {% include '@EMSCore/elements/get-button.html.twig' with {
+                                                        'url':  path('permissions.view', {'contentType': contentType.id}),
+                                                        'label': 'View',
+                                                        'icon': 'tv'
+                                                    }%}
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+                <div class="box-header with-border">
+                    <i class="fa fa-group"></i>
+                    <h3 class="box-title">{{ 'view.user.permissions.titles.roles_hierarchy'|trans }}</h3>
+                </div>
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <p>{{ 'view.user.permissions.titles.descriptions.roles_hierarchy_description'|trans }}</p>
+                        <table class="table table-condensed table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>{{ 'view.user.permissions.table_headers.role'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for role in roles %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ role|trans }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+                <div class="box-header with-border">
+                    <i class="fa fa-group"></i>
+                    <h3 class="box-title">{{ 'view.user.permissions.titles.roles_specific_functionalities'|trans }}</h3>
+                </div>
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <p>{{ 'view.user.permissions.titles.descriptions.roles_functionalities_description'|trans }}</p>
+                        <table class="table table-condensed table-striped">
+                            <thead>
+                            <tr>
+                                <th>{{ 'view.user.permissions.table_headers.role'|trans }}</th>
+                                <th>{{ 'view.user.permissions.table_headers.description'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for role in rolesFunctionality %}
+                                    <tr>
+                                        <td>{{ role|trans }}</td>
+                                        <td>
+                                            {% set translationKey = 'view.user.permissions.roles_functionality.' ~ role|lower %}
+                                            {% set translatedDescription = translationKey|trans %}
+
+                                            {{ translatedDescription }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

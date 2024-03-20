@@ -424,7 +424,7 @@ form:
         table_default_css:
             title: 'Default Table class attribute (deprecated)'
     header:
-        checkbo:
+        checkbox:
             select-all: 'Select all'
 ROLE_ADMIN: Administrator
 ROLE_ALLOW_ALIGN: 'Align Environment'
@@ -1018,6 +1018,48 @@ view:
     user:
         index:
             title: 'User list'
+        permissions:
+            page_title: 'Permissions Overview'
+            titles:
+                content_type_permissions: 'Permissions of content types'
+                roles_specific_functionalities: 'Roles for specific functionalities'
+                roles_hierarchy: 'Roles hierarchy'
+                descriptions:
+                    roles_hierarchy_description: 'Access to a role implies access to all roles below it in the hierarchy. Hierarchical roles can be assigned to grant and limit access to the content type.'
+                    roles_functionalities_description: 'These roles are specifically for functionality and have nothing to do with content management. They are functional roles that grant access to specific CMS features.'
+            table_headers:
+                content_type: 'Content Type'
+                icon: Icon
+                view: View
+                create: Create
+                edit: Edit
+                specific_roles: 'Specif. Roles'
+                publish: Publish
+                delete: Delete
+                trash: Trash
+                archive: Archive
+                show_link_create: 'Show link create'
+                show_link_search: 'Show link search'
+                role: 'Role'
+                description: 'Description'
+            roles_functionality:
+                role_api: 'Give access through the API.'
+                role_form_crm: 'Form CRM grants access to the mini CRM management tool included in the CMS.'
+                role_task_manager: 'Task Manager role for managing tasks.'
+                role_allow_align: 'Align environment grants access to a tool that allows bulk publishing of various documents.'
+                role_user_management: 'User Management role for managing users.'
+                role_copy_paste: 'Copy/Paste role for copying and pasting content on documents.'
+                role_default_search: 'Default Search role for default search functionality (deprecated).'
+                role_super_user: 'Super User role for super user functionalities.'
+                role_user_read: 'User Read role for accessing to CMS user accounts information through the API.'
+        specific_permissions:
+            breadcrumb:
+                permission_overview: 'Permission Overview'
+                specific_role: 'specific roles'
+            titles:
+                specific_permissions: 'Permission for %content_type_singular_name%'
+                permissions_overview: 'Permissions Overview'
+                specific_roles: 'Specific roles of fields'
     index:
         reorder: 'Reorder views'
         column:

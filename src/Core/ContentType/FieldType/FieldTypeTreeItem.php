@@ -24,7 +24,6 @@ class FieldTypeTreeItem implements \IteratorAggregate
         ArrayCollection $fieldTypes
     ) {
         $this->name = $this->fieldType->getName();
-
         $children = [];
         $childFieldTypes = $fieldTypes->filter(fn (FieldType $f) => $f->getParent()?->getId() === $fieldType->getId());
 
@@ -78,6 +77,18 @@ class FieldTypeTreeItem implements \IteratorAggregate
         return $this->name;
     }
 
+    public function getDisplayOptionsLabel(): ?string
+    {
+        $fieldType = $this->getFieldType();
+        $options = $fieldType->getOptions();
+
+        if (isset($options['displayOptions']['label'])) {
+            return $options['displayOptions']['label'];
+        }
+
+        return null;
+    }
+
     /**
      * @return FieldTypeTreeItem[]
      */
@@ -109,5 +120,10 @@ class FieldTypeTreeItem implements \IteratorAggregate
     public function setParent(?FieldTypeTreeItem $parent): void
     {
         $this->parent = $parent;
+    }
+
+    public function getParent(): ?FieldTypeTreeItem
+    {
+        return $this->parent;
     }
 }

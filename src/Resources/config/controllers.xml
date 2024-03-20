@@ -590,6 +590,7 @@
         </service>
         <service id="EMS\CoreBundle\Controller\UserController" public="true">
             <argument type="service" id="logger" />
+            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
             <argument type="service" id="ems.service.user" />
             <argument type="service" id="emsco.manager.user" />
             <argument type="service" id="EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface"/>
@@ -598,6 +599,7 @@
             <argument type="service" id="ems.repository.wysiwyg_profile" />
             <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <argument>%ems_core.template_namespace%</argument>
+            <argument type="service" id="emsco.core.content_type.field_type.service"/>
             <argument>%ems_core.date_time_format%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>

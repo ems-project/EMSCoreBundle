@@ -4,16 +4,21 @@ namespace EMS\CoreBundle\Controller;
 
 use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Core\ContentType\FieldType\FieldTypeService;
+use EMS\CoreBundle\Core\ContentType\FieldType\FieldTypeTreeItem;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\DataTable\Type\UserDataTableType;
 use EMS\CoreBundle\Entity\AuthToken;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Form\Form\UserType;
 use EMS\CoreBundle\Repository\AuthTokenRepository;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
+use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
@@ -25,6 +30,7 @@ class UserController extends AbstractController
 {
     public function __construct(
         private readonly LoggerInterface $logger,
+        private readonly ContentTypeRepository $contentTypeRepository,
         private readonly UserService $userService,
         private readonly UserManager $userManager,
         private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGenerator,
@@ -33,6 +39,7 @@ class UserController extends AbstractController
         private readonly WysiwygProfileRepository $wysiwygProfileRepository,
         private readonly FlashMessageLogger $flashMessageLogger,
         private readonly string $templateNamespace,
+        private readonly FieldTypeService $fieldTypeService,
         private readonly string $dateTimeFormat
     ) {
     }
@@ -46,6 +53,80 @@ class UserController extends AbstractController
 
         return $this->render("@$this->templateNamespace/user/index.html.twig", [
             'form' => $form->createView(),
+        ]);
+    }
+
+    public function contentTypePermissions(): Response
+    {
+        $contentTypes = $this->contentTypeRepository->findAll();
+
+        $contentTypeCounts = [];
+        foreach ($contentTypes as $contentType) {
+            $tree = $this->fieldTypeService->getTree($contentType);
+
+            $fieldTypesWithMinimumRole = $tree->getChildrenRecursive()->filter(function (FieldTypeTreeItem $item) {
+                return $item->getFieldType()->getRestrictionOption('minimum_role', false);
+            });
+
+            $contentTypeCounts[$contentType->getId()] = \count($fieldTypesWithMinimumRole);
+
+            $roles = [
+                'view' => $contentType->getRoles()['view'],
+                'create' => $contentType->getRoles()['create'],
+                'edit' => $contentType->getRoles()['edit'],
+                'publish' => $contentType->getRoles()['publish'],
+                'delete' => $contentType->getRoles()['delete'],
+                'trash' => $contentType->getRoles()['trash'],
+                'archive' => $contentType->getRoles()['archive'],
+                'show_link_create' => $contentType->getRoles()['show_link_create'],
+                'show_link_search' => $contentType->getRoles()['show_link_search'],
+            ];
+        }
+
+        $roles = [
+            Roles::ROLE_AUTHOR,
+            Roles::ROLE_REVIEWER,
+            Roles::ROLE_TRADUCTOR,
+            Roles::ROLE_AUDITOR,
+            Roles::ROLE_COPYWRITER,
+            Roles::ROLE_PUBLISHER,
+            Roles::ROLE_WEBMASTER,
+            Roles::ROLE_ADMIN,
+            Roles::ROLE_SUPER_ADMIN,
+        ];
+
+        $rolesFunctionality = [
+            Roles::ROLE_API,
+            Roles::ROLE_FORM_CRM,
+            Roles::ROLE_TASK_MANAGER,
+            Roles::ROLE_ALLOW_ALIGN,
+            Roles::ROLE_USER_MANAGEMENT,
+            Roles::ROLE_COPY_PASTE,
+            Roles::ROLE_DEFAULT_SEARCH,
+            Roles::ROLE_SUPER_USER,
+            Roles::ROLE_USER_READ,
+        ];
+
+        return $this->render("@$this->templateNamespace/user/permissions/permissions.html.twig", [
+            'contentTypeCounts' => $contentTypeCounts,
+            'roles' => $roles,
+            'rolesFunctionality' => $rolesFunctionality,
+            'contentTypes' => $contentTypes,
+        ]);
+    }
+
+    public function contentTypeFieldsPermissions(ContentType $contentType, Request $request): Response
+    {
+        $tree = $this->fieldTypeService->getTree($contentType);
+
+        $fieldTypesWithMinimumRole = $tree->getChildrenRecursive()->filter(function (FieldTypeTreeItem $item) {
+            return $item->getFieldType()->getRestrictionOption('minimum_role', false);
+        });
+
+        return $this->render("@$this->templateNamespace/user/permissions/specific-permissions.html.twig", [
+            'contentType' => $contentType,
+            'tree' => $tree,
+            'children' => $fieldTypesWithMinimumRole,
         ]);
     }
 

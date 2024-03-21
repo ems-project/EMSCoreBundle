@@ -12,6 +12,7 @@ use Elastica\Query\Term;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\QueryStringEscaper;
 use EMS\CommonBundle\Elasticsearch\Response\Response;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Commands;
@@ -29,12 +30,10 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\MediaLibraryException;
 use EMS\CoreBundle\Exception\NotFoundException;
 use EMS\CoreBundle\Service\DataService;
-use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Standard\Json;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 use function Symfony\Component\String\u;
@@ -48,26 +47,11 @@ class MediaLibraryService
         private readonly RevisionService $revisionService,
         private readonly DataService $dataService,
         private readonly JobService $jobService,
-        private readonly FileService $fileService,
         private readonly MediaLibraryConfigFactory $configFactory,
         private readonly MediaLibraryTemplateFactory $templateFactory,
         private readonly MediaLibraryFileFactory $fileFactory,
         private readonly MediaLibraryFolderFactory $folderFactory
     ) {
-    }
-
-    public function count(string $path, ?string $excludeId = null): int
-    {
-        $query = $this->elasticaService->getBoolQuery();
-        $query->addMust((new Term())->setTerm($this->getConfig()->fieldPath, $path));
-
-        if ($excludeId) {
-            $query->addMustNot((new Term())->setTerm('_id', $excludeId));
-        }
-
-        $search = $this->buildSearch($query, false);
-
-        return $this->elasticaService->count($search);
     }
 
     public function countChildren(string $folder): int
@@ -80,29 +64,16 @@ class MediaLibraryService
         return $this->elasticaService->count($search);
     }
 
-    /**
-     * @param array{ filename: string, filesize: int, mimetype?: string, sha1: string } $file
-     */
-    public function createFile(array $file, ?MediaLibraryFolder $folder = null): bool
+    public function createFile(MediaLibraryFile $file): ?MediaLibraryFile
     {
-        $path = $folder ? $folder->getPath()->getValue().'/' : '/';
-        $file['mimetype'] ??= $this->getMimeType($file['sha1']);
+        $createdUuid = $this->create($file);
 
-        $createdUuid = $this->create([
-            $this->getConfig()->fieldPath => $path.$file['filename'],
-            $this->getConfig()->fieldFolder => $path,
-            $this->getConfig()->fieldFile => \array_filter($file),
-        ]);
-
-        return null !== $createdUuid;
+        return $createdUuid ? $this->getFile($createdUuid) : null;
     }
 
-    public function createFolder(MediaLibraryDocumentDTO $documentDTO): ?MediaLibraryFolder
+    public function createFolder(MediaLibraryFolder $folder): ?MediaLibraryFolder
     {
-        $createdUuid = $this->create([
-            $this->getConfig()->fieldPath => $documentDTO->getPath(),
-            $this->getConfig()->fieldFolder => $documentDTO->getFolder(),
-        ]);
+        $createdUuid = $this->create($folder);
 
         return $createdUuid ? $this->getFolder($createdUuid) : null;
     }
@@ -111,6 +82,28 @@ class MediaLibraryService
     {
         $document = $mediaDocument->document;
         $this->dataService->delete($document->getContentType(), $document->getOuuid(), $username);
+    }
+
+    public function exists(MediaLibraryFile|MediaLibraryFolder $document): bool
+    {
+        $query = $this->elasticaService->getBoolQuery();
+        $query
+            ->addMust((new Term())->setTerm($this->getConfig()->fieldPath, $document->path))
+            ->addMustNot((new Term())->setTerm('_id', $document->id));
+
+        $existsFile = (new Nested())
+            ->setPath($this->getConfig()->fieldFile)
+            ->setQuery(new Exists($this->getConfig()->fieldFile));
+
+        match (true) {
+            $document instanceof MediaLibraryFile => $query->addMust($existsFile),
+            $document instanceof MediaLibraryFolder => $query->addMustNot($existsFile)
+        };
+
+        $search = $this->buildSearch($query, false);
+        $count = $this->elasticaService->count($search);
+
+        return !(0 === $count);
     }
 
     /**
@@ -132,12 +125,12 @@ class MediaLibraryService
 
     public function getFile(string $ouuid): MediaLibraryFile
     {
-        return $this->fileFactory->create($this->getConfig(), $ouuid);
+        return $this->fileFactory->createFromOuuid($this->getConfig(), $ouuid);
     }
 
     public function getFolder(string $ouuid): MediaLibraryFolder
     {
-        return $this->folderFactory->create($this->getConfig(), $ouuid);
+        return $this->folderFactory->createFromOuuid($this->getConfig(), $ouuid);
     }
 
     public function getFolders(): MediaLibraryFolders
@@ -191,7 +184,7 @@ class MediaLibraryService
             $this->getConfig()->getHash(),
             $user->getUserIdentifier(),
             $folder->id,
-            $folder->getName(),
+            $folder->giveName(),
         ]);
 
         return $this->jobService->createCommand($user, $command);
@@ -206,6 +199,23 @@ class MediaLibraryService
         $componentModal->template->context->append($context);
 
         return $componentModal;
+    }
+
+    public function moveFile(MediaLibraryFile $file, ?MediaLibraryFolder $folder): void
+    {
+        $moveLocation = $folder ? $folder->getPath()->getValue() : '/';
+        $newPath = $file->getPath()->move($moveLocation);
+        $file->setPath($newPath);
+    }
+
+    public function newFile(?MediaLibraryFolder $parentFolder): MediaLibraryFile
+    {
+        return $this->fileFactory->create($this->getConfig(), $parentFolder);
+    }
+
+    public function newFolder(?MediaLibraryFolder $parentFolder): MediaLibraryFolder
+    {
+        return $this->folderFactory->create($this->getConfig(), $parentFolder);
     }
 
     public function refresh(): void
@@ -289,6 +299,8 @@ class MediaLibraryService
             rawData: $document->getSource(true),
             username: $username
         );
+
+        $this->elasticaService->refresh($this->getConfig()->contentType->giveEnvironment()->getAlias());
     }
 
     private function buildSearch(BoolQuery $query, bool $includeSearchQuery = true): Search
@@ -307,13 +319,11 @@ class MediaLibraryService
         return $search;
     }
 
-    /**
-     * @param array<mixed> $rawData
-     */
-    private function create(array $rawData): ?string
+    private function create(MediaLibraryDocument $mediaLibDocument): ?string
     {
-        $uuid = Uuid::uuid4();
-        $rawData = \array_merge_recursive($this->getConfig()->defaultValue, $rawData);
+        $uuid = Uuid::fromString($mediaLibDocument->id);
+        $rawData = $mediaLibDocument->document->getSource();
+
         $revision = $this->revisionService->create($this->getConfig()->contentType, $uuid, $rawData);
 
         $form = $this->revisionService->createRevisionForm($revision);
@@ -329,9 +339,11 @@ class MediaLibraryService
      */
     private function findFilesByPath(string $path, int $from, ?string $searchValue = null): array
     {
+        $hashField = \sprintf('%s.%s', $this->getConfig()->fieldFile, EmsFields::CONTENT_FILE_HASH_FIELD);
+
         $query = $this->elasticaService->getBoolQuery();
         $query
-            ->addMust((new Nested())->setPath($this->getConfig()->fieldFile)->setQuery(new Exists($this->getConfig()->fieldFile)))
+            ->addMust((new Nested())->setPath($this->getConfig()->fieldFile)->setQuery(new Exists($hashField)))
             ->addMust((new Term())->setTerm($this->getConfig()->fieldFolder, $path));
 
         if ($searchValue) {
@@ -370,16 +382,6 @@ class MediaLibraryService
         }
 
         return $this->config;
-    }
-
-    private function getMimeType(string $fileHash): string
-    {
-        $tempFile = $this->fileService->temporaryFilename($fileHash);
-        \file_put_contents($tempFile, $this->fileService->getResource($fileHash));
-
-        $type = (new File($tempFile))->getMimeType();
-
-        return $type ?: 'application/bin';
     }
 
     private function getRevision(MediaLibraryDocument $mediaLibraryDocument): Revision

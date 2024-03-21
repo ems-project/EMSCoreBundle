@@ -29,7 +29,8 @@
         <requirement key="hash">.*</requirement>
         <requirement key="itemId">.*</requirement>
     </route>
-    <route id="emsco.json_menu_nested.item_modal_custom" path="/json-menu-nested/{hash}/item/{itemId}/modal-custom/{modalName}"
+    <route id="emsco.json_menu_nested.item_modal_custom"
+           path="/json-menu-nested/{hash}/item/{itemId}/modal-custom/{modalName}"
            controller="EMS\CoreBundle\Controller\Component\JsonMenuNestedController::itemModalCustom"
            methods="GET">
         <requirement key="hash">.*</requirement>
@@ -63,26 +64,26 @@
 
     <!-- Media library -->
     <route id="emsco.media_library.header" path="/media-lib/{hash}/header"
-         controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::getHeader"
-         methods="GET">
-      <requirement key="hash">.*</requirement>
+           controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::getHeader"
+           methods="GET">
+        <requirement key="hash">.*</requirement>
     </route>
     <route id="emsco.media_library.file.rename" path="/media-lib/{hash}/file/{fileId}/rename"
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::renameFile"
            methods="GET|POST">
-      <requirement key="hash">.*</requirement>
-      <requirement key="fileId">.*</requirement>
+        <requirement key="hash">.*</requirement>
+        <requirement key="fileId">.*</requirement>
     </route>
     <route id="emsco.media_library.file.delete" path="/media-lib/{hash}/file/{fileId}/delete"
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::deleteFile"
            methods="POST">
-      <requirement key="hash">.*</requirement>
+        <requirement key="hash">.*</requirement>
     </route>
-  <route id="emsco.media_library.file.move" path="/media-lib/{hash}/file/{fileId}/move"
-         controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::moveFile"
-         methods="POST">
-    <requirement key="hash">.*</requirement>
-  </route>
+    <route id="emsco.media_library.file.move" path="/media-lib/{hash}/file/{fileId}/move"
+           controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::moveFile"
+           methods="POST">
+        <requirement key="hash">.*</requirement>
+    </route>
     <route id="emsco.media_library.files" path="/media-lib/{hash}/files/{folderId}"
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::getFiles"
            methods="GET">
@@ -112,7 +113,7 @@
         <requirement key="hash">.*</requirement>
         <default key="folderId" xsi:nil="true"/>
     </route>
-    <route id="emsco.media_library.add_file" path="/media-lib/{hash}/add-file/{folderId}"
+    <route id="emsco.media_library.create_file" path="/media-lib/{hash}/add-file/{folderId}"
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::addFile"
            methods="POST">
         <requirement key="hash">.*</requirement>
@@ -127,7 +128,7 @@
     <route id="emsco.media_library.files.move" path="/media-lib/{hash}/move-files/{folderId}"
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::moveFiles"
            methods="GET|POST">
-      <requirement key="hash">.*</requirement>
-      <default key="folderId" xsi:nil="true"/>
+        <requirement key="hash">.*</requirement>
+        <default key="folderId" xsi:nil="true"/>
     </route>
 </routes>

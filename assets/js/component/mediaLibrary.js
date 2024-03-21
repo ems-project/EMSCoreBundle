@@ -49,7 +49,7 @@ export default class MediaLibrary {
         return this.element.classList.contains('loading');
     }
     loading(flag) {
-        const buttons = this.element.querySelectorAll('button');
+        const buttons = this.element.querySelectorAll('button:not(.close-button)');
         const uploadButton = (this.#elements.inputUpload) ?
             this.#elements.header.querySelector(`label[for="${this.#elements.inputUpload.id}"]`) : false;
 
@@ -112,12 +112,11 @@ export default class MediaLibrary {
             if (this.isLoading()) return;
             if (event.target.classList.contains('file-uploader-input')) {
                 this._uploadFiles(Array.from(event.target.files));
+                event.target.value = '';
             }
         }
 
         ['dragenter', 'dragover', 'dragleave', 'drop', 'dragend'].forEach((dragEvent) => {
-            if (this.isLoading()) return;
-
             this.#elements.files.addEventListener(dragEvent, (event) => this._onDragUpload(event));
         });
     }
@@ -206,33 +205,62 @@ export default class MediaLibrary {
             if (!json.hasOwnProperty('success') || json.success === false) return;
             if (!json.hasOwnProperty('targetFolderId')) return;
 
+            const targetFolderId = json.targetFolderId;
+
             let processed = 0;
+            let errorList = [];
             const progressBar = new ProgressBar('progress-move-files', {
                 label: (1 === selection.length ? 'Moving file' : 'Moving files'),
                 value: 100,
                 showPercentage: true,
             });
 
+            const divAlert = document.createElement('div');
+            divAlert.id = 'move-errors';
+            divAlert.className = 'alert alert-danger';
+            divAlert.style.display = 'none';
+            divAlert.attributes.role = 'alert';
+
+            ajaxModal.getBodyElement().append(divAlert);
             ajaxModal.getBodyElement().append(progressBar.element());
             this.loading(true);
 
             Promise
                 .allSettled(Array.from(selection).map(fileRow => {
-                    return this._post(`/file/${fileRow.dataset.id}/move`, {
-                        targetFolderId: json.targetFolderId
-                    }).then(() => {
-                        if (!json.hasOwnProperty('success') || json.success === false) return;
+                    return new Promise((resolve, reject) => {
+                        this._post(`/file/${fileRow.dataset.id}/move`, {targetFolderId: targetFolderId})
+                            .then((moveOk) => {
+                                if (!moveOk.hasOwnProperty('success') || moveOk.success === false) return;
+                                fileRow.closest('li').remove();
+                                resolve();
+                            })
+                            .catch((moveError) => moveError.json().then((moveError) => {
+                                errorList[moveError.error] = (errorList[moveError.error] || 0) + 1;
 
-                        fileRow.closest('li').remove();
-                        progressBar
-                            .progress(Math.round((++processed / selection.length) * 100))
-                            .style('success');
+                                let content = '';
+                                for (let e in errorList) { content += `<p>${e} : for ${errorList[e]} files</p>`;}
+
+                                divAlert.style.display = 'block';
+                                divAlert.innerHTML = content;
+
+                                reject();
+                            }))
+                            .finally(() => {
+                                progressBar
+                                    .style('success')
+                                    .progress(Math.round((++processed / selection.length) * 100))
+                                    .status(`${processed} / ${selection.length}`);
+
+                                const currentDivAlert = ajaxModal.getBodyElement().querySelector('div#move-errors');
+                                if (currentDivAlert) ajaxModal.getBodyElement().replaceChild(divAlert, currentDivAlert);
+                            });
                     });
                 }))
                 .then(() => this._selectFilesReset())
                 .then(() => this.loading(false))
-                .then(() => new Promise(resolve => setTimeout(resolve, 2000)))
-                .then(() => ajaxModal.close())
+                .then(() => {
+                    if (Object.keys(errorList).length === 0) setTimeout(() => { ajaxModal.close() }, 2000);
+                })
             ;
         });
     }
@@ -488,70 +516,103 @@ export default class MediaLibrary {
 
         Promise
             .allSettled(files.map((file) => this._uploadFile(file)))
-            .then(() => {
-                this._getFiles().then(() => this.loading(false));
-            });
+            .then(() => this._getFiles().then(() => this.loading(false)));
     }
     _uploadFile(file) {
         return new Promise((resolve, reject) => {
-            let id = 'upload-' + Date.now();
-            let progressBar = new ProgressBar('progress-' + id, {
-                'label': file.name
+            const id = Date.now();
+            let liUpload = document.createElement('li');
+            liUpload.id = `upload-${id}`;
+
+            const uploadDiv = document.createElement('div');
+            uploadDiv.className = 'upload-file';
+
+            const closeButton = document.createElement('button');
+            closeButton.type = 'button';
+            closeButton.className = 'close-button';
+            closeButton.addEventListener('click', () => {
+                this.#elements.listUploads.removeChild(liUpload);
+                liUpload = false;
+                reject();
             });
 
-            let fileHash = null;
-            let mediaLib = this;
-            let liUpload = document.createElement('li');
-            liUpload.append(progressBar.element());
+            const closeIcon = document.createElement('i');
+            closeIcon.className = 'fa fa-times';
+            closeIcon.setAttribute('aria-hidden', 'true');
+            closeButton.appendChild(closeIcon);
+
+            const progressBar = new ProgressBar(`progress-${id}`, {'label': file.name, value: 5});
+
+            uploadDiv.append(progressBar.style('success').element());
+            uploadDiv.append(closeButton);
+
+            liUpload.appendChild(uploadDiv);
             this.#elements.listUploads.appendChild(liUpload);
 
+            this._getFileHash(file, progressBar)
+                .then((fileHash) => this._createFile(file, fileHash))
+                .then(() => {
+                    progressBar.status('Finished');
+                    setTimeout(() => {
+                        this.#elements.listUploads.removeChild(liUpload);
+                        resolve();
+                    }, 1000);
+                })
+                .catch((error) => {
+                    uploadDiv.classList.add('upload-error');
+                    progressBar.status(error.message).style('danger').progress(100);
+                    setTimeout(() => {
+                        if (liUpload === false) return;
+                        this.#elements.listUploads.removeChild(liUpload);
+                        reject();
+                    }, 3000);
+                });
+        });
+    }
+    async _createFile(file, fileHash) {
+        const formData = new FormData();
+        formData.append('name', file.name);
+        formData.append('filesize', file.size);
+        formData.append('fileMimetype', file.type);
+        formData.append('fileHash', fileHash);
+
+        const path = this.#activeFolderId ? `/add-file/${this.#activeFolderId}` : '/add-file';
+        await this._post(path, formData, true)
+            .catch((response) => response.json().then((json) => {
+                throw new Error(json.error);
+            }));
+    }
+    async _getFileHash(file, progressBar) {
+        const hash = await new Promise((resolve, reject) => {
+            let fileHash = null;
             new FileUploader({
                 file: file,
                 algo: this.#options.hashAlgo,
                 initUrl: this.#options.urlInitUpload,
                 onHashAvailable: function (hash) {
-                    progressBar.status('Hash available');
-                    progressBar.progress(0);
+                    progressBar.status('Hash available').progress(0);
                     fileHash = hash;
                 },
                 onProgress: function (status, progress, remaining) {
                     if (status === 'Computing hash') {
-                        progressBar.status('Calculating ...');
-                        progressBar.progress(remaining);
+                        progressBar.status('Calculating ...').progress(remaining);
                     }
                     if (status === 'Uploading') {
-                        progressBar.status('Uploading: ' + remaining);
-                        progressBar.progress(Math.round(progress * 100));
+                        progressBar.status('Uploading: ' + remaining).progress(Math.round(progress * 100));
                     }
                 },
                 onUploaded: function () {
-                    progressBar.status('Uploaded');
-                    progressBar.progress(100);
-                    progressBar.style('success');
-
-                    const path = mediaLib.#activeFolderId ? `/add-file/${mediaLib.#activeFolderId}` : '/add-file';
-                    const data =  {
-                        'filename': file.name,
-                        'filesize': file.size,
-                        'mimetype': file.type,
-                    };
-                    data[mediaLib.#options.hashAlgo] = fileHash;
-
-                    mediaLib._post(path, { file: data }
-                    ).then(() => {
-                        mediaLib.#elements.listUploads.removeChild(liUpload);
-                        resolve();
-                    }).catch(() => reject());
+                    progressBar.status('Uploaded').progress(100);
+                    resolve(fileHash);
                 },
-                onError: function (message) {
-                    progressBar.status('Error: ' + message);
-                    progressBar.progress(100);
-                    progressBar.style('danger');
-                }
+                onError: (message) => reject(message)
             });
         });
-    }
 
+        if (typeof hash !== 'string') throw new Error('Invalid hash');
+
+        return hash;
+    }
     _initInfiniteScrollFiles(scrollArea, divLoadMore) {
         const options = {
             root: scrollArea,
@@ -645,13 +706,22 @@ export default class MediaLibrary {
         });
         return response.json();
     }
-    async _post(path, data = {}) {
+    async _post(path, data = {}, isFormData = false) {
         this.loading(true);
-        const response = await fetch(`${this.#pathPrefix}${path}`, {
-            method: "POST",
-            headers: { 'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        });
-        return response.json();
+        let options = {};
+
+        if (isFormData) {
+            options = { method: "POST", body: data }
+        } else {
+            options = {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            }
+        }
+
+        const response = await fetch(`${this.#pathPrefix}${path}`, options);
+
+        return response.ok ? response.json() : Promise.reject(response);
     }
 }

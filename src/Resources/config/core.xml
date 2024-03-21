@@ -40,7 +40,6 @@
             <argument type="service" id="ems.service.revision" />
             <argument type="service" id="EMS\CoreBundle\Service\DataService" />
             <argument type="service" id="EMS\CoreBundle\Service\JobService"/>
-            <argument type="service" id="ems.service.file" />
             <argument type="service" id="emsco.core.media_library.config_factory" />
             <argument type="service" id="emsco.core.media_library.template_factory" />
             <argument type="service" id="emsco.core.media_library.file_factory" />
@@ -66,7 +65,7 @@
             <argument type="service" id="twig" />
             <argument>%ems_core.template_namespace%</argument>
         </service>
-        <service id="emsco.core.media_library.validator.document_dto" class="EMS\CoreBundle\Validator\Constraints\MediaLibrary\DocumentDTOValidator">
+        <service id="emsco.core.media_library.validator.document" class="EMS\CoreBundle\Validator\Constraints\MediaLibrary\DocumentValidator">
             <argument type="service" id="emsco.core.media_library"/>
             <tag name="validator.constraint_validator" />
         </service>

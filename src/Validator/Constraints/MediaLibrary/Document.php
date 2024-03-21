@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Validator\Constraints\MediaLibrary;
 use Symfony\Component\Validator\Constraint;
 
 #[\Attribute]
-class DocumentDTO extends Constraint
+class Document extends Constraint
 {
     public function getTargets(): string
     {

@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Component\MediaLibrary\File;
 
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig;
 use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryDocument;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class MediaLibraryFile extends MediaLibraryDocument
 {
-    /** @var array{filename: string, sha1: string, filesize: int, mimetype: string} */
+    /** @var array{filename: ?string, sha1: ?string, filesize: ?int, mimetype: ?string} */
     public array $file;
 
     public function __construct(
@@ -21,15 +22,66 @@ class MediaLibraryFile extends MediaLibraryDocument
     ) {
         parent::__construct($this->document, $this->config);
 
-        $this->file = $document->getValue($config->fieldFile);
+        $this->file = $document->getValue($config->fieldFile, [
+            EmsFields::CONTENT_FILE_NAME_FIELD => null,
+            EmsFields::CONTENT_FILE_HASH_FIELD => null,
+            EmsFields::CONTENT_FILE_SIZE_FIELD => null,
+            EmsFields::CONTENT_MIME_TYPE_FIELD => null,
+        ]);
+    }
+
+    public function getFileHash(): ?string
+    {
+        return $this->file[EmsFields::CONTENT_FILE_HASH_FIELD] ?? null;
+    }
+
+    public function getFilesize(): ?int
+    {
+        return $this->file[EmsFields::CONTENT_FILE_SIZE_FIELD] ?? null;
+    }
+
+    public function getFileMimetype(): ?string
+    {
+        return $this->file[EmsFields::CONTENT_MIME_TYPE_FIELD] ?? null;
+    }
+
+    public function setFileHash(?string $fileHash): void
+    {
+        $this->file[EmsFields::CONTENT_FILE_HASH_FIELD] = $fileHash;
+        $this->setFileProperty(EmsFields::CONTENT_FILE_HASH_FIELD, $fileHash);
+    }
+
+    public function setFilesize(?int $filesize): void
+    {
+        $this->file[EmsFields::CONTENT_FILE_SIZE_FIELD] = $filesize;
+        $this->setFileProperty(EmsFields::CONTENT_FILE_SIZE_FIELD, $filesize);
+    }
+
+    public function setFileMimetype(?string $mimetype): void
+    {
+        $mimetype ??= 'application/bin';
+
+        $this->file[EmsFields::CONTENT_MIME_TYPE_FIELD] = $mimetype;
+        $this->setFileProperty(EmsFields::CONTENT_MIME_TYPE_FIELD, $mimetype);
+    }
+
+    public function setName(?string $name): void
+    {
+        parent::setName($name);
+        $this->setFileProperty(EmsFields::CONTENT_FILE_NAME_FIELD, $name);
     }
 
     public function urlView(): string
     {
         return $this->urlGenerator->generate('ems.file.view', [
-            'sha1' => $this->file['sha1'],
-            'type' => $this->file['mimetype'],
-            'name' => $this->getName(),
+            'sha1' => $this->getFileHash(),
+            'type' => $this->getFileMimetype(),
+            'name' => $this->giveName(),
         ]);
+    }
+
+    private function setFileProperty(string $property, null|int|string $value): void
+    {
+        $this->document->setValue(\sprintf('%s[%s]', $this->config->fieldFile, $property), $value);
     }
 }

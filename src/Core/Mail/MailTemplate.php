@@ -21,7 +21,8 @@ final class MailTemplate
     private array $bcc = [];
     /** @var string[] */
     private array $attachments = [];
-    private ?string $replyTo = null;
+    /** @var array<mixed> */
+    private array $replyTo = [];
 
     public function __construct(private readonly TemplateWrapper $template, private readonly TranslatorInterface $translator, private readonly string $senderName)
     {
@@ -165,23 +166,21 @@ final class MailTemplate
         return $this->attachments;
     }
 
-    public function hasReplyTo(): bool
+    /**
+     * @return string[]
+     */
+    public function getReplyTo(): array
     {
-        return null !== $this->replyTo;
-    }
-
-    public function getReplyTo(): string
-    {
-        if (null === $this->replyTo) {
-            throw new \RuntimeException('Test if the reply to is defined first with the method MailTemplate::hasReplyTo');
-        }
-
         return $this->replyTo;
     }
 
-    public function setReplyTo(string $replyTo): self
+    public function addReplyTo(string $email, string $name = null): self
     {
-        $this->replyTo = $replyTo;
+        if ($name) {
+            $this->replyTo[$email] = $name;
+        } else {
+            $this->replyTo[] = $email;
+        }
 
         return $this;
     }

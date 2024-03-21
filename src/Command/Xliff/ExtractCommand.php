@@ -61,6 +61,7 @@ final class ExtractCommand extends AbstractCommand
     public const OPTION_MAIL_SUBJECT = 'mail-subject';
     public const OPTION_MAIL_TO = 'mail-to';
     public const OPTION_MAIL_CC = 'mail-cc';
+    public const OPTION_MAIL_REPLY_TO = 'mail-reply-to';
     private const MAIL_TEMPLATE = '@EMSCore/email/xliff/extract.email.html.twig';
     private string $xliffFilename;
     private ?string $baseUrl = null;
@@ -72,6 +73,7 @@ final class ExtractCommand extends AbstractCommand
     private string $mailSubject;
     private ?string $mailTo = null;
     private ?string $mailCC = null;
+    private ?string $mailReplyTo;
 
     public function __construct(
         private readonly ContentTypeService $contentTypeService,
@@ -104,7 +106,9 @@ final class ExtractCommand extends AbstractCommand
             ->addOption(self::OPTION_WITH_BASELINE, null, InputOption::VALUE_NONE, 'The baseline has been checked and can be used to flag field as final')
             ->addOption(self::OPTION_MAIL_SUBJECT, null, InputOption::VALUE_OPTIONAL, 'Mail subject', 'A new XLIFF has been generated')
             ->addOption(self::OPTION_MAIL_TO, null, InputOption::VALUE_OPTIONAL, 'A comma seperated list of emails where to send the XLIFF')
-            ->addOption(self::OPTION_MAIL_CC, null, InputOption::VALUE_OPTIONAL, 'A comma seperated list of emails where to send, in carbon copy, the XLIFF');
+            ->addOption(self::OPTION_MAIL_CC, null, InputOption::VALUE_OPTIONAL, 'A comma seperated list of emails where to send, in carbon copy, the XLIFF')
+            ->addOption(self::OPTION_MAIL_REPLY_TO, null, InputOption::VALUE_OPTIONAL, 'A comma seperated list of emails where to reply')
+        ;
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -131,6 +135,7 @@ final class ExtractCommand extends AbstractCommand
         $this->mailSubject = $this->getOptionString(self::OPTION_MAIL_SUBJECT);
         $this->mailTo = $this->getOptionStringNull(self::OPTION_MAIL_TO);
         $this->mailCC = $this->getOptionStringNull(self::OPTION_MAIL_CC);
+        $this->mailReplyTo = $this->getOptionStringNull(self::OPTION_MAIL_REPLY_TO);
 
         if (null === $this->translationField && $this->translationField !== $this->localeField) {
             throw new \RuntimeException(\sprintf('Both %s and %s options must be defined or not defined at all (fields defined with %%locale%% placeholder)', self::OPTION_TRANSLATION_FIELD, self::OPTION_LOCALE_FIELD));
@@ -211,6 +216,12 @@ final class ExtractCommand extends AbstractCommand
             $split = \explode(',', $this->mailCC);
             foreach ($split as $email) {
                 $mailTemplate->addCc($email);
+            }
+        }
+        if (null !== $this->mailReplyTo) {
+            $split = \explode(',', $this->mailReplyTo);
+            foreach ($split as $email) {
+                $mailTemplate->addReplyTo($email);
             }
         }
         $mailTemplate->setBodyBlock('xliff_extracted', [

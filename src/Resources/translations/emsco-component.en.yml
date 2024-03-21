@@ -1,8 +1,9 @@
 media_library:
     home: Home
     submit: Save
-    cancel: Cancel
+    close: Close
     error:
+        file_exists: 'File name already exists.'
         folder_exists: 'Folder name already exists.'
     folder:
         add:

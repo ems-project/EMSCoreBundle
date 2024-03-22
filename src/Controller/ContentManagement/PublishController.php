@@ -148,7 +148,7 @@ class PublishController extends AbstractController
                 $environment->getName(),
                 $form->get('toEnvironment')->getData(),
                 \sprintf('--%s', AlignCommand::OPTION_FORCE),
-                \sprintf('--%s=%s', AlignCommand::OPTION_SEARCH_QUERY, $query),
+                \sprintf("--%s='%s'", AlignCommand::OPTION_SEARCH_QUERY, $query),
             ];
 
             $job = $this->jobService->createCommand($user, \implode(' ', $command));

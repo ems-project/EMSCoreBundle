@@ -69,12 +69,16 @@ export default class MediaLibrary {
     getFolders() {
         return this.#elements.listFolders.querySelectorAll('.media-lib-folder');
     }
+    getSelectionFile() {
+        const selection = this.getSelectionFiles();
+        return selection.length === 1 ? selection[0] : null;
+    }
     getSelectionFiles() {
         return this.#elements.listFiles.querySelectorAll('.active');
     }
 
     _addEventListeners() {
-        document.onkeyup = (event) => {
+        this.element.onkeyup = (event) => {
             if (event.shiftKey) this.#selectionLastFile = null;
             if (event.target.classList.contains('media-lib-search')) this._onSearchInput(event.target, 500);
         }
@@ -90,6 +94,7 @@ export default class MediaLibrary {
             if (classList.contains('media-lib-folder')) this._onClickFolder(event.target);
 
             if (classList.contains('btn-file-upload')) this.#elements.inputUpload.click();
+            if (classList.contains('btn-file-view')) this._onClickButtonFileView(event.target);
             if (classList.contains('btn-file-rename')) this._onClickButtonFileRename(event.target);
             if (classList.contains('btn-file-delete')) this._onClickButtonFileDelete(event.target);
             if (classList.contains('btn-files-delete')) this._onClickButtonFilesDelete(event.target)
@@ -102,7 +107,7 @@ export default class MediaLibrary {
             if (classList.contains('btn-home')) this._onClickButtonHome(event.target);
             if (classList.contains('breadcrumb-item')) this._onClickBreadcrumbItem(event.target);
 
-            const keepSelection = ['media-lib-file', 'btn-file-rename', 'btn-file-delete', 'btn-files-delete', 'btn-files-move'];
+            const keepSelection = ['media-lib-file', 'btn-file-rename', 'btn-file-delete', 'btn-files-delete', 'btn-files-move', 'btn-file-view'];
             if (!keepSelection.some(className => classList.contains(className))) {
                 this._selectFilesReset();
             }
@@ -126,6 +131,59 @@ export default class MediaLibrary {
         const selection = this._selectFiles(item, event);
         const fileId = selection.length === 1 ? item.dataset.id : null;
         this._getHeader(fileId).then(() => { this.loading(false); });
+    }
+    _onClickButtonFileView(button) {
+        const getSiblingFile = (fileId, sibling) => {
+            const row = this.#elements.listFiles.querySelector(`.media-lib-file[data-id='${fileId}']`);
+            const rowSibling = row.closest('li')[sibling];
+            return rowSibling ? rowSibling.querySelector('.media-lib-file') : null;
+        }
+
+        const navigation = (action, sibling, fileId) => {
+            const button = ajaxModal.modal.querySelector(`.btn-preview-${action}`);
+            if (!button || null === getSiblingFile(fileId, sibling)) return;
+
+            button.style.display = 'inline-block';
+            button.addEventListener('click', () => {
+                const file = getSiblingFile(fileId, sibling);
+                if (!file) return;
+
+                const header = this.#elements.files.querySelector('.media-lib-file-header');
+                const headerHeight = header ? header.getBoundingClientRect().height : 0;
+
+                this._selectFilesReset();
+                this._selectFile(file);
+                this.#elements.files.scrollTop = (file.offsetTop - this.#elements.files.offsetTop) - headerHeight;
+                openModal(file.dataset.id);
+            });
+        };
+
+        const onKeydown = (e) => {
+            const actions = { 'ArrowRight': 'next', 'ArrowLeft': 'prev'};
+            const action = actions[e.key] || false;
+            if (!action) return;
+
+            const button = ajaxModal.modal.querySelector(`.btn-preview-${action}`);
+            if (button) button.click();
+        }
+
+        const openModal = (fileId) => {
+            const onClose = () => {
+                ajaxModal.modal.removeEventListener('ajax-modal-close', onClose);
+                document.removeEventListener('keydown', onKeydown);
+                const selectionFile = this.getSelectionFile();
+                if (selectionFile) selectionFile.click();
+            }
+            ajaxModal.modal.addEventListener('ajax-modal-close', onClose);
+
+            ajaxModal.load({ url: `${this.#pathPrefix}/file/${fileId}/view`, size: 'lg', noLoading: true }, () => {
+                navigation('prev', 'previousSibling', fileId);
+                navigation('next','nextSibling', fileId);
+                document.addEventListener('keydown', onKeydown);
+            });
+        };
+
+        openModal(button.dataset.id);
     }
     _onClickButtonFileRename(button) {
         const fileId = button.dataset.id;
@@ -649,6 +707,8 @@ export default class MediaLibrary {
             files.forEach((f, index) => {
                 if (index >= start && index <= end) this._selectFile(f);
             });
+        } else if (event.ctrlKey) {
+            this._selectFile(item);
         } else {
             this._selectFilesReset(false);
             this._selectFile(item);

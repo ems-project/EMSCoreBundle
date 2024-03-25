@@ -74,6 +74,11 @@
         <requirement key="hash">.*</requirement>
         <requirement key="fileId">.*</requirement>
     </route>
+    <route id="emsco.media_library.file.view" path="/media-lib/{hash}/file/{fileId}/view"
+           controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::viewFile"
+           methods="GET">
+        <requirement key="hash">.*</requirement>
+    </route>
     <route id="emsco.media_library.file.delete" path="/media-lib/{hash}/file/{fileId}/delete"
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::deleteFile"
            methods="POST">

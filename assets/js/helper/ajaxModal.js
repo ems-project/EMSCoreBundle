@@ -92,7 +92,8 @@ class AjaxModal {
             dialog.classList.add('modal-md');
         }
 
-        this.stateLoading();
+        if (!options.hasOwnProperty('noLoading')) this.stateLoading();
+
         if (options.hasOwnProperty('title')) {
             this.modal.querySelector('.modal-title').innerHTML = options.title;
         }

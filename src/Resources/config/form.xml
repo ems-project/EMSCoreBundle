@@ -461,6 +461,10 @@
             <argument type="service" id="ems.service.data" />
             <tag name="form.type"/>
         </service>
+        <service id="ems_core.form.field-holder" class="EMS\CoreBundle\Form\Form\LoadLinkModalType">
+            <argument type="service" id="router" />
+            <tag name="form.type"/>
+        </service>
 
         <service id="emsco.form_extension.locale_form_extension" class="EMS\CoreBundle\Form\Extension\LocaleFormExtension">
             <tag name="form.type_extension"/>

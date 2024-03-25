@@ -14,6 +14,13 @@
            controller="EMS\CoreBundle\Controller\Wysiwyg\StylesetController::allPrefixedCSS"
            methods="GET"/>
 
+    <route id="emsco_wysiwyg_modal_load_link" path="/modal/ajax/load-link"
+           controller="EMS\CoreBundle\Controller\Wysiwyg\ModalController::loadLinkModal"
+           methods="POST" />
+    <route id="emsco_ems_link_info" path="/modal/ajax/ems-link-info"
+           controller="EMS\CoreBundle\Controller\Wysiwyg\ModalController::emsLinkInfo"
+           methods="GET" />
+
     <route id="emsco_wysiwyg_ajax_paste" path="/ajax/{wysiwygProfileId}/paste"
            controller="EMS\CoreBundle\Controller\Wysiwyg\AjaxPasteController"
            methods="POST" />

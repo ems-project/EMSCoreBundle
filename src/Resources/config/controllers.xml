@@ -462,6 +462,14 @@
             <argument type="service" id="emsco.logger" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Wysiwyg\ModalController" public="true">
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="twig" />
+            <argument type="service" id="ems_core.core_ui.flash_message_logger" />
+            <argument>%ems_core.template_namespace%</argument>
+            <call method="setContainer"/>
+            <tag name="container.service_subscriber"/>
+        </service>
         <service id="EMS\CoreBundle\Controller\Wysiwyg\StylesetController" public="true">
             <argument type="service" id="ems.service.wysiwyg_styles_set" />
             <argument type="service" id="emsch.twig.runtime.asset" />

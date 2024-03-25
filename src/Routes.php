@@ -68,4 +68,5 @@ class Routes
     final public const LOG_INDEX = 'emsco_log_index';
     final public const LOG_DELETE = 'emsco_log_delete';
     final public const LOG_VIEW = 'emsco_log_view';
+    final public const WYSIWYG_MODAL_LOAD_LINK = 'emsco_wysiwyg_modal_load_link';
 }

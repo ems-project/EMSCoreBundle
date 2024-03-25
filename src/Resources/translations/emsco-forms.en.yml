@@ -1,3 +1,19 @@
+link_modal:
+    field:
+        file: 'File'
+        link_type: 'Link type'
+        data_link: 'Internal document'
+        mailto: 'To'
+        subject: 'Subject'
+        body: 'Body'
+        href: 'URL'
+        submit: 'Set link'
+        target_blank: 'Open links in a new tab (_blank)'
+    link_type:
+        url: 'URL'
+        internal: 'Internal Link'
+        file: 'File'
+        mailto: 'Mailto'
 analyzer.type.standard: Standard
 analyzer.type.simple: Simple
 analyzer.type.whitespace: Whitespace

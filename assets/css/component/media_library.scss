@@ -93,7 +93,7 @@ div.media-lib {
   }
 
   div.media-lib-folder > *, div.media-lib-file > * { pointer-events: none; }
-  div.media-lib-folder a, div.media-lib-file a { pointer-events: auto; }
+  div.media-lib-folder a, div.media-lib-file a, div.media-lib-file button { pointer-events: auto; }
   div.media-lib-drop-area div.media-lib-file a { pointer-events: none; }
 
   div.media-lib-folder, div.media-lib-file, div.media-lib-file-header {
@@ -262,6 +262,37 @@ div.media-lib {
       padding: 8px;
       height: 100%;
       min-height: 30px;
+    }
+  }
+}
+
+div.media-lib-preview-modal {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+  gap: 16px;
+
+  object {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &[data-type^="image"] {
+    flex-direction: row;
+
+    .media-lib-preview-file {
+      border: 1px solid #D7D7D7;
+      border-radius: 5px;
+      padding: 16px;
+      min-width: 400px;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-content: center;
+
+      & > img { max-height: 268px; }
     }
   }
 }

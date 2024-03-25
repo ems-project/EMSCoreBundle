@@ -346,6 +346,23 @@ class MediaLibraryController
         return new JsonResponse($modal->render());
     }
 
+    public function viewFile(string $fileId): JsonResponse
+    {
+        $file = $this->mediaLibraryService->getFile($fileId);
+        $modalTitle = $this->translator->trans('media_library.file.view.title_modal', ['%name%' => $file->giveName()], EMSCoreBundle::TRANS_COMPONENT);
+
+        $modal = $this->mediaLibraryService->modal([
+            'type' => 'view',
+            'title' => $modalTitle,
+            'mediaFile' => $file,
+        ]);
+        $modal
+            ->setBlockBody('media_lib_modal_preview')
+            ->setBlockFooter('media_lib_modal_preview_footer');
+
+        return new JsonResponse($modal->render());
+    }
+
     private function flashBag(Request $request): FlashBagInterface
     {
         /** @var Session $session */

@@ -31,6 +31,13 @@ media_library:
             title: 'Delete file'
         rename:
             title: 'Rename file'
+        view:
+            title: 'View file'
+            title_modal: 'View file: %name%'
+            next: 'Next'
+            previous: 'Previous'
+            fallback: 'No plugin-in available to display the file content.'
+            download: 'Download the file'
     files:
         delete:
             title: 'Delete %count% files'

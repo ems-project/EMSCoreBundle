@@ -10,6 +10,7 @@
         {{- template.block('media_lib_button_folder_add', _context)|raw -}}
         {{- template.block('media_lib_button_upload', _context)|raw -}}
         {%- if mediaFile is defined -%}
+            {{- template.block('media_lib_button_file_view', _context)|raw -}}
             {{- template.block('media_lib_button_file_rename', _context)|raw -}}
             {{- template.block('media_lib_button_files_move', _context)|raw -}}
             {{- template.block('media_lib_button_file_delete', _context)|raw -}}
@@ -132,6 +133,12 @@
     </button>
 {%- endblock media_lib_button_file_delete -%}
 
+{%- block media_lib_button_file_view -%}
+    <button class="btn btn-sm btn-default btn-file-view" data-id="{{- mediaFile.id -}}">
+        <i class="fa fa-eye" aria-hidden="true"></i> {{- buttonLabel|default('media_library.file.view.title'|trans) -}}
+    </button>
+{%- endblock media_lib_button_file_view -%}
+
 {%- block media_lib_button_files_delete -%}
     <button class="btn btn-sm btn-default btn-files-delete" data-modal-size="md">
         <i class="fa fa-remove" aria-hidden="true"></i> {{- buttonLabel|default('media_library.files.delete.title'|trans({ '%count%': selectionFiles })) -}}
@@ -202,3 +209,46 @@
         <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">{{ 'media_library.close'|trans }}</button>
     </div>
 {%- endblock media_lib_modal_footer -%}
+
+{% block media_lib_modal_preview %}
+    {% set url = ems_asset_path(mediaFile.file) %}
+    <div class="media-lib-preview-modal" data-type="{{ mediaFile.fileMimetype }}">
+        <div class="media-lib-preview-file">
+            {% if mediaFile.fileMimetype starts with 'image/' %}
+                <img src="{{ url }}" alt="{{ mediaFile.giveName }}"/>
+            {% else %}
+                <div class="embed-responsive embed-responsive-16by9">
+                    <object data="{{ url }}" type="{{ mediaFile.fileMimetype }}">
+                        <div class="alert alert-info" role="alert">
+                            {{ fallback|default('media_library.file.view.fallback'|trans) }}
+                            <a href="{{ url }}">{{ fallback|default('media_library.file.view.download'|trans) }}</a>
+                        </div>
+                    </object>
+                </div>
+            {% endif %}
+        </div>
+        <div class="media-lib-preview-info">
+            {{- template.block('media_lib_modal_preview_info', _context)|raw -}}
+        </div>
+    </div>
+{% endblock media_lib_modal_preview %}
+
+{% block media_lib_modal_preview_info %}
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">Size: {{ mediaFile.filesize|format_bytes }}</li>
+        <li class="list-group-item">Type: {{ mediaFile.fileMimetype|trans({}, 'emsco-mimetypes') }}</li>
+    </ul>
+{% endblock media_lib_modal_preview_info %}
+
+{% block media_lib_modal_preview_footer %}
+    <div class="text-center">
+        <button class="btn btn-sm btn-default btn-preview-prev" style="display: none;">
+            <i class="fa fa-angle-double-left"></i>
+            {{ 'media_library.file.view.previous'|trans }}
+        </button>
+        <button class="btn btn-sm btn-default btn-preview-next" style="display: none;">
+            {{ 'media_library.file.view.next'|trans }}
+            <i class="fa fa-angle-double-right"></i>
+        </button>
+    </div>
+{% endblock media_lib_modal_preview_footer %}

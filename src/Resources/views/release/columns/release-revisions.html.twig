@@ -10,8 +10,10 @@
 
         {% if revisionTarget %}
             {{ revisionTarget|emsco_display }}
-        {% else %}
+        {% elseif revisionSource %}
             {{ 'release.release-revisison.missing-revision'|trans({'%label%': revisionSource|emsco_display, '%environment%': data.release.environmentTarget.name}) }}
+        {% else %}
+            {{ 'release.release-revisison.revision-not-applicable'|trans }}
         {% endif %}
     {% endif %}
 {% endblock label %}

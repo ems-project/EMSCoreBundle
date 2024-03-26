@@ -2,7 +2,6 @@
 
 namespace EMS\CoreBundle\Controller\Wysiwyg;
 
-use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\Entity\Form\LoadLinkModalEntity;
 use EMS\CoreBundle\Form\Form\LoadLinkModalType;
@@ -56,14 +55,9 @@ class ModalController extends AbstractController
         if (!\is_string($link)) {
             return $this->flashMessageLogger->buildJsonResponse([]);
         }
-        $emsLink = EMSLink::fromText($link);
-        $revision = $this->revisionService->get($emsLink->getOuuid(), $emsLink->getContentType());
-        if (!\is_string($link)) {
-            return $this->flashMessageLogger->buildJsonResponse([]);
-        }
 
         return $this->flashMessageLogger->buildJsonResponse([
-            'label' => null === $revision ? $emsLink->getOuuid() : $revision->getLabel(),
+            'label' => $this->revisionService->display($link),
         ]);
     }
 }

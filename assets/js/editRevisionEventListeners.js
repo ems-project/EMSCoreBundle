@@ -249,20 +249,6 @@ function editRevisionEventListeners(target, onChangeCallback = null){
         }
     });
 
-    target.find('.ems_daterangepicker').each(function( ) {
-
-        const options = $(this).data('display-option');
-        $(this).unbind('change');
-
-        if ($(this).not('.ignore-ems-update')) {
-            if (onChangeCallback) {
-                $(this).daterangepicker(options, function() { onChangeCallback(); });
-            }
-        } else {
-            $(this).daterangepicker(options);
-        }
-    });
-
     target.find('textarea,input').each(function( ) {
         const counterSpan = this.parentNode.querySelector('.text-counter');
         if (null === counterSpan || !counterSpan.hasAttribute('data-counter-label') || counterSpan.parentNode !== this.parentNode) {

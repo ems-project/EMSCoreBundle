@@ -40,6 +40,7 @@ export default class EmsListeners {
         this.addFileUploaderListerners();
         this.addA2LixLibSfCollection();
         this.addDisabledButtonTreatListeners();
+        this.addDateRangeListeners();
         tooltipDataLinks(this.target);
     }
 
@@ -736,5 +737,22 @@ export default class EmsListeners {
                 form.elements.treat_notifications_reject.disabled = !isDisabledAccept;
             });
         }
+    }
+
+    addDateRangeListeners() {
+        const self = this;
+        jquery(this.target).find('.ems_daterangepicker').each(function( ) {
+
+            const options = $(this).data('display-option');
+            $(this).unbind('change');
+
+            if ($(this).not('.ignore-ems-update')) {
+                if (typeof self.onChangeCallback === "function") {
+                    $(this).daterangepicker(options, function() { self.onChangeCallback(); });
+                }
+            } else {
+                $(this).daterangepicker(options);
+            }
+        });
     }
 }

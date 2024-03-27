@@ -177,6 +177,7 @@
             <argument type="service" id="ems.service.internationalization.xliff"/>
             <argument type="service" id="ems.service.publish"/>
             <argument type="service" id="ems.service.revision"/>
+            <argument type="service" id="ems_common.storage.manager"/>
             <tag name="console.command"/>
         </service>
         <service id="ems.command.revision.discard-drafts" class="EMS\CoreBundle\Command\Revision\DiscardDraftCommand">

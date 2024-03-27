@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Xliff;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Exception\XliffException;
@@ -43,7 +44,8 @@ final class UpdateCommand extends AbstractCommand
         private readonly EnvironmentService $environmentService,
         private readonly XliffService $xliffService,
         private readonly PublishService $publishService,
-        private readonly RevisionService $revisionService
+        private readonly RevisionService $revisionService,
+        private readonly StorageManager $storageManager
     ) {
         parent::__construct();
     }
@@ -51,7 +53,7 @@ final class UpdateCommand extends AbstractCommand
     protected function configure(): void
     {
         $this
-            ->addArgument(self::ARGUMENT_XLIFF_FILE, InputArgument::REQUIRED, 'Input XLIFF file')
+            ->addArgument(self::ARGUMENT_XLIFF_FILE, InputArgument::REQUIRED, 'Input XLIFF file (filename or hash)')
             ->addOption(self::OPTION_PUBLISH_TO, null, InputOption::VALUE_OPTIONAL, 'If defined the revision will be published in the defined environment')
             ->addOption(self::OPTION_ARCHIVE, null, InputOption::VALUE_NONE, 'If set another revision will be flagged as archived')
             ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', null)
@@ -90,7 +92,8 @@ final class UpdateCommand extends AbstractCommand
             \sprintf('Starting the XLIFF update from file %s', $this->xliffFilename),
         ]);
 
-        $inserter = Inserter::fromFile($this->xliffFilename);
+        $fileGetter = $this->storageManager->getFile($this->xliffFilename);
+        $inserter = Inserter::fromFile($fileGetter->getFilename());
         $this->io->progressStart($inserter->count());
         $insertReport = new InsertReport();
         foreach ($inserter->getDocuments() as $document) {

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="emsco_api_forms_submissions" path="/submissions"
+           controller="EMS\CoreBundle\Controller\Api\Form\SubmissionController::submit"
+           methods="POST"
+           format="json"/>
+    <route id="emsco_api_forms_submissions_detail" path="/submissions/{submissionId}"
+           controller="EMS\CoreBundle\Controller\Api\Form\SubmissionController::detail"
+           methods="GET"
+           format="json">
+        <requirement key="submissionId">.*</requirement>
+    </route>
+    <route id="emsco_api_forms_post_verifications" path="/verifications"
+           controller="EMS\CoreBundle\Controller\Api\Form\VerificationController::createVerification"
+           methods="POST"
+           format="json"/>
+    <route id="emsco_api_forms_get_verifications" path="/verifications"
+           controller="EMS\CoreBundle\Controller\Api\Form\VerificationController::getVerification"
+           methods="GET"
+           format="json"/>
+
+</routes>

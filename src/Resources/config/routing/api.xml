@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="emsco_auth_token_login" path="/auth-token"
+           controller="EMS\CoreBundle\Controller\Api\AuthTokenLoginController::login"
+           methods="POST"
+           format="json"/>
+
+    <import resource="@EMSCoreBundle/Resources/config/routing/api/admin.xml"
+            prefix="/api/admin"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/api/extract-data.xml"
+            prefix="/api/extract-data"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/api/file.xml"
+            prefix="/api/file"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/api/forms.xml"
+            prefix="/api/forms"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/api/images.xml"
+            prefix="/api/images"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/api/meta.xml"
+            prefix="/api/meta"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/api/search.xml"
+            prefix="/api/search"/>
+
+</routes>

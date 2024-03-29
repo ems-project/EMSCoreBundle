@@ -115,22 +115,6 @@
         <default key="interface">api</default>
         <requirement key="interface">api|json</requirement>
     </route>
-    <route id="emsco_auth_token_login" path="/auth-token"
-           controller="EMS\CoreBundle\Controller\Api\AuthTokenLoginController::login"
-           methods="POST"
-           format="json"/>
-    <route id="emsco_api_forms_submissions" path="/api/forms/submissions"
-           controller="EMS\CoreBundle\Controller\Api\Form\SubmissionController::submit"
-           methods="POST"
-           format="json"/>
-    <route id="emsco_api_forms_post_verifications" path="/api/forms/verifications"
-           controller="EMS\CoreBundle\Controller\Api\Form\VerificationController::createVerification"
-           methods="POST"
-           format="json"/>
-    <route id="emsco_api_forms_get_verifications" path="/api/forms/verifications"
-           controller="EMS\CoreBundle\Controller\Api\Form\VerificationController::getVerification"
-           methods="GET"
-           format="json"/>
 
     <!--Deprecated routes -->
     <route id="api.test" path="/{interface}/test"

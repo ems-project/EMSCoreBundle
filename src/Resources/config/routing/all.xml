@@ -6,6 +6,7 @@
 
     <import resource="@EMSCoreBundle/Resources/config/routing/data.xml"
             prefix="/data"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/api.xml" />
     <import resource="@EMSCoreBundle/Resources/config/routing/public.xml"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/dashboard.xml"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/form.xml"/>
@@ -35,22 +36,10 @@
             prefix="/data"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/search.xml"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/task.xml"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/api/search.xml"
-            prefix="/api/search"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/api/extract-data.xml"
-            prefix="/api/extract-data"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/api/admin.xml"
-            prefix="/api/admin"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/api/meta.xml"
-            prefix="/api/meta"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/api/file.xml"
-            prefix="/api/file"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/admin/view.xml"
             prefix="/admin/view"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/admin/file.xml"
             prefix="/admin/file"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/api/images.xml"
-            prefix="/api/images"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/views.xml"
             prefix="/views"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/admin/job.xml"

@@ -1,7 +1,9 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}{{ 'view.environment.index.title'|trans }}{% endblock %}
-{% block pagetitle %}{{ 'view.environment.index.pagetitle'|trans }}{% endblock %}
+{% block pagetitle %}
+    <i class="fa fa-database"></i>&nbsp;{{ 'view.environment.index.pagetitle'|trans }}
+{% endblock %}
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
@@ -18,143 +20,17 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box ">
-                <div class="box-header with-border">
-                    <i class="fa fa-database"></i>
-                    <h3 class="box-title">{{ 'view.environment.index.local_environment_label'|trans }}</h3>
-                    <div class="btn-group  pull-right">
-                        <a class="btn btn-xs btn-primary" href="{{ path('environment.add') }}">
-                            <i class="fa fa-plus"></i> {{ 'view.environment.index.add_environment_button'|trans }}
-                        </a>
-                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal"
-                                data-target="#environment_modal_reorder">
-                            <i class="fa fa-reorder"></i> {{ 'view.environment.index.reorder_button'|trans }}
-                        </button>
-                    </div>
-                    <div class="modal fade" id="environment_modal_reorder" tabindex="-1" role="dialog"
-                         aria-labelledby="myModalReorder">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    <h4 class="modal-title" id="myModalReorderLabel">
-                                        <strong>{{ 'view.environment.index.reorder_title'|trans }}</strong>
-                                    </h4>
-                                </div>
-                                {{ form_start(form) }}
-                                <div class="modal-body">
-                                    <ul class="list-group sortable" id="content_type_modal_reorder_list">
-                                        {% for child in form.environmentNames %}
-                                            <li class="list-group-item">
-                                                <i class="glyphicon glyphicon-move"></i>
-                                                {{ child.vars.value }}
-                                                {{ form_row( child ) }}
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                                <div class="modal-footer">
-                                    <div class="btn-group">
-                                        {{ form_widget(form.reorder) }}
-                                        <button type="button" class="btn btn-primary" data-dismiss="modal">
-                                            <i class="fa fa-close"></i> {{ 'view.environment.index.close_modal_button'|trans }}
-                                        </button>
-                                    </div>
-                                </div>
-                                {{ form_end(form) }}
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    {%  set toolbar %}
+                        <a class="btn btn-primary" href="{{ path('environment.add') }}"><i class="fa fa-plus"></i> {{ add_label|default(form.vars.add_label)|trans }}</a>
+                    {%  endset %}
+
+                    {% form_theme form '@EMSCore/form/forms.html.twig' %}
+                    {{ form(form, {
+                        reorder_label: 'environment.index.reorder',
+                        toolbar: toolbar
+                    }) }}
                 </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    {% if environments|length == 0 %}
-                        {{ 'view.environment.index.no_environment_yet'|trans }}
-                    {% else %}
-                        <div class="table-responsive">
-                            <table class="table table-condensed table-striped">
-                                <tbody>
-                                <tr>
-                                    <th class="text-center" style="width: 10px">
-                                        {{ 'view.environment.index.count_label'|trans }}
-                                    </th>
-                                    <th>{{ 'view.environment.index.label'|trans }}</th>
-                                    <th>{{ 'view.environment.index.name_label'|trans }}</th>
-                                    <th>{{ 'view.environment.index.alias_label'|trans }}</th>
-                                    <th>{{ 'view.environment.index.indexes_label'|trans }}</th>
-                                    <th class="text-center">{{ 'view.environment.index.total_indexed_label'|trans }}</th>
-                                    <th class="text-center">{{ 'view.environment.index.total_in_ems'|trans }}</th>
-                                    <th class="text-center">{{ 'view.environment.index.total_mark_has_deleted'|trans }}</th>
-                                    <th>{{ 'view.environment.index.action_label'|trans }}</th>
-                                </tr>
-                                {% for environment in environments %}
-                                    {{ "Environmen's info"|debug({name: environment.name}) }}
-                                    {% if environment.managed %}
-                                        <tr>
-                                            <td class="text-center">{{ loop.index }}.</td>
-                                            <td>
-                                                <span class="badge bg-{{ environment.color|raw }}"
-                                                      title="Circles:{% for circle in environment.circles %}
-                                                     {% if not loop.first %}
-                                                       {% if loop.last %}
-                                                       &amp;
-                                                       {% else %}
-                                                       ,
-                                                       {% endif %}
-                                                     {% endif %}
-                                                      {{ circle|trans }}
-                                                    {% endfor %}">
-                                                    {{ environment.label }}
-                                                </span>
-                                            </td>
-                                            <td>{{ environment.name }}</td>
-                                            <td>{{ environment.alias }}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-default btn-sm" data-toggle="modal"
-                                                        data-target="#modal-environment-{{ environment.id }}">
-                                                    {{ 'view.environment.index.environment_index_count'|trans({'%count%': environment.indexes|length}) }}
-                                                </button>
-                                            </td>
-                                            <td class="text-center">{{ environment.total|number_format }}</td>
-                                            <td class="text-center">{{ environment.counter|number_format }}</td>
-                                            <td class="text-center">{{ environment.deletedRevision|number_format }}</td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    {% include '@EMSCore/elements/get-button.html.twig' with {
-                                                        'url': path('environment.rebuild', {'id': environment.id}),
-                                                        'label': 'view.environment.index.rebuild_button'|trans,
-                                                        'icon': 'recycle'
-                                                    } %}
-                                                    {% include '@EMSCore/elements/get-button.html.twig' with {
-                                                        'url': path('environment.view', {'id': environment.id}),
-                                                        'label': 'view.environment.index.view_button'|trans,
-                                                        'icon': 'eye'
-                                                    } %}
-                                                    {% include '@EMSCore/elements/get-button.html.twig' with {
-                                                        'url': path('environment.edit', {'id': environment.id}),
-                                                        'label': 'view.environment.index.edit_button'|trans,
-                                                        'icon': 'pencil'
-                                                    } %}
-                                                    {% include '@EMSCore/elements/post-button.html.twig' with {
-                                                        'url': path('environment.remove', {'id': environment.id}),
-                                                        'message': 'view.environment.index.confirm_delete'|trans({'%name%': environment.label}),
-                                                        'label': 'view.environment.index.delete_button'|trans,
-                                                        'icon': 'trash'
-                                                    } %}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% endif %}
-                </div>
-                <!-- /.box-body -->
-            </div>
 
 
             {% set found = false %}

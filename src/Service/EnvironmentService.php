@@ -350,6 +350,41 @@ class EnvironmentService implements EntityServiceInterface
         $em->flush();
     }
 
+    /**
+     * @param string[] $ids
+     */
+    public function reorderByIds(array $ids): void
+    {
+        $counter = 1;
+        foreach ($ids as $id) {
+            $environment = $this->environmentRepository->getById($id);
+            $environment->setOrderKey($counter++);
+            $this->environmentRepository->create($environment);
+        }
+    }
+
+    /**
+     * @param string[] $ids
+     */
+    public function deleteByIds(array $ids): void
+    {
+        $queryBuilder = $this->environmentRepository->createQueryBuilder('e');
+        $queryBuilder
+            ->delete()
+            ->where($queryBuilder->expr()->in('e.id', $ids))
+            ->getQuery()
+            ->execute();
+    }
+
+    public function delete(Environment $environment): void
+    {
+        $name = $environment->getName();
+        $this->environmentRepository->delete($environment);
+        $this->logger->warning('log.service.environment.delete', [
+            'name' => $name,
+        ]);
+    }
+
     public function isSortable(): bool
     {
         return true;

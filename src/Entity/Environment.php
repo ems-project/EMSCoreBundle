@@ -53,6 +53,8 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
      */
     protected array $indexes = [];
 
+    protected string $indexName;
+
     protected int $total = 0;
 
     /**
@@ -204,6 +206,17 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getIndexes(): array
     {
         return $this->indexes;
+    }
+
+    /**
+     * Get indexName.
+     */
+    public function getIndexName(): string
+    {
+        $nonEmptyIndexes = \array_filter($this->indexes);
+        $firstNonEmptyArray = \current($nonEmptyIndexes);
+
+        return \is_array($firstNonEmptyArray) ? \array_shift($firstNonEmptyArray) : '';
     }
 
     public function setTotal(int $total): self
@@ -458,24 +471,16 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
 
     /**
      * Set orderKey.
-     *
-     * @param int $orderKey
-     *
-     * @return Environment
      */
-    public function setOrderKey($orderKey)
+    public function setOrderKey(int $orderKey): void
     {
         $this->orderKey = $orderKey;
-
-        return $this;
     }
 
     /**
      * Get orderKey.
-     *
-     * @return int
      */
-    public function getOrderKey()
+    public function getOrderKey(): int
     {
         return $this->orderKey;
     }

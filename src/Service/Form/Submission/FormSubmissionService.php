@@ -6,10 +6,11 @@ namespace EMS\CoreBundle\Service\Form\Submission;
 
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Repository\FormSubmissionFileRepository;
 use EMS\CoreBundle\Repository\FormSubmissionRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
-use EMS\Helpers\Standard\Json;
 use EMS\SubmissionBundle\Entity\FormSubmission;
+use EMS\SubmissionBundle\Entity\FormSubmissionFile;
 use EMS\SubmissionBundle\Request\DatabaseRequest;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -21,8 +22,14 @@ use ZipStream\ZipStream;
 
 final class FormSubmissionService implements EntityServiceInterface
 {
-    public function __construct(private readonly FormSubmissionRepository $formSubmissionRepository, private readonly Environment $twig, private readonly FlashBagInterface $flashBag, private readonly TranslatorInterface $translator, private readonly string $templateNamespace)
-    {
+    public function __construct(
+        private readonly FormSubmissionRepository $formSubmissionRepository,
+        private readonly FormSubmissionFileRepository $formSubmissionFileRepository,
+        private readonly Environment $twig,
+        private readonly FlashBagInterface $flashBag,
+        private readonly TranslatorInterface $translator,
+        private readonly string $templateNamespace
+    ) {
     }
 
     /**
@@ -40,6 +47,11 @@ final class FormSubmissionService implements EntityServiceInterface
         return $this->formSubmissionRepository->findById($id);
     }
 
+    public function findFile(string $submissionId, string $submissionFileId): ?FormSubmissionFile
+    {
+        return $this->formSubmissionFileRepository->findOneBySubmission($submissionId, $submissionFileId);
+    }
+
     public function getById(string $id): FormSubmission
     {
         $submission = $this->formSubmissionRepository->findById($id);
@@ -53,7 +65,7 @@ final class FormSubmissionService implements EntityServiceInterface
 
     public function getProperty(FormSubmission $formSubmission, string $property): mixed
     {
-        $data = Json::decode(Json::encode($formSubmission));
+        $data = $formSubmission->toArray();
 
         $propertyAccessor = new PropertyAccessor();
         if ($propertyAccessor->isReadable($data, $property)) {
@@ -211,10 +223,12 @@ final class FormSubmissionService implements EntityServiceInterface
     public function submit(DatabaseRequest $submitRequest): array
     {
         $formSubmission = new FormSubmission($submitRequest);
-
         $this->formSubmissionRepository->save($formSubmission);
 
-        return ['submission_id' => $formSubmission->getId()];
+        return [
+            'submission_id' => $formSubmission->getId(),
+            'submission' => $formSubmission->toArray(),
+        ];
     }
 
     public function removeExpiredSubmissions(): int

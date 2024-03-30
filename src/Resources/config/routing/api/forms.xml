@@ -8,8 +8,15 @@
            controller="EMS\CoreBundle\Controller\Api\Form\SubmissionController::submit"
            methods="POST"
            format="json"/>
+    <route id="emsco_api_forms_submissions_file" path="/submissions/{submissionId}/files/{submissionFileId}"
+           controller="EMS\CoreBundle\Controller\Api\Form\SubmissionController::submissionFile"
+           methods="GET"
+           format="json">
+        <requirement key="submissionId">.*</requirement>
+        <requirement key="submissionFileId">.*</requirement>
+    </route>
     <route id="emsco_api_forms_submissions_detail" path="/submissions/{submissionId}"
-           controller="EMS\CoreBundle\Controller\Api\Form\SubmissionController::detail"
+           controller="EMS\CoreBundle\Controller\Api\Form\SubmissionController::submission"
            methods="GET"
            format="json">
         <requirement key="submissionId">.*</requirement>

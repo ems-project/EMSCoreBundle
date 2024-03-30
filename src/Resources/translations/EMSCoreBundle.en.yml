@@ -1012,6 +1012,16 @@ view:
     user:
         index:
             title: 'User list'
+    wysiwyg:
+        actions:
+            delete_selected: 'Delete selected'
+        index:
+            reorder: Reorder
+            column:
+                profileName: Profiles
+                stylesSetName: 'Styles set'
+        wysiwyg_profiles_label: 'WYSIWYG profiles'
+        wysiwyg_styles_set_label: 'WYSIWYG styles set'
     index:
         reorder: 'Reorder views'
         column:
@@ -1038,6 +1048,8 @@ views:
         revision-toolbar-html:
             add-to-release: 'Add to release'
 wysiwyg:
+    actions:
+        edit_button: Edit
     invalid_config_format: 'Format not valid: %msg%'
 revision:
     draft-in-progress:

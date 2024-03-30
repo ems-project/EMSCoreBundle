@@ -2,68 +2,88 @@
 
 namespace EMS\CoreBundle\Controller;
 
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\DataTable\Type\Wysiwyg\WysiwygProfileDataTableType;
+use EMS\CoreBundle\DataTable\Type\Wysiwyg\WysiwygStylesSetDataTableType;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Entity\WysiwygStylesSet;
-use EMS\CoreBundle\Form\Form\ReorderBisType;
-use EMS\CoreBundle\Form\Form\ReorderType;
+use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Form\Form\WysiwygProfileType;
 use EMS\CoreBundle\Form\Form\WysiwygStylesSetType;
 use EMS\CoreBundle\Service\WysiwygProfileService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\ClickableInterface;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class WysiwygController extends AbstractController
 {
-    public function __construct(private readonly WysiwygProfileService $wysiwygProfileService, private readonly WysiwygStylesSetService $wysiwygStylesSetService, private readonly TranslatorInterface $translator, private readonly string $templateNamespace)
+    public function __construct(private readonly LoggerInterface $logger,
+        private readonly WysiwygProfileService $wysiwygProfileService,
+        private readonly WysiwygStylesSetService $wysiwygStylesSetService,
+        private readonly TranslatorInterface $translator,
+        private readonly string $templateNamespace,
+        private readonly DataTableFactory $dataTableFactory)
     {
     }
 
     public function indexAction(Request $request): Response
     {
-        $data = [];
-        $form = $this->createForm(ReorderType::class, $data, [
+        $tableProfile = $this->dataTableFactory->create(WysiwygProfileDataTableType::class);
+
+        $formProfiles = $this->createForm(TableType::class, $tableProfile, [
+            'title_label' => 'view.wysiwyg.wysiwyg_profiles_label',
         ]);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted()) {
-            $order = \json_decode((string) $form->getData()['items'], true, 512, JSON_THROW_ON_ERROR);
-            $i = 1;
-            foreach ($order as $id) {
-                $profile = $this->wysiwygProfileService->getById(\intval($id['id']));
-                if (null === $profile) {
-                    throw new NotFoundHttpException(\sprintf('WYSIWYG Profile %d not found', \intval($id['id'])));
+        $formProfiles->handleRequest($request);
+        if ($formProfiles->isSubmitted() && $formProfiles->isValid()) {
+            if ($formProfiles instanceof Form && ($action = $formProfiles->getClickedButton()) instanceof SubmitButton) {
+                switch ($action->getName()) {
+                    case EntityTable::DELETE_ACTION:
+                        $this->wysiwygProfileService->deleteByIds($tableProfile->getSelected());
+                        break;
+                    case TableType::REORDER_ACTION:
+                        $newOrder = TableType::getReorderedKeys($formProfiles->getName(), $request);
+                        $this->wysiwygProfileService->reorderByIds($newOrder);
+                        break;
+                    default:
+                        $this->logger->error('log.controller.wysiwyg_profile.unknown_action');
                 }
-                $profile->setOrderKey($i++);
-
-                $this->wysiwygProfileService->saveProfile($profile);
+            } else {
+                $this->logger->error('log.controller.wysiwyg_profile.unknown_action');
             }
 
             return $this->redirectToRoute('ems_wysiwyg_index');
         }
 
-        $dataStylesSet = [];
-        $formStylesSet = $this->createForm(ReorderBisType::class, $dataStylesSet, [
+        $tableStylesSet = $this->dataTableFactory->create(WysiwygStylesSetDataTableType::class);
+        $formStylesSet = $this->createForm(TableType::class, $tableStylesSet, [
+            'title_label' => 'view.wysiwyg.wysiwyg_styles_set_label',
         ]);
         $formStylesSet->handleRequest($request);
 
-        if ($formStylesSet->isSubmitted()) {
-            $order = \json_decode((string) $formStylesSet->getData()['items'], true, 512, JSON_THROW_ON_ERROR);
-            $i = 1;
-            foreach ($order as $id) {
-                $stylesSet = $this->wysiwygStylesSetService->getById(\intval($id['id']));
-                if (null === $stylesSet) {
-                    throw new NotFoundHttpException(\sprintf('WYSIWYG Styles Set %d not found', \intval($id['id'])));
+        if ($formStylesSet->isSubmitted() && $formStylesSet->isValid()) {
+            if ($formStylesSet instanceof Form && ($action = $formStylesSet->getClickedButton()) instanceof SubmitButton) {
+                switch ($action->getName()) {
+                    case EntityTable::DELETE_ACTION:
+                        $this->wysiwygStylesSetService->deleteByIds($tableProfile->getSelected());
+                        break;
+                    case TableType::REORDER_ACTION:
+                        $newOrder = TableType::getReorderedKeys($formStylesSet->getName(), $request);
+                        $this->wysiwygStylesSetService->reorderByIds($newOrder);
+                        break;
+                    default:
+                        $this->logger->error('log.controller.wysiwyg_styles_set.unknown_action');
                 }
-                $stylesSet->setOrderKey($i++);
-
-                $this->wysiwygStylesSetService->save($stylesSet);
+            } else {
+                $this->logger->error('log.controller.wysiwyg_styles_set.unknown_action');
             }
 
             return $this->redirectToRoute('ems_wysiwyg_index');
@@ -72,7 +92,7 @@ class WysiwygController extends AbstractController
         return $this->render("@$this->templateNamespace/wysiwygprofile/index.html.twig", [
                 'profiles' => $this->wysiwygProfileService->getProfiles(),
                 'stylesSets' => $this->wysiwygStylesSetService->getStylesSets(),
-                'form' => $form->createView(),
+                'formProfiles' => $formProfiles->createView(),
                 'formStylesSet' => $formStylesSet->createView(),
         ]);
     }

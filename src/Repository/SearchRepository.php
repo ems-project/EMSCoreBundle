@@ -28,6 +28,14 @@ class SearchRepository extends ServiceEntityRepository
         return $this->findBy(['user' => $username]);
     }
 
+    /**
+     * @return Search[]
+     */
+    public function getAll(): array
+    {
+        return $this->findBy([]);
+    }
+
     public function remove(Search $search): void
     {
         $this->_em->remove($search);

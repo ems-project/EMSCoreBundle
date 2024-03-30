@@ -14,11 +14,26 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
+use EMS\CoreBundle\Repository\SearchRepository;
 
 class SearchService
 {
-    public function __construct(private readonly Registry $doctrine, private readonly Mapping $mapping, private readonly ElasticaService $elasticaService, private readonly EnvironmentService $environmentService, private readonly ContentTypeService $contentTypeService)
+    public function __construct(
+        private readonly Registry $doctrine,
+        private readonly Mapping $mapping,
+        private readonly ElasticaService $elasticaService,
+        private readonly EnvironmentService $environmentService,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly SearchRepository $searchRepository)
     {
+    }
+
+    /**
+     * @return Search[]
+     */
+    public function getAll(): array
+    {
+        return $this->searchRepository->getAll();
     }
 
     /**

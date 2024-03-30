@@ -1,0 +1,60 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block title %}{{ 'Searchs'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'Searchs'|trans }}{% endblock %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li>{{ 'List Searchs'|trans }}</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box ">
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-striped dataTable">
+                            <thead>
+                            <tr role="row">
+                                <th class="nowrap text-center" style="width: 10px">{{ 'ID'|trans }}</th>
+                                <th class="nowrap">{{ 'Name'|trans }}</th>
+                                <th class="nowrap">{{ 'Username'|trans }}</th>
+                                <th class="nowrap">{{ 'Envs'|trans }}</th>
+                                <th class="nowrap">{{ 'CTs'|trans }}</th>
+                                <th class="nowrap">{{ 'Default'|trans }}</th>
+                                <th class="nowrap">{{ 'Action'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for search in data %}
+                                <tr>
+                                    <td class="text-center" style="width: 10px">{{ search.id }}</td>
+                                    <td><a href="{{ path('elasticsearch.search', {'searchId': search.id}) }}">{{ search.name }}</a></td>
+                                    <td>{{ search.user|default }}</td>
+                                    <td>{{ search.environments|default([])|join(', ') }}</td>
+                                    <td>{{ search.contentTypes|default([])|join(', ') }}</td>
+                                    <td>{{ (search.default|default) ? 'X' : '' }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            {% include '@EMSCore/elements/post-button.html.twig' with {
+                                                'url': path('elasticsearch.search.delete', {'id': search.id}),
+                                                'message': 'Delete the search ' ~ search.name ~ ' ?',
+                                                'label': 'Delete',
+                                                'icon': 'trash'
+                                            }%}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

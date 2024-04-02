@@ -106,6 +106,9 @@
         <service id="ems.repository.form_submission" class="EMS\CoreBundle\Repository\FormSubmissionRepository">
             <argument type="service" id="doctrine"/>
         </service>
+        <service id="ems.repository.form_submission_file" class="EMS\CoreBundle\Repository\FormSubmissionFileRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
         <service id="ems.repository.form_verification" class="EMS\CoreBundle\Repository\FormVerificationRepository">
             <argument type="service" id="doctrine"/>
         </service>

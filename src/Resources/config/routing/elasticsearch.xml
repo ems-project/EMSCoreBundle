@@ -10,6 +10,9 @@
     <route id="elasticsearch.search.delete" path="/delete-search/{id}"
            controller="EMS\CoreBundle\Controller\ElasticsearchController::deleteSearch"
            methods="GET|POST"/>
+    <route id="elasticsearch.search.index" path="/index-search"
+           controller="EMS\CoreBundle\Controller\ElasticsearchController::indexSearch"
+           methods="GET"/>
     <route id="ems_search_set_default_search_from" path="/set-default-search/{id}/{contentType}"
            controller="EMS\CoreBundle\Controller\ElasticsearchController::setDefaultSearch"
            methods="POST">

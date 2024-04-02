@@ -441,6 +441,7 @@
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems.service.environment"/>
             <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.repository.search"/>
         </service>
         <service id="ems.service.file" class="EMS\CoreBundle\Service\FileService">
             <argument type="service" id="doctrine"/>
@@ -496,6 +497,7 @@
         </service>
         <service id="ems.form_submission" class="EMS\CoreBundle\Service\Form\Submission\FormSubmissionService">
             <argument type="service" id="ems.repository.form_submission"/>
+            <argument type="service" id="ems.repository.form_submission_file"/>
             <argument type="service" id="twig"/>
             <argument type="service" id="request_stack"/>
             <argument type="service" id="translator"/>

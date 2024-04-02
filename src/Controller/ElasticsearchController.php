@@ -175,6 +175,13 @@ class ElasticsearchController extends AbstractController
         }
     }
 
+    public function indexSearch(): Response
+    {
+        return $this->render("@$this->templateNamespace/elasticsearch/index.html.twig", [
+            'data' => $this->searchService->getAll(),
+        ]);
+    }
+
     /**
      * @param int $id
      */

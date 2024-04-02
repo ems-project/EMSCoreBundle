@@ -23,9 +23,41 @@ class WysiwygProfileService implements EntityServiceInterface
         return $profiles;
     }
 
+    /**
+     * @param string[] $ids
+     */
+    public function reorderByIds(array $ids): void
+    {
+        $counter = 1;
+        foreach ($ids as $id) {
+            $wysiwyg_profile = $this->wysiwygProfileRepository->getById($id);
+            $wysiwyg_profile->setOrderKey($counter++);
+            $this->wysiwygProfileRepository->create($wysiwyg_profile);
+        }
+    }
+
     public function getById(int $id): ?WysiwygProfile
     {
         return $this->wysiwygProfileRepository->findById($id);
+    }
+
+    /**
+     * @param string[] $ids
+     */
+    public function deleteByIds(array $ids): void
+    {
+        foreach ($this->wysiwygProfileRepository->getByIds($ids) as $wysiwygProfile) {
+            $this->delete($wysiwygProfile);
+        }
+    }
+
+    public function delete(WysiwygProfile $wysiwygProfile): void
+    {
+        $name = $wysiwygProfile->getName();
+        $this->wysiwygProfileRepository->delete($wysiwygProfile);
+        $this->logger->warning('log.service.wysiwyg_profile.delete', [
+            'name' => $name,
+        ]);
     }
 
     public function saveProfile(WysiwygProfile $profile): void

@@ -91,8 +91,6 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     }
 
     /**
-     * Get indexes.
-     *
      * @return array<mixed>
      */
     public function getIndexes(): array
@@ -352,24 +350,16 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
 
     /**
      * Set orderKey.
-     *
-     * @param int $orderKey
-     *
-     * @return Environment
      */
-    public function setOrderKey($orderKey)
+    public function setOrderKey(int $orderKey): void
     {
         $this->orderKey = $orderKey;
-
-        return $this;
     }
 
     /**
      * Get orderKey.
-     *
-     * @return int
      */
-    public function getOrderKey()
+    public function getOrderKey(): int
     {
         return $this->orderKey;
     }

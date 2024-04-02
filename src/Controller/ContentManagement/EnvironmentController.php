@@ -6,18 +6,21 @@ use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
-use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\DataTable\Type\EnvironmentDataTableType;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\RebuildIndex;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\UserInterface;
+use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Field\ColorPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\CompareEnvironmentFormType;
 use EMS\CoreBundle\Form\Form\EditEnvironmentType;
 use EMS\CoreBundle\Form\Form\RebuildIndexType;
+use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
@@ -33,9 +36,9 @@ use EMS\CoreBundle\Service\SearchService;
 use EMS\Helpers\Standard\Type;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -62,7 +65,8 @@ class EnvironmentController extends AbstractController
         private readonly int $pagingSize,
         private readonly string $instanceId,
         private readonly ?string $circlesObject,
-        private readonly string $templateNamespace)
+        private readonly string $templateNamespace,
+        private readonly DataTableFactory $dataTableFactory)
     {
     }
 
@@ -301,6 +305,7 @@ class EnvironmentController extends AbstractController
                     $environment->setAlias($name);
                     // TODO: setCircles
                     $environment->setManaged(false);
+
                     $this->environmentRepository->save($environment);
 
                     $this->logger->notice('log.environment.alias_attached', [
@@ -432,6 +437,7 @@ class EnvironmentController extends AbstractController
                 } else {
                     $environment->setAlias($this->instanceId.$environment->getName());
                     $environment->setManaged(true);
+
                     $this->environmentRepository->save($environment);
 
                     $indexName = $environment->getNewIndexName();
@@ -519,7 +525,7 @@ class EnvironmentController extends AbstractController
         $environment = $this->environmentRepository->find($id);
 
         if (null === $environment) {
-            throw new NotFoundHttpException('Unknow environment');
+            throw new NotFoundHttpException('Unknown environment');
         }
 
         $rebuildIndex = new RebuildIndex();
@@ -566,20 +572,31 @@ class EnvironmentController extends AbstractController
     public function index(Request $request): Response
     {
         try {
-            $logger = $this->logger;
-            $logger->debug('For each environments: start');
-
-            $builder = $this->createFormBuilder([])
-            ->add('reorder', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary ',
-                ],
-                'label' => 'controller.environment.index.reorder_submit_button',
-                'icon' => 'fa fa-reorder',
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+            $table = $this->dataTableFactory->create(EnvironmentDataTableType::class);
+            $form = $this->createForm(TableType::class, $table, [
+                'title_label' => 'view.environment.index.local_environment_label',
             ]);
+            $form->handleRequest($request);
 
-            $names = [];
+            if ($form->isSubmitted() && $form->isValid()) {
+                if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
+                    switch ($action->getName()) {
+                        case EntityTable::DELETE_ACTION:
+                            $this->environmentService->deleteByIds($table->getSelected());
+                            break;
+                        case TableType::REORDER_ACTION:
+                            $newOrder = TableType::getReorderedKeys($form->getName(), $request);
+                            $this->environmentService->reorderByIds($newOrder);
+                            break;
+                        default:
+                            $this->logger->error('log.controller.environment.unknown_action');
+                    }
+                } else {
+                    $this->logger->error('log.controller.environment.unknown_action');
+                }
+
+                return $this->redirectToRoute('environment.index');
+            }
 
             $this->aliasService->build();
             $environments = [];
@@ -591,45 +608,10 @@ class EnvironmentController extends AbstractController
                 $environment->setDeletedRevision($stat['deleted']);
                 if ($this->aliasService->hasAlias($environment->getAlias())) {
                     $alias = $this->aliasService->getAlias($environment->getAlias());
-
                     $environment->setIndexes($alias['indexes']);
                     $environment->setTotal($alias['total']);
                 }
                 $environments[] = $environment;
-                $names[] = $environment->getName();
-            }
-            $logger->debug('For each environments: done');
-
-            $builder->add('environmentNames', CollectionType::class, [
-                    // each entry in the array will be an "email" field
-                    'entry_type' => HiddenType::class,
-                    // these options are passed to each "email" type
-                    'entry_options' => [
-                    ],
-                    'data' => $names,
-            ]);
-
-            $form = $builder->getForm();
-
-            if ($request->isMethod('POST')) {
-                $form = $request->get('form');
-                if (isset($form['environmentNames']) && \is_array($form['environmentNames'])) {
-                    $counter = 0;
-                    foreach ($form['environmentNames'] as $name) {
-                        $environment = $this->environmentService->getByName($name);
-                        if ($environment) {
-                            $environment->setOrderKey($counter);
-                            $this->environmentRepository->save($environment);
-                        }
-                        ++$counter;
-                    }
-
-                    $this->logger->notice('log.environment.reordered', [
-                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                    ]);
-                }
-
-                return $this->redirectToRoute('ems_environment_index');
             }
 
             return $this->render("@$this->templateNamespace/environment/index.html.twig", [

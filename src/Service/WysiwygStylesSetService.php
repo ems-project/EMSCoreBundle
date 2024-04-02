@@ -44,6 +44,38 @@ class WysiwygStylesSetService implements EntityServiceInterface
         return $this->wysiwygStylesSetRepository->findById($id);
     }
 
+    /**
+     * @param string[] $ids
+     */
+    public function reorderByIds(array $ids): void
+    {
+        $counter = 1;
+        foreach ($ids as $id) {
+            $wysiwyg_styles_set = $this->wysiwygStylesSetRepository->getById($id);
+            $wysiwyg_styles_set->setOrderKey($counter++);
+            $this->wysiwygStylesSetRepository->create($wysiwyg_styles_set);
+        }
+    }
+
+    /**
+     * @param string[] $ids
+     */
+    public function deleteByIds(array $ids): void
+    {
+        foreach ($this->wysiwygStylesSetRepository->getByIds($ids) as $wysiwygStylesSet) {
+            $this->delete($wysiwygStylesSet);
+        }
+    }
+
+    public function delete(WysiwygStylesSet $wysiwygStylesSet): void
+    {
+        $name = $wysiwygStylesSet->getName();
+        $this->wysiwygStylesSetRepository->delete($wysiwygStylesSet);
+        $this->logger->warning('log.service.wysiwyg_styles_set.delete', [
+            'name' => $name,
+        ]);
+    }
+
     public function save(WysiwygStylesSet $stylesSet): void
     {
         $this->wysiwygStylesSetRepository->update($stylesSet);

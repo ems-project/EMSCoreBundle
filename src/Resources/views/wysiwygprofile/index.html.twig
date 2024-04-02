@@ -1,5 +1,5 @@
 {% trans_default_domain 'EMSCoreBundle' %}{% extends '@EMSCore/base.html.twig' %} {% block title %} {{ 'WYSIWYG options'|trans }} {% endblock %}
-{% block pagetitle %} {{ 'WYSIWYG options'|trans }} {% endblock %} 
+{% block pagetitle %} {{ 'WYSIWYG options'|trans }} {% endblock %}
 
 {% block breadcrumb %}
 	<ol class="breadcrumb">
@@ -10,104 +10,30 @@
 {% block body %}
 <div class="row">
 	<div class="col-md-6">
-		<div class="box" id="profiles-box">
-			<div class="box-header with-border">
-				<i class="fa fa-gear"></i>
-				<h3 class="box-title">{{ 'WYSIWYG profiles'|trans }}</h3>
-				<div class="btn-group  pull-right">
-					<a class="btn btn-xs btn-primary" href="{{ path('ems_wysiwyg_profile_new') }}"><i class="fa fa-plus"></i> {{ 'Add a profile'|trans }}</a>
-				</div>
-			</div>
-			<!-- /.box-header -->
-			{% if profiles|length %}
-                {{ form_start(form) }}
-    			<div class="box-body no-padding">
-    				<ol class="nested-sortable vertical" id="root-list">
-    					{% for profile in profiles %}
-    						<li id="{{ profile.id }}" class="mjs-nestedSortable-no-nesting mjs-nestedSortable-leaf">
-                				<div class="box-header ui-sortable-handle">
-        							<div class="pull-right box-tools ui-sortable-handle">
-        								<div class="btn-group">
-                                            {% include '@EMSCore/elements/get-button.html.twig' with {
-    											'url':  path('ems_wysiwyg_profile_edit', {'id': profile.id}),
-    											'label': 'Edit',
-    											'icon': 'pencil'
-    										}%}
-        								</div>
-        							</div>
-        							<h3 class="box-title">{{ profile.name }}</h3>
-        						</div>
-        					</li>
-    					{% endfor %}
-    				</ol>
-				</div>
+        <div>
+            {%  set toolbar %}
+                <a class="btn btn-primary" href="{{ path('ems_wysiwyg_profile_new') }}"><i class="fa fa-plus"></i> {{ add_label|default(formProfiles.vars.add_label)|trans }}</a>
+            {%  endset %}
 
-        		    <div>
-        		    	<div class="box-footer">
-            				<div class="btn-group">
-            				    {{ form_widget(form.reorder) }}
-            				</div>
-                		</div>
-                	</div>
-        		    {{ form_end(form) }}
-            		<!-- /.box-footer -->
-				{% else %}
-    				<div class="box-body">
-					    {{'Click on \'Add a profile\' to create a first WYSIWYG profile'|trans}}
-					</div>
-				{% endif %}
-			<!-- /.box-body -->
-		</div>
+            {% form_theme formProfiles '@EMSCore/form/forms.html.twig' %}
+            {{ form(formProfiles, {
+                reorder_label: 'view.wysiwyg.index.reorder',
+                toolbar: toolbar
+            }) }}
+        </div>
 	</div>
-		<div class="col-md-6">
-		<div class="box" id="styles-set-box">
-			<div class="box-header with-border">
-				<i class="fa fa-css3"></i>
-				<h3 class="box-title">{{ 'WYSIWYG styles sets'|trans }}</h3>
-				<div class="btn-group  pull-right">
-					<a class="btn btn-xs btn-primary" href="{{ path('ems_wysiwyg_styles_set_new') }}"><i class="fa fa-plus"></i> {{ 'Add a style set'|trans }}</a>
-				</div>
-			</div>
-			<!-- /.box-header -->
-			{% if stylesSets|length %}
+    <div class="col-md-6">
+        <div>
+            {%  set toolbar %}
+                <a class="btn btn-primary" href="{{ path('ems_wysiwyg_styles_set_new') }}"><i class="fa fa-plus"></i> {{ add_label|default(formStylesSet.vars.add_label)|trans }}</a>
+            {%  endset %}
 
-                {{ form_start(formStylesSet) }}
-    			<div class="box-body no-padding">
-    				<ol class="nested-sortable vertical" id="root-list">
-    					{% for stylesSet in stylesSets %}
-    						<li id="{{ stylesSet.id }}" class="mjs-nestedSortable-no-nesting mjs-nestedSortable-leaf">
-                				<div class="box-header ui-sortable-handle">
-        							<div class="pull-right box-tools ui-sortable-handle">
-        								<div class="btn-group">
-                                            {% include '@EMSCore/elements/get-button.html.twig' with {
-    											'url':  path('ems_wysiwyg_styles_set_edit', {'id': stylesSet.id}),
-    											'label': 'Edit',
-    											'icon': 'pencil'
-    										}%}
-        								</div>
-        							</div>
-        							<h3 class="box-title">{{ stylesSet.name }}</h3>
-        						</div>
-        					</li>
-    					{% endfor %}
-    				</ol>
-					</div>
-        		    <div>
-        		    	<div class="box-footer">
-            				<div class="btn-group">
-            				    {{ form_widget(formStylesSet.reorder) }}
-            				</div>
-                		</div>
-                	</div>
-        		    {{ form_end(formStylesSet) }}
-            		<!-- /.box-footer -->
-				{% else %}
-    				<div class="box-body">
-					    {{'Click on \'Add a styles set\' to create a first styles set'|trans}}
-					</div>
-				{% endif %}
-			<!-- /.box-body -->
-		</div>
+            {% form_theme formStylesSet '@EMSCore/form/forms.html.twig' %}
+            {{ form(formStylesSet, {
+                reorder_label: 'view.wysiwyg.index.reorder',
+                toolbar: toolbar
+            }) }}
+        </div>
 	</div>
 </div>
 {% endblock %}

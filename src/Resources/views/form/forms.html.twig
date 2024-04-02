@@ -173,11 +173,7 @@
     {%- set value = attribute(line.data, column.attribute) -%}
     {% if column.valid(line.data) %}
         {{- block('emsco_form_table_column_data_label_prefix') -}}
-            {% if column.attribute == 'label' and column.colorAttribute == 'color' %}
-                <span class="badge bg-{{ line.data.color }}">{{- value -}}</span>
-            {% else %}
-                {{ value }}
-            {% endif %}
+        {{- value -}}
         {{- block('emsco_form_table_column_data_label_suffix') -}}
     {% endif %}
 {% endblock emsco_form_table_column_data_value %}

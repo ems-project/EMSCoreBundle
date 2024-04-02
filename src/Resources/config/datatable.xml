@@ -68,8 +68,9 @@
             <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.environment" class="EMS\CoreBundle\DataTable\Type\EnvironmentDataTableType">
-          <argument type="service" id="ems.service.environment"/>
-          <tag name="emsco.datatable" />
+            <argument type="service" id="ems.service.environment"/>
+            <argument>%ems_core.template_namespace%</argument>
+            <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.wysiwygProfile" class="EMS\CoreBundle\DataTable\Type\Wysiwyg\WysiwygProfileDataTableType">
             <argument type="service" id="ems.service.wysiwyg_profile"/>

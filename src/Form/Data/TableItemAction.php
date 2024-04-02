@@ -96,9 +96,11 @@ final class TableItemAction
         return $this->dynamic;
     }
 
-    public function setDynamic(bool $dynamic): void
+    public function setDynamic(bool $dynamic): TableItemAction
     {
         $this->dynamic = $dynamic;
+
+        return $this;
     }
 
     public function setButtonType(string $buttonType): void

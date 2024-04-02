@@ -9,7 +9,6 @@ use EMS\CoreBundle\Form\Data\Condition\ConditionInterface;
 class TableColumn
 {
     private string $attribute;
-    private ?string $colorAttribute;
     private ?string $routeName = null;
     private ?\Closure $routeParametersCallback = null;
     private ?string $routeTarget = null;
@@ -59,16 +58,6 @@ class TableColumn
     public function setAttribute(string $attribute): void
     {
         $this->attribute = $attribute;
-    }
-
-    public function setColorAttribute(string $colorAttribute): void
-    {
-        $this->colorAttribute = $colorAttribute;
-    }
-
-    public function getColorAttribute(): ?string
-    {
-        return $this->colorAttribute;
     }
 
     public function setRoute(string $name, ?\Closure $callback = null, ?string $target = null): void

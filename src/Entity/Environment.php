@@ -53,8 +53,6 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
      */
     protected array $indexes = [];
 
-    protected string $indexName;
-
     protected int $total = 0;
 
     /**
@@ -199,24 +197,11 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     }
 
     /**
-     * Get indexes.
-     *
      * @return array<mixed>
      */
     public function getIndexes(): array
     {
         return $this->indexes;
-    }
-
-    /**
-     * Get indexName.
-     */
-    public function getIndexName(): string
-    {
-        $nonEmptyIndexes = \array_filter($this->indexes);
-        $firstNonEmptyArray = \current($nonEmptyIndexes);
-
-        return \is_array($firstNonEmptyArray) ? \array_shift($firstNonEmptyArray) : '';
     }
 
     public function setTotal(int $total): self

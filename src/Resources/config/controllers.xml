@@ -601,6 +601,7 @@
             <argument type="service" id="translator" />
             <argument>%ems_core.template_namespace%</argument>
             <argument type="service" id="emsco.data_table.factory" />
+            <argument type="service" id="form.factory" />
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>

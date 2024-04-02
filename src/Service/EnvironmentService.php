@@ -368,12 +368,9 @@ class EnvironmentService implements EntityServiceInterface
      */
     public function deleteByIds(array $ids): void
     {
-        $queryBuilder = $this->environmentRepository->createQueryBuilder('e');
-        $queryBuilder
-            ->delete()
-            ->where($queryBuilder->expr()->in('e.id', $ids))
-            ->getQuery()
-            ->execute();
+        foreach ($this->environmentRepository->getByIds($ids) as $environment) {
+            $this->delete($environment);
+        }
     }
 
     public function delete(Environment $environment): void

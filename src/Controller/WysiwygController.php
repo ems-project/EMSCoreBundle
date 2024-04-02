@@ -19,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,15 +32,16 @@ class WysiwygController extends AbstractController
         private readonly WysiwygStylesSetService $wysiwygStylesSetService,
         private readonly TranslatorInterface $translator,
         private readonly string $templateNamespace,
-        private readonly DataTableFactory $dataTableFactory)
-    {
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly FormFactoryInterface $formFactory,
+    ) {
     }
 
     public function indexAction(Request $request): Response
     {
         $tableProfile = $this->dataTableFactory->create(WysiwygProfileDataTableType::class);
 
-        $formProfiles = $this->createForm(TableType::class, $tableProfile, [
+        $formProfiles = $this->formFactory->createNamed('wysiwyg_profiles', TableType::class, $tableProfile, [
             'title_label' => 'view.wysiwyg.wysiwyg_profiles_label',
         ]);
         $formProfiles->handleRequest($request);
@@ -64,7 +66,7 @@ class WysiwygController extends AbstractController
         }
 
         $tableStylesSet = $this->dataTableFactory->create(WysiwygStylesSetDataTableType::class);
-        $formStylesSet = $this->createForm(TableType::class, $tableStylesSet, [
+        $formStylesSet = $this->formFactory->createNamed('wysiwyg_style_sets', TableType::class, $tableStylesSet, [
             'title_label' => 'view.wysiwyg.wysiwyg_styles_set_label',
         ]);
         $formStylesSet->handleRequest($request);

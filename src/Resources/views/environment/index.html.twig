@@ -16,6 +16,17 @@
     </ol>
 {% endblock %}
 
+{% block column_label %}
+    <span class="badge bg-{{ data.color }}">{{- data.label -}}</span>
+{% endblock column_label %}
+
+{% block column_indexes %}
+    <button type="button" class="btn btn-default btn-sm" data-toggle="modal"
+            data-target="#modal-environment-{{ data.id }}">
+        {{ 'view.environment.index.environment_index_count'|trans({'%count%': data.indexes|length}) }}
+    </button>
+{% endblock column_indexes %}
+
 {% block body %}
 
     <div class="row">

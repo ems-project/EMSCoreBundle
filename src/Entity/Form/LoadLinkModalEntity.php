@@ -8,6 +8,7 @@ use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Form\Form\LoadLinkModalType;
 use EMS\Helpers\Standard\Type;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 final class LoadLinkModalEntity
 {
@@ -21,6 +22,7 @@ final class LoadLinkModalEntity
     private ?string $body = null;
     /** @var array{sha1: string, filename: string|null, mimetype: string|null}|null */
     private ?array $file = null;
+    private ?string $anchor = null;
 
     public function __construct(private readonly string $url, string $target)
     {
@@ -38,6 +40,9 @@ final class LoadLinkModalEntity
             $this->subject = Type::string($query['subject'] ?? '');
             $this->body = Type::string($query['body'] ?? '');
             $this->linkType = LoadLinkModalType::LINK_TYPE_MAILTO;
+        } elseif (\str_starts_with($this->url, '#')) {
+            $this->anchor = $this->url;
+            $this->linkType = LoadLinkModalType::LINK_TYPE_ANCHOR;
         } else {
             $this->href = $this->url;
             $this->linkType = LoadLinkModalType::LINK_TYPE_URL;
@@ -150,6 +155,10 @@ final class LoadLinkModalEntity
 
                     return "ems://asset:$hash?name=$name&type=$type";
                 }
+
+                return null;
+            case LoadLinkModalType::LINK_TYPE_ANCHOR:
+                return $this->anchor;
         }
         throw new \RuntimeException(\sprintf('Unsupported %s link type', $this->linkType));
     }
@@ -168,5 +177,55 @@ final class LoadLinkModalEntity
     public function setFile(?array $file): void
     {
         $this->file = $file;
+    }
+
+    public function getAnchor(): ?string
+    {
+        return $this->anchor;
+    }
+
+    public function setAnchor(?string $anchor): void
+    {
+        $this->anchor = $anchor;
+    }
+
+    public function validate(ExecutionContextInterface $context): void
+    {
+        switch ($this->getLinkType()) {
+            case LoadLinkModalType::LINK_TYPE_INTERNAL:
+                if ('' === ($this->dataLink ?? '')) {
+                    $context->buildViolation('modal.link.data_link.mandatory')->atPath(LoadLinkModalType::FIELD_DATA_LINK)->addViolation();
+                }
+
+                return;
+            case LoadLinkModalType::LINK_TYPE_URL:
+                if ('' === ($this->url ?? '')) {
+                    $context->buildViolation('modal.link.url.mandatory')->atPath(LoadLinkModalType::FIELD_HREF)->addViolation();
+                }
+
+                return;
+            case LoadLinkModalType::LINK_TYPE_FILE:
+                if (null === ($this->file[EmsFields::CONTENT_FILE_HASH_FIELD] ?? null)) {
+                    $context->buildViolation('modal.link.file.mandatory')->atPath(LoadLinkModalType::FIELD_FILE)->addViolation();
+                }
+
+                return;
+            case LoadLinkModalType::LINK_TYPE_MAILTO:
+                if ('' === ($this->mailto ?? '')) {
+                    $context->buildViolation('modal.link.mailto.mandatory')->atPath(LoadLinkModalType::FIELD_MAILTO)->addViolation();
+                }
+
+                return;
+            case LoadLinkModalType::LINK_TYPE_ANCHOR:
+                if ('' === ($this->anchor ?? '')) {
+                    $context->buildViolation('modal.link.anchor.mandatory')->atPath(LoadLinkModalType::FIELD_ANCHOR)->addViolation();
+                } elseif (!\str_starts_with($this->anchor ?? '', '#')) {
+                    $context->buildViolation('modal.link.anchor.format')->atPath(LoadLinkModalType::FIELD_ANCHOR)->addViolation();
+                }
+
+                return;
+            default:
+                $context->buildViolation('modal.link.link_type.unknown')->atPath(LoadLinkModalType::FIELD_LINK_TYPE)->addViolation();
+        }
     }
 }

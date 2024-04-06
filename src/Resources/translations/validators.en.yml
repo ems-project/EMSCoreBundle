@@ -1,3 +1,18 @@
+modal:
+    link:
+        anchor:
+            mandatory: 'A target anchor is required'
+            format: 'An anchor must starts by a #'
+        mailto:
+            mandatory: 'A target email address is required'
+        url:
+            mandatory: 'A target URL is required'
+        data_link:
+            mandatory: 'A target document is required'
+        file:
+            mandatory: 'A target file is required'
+        link_type:
+            unknown: 'Type of link unknown'
 revision:
     raw_data:
         version_from_required: 'This Field is not valid! Empty field'

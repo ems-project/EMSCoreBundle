@@ -359,7 +359,7 @@ class EnvironmentService implements EntityServiceInterface
         foreach ($ids as $id) {
             $environment = $this->environmentRepository->getById($id);
             $environment->setOrderKey($counter++);
-            $this->environmentRepository->create($environment);
+            $this->environmentRepository->save($environment);
         }
     }
 
@@ -435,7 +435,7 @@ class EnvironmentService implements EntityServiceInterface
         }
         $environment->setAlias($this->generateAlias($environment));
 
-        $this->environmentRepository->create($environment);
+        $this->environmentRepository->save($environment);
 
         return $environment;
     }

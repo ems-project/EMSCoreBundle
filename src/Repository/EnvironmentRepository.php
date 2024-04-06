@@ -206,6 +206,10 @@ class EnvironmentRepository extends EntityRepository
 
     public function create(Environment $environment): void
     {
+        if (!$environment->hasOrderKey() && $environment->getManaged()) {
+            $environment->setOrderKey($this->counter() + 1);
+        }
+
         $this->getEntityManager()->persist($environment);
         $this->getEntityManager()->flush();
     }

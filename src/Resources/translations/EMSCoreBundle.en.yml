@@ -14,6 +14,8 @@ log:
             delete: 'Form %name% has been deleted'
         action:
             delete: 'The action %label% has been deleted'
+        environment:
+            delete: 'The environment %name% has been deleted'
         channel:
             delete: 'The channel %name% has been deleted'
         content-type:

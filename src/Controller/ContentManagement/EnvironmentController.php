@@ -438,7 +438,7 @@ class EnvironmentController extends AbstractController
                     $environment->setAlias($this->instanceId.$environment->getName());
                     $environment->setManaged(true);
 
-                    $this->environmentRepository->save($environment);
+                    $this->environmentRepository->create($environment);
 
                     $indexName = $environment->getNewIndexName();
                     $this->mapping->createIndex($indexName, $this->environmentService->getIndexAnalysisConfiguration());

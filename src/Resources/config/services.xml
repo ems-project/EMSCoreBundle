@@ -37,7 +37,7 @@
             <argument type="service" id="ems.repository.dashboard"/>
             <argument type="service" id="logger"/>
             <argument type="service" id="security.authorization_checker"/>
-            <tag name="emsco.entity.service" priority="10" />
+            <tag name="emsco.entity.service" priority="50" />
         </service>
         <service id="ems.form.field-type.manager" class="EMS\CoreBundle\Core\Form\FieldTypeManager">
             <argument type="service" id="logger"/>
@@ -46,12 +46,12 @@
         <service id="ems.form.manager" class="EMS\CoreBundle\Core\Form\FormManager">
             <argument type="service" id="ems.repository.form"/>
             <argument type="service" id="logger"/>
-            <tag name="emsco.entity.service" priority="48" />
+            <tag name="emsco.entity.service" priority="70" />
         </service>
         <service id="ems.service.channel" class="EMS\CoreBundle\Service\Channel\ChannelService">
             <argument type="service" id="ems.repository.channel"/>
             <argument type="service" id="logger"/>
-            <tag name="emsco.entity.service" priority="10" />
+            <tag name="emsco.entity.service" priority="40" />
         </service>
         <service id="ems.service.channel.register" class="EMS\CoreBundle\Service\Channel\ChannelRegistrar">
             <argument type="service" id="ems.repository.channel"/>
@@ -108,7 +108,7 @@
             <argument type="service" id="ems.repository.query_search"/>
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.environment" />
-            <tag name="emsco.entity.service" priority="10" />
+            <tag name="emsco.entity.service" priority="30" />
         </service>
 
         <service id="ems.service.internationalization.xliff" alias="EMS\CoreBundle\Service\Internationalization\XliffService"/>
@@ -202,7 +202,7 @@
         <service id="ems.schedule.manager" class="EMS\CoreBundle\Core\Job\ScheduleManager">
             <argument type="service" id="ems.repository.schedule"/>
             <argument type="service" id="logger"/>
-            <tag name="emsco.entity.service" priority="10" />
+            <tag name="emsco.entity.service" priority="20" />
         </service>
         <service id="EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer">
             <argument type="service" id="twig"/>
@@ -226,11 +226,11 @@
 
         <service id="emsco.helper.analyzer" class="EMS\CoreBundle\Core\Mapping\AnalyzerManager">
             <argument type="service" id="ems.repository.analyzer"/>
-            <tag name="emsco.entity.service" priority="60" />
+            <tag name="emsco.entity.service" priority="120" />
         </service>
         <service id="emsco.helper.filter" class="EMS\CoreBundle\Core\Mapping\FilterManager">
             <argument type="service" id="ems.repository.filter"/>
-            <tag name="emsco.entity.service" priority="60" />
+            <tag name="emsco.entity.service" priority="110" />
         </service>
         <service id="emsco.helper.entities" class="EMS\CoreBundle\Core\Entity\EntitiesHelper">
             <argument type="tagged_iterator" tag="emsco.entity.service"/>
@@ -332,7 +332,7 @@
             <argument type="service" id="logger" />
             <argument type="service" id="ems_common.service.elastica" />
             <argument>%ems_core.instance_id%</argument>
-            <tag name="emsco.entity.service" priority="59" />
+            <tag name="emsco.entity.service" priority="80" />
         </service>
         <service id="EMS\CoreBundle\Service\ContentTypeService">
             <argument type="service" id="doctrine" />
@@ -345,7 +345,7 @@
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="translator" />
             <argument>%ems_core.circles_object%</argument>
-            <tag name="emsco.entity.service" priority="49" />
+            <tag name="emsco.entity.service" priority="60" />
         </service>
         <service id="ems.service.user" class="EMS\CoreBundle\Service\UserService">
             <argument type="service" id="doctrine" />
@@ -359,7 +359,7 @@
         <service id="ems.service.wysiwyg_profile" class="EMS\CoreBundle\Service\WysiwygProfileService">
             <argument type="service" id="ems.repository.wysiwyg_profile"/>
             <argument type="service" id="logger"/>
-            <tag name="emsco.entity.service" priority="10" />
+            <tag name="emsco.entity.service" priority="110" />
         </service>
         <service id="ems.service.aggregate_option" class="EMS\CoreBundle\Service\AggregateOptionService">
             <argument type="service" id="doctrine"/>
@@ -379,7 +379,7 @@
         <service id="ems.service.wysiwyg_styles_set" class="EMS\CoreBundle\Service\WysiwygStylesSetService">
             <argument type="service" id="ems.repository.wysiwyg_style_set"/>
             <argument type="service" id="logger"/>
-            <tag name="emsco.entity.service" priority="10" />
+            <tag name="emsco.entity.service" priority="100" />
         </service>
         <service id="ems.service.objectchoicecache" class="EMS\CoreBundle\Service\ObjectChoiceCacheService">
             <argument type="service" id="logger"/>
@@ -417,7 +417,7 @@
         </service>
         <service id="EMS\CoreBundle\Service\I18nService" class="EMS\CoreBundle\Service\I18nService">
             <argument type="service" id="ems.repository.i18n"/>
-            <tag name="emsco.entity.service" priority="10" />
+            <tag name="emsco.entity.service" priority="130" />
         </service>
         <service id="ems.service.rest_client" class="EMS\CoreBundle\Service\RestClientService" />
         <service id="ems.service.asset_extractor" class="EMS\CoreBundle\Service\AssetExtractorService">
@@ -505,7 +505,7 @@
         <service id="ems.managed_alias.manager" class="EMS\CoreBundle\Core\ManagedAlias\ManagedAliasManager">
             <argument type="service" id="EMS\CoreBundle\Repository\ManagedAliasRepository" />
             <argument>%ems_core.instance_id%</argument>
-            <tag name="emsco.entity.service" priority="58" />
+            <tag name="emsco.entity.service" priority="90" />
         </service>
 
         <!-- Aliases -->

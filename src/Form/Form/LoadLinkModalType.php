@@ -3,6 +3,7 @@
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Entity\Form\LoadLinkModalEntity;
 use EMS\CoreBundle\Form\Field\FileType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -15,6 +16,8 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Validator\Constraints\Email;
@@ -38,6 +41,7 @@ class LoadLinkModalType extends AbstractType
     public const FIELD_SUBMIT = 'submit';
     public const WITH_TARGET_BLANK_FIELD = 'with_target_blank_field';
     public const ANCHOR_TARGETS = 'anchor_targets';
+    private AnchorChoiceLoader $anchorLoader;
 
     public function __construct(private readonly RouterInterface $router)
     {
@@ -49,6 +53,7 @@ class LoadLinkModalType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $this->anchorLoader = new AnchorChoiceLoader($options[self::ANCHOR_TARGETS]);
         $builder
             ->add(self::FIELD_LINK_TYPE, ChoiceType::class, [
                 'label' => 'link_modal.field.link_type',
@@ -148,7 +153,7 @@ class LoadLinkModalType extends AbstractType
             ->add(self::FIELD_ANCHOR, ChoiceType::class, [
                 'label' => 'link_modal.field.anchor',
                 'attr' => ['data-tags' => true, 'class' => 'select2'],
-                'choices' => $options[self::ANCHOR_TARGETS],
+                'choice_loader' => $this->anchorLoader,
                 'multiple' => false,
                 'choice_translation_domain' => false,
                 'required' => false,
@@ -162,6 +167,7 @@ class LoadLinkModalType extends AbstractType
                     ]]),
                 ],
             ]);
+        $builder->get(self::FIELD_ANCHOR)->resetViewTransformers();
 
         if (true === ($options[self::WITH_TARGET_BLANK_FIELD] ?? false)) {
             $builder->add(self::FIELD_TARGET_BLANK, CheckboxType::class, [
@@ -203,5 +209,14 @@ class LoadLinkModalType extends AbstractType
                 ],
             ]);
         parent::configureOptions($resolver);
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options): void
+    {
+        $data = $options['data'] ?? null;
+        if ($data instanceof LoadLinkModalEntity and null !== $anchor = $data->getAnchor()) {
+            $this->anchorLoader->addAnchor($anchor);
+        }
+        parent::buildView($view, $form, $options);
     }
 }

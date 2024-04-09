@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\DataTable\Type;
 
 use EMS\CoreBundle\Core\DataTable\Type\AbstractEntityTableType;
-use EMS\CoreBundle\Form\Data\DateTableColumn;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -27,7 +26,7 @@ class FormSubmissionDataTableType extends AbstractEntityTableType
         $table->addColumn('form-submission.index.column.form', 'name');
         $table->addColumn('form-submission.index.column.locale', 'locale');
         $table->addColumnDefinition(new DatetimeTableColumn('form-submission.index.column.created', 'created'));
-        $table->addColumnDefinition(new DateTableColumn('form-submission.index.column.expire_date', 'expireDate'));
+        $table->addColumnDefinition(new DatetimeTableColumn('form-submission.index.column.expire_date', 'expireDate'));
 
         $table->addItemGetAction('form.submissions.download', 'form-submission.form-submissions.download', 'download');
         $table->addItemPostAction('form.submissions.process', 'form-submission.form-submissions.process', 'check', 'form-submission.form-submissions.confirm');

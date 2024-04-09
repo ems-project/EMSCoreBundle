@@ -41,7 +41,7 @@
     {% endif %}
 {%- endblock -%}
 
-{%- block modified -%}<td data-order="{{ data.task_modified|date('U') }}">{{ data.task_modified -}}</td>{%- endblock -%}
+{%- block modified -%}<td data-order="{{ data.task_modified|date('U') }}">{{ data.task_modified|date(date_time_format) -}}</td>{%- endblock -%}
 
 {%- block actions -%}
     <div class="btn-group">

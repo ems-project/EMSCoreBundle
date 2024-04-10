@@ -572,7 +572,7 @@ class EnvironmentController extends AbstractController
     public function index(Request $request): Response
     {
         try {
-            $table = $this->dataTableFactory->create(EnvironmentDataTableType::class);
+            $table = $this->dataTableFactory->create(EnvironmentDataTableType::class, ['managed' => true]);
             $form = $this->createForm(TableType::class, $table, [
                 'title_label' => 'view.environment.index.local_environment_label',
             ]);

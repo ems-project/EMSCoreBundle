@@ -68,7 +68,7 @@
             <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.environment" class="EMS\CoreBundle\DataTable\Type\EnvironmentDataTableType">
-            <argument type="service" id="ems.service.environment"/>
+            <argument type="service" id="emsco.core.environment.managed_entity"/>
             <argument>%ems_core.template_namespace%</argument>
             <tag name="emsco.datatable" />
         </service>

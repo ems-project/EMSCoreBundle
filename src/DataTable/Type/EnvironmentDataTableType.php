@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\DataTable\Type;
 
 use EMS\CoreBundle\Core\DataTable\Type\AbstractEntityTableType;
+use EMS\CoreBundle\Core\Environment\EnvironmentManagedEntityService;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
 use EMS\CoreBundle\Roles;
-use EMS\CoreBundle\Service\EnvironmentService;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EnvironmentDataTableType extends AbstractEntityTableType
 {
     public function __construct(
-        EnvironmentService $entityService,
+        EnvironmentManagedEntityService $entityService,
         private readonly string $templateNamespace
     ) {
         parent::__construct($entityService);
@@ -44,8 +45,26 @@ class EnvironmentDataTableType extends AbstractEntityTableType
         $table->setDefaultOrder('orderKey');
     }
 
+    /**
+     * @param array{'managed': bool} $options
+     *
+     * @return array{'managed': bool}
+     */
+    public function getContext(array $options): array
+    {
+        return $options;
+    }
+
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];
+    }
+
+    public function configureOptions(OptionsResolver $optionsResolver): void
+    {
+        $optionsResolver
+            ->setRequired(['managed'])
+            ->setAllowedTypes('managed', ['bool'])
+        ;
     }
 }

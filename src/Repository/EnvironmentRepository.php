@@ -175,12 +175,16 @@ class EnvironmentRepository extends EntityRepository
     /**
      * @return Environment[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, ?bool $isManaged = null): array
     {
         $qb = $this->createQueryBuilder('e')
             ->setFirstResult($from)
             ->setMaxResults($size);
         $this->addSearchFilters($qb, $searchValue);
+
+        if (null !== $isManaged) {
+            $qb->andWhere($qb->expr()->eq('e.managed', $qb->expr()->literal($isManaged)));
+        }
 
         if (\in_array($orderField, ['name', 'label'])) {
             $qb->orderBy(\sprintf('e.%s', $orderField), $orderDirection);
@@ -191,11 +195,15 @@ class EnvironmentRepository extends EntityRepository
         return $qb->getQuery()->execute();
     }
 
-    public function counter(string $searchValue = ''): int
+    public function counter(string $searchValue = '', ?bool $isManaged = null): int
     {
         $qb = $this->createQueryBuilder('e');
         $qb->select('count(e.id)');
         $this->addSearchFilters($qb, $searchValue);
+
+        if (null !== $isManaged) {
+            $qb->andWhere($qb->expr()->eq('e.managed', $qb->expr()->literal($isManaged)));
+        }
 
         try {
             return \intval($qb->getQuery()->getSingleScalarResult());

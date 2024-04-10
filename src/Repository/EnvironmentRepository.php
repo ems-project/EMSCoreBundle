@@ -175,7 +175,7 @@ class EnvironmentRepository extends EntityRepository
     /**
      * @return Environment[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, ?bool $isManaged = null): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, bool $isManaged = null): array
     {
         $qb = $this->createQueryBuilder('e')
             ->setFirstResult($from)
@@ -195,7 +195,7 @@ class EnvironmentRepository extends EntityRepository
         return $qb->getQuery()->execute();
     }
 
-    public function counter(string $searchValue = '', ?bool $isManaged = null): int
+    public function counter(string $searchValue = '', bool $isManaged = null): int
     {
         $qb = $this->createQueryBuilder('e');
         $qb->select('count(e.id)');

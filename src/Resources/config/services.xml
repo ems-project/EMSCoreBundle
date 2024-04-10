@@ -321,6 +321,9 @@
             <argument type="service" id="ems.service.mapping" />
             <argument type="service" id="ems.service.alias" />
         </service>
+        <service id="emsco.core.environment.managed_entity" class="EMS\CoreBundle\Core\Environment\EnvironmentManagedEntityService">
+            <argument type="service" id="EMS\CoreBundle\Repository\EnvironmentRepository"/>
+        </service>
         <service id="emsco.environment.publisher_factory" class="EMS\CoreBundle\Core\Environment\EnvironmentPublisherFactory">
             <argument type="service" id="twig" />
             <argument type="service" id="ems.service.search" />

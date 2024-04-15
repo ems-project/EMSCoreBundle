@@ -1,5 +1,9 @@
-{% trans_default_domain 'EMSCoreBundle' %}{% extends '@EMSCore/base.html.twig' %} {% block title %} {{ 'WYSIWYG options'|trans }} {% endblock %}
-{% block pagetitle %} {{ 'WYSIWYG options'|trans }} {% endblock %}
+{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}
+
+{% block title %}{{ 'WYSIWYG options'|trans }}{% endblock %}
+
+{% block pagetitle %}{{ block('title') }}{% endblock %}
 
 {% block breadcrumb %}
 	<ol class="breadcrumb">

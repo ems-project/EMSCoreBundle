@@ -369,7 +369,7 @@ form:
             title: 'Update the content type "%content_type%"'
             update: 'Update content type from JSON'
     data:
-        bool_table_collum:
+        bool_table_column:
             false_value: disable
             true_value: enable
     data_field:

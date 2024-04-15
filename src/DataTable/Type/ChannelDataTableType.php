@@ -21,6 +21,7 @@ class ChannelDataTableType extends AbstractEntityTableType
 
     public function build(EntityTable $table): void
     {
+        $table->setLabelAttribute('label');
         $table->addColumn('table.index.column.loop_count', 'orderKey');
         $table->addColumn('channel.index.column.label', 'label');
         $column = $table->addColumn('channel.index.column.name', 'name');

@@ -23,9 +23,9 @@
 
 {% block emsco_form_table_column_data_value_bool %}
     {%- if attribute(line.data, column.attribute)|default(false) -%}
-        <i class="fa fa-check-square-o" title="{{ 'form.data.bool_table_collum.true_value'|trans }}"></i> <span class="sr-only">{{ 'form.data.bool_table_collum.true_value'|trans }}</span>
+        <i class="fa fa-check-square-o" title="{{ 'form.data.bool_table_column.true_value'|trans }}"></i> <span class="sr-only">{{ 'form.data.bool_table_column.true_value'|trans }}</span>
     {%- else -%}
-        <i class="fa fa-square-o" title="{{ 'form.data.bool_table_collum.false_value'|trans }}"></i> <span class="sr-only">{{ 'form.data.bool_table_collum.false_value'|trans }}</span>
+        <i class="fa fa-square-o" title="{{ 'form.data.bool_table_column.false_value'|trans }}"></i> <span class="sr-only">{{ 'form.data.bool_table_column.false_value'|trans }}</span>
     {%- endif -%}
 {% endblock emsco_form_table_column_data_value_bool %}
 

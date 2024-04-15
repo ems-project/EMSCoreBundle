@@ -20,6 +20,7 @@ class FormDataTableType extends AbstractEntityTableType
 
     public function build(EntityTable $table): void
     {
+        $table->setLabelAttribute('label');
         $table->addColumn('table.index.column.loop_count', 'orderKey');
         $table->addColumn('form.index.column.name', 'name');
         $table->addColumn('form.index.column.label', 'label');

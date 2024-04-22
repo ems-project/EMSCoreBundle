@@ -64,10 +64,11 @@ final class FormSubmissionService implements EntityServiceInterface
         return $submission;
     }
 
-    public function getProperty(FormSubmission $formSubmission, string $property): mixed
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function getProperty(array $data, string $property): mixed
     {
-        $data = $formSubmission->toArray();
-
         $propertyAccessor = new PropertyAccessor();
         if ($propertyAccessor->isReadable($data, $property)) {
             return $propertyAccessor->getValue($data, $property);

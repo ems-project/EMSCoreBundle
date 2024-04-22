@@ -9,6 +9,7 @@ use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 use EMS\Helpers\File\File;
 use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
+use EMS\SubmissionBundle\Entity\FormSubmissionFile;
 use EMS\SubmissionBundle\Request\DatabaseRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +18,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+
+use function Symfony\Component\String\u;
 
 final class SubmissionController extends AbstractController
 {
@@ -47,13 +50,24 @@ final class SubmissionController extends AbstractController
             return new JsonResponse([], Response::HTTP_NOT_FOUND);
         }
 
+        $data = $submission->toArray();
+        $fileUrl = $request->query->get('fileUrl');
+
+        if ($fileUrl && $submission->getFiles()->count() > 0) {
+            $data['file_urls'] = $submission->getFiles()->map(fn (FormSubmissionFile $f) => u($fileUrl)
+                ->replace('{SUBMISSION_ID}', $submission->getId())
+                ->replace('{FILE_ID}', $f->getId())
+                ->toString()
+            )->toArray();
+        }
+
         if ($request->query->has('property')) {
             $property = Type::string($request->query->get('property'));
 
-            return new JsonResponse([$property => $this->formSubmissionService->getProperty($submission, $property)]);
+            return new JsonResponse([$property => $this->formSubmissionService->getProperty($data, $property)]);
         }
 
-        return new JsonResponse($submission);
+        return new JsonResponse($data);
     }
 
     public function submissionFile(string $submissionId, string $submissionFileId): JsonResponse|StreamedResponse

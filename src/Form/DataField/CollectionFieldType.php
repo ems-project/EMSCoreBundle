@@ -134,7 +134,7 @@ class CollectionFieldType extends DataFieldType
         return true;
     }
 
-    public function isValid(DataField &$dataField, DataField $parent = null, mixed &$masterRawData = null): bool
+    public function isValid(DataField &$dataField, ?DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
             return true;
@@ -182,24 +182,24 @@ class CollectionFieldType extends DataFieldType
 
         // an optional icon can't be specified ritgh to the container label
         $optionsForm->get('displayOptions')->add('singularLabel', TextType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('itemBootstrapClass', TextType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('labelField', TextType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('icon', IconPickerType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('collapsible', CheckboxType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('sortable', CheckboxType::class, [
-                'required' => false,
+            'required' => false,
         ]);
 
         $optionsForm->get('restrictionOptions')
         ->add('min', IntegerType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('max', IntegerType::class, [
-                'required' => false,
+            'required' => false,
         ]);
         $optionsForm->get('restrictionOptions')->remove('mandatory');
         $optionsForm->get('restrictionOptions')->remove('mandatory_if');
@@ -225,8 +225,8 @@ class CollectionFieldType extends DataFieldType
     public function generateMapping(FieldType $current): array
     {
         return [$current->getName() => [
-                'type' => 'nested',
-                'properties' => [],
+            'type' => 'nested',
+            'properties' => [],
         ]];
     }
 

@@ -110,10 +110,10 @@ class TimeFieldType extends DataFieldType
     public function generateMapping(FieldType $current): array
     {
         return [
-                $current->getName() => \array_merge([
-                        'type' => 'date',
-                        'format' => TimeFieldType::INDEXFORMAT,
-                ], \array_filter($current->getMappingOptions())),
+            $current->getName() => \array_merge([
+                'type' => 'date',
+                'format' => TimeFieldType::INDEXFORMAT,
+            ], \array_filter($current->getMappingOptions())),
         ];
     }
 
@@ -177,23 +177,23 @@ class TimeFieldType extends DataFieldType
         }
 
         $optionsForm->get('displayOptions')->add('minuteStep', IntegerType::class, [
-                'required' => false,
-                'empty_data' => 15,
+            'required' => false,
+            'empty_data' => 15,
         ]);
         $optionsForm->get('displayOptions')->add('showMeridian', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Show meridian (true: 12hr, false: 24hr)',
+            'required' => false,
+            'label' => 'Show meridian (true: 12hr, false: 24hr)',
         ]);
         $optionsForm->get('displayOptions')->add('defaultTime', TextType::class, [
-                'required' => false,
-                 'label' => 'Default time (Deprecated)',
+            'required' => false,
+            'label' => 'Default time (Deprecated)',
         ]);
         $optionsForm->get('displayOptions')->add('showSeconds', CheckboxType::class, [
-                'required' => false,
+            'required' => false,
         ]);
         $optionsForm->get('displayOptions')->add('explicitMode', CheckboxType::class, [
-                'label' => 'Explicit mode (Deprecated)',
-                'required' => false,
+            'label' => 'Explicit mode (Deprecated)',
+            'required' => false,
         ]);
     }
 }

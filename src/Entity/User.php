@@ -117,7 +117,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return $this->expirationDate;
     }
 
-    public function setExpirationDate(\DateTime $time = null): void
+    public function setExpirationDate(?\DateTime $time = null): void
     {
         $this->expirationDate = $time;
     }
@@ -425,7 +425,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         $this->plainPassword = $password;
     }
 
-    public function setLastLogin(\DateTime $time = null): void
+    public function setLastLogin(?\DateTime $time = null): void
     {
         $this->lastLogin = $time;
     }
@@ -435,7 +435,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         $this->confirmationToken = $confirmationToken;
     }
 
-    public function setPasswordRequestedAt(\DateTime $date = null): void
+    public function setPasswordRequestedAt(?\DateTime $date = null): void
     {
         $this->passwordRequestedAt = $date;
     }

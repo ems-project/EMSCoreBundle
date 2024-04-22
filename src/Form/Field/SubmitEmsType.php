@@ -22,9 +22,9 @@ class SubmitEmsType extends SubmitType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-                'compound' => false,
-                'icon' => null,
-                'message' => null,
+            'compound' => false,
+            'icon' => null,
+            'message' => null,
         ]);
     }
 

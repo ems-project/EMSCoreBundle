@@ -26,7 +26,7 @@ use Ramsey\Uuid\UuidInterface;
  */
 class RevisionRepository extends EntityRepository
 {
-    public function findRevision(string $ouuid, string $contentTypeName = null, \DateTimeInterface $dateTime = null): ?Revision
+    public function findRevision(string $ouuid, ?string $contentTypeName = null, ?\DateTimeInterface $dateTime = null): ?Revision
     {
         $qb = $this->createQueryBuilder('r');
         $qb
@@ -266,9 +266,9 @@ class RevisionRepository extends EntityRepository
         $qb->select('count(rev)');
         $qb->where($qb->expr()->in('rev.id', $sqb->getDQL()));
         $qb->setParameters([
-                'false' => false,
-                'source' => $source,
-                'target' => $target,
+            'false' => false,
+            'source' => $source,
+            'target' => $target,
         ]);
 
         return (int) $qb->getQuery()->getSingleScalarResult();
@@ -388,7 +388,7 @@ class RevisionRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findByOuuidContentTypeAndEnvironment(Revision $revision, Environment $env = null): ?Revision
+    public function findByOuuidContentTypeAndEnvironment(Revision $revision, ?Environment $env = null): ?Revision
     {
         $env ??= $revision->giveContentType()->giveEnvironment();
 
@@ -500,9 +500,9 @@ class RevisionRepository extends EntityRepository
         ->set('r.endTime', 'null')
         ->where('r.id = :id')
         ->setParameters([
-                'draft' => $draft,
-                'id' => $revision->getId(),
-            ]);
+            'draft' => $draft,
+            'id' => $revision->getId(),
+        ]);
 
         return (int) $qb->getQuery()->execute();
     }
@@ -562,7 +562,7 @@ class RevisionRepository extends EntityRepository
         return $this->deleteByQueryBuilder($qb);
     }
 
-    public function lockRevisions(?ContentType $contentType, \DateTime $until, string $by, bool $force = false, string $ouuid = null, bool $onlyCurrentRevision = true): int
+    public function lockRevisions(?ContentType $contentType, \DateTime $until, string $by, bool $force = false, ?string $ouuid = null, bool $onlyCurrentRevision = true): int
     {
         $qbSelect = $this->createQueryBuilder('s');
         $qbSelect
@@ -680,7 +680,7 @@ class RevisionRepository extends EntityRepository
     /**
      * @return Revision[]
      */
-    public function findAllWithCurrentTask(\DateTimeImmutable $deadlineStart = null, \DateTimeImmutable $deadlineEnd = null, TaskStatus ...$status): array
+    public function findAllWithCurrentTask(?\DateTimeImmutable $deadlineStart = null, ?\DateTimeImmutable $deadlineEnd = null, TaskStatus ...$status): array
     {
         $qb = $this->createQueryBuilder('r');
         $qb
@@ -862,7 +862,7 @@ class RevisionRepository extends EntityRepository
         return $qb->getQuery()->execute();
     }
 
-    public function findLatestVersion(ContentType $contentType, string $versionOuuid, Environment $environment = null): ?Revision
+    public function findLatestVersion(ContentType $contentType, string $versionOuuid, ?Environment $environment = null): ?Revision
     {
         $toField = $contentType->getVersionDateToField();
 

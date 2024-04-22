@@ -69,9 +69,9 @@ class CrudController extends AbstractController
         }
 
         return $this->flashMessageLogger->buildJsonResponse([
-                'success' => true,
-                'revision_id' => $newRevision->getId(),
-                'ouuid' => $newRevision->getOuuid(),
+            'success' => true,
+            'revision_id' => $newRevision->getId(),
+            'ouuid' => $newRevision->getOuuid(),
         ]);
     }
 
@@ -92,9 +92,9 @@ class CrudController extends AbstractController
             }
 
             return $this->flashMessageLogger->buildJsonResponse([
-                    'success' => false,
-                    'ouuid' => $ouuid,
-                    'type' => $contentType->getName(),
+                'success' => false,
+                'ouuid' => $ouuid,
+                'type' => $contentType->getName(),
             ]);
         }
 
@@ -167,16 +167,16 @@ class CrudController extends AbstractController
             }
 
             return $this->flashMessageLogger->buildJsonResponse([
-                    'success' => $isDiscard,
-                    'type' => $contentType->getName(),
-                    'revision_id' => $id,
+                'success' => $isDiscard,
+                'type' => $contentType->getName(),
+                'revision_id' => $id,
             ]);
         }
 
         return $this->flashMessageLogger->buildJsonResponse([
-                'success' => $isDiscard,
-                'type' => $contentType->getName(),
-                'revision_id' => $revision->getId(),
+            'success' => $isDiscard,
+            'type' => $contentType->getName(),
+            'revision_id' => $revision->getId(),
         ]);
     }
 
@@ -209,9 +209,9 @@ class CrudController extends AbstractController
         }
 
         return $this->flashMessageLogger->buildJsonResponse([
-                'success' => $isDeleted,
-                'ouuid' => $ouuid,
-                'type' => $contentType->getName(),
+            'success' => $isDeleted,
+            'ouuid' => $ouuid,
+            'type' => $contentType->getName(),
         ]);
     }
 
@@ -244,18 +244,18 @@ class CrudController extends AbstractController
             }
 
             return $this->flashMessageLogger->buildJsonResponse([
-                    'success' => $isReplaced,
-                    'ouuid' => $ouuid,
-                    'type' => $contentType->getName(),
-                    'revision_id' => null,
+                'success' => $isReplaced,
+                'ouuid' => $ouuid,
+                'type' => $contentType->getName(),
+                'revision_id' => null,
             ]);
         }
 
         return $this->flashMessageLogger->buildJsonResponse([
-                'success' => $isReplaced,
-                'ouuid' => $ouuid,
-                'type' => $contentType->getName(),
-                'revision_id' => $newDraft->getId(),
+            'success' => $isReplaced,
+            'ouuid' => $ouuid,
+            'type' => $contentType->getName(),
+            'revision_id' => $newDraft->getId(),
         ]);
     }
 
@@ -288,25 +288,25 @@ class CrudController extends AbstractController
             $isMerged = false;
 
             return $this->flashMessageLogger->buildJsonResponse([
-                    'success' => $isMerged,
-                    'ouuid' => $ouuid,
-                    'type' => $contentType->getName(),
-                    'revision_id' => null,
+                'success' => $isMerged,
+                'ouuid' => $ouuid,
+                'type' => $contentType->getName(),
+                'revision_id' => null,
             ]);
         }
 
         return $this->flashMessageLogger->buildJsonResponse([
-                'success' => $isMerged,
-                'ouuid' => $ouuid,
-                'type' => $contentType->getName(),
-                'revision_id' => $newDraft->getId(),
+            'success' => $isMerged,
+            'ouuid' => $ouuid,
+            'type' => $contentType->getName(),
+            'revision_id' => $newDraft->getId(),
         ]);
     }
 
     public function test(): Response
     {
         return $this->flashMessageLogger->buildJsonResponse([
-                'success' => true,
+            'success' => true,
         ]);
     }
 
@@ -315,11 +315,11 @@ class CrudController extends AbstractController
         $contentType = $this->giveContentType($name);
 
         return $this->flashMessageLogger->buildJsonResponse([
-                'success' => true,
-                'singular_name' => $contentType->getSingularName(),
-                'plural_name' => $contentType->getPluralName(),
-                'default_alias' => $contentType->giveEnvironment()->getAlias(),
-                'default_name' => $contentType->giveEnvironment()->getName(),
+            'success' => true,
+            'singular_name' => $contentType->getSingularName(),
+            'plural_name' => $contentType->getPluralName(),
+            'default_alias' => $contentType->giveEnvironment()->getAlias(),
+            'default_name' => $contentType->giveEnvironment()->getName(),
         ]);
     }
 
@@ -353,7 +353,7 @@ class CrudController extends AbstractController
         return $this->json($users);
     }
 
-    public function index(Request $request, string $name, string $ouuid = null, string $replaceOrMerge = 'replace'): Response
+    public function index(Request $request, string $name, ?string $ouuid = null, string $replaceOrMerge = 'replace'): Response
     {
         $revision = null;
         if (null !== $ouuid) {

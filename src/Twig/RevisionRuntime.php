@@ -19,7 +19,7 @@ class RevisionRuntime implements RuntimeExtensionInterface
     {
     }
 
-    public function display(Revision|Document|string $display, string $expression = null): string
+    public function display(Revision|Document|string $display, ?string $expression = null): string
     {
         return $this->revisionService->display($display, $expression);
     }

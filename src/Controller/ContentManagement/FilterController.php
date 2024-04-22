@@ -26,7 +26,7 @@ class FilterController extends AbstractController
     public function index(): Response
     {
         return $this->render("@$this->templateNamespace/filter/index.html.twig", [
-                'paging' => $this->helperService->getPagingTool(Filter::class, 'ems_filter_index', 'name'),
+            'paging' => $this->helperService->getPagingTool(Filter::class, 'ems_filter_index', 'name'),
         ]);
     }
 
@@ -45,7 +45,7 @@ class FilterController extends AbstractController
         }
 
         return $this->render("@$this->templateNamespace/filter/edit.html.twig", [
-                'form' => $form->createView(),
+            'form' => $form->createView(),
         ]);
     }
 
@@ -77,7 +77,7 @@ class FilterController extends AbstractController
         }
 
         return $this->render("@$this->templateNamespace/filter/add.html.twig", [
-                'form' => $form->createView(),
+            'form' => $form->createView(),
         ]);
     }
 

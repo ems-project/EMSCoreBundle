@@ -62,14 +62,14 @@ class CollectionItemFieldType extends DataFieldType
             if (!$fieldType->getDeleted()) {
                 /* merge the default options with the ones specified by the user */
                 $options = \array_merge([
-                        'metadata' => $fieldType,
-                        'label' => false,
-                        'migration' => $options['migration'],
-                        'with_warning' => $options['with_warning'],
-                        'raw_data' => $options['raw_data'],
-                        'disabled_fields' => $options['disabled_fields'],
-                        'referrer-ems-id' => $options['referrer-ems-id'],
-                        'locale' => $options['locale'],
+                    'metadata' => $fieldType,
+                    'label' => false,
+                    'migration' => $options['migration'],
+                    'with_warning' => $options['with_warning'],
+                    'raw_data' => $options['raw_data'],
+                    'disabled_fields' => $options['disabled_fields'],
+                    'referrer-ems-id' => $options['referrer-ems-id'],
+                    'locale' => $options['locale'],
                 ], $fieldType->getDisplayOptions());
                 $builder->add($fieldType->getName(), $fieldType->getType(), $options);
                 $builder->get($fieldType->getName())
@@ -79,11 +79,11 @@ class CollectionItemFieldType extends DataFieldType
         }
 
         $builder->add('remove_collection_item', SubmitEmsType::class, [
-                'attr' => [
-                        'class' => 'btn btn-danger btn-sm remove-content-button',
-                ],
-                'label' => 'Remove',
-                'icon' => 'fa fa-trash',
+            'attr' => [
+                'class' => 'btn btn-danger btn-sm remove-content-button',
+            ],
+            'label' => 'Remove',
+            'icon' => 'fa fa-trash',
         ]);
     }
 

@@ -6,7 +6,7 @@ use EMS\CoreBundle\Entity\Revision;
 
 class CantBeFinalizedException extends ElasticmsException implements \Stringable
 {
-    public function __construct(string $originMessage = '', int $code = 0, \Throwable $previous = null, Revision $revision = null)
+    public function __construct(string $originMessage = '', int $code = 0, ?\Throwable $previous = null, ?Revision $revision = null)
     {
         if (null === $revision) {
             $message = 'This revision can not be finalized';

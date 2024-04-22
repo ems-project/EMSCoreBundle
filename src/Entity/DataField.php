@@ -589,7 +589,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
     /**
      * @return DataField
      */
-    public function setFieldType(FieldType $fieldType = null)
+    public function setFieldType(?FieldType $fieldType = null)
     {
         $this->fieldType = $fieldType;
 
@@ -615,7 +615,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
      *
      * @return DataField
      */
-    public function setParent(DataField $parent = null)
+    public function setParent(?DataField $parent = null)
     {
         $this->parent = $parent;
 

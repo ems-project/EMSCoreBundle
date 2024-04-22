@@ -187,7 +187,7 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
         return $json;
     }
 
-    public static function fromJson(string $json, EntityInterface $dashboard = null): Dashboard
+    public static function fromJson(string $json, ?EntityInterface $dashboard = null): Dashboard
     {
         $meta = JsonClass::fromJsonString($json);
         $dashboard = $meta->jsonDeserialize($dashboard);

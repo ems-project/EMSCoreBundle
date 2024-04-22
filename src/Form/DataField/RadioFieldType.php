@@ -44,13 +44,13 @@ class RadioFieldType extends DataFieldType
         }
 
         $builder->add('value', ChoiceType::class, [
-                'label' => ($options['label'] ?? $fieldType->getName()),
-                'required' => false,
-                'disabled' => $this->isDisabled($options),
-                'choices' => $choices,
-                'empty_data' => null,
-                'multiple' => false,
-                'expanded' => true,
+            'label' => ($options['label'] ?? $fieldType->getName()),
+            'required' => false,
+            'disabled' => $this->isDisabled($options),
+            'choices' => $choices,
+            'empty_data' => null,
+            'multiple' => false,
+            'expanded' => true,
         ]);
     }
 
@@ -69,9 +69,9 @@ class RadioFieldType extends DataFieldType
 
         // String specific display options
         $optionsForm->get('displayOptions')->add('choices', TextareaType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('labels', TextareaType::class, [
-                'required' => false,
+            'required' => false,
         ]);
 
         if ($optionsForm->has('mappingOptions')) {

@@ -25,27 +25,27 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
      * @var array<mixed>
      */
     private array $toSkip = ['ContentType' => ['id',
-                                         'indexAnalysisConfiguration', ],
-                       'FieldType' => ['id',
-                                          'contentType',
-                                          'parent',
-                                          'children',
-                                          'displayOptions',
-                                          'mappingOptions',
-                                          'restrictionOptions',
-                                          'migrationOptions',
-                                          'extraOptions',
-                                       'fieldRoles',
-                                         ],
-                       'Template' => ['id',
-                                         'created',
-                                         'modified',
-                                         'environments',
-                                        ],
-                       'View' => ['id',
-                                     'created',
-                                     'modified',
-                                    ],
+        'indexAnalysisConfiguration', ],
+        'FieldType' => ['id',
+            'contentType',
+            'parent',
+            'children',
+            'displayOptions',
+            'mappingOptions',
+            'restrictionOptions',
+            'migrationOptions',
+            'extraOptions',
+            'fieldRoles',
+        ],
+        'Template' => ['id',
+            'created',
+            'modified',
+            'environments',
+        ],
+        'View' => ['id',
+            'created',
+            'modified',
+        ],
     ];
 
     /**
@@ -61,8 +61,8 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
         $reflectionClass = new \ReflectionClass($object);
 
         $data['__jsonclass__'] = [
-                $object::class,
-                [], // constructor arguments
+            $object::class,
+            [], // constructor arguments
         ];
         // Parsing all methods of the object
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {

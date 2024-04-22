@@ -296,7 +296,7 @@ class ExportDocumentsCommand extends EmsCommand
                     EmsFields::CONTENT_FILE_HASH_FIELD_ => \sha1_file($outZipPath),
                 ],
                 [
-                EmsFields::ASSET_CONFIG_FILE_NAMES => [$outZipPath],
+                    EmsFields::ASSET_CONFIG_FILE_NAMES => [$outZipPath],
                 ],
                 'ems_asset',
                 EmsFields::CONTENT_FILE_HASH_FIELD,

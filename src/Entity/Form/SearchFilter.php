@@ -71,11 +71,11 @@ class SearchFilter implements \JsonSerializable
                 case 'match_or':
                     $out = [
                         'match' => [
-                                $field ?? '_all' => [
+                            $field ?? '_all' => [
                                 'query' => $this->pattern ?: '',
                                 'operator' => 'OR',
                                 'boost' => $this->boost ?? '1.0',
-                                ],
+                            ],
                         ],
                     ];
                     break;
@@ -212,7 +212,7 @@ class SearchFilter implements \JsonSerializable
         return $this;
     }
 
-    public function setSearch(Search $search = null): self
+    public function setSearch(?Search $search = null): self
     {
         $this->search = $search;
 

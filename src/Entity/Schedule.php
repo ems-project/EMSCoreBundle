@@ -33,7 +33,7 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
         $this->modified = DateTime::create('now');
     }
 
-    public static function fromJson(string $json, \EMS\CommonBundle\Entity\EntityInterface $schedule = null): Schedule
+    public static function fromJson(string $json, ?\EMS\CommonBundle\Entity\EntityInterface $schedule = null): Schedule
     {
         $meta = JsonClass::fromJsonString($json);
         $schedule = $meta->jsonDeserialize($schedule);

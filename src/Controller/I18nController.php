@@ -25,8 +25,8 @@ class I18nController extends AbstractController
         $i18nFilter = new I18nFilter();
 
         $form = $this->createForm(I18nFormType::class, $i18nFilter, [
-                 'method' => 'GET',
-         ]);
+            'method' => 'GET',
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {

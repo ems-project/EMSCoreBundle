@@ -294,7 +294,7 @@ final class ReleaseService implements EntityServiceInterface
         throw new \RuntimeException('updateEntityFromJson method not supported for releases');
     }
 
-    public function createEntityFromJson(string $json, string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         throw new \RuntimeException('createEntityFromJson method not supported for releases');
     }

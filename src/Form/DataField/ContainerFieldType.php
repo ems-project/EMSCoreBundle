@@ -93,7 +93,7 @@ class ContainerFieldType extends DataFieldType
         $optionsForm->get('restrictionOptions')->remove('mandatory');
         $optionsForm->get('restrictionOptions')->remove('mandatory_if');
         $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
-                'required' => false,
+            'required' => false,
         ]);
     }
 

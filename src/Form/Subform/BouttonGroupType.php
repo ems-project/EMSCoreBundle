@@ -12,8 +12,8 @@ class BouttonGroupType extends TextType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-                'compound' => false,
-                'buttons' => [],
+            'compound' => false,
+            'buttons' => [],
         ]);
     }
 

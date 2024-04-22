@@ -29,13 +29,13 @@ class NumberFieldType extends DataFieldType
         $fieldType = $builder->getOptions()['metadata'];
 
         $builder->add('value', TextType::class, [
-                'label' => ($options['label'] ?? $fieldType->getName()),
-                'required' => false,
-                'disabled' => $this->isDisabled($options),
+            'label' => ($options['label'] ?? $fieldType->getName()),
+            'required' => false,
+            'disabled' => $this->isDisabled($options),
         ]);
     }
 
-    public function isValid(DataField &$dataField, DataField $parent = null, mixed &$masterRawData = null): bool
+    public function isValid(DataField &$dataField, ?DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
             return true;
@@ -66,7 +66,7 @@ class NumberFieldType extends DataFieldType
     public function generateMapping(FieldType $current): array
     {
         return [
-                $current->getName() => \array_merge(['type' => 'double'], \array_filter($current->getMappingOptions())),
+            $current->getName() => \array_merge(['type' => 'double'], \array_filter($current->getMappingOptions())),
         ];
     }
 

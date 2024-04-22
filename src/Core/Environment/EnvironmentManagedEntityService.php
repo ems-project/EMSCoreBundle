@@ -64,7 +64,7 @@ class EnvironmentManagedEntityService implements EntityServiceInterface
         throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 
-    public function createEntityFromJson(string $json, string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         throw new \RuntimeException('createEntityFromJson method not yet implemented');
     }

@@ -36,9 +36,9 @@ final class TimeMachineCommand extends Command
     public const RESULT_SUCCESS = 3;
 
     public const RESULTS = [
-         self::RESULT_NOT_FOUND => 'Not found in time revision',
-         self::RESULT_EQUALS_IN_TIME => 'Revision in time property equals current revision property',
-         self::RESULT_SUCCESS => 'New revision with in time revision property data',
+        self::RESULT_NOT_FOUND => 'Not found in time revision',
+        self::RESULT_EQUALS_IN_TIME => 'Revision in time property equals current revision property',
+        self::RESULT_SUCCESS => 'New revision with in time revision property data',
     ];
 
     public function __construct(

@@ -192,7 +192,7 @@ class FileController extends AbstractController
         return new JsonResponse($response);
     }
 
-    public function icon(Request $request, int $width, int $height, string $background = null): Response
+    public function icon(Request $request, int $width, int $height, ?string $background = null): Response
     {
         if ($width !== $height) {
             throw new NotFoundHttpException('File not found');

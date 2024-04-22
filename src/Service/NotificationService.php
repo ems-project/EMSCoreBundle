@@ -130,7 +130,7 @@ class NotificationService
     /**
      * Call addNotification when click on a request.
      */
-    public function addNotification(Template $template, Revision $revision, Environment $environment, string $username = null): ?bool
+    public function addNotification(Template $template, Revision $revision, Environment $environment, ?string $username = null): ?bool
     {
         $out = false;
         try {
@@ -145,10 +145,10 @@ class NotificationService
             $repository = $em->getRepository(Notification::class);
 
             $alreadyPending = $repository->findBy([
-                    'template' => $template,
-                    'revision' => $revision,
-                    'environment' => $environment,
-                    'status' => 'pending',
+                'template' => $template,
+                'revision' => $revision,
+                'environment' => $environment,
+                'status' => 'pending',
             ]);
 
             if (!empty($alreadyPending)) {
@@ -217,7 +217,7 @@ class NotificationService
     /**
      * @param ?array<string, mixed> $filters
      */
-    public function menuNotification(array $filters = null): int
+    public function menuNotification(?array $filters = null): int
     {
         $contentTypes = null;
         $environments = null;
@@ -275,7 +275,7 @@ class NotificationService
      *
      * @return Notification[]
      */
-    public function listRejectedNotifications(int $from, int $limit, array $filters = null): array
+    public function listRejectedNotifications(int $from, int $limit, ?array $filters = null): array
     {
         $contentTypes = null;
         $environments = null;
@@ -305,7 +305,7 @@ class NotificationService
      *
      * @return Notification[]
      */
-    public function listInboxNotifications(int $from, int $limit, array $filters = null): array
+    public function listInboxNotifications(int $from, int $limit, ?array $filters = null): array
     {
         $contentTypes = null;
         $environments = null;
@@ -342,7 +342,7 @@ class NotificationService
      *
      * @return Notification[]
      */
-    public function listArchivesNotifications(int $from, int $limit, array $filters = null): array
+    public function listArchivesNotifications(int $from, int $limit, ?array $filters = null): array
     {
         $contentTypes = null;
         $environments = null;

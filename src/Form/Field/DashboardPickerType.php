@@ -21,7 +21,7 @@ class DashboardPickerType extends Select2Type
         $resolver->setDefaults([
             'choices' => $this->dashboardService->getIds(),
             'attr' => [
-                    'data-live-search' => true,
+                'data-live-search' => true,
             ],
             'choice_attr' => function ($category, $key, $id) {
                 $icon = $this->translator->trans(\implode('.', [$id, 'icon']), [], EMSCoreBundle::TRANS_TWIG_DOMAIN);

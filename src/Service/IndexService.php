@@ -50,7 +50,7 @@ final class IndexService
         }
     }
 
-    public function indexRevision(Revision $revision, Environment $environment = null): bool
+    public function indexRevision(Revision $revision, ?Environment $environment = null): bool
     {
         $contentType = $revision->getContentType();
         if (null === $contentType) {
@@ -112,7 +112,7 @@ final class IndexService
         $this->aliasService->updateAlias($aliasName, $actions);
     }
 
-    public function delete(Revision $revision, Environment $environment = null): void
+    public function delete(Revision $revision, ?Environment $environment = null): void
     {
         $contentType = $revision->getContentType();
         if (null === $contentType) {

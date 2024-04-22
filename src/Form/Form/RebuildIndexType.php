@@ -21,14 +21,14 @@ class RebuildIndexType extends AbstractType
         ];
         $builder
         ->add('option', ChoiceType::class, [
-                'choices' => $options,
-                'expanded' => true,
+            'choices' => $options,
+            'expanded' => true,
         ])
          ->add('rebuild', SubmitEmsType::class, [
-                'attr' => [
-                        'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-recycle',
+             'attr' => [
+                 'class' => 'btn btn-primary btn-sm ',
+             ],
+             'icon' => 'fa fa-recycle',
          ]);
     }
 }

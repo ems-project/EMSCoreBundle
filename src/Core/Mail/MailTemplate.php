@@ -28,7 +28,7 @@ final class MailTemplate
     {
     }
 
-    public function addTo(string $email, string $name = null): self
+    public function addTo(string $email, ?string $name = null): self
     {
         if ($name) {
             $this->to[$email] = $name;
@@ -47,7 +47,7 @@ final class MailTemplate
         return $this->to;
     }
 
-    public function addCc(string $email, string $name = null): self
+    public function addCc(string $email, ?string $name = null): self
     {
         if ($name) {
             $this->cc[$email] = $name;
@@ -66,7 +66,7 @@ final class MailTemplate
         return $this->cc;
     }
 
-    public function addBCC(string $email, string $name = null): self
+    public function addBCC(string $email, ?string $name = null): self
     {
         if ($name) {
             $this->bcc[$email] = $name;
@@ -174,7 +174,7 @@ final class MailTemplate
         return $this->replyTo;
     }
 
-    public function addReplyTo(string $email, string $name = null): self
+    public function addReplyTo(string $email, ?string $name = null): self
     {
         if ($name) {
             $this->replyTo[$email] = $name;

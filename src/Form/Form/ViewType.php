@@ -78,11 +78,11 @@ class ViewType extends AbstractType
             ]);
         } else {
             $builder->add('options', Type::string($this->container->get($view->getType())::class), [
-                    'view' => $view,
-                    'row_attr' => [
-                        'class' => 'col-md-12',
-                    ],
-                ])
+                'view' => $view,
+                'row_attr' => [
+                    'class' => 'col-md-12',
+                ],
+            ])
                 ->add('save', SubmitEmsType::class, [
                     'attr' => [
                         'class' => 'btn-primary btn-sm',

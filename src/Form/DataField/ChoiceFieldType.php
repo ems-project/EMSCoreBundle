@@ -64,15 +64,15 @@ class ChoiceFieldType extends DataFieldType
         $choices = $this->buildChoices($options);
 
         $builder->add('value', ChoiceType::class, [
-                'label' => ($options['label'] ?? $fieldType->getName()),
-                'required' => false,
-                'disabled' => $this->isDisabled($options),
-                'choices' => $choices,
-                'empty_data' => $options['multiple'] ? [] : null,
-                'multiple' => $options['multiple'],
-                'expanded' => $options['expanded'],
-                'placeholder' => $options['placeholder'] ?? '',
-                'choice_attr' => $this->choiceAttr(...),
+            'label' => ($options['label'] ?? $fieldType->getName()),
+            'required' => false,
+            'disabled' => $this->isDisabled($options),
+            'choices' => $choices,
+            'empty_data' => $options['multiple'] ? [] : null,
+            'multiple' => $options['multiple'],
+            'expanded' => $options['expanded'],
+            'placeholder' => $options['placeholder'] ?? '',
+            'choice_attr' => $this->choiceAttr(...),
         ]);
     }
 
@@ -113,15 +113,15 @@ class ChoiceFieldType extends DataFieldType
 
         // String specific display options
         $optionsForm->get('displayOptions')->add('multiple', CheckboxType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('expanded', CheckboxType::class, [
             'required' => false,
         ])->add('select2', CheckboxType::class, [
             'required' => false,
         ])->add('choices', TextareaType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('labels', TextareaType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('placeholder', TextType::class, [
             'required' => false,
         ])->add('linked_collection', TextType::class, [

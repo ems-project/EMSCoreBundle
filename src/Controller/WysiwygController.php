@@ -93,10 +93,10 @@ class WysiwygController extends AbstractController
         }
 
         return $this->render("@$this->templateNamespace/wysiwygprofile/index.html.twig", [
-                'profiles' => $this->wysiwygProfileService->getProfiles(),
-                'stylesSets' => $this->wysiwygStylesSetService->getStylesSets(),
-                'formProfiles' => $formProfiles->createView(),
-                'formStylesSet' => $formStylesSet->createView(),
+            'profiles' => $this->wysiwygProfileService->getProfiles(),
+            'stylesSets' => $this->wysiwygStylesSetService->getStylesSets(),
+            'formProfiles' => $formProfiles->createView(),
+            'formStylesSet' => $formStylesSet->createView(),
         ]);
     }
 
@@ -105,7 +105,7 @@ class WysiwygController extends AbstractController
         $profile = new WysiwygProfile();
 
         $form = $this->createForm(WysiwygProfileType::class, $profile, [
-                'createform' => true,
+            'createform' => true,
         ]);
         $form->handleRequest($request);
 
@@ -131,7 +131,7 @@ class WysiwygController extends AbstractController
         $stylesSet = new WysiwygStylesSet();
 
         $form = $this->createForm(WysiwygStylesSetType::class, $stylesSet, [
-                'createform' => true,
+            'createform' => true,
         ]);
         $form->handleRequest($request);
 
@@ -148,7 +148,7 @@ class WysiwygController extends AbstractController
         }
 
         return $this->render("@$this->templateNamespace/wysiwyg_styles_set/new.html.twig", [
-                'form' => $form->createView(),
+            'form' => $form->createView(),
         ]);
     }
 
@@ -178,7 +178,7 @@ class WysiwygController extends AbstractController
         }
 
         return $this->render("@$this->templateNamespace/wysiwyg_styles_set/edit.html.twig", [
-                'form' => $form->createView(),
+            'form' => $form->createView(),
         ]);
     }
 
@@ -208,7 +208,7 @@ class WysiwygController extends AbstractController
         }
 
         return $this->render("@$this->templateNamespace/wysiwygprofile/edit.html.twig", [
-                'form' => $form->createView(),
+            'form' => $form->createView(),
         ]);
     }
 }

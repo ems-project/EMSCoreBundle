@@ -17,14 +17,14 @@ class ReorderType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('items', ItemsType::class, [
-                'result' => $options['result'],
+            'result' => $options['result'],
         ]);
 
         $builder->add('reorder', SubmitEmsType::class, [
-                'attr' => [
-                        'class' => 'btn-primary ',
-                ],
-                'icon' => 'fa fa-reorder',
+            'attr' => [
+                'class' => 'btn-primary ',
+            ],
+            'icon' => 'fa fa-reorder',
         ]);
     }
 

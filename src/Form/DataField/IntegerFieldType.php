@@ -19,7 +19,7 @@ class IntegerFieldType extends DataFieldType
         return 'glyphicon glyphicon-sort-by-order';
     }
 
-    public function isValid(DataField &$dataField, DataField $parent = null, mixed &$masterRawData = null): bool
+    public function isValid(DataField &$dataField, ?DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
             return true;
@@ -46,12 +46,12 @@ class IntegerFieldType extends DataFieldType
         $fieldType = $builder->getOptions()['metadata'];
 
         $builder->add('value', TextType::class, [
-                'label' => ($options['label'] ?? $fieldType->getName()),
-                'required' => false,
-                'disabled' => $this->isDisabled($options),
-                'attr' => [
-                        // 'class' => 'spinner',
-                ],
+            'label' => ($options['label'] ?? $fieldType->getName()),
+            'required' => false,
+            'disabled' => $this->isDisabled($options),
+            'attr' => [
+                // 'class' => 'spinner',
+            ],
         ]);
     }
 
@@ -65,7 +65,7 @@ class IntegerFieldType extends DataFieldType
     public function generateMapping(FieldType $current): array
     {
         return [
-                $current->getName() => $this->elasticsearchService->updateMapping(\array_merge(['type' => 'integer'], \array_filter($current->getMappingOptions()))),
+            $current->getName() => $this->elasticsearchService->updateMapping(\array_merge(['type' => 'integer'], \array_filter($current->getMappingOptions()))),
         ];
     }
 

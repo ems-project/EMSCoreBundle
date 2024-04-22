@@ -41,7 +41,7 @@ class EmailFieldType extends DataFieldType
         return $out;
     }
 
-    public function isValid(DataField &$dataField, DataField $parent = null, mixed &$masterRawData = null): bool
+    public function isValid(DataField &$dataField, ?DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
             return true;
@@ -94,9 +94,9 @@ class EmailFieldType extends DataFieldType
         /** @var FieldType $fieldType */
         $fieldType = $options['metadata'];
         $builder->add('value', TextType::class, [
-                'label' => (null != $options['label'] ? $options['label'] : 'Email field type'),
-                'disabled' => $this->isDisabled($options),
-                'required' => false,
+            'label' => (null != $options['label'] ? $options['label'] : 'Email field type'),
+            'disabled' => $this->isDisabled($options),
+            'required' => false,
         ]);
     }
 

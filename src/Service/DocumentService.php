@@ -38,7 +38,7 @@ class DocumentService
         }
     }
 
-    private function submitData(DocumentImportContext $documentImportContext, Revision $revision, Revision $previousRevision = null): void
+    private function submitData(DocumentImportContext $documentImportContext, Revision $revision, ?Revision $previousRevision = null): void
     {
         $revisionType = $this->formFactory->create(RevisionType::class, $revision, ['migration' => true, 'with_warning' => false, 'raw_data' => $revision->getRawData()]);
         $viewData = $this->dataService->getSubmitData($revisionType->get('data'));

@@ -97,7 +97,7 @@ class EnvironmentController extends AbstractController
                     $revid = $request->request->all('compare_environment_form')['alignWith'];
                     /** @var Revision $revision */
                     $revision = $this->revisionRepository->findOneBy([
-                            'id' => $revid,
+                        'id' => $revid,
                     ]);
 
                     foreach ($revision->getEnvironments() as $item) {
@@ -285,7 +285,7 @@ class EnvironmentController extends AbstractController
             'orderField' => $orderField,
             'orderDirection' => $orderDirection,
             'contentTypes' => $this->contentTypeService->getAll(),
-         ]);
+        ]);
     }
 
     /**
@@ -296,7 +296,7 @@ class EnvironmentController extends AbstractController
         try {
             if ($this->indexService->hasIndex($name)) {
                 $anotherObject = $this->environmentRepository->findBy([
-                        'name' => $name,
+                    'name' => $name,
                 ]);
 
                 if (0 == \count($anotherObject)) {
@@ -313,7 +313,7 @@ class EnvironmentController extends AbstractController
                     ]);
 
                     return $this->redirectToRoute('environment.edit', [
-                            'id' => $environment->getId(),
+                        'id' => $environment->getId(),
                     ]);
                 }
             }
@@ -405,16 +405,16 @@ class EnvironmentController extends AbstractController
         $environment = new Environment();
 
         $form = $this->createFormBuilder($environment)->add('name', IconTextType::class, [
-                'icon' => 'fa fa-database',
-                'required' => false,
+            'icon' => 'fa fa-database',
+            'required' => false,
         ])->add('color', ColorPickerType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('save', SubmitEmsType::class, [
-                'label' => 'Create',
-                'icon' => 'fa fa-plus',
-                'attr' => [
-                        'class' => 'btn btn-primary pull-right',
-                ],
+            'label' => 'Create',
+            'icon' => 'fa fa-plus',
+            'attr' => [
+                'class' => 'btn btn-primary pull-right',
+            ],
         ])->getForm();
 
         $form->handleRequest($request);
@@ -428,7 +428,7 @@ class EnvironmentController extends AbstractController
 
             if ($form->isValid()) {
                 $anotherObject = $this->environmentRepository->findBy([
-                        'name' => $environment->getName(),
+                    'name' => $environment->getName(),
                 ]);
 
                 if (0 != \count($anotherObject)) {
@@ -459,7 +459,7 @@ class EnvironmentController extends AbstractController
         }
 
         return $this->render("@$this->templateNamespace/environment/add.html.twig", [
-                'form' => $form->createView(),
+            'form' => $form->createView(),
         ]);
     }
 
@@ -514,8 +514,8 @@ class EnvironmentController extends AbstractController
         }
 
         return $this->render("@$this->templateNamespace/environment/view.html.twig", [
-                'environment' => $environment,
-                'info' => $info,
+            'environment' => $environment,
+            'info' => $info,
         ]);
     }
 
@@ -564,8 +564,8 @@ class EnvironmentController extends AbstractController
         }
 
         return $this->render("@$this->templateNamespace/environment/rebuild.html.twig", [
-                'environment' => $environment,
-                'form' => $form->createView(),
+            'environment' => $environment,
+            'form' => $form->createView(),
         ]);
     }
 

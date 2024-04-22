@@ -60,7 +60,7 @@ class CriteriaController extends AbstractController
     {
         $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->logger);
         $form = $this->createForm(CriteriaFilterType::class, $criteriaUpdateConfig, [
-                'view' => $view,
+            'view' => $view,
         ]);
 
         $form->handleRequest($request);
@@ -237,11 +237,11 @@ class CriteriaController extends AbstractController
         $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->logger);
 
         $form = $this->createForm(CriteriaFilterType::class, $criteriaUpdateConfig, [
-                'view' => $view,
-                'attr' => [
-                    'id' => 'criteria_filter',
-                        'action' => $this->generateUrl('data.customindexview', ['viewId' => $view->getId()], UrlGeneratorInterface::RELATIVE_PATH),
-                ],
+            'view' => $view,
+            'attr' => [
+                'id' => 'criteria_filter',
+                'action' => $this->generateUrl('data.customindexview', ['viewId' => $view->getId()], UrlGeneratorInterface::RELATIVE_PATH),
+            ],
         ]);
 
         $form->handleRequest($request);
@@ -268,9 +268,9 @@ class CriteriaController extends AbstractController
 
         if (!$valid) {
             return $this->render("@$this->templateNamespace/view/custom/criteria_view.html.twig", [
-                    'view' => $view,
-                    'form' => $form->createView(),
-                    'contentType' => $contentType,
+                'view' => $view,
+                'form' => $form->createView(),
+                'contentType' => $contentType,
             ]);
         }
 
@@ -346,12 +346,12 @@ class CriteriaController extends AbstractController
         }
 
         $body = [
-                'query' => [
-                        'bool' => [
-                                'must' => [
-                                ],
-                        ],
+            'query' => [
+                'bool' => [
+                    'must' => [
+                    ],
                 ],
+            ],
         ];
 
         $categoryChoiceList = false;
@@ -400,7 +400,7 @@ class CriteriaController extends AbstractController
                 'nested' => [
                     'path' => $criteriaFieldName,
                     'query' => [
-                            'bool' => ['must' => $criteriaFilters],
+                        'bool' => ['must' => $criteriaFilters],
                     ],
                 ],
             ];
@@ -516,7 +516,7 @@ class CriteriaController extends AbstractController
                 ]);
 
                 return $this->flashMessageLogger->buildJsonResponse([
-                        'success' => false,
+                    'success' => false,
                 ]);
             }
 
@@ -529,7 +529,7 @@ class CriteriaController extends AbstractController
                 ]);
 
                 return $this->flashMessageLogger->buildJsonResponse([
-                        'success' => false,
+                    'success' => false,
                 ]);
             }
 
@@ -551,7 +551,7 @@ class CriteriaController extends AbstractController
                 ]);
 
                 return $this->flashMessageLogger->buildJsonResponse([
-                        'success' => false,
+                    'success' => false,
                 ]);
             }
         } else {
@@ -573,7 +573,7 @@ class CriteriaController extends AbstractController
         }
 
         return $this->flashMessageLogger->buildJsonResponse([
-                'success' => true,
+            'success' => true,
         ]);
     }
 
@@ -808,7 +808,7 @@ class CriteriaController extends AbstractController
                 ]);
 
                 return $this->flashMessageLogger->buildJsonResponse([
-                        'success' => false,
+                    'success' => false,
                 ]);
             }
 
@@ -830,7 +830,7 @@ class CriteriaController extends AbstractController
                 ]);
 
                 return $this->flashMessageLogger->buildJsonResponse([
-                        'success' => false,
+                    'success' => false,
                 ]);
             }
         } else {
@@ -869,28 +869,28 @@ class CriteriaController extends AbstractController
         $multipleField = $this->getMultipleField($view->getContentType()->getFieldType());
 
         $body = [
-                'query' => [
-                        'bool' => [
-                                'must' => [
-                                ],
-                        ],
+            'query' => [
+                'bool' => [
+                    'must' => [
+                    ],
                 ],
+            ],
         ];
 
         foreach ($rawData as $name => $key) {
             $body['query']['bool']['must'][] = [
-                    'term' => [
-                            $name => [
-                                    'value' => $key,
-                            ],
+                'term' => [
+                    $name => [
+                        'value' => $key,
                     ],
+                ],
             ];
         }
 
         $search = $this->elasticaService->convertElasticsearchSearch([
-                'body' => $body,
-                'index' => $view->getContentType()->giveEnvironment()->getAlias(),
-                'type' => $view->getContentType()->getName(),
+            'body' => $body,
+            'index' => $view->getContentType()->giveEnvironment()->getAlias(),
+            'type' => $view->getContentType()->getName(),
         ]);
         $response = EmsResponse::fromResultSet($this->elasticaService->search($search));
 

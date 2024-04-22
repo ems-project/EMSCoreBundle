@@ -62,26 +62,26 @@ class CriteriaFilterType extends AbstractType
             }
 
             $builder->add('columnCriteria', ChoiceType::class, [
-                    'choices' => $choices,
-                    'data' => $defaultColumn,
-                    'attr' => [
-                            'class' => 'criteria-filter-columnrow',
-                    ],
+                'choices' => $choices,
+                'data' => $defaultColumn,
+                'attr' => [
+                    'class' => 'criteria-filter-columnrow',
+                ],
             ]);
 
             $builder->add('rowCriteria', ChoiceType::class, [
-                    'choices' => $choices,
-                    'data' => $defaultRow,
-                    'attr' => [
-                            'class' => 'criteria-filter-columnrow',
-                    ],
+                'choices' => $choices,
+                'data' => $defaultRow,
+                'attr' => [
+                    'class' => 'criteria-filter-columnrow',
+                ],
             ]);
 
             $builder->add('manage', SubmitEmsType::class, [
-                    'icon' => 'fa fa-table',
-                    'attr' => [
-                            'class' => 'btn-primary',
-                    ],
+                'icon' => 'fa fa-table',
+                'attr' => [
+                    'class' => 'btn-primary',
+                ],
             ]);
 
             if ($view->getOptions()['categoryFieldPath']) {
@@ -120,7 +120,7 @@ class CriteriaFilterType extends AbstractType
             }
 
             $criterion = $builder->create('criterion', FormType::class, [
-                    'label' => ' ',
+                'label' => ' ',
             ]);
 
             $fieldPaths = \preg_split('/\\r\\n|\\r|\\n/', (string) $view->getOptions()['criteriaFieldPaths']);
@@ -147,7 +147,7 @@ class CriteriaFilterType extends AbstractType
                     }
                     $displayOptions['attr'] =
                         [
-                                'data-name' => $child->getName(),
+                            'data-name' => $child->getName(),
                         ];
 
                     $displayOptions['multiple'] = true; // ($child->getName() == $defaultRow || $child->getName() == $defaultColumn);

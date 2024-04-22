@@ -79,7 +79,7 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
         return $json;
     }
 
-    public static function fromJson(string $json, EntityInterface $profile = null): WysiwygProfile
+    public static function fromJson(string $json, ?EntityInterface $profile = null): WysiwygProfile
     {
         $meta = JsonClass::fromJsonString($json);
         $profile = $meta->jsonDeserialize($profile);

@@ -247,20 +247,20 @@ abstract class DataFieldType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-                // 'data_class' => 'EMS\CoreBundle\Entity\DataField',
-                'lastOfRow' => false,
-                'class' => null, // used to specify a bootstrap class arround the compoment
-                'metadata' => null, // used to keep a link to the FieldType
-                'error_bubbling' => false,
-                'required' => false,
-                'translation_domain' => false,
-                'migration' => false,
-                'with_warning' => true,
-                'raw_data' => [],
-                'helptext' => null,
-                'disabled_fields' => [],
-                'referrer-ems-id' => null,
-                'is_visible' => true,
+            // 'data_class' => 'EMS\CoreBundle\Entity\DataField',
+            'lastOfRow' => false,
+            'class' => null, // used to specify a bootstrap class arround the compoment
+            'metadata' => null, // used to keep a link to the FieldType
+            'error_bubbling' => false,
+            'required' => false,
+            'translation_domain' => false,
+            'migration' => false,
+            'with_warning' => true,
+            'raw_data' => [],
+            'helptext' => null,
+            'disabled_fields' => [],
+            'referrer-ems-id' => null,
+            'is_visible' => true,
         ]);
     }
 
@@ -364,7 +364,7 @@ abstract class DataFieldType extends AbstractType
     /**
      * Test if the field is valid.
      */
-    public function isValid(DataField &$dataField, DataField $parent = null, mixed &$masterRawData = null): bool
+    public function isValid(DataField &$dataField, ?DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
             return true;
@@ -376,7 +376,7 @@ abstract class DataFieldType extends AbstractType
     /**
      * Test if the requirment of the field is reached.
      */
-    public function isMandatory(DataField &$dataField, DataField $parent = null, mixed &$masterRawData = null): bool
+    public function isMandatory(DataField &$dataField, ?DataField $parent = null, mixed &$masterRawData = null): bool
     {
         $isValidMandatory = true;
         // Get FieldType mandatory option
@@ -404,7 +404,7 @@ abstract class DataFieldType extends AbstractType
      * @param array<mixed> $rawData
      * @param array<mixed> $parentRawData
      */
-    public static function resolve(array $rawData, array $parentRawData, string $path, string $default = null): ?string
+    public static function resolve(array $rawData, array $parentRawData, string $path, ?string $default = null): ?string
     {
         $current = $rawData;
         if (\strlen($path) && \str_starts_with($path, '.')) {
@@ -423,7 +423,7 @@ abstract class DataFieldType extends AbstractType
         return $current;
     }
 
-    public function hasDeletedParent(DataField $parent = null): bool
+    public function hasDeletedParent(?DataField $parent = null): bool
     {
         if (!$parent) {
             return false;

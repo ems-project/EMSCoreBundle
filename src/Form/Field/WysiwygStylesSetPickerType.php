@@ -24,8 +24,8 @@ class WysiwygStylesSetPickerType extends Select2Type
             ],
             'choice_attr' => fn ($category, $key, $index) => // TODO: it would be nice to translate the roles
 [
-                    'data-content' => "<div class='text-".$category."'><i class='fa fa-css3'></i>&nbsp;&nbsp;".$key.'</div>',
-            ],
+    'data-content' => "<div class='text-".$category."'><i class='fa fa-css3'></i>&nbsp;&nbsp;".$key.'</div>',
+],
             'choice_value' => fn ($value) => $value,
         ]);
     }

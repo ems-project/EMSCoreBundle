@@ -26,11 +26,11 @@ class FilterType extends AbstractType
                 ],
             ])
             ->add('save', SubmitEmsType::class, [
-                    'label' => 'Save',
-                    'attr' => [
-                            'class' => 'btn btn-primary pull-right',
-                    ],
-                    'icon' => 'fa fa-save',
+                'label' => 'Save',
+                'attr' => [
+                    'class' => 'btn btn-primary pull-right',
+                ],
+                'icon' => 'fa fa-save',
             ]);
     }
 

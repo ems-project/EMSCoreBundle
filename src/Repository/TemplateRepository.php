@@ -26,7 +26,7 @@ class TemplateRepository extends ServiceEntityRepository
      *
      * @return Template[]
      */
-    public function findByRenderOptionAndContentType(string $option, array $contentTypes = null): array
+    public function findByRenderOptionAndContentType(string $option, ?array $contentTypes = null): array
     {
         $qb = $this->createQueryBuilder('t')
         ->select('t')

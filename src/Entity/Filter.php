@@ -150,7 +150,7 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
         return $json;
     }
 
-    public static function fromJson(string $json, \EMS\CommonBundle\Entity\EntityInterface $filter = null): Filter
+    public static function fromJson(string $json, ?\EMS\CommonBundle\Entity\EntityInterface $filter = null): Filter
     {
         $meta = JsonClass::fromJsonString($json);
         $filter = $meta->jsonDeserialize($filter);

@@ -66,7 +66,7 @@ class DataService
     final public const ALGO = OPENSSL_ALGO_SHA1;
     protected const SCROLL_TIMEOUT = '1m';
 
-    private null|false|\OpenSSLAsymmetricKey $private_key = null;
+    private false|\OpenSSLAsymmetricKey|null $private_key = null;
     private ?string $public_key = null;
 
     /** @var array<mixed> */
@@ -122,7 +122,7 @@ class DataService
         }
     }
 
-    public function unlockRevision(Revision $revision, string $lockerUsername = null): void
+    public function unlockRevision(Revision $revision, ?string $lockerUsername = null): void
     {
         $lockerUsername ??= $this->userService->getCurrentUser()->getUsername();
 
@@ -136,7 +136,7 @@ class DataService
      * @throws PrivilegeException
      * @throws \Exception
      */
-    public function lockRevision(Revision $revision, Environment $publishEnv = null, bool $super = false, string $username = null, \DateTime $lockTime = null): string
+    public function lockRevision(Revision $revision, ?Environment $publishEnv = null, bool $super = false, ?string $username = null, ?\DateTime $lockTime = null): string
     {
         if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
@@ -460,9 +460,9 @@ class DataService
         if (!empty($ouuid)) {
             $revisionRepository = $em->getRepository(Revision::class);
             $anotherObject = $revisionRepository->findOneBy([
-                    'contentType' => $contentType,
-                    'ouuid' => $newRevision->getOuuid(),
-                    'endTime' => null,
+                'contentType' => $contentType,
+                'ouuid' => $newRevision->getOuuid(),
+                'endTime' => null,
             ]);
 
             if (!empty($anotherObject)) {
@@ -712,7 +712,7 @@ class DataService
      * @throws \Exception
      * @throws \Throwable
      */
-    public function finalizeDraft(Revision $revision, FormInterface &$form = null, string $username = null, bool $computeFields = true): Revision
+    public function finalizeDraft(Revision $revision, ?FormInterface &$form = null, ?string $username = null, bool $computeFields = true): Revision
     {
         if ($revision->getDeleted()) {
             throw new \Exception('Can not finalized a deleted revision');
@@ -895,8 +895,8 @@ class DataService
         /** @var ContentTypeRepository $contentTypeRepo */
         $contentTypeRepo = $em->getRepository(ContentType::class);
         $contentTypes = $contentTypeRepo->findBy([
-                'name' => $type,
-                'deleted' => false,
+            'name' => $type,
+            'deleted' => false,
         ]);
 
         if (1 != \count($contentTypes)) {
@@ -908,10 +908,10 @@ class DataService
         $repository = $em->getRepository(Revision::class);
         /** @var Revision[] $revisions */
         $revisions = $repository->findBy([
-                'ouuid' => $ouuid,
-                'endTime' => null,
-                'contentType' => $contentType,
-                'deleted' => false,
+            'ouuid' => $ouuid,
+            'endTime' => null,
+            'contentType' => $contentType,
+            'deleted' => false,
         ]);
 
         if (1 == \count($revisions)) {
@@ -936,7 +936,7 @@ class DataService
      * @throws HasNotCircleException
      * @throws \Throwable
      */
-    public function newDocument(ContentType $contentType, string $ouuid = null, array $rawData = null, string $username = null): Revision
+    public function newDocument(ContentType $contentType, ?string $ouuid = null, ?array $rawData = null, ?string $username = null): Revision
     {
         $this->hasCreateRights($contentType);
         /** @var RevisionRepository $revisionRepository */
@@ -1103,7 +1103,7 @@ class DataService
      * @throws OptimisticLockException
      * @throws \Exception
      */
-    public function initNewDraft(string $type, string $ouuid, Revision $fromRev = null, string $username = null): Revision
+    public function initNewDraft(string $type, string $ouuid, ?Revision $fromRev = null, ?string $username = null): Revision
     {
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
@@ -1112,8 +1112,8 @@ class DataService
         $contentTypeRepo = $em->getRepository(ContentType::class);
         /** @var ContentType|null $contentType */
         $contentType = $contentTypeRepo->findOneBy([
-                'name' => $type,
-                'deleted' => false,
+            'name' => $type,
+            'deleted' => false,
         ]);
 
         if (null === $contentType) {
@@ -1167,7 +1167,7 @@ class DataService
      * @throws OptimisticLockException
      * @throws PrivilegeException
      */
-    public function discardDraft(Revision $revision, bool $super = false, string $username = null): ?int
+    public function discardDraft(Revision $revision, bool $super = false, ?string $username = null): ?int
     {
         $this->lockRevision($revision, null, $super, $username);
 
@@ -1220,7 +1220,7 @@ class DataService
         return $hasPreviousRevision;
     }
 
-    public function delete(string $type, string $ouuid, string $username = null): void
+    public function delete(string $type, string $ouuid, ?string $username = null): void
     {
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
@@ -1229,8 +1229,8 @@ class DataService
         $contentTypeRepo = $em->getRepository(ContentType::class);
 
         $contentTypes = $contentTypeRepo->findBy([
-                'deleted' => false,
-                'name' => $type,
+            'deleted' => false,
+            'name' => $type,
         ]);
         if (!$contentTypes || 1 != \count($contentTypes)) {
             throw new NotFoundHttpException('Content Type not found');
@@ -1240,8 +1240,8 @@ class DataService
         $repository = $em->getRepository(Revision::class);
 
         $revisions = $repository->findBy([
-                'ouuid' => $ouuid,
-                'contentType' => $contentTypes[0],
+            'ouuid' => $ouuid,
+            'contentType' => $contentTypes[0],
         ]);
 
         $username ??= $this->userService->getCurrentUser()->getUsername();
@@ -1297,9 +1297,9 @@ class DataService
         $repository = $em->getRepository(Revision::class);
 
         $revisions = $repository->findBy([
-                'ouuid' => $ouuid,
-                'contentType' => $contentType,
-                'deleted' => true,
+            'ouuid' => $ouuid,
+            'contentType' => $contentType,
+            'deleted' => true,
         ]);
 
         /** @var Revision $revision */
@@ -1325,9 +1325,9 @@ class DataService
         $repository = $em->getRepository(Revision::class);
 
         $revisions = $repository->findBy([
-                'ouuid' => $ouuid,
-                'contentType' => $contentType,
-                'deleted' => true,
+            'ouuid' => $ouuid,
+            'contentType' => $contentType,
+            'deleted' => true,
         ]);
 
         $out = null;
@@ -1556,7 +1556,7 @@ class DataService
         return $out;
     }
 
-    public function getEmptyRevision(ContentType $contentType, string $user = null): Revision
+    public function getEmptyRevision(ContentType $contentType, ?string $user = null): Revision
     {
         $now = new \DateTime();
         $until = $now->add(new \DateInterval('PT5M')); // +5 minutes
@@ -1601,7 +1601,7 @@ class DataService
      *
      * @throws \Exception
      */
-    public function isValid(FormInterface &$form, DataField $parent = null, array &$masterRawData = null): bool
+    public function isValid(FormInterface &$form, ?DataField $parent = null, ?array &$masterRawData = null): bool
     {
         $viewData = $form->getNormData();
 
@@ -1670,8 +1670,8 @@ class DataService
         /** @var ContentTypeRepository $contentTypeRepo */
         $contentTypeRepo = $em->getRepository(ContentType::class);
         $contentTypes = $contentTypeRepo->findBy([
-                'name' => $type->getName(),
-                'deleted' => false,
+            'name' => $type->getName(),
+            'deleted' => false,
         ]);
 
         if (1 != \count($contentTypes)) {
@@ -1682,10 +1682,10 @@ class DataService
         $repository = $em->getRepository(Revision::class);
         /** @var Revision[] $revisions */
         $revisions = $repository->findBy([
-                'id' => $id,
-                'endTime' => null,
-                'contentType' => $contentType,
-                'deleted' => false,
+            'id' => $id,
+            'endTime' => null,
+            'contentType' => $contentType,
+            'deleted' => false,
         ]);
 
         if (1 == \count($revisions)) {

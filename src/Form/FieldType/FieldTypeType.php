@@ -45,64 +45,64 @@ class FieldTypeType extends AbstractType
 
         if ($dataFieldType->isContainer()) {
             $builder->add('ems:internal:add:field:class', FieldTypePickerType::class, [
-                    'label' => 'Field\'s type',
-                    'mapped' => false,
-                    'required' => false,
+                'label' => 'Field\'s type',
+                'mapped' => false,
+                'required' => false,
             ]);
             $builder->add('ems:internal:add:field:name', TextType::class, [
-                    'label' => 'Field\'s machine name',
-                    'mapped' => false,
-                    'required' => false,
+                'label' => 'Field\'s machine name',
+                'mapped' => false,
+                'required' => false,
             ]);
 
             $builder->add('add', SubmitEmsType::class, [
-                    'attr' => [
-                            'class' => 'btn btn-primary ',
-                    ],
-                    'icon' => 'fa fa-plus',
+                'attr' => [
+                    'class' => 'btn btn-primary ',
+                ],
+                'icon' => 'fa fa-plus',
             ]);
         } elseif (0 != \strcmp(SubfieldType::class, $fieldType->getType())) {
             $builder->add('ems:internal:add:subfield:name', TextType::class, [
-                    'label' => 'Subfield\'s name',
-                    'mapped' => false,
-                    'required' => false,
+                'label' => 'Subfield\'s name',
+                'mapped' => false,
+                'required' => false,
             ]);
 
             $builder->add('subfield', SubmitEmsType::class, [
-                    'label' => 'Add',
-                    'attr' => [
-                            'class' => 'btn btn-primary ',
-                    ],
-                    'icon' => 'fa fa-plus',
+                'label' => 'Add',
+                'attr' => [
+                    'class' => 'btn btn-primary ',
+                ],
+                'icon' => 'fa fa-plus',
             ]);
 
             $builder->add('ems:internal:add:subfield:target_name', TextType::class, [
-                    'label' => 'New field\'s machine name',
-                    'mapped' => false,
-                    'required' => false,
+                'label' => 'New field\'s machine name',
+                'mapped' => false,
+                'required' => false,
             ]);
 
             $builder->add('duplicate', SubmitEmsType::class, [
-                    'label' => 'Duplicate',
-                    'attr' => [
-                            'class' => 'btn btn-primary ',
-                    ],
-                    'icon' => 'fa fa-paste',
+                'label' => 'Duplicate',
+                'attr' => [
+                    'class' => 'btn btn-primary ',
+                ],
+                'icon' => 'fa fa-paste',
             ]);
         }
         if (!$options['editSubfields']) {
             $builder->add('name', TextType::class, [
                 'label' => 'Field\'s name',
-//                'mapped' => false,
-//                'required' => false,
+                //                'mapped' => false,
+                //                'required' => false,
             ]);
         }
         if (null != $fieldType->getParent() && $options['editSubfields']) {
             $builder->add('remove', SubmitEmsType::class, [
-                    'attr' => [
-                            'class' => 'btn btn-danger btn-xs',
-                    ],
-                    'icon' => 'fa fa-trash',
+                'attr' => [
+                    'class' => 'btn btn-danger btn-xs',
+                ],
+                'icon' => 'fa fa-trash',
             ]);
         }
 
@@ -122,10 +122,10 @@ class FieldTypeType extends AbstractType
             }
             if ($childFound && $options['editSubfields']) {
                 $builder->add('reorder', SubmitEmsType::class, [
-                        'attr' => [
-                                'class' => 'btn btn-primary ',
-                        ],
-                        'icon' => 'fa fa-reorder',
+                    'attr' => [
+                        'class' => 'btn btn-primary ',
+                    ],
+                    'icon' => 'fa fa-reorder',
                 ]);
             }
         }

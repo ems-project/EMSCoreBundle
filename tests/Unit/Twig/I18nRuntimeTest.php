@@ -79,7 +79,7 @@ class I18nRuntimeTest extends TestCase
         $this->assertEquals('hello in en', $value);
     }
 
-    private function getResults(string $name = null)
+    private function getResults(?string $name = null)
     {
         $dbResults = [
             ['id' => 8, 'created' => '2022-03-02 14:44:56', 'modified' => '2022-03-02 14:44:56', 'identifier' => 'invalid', 'content' => [['locale' => 0, 'text' => '{"locales": ["en", "fr","nl","de"]}']]],

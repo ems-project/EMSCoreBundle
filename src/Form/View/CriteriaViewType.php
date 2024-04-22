@@ -59,9 +59,9 @@ class CriteriaViewType extends ViewType
             ->add('criteriaField', TextType::class, [
                 'label' => 'The collection field containing the list of criteria (internal collection mode)',
             ])->add('criteriaFieldPaths', TextareaType::class, [
-                    'attr' => [
-                        'rows' => 6,
-                    ],
+                'attr' => [
+                    'rows' => 6,
+                ],
             ]);
     }
 
@@ -75,10 +75,10 @@ class CriteriaViewType extends ViewType
         $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->logger);
 
         $form = $formFactory->create(CriteriaFilterType::class, $criteriaUpdateConfig, [
-                'view' => $view,
-                'action' => $this->router->generate('views.criteria.table', [
-                    'view' => $view->getId(),
-                ], UrlGeneratorInterface::RELATIVE_PATH),
+            'view' => $view,
+            'action' => $this->router->generate('views.criteria.table', [
+                'view' => $view->getId(),
+            ], UrlGeneratorInterface::RELATIVE_PATH),
         ]);
 
         $form->handleRequest($request);

@@ -34,8 +34,8 @@ abstract class ViewType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-                'view' => null,
-                'label' => $this->getName().' options',
+            'view' => null,
+            'label' => $this->getName().' options',
         ]);
     }
 

@@ -80,7 +80,7 @@ class MediaLibraryFile extends MediaLibraryDocument
         ]);
     }
 
-    private function setFileProperty(string $property, null|int|string $value): void
+    private function setFileProperty(string $property, int|string|null $value): void
     {
         $this->document->setValue(\sprintf('%s[%s]', $this->config->fieldFile, $property), $value);
     }

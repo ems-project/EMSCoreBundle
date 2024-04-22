@@ -39,13 +39,13 @@ class KeywordsViewType extends ViewType
         parent::buildForm($builder, $options);
         $builder
         ->add('aggsQuery', TextareaType::class, [
-                'label' => 'The aggregations Elasticsearch query [Twig]',
+            'label' => 'The aggregations Elasticsearch query [Twig]',
         ])
         ->add('template', TextareaType::class, [
-                'label' => 'The Twig template used to display each keywords',
+            'label' => 'The Twig template used to display each keywords',
         ])
         ->add('pathToBuckets', TextType::class, [
-                'label' => 'The twig path to the buckets array',
+            'label' => 'The twig path to the buckets array',
         ]);
     }
 

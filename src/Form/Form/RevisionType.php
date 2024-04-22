@@ -98,11 +98,11 @@ class RevisionType extends AbstractType
 
             if ($options['has_copy']) {
                 $builder->add('copy', SubmitEmsType::class, [
-                        'label' => 'form.form.revision-type.copy-label',
-                        'attr' => [
-                            'class' => '',
-                        ],
-                        'icon' => 'fa fa-copy',
+                    'label' => 'form.form.revision-type.copy-label',
+                    'attr' => [
+                        'class' => '',
+                    ],
+                    'icon' => 'fa fa-copy',
                 ]);
             }
         }
@@ -126,23 +126,23 @@ class RevisionType extends AbstractType
             }
         }
         $builder->add('allFieldsAreThere', HiddenType::class, [
-                 'data' => true,
+            'data' => true,
         ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-                'compound' => true,
-                'content_type' => null,
-                'csrf_protection' => false,
-                'data_class' => Revision::class,
-                'has_clipboard' => false,
-                'has_copy' => false,
-                'migration' => false,
-                'with_warning' => true,
-                'translation_domain' => 'EMSCoreBundle',
-                'raw_data' => [],
+            'compound' => true,
+            'content_type' => null,
+            'csrf_protection' => false,
+            'data_class' => Revision::class,
+            'has_clipboard' => false,
+            'has_copy' => false,
+            'migration' => false,
+            'with_warning' => true,
+            'translation_domain' => 'EMSCoreBundle',
+            'raw_data' => [],
         ]);
     }
 

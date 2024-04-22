@@ -30,7 +30,7 @@ final class DatatableController extends AbstractController
     ) {
     }
 
-    public function ajaxData(Request $request, string $hash, string $optionsCacheKey = null): Response
+    public function ajaxData(Request $request, string $hash, ?string $optionsCacheKey = null): Response
     {
         $table = $this->dataTableFactory->createFromHash($hash, $optionsCacheKey);
         $dataTableRequest = DataTableRequest::fromRequest($request);
@@ -42,7 +42,7 @@ final class DatatableController extends AbstractController
         ], new JsonResponse());
     }
 
-    public function ajaxExport(Request $request, string $format, string $hash, string $optionsCacheKey = null): Response
+    public function ajaxExport(Request $request, string $format, string $hash, ?string $optionsCacheKey = null): Response
     {
         $table = $this->dataTableFactory->createFromHash($hash, $optionsCacheKey, DataTableFormat::from($format));
         $dataTableRequest = DataTableRequest::fromRequest($request);

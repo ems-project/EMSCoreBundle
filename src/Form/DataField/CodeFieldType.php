@@ -82,21 +82,21 @@ class CodeFieldType extends DataFieldType
             $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
         }
         $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('maxLines', IntegerType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('height', IntegerType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('language', TextType::class, [
-                'required' => false,
-                'attr' => [
-                        'class' => 'code_editor_mode_ems',
-                ],
+            'required' => false,
+            'attr' => [
+                'class' => 'code_editor_mode_ems',
+            ],
         ])->add('theme', TextType::class, [
-                'required' => false,
-                'attr' => [
-                        'class' => 'code_editor_theme_ems',
-                ],
+            'required' => false,
+            'attr' => [
+                'class' => 'code_editor_theme_ems',
+            ],
         ]);
     }
 }

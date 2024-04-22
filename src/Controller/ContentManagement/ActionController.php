@@ -127,7 +127,7 @@ final class ActionController extends AbstractController
             }
 
             return $this->redirectToRoute('ems_core_action_index', [
-                    'contentType' => $action->giveContentType()->getId(),
+                'contentType' => $action->giveContentType()->getId(),
             ]);
         }
 

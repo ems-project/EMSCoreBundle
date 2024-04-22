@@ -83,7 +83,7 @@ class NotificationController extends AbstractController
         $success = $this->notificationService->addNotification($ct->getActionById(\intval($templateId)), $revision, $env);
 
         return $this->flashMessageLogger->buildJsonResponse([
-                'success' => $success,
+            'success' => $success,
         ]);
     }
 
@@ -161,8 +161,8 @@ class NotificationController extends AbstractController
         $notificationFilter = new NotificationFilter();
 
         $form = $this->createForm(NotificationFormType::class, $notificationFilter, [
-                 'method' => 'GET',
-         ]);
+            'method' => 'GET',
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -192,24 +192,24 @@ class NotificationController extends AbstractController
         $treatNotification = new TreatNotifications();
 
         $treatForm = $this->createForm(TreatNotificationsType::class, $treatNotification, [
-                 'action' => $this->generateUrl('notification.treat', [], UrlGeneratorInterface::RELATIVE_PATH),
-                 'notifications' => $notifications,
-         ]);
+            'action' => $this->generateUrl('notification.treat', [], UrlGeneratorInterface::RELATIVE_PATH),
+            'notifications' => $notifications,
+        ]);
 
         return $this->render("@$this->templateNamespace/notification/list.html.twig", [
-                'counter' => $count,
-                'notifications' => $notifications,
-                'lastPage' => $lastPage,
-                'paginationPath' => 'notifications.'.$folder,
-                'page' => $page,
-                'form' => $form->createView(),
-                'treatform' => $treatForm->createView(),
-                'currentFilters' => $request->query,
-                'folder' => $folder,
-                'countPending' => $countPending,
-                'countRejected' => $countRejected,
-                'rejectedNotifications' => $rejectedNotifications,
-                'countSent' => $countSent,
+            'counter' => $count,
+            'notifications' => $notifications,
+            'lastPage' => $lastPage,
+            'paginationPath' => 'notifications.'.$folder,
+            'page' => $page,
+            'form' => $form->createView(),
+            'treatform' => $treatForm->createView(),
+            'currentFilters' => $request->query,
+            'folder' => $folder,
+            'countPending' => $countPending,
+            'countRejected' => $countRejected,
+            'rejectedNotifications' => $rejectedNotifications,
+            'countSent' => $countSent,
         ]);
     }
 }

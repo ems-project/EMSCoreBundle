@@ -213,7 +213,7 @@ class JsonMenuNestedController
         $session->getFlashBag()->clear();
     }
 
-    private function createFormItem(JsonMenuNestedConfig $config, JsonMenuNestedNode $node, JsonMenuNested $item = null): FormInterface
+    private function createFormItem(JsonMenuNestedConfig $config, JsonMenuNestedNode $node, ?JsonMenuNested $item = null): FormInterface
     {
         $object = $item ? $item->getObject() : [];
         $data = RawDataTransformer::transform($node->getFieldType(), $object);

@@ -95,13 +95,13 @@ class JsonMenuLinkFieldType extends DataFieldType
         }
 
         $builder->add('value', ChoiceType::class, [
-                'label' => ($options['label'] ?? $fieldType->getName()),
-                'required' => false,
-                'disabled' => $this->isDisabled($options),
-                'choices' => $choices,
-                'empty_data' => [],
-                'multiple' => true,
-                'expanded' => $options['expanded'],
+            'label' => ($options['label'] ?? $fieldType->getName()),
+            'required' => false,
+            'disabled' => $this->isDisabled($options),
+            'choices' => $choices,
+            'empty_data' => [],
+            'multiple' => true,
+            'expanded' => $options['expanded'],
         ]);
     }
 

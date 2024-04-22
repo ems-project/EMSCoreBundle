@@ -177,28 +177,28 @@ class DateFieldType extends DataFieldType
         $fieldType = $builder->getOptions()['metadata'];
 
         $builder->add('value', TextType::class, [
-                'label' => ($options['label'] ?? $fieldType->getName()),
-                'required' => false,
-                'disabled' => $this->isDisabled($options),
-                'attr' => [
-                    'class' => 'datepicker',
-                    'data-date-format' => $fieldType->getDisplayOptions()['displayFormat'],
-                    'data-today-highlight' => $fieldType->getDisplayOptions()['todayHighlight'],
-                    'data-week-start' => $fieldType->getDisplayOptions()['weekStart'],
-                    'data-days-of-week-highlighted' => $fieldType->getDisplayOptions()['daysOfWeekHighlighted'],
-                    'data-days-of-week-disabled' => $fieldType->getDisplayOptions()['daysOfWeekDisabled'],
-                    'data-multidate' => $fieldType->getDisplayOptions()['multidate'] ? 'true' : 'false',
-                ],
+            'label' => ($options['label'] ?? $fieldType->getName()),
+            'required' => false,
+            'disabled' => $this->isDisabled($options),
+            'attr' => [
+                'class' => 'datepicker',
+                'data-date-format' => $fieldType->getDisplayOptions()['displayFormat'],
+                'data-today-highlight' => $fieldType->getDisplayOptions()['todayHighlight'],
+                'data-week-start' => $fieldType->getDisplayOptions()['weekStart'],
+                'data-days-of-week-highlighted' => $fieldType->getDisplayOptions()['daysOfWeekHighlighted'],
+                'data-days-of-week-disabled' => $fieldType->getDisplayOptions()['daysOfWeekDisabled'],
+                'data-multidate' => $fieldType->getDisplayOptions()['multidate'] ? 'true' : 'false',
+            ],
         ]);
     }
 
     public function generateMapping(FieldType $current): array
     {
         return [
-                $current->getName() => \array_merge([
-                        'type' => 'date',
-                        'format' => 'date_time_no_millis',
-                ], \array_filter($current->getMappingOptions())),
+            $current->getName() => \array_merge([
+                'type' => 'date',
+                'format' => 'date_time_no_millis',
+            ], \array_filter($current->getMappingOptions())),
         ];
     }
 
@@ -288,38 +288,38 @@ class DateFieldType extends DataFieldType
 
         // String specific display options
         $optionsForm->get('displayOptions')->add('displayFormat', TextType::class, [
-                'required' => false,
-                'empty_data' => 'dd/MM/yyyy',
-                'attr' => [
-                    'placeholder' => 'e.g. dd/MM/yyyy',
-                ],
+            'required' => false,
+            'empty_data' => 'dd/MM/yyyy',
+            'attr' => [
+                'placeholder' => 'e.g. dd/MM/yyyy',
+            ],
         ]);
         $optionsForm->get('displayOptions')->add('weekStart', IntegerType::class, [
-                'required' => false,
-                'empty_data' => 0,
-                'attr' => [
-                    'placeholder' => '0',
-                ],
+            'required' => false,
+            'empty_data' => 0,
+            'attr' => [
+                'placeholder' => '0',
+            ],
         ]);
         $optionsForm->get('displayOptions')->add('todayHighlight', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Today highlight (deprecated)',
+            'required' => false,
+            'label' => 'Today highlight (deprecated)',
         ]);
         $optionsForm->get('displayOptions')->add('multidate', CheckboxType::class, [
-                'required' => false,
+            'required' => false,
         ]);
         $optionsForm->get('displayOptions')->add('daysOfWeekDisabled', TextType::class, [
-                'required' => false,
-                'attr' => [
-                    'placeholder' => 'e.g. [0,6]',
-                ],
+            'required' => false,
+            'attr' => [
+                'placeholder' => 'e.g. [0,6]',
+            ],
         ]);
         $optionsForm->get('displayOptions')->add('daysOfWeekHighlighted', TextType::class, [
             'required' => false,
             'label' => 'Days of week highlighted (deprecated)',
-                'attr' => [
-                    'placeholder' => 'i.e. 0,6',
-                ],
+            'attr' => [
+                'placeholder' => 'i.e. 0,6',
+            ],
         ]);
     }
 }

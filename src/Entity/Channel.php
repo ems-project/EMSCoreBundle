@@ -39,7 +39,7 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
         $this->modified = DateTime::create('now');
     }
 
-    public static function fromJson(string $json, \EMS\CommonBundle\Entity\EntityInterface $channel = null): Channel
+    public static function fromJson(string $json, ?\EMS\CommonBundle\Entity\EntityInterface $channel = null): Channel
     {
         $meta = JsonClass::fromJsonString($json);
         $channel = $meta->jsonDeserialize($channel);
@@ -106,7 +106,7 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
     /**
      * @param array<string, mixed> $options
      */
-    public function setOptions(array $options = null): void
+    public function setOptions(?array $options = null): void
     {
         $this->options = $options;
     }

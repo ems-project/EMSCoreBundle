@@ -51,7 +51,7 @@ final class TaskManager
     /**
      * @return Revision[]
      */
-    public function getRevisionsWithCurrentTask(\DateTimeImmutable $deadlineStart = null, \DateTimeImmutable $deadlineEnd = null): array
+    public function getRevisionsWithCurrentTask(?\DateTimeImmutable $deadlineStart = null, ?\DateTimeImmutable $deadlineEnd = null): array
     {
         $statuses = [TaskStatus::PROGRESS, TaskStatus::REJECTED, TaskStatus::COMPLETED];
 
@@ -113,7 +113,7 @@ final class TaskManager
         return $task->getCreatedBy() === $user->getUsername();
     }
 
-    public function isTaskManager(UserInterface $user = null): bool
+    public function isTaskManager(?UserInterface $user = null): bool
     {
         if ($user) {
             return $user->hasRole(Roles::ROLE_TASK_MANAGER);
@@ -148,7 +148,7 @@ final class TaskManager
         return $task;
     }
 
-    public function taskDelete(Task $task, Revision $revision, string $comment = null): void
+    public function taskDelete(Task $task, Revision $revision, ?string $comment = null): void
     {
         $transaction = $this->revisionTransaction(function (Revision $revision) use ($task, $comment) {
             if ($revision->isTaskCurrent($task)) {
@@ -215,7 +215,7 @@ final class TaskManager
         $transaction($revision);
     }
 
-    public function taskValidateRequest(Task $task, Revision $revision, string $comment = null): void
+    public function taskValidateRequest(Task $task, Revision $revision, ?string $comment = null): void
     {
         $transaction = $this->revisionTransaction(function (Revision $revision) use ($task, $comment) {
             $event = $this->createTaskEvent($task, $revision);
@@ -253,7 +253,7 @@ final class TaskManager
         $this->eventDispatcher->dispatch($event, $eventName);
     }
 
-    private function createTaskEvent(Task $task, Revision $revision, string $username = null): TaskEvent
+    private function createTaskEvent(Task $task, Revision $revision, ?string $username = null): TaskEvent
     {
         $username = $username ?: $this->userService->getCurrentUser()->getUsername();
 

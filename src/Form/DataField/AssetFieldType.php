@@ -58,10 +58,10 @@ class AssetFieldType extends DataFieldType
             'required' => false,
         ])
         ->add('icon', IconPickerType::class, [
-                'required' => false,
+            'required' => false,
         ])
         ->add('imageAssetConfigIdentifier', TextType::class, [
-                'required' => false,
+            'required' => false,
         ]);
     }
 
@@ -88,13 +88,13 @@ class AssetFieldType extends DataFieldType
     {
         return [
             $current->getName() => \array_merge([
-                    'type' => 'nested',
-                    'properties' => [
-                        'mimetype' => $this->elasticsearchService->getKeywordMapping(),
-                        'sha1' => $this->elasticsearchService->getKeywordMapping(),
-                        'filename' => $this->elasticsearchService->getIndexedStringMapping(),
-                        'filesize' => $this->elasticsearchService->getLongMapping(),
-                    ],
+                'type' => 'nested',
+                'properties' => [
+                    'mimetype' => $this->elasticsearchService->getKeywordMapping(),
+                    'sha1' => $this->elasticsearchService->getKeywordMapping(),
+                    'filename' => $this->elasticsearchService->getIndexedStringMapping(),
+                    'filesize' => $this->elasticsearchService->getLongMapping(),
+                ],
             ], \array_filter($current->getMappingOptions())),
         ];
     }

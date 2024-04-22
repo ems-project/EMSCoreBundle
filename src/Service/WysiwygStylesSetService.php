@@ -149,7 +149,7 @@ class WysiwygStylesSetService implements EntityServiceInterface
         return $stylesSet;
     }
 
-    public function createEntityFromJson(string $json, string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $styleSet = WysiwygStylesSet::fromJson($json);
         if (null !== $name && $styleSet->getName() !== $name) {

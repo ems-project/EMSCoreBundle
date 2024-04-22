@@ -59,8 +59,8 @@ class ComputedFieldType extends DataFieldType
             'required' => false,
             'language' => 'ace/mode/twig',
         ])->add('json', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Try to JSON decode',
+            'required' => false,
+            'label' => 'Try to JSON decode',
         ])->add('displayTemplate', CodeEditorType::class, [
             'required' => false,
             'language' => 'ace/mode/twig',
@@ -73,7 +73,7 @@ class ComputedFieldType extends DataFieldType
                     'language' => 'ace/mode/json',
                 ])
             ->add('copy_to', TextType::class, [
-                    'required' => false,
+                'required' => false,
             ]);
         }
 

@@ -21,54 +21,54 @@ class FileType extends AbstractType
     {
         $builder->add('sha1', HiddenType::class, [
             'attr' => [
-                    'class' => 'sha1',
+                'class' => 'sha1',
             ],
             'required' => $options['required'],
         ])
         ->add('mimetype', TextType::class, [
             'attr' => [
-                    'class' => 'type',
+                'class' => 'type',
             ],
             'required' => $options['required'],
         ])
         ->add('filename', TextType::class, [
-                'attr' => [
-                        'class' => 'name',
-                ],
-                'required' => $options['required'],
+            'attr' => [
+                'class' => 'name',
+            ],
+            'required' => $options['required'],
         ]);
 
         if ($options['meta_fields']) {
             $builder->add('_title', TextType::class, [
-                    'attr' => [
-                            'class' => 'title',
-                    ],
-                    'required' => false,
+                'attr' => [
+                    'class' => 'title',
+                ],
+                'required' => false,
             ])
             ->add('_date', TextType::class, [
-                    'attr' => [
-                            'class' => 'date',
-                    ],
-                    'required' => false,
+                'attr' => [
+                    'class' => 'date',
+                ],
+                'required' => false,
             ])
             ->add('_author', TextType::class, [
-                    'attr' => [
-                            'class' => 'author',
-                    ],
-                    'required' => false,
+                'attr' => [
+                    'class' => 'author',
+                ],
+                'required' => false,
             ])
             ->add('_language', TextType::class, [
-                    'attr' => [
-                            'class' => 'language',
-                    ],
-                    'required' => false,
+                'attr' => [
+                    'class' => 'language',
+                ],
+                'required' => false,
             ])
             ->add('_content', TextareaType::class, [
-                    'attr' => [
-                            'class' => 'content',
-                            'rows' => 6,
-                    ],
-                    'required' => false,
+                'attr' => [
+                    'class' => 'content',
+                    'rows' => 6,
+                ],
+                'required' => false,
             ]);
         }
     }

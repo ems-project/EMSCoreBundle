@@ -54,12 +54,12 @@ class RequestListener
                 $this->logger->error($exception instanceof LockedException ? 'log.locked_exception_error' : 'log.privilege_exception_error', [...['username' => $exception->getRevision()->getLockBy()], ...LogRevisionContext::read($exception->getRevision())]);
                 if (null == $exception->getRevision()->getOuuid()) {
                     $response = new RedirectResponse($this->router->generate('data.draft_in_progress', [
-                            'contentTypeId' => $exception->getRevision()->giveContentType()->getId(),
+                        'contentTypeId' => $exception->getRevision()->giveContentType()->getId(),
                     ], UrlGeneratorInterface::RELATIVE_PATH));
                 } else {
                     $response = new RedirectResponse($this->router->generate(Routes::VIEW_REVISIONS, [
-                            'type' => $exception->getRevision()->giveContentType()->getName(),
-                            'ouuid' => $exception->getRevision()->getOuuid(),
+                        'type' => $exception->getRevision()->giveContentType()->getName(),
+                        'ouuid' => $exception->getRevision()->getOuuid(),
                     ], UrlGeneratorInterface::RELATIVE_PATH));
                 }
                 $event->setResponse($response);
@@ -70,7 +70,7 @@ class RequestListener
                     EmsFields::LOG_EXCEPTION_FIELD => $exception,
                 ]);
                 $response = new RedirectResponse($this->router->generate('notifications.list', [
-                    ]));
+                ]));
                 $event->setResponse($response);
             }
         } catch (\Exception $e) {
@@ -86,17 +86,17 @@ class RequestListener
         // TODO: move to twig appextension?
         $repository = $this->doctrine->getRepository(ContentType::class);
         $contentTypes = $repository->findBy([
-                'deleted' => false,
-//                 'rootContentType' => true,
+            'deleted' => false,
+            //                 'rootContentType' => true,
         ], [
-                'orderKey' => 'ASC',
+            'orderKey' => 'ASC',
         ]);
 
         $this->twig->addGlobal('contentTypes', $contentTypes);
 
         $envRepository = $this->doctrine->getRepository(Environment::class);
         $contentTypes = $envRepository->findBy([
-                'inDefaultSearch' => true,
+            'inDefaultSearch' => true,
         ]);
 
         $defaultEnvironments = [];

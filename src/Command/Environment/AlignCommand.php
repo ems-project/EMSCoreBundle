@@ -40,9 +40,9 @@ class AlignCommand extends AbstractEnvironmentCommand
 
     /** @var array<int, string> */
     private array $bulkResultCounter = [
-       0 => 'aligned',
-       1 => 'published',
-       -1 => 'publication_template',
+        0 => 'aligned',
+        1 => 'published',
+        -1 => 'publication_template',
     ];
 
     protected function configure(): void

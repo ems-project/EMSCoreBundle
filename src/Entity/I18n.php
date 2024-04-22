@@ -96,7 +96,7 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
         return $json;
     }
 
-    public static function fromJson(string $json, EntityInterface $dashboard = null): I18n
+    public static function fromJson(string $json, ?EntityInterface $dashboard = null): I18n
     {
         $meta = JsonClass::fromJsonString($json);
         $dashboard = $meta->jsonDeserialize($dashboard);

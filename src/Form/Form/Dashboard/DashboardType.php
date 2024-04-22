@@ -88,11 +88,11 @@ final class DashboardType extends AbstractType
         if ($options['create'] ?? false) {
             $builder
                 ->add('create', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-save',
-            ]);
+                    'attr' => [
+                        'class' => 'btn btn-primary btn-sm ',
+                    ],
+                    'icon' => 'fa fa-save',
+                ]);
         } else {
             $builder->add('options', DashboardOptionsType::class, [
                 'dashboard' => $this->dashboardService->get($dashboard->getType()),

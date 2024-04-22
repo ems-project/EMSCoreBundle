@@ -35,7 +35,7 @@ class JobService implements EntityServiceInterface
         $this->em = $doctrine->getManager();
     }
 
-    public function nextJob(string $tag = null): ?Job
+    public function nextJob(?string $tag = null): ?Job
     {
         return $this->repository->findOneBy(
             ['started' => false, 'done' => false, 'tag' => $tag],
@@ -102,7 +102,7 @@ class JobService implements EntityServiceInterface
         return $job;
     }
 
-    public function createCommand(UserInterface $user, ?string $command, string $tag = null): Job
+    public function createCommand(UserInterface $user, ?string $command, ?string $tag = null): Job
     {
         $job = $this->newJob($user);
         $job->setCommand($command);
@@ -167,7 +167,7 @@ class JobService implements EntityServiceInterface
         return $output;
     }
 
-    public function finish(int $jobId, string $errorMessage = null): void
+    public function finish(int $jobId, ?string $errorMessage = null): void
     {
         $job = $this->repository->findById($jobId);
         $job->setDone(true);
@@ -267,7 +267,7 @@ class JobService implements EntityServiceInterface
         throw new \RuntimeException('Job entities doesn\'t support JSON update');
     }
 
-    public function createEntityFromJson(string $json, string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         if (null !== $name) {
             throw new \RuntimeException('Job entities doesn\'t support JSON update');

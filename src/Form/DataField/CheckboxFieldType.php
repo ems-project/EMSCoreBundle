@@ -41,9 +41,9 @@ class CheckboxFieldType extends DataFieldType
         $fieldType = $builder->getOptions()['metadata'];
 
         $builder->add('value', CheckboxType::class, [
-                'label' => ($options['question_label'] ?: $options['label'] ?? false),
-                'disabled' => $this->isDisabled($options),
-                'required' => false,
+            'label' => ($options['question_label'] ?: $options['label'] ?? false),
+            'disabled' => $this->isDisabled($options),
+            'required' => false,
         ]);
     }
 
@@ -67,7 +67,7 @@ class CheckboxFieldType extends DataFieldType
     {
         parent::configureOptions($resolver);
         $resolver->setDefaults([
-                'question_label' => false,
+            'question_label' => false,
         ]);
     }
 
@@ -100,7 +100,7 @@ class CheckboxFieldType extends DataFieldType
     public function generateMapping(FieldType $current): array
     {
         return [
-                $current->getName() => $this->elasticsearchService->updateMapping(\array_merge(['type' => 'boolean'], \array_filter($current->getMappingOptions()))),
+            $current->getName() => $this->elasticsearchService->updateMapping(\array_merge(['type' => 'boolean'], \array_filter($current->getMappingOptions()))),
         ];
     }
 
@@ -111,9 +111,9 @@ class CheckboxFieldType extends DataFieldType
 
         // String specific display options
         $optionsForm->get('displayOptions')->add('question_label', TextType::class, [
-                'required' => false,
-//         ] )->add ( 'labels', TextareaType::class, [
-//                 'required' => false,
+            'required' => false,
+            //         ] )->add ( 'labels', TextareaType::class, [
+            //                 'required' => false,
         ]);
 
         //         // String specific mapping options

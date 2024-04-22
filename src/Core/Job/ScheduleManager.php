@@ -118,7 +118,7 @@ class ScheduleManager implements EntityServiceInterface
         $schedule->setNextRun($cron->getNextRunDate());
     }
 
-    public function findNext(string $tag = null): ?Schedule
+    public function findNext(?string $tag = null): ?Schedule
     {
         $schedule = $this->scheduleRepository->findNext($tag);
         if (null === $schedule) {
@@ -145,7 +145,7 @@ class ScheduleManager implements EntityServiceInterface
         return $schedule;
     }
 
-    public function createEntityFromJson(string $json, string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $schedule = Schedule::fromJson($json);
         if (null !== $name && $schedule->getName() !== $name) {

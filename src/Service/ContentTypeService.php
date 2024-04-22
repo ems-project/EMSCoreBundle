@@ -130,14 +130,14 @@ class ContentTypeService implements EntityServiceInterface
         ]);
     }
 
-    public function getIndex(ContentType $contentType, Environment $environment = null): string
+    public function getIndex(ContentType $contentType, ?Environment $environment = null): string
     {
         $environment ??= $contentType->giveEnvironment();
 
         return $environment->getAlias();
     }
 
-    public function updateMapping(ContentType $contentType, string $envs = null): void
+    public function updateMapping(ContentType $contentType, ?string $envs = null): void
     {
         try {
             $body = $this->environmentService->getIndexAnalysisConfiguration();
@@ -325,7 +325,7 @@ class ContentTypeService implements EntityServiceInterface
         return $this->importContentType($updatedContentType);
     }
 
-    public function contentTypeFromJson(string $json, Environment $environment, ContentType $contentType = null): ContentType
+    public function contentTypeFromJson(string $json, Environment $environment, ?ContentType $contentType = null): ContentType
     {
         $meta = JsonClass::fromJsonString($json);
         $contentType = $meta->jsonDeserialize($contentType);
@@ -633,7 +633,7 @@ class ContentTypeService implements EntityServiceInterface
         return $this->updateFromJson($entity, $json, false, false);
     }
 
-    public function createEntityFromJson(string $json, string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $firstEnvironment = null;
         foreach ($this->environmentService->getEnvironments() as $environment) {

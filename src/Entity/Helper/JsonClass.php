@@ -97,7 +97,7 @@ class JsonClass implements \JsonSerializable
         ];
     }
 
-    public function jsonDeserialize(object $object = null): ?object
+    public function jsonDeserialize(?object $object = null): ?object
     {
         $reflectionClass = new \ReflectionClass($this->class);
         $instance = $object;

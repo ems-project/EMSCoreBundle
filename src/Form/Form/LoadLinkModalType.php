@@ -171,18 +171,18 @@ class LoadLinkModalType extends AbstractType
 
         if (true === ($options[self::WITH_TARGET_BLANK_FIELD] ?? false)) {
             $builder->add(self::FIELD_TARGET_BLANK, CheckboxType::class, [
-                    'label' => 'link_modal.field.target_blank',
-                    'required' => false,
-                    'row_attr' => [
-                        'data-show-hide' => 'hide',
-                        'data-all-any' => 'any',
-                        'data-rules' => Json::encode([[
-                            'field' => \sprintf('[%s]', self::FIELD_LINK_TYPE),
-                            'condition' => 'is',
-                            'value' => self::LINK_TYPE_MAILTO,
-                        ]]),
-                    ],
-                ]);
+                'label' => 'link_modal.field.target_blank',
+                'required' => false,
+                'row_attr' => [
+                    'data-show-hide' => 'hide',
+                    'data-all-any' => 'any',
+                    'data-rules' => Json::encode([[
+                        'field' => \sprintf('[%s]', self::FIELD_LINK_TYPE),
+                        'condition' => 'is',
+                        'value' => self::LINK_TYPE_MAILTO,
+                    ]]),
+                ],
+            ]);
         }
 
         $builder->add(self::FIELD_SUBMIT, SubmitEmsType::class, [

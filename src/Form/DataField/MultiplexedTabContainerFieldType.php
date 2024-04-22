@@ -174,7 +174,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     /**
      * @return array<string, string>
      */
-    private function getChoices(FieldType $fieldType, string $locale = null): array
+    private function getChoices(FieldType $fieldType, ?string $locale = null): array
     {
         $choices = [];
         $labels = $fieldType->getDisplayOption(self::LABELS_DISPLAY_OPTION) ?? '';

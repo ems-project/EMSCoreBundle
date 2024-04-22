@@ -44,7 +44,7 @@ class SubfieldType extends DataFieldType
         $options = $this->elasticsearchService->updateMapping(\array_merge(['type' => 'string'], \array_filter($current->getMappingOptions())));
 
         return [
-                'fields' => [$current->getName() => $options],
+            'fields' => [$current->getName() => $options],
         ];
     }
 

@@ -15,7 +15,7 @@ class I18nService implements EntityServiceInterface
     /**
      * @param array<string>|null $filters
      */
-    public function counter(array $filters = null): int
+    public function counter(?array $filters = null): int
     {
         $identifier = null;
 
@@ -36,7 +36,7 @@ class I18nService implements EntityServiceInterface
      *
      * @return iterable|I18n[]
      */
-    public function findAll(int $from, int $limit, array $filters = null): iterable
+    public function findAll(int $from, int $limit, ?array $filters = null): iterable
     {
         $identifier = null;
 
@@ -126,7 +126,7 @@ class I18nService implements EntityServiceInterface
         return $i18n;
     }
 
-    public function createEntityFromJson(string $json, string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $i18n = I18n::fromJson($json);
         if (null !== $name && $i18n->getIdentifier() !== $name) {

@@ -121,7 +121,7 @@ class NestedFieldType extends DataFieldType
         $optionsForm->remove('mappingOptions');
         // an optional icon can't be specified ritgh to the container label
         $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
-                'required' => false,
+            'required' => false,
         ]);
     }
 

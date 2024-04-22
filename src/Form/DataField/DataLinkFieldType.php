@@ -65,7 +65,7 @@ class DataLinkFieldType extends DataFieldType
     public function getElasticsearchQuery(DataField $dataField, array $options = []): array
     {
         $opt = [...[
-                'nested' => '',
+            'nested' => '',
         ], ...$options];
         if (\strlen((string) $opt['nested'])) {
             $opt['nested'] .= '.';
@@ -76,14 +76,14 @@ class DataLinkFieldType extends DataFieldType
         if (\is_array($data)) {
             $out = [
                 'terms' => [
-                        $opt['nested'].$dataField->giveFieldType()->getName() => $data,
+                    $opt['nested'].$dataField->giveFieldType()->getName() => $data,
                 ],
             ];
         } else {
             $out = [
-                    'term' => [
-                            $opt['nested'].$dataField->giveFieldType()->getName() => $data,
-                    ],
+                'term' => [
+                    $opt['nested'].$dataField->giveFieldType()->getName() => $data,
+                ],
             ];
         }
 
@@ -217,23 +217,23 @@ class DataLinkFieldType extends DataFieldType
 
         // String specific display options
         $optionsForm->get('displayOptions')->add('multiple', CheckboxType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('dynamicLoading', CheckboxType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('sortable', CheckboxType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('querySearch', QuerySearchPickerType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('type', TextType::class, [
             'required' => false,
         ])->add('searchId', TextType::class, [
             'required' => false,
         ])->add('defaultValue', TextType::class, [
-                'required' => false,
+            'required' => false,
         ]);
 
         $optionsForm->get('extraOptions')->add('updateReferersField', TextType::class, [
-                'required' => false,
+            'required' => false,
         ]);
 
         if ($optionsForm->has('mappingOptions')) {

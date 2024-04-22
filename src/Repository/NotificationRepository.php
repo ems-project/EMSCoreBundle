@@ -41,11 +41,11 @@ class NotificationRepository extends ServiceEntityRepository
             ->andwhere('n.environment = :environment');
 
         $qb->setParameters([
-                'status' => 'pending',
-                'contentType' => $revision->getContentType(),
-                'ouuid' => $revision->getOuuid(),
-                'environment' => $environment,
-                'false' => false,
+            'status' => 'pending',
+            'contentType' => $revision->getContentType(),
+            'ouuid' => $revision->getOuuid(),
+            'environment' => $environment,
+            'false' => false,
         ]);
 
         $query = $qb->getQuery();
@@ -71,7 +71,7 @@ class NotificationRepository extends ServiceEntityRepository
      * @param Environment[] $environments
      * @param Template[]    $templates
      */
-    public function countPendingByUserRoleAndCircle(UserInterface $user, array $contentTypes = null, array $environments = null, array $templates = null): int
+    public function countPendingByUserRoleAndCircle(UserInterface $user, ?array $contentTypes = null, ?array $environments = null, ?array $templates = null): int
     {
         $templateIds = $this->getTemplatesIdsForUser($user, $contentTypes ?? []);
 
@@ -105,9 +105,9 @@ class NotificationRepository extends ServiceEntityRepository
         ->andwhere('r.ouuid = :ouuid');
 
         $qb->setParameters([
-                'status' => 'pending',
-                'contentType' => $contentType,
-                'ouuid' => $ouuid,
+            'status' => 'pending',
+            'contentType' => $contentType,
+            'ouuid' => $ouuid,
         ]);
 
         $query = $qb->getQuery();
@@ -185,7 +185,7 @@ class NotificationRepository extends ServiceEntityRepository
      *
      * @return Notification[]
      */
-    public function findRejectedForUser(UserInterface $user, int $from, int $limit, array $contentTypes = null, array $environments = null, array $templates = null): array
+    public function findRejectedForUser(UserInterface $user, int $from, int $limit, ?array $contentTypes = null, ?array $environments = null, ?array $templates = null): array
     {
         $qb = $this->createQueryBuilder('n')
         ->select('n')
@@ -216,7 +216,7 @@ class NotificationRepository extends ServiceEntityRepository
      *
      * @return Notification[]
      */
-    public function findByPendingAndUserRoleAndCircle(UserInterface $user, int $from, int $limit, array $contentTypes = null, array $environments = null, array $templates = null): array
+    public function findByPendingAndUserRoleAndCircle(UserInterface $user, int $from, int $limit, ?array $contentTypes = null, ?array $environments = null, ?array $templates = null): array
     {
         $templateIds = $this->getTemplatesIdsForUser($user, $contentTypes ?? []);
 
@@ -284,7 +284,7 @@ class NotificationRepository extends ServiceEntityRepository
      *
      * @return int[]
      */
-    private function getTemplatesIdsForUserFrom(UserInterface $user, array $contentTypes = null): array
+    private function getTemplatesIdsForUserFrom(UserInterface $user, ?array $contentTypes = null): array
     {
         $em = $this->getEntityManager();
 
@@ -332,7 +332,7 @@ class NotificationRepository extends ServiceEntityRepository
            ->where('n.status <> :status')
            ->andwhere('n.responseEmailed is NULL')
             ->setParameters([
-                    'status' => 'pending',
+                'status' => 'pending',
             ]);
 
         return $query->getQuery()->getResult();

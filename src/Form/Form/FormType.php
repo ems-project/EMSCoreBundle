@@ -46,11 +46,11 @@ final class FormType extends AbstractType
         if ($options['create'] ?? false) {
             $builder
                 ->add('create', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-save',
-            ]);
+                    'attr' => [
+                        'class' => 'btn btn-primary btn-sm ',
+                    ],
+                    'icon' => 'fa fa-save',
+                ]);
         } else {
             $builder->add('fieldType', FieldTypeType::class, [
                 'data' => $form->getFieldType(),

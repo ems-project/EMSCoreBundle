@@ -30,11 +30,11 @@ class HierarchicalController extends AbstractController
         }
 
         return $this->render("@$this->templateNamespace/view/custom/hierarchical_add_item.html.twig", [
-                'data' => $document->getSource(),
-                'view' => $view,
-                'contentType' => $contentType,
-                'key' => $ouuid,
-                'child' => $key,
+            'data' => $document->getSource(),
+            'view' => $view,
+            'contentType' => $contentType,
+            'key' => $ouuid,
+            'child' => $key,
         ]);
     }
 }

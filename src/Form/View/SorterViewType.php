@@ -69,23 +69,23 @@ class SorterViewType extends ViewType
 
         $builder
         ->add('body', CodeEditorType::class, [
-                'label' => 'The Elasticsearch body query [JSON Twig]',
-                'attr' => [
-                ],
-                'slug' => 'sorter_query',
+            'label' => 'The Elasticsearch body query [JSON Twig]',
+            'attr' => [
+            ],
+            'slug' => 'sorter_query',
         ])
         ->add('size', IntegerType::class, [
-                'label' => 'Limit the result to the x first results',
+            'label' => 'Limit the result to the x first results',
         ])
         ->add('field', ContentTypeFieldPickerType::class, [
-                'label' => 'Target order field (integer)',
-                'required' => false,
-                'firstLevelOnly' => false,
-                'mapping' => $mapping,
-                'types' => [
-                    'integer',
-                    'long',
-                ], ]);
+            'label' => 'Target order field (integer)',
+            'required' => false,
+            'firstLevelOnly' => false,
+            'mapping' => $mapping,
+            'types' => [
+                'integer',
+                'long',
+            ], ]);
     }
 
     public function getBlockPrefix(): string
@@ -102,9 +102,9 @@ class SorterViewType extends ViewType
     {
         try {
             $renderQuery = $this->twig->createTemplate($view->getOptions()['body'] ?? '')->render([
-                    'view' => $view,
-                    'contentType' => $view->getContentType(),
-                    'environment' => $view->getContentType()->giveEnvironment(),
+                'view' => $view,
+                'contentType' => $view->getContentType(),
+                'environment' => $view->getContentType()->giveEnvironment(),
             ]);
         } catch (\Throwable $e) {
             $renderQuery = '{}';
@@ -113,16 +113,16 @@ class SorterViewType extends ViewType
         $body = Json::decode($renderQuery);
 
         $body['sort'] = [
-                $view->getOptions()['field'] => [
-                        'order' => 'asc',
-                        'missing' => '_last',
-                ],
+            $view->getOptions()['field'] => [
+                'order' => 'asc',
+                'missing' => '_last',
+            ],
         ];
 
         $searchQuery = [
-                'index' => $view->getContentType()->giveEnvironment()->getAlias(),
-                'type' => $view->getContentType()->getName(),
-                'body' => $body,
+            'index' => $view->getContentType()->giveEnvironment()->getAlias(),
+            'type' => $view->getContentType()->getName(),
+            'body' => $body,
         ];
 
         $searchQuery['size'] = self::SEARCH_SIZE;
@@ -177,17 +177,17 @@ class SorterViewType extends ViewType
             ]);
 
             return new RedirectResponse($this->router->generate('data.draft_in_progress', [
-                    'contentTypeId' => $view->getContentType()->getId(),
+                'contentTypeId' => $view->getContentType()->getId(),
             ], UrlGeneratorInterface::RELATIVE_PATH));
         }
 
         $response = new Response();
         $response->setContent($this->twig->render("@$this->templateNamespace/view/custom/".$this->getBlockPrefix().'.html.twig', [
-                'response' => $emsResponse,
-                'view' => $view,
-                'form' => $form->createView(),
-                'contentType' => $view->getContentType(),
-                'environment' => $view->getContentType()->getEnvironment(),
+            'response' => $emsResponse,
+            'view' => $view,
+            'form' => $form->createView(),
+            'contentType' => $view->getContentType(),
+            'environment' => $view->getContentType()->getEnvironment(),
         ]));
 
         return $response;

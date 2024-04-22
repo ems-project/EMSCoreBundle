@@ -84,7 +84,7 @@ class XliffService
         }
     }
 
-    public function insert(InsertReport $insertReport, InsertionRevision $insertionRevision, ?string $localeField, ?string $translationField, ?Environment $publishAndArchive, string $username = null, bool $currentRevisionOnly = false): Revision
+    public function insert(InsertReport $insertReport, InsertionRevision $insertionRevision, ?string $localeField, ?string $translationField, ?Environment $publishAndArchive, ?string $username = null, bool $currentRevisionOnly = false): Revision
     {
         $propertyAccessor = PropertyAccessor::createPropertyAccessor();
         $revision = $this->revisionService->getByRevisionId($insertionRevision->getRevisionId());

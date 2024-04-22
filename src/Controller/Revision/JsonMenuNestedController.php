@@ -175,7 +175,7 @@ final class JsonMenuNestedController extends AbstractController
                 $item->setChildren($updateJsonMenuNested->getChildren());
             }
 
-            return JSON::encode($currentJsonMenuNested->toArrayStructure());
+            return Json::encode($currentJsonMenuNested->toArrayStructure());
         });
 
         $username = $this->userService->getCurrentUser()->getUsername();

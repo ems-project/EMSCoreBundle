@@ -80,8 +80,8 @@ final class SendAllCommand extends Command
         }
 
         $notifications = $notificationRepository->findBy([
-                'status' => 'pending',
-                'emailed' => null,
+            'status' => 'pending',
+            'emailed' => null,
         ]);
         if (!empty($notifications)) {
             $output->writeln('Sending new notifications');

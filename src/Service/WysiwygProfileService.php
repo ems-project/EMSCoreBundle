@@ -132,7 +132,7 @@ class WysiwygProfileService implements EntityServiceInterface
         return $profile;
     }
 
-    public function createEntityFromJson(string $json, string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $profile = WysiwygProfile::fromJson($json);
         if (null !== $name && $profile->getName() !== $name) {

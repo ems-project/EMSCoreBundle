@@ -381,7 +381,7 @@ class AppExtension extends AbstractExtension
      * @param mixed|null $rawData
      * @param mixed|null $compareRawData
      */
-    public function diffDate($rawData, bool $compare, string $fieldName, $compareRawData, string $format1, string $format2 = null, string $internalFormat = null): string
+    public function diffDate($rawData, bool $compare, string $fieldName, $compareRawData, string $format1, ?string $format2 = null, ?string $internalFormat = null): string
     {
         $b = $a = [];
         $out = '';
@@ -668,7 +668,7 @@ class AppExtension extends AbstractExtension
         return $repo->nextValue($name);
     }
 
-    public function cantBeFinalized(string $message = '', int $code = 0, \Throwable $previous = null): never
+    public function cantBeFinalized(string $message = '', int $code = 0, ?\Throwable $previous = null): never
     {
         throw new CantBeFinalizedException($message, $code, $previous);
     }
@@ -702,7 +702,7 @@ class AppExtension extends AbstractExtension
      * @param array<mixed>|null   $sort
      * @param string[]|null       $sources
      */
-    public function search(string|array $indexes, string|array $body = [], string|array $contentTypes = [], int $size = null, int $from = 0, array $sort = null, array $sources = null): ResultSet
+    public function search(string|array $indexes, string|array $body = [], string|array $contentTypes = [], ?int $size = null, int $from = 0, ?array $sort = null, ?array $sources = null): ResultSet
     {
         if (\is_string($contentTypes)) {
             $contentTypes = [$contentTypes];
@@ -903,7 +903,7 @@ class AppExtension extends AbstractExtension
         return $this->revisionService->display($key);
     }
 
-    public function dataLink(string $key, string $revisionId = null, string $diffMod = null): string
+    public function dataLink(string $key, ?string $revisionId = null, ?string $diffMod = null): string
     {
         $emsLink = EMSLink::fromText($key);
         if (!$emsLink->isValid() || !$contentType = $this->contentTypeService->getByName($emsLink->getContentType())) {
@@ -986,7 +986,7 @@ class AppExtension extends AbstractExtension
         return $this->get($key)?->getSource();
     }
 
-    public function get(?string $key, Environment $environment = null): ?DocumentInterface
+    public function get(?string $key, ?Environment $environment = null): ?DocumentInterface
     {
         if (empty($key)) {
             return null;

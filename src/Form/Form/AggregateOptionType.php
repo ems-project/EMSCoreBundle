@@ -20,31 +20,31 @@ class AggregateOptionType extends AbstractType
     {
         $builder
         ->add('name', IconTextType::class, [
-                'icon' => 'fa fa-tag',
-                'label' => 'Aggregate Option\'s name',
+            'icon' => 'fa fa-tag',
+            'label' => 'Aggregate Option\'s name',
         ])
         ->add('icon', IconPickerType::class, [
-                'required' => false,
+            'required' => false,
         ])
         ->add('config', CodeEditorType::class, [
-                'language' => 'ace/mode/json',
+            'language' => 'ace/mode/json',
         ])
         ->add('template', CodeEditorType::class, [
-                'language' => 'ace/mode/twig',
+            'language' => 'ace/mode/twig',
         ])
         ->add('save', SubmitEmsType::class, [
-                'attr' => [
-                        'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-save',
+            'attr' => [
+                'class' => 'btn btn-primary btn-sm ',
+            ],
+            'icon' => 'fa fa-save',
         ]);
 
         if (!$options['createform']) {
             $builder->add('remove', SubmitEmsType::class, [
-                    'attr' => [
-                            'class' => 'btn btn-primary btn-sm ',
-                    ],
-                    'icon' => 'fa fa-trash',
+                'attr' => [
+                    'class' => 'btn btn-primary btn-sm ',
+                ],
+                'icon' => 'fa fa-trash',
             ]);
         }
     }

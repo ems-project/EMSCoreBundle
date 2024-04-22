@@ -89,12 +89,12 @@ final class ReleaseType extends AbstractType
 
         if ($options['add'] ?? false) {
             $builder->add('create', SubmitEmsType::class, [
-                    'attr' => [
-                        'class' => 'btn btn-primary btn-sm',
-                    ],
-                    'icon' => 'fa fa-plus',
-                    'label' => 'release.add.save',
-                ]);
+                'attr' => [
+                    'class' => 'btn btn-primary btn-sm',
+                ],
+                'icon' => 'fa fa-plus',
+                'label' => 'release.add.save',
+            ]);
         } else {
             $builder->add('save', SubmitEmsType::class, [
                 'attr' => [

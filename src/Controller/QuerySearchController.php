@@ -67,7 +67,7 @@ final class QuerySearchController extends AbstractController
         return $this->edit($request, $querySearch, "@$this->templateNamespace/query-search/add.html.twig");
     }
 
-    public function edit(Request $request, QuerySearch $querySearch, string $view = null): Response
+    public function edit(Request $request, QuerySearch $querySearch, ?string $view = null): Response
     {
         if (null == $view) {
             $view = "@$this->templateNamespace/query-search/edit.html.twig";

@@ -133,7 +133,7 @@ class DataTableFactory
         return $filterForm;
     }
 
-    private function addFilterFormToContext(DataTableTypeInterface $type, mixed $context, FormInterface $filterForm = null): mixed
+    private function addFilterFormToContext(DataTableTypeInterface $type, mixed $context, ?FormInterface $filterForm = null): mixed
     {
         if (!$type instanceof DataTableFilterFormInterface || null === $filterForm) {
             return $context;

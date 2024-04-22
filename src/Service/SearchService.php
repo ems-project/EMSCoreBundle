@@ -118,7 +118,7 @@ class SearchService
         return $commonSearch;
     }
 
-    public function getDocument(ContentType $contentType, string $ouuid, Environment $environment = null): ElasticsearchDocument
+    public function getDocument(ContentType $contentType, string $ouuid, ?Environment $environment = null): ElasticsearchDocument
     {
         $environment ??= $contentType->giveEnvironment();
         $index = $this->contentTypeService->getIndex($contentType, $environment);

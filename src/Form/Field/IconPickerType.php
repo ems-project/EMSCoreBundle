@@ -3294,7 +3294,7 @@ class IconPickerType extends Select2Type
         $resolver->setDefaults([
             'choices' => $this->choices,
             'attr' => [
-                    'data-live-search' => true,
+                'data-live-search' => true,
             ],
             'choice_attr' => fn ($category, $key, $index) => [
                 'data-icon' => $category,

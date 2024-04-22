@@ -33,18 +33,18 @@ class PasswordFieldType extends DataFieldType
         /** @var FieldType $fieldType */
         $fieldType = $options['metadata'];
         $builder->add('password_value', PasswordType::class, [
-                                'label' => false,
-                'disabled' => $this->isDisabled($options),
-                'required' => false,
-                'attr' => [
-                        'autocomplete' => 'new-password', // http://stackoverflow.com/questions/18531437/stop-google-chrome-auto-fill-the-input
-                ],
+            'label' => false,
+            'disabled' => $this->isDisabled($options),
+            'required' => false,
+            'attr' => [
+                'autocomplete' => 'new-password', // http://stackoverflow.com/questions/18531437/stop-google-chrome-auto-fill-the-input
+            ],
         ]);
 
         $builder->add('reset_password_value', CheckboxType::class, [
-                'label' => 'Reset the password',
-                'disabled' => $this->isDisabled($options),
-                'required' => false,
+            'label' => 'Reset the password',
+            'disabled' => $this->isDisabled($options),
+            'required' => false,
         ]);
     }
 
@@ -62,13 +62,13 @@ class PasswordFieldType extends DataFieldType
 
         // String specific display options
         $optionsForm->get('displayOptions')->add('encryption', ChoiceType::class, [
-                'required' => false,
-                'choices' => [
-                    'sha1' => 'sha1',
-                    'md5' => 'md5',
-                                        'bcrypt (cost 12)' => 'bcrypt_12',
-                ],
-                'empty_data' => 'sha1',
+            'required' => false,
+            'choices' => [
+                'sha1' => 'sha1',
+                'md5' => 'md5',
+                'bcrypt (cost 12)' => 'bcrypt_12',
+            ],
+            'empty_data' => 'sha1',
         ]);
 
         if ($optionsForm->has('mappingOptions')) {
@@ -85,10 +85,10 @@ class PasswordFieldType extends DataFieldType
         $out = parent::viewTransform($dataField);
 
         return [
-                'password_value' => '',
-                'password_backup' => $out,
-                'reset_password_value' => false,
-            ];
+            'password_value' => '',
+            'password_backup' => $out,
+            'reset_password_value' => false,
+        ];
     }
 
     /**

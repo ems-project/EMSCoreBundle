@@ -39,29 +39,29 @@ class ReportViewType extends ViewType
         parent::buildForm($builder, $options);
         $builder
         ->add('body', CodeEditorType::class, [
-                'label' => 'The Elasticsearch body query [JSON Twig]',
-                'attr' => [
-                ],
-                'slug' => 'report_query',
+            'label' => 'The Elasticsearch body query [JSON Twig]',
+            'attr' => [
+            ],
+            'slug' => 'report_query',
         ])
         ->add('size', IntegerType::class, [
-                'label' => 'Limit the result to the x first results',
+            'label' => 'Limit the result to the x first results',
         ])
         ->add('template', CodeEditorType::class, [
-                'label' => 'The Twig template used to display each keywords',
-                'attr' => [
-                ],
-                'slug' => 'report_template',
+            'label' => 'The Twig template used to display each keywords',
+            'attr' => [
+            ],
+            'slug' => 'report_template',
         ])
         ->add('header', CodeEditorType::class, [
-                'label' => 'The HTML template included at the end of the header',
-                'attr' => [
-                ],
+            'label' => 'The HTML template included at the end of the header',
+            'attr' => [
+            ],
         ])
         ->add('javascript', CodeEditorType::class, [
-                'label' => 'The HTML template included at the end of the page (after jquery and bootstrap)',
-                'attr' => [
-                ],
+            'label' => 'The HTML template included at the end of the page (after jquery and bootstrap)',
+            'attr' => [
+            ],
         ]);
     }
 
@@ -74,9 +74,9 @@ class ReportViewType extends ViewType
     {
         try {
             $renderQuery = $this->twig->createTemplate($view->getOptions()['body'] ?? '')->render([
-                    'view' => $view,
-                    'contentType' => $view->getContentType(),
-                    'environment' => $view->getContentType()->getEnvironment(),
+                'view' => $view,
+                'contentType' => $view->getContentType(),
+                'environment' => $view->getContentType()->getEnvironment(),
             ]);
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage(), ['view' => $view->getName(), 'option' => 'body']);

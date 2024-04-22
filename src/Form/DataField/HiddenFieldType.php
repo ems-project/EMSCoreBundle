@@ -30,8 +30,8 @@ class HiddenFieldType extends DataFieldType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('value', HiddenType::class, [
-                    'disabled' => $this->isDisabled($options),
-            ]);
+            'disabled' => $this->isDisabled($options),
+        ]);
     }
 
     public function getBlockPrefix(): string

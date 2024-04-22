@@ -48,7 +48,7 @@ final class TableItemActionCollection implements \IteratorAggregate, \Countable
     /**
      * @param array<string, mixed> $routeParameters
      */
-    public function addItemPostAction(string $route, string $labelKey, string $icon, string $messageKey = null, array $routeParameters = []): TableItemAction
+    public function addItemPostAction(string $route, string $labelKey, string $icon, ?string $messageKey = null, array $routeParameters = []): TableItemAction
     {
         $action = TableItemAction::postAction($route, $labelKey, $icon, $messageKey, $routeParameters);
         $this->itemActions[] = $action;
@@ -59,7 +59,7 @@ final class TableItemActionCollection implements \IteratorAggregate, \Countable
     /**
      * @param array<string, string> $routeParameters
      */
-    public function addDynamicItemPostAction(string $route, string $labelKey, string $icon, string $messageKey = null, array $routeParameters = []): TableItemAction
+    public function addDynamicItemPostAction(string $route, string $labelKey, string $icon, ?string $messageKey = null, array $routeParameters = []): TableItemAction
     {
         $action = TableItemAction::postDynamicAction($route, $labelKey, $icon, $messageKey, $routeParameters);
         $this->itemActions[] = $action;

@@ -31,12 +31,12 @@ class ContentTypeType extends AbstractType
         $mapping = $options['mapping'] ?? null;
         if (null !== $mapping) {
             $builder->add('sortOrder', ChoiceType::class, [
-                    'required' => false,
-                    'label' => 'Default sort order',
-                    'choices' => [
-                        'Ascending' => 'asc',
-                        'Descending' => 'desc',
-                    ],
+                'required' => false,
+                'label' => 'Default sort order',
+                'choices' => [
+                    'Ascending' => 'asc',
+                    'Descending' => 'desc',
+                ],
             ]);
 
             if ($environment->getManaged()) {
@@ -67,8 +67,8 @@ class ContentTypeType extends AbstractType
 
         $builder->add('refererFieldName');
         $builder->add('editTwigWithWysiwyg', CheckboxType::class, [
-                'label' => 'Edit the Twig template with a WYSIWYG editor',
-                'required' => false,
+            'label' => 'Edit the Twig template with a WYSIWYG editor',
+            'required' => false,
         ]);
         $builder->add('webContent', CheckboxType::class, [
             'label' => 'Web content (available in WYSIWYG field as internal link)',
@@ -92,53 +92,53 @@ class ContentTypeType extends AbstractType
         ]);
 
         $builder->add('description', TextareaType::class, [
-                'required' => false,
-                'attr' => [
-                        'class' => 'ckeditor',
-                ],
+            'required' => false,
+            'attr' => [
+                'class' => 'ckeditor',
+            ],
         ]);
 
         if ($options['twigWithWysiwyg']) {
             $builder->add('indexTwig', TextareaType::class, [
-                    'required' => false,
-                    'attr' => [
-                            'class' => 'ckeditor',
-                            'rows' => 10,
-                    ],
+                'required' => false,
+                'attr' => [
+                    'class' => 'ckeditor',
+                    'rows' => 10,
+                ],
             ]);
         } else {
             $builder->add('indexTwig', CodeEditorType::class, [
-                    'required' => false,
-                    'attr' => [
-                    ],
-                    'slug' => 'content_type',
+                'required' => false,
+                'attr' => [
+                ],
+                'slug' => 'content_type',
             ]);
         }
 
         $builder->add('extra', TextareaType::class, [
-                'required' => false,
-                'attr' => [
-                        'rows' => 10,
-                ],
+            'required' => false,
+            'attr' => [
+                'rows' => 10,
+            ],
         ]);
 
         $builder->add('save', SubmitEmsType::class, [
-                'attr' => [
-                        'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-save',
+            'attr' => [
+                'class' => 'btn btn-primary btn-sm ',
+            ],
+            'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndUpdateMapping', SubmitEmsType::class, [
-                'attr' => [
-                        'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-save',
+            'attr' => [
+                'class' => 'btn btn-primary btn-sm ',
+            ],
+            'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndClose', SubmitEmsType::class, [
-                'attr' => [
-                        'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-save',
+            'attr' => [
+                'class' => 'btn btn-primary btn-sm ',
+            ],
+            'icon' => 'fa fa-save',
         ]);
 
         $builder->add('rootContentType');
@@ -166,16 +166,16 @@ class ContentTypeType extends AbstractType
                 'required' => false,
             ]);
             $builder->add('saveAndEditStructure', SubmitEmsType::class, [
-                    'attr' => [
-                            'class' => 'btn btn-primary btn-sm ',
-                    ],
-                    'icon' => 'fa fa-save',
+                'attr' => [
+                    'class' => 'btn btn-primary btn-sm ',
+                ],
+                'icon' => 'fa fa-save',
             ]);
             $builder->add('saveAndReorder', SubmitEmsType::class, [
-                    'attr' => [
-                            'class' => 'btn btn-primary btn-sm ',
-                    ],
-                    'icon' => 'fa fa-reorder',
+                'attr' => [
+                    'class' => 'btn btn-primary btn-sm ',
+                ],
+                'icon' => 'fa fa-reorder',
             ]);
         }
     }

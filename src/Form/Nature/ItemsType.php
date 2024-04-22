@@ -19,8 +19,8 @@ class ItemsType extends AbstractType
 
         foreach ($result['hits']['hits'] as $hit) {
             $builder->add($hit['_id'], HiddenType::class, [
-                    'attr' => [
-                    ],
+                'attr' => [
+                ],
             ]);
         }
     }

@@ -84,7 +84,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     /**
      * @param array<mixed> $mapping
      */
-    private function recursiveLoad(array $mapping, string $path = null): void
+    private function recursiveLoad(array $mapping, ?string $path = null): void
     {
         foreach ($mapping as $key => $field) {
             $newPath = (null === $path ? '' : $path.'.').$key;

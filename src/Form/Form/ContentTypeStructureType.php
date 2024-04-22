@@ -26,22 +26,22 @@ class ContentTypeStructureType extends AbstractType
         }
 
         $builder->add('save', SubmitEmsType::class, [
-                'attr' => [
-                        'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-save',
+            'attr' => [
+                'class' => 'btn btn-primary btn-sm ',
+            ],
+            'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndClose', SubmitEmsType::class, [
-                'attr' => [
-                        'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-save',
+            'attr' => [
+                'class' => 'btn btn-primary btn-sm ',
+            ],
+            'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndReorder', SubmitEmsType::class, [
-                'attr' => [
-                        'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-reorder',
+            'attr' => [
+                'class' => 'btn btn-primary btn-sm ',
+            ],
+            'icon' => 'fa fa-reorder',
         ]);
     }
 }

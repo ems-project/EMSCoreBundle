@@ -791,7 +791,7 @@ class DataController extends AbstractController
                     'pattern' => '/^[A-Za-z0-9_\.\-~]*$/',
                     'match' => true,
                     'message' => 'Ouuid has an unauthorized character.',
-                    ]),
+                ]),
                 ],
                 'attr' => [
                     'class' => 'form-control',

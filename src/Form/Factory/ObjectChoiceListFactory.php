@@ -16,7 +16,7 @@ class ObjectChoiceListFactory extends DefaultChoiceListFactory
     {
     }
 
-    public function createLoader(string $types = null, bool $loadAll = false, bool $circleOnly = false, bool $withWarning = true, string $querySearchName = null): ObjectChoiceLoader
+    public function createLoader(?string $types = null, bool $loadAll = false, bool $circleOnly = false, bool $withWarning = true, ?string $querySearchName = null): ObjectChoiceLoader
     {
         if (null === $types) {
             if ($loadAll && null === $querySearchName) {
@@ -28,7 +28,7 @@ class ObjectChoiceListFactory extends DefaultChoiceListFactory
         return new ObjectChoiceLoader($this->objectChoiceCacheService, $types, $loadAll, $circleOnly, $withWarning, $querySearchName);
     }
 
-    public function createListFromLoader(ChoiceLoaderInterface $loader, callable $value = null, callable $filter = null): ChoiceListInterface
+    public function createListFromLoader(ChoiceLoaderInterface $loader, ?callable $value = null, ?callable $filter = null): ChoiceListInterface
     {
         return $loader->loadChoiceList($value);
     }
@@ -36,7 +36,7 @@ class ObjectChoiceListFactory extends DefaultChoiceListFactory
     /**
      * @param iterable<mixed> $choices
      */
-    public function createListFromChoices(iterable $choices, callable $value = null, callable $filter = null): ChoiceListInterface
+    public function createListFromChoices(iterable $choices, ?callable $value = null, ?callable $filter = null): ChoiceListInterface
     {
         return parent::createListFromChoices($choices, $value, $filter);
     }

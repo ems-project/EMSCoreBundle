@@ -60,12 +60,12 @@ class ScheduleType extends AbstractType
             ]);
         } else {
             $builder->add('save', SubmitEmsType::class, [
-                    'attr' => [
-                        'class' => 'btn-primary btn-sm',
-                        'data-ajax-save-url' => $options['ajax-save-url'],
-                    ],
-                    'icon' => 'fa fa-save',
-                ])
+                'attr' => [
+                    'class' => 'btn-primary btn-sm',
+                    'data-ajax-save-url' => $options['ajax-save-url'],
+                ],
+                'icon' => 'fa fa-save',
+            ])
                 ->add('saveAndClose', SubmitEmsType::class, [
                     'attr' => [
                         'class' => 'btn-primary btn-sm',

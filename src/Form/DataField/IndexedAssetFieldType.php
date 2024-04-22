@@ -57,16 +57,16 @@ class IndexedAssetFieldType extends DataFieldType
             $optionsForm->get('mappingOptions')
             ->add('analyzer', AnalyzerPickerType::class)
             ->add('copy_to', TextType::class, [
-                    'required' => false,
+                'required' => false,
             ]);
         }
 
         $optionsForm->get('displayOptions')
         ->add('icon', IconPickerType::class, [
-                'required' => false,
+            'required' => false,
         ])
         ->add('imageAssetConfigIdentifier', TextType::class, [
-                'required' => false,
+            'required' => false,
         ]);
     }
 
@@ -84,18 +84,18 @@ class IndexedAssetFieldType extends DataFieldType
 
         return [
             $current->getName() => [
-                    'type' => 'nested',
-                    'properties' => [
-                            EmsFields::CONTENT_MIME_TYPE_FIELD => $this->elasticsearchService->getKeywordMapping(),
-                            EmsFields::CONTENT_FILE_HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
-                            EmsFields::CONTENT_FILE_NAME_FIELD => $this->elasticsearchService->getIndexedStringMapping(),
-                            EmsFields::CONTENT_FILE_SIZE_FIELD => $this->elasticsearchService->getLongMapping(),
-                            '_content' => $mapping[$current->getName()],
-                            '_author' => $mapping[$current->getName()],
-                            '_title' => $mapping[$current->getName()],
-                            '_date' => $this->elasticsearchService->getDateTimeMapping(),
-                            '_language' => $this->elasticsearchService->getKeywordMapping(),
-                    ],
+                'type' => 'nested',
+                'properties' => [
+                    EmsFields::CONTENT_MIME_TYPE_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                    EmsFields::CONTENT_FILE_HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                    EmsFields::CONTENT_FILE_NAME_FIELD => $this->elasticsearchService->getIndexedStringMapping(),
+                    EmsFields::CONTENT_FILE_SIZE_FIELD => $this->elasticsearchService->getLongMapping(),
+                    '_content' => $mapping[$current->getName()],
+                    '_author' => $mapping[$current->getName()],
+                    '_title' => $mapping[$current->getName()],
+                    '_date' => $this->elasticsearchService->getDateTimeMapping(),
+                    '_language' => $this->elasticsearchService->getKeywordMapping(),
+                ],
             ],
         ];
     }

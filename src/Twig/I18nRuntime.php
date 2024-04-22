@@ -14,7 +14,7 @@ class I18nRuntime implements RuntimeExtensionInterface
     {
     }
 
-    public function i18n(string $key, string $locale = null): string
+    public function i18n(string $key, ?string $locale = null): string
     {
         if ('' === $locale || null === $locale) {
             $locale = $this->getLocale();

@@ -74,7 +74,7 @@ class ManagedAliasManager implements EntityServiceInterface
         return $i18n;
     }
 
-    public function createEntityFromJson(string $json, string $name = null): EntityInterface
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $managedAlias = ManagedAlias::fromJson($json);
         if (null !== $name && $managedAlias->getName() !== $name) {

@@ -41,22 +41,22 @@ class CalendarViewType extends ViewType
         parent::buildForm($builder, $options);
         $builder->add('dateRangeField', TextType::class, [
         ])->add('timeFormat', TextType::class, [
-                'attr' => [
-                        'placeholder' => 'i.e. H(:mm)',
-                ],
+            'attr' => [
+                'placeholder' => 'i.e. H(:mm)',
+            ],
         ])->add('locale', TextType::class, [
-                'attr' => [
-                        'placeholder' => 'i.e. fr',
-                ],
+            'attr' => [
+                'placeholder' => 'i.e. fr',
+            ],
         ])->add('firstDay', IntegerType::class, [
-                'attr' => [
-                        'placeholder' => 'Sunday=0, Monday=1, Tuesday=2, etc.',
-                ],
+            'attr' => [
+                'placeholder' => 'Sunday=0, Monday=1, Tuesday=2, etc.',
+            ],
         ])->add('weekends', CheckboxType::class, [
         ])->add('slotDuration', TextType::class, [
-                'attr' => [
-                        'placeholder' => 'i.e. 00:30:00',
-                ],
+            'attr' => [
+                'placeholder' => 'i.e. 00:30:00',
+            ],
         ]);
     }
 
@@ -69,8 +69,8 @@ class CalendarViewType extends ViewType
     {
         $search = new Search();
         $form = $formFactory->create(SearchFormType::class, $search, [
-                'method' => 'GET',
-                'light' => true,
+            'method' => 'GET',
+            'light' => true,
         ]);
 
         $form->handleRequest($request);

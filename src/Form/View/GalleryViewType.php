@@ -41,15 +41,15 @@ class GalleryViewType extends ViewType
         parent::buildForm($builder, $options);
         $builder->add('imageField', TextType::class, [
         ])->add('sourceFields', TextType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('imageAltFields', TextType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('missingImageHash', TextType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('thumbnailAssetConfigIdentifier', TextType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('imageAssetConfigIdentifier', TextType::class, [
-                'required' => false,
+            'required' => false,
         ]);
     }
 
@@ -73,8 +73,8 @@ class GalleryViewType extends ViewType
         $search->setEnvironments([$environment->getName()]);
 
         $form = $formFactory->create(SearchFormType::class, $search, [
-                'method' => 'GET',
-                'light' => true,
+            'method' => 'GET',
+            'light' => true,
         ]);
 
         $form->handleRequest($request);

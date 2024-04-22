@@ -59,7 +59,7 @@ class CleanDeletedContentTypeCommand extends Command
         $em->flush();
 
         $contentTypes = $ctRepo->findBy([
-                'deleted' => true,
+            'deleted' => true,
         ]);
 
         foreach ($contentTypes as $contentType) {
@@ -108,7 +108,7 @@ class CleanDeletedContentTypeCommand extends Command
         $output->writeln('Remove deleted revisions');
         /** @var Revision $revision */
         $revisions = $revisionRepo->findBy([
-                'deleted' => true,
+            'deleted' => true,
         ]);
         foreach ($revisions as $revision) {
             $em->remove($revision);

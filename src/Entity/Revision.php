@@ -181,10 +181,10 @@ class Revision implements EntityInterface, \Stringable
     public function getObject($source): array
     {
         return [
-                '_index' => 'N/A',
-                '_source' => $source,
-                '_id' => $this->ouuid,
-                '_type' => $this->giveContentType()->getName(),
+            '_index' => 'N/A',
+            '_source' => $source,
+            '_id' => $this->ouuid,
+            '_type' => $this->giveContentType()->getName(),
         ];
     }
 
@@ -687,7 +687,7 @@ class Revision implements EntityInterface, \Stringable
     /**
      * @param ?string[] $circles
      */
-    public function setCircles(array $circles = null): self
+    public function setCircles(?array $circles = null): self
     {
         $this->circles = $circles ?? [];
 

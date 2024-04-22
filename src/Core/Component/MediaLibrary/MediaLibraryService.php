@@ -78,7 +78,7 @@ class MediaLibraryService
         return $createdUuid ? $this->getFolder($createdUuid) : null;
     }
 
-    public function deleteDocument(MediaLibraryDocument $mediaDocument, string $username = null): void
+    public function deleteDocument(MediaLibraryDocument $mediaDocument, ?string $username = null): void
     {
         $document = $mediaDocument->document;
         $this->dataService->delete($document->getContentType(), $document->getOuuid(), $username);
@@ -239,7 +239,7 @@ class MediaLibraryService
      *     rows?: string
      * }
      */
-    public function renderFiles(int $from, MediaLibraryFolder $folder = null, string $searchValue = null): array
+    public function renderFiles(int $from, ?MediaLibraryFolder $folder = null, ?string $searchValue = null): array
     {
         $path = $folder ? $folder->getPath()->getValue().'/' : '/';
 
@@ -266,7 +266,7 @@ class MediaLibraryService
         return $template->block('media_lib_folder_rows');
     }
 
-    public function renderHeader(MediaLibraryFolder|string $folder = null, MediaLibraryFile|string $file = null, int $selectionFiles = 0, string $searchValue = null): string
+    public function renderHeader(MediaLibraryFolder|string|null $folder = null, MediaLibraryFile|string|null $file = null, int $selectionFiles = 0, ?string $searchValue = null): string
     {
         $mediaFolder = \is_string($folder) ? $this->getFolder($folder) : $folder;
         $mediaFile = \is_string($file) ? $this->getFile($file) : $file;
@@ -290,7 +290,7 @@ class MediaLibraryService
         $this->config = $config;
     }
 
-    public function updateDocument(MediaLibraryDocument $mediaDocument, string $username = null): void
+    public function updateDocument(MediaLibraryDocument $mediaDocument, ?string $username = null): void
     {
         $document = $mediaDocument->document;
 
@@ -337,7 +337,7 @@ class MediaLibraryService
     /**
      * @return array{ files: MediaLibraryFile[], total: int, total_documents: int}
      */
-    private function findFilesByPath(string $path, int $from, string $searchValue = null): array
+    private function findFilesByPath(string $path, int $from, ?string $searchValue = null): array
     {
         $hashField = \sprintf('%s.%s', $this->getConfig()->fieldFile, EmsFields::CONTENT_FILE_HASH_FIELD);
 

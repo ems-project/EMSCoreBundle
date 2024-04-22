@@ -71,36 +71,36 @@ class HierarchicalViewType extends ViewType
 
         $builder
         ->add('parent', DataLinkFieldType::class, [
-                'label' => 'Parent',
-                'metadata' => $fieldType,
-                'type' => $view->getContentType()->getName(),
-                'multiple' => false,
-                'dynamicLoading' => true,
+            'label' => 'Parent',
+            'metadata' => $fieldType,
+            'type' => $view->getContentType()->getName(),
+            'multiple' => false,
+            'dynamicLoading' => true,
         ])
         ->add('size', IntegerType::class, [
-                'label' => 'Limit the result to the x first results',
-                'attr' => [
-                ],
+            'label' => 'Limit the result to the x first results',
+            'attr' => [
+            ],
         ])
         ->add('maxDepth', IntegerType::class, [
-                'label' => 'Limit the menu\'s depth',
-                'attr' => [
-                ],
+            'label' => 'Limit the menu\'s depth',
+            'attr' => [
+            ],
         ])
         ->add('maxDepth', IntegerType::class, [
-                'label' => 'Limit the menu\'s depth',
-                'attr' => [
-                ],
+            'label' => 'Limit the menu\'s depth',
+            'attr' => [
+            ],
         ])
         ->add('field', ContentTypeFieldPickerType::class, [
-                'label' => 'Target children field (datalink)',
-                'required' => false,
-                'firstLevelOnly' => false,
-                'mapping' => $mapping,
-                'types' => [
-                        'keyword',
-                        'text', // TODO: for ES2 support
-                ], ]);
+            'label' => 'Target children field (datalink)',
+            'required' => false,
+            'firstLevelOnly' => false,
+            'mapping' => $mapping,
+            'types' => [
+                'keyword',
+                'text', // TODO: for ES2 support
+            ], ]);
 
         $builder->get('parent')->addModelTransformer(new CallbackTransformer(
             function ($raw) {
@@ -158,7 +158,7 @@ $dataField->getRawData()
         $data = [];
 
         $form = $this->formFactory->create(ReorganizeType::class, $data, [
-                'view' => $view,
+            'view' => $view,
         ]);
 
         $form->handleRequest($request);
@@ -176,17 +176,17 @@ $dataField->getRawData()
             ]);
 
             return new RedirectResponse($this->router->generate('data.draft_in_progress', [
-                    'contentTypeId' => $view->getContentType()->getId(),
+                'contentTypeId' => $view->getContentType()->getId(),
             ], UrlGeneratorInterface::RELATIVE_PATH));
         }
 
         $response = new Response();
         $response->setContent($this->twig->render("@$this->templateNamespace/view/custom/".$this->getBlockPrefix().'.html.twig', [
-                'parent' => $parent,
-                'view' => $view,
-                'form' => $form->createView(),
-                'contentType' => $view->getContentType(),
-                'environment' => $view->getContentType()->getEnvironment(),
+            'parent' => $parent,
+            'view' => $view,
+            'form' => $form->createView(),
+            'contentType' => $view->getContentType(),
+            'environment' => $view->getContentType()->getEnvironment(),
         ]));
 
         return $response;

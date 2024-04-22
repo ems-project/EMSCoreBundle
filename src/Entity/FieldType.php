@@ -30,7 +30,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     /** @var string */
     protected $description;
     /** @var array<mixed>|null */
-    protected array|null $options = [];
+    protected ?array $options = [];
     /** @var int */
     protected $orderKey = 0;
     /** @var ?FieldType */
@@ -414,7 +414,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      *
      * @return FieldType
      */
-    public function setContentType(ContentType $contentType = null)
+    public function setContentType(?ContentType $contentType = null)
     {
         $this->contentType = $contentType;
 
@@ -463,7 +463,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         throw new \RuntimeException(\sprintf('Field type for key "%s" not found', $key));
     }
 
-    public function setParent(FieldType $parent = null): self
+    public function setParent(?FieldType $parent = null): self
     {
         $this->parent = $parent;
 
@@ -493,7 +493,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
      * @param array<mixed>             $newStructure
      * @param array<string, FieldType> $fieldsByIds
      */
-    public function reorderFields(array $newStructure, array $fieldsByIds = null): void
+    public function reorderFields(array $newStructure, ?array $fieldsByIds = null): void
     {
         if (null === $fieldsByIds) {
             $fieldsByIds = $this->listAllFields();

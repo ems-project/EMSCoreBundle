@@ -31,7 +31,7 @@ class ObjectChoiceCacheService
     /**
      * @param ObjectChoiceListItem[] $choices
      */
-    public function loadAll(array &$choices, string $types, bool $circleOnly = false, bool $withWarning = true, string $querySearchName = null): void
+    public function loadAll(array &$choices, string $types, bool $circleOnly = false, bool $withWarning = true, ?string $querySearchName = null): void
     {
         if (null !== $querySearchName) {
             $this->loadAllFromQuerySearch($choices, $querySearchName);

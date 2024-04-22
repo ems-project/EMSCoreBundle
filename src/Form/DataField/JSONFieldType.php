@@ -84,7 +84,7 @@ class JSONFieldType extends DataFieldType
         return 'bypassdatafield';
     }
 
-    public function isValid(DataField &$dataField, DataField $parent = null, mixed &$masterRawData = null): bool
+    public function isValid(DataField &$dataField, ?DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
             return true;
@@ -135,7 +135,7 @@ class JSONFieldType extends DataFieldType
                 ->add('mappingOptions', TextareaType::class, [
                     'required' => false,
                     'attr' => ['rows' => 8],
-            ]);
+                ]);
         }
     }
 }

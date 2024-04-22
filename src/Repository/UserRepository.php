@@ -36,7 +36,7 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
     /**
      * @return array{count: int, results: iterable<User>}
      */
-    public function countFindAll(string $email = null): array
+    public function countFindAll(?string $email = null): array
     {
         $qb = $this->createQueryBuilder('u');
 

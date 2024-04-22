@@ -63,11 +63,11 @@ class TextStringFieldType extends DataFieldType
         /* set the default option value for this kind of compound field */
         parent::configureOptions($resolver);
         $resolver->setDefaults([
-                'prefixIcon' => null,
-                'prefixText' => null,
-                'suffixIcon' => null,
-                'suffixText' => null,
-                'placeholder' => null,
+            'prefixIcon' => null,
+            'prefixText' => null,
+            'suffixIcon' => null,
+            'suffixText' => null,
+            'placeholder' => null,
         ]);
     }
 
@@ -78,19 +78,19 @@ class TextStringFieldType extends DataFieldType
 
         // String specific display options
         $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('prefixIcon', IconPickerType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('prefixText', IconTextType::class, [
-                'required' => false,
-                'prefixIcon' => 'fa fa-hand-o-left',
+            'required' => false,
+            'prefixIcon' => 'fa fa-hand-o-left',
         ])->add('suffixIcon', IconPickerType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('suffixText', IconTextType::class, [
-                'required' => false,
-                'prefixIcon' => 'fa fa-hand-o-right',
+            'required' => false,
+            'prefixIcon' => 'fa fa-hand-o-right',
         ])->add('placeholder', TextType::class, [
-                'required' => false,
+            'required' => false,
         ]);
 
         if ($optionsForm->has('mappingOptions')) {

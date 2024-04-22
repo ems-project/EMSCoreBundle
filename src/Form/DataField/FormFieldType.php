@@ -115,7 +115,7 @@ class FormFieldType extends DataFieldType
         $optionsForm->get('displayOptions')->remove('helptext');
         $optionsForm->get('displayOptions')->remove('lastOfRow');
         $optionsForm->get('displayOptions')->add('form', FormPickerType::class, [
-                'required' => false,
+            'required' => false,
         ]);
     }
 

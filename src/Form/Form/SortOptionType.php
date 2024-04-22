@@ -21,30 +21,30 @@ class SortOptionType extends AbstractType
     {
         $builder
         ->add('name', IconTextType::class, [
-                'icon' => 'fa fa-tag',
-                'label' => 'Sort Option\'s name',
+            'icon' => 'fa fa-tag',
+            'label' => 'Sort Option\'s name',
         ])
         ->add('field', TextType::class, [
         ])
         ->add('inverted', CheckboxType::class, [
-                'required' => false,
+            'required' => false,
         ])
         ->add('icon', IconPickerType::class, [
-                'required' => false,
+            'required' => false,
         ])
         ->add('save', SubmitEmsType::class, [
-                'attr' => [
-                        'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-save',
+            'attr' => [
+                'class' => 'btn btn-primary btn-sm ',
+            ],
+            'icon' => 'fa fa-save',
         ]);
 
         if (!$options['createform']) {
             $builder->add('remove', SubmitEmsType::class, [
-                    'attr' => [
-                            'class' => 'btn btn-primary btn-sm ',
-                    ],
-                    'icon' => 'fa fa-trash',
+                'attr' => [
+                    'class' => 'btn btn-primary btn-sm ',
+                ],
+                'icon' => 'fa fa-trash',
             ]);
         }
     }

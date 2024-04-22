@@ -176,14 +176,14 @@ class DateRangeFieldType extends DataFieldType
         $fieldType = $builder->getOptions()['metadata'];
 
         $builder->add('value', IconTextType::class, [
-                'label' => (null != $options['label'] ? $options['label'] : $fieldType->getName()),
-                'required' => false,
-                'disabled' => $this->isDisabled($options),
-                'icon' => $options['icon'],
-                'attr' => [
-                    'class' => 'ems_daterangepicker',
-                    'data-display-option' => Json::encode($fieldType->getDisplayOptions()),
-                ],
+            'label' => (null != $options['label'] ? $options['label'] : $fieldType->getName()),
+            'required' => false,
+            'disabled' => $this->isDisabled($options),
+            'icon' => $options['icon'],
+            'attr' => [
+                'class' => 'ems_daterangepicker',
+                'data-display-option' => Json::encode($fieldType->getDisplayOptions()),
+            ],
         ]);
     }
 
@@ -197,8 +197,8 @@ class DateRangeFieldType extends DataFieldType
         $out['mappingOptions']['index'] = null;
         $out['displayOptions']['timePickerIncrement'] = 5;
         $out['displayOptions']['locale'] = [
-                'format' => 'DD/MM/YYYY HH:mm',
-                'firstDay' => 1,
+            'format' => 'DD/MM/YYYY HH:mm',
+            'firstDay' => 1,
         ];
 
         return $out;
@@ -281,41 +281,41 @@ class DateRangeFieldType extends DataFieldType
         }
 
         $optionsForm->get('displayOptions')->add('locale', SubOptionsType::class, [
-                'required' => false,
-                'label' => false,
+            'required' => false,
+            'label' => false,
         ]);
         $optionsForm->get('displayOptions')->get('locale')->add('format', TextType::class, [
-                'required' => false,
-                'attr' => [
-                    'placeholder' => 'i.e. dd/MM/yyyy HH:mm',
-                ],
+            'required' => false,
+            'attr' => [
+                'placeholder' => 'i.e. dd/MM/yyyy HH:mm',
+            ],
         ]);
         $optionsForm->get('displayOptions')->get('locale')->add('parseFormat', TextType::class, [
             'required' => false,
             'attr' => ['placeholder' => '(PHP) d/m/Y H:i'],
         ]);
         $optionsForm->get('displayOptions')->get('locale')->add('firstDay', IntegerType::class, [
-                'required' => false,
+            'required' => false,
         ]);
         $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
-                'required' => false,
+            'required' => false,
         ]);
         $optionsForm->get('displayOptions')->add('showWeekNumbers', CheckboxType::class, [
-                'required' => false,
+            'required' => false,
         ]);
         $optionsForm->get('displayOptions')->add('timePicker', CheckboxType::class, [
-                'required' => false,
+            'required' => false,
         ]);
         $optionsForm->get('displayOptions')->add('timePicker24Hour', CheckboxType::class, [
-                'required' => false,
+            'required' => false,
         ]);
 
         $optionsForm->get('displayOptions')->add('timePickerIncrement', IntegerType::class, [
-                'required' => false,
-                'empty_data' => 5,
-                'attr' => [
-                    'placeholder' => '5',
-                ],
+            'required' => false,
+            'empty_data' => 5,
+            'attr' => [
+                'placeholder' => '5',
+            ],
         ]);
     }
 }

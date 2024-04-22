@@ -36,7 +36,7 @@ class ChangePasswordType extends AbstractType
             'type' => PasswordType::class,
             'options' => [
                 'attr' => ['autocomplete' => 'new-password',
-            ], ],
+                ], ],
             'first_options' => ['label' => 'user.new_password'],
             'second_options' => ['label' => 'user.new_password_confirmation'],
             'invalid_message' => 'user.password.mismatch',

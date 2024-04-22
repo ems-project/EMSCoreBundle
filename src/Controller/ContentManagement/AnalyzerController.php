@@ -28,7 +28,7 @@ class AnalyzerController extends AbstractController
     public function index(): Response
     {
         return $this->render("@$this->templateNamespace/analyzer/index.html.twig", [
-                'paging' => $this->helperService->getPagingTool(Analyzer::class, 'ems_analyzer_index', 'name'),
+            'paging' => $this->helperService->getPagingTool(Analyzer::class, 'ems_analyzer_index', 'name'),
         ]);
     }
 
@@ -53,7 +53,7 @@ class AnalyzerController extends AbstractController
         }
 
         return $this->render("@$this->templateNamespace/analyzer/edit.html.twig", [
-                'form' => $form->createView(),
+            'form' => $form->createView(),
         ]);
     }
 
@@ -97,7 +97,7 @@ class AnalyzerController extends AbstractController
         }
 
         return $this->render("@$this->templateNamespace/analyzer/add.html.twig", [
-                'form' => $form->createView(),
+            'form' => $form->createView(),
         ]);
     }
 

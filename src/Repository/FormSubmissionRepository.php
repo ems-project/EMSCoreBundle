@@ -92,7 +92,7 @@ class FormSubmissionRepository extends ServiceEntityRepository
     /**
      * @return FormSubmission[]
      */
-    public function findFormSubmissions(string $formInstance = null): array
+    public function findFormSubmissions(?string $formInstance = null): array
     {
         $qb = $this->createQueryBuilder('fs');
 

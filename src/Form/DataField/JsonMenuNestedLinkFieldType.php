@@ -231,9 +231,9 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
      */
     private function buildChoices(
         FieldType $fieldType,
-        string $jmnQuery = null,
-        string $jmnField = null,
-        string $jmnChoicesTemplate = null,
+        ?string $jmnQuery = null,
+        ?string $jmnField = null,
+        ?string $jmnChoicesTemplate = null,
         array $jmnTypes = [],
         bool $jmnUnique = false,
         array $rawData = [],

@@ -12,10 +12,10 @@ class IconTextType extends TextType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-                'compound' => false,
-                'metadata' => null,
-                'icon' => null,
-                'class' => null,
+            'compound' => false,
+            'metadata' => null,
+            'icon' => null,
+            'class' => null,
         ]);
         $resolver->setDefault('prefixIcon', null);
         $resolver->setDefault('prefixText', null);

@@ -90,7 +90,7 @@ class Form extends JsonDeserializer implements \JsonSerializable, EntityInterfac
         return $json;
     }
 
-    public static function fromJson(string $json, EntityInterface $form = null): Form
+    public static function fromJson(string $json, ?EntityInterface $form = null): Form
     {
         $meta = JsonClass::fromJsonString($json);
         $form = $meta->jsonDeserialize($form);

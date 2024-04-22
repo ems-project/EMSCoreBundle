@@ -24,13 +24,13 @@ class DisplayOptionsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('label', IconTextType::class, [
-                'required' => false,
-                'icon' => 'fa fa-tag',
+            'required' => false,
+            'icon' => 'fa fa-tag',
         ]);
         $builder->add('class', IconTextType::class, [
-                'required' => false,
-                'label' => 'Bootstrap class',
-                'icon' => 'fa fa-css3',
+            'required' => false,
+            'label' => 'Bootstrap class',
+            'icon' => 'fa fa-css3',
         ]);
         $builder->add('lastOfRow', CheckboxType::class, [
             'required' => false,

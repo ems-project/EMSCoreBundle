@@ -49,49 +49,49 @@ class ExportViewType extends ViewType
         parent::buildForm($builder, $options);
         $builder
         ->add('body', CodeEditorType::class, [
-                'label' => 'The Elasticsearch body query [JSON Twig]',
-                'attr' => [
-                ],
-                'slug' => 'export_query',
+            'label' => 'The Elasticsearch body query [JSON Twig]',
+            'attr' => [
+            ],
+            'slug' => 'export_query',
         ])
         ->add('size', IntegerType::class, [
-                'label' => 'Limit the result to the x first results',
+            'label' => 'Limit the result to the x first results',
         ])
         ->add('template', CodeEditorType::class, [
-                'label' => 'The Twig template used to display each keywords',
-                'attr' => [
-                ],
-                'slug' => 'export_template',
+            'label' => 'The Twig template used to display each keywords',
+            'attr' => [
+            ],
+            'slug' => 'export_template',
         ])
         ->add('mimetype', TextType::class, [
-                'label' => 'The mimetype used in the response',
-                'attr' => [
-                ],
+            'label' => 'The mimetype used in the response',
+            'attr' => [
+            ],
         ])
         ->add('allow_origin', TextType::class, [
-                'label' => 'The Access-Control-Allow-Origin header',
-                'required' => false,
-                'attr' => [
-                ],
+            'label' => 'The Access-Control-Allow-Origin header',
+            'required' => false,
+            'attr' => [
+            ],
         ])
         ->add('filename', CodeEditorType::class, [
-                'label' => 'The Twig template used to generate the export file name',
-                'attr' => [
-                ],
-                'slug' => 'export_filename',
-                'min-lines' => 4,
-                'max-lines' => 4,
+            'label' => 'The Twig template used to generate the export file name',
+            'attr' => [
+            ],
+            'slug' => 'export_filename',
+            'min-lines' => 4,
+            'max-lines' => 4,
         ])
         ->add('disposition', FileDispositionType::class)
         ->add('export_type', ChoiceType::class, [
-                'label' => 'Export type',
-                'expanded' => false,
-                'attr' => [
-                ],
-                'choices' => [
-                        'Raw (HTML, XML, JSON, ...)' => null,
-                        'PDF (dompdf)' => 'dompdf',
-                ],
+            'label' => 'Export type',
+            'expanded' => false,
+            'attr' => [
+            ],
+            'choices' => [
+                'Raw (HTML, XML, JSON, ...)' => null,
+                'PDF (dompdf)' => 'dompdf',
+            ],
         ])
         ->add('pdf_orientation', OrientationType::class, [
             'required' => false,
@@ -149,18 +149,18 @@ class ExportViewType extends ViewType
     {
         try {
             $renderQuery = $this->twig->createTemplate($view->getOptions()['body'] ?? '')->render([
-                    'view' => $view,
-                    'contentType' => $view->getContentType(),
-                    'environment' => $view->getContentType()->giveEnvironment(),
+                'view' => $view,
+                'contentType' => $view->getContentType(),
+                'environment' => $view->getContentType()->giveEnvironment(),
             ]);
         } catch (\Throwable $e) {
             $renderQuery = '{}';
         }
 
         $searchQuery = [
-                'index' => $view->getContentType()->giveEnvironment()->getAlias(),
-                'type' => $view->getContentType()->getName(),
-                'body' => $renderQuery,
+            'index' => $view->getContentType()->giveEnvironment()->getAlias(),
+            'type' => $view->getContentType()->getName(),
+            'body' => $renderQuery,
         ];
 
         if (isset($view->getOptions()['size'])) {
@@ -172,10 +172,10 @@ class ExportViewType extends ViewType
 
         try {
             $render = $this->twig->createTemplate($view->getOptions()['template'] ?? '')->render([
-                    'view' => $view,
-                    'contentType' => $view->getContentType(),
-                    'environment' => $view->getContentType()->giveEnvironment(),
-                    'result' => $resultSet->getResponse()->getData(),
+                'view' => $view,
+                'contentType' => $view->getContentType(),
+                'environment' => $view->getContentType()->giveEnvironment(),
+                'result' => $resultSet->getResponse()->getData(),
             ]);
         } catch (\Throwable $e) {
             $render = 'Something went wrong with the template of the view '.$view->getLabel().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
@@ -183,23 +183,23 @@ class ExportViewType extends ViewType
 
         try {
             $filename = $this->twig->createTemplate($view->getOptions()['filename'] ?? '')->render([
-                    'view' => $view,
-                    'contentType' => $view->getContentType(),
-                    'environment' => $view->getContentType()->giveEnvironment(),
-                    'result' => $resultSet->getResponse()->getData(),
+                'view' => $view,
+                'contentType' => $view->getContentType(),
+                'environment' => $view->getContentType()->giveEnvironment(),
+                'result' => $resultSet->getResponse()->getData(),
             ]);
         } catch (\Throwable $e) {
             $filename = 'Something went wrong with the template of the view '.$view->getLabel().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
         }
 
         return [
-                'render' => $render,
-                'filename' => $filename,
-                'mimetype' => empty($view->getOptions()['mimetype']) ? 'application/bin' : $view->getOptions()['mimetype'],
-                'allow_origin' => empty($view->getOptions()['allow_origin']) ? null : $view->getOptions()['allow_origin'],
-                'view' => $view,
-                'contentType' => $view->getContentType(),
-                'environment' => $view->getContentType()->giveEnvironment(),
+            'render' => $render,
+            'filename' => $filename,
+            'mimetype' => empty($view->getOptions()['mimetype']) ? 'application/bin' : $view->getOptions()['mimetype'],
+            'allow_origin' => empty($view->getOptions()['allow_origin']) ? null : $view->getOptions()['allow_origin'],
+            'view' => $view,
+            'contentType' => $view->getContentType(),
+            'environment' => $view->getContentType()->giveEnvironment(),
         ];
     }
 }

@@ -482,7 +482,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      *
      * @return ContentType
      */
-    public function setEnvironment(Environment $environment = null)
+    public function setEnvironment(?Environment $environment = null)
     {
         $this->environment = $environment;
 

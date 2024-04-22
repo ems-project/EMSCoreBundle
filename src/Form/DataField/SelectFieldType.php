@@ -42,12 +42,12 @@ class SelectFieldType extends DataFieldType
         }
 
         $builder->add('value', ChoiceType::class, [
-                'label' => ($options['label'] ?? $fieldType->getName()),
-                'required' => false,
-                'disabled' => $this->isDisabled($options),
-                'choices' => $choices,
-                'empty_data' => $options['multiple'] ? [] : null,
-                'multiple' => $options['multiple'],
+            'label' => ($options['label'] ?? $fieldType->getName()),
+            'required' => false,
+            'disabled' => $this->isDisabled($options),
+            'choices' => $choices,
+            'empty_data' => $options['multiple'] ? [] : null,
+            'multiple' => $options['multiple'],
         ]);
     }
 
@@ -79,11 +79,11 @@ class SelectFieldType extends DataFieldType
         // String specific display options
         $optionsForm->get('displayOptions')
         ->add('multiple', CheckboxType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('choices', TextareaType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('labels', TextareaType::class, [
-                'required' => false,
+            'required' => false,
         ]);
 
         if ($optionsForm->has('mappingOptions')) {

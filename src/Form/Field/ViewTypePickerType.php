@@ -17,7 +17,7 @@ class ViewTypePickerType extends Select2Type
         $resolver->setDefaults([
             'choices' => $this->viewTypes->getIds(),
             'attr' => [
-                    'data-live-search' => true,
+                'data-live-search' => true,
             ],
             'choice_attr' => function ($category, $key, $id) {
                 $viewType = $this->viewTypes->get($id);

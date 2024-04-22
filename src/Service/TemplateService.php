@@ -75,7 +75,7 @@ class TemplateService
     /**
      * @param array<mixed> $source
      */
-    public function getXml(ContentType $contentType, array $source, bool $arrayOfDocument, string $ouuid = null): string
+    public function getXml(ContentType $contentType, array $source, bool $arrayOfDocument, ?string $ouuid = null): string
     {
         $xmlDocument = new \DOMDocument();
         if ($arrayOfDocument) {

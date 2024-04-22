@@ -76,7 +76,7 @@ class FormLoginAuthenticator extends AbstractAuthenticator implements Authentica
         return new RedirectResponse($this->urlGenerator->generate(Routes::USER_LOGIN));
     }
 
-    public function start(Request $request, AuthenticationException $authException = null): Response
+    public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
         return new RedirectResponse($this->urlGenerator->generate(Routes::USER_LOGIN));
     }

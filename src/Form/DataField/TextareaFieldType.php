@@ -40,13 +40,13 @@ class TextareaFieldType extends DataFieldType
         /** @var FieldType $fieldType */
         $fieldType = $builder->getOptions()['metadata'];
         $builder->add('value', TextareaType::class, [
-                'attr' => [
-                        'rows' => $options['rows'],
-                        'placeholder' => $options['placeholder'],
-                ],
-                'label' => (null != $options['label'] ? $options['label'] : $fieldType->getName()),
-                'required' => false,
-                'disabled' => $this->isDisabled($options),
+            'attr' => [
+                'rows' => $options['rows'],
+                'placeholder' => $options['placeholder'],
+            ],
+            'label' => (null != $options['label'] ? $options['label'] : $fieldType->getName()),
+            'required' => false,
+            'disabled' => $this->isDisabled($options),
         ]);
     }
 
@@ -81,7 +81,7 @@ class TextareaFieldType extends DataFieldType
                 ->add('copy_to', TextType::class, ['required' => false]);
         }
         $optionsForm->get('displayOptions')->add('rows', IntegerType::class, [
-                'required' => false,
+            'required' => false,
         ])->add('placeholder', TextareaType::class, [
             'required' => false,
         ]);

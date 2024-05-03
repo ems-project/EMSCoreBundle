@@ -423,7 +423,7 @@ class AppExtension extends AbstractExtension
             }
 
             if (!$date instanceof \DateTimeInterface) {
-                $out .= '<'.$tag.' class="text-red">'.\htmlentities($item).'</'.$tag.'>';
+                $out .= '<'.$tag.' class="text-red">'.\htmlentities((string) $item).'</'.$tag.'>';
                 continue;
             }
 

@@ -16,7 +16,7 @@ final class LoadLinkModalEntity
     private ?string $target;
     private ?string $dataLink = null;
     private ?string $href = null;
-    private ?string $linkType;
+    private ?string $linkType = null;
     private ?string $mailto = null;
     private ?string $subject = null;
     private ?string $body = null;

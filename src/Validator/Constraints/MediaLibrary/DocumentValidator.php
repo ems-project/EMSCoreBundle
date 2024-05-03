@@ -28,7 +28,7 @@ class DocumentValidator extends ConstraintValidator
             throw new UnexpectedValueException($constraint, Document::class);
         }
 
-        match (\get_class($value)) {
+        match ($value::class) {
             MediaLibraryFile::class, MediaLibraryFolder::class => $this->existsValidation($value),
             default => throw new UnexpectedValueException($value, MediaLibraryDocument::class)
         };

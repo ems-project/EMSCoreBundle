@@ -73,7 +73,7 @@ final class ExtractCommand extends AbstractCommand
     private string $mailSubject;
     private ?string $mailTo = null;
     private ?string $mailCC = null;
-    private ?string $mailReplyTo;
+    private ?string $mailReplyTo = null;
 
     public function __construct(
         private readonly ContentTypeService $contentTypeService,

@@ -14,7 +14,7 @@
   ],
   "minimum-stability": "RC",
   "require": {
-    "php": "^8.2",
+    "php": "^8.3",
     "ext-libxml": "*",
     "ext-openssl": "*",
     "ext-simplexml": "*",

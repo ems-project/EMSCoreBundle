@@ -13,7 +13,6 @@ use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 use SensioLabs\AnsiConverter\Theme\Theme;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\JsonResponse as SymfonyJsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -110,7 +109,7 @@ class JobController extends AbstractController
         }
 
         if ($job->getStarted() && $job->getDone()) {
-            return new SymfonyJsonResponse('job already done');
+            return new JsonResponse('job already done');
         }
 
         if (false === $this->triggerJobFromWeb || $job->hasTag()) {

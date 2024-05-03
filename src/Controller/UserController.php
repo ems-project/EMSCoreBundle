@@ -64,9 +64,7 @@ class UserController extends AbstractController
         foreach ($contentTypes as $contentType) {
             $tree = $this->fieldTypeService->getTree($contentType);
 
-            $fieldTypesWithMinimumRole = $tree->getChildrenRecursive()->filter(function (FieldTypeTreeItem $item) {
-                return $item->getFieldType()->getRestrictionOption('minimum_role', false);
-            });
+            $fieldTypesWithMinimumRole = $tree->getChildrenRecursive()->filter(fn (FieldTypeTreeItem $item) => $item->getFieldType()->getRestrictionOption('minimum_role', false));
 
             $contentTypeCounts[$contentType->getId()] = \count($fieldTypesWithMinimumRole);
 
@@ -119,9 +117,7 @@ class UserController extends AbstractController
     {
         $tree = $this->fieldTypeService->getTree($contentType);
 
-        $fieldTypesWithMinimumRole = $tree->getChildrenRecursive()->filter(function (FieldTypeTreeItem $item) {
-            return $item->getFieldType()->getRestrictionOption('minimum_role', false);
-        });
+        $fieldTypesWithMinimumRole = $tree->getChildrenRecursive()->filter(fn (FieldTypeTreeItem $item) => $item->getFieldType()->getRestrictionOption('minimum_role', false));
 
         return $this->render("@$this->templateNamespace/user/permissions/specific-permissions.html.twig", [
             'contentType' => $contentType,

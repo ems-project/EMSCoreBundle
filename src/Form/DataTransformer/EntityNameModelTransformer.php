@@ -73,7 +73,7 @@ readonly class EntityNameModelTransformer implements DataTransformerInterface
     private function reverseTransformSingle(mixed $value): string
     {
         if (!$value instanceof EntityInterface) {
-            throw new \RuntimeException(\sprintf('EntityInterface expected got %s', \is_object($value) ? \get_class($value) : \gettype($value)));
+            throw new \RuntimeException(\sprintf('EntityInterface expected got %s', \get_debug_type($value)));
         }
 
         return $value->getName();

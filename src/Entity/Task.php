@@ -28,15 +28,13 @@ class Task implements EntityInterface
     private ?string $description = null;
     /** @var array<mixed> */
     private array $logs;
-    private string $createdBy;
 
-    private function __construct(Revision $revision, string $username)
+    private function __construct(Revision $revision, private string $createdBy)
     {
         $this->id = Uuid::uuid4();
         $this->revisionOuuid = $revision->giveOuuid();
         $this->created = DateTime::create('now');
         $this->modified = DateTime::create('now');
-        $this->createdBy = $username;
         $this->status = TaskStatus::PLANNED->value;
     }
 

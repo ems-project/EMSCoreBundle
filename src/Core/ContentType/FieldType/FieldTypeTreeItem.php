@@ -10,7 +10,7 @@ use EMS\CoreBundle\Entity\FieldType;
 /**
  * @implements \IteratorAggregate<FieldTypeTreeItem>
  */
-class FieldTypeTreeItem implements \IteratorAggregate
+class FieldTypeTreeItem implements \IteratorAggregate, \Stringable
 {
     private FieldTypeTreeItemCollection $children;
     private ?FieldTypeTreeItem $parent = null;
@@ -82,11 +82,7 @@ class FieldTypeTreeItem implements \IteratorAggregate
         $fieldType = $this->getFieldType();
         $options = $fieldType->getOptions();
 
-        if (isset($options['displayOptions']['label'])) {
-            return $options['displayOptions']['label'];
-        }
-
-        return null;
+        return $options['displayOptions']['label'] ?? null;
     }
 
     /**

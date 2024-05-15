@@ -20,6 +20,9 @@
     <route id="emsco_ems_link_info" path="/modal/ajax/ems-link-info"
            controller="EMS\CoreBundle\Controller\Wysiwyg\ModalController::emsLinkInfo"
            methods="GET" />
+    <route id="emsco_wysiwyg_modal_edit_image" path="/modal/ajax/edit-image"
+           controller="EMS\CoreBundle\Controller\Wysiwyg\ModalController::editImageModal"
+           methods="POST" />
 
     <route id="emsco_wysiwyg_ajax_paste" path="/ajax/{wysiwygProfileId}/paste"
            controller="EMS\CoreBundle\Controller\Wysiwyg\AjaxPasteController"

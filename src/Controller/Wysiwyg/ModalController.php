@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Controller\Wysiwyg;
 
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\Entity\Form\LoadLinkModalEntity;
+use EMS\CoreBundle\Form\Form\EditImageModalType;
 use EMS\CoreBundle\Form\Form\LoadLinkModalType;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Html\HtmlHelper;
@@ -62,7 +65,7 @@ class ModalController extends AbstractController
 
         $form->handleRequest($request);
         $response = [
-            'body' => $this->twig->render("@$this->templateNamespace/modal/link.html.twig", [
+            'body' => $this->twig->render("@$this->templateNamespace/modal/default.html.twig", [
                 'form' => $form->createView(),
             ]),
         ];
@@ -74,8 +77,27 @@ class ModalController extends AbstractController
                 throw new \RuntimeException('Unexpected not LoadLinkModalEntity submitted data');
             }
 
+            $response['type'] = 'select-link';
             $response['url'] = $data->generateUrl();
             $response['target'] = $data->getTarget();
+        }
+
+        return $this->flashMessageLogger->buildJsonResponse($response);
+    }
+
+    public function editImageModal(Request $request): JsonResponse
+    {
+        $path = (string) $request->request->get('path', '');
+        $form = $this->createForm(EditImageModalType::class, [EditImageModalType::FIELD_IMAGE => $path]);
+        $form->handleRequest($request);
+        $response = [
+            'body' => $this->twig->render("@$this->templateNamespace/modal/default.html.twig", [
+                'form' => $form->createView(),
+            ]),
+        ];
+        if ($form->isSubmitted() && $form->isValid()) {
+            $response['type'] = 'edit-image';
+            $response['url'] = $form->getData()['image'];
         }
 
         return $this->flashMessageLogger->buildJsonResponse($response);

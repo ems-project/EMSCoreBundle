@@ -1,3 +1,6 @@
+edit_image_modal:
+    field:
+        submit: 'Save'
 link_modal:
     field:
         anchor: 'Anchor'

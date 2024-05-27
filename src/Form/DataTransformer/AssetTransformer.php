@@ -36,7 +36,7 @@ readonly class AssetTransformer implements DataTransformerInterface
         $this->router->setContext($context);
         $match = $this->router->match($value);
         $this->router->setContext($backupContext);
-        if (Routes::ASSET !== $match['_route']) {
+        if (Routes::ASSET->value !== $match['_route']) {
             throw new \RuntimeException('Was expecting an asset route');
         }
         $config = $this->storageManager->getConfig($match['hash_config']);
@@ -54,7 +54,7 @@ readonly class AssetTransformer implements DataTransformerInterface
         }
         $configHash = $this->storageManager->saveConfig($value->getConfig(), StorageInterface::STORAGE_USAGE_ASSET);
 
-        return $this->router->generate(Routes::ASSET, [
+        return $this->router->generate(Routes::ASSET->value, [
             'hash_config' => $configHash,
             'filename' => $value->getFilename(),
             'hash' => $value->getHash(),

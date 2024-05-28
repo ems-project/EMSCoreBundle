@@ -1114,6 +1114,7 @@ views:
             raw-view: 'Raw view'
             raw-view-icon-class: 'fa fa-th'
             action-dropdown-label: 'Actions in %environment%'
+            published-label: 'Published in %environment%'
         revision-toolbar-html:
             add-to-release: 'Add to release'
 wysiwyg:

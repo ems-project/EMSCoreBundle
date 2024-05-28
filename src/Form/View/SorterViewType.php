@@ -70,8 +70,8 @@ class SorterViewType extends ViewType
         $builder
         ->add('body', CodeEditorType::class, [
             'label' => 'The Elasticsearch body query [JSON Twig]',
-            'attr' => [
-            ],
+            'attr' => [],
+
             'slug' => 'sorter_query',
         ])
         ->add('size', IntegerType::class, [
@@ -100,20 +100,26 @@ class SorterViewType extends ViewType
 
     public function generateResponse(View $view, Request $request): Response
     {
-        try {
-            $renderQuery = $this->twig->createTemplate($view->getOptions()['body'] ?? '')->render([
-                'view' => $view,
-                'contentType' => $view->getContentType(),
-                'environment' => $view->getContentType()->giveEnvironment(),
-            ]);
-        } catch (\Throwable $e) {
-            $renderQuery = '{}';
+        $options = $view->getOptions();
+        $bodyTemplate = $options['body'] ?? null;
+        $body = [];
+
+        if ($bodyTemplate) {
+            try {
+                $renderQuery = $this->twig->createTemplate($bodyTemplate)->render([
+                    'view' => $view,
+                    'contentType' => $view->getContentType(),
+                    'environment' => $view->getContentType()->giveEnvironment(),
+                ]);
+
+                $body = Json::decode($renderQuery);
+            } catch (\Throwable $e) {
+                $this->logger->error($e->getMessage());
+            }
         }
 
-        $body = Json::decode($renderQuery);
-
         $body['sort'] = [
-            $view->getOptions()['field'] => [
+            $options['field'] => [
                 'order' => 'asc',
                 'missing' => '_last',
             ],
@@ -126,8 +132,8 @@ class SorterViewType extends ViewType
         ];
 
         $searchQuery['size'] = self::SEARCH_SIZE;
-        if (isset($view->getOptions()['size'])) {
-            $searchQuery['size'] = $view->getOptions()['size'];
+        if (isset($options['size'])) {
+            $searchQuery['size'] = $options['size'];
         }
 
         $search = $this->elasticaService->convertElasticsearchSearch($searchQuery);
@@ -158,7 +164,7 @@ class SorterViewType extends ViewType
                 try {
                     $revision = $this->dataService->initNewDraft($view->getContentType()->getName(), $itemKey);
                     $data = $revision->getRawData();
-                    $data[$view->getOptions()['field']] = $counter++;
+                    $data[$options['field']] = $counter++;
                     $revision->setRawData($data);
                     $this->dataService->finalizeDraft($revision);
                 } catch (\Throwable $e) {
@@ -170,7 +176,7 @@ class SorterViewType extends ViewType
                     ]);
                 }
             }
-            $this->logger->notice('form.view.hierarchical.ordered', [
+            $this->logger->notice('form.view.sorter.ordered', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $view->getContentType()->getName(),
                 'view_name' => $view->getName(),
                 'view_label' => $view->getLabel(),

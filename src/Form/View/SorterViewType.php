@@ -11,6 +11,7 @@ use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
 use EMS\CoreBundle\Form\Nature\ReorderType;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Mapping;
+use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -68,23 +69,22 @@ class SorterViewType extends ViewType
 
         $builder
         ->add('body', CodeEditorType::class, [
-                'label' => 'The Elasticsearch body query [JSON Twig]',
-                'attr' => [
-                ],
-                'slug' => 'sorter_query',
+            'label' => 'The Elasticsearch body query [JSON Twig]',
+            'attr' => [],
+            'slug' => 'sorter_query',
         ])
         ->add('size', IntegerType::class, [
-                'label' => 'Limit the result to the x first results',
+            'label' => 'Limit the result to the x first results',
         ])
         ->add('field', ContentTypeFieldPickerType::class, [
-                'label' => 'Target order field (integer)',
-                'required' => false,
-                'firstLevelOnly' => false,
-                'mapping' => $mapping,
-                'types' => [
-                    'integer',
-                    'long',
-                ], ]);
+            'label' => 'Target order field (integer)',
+            'required' => false,
+            'firstLevelOnly' => false,
+            'mapping' => $mapping,
+            'types' => [
+                'integer',
+                'long',
+            ], ]);
     }
 
     public function getBlockPrefix(): string
@@ -92,9 +92,6 @@ class SorterViewType extends ViewType
         return 'sorter_view';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         return [];
@@ -102,34 +99,37 @@ class SorterViewType extends ViewType
 
     public function generateResponse(View $view, Request $request): Response
     {
-        try {
-            $renderQuery = $this->twig->createTemplate($view->getOptions()['body'] ?? '')->render([
+        $options = $view->getOptions();
+        $bodyTemplate = $options['body'] ?? null;
+        $body = [];
+
+        if ($bodyTemplate) {
+            try {
+                $renderQuery = $this->twig->createTemplate($bodyTemplate)->render([
                     'view' => $view,
                     'contentType' => $view->getContentType(),
                     'environment' => $view->getContentType()->giveEnvironment(),
-            ]);
-        } catch (\Throwable $e) {
-            $renderQuery = '{}';
+                ]);
+
+                $body = Json::decode($renderQuery);
+            } catch (\Throwable $e) {
+                $this->logger->error($e->getMessage());
+            }
         }
 
-        $boby = \json_decode($renderQuery, true, 512, JSON_THROW_ON_ERROR);
-
-        $boby['sort'] = [
-                $view->getOptions()['field'] => [
-                        'order' => 'asc',
-                        'missing' => '_last',
-                ],
+        $body['sort'] = [
+            $options['field'] => ['order' => 'asc', 'missing' => '_last'],
         ];
 
         $searchQuery = [
-                'index' => $view->getContentType()->giveEnvironment()->getAlias(),
-                'type' => $view->getContentType()->getName(),
-                'body' => $boby,
+            'index' => $view->getContentType()->giveEnvironment()->getAlias(),
+            'type' => $view->getContentType()->getName(),
+            'body' => $body,
         ];
 
         $searchQuery['size'] = self::SEARCH_SIZE;
-        if (isset($view->getOptions()['size'])) {
-            $searchQuery['size'] = $view->getOptions()['size'];
+        if (isset($options['size'])) {
+            $searchQuery['size'] = $options['size'];
         }
 
         $search = $this->elasticaService->convertElasticsearchSearch($searchQuery);
@@ -160,7 +160,7 @@ class SorterViewType extends ViewType
                 try {
                     $revision = $this->dataService->initNewDraft($view->getContentType()->getName(), $itemKey);
                     $data = $revision->getRawData();
-                    $data[$view->getOptions()['field']] = $counter++;
+                    $data[$options['field']] = $counter++;
                     $revision->setRawData($data);
                     $this->dataService->finalizeDraft($revision);
                 } catch (\Throwable $e) {
@@ -172,24 +172,24 @@ class SorterViewType extends ViewType
                     ]);
                 }
             }
-            $this->logger->notice('form.view.hierarchical.ordered', [
+            $this->logger->notice('form.view.sorter.ordered', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $view->getContentType()->getName(),
                 'view_name' => $view->getName(),
                 'view_label' => $view->getLabel(),
             ]);
 
             return new RedirectResponse($this->router->generate('data.draft_in_progress', [
-                    'contentTypeId' => $view->getContentType()->getId(),
+                'contentTypeId' => $view->getContentType()->getId(),
             ], UrlGeneratorInterface::RELATIVE_PATH));
         }
 
         $response = new Response();
         $response->setContent($this->twig->render("@$this->templateNamespace/view/custom/".$this->getBlockPrefix().'.html.twig', [
-                'response' => $emsResponse,
-                'view' => $view,
-                'form' => $form->createView(),
-                'contentType' => $view->getContentType(),
-                'environment' => $view->getContentType()->getEnvironment(),
+            'response' => $emsResponse,
+            'view' => $view,
+            'form' => $form->createView(),
+            'contentType' => $view->getContentType(),
+            'environment' => $view->getContentType()->getEnvironment(),
         ]));
 
         return $response;

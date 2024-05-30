@@ -12,11 +12,13 @@ use EMS\CoreBundle\Entity\Task;
  */
 final class TaskCollection implements \IteratorAggregate
 {
-    /** @var Task[] */
-    private array $tasks = [];
-
-    public function __construct(private readonly Revision $revision)
-    {
+    /**
+     * @param Task[] $tasks
+     */
+    public function __construct(
+        private readonly Revision $revision,
+        private readonly array $tasks = []
+    ) {
     }
 
     /**
@@ -27,25 +29,16 @@ final class TaskCollection implements \IteratorAggregate
         return new \ArrayIterator($this->tasks);
     }
 
-    public function addTask(object $task): void
-    {
-        if ($task instanceof Task) {
-            $this->tasks[] = $task;
-        }
-    }
-
-    /**
-     * @param Task[] $tasks
-     */
-    public function addTasks(array $tasks): void
-    {
-        foreach ($tasks as $task) {
-            $this->tasks[] = $task;
-        }
-    }
-
     public function getRevision(): Revision
     {
         return $this->revision;
+    }
+
+    public function sort(\Closure $callback): self
+    {
+        $sortTasks = $this->tasks;
+        \usort($sortTasks, $callback);
+
+        return new self($this->revision, $sortTasks);
     }
 }

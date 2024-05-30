@@ -331,7 +331,7 @@
 
     {% if dataField.fieldType.displayOptions.label is defined and dataField.fieldType.displayOptions.label %}
     	<div class="panel panel-default">
-			{% if parentType != 'EMS\\CoreBundle\\Form\\DataField\\TabsFieldType' %}
+			{% if parentType not in ['EMS\\CoreBundle\\Form\\DataField\\TabsFieldType', 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType'] %}
 				<div class="panel-heading">
 					<h3 class="panel-title">
 						{% if dataField.fieldType.displayOptions.icon is defined %}
@@ -435,9 +435,16 @@
 				<div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~loop.index0 }}__tab">
 					{% set childData = source[value]|default([]) %}
 					{% set childCompareData = compareRawData[value]|default([]) %}
-					{% for grandchild in dataField.getChildren.get(value).getChildren|default([]) %}
-						{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData, '', path|merge([loop.index0]), locale) }}
-					{% endfor %}
+					<div class="row">
+						{% for grandchild in dataField.getChildren.get(value).getChildren|default([]) %}
+							<div class="{% if grandchild.fieldType.displayOptions.class is defined and grandchild.fieldType.displayOptions.class  %}{{ grandchild.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
+								{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData, '', path|merge([loop.index0]), locale) }}
+							</div>
+							{% if grandchild.fieldType.displayOptions.lastOfRow is defined and grandchild.fieldType.displayOptions.lastOfRow %}
+								<div class="clearfix"></div>
+							{% endif %}
+						{% endfor %}
+					</div>
 				</div>
 			{% endfor %}
 		</div>
@@ -511,9 +518,16 @@
 							<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~counter }}__tab">
 								{% set childData = source[key]|default([]) %}
 								{% set childCompareData = compareRawData[key]|default([]) %}
-								{% for grandchild in child.getChildren|default([]) %}
-									{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData, '', path|merge([counter]), locale) }}
-								{% endfor %}
+								<div class="row">
+									{% for grandchild in child.getChildren|default([]) %}
+										<div class="{% if grandchild.fieldType.displayOptions.class is defined and grandchild.fieldType.displayOptions.class  %}{{ grandchild.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
+											{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData, '', path|merge([counter]), locale) }}
+										</div>
+										{% if grandchild.fieldType.displayOptions.lastOfRow is defined and grandchild.fieldType.displayOptions.lastOfRow %}
+											<div class="clearfix"></div>
+										{% endif %}
+									{% endfor %}
+								</div>
 							</div>
 						{% endwith %}
 						{% set counter = counter + 1 %}

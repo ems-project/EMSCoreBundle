@@ -74,24 +74,24 @@ final class TaskManager
 
     public function getTasksPlanned(Revision $revision): TaskCollection
     {
-        $tasks = new TaskCollection($revision);
-
         if ($revision->hasTaskPlannedIds()) {
-            $tasks->addTasks($this->taskRepository->findTasksByIds($revision->getTaskPlannedIds()));
+            $tasksPlanned = $this->taskRepository->findTasksByIds($revision->getTaskPlannedIds());
         }
 
-        return $tasks;
+        return new TaskCollection(revision: $revision, tasks: $tasksPlanned ?? []);
     }
 
     public function getTasksApproved(Revision $revision): TaskCollection
     {
-        $tasks = new TaskCollection($revision);
-
         if ($revision->hasTaskApprovedIds()) {
-            $tasks->addTasks($this->taskRepository->findTasksByIds($revision->getTaskApprovedIds()));
+            $tasksApproved = $this->taskRepository->findTasksByIds($revision->getTaskApprovedIds());
         }
 
-        return $tasks;
+        $taskCollection = new TaskCollection(revision: $revision, tasks: $tasksApproved ?? []);
+
+        return $taskCollection->sort(function (Task $a, Task $b) {
+            return $b->getModified() <=> $a->getModified();
+        });
     }
 
     public function getTaskCurrent(Revision $revision): ?Task

@@ -331,7 +331,7 @@
 
     {% if dataField.fieldType.displayOptions.label is defined and dataField.fieldType.displayOptions.label %}
     	<div class="panel panel-default">
-			{% if parentType != 'EMS\\CoreBundle\\Form\\DataField\\TabsFieldType' %}
+			{% if parentType not in ['EMS\\CoreBundle\\Form\\DataField\\TabsFieldType', 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType'] %}
 				<div class="panel-heading">
 					<h3 class="panel-title">
 						{% if dataField.fieldType.displayOptions.icon is defined %}
@@ -435,9 +435,16 @@
 				<div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~loop.index0 }}__tab">
 					{% set childData = source[value]|default([]) %}
 					{% set childCompareData = compareRawData[value]|default([]) %}
-					{% for grandchild in dataField.getChildren.get(value).getChildren|default([]) %}
-						{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData, '', path|merge([loop.index0]), locale) }}
-					{% endfor %}
+					<div class="row">
+						{% for grandchild in dataField.getChildren.get(value).getChildren|default([]) %}
+							<div class="{% if grandchild.fieldType.displayOptions.class is defined and grandchild.fieldType.displayOptions.class  %}{{ grandchild.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
+								{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData, '', path|merge([loop.index0]), locale) }}
+							</div>
+							{% if grandchild.fieldType.displayOptions.lastOfRow is defined and grandchild.fieldType.displayOptions.lastOfRow %}
+								<div class="clearfix"></div>
+							{% endif %}
+						{% endfor %}
+					</div>
 				</div>
 			{% endfor %}
 		</div>
@@ -511,9 +518,16 @@
 							<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~counter }}__tab">
 								{% set childData = source[key]|default([]) %}
 								{% set childCompareData = compareRawData[key]|default([]) %}
-								{% for grandchild in child.getChildren|default([]) %}
-									{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData, '', path|merge([counter]), locale) }}
-								{% endfor %}
+								<div class="row">
+									{% for grandchild in child.getChildren|default([]) %}
+										<div class="{% if grandchild.fieldType.displayOptions.class is defined and grandchild.fieldType.displayOptions.class  %}{{ grandchild.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
+											{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData, '', path|merge([counter]), locale) }}
+										</div>
+										{% if grandchild.fieldType.displayOptions.lastOfRow is defined and grandchild.fieldType.displayOptions.lastOfRow %}
+											<div class="clearfix"></div>
+										{% endif %}
+									{% endfor %}
+								</div>
 							</div>
 						{% endwith %}
 						{% set counter = counter + 1 %}
@@ -1081,6 +1095,7 @@
 			{%- if displayOptions.display_template|default(false) -%}
 				{%- set rawData = dataField.rawData -%}
 				{%- set data = choices|default([])|filter( (id, label) => rawData is iterable ? id in rawData : id == rawData) -%}
+				{%- set dataItems = items|default([])|filter( item => rawData is iterable ? item.id in rawData : item.id == rawData)|reverse|reverse -%}
 
 				{%- if doCompare -%}
 					{%- set compareRawData = attribute(compareRawData, dataField.fieldType.name)|default(false) -%}
@@ -1088,15 +1103,16 @@
 						<div class="col-md-6 bg-gray-light">
 							{%- if compareRawData -%}
 								{%- set compareData = choices|default([])|filter( (id, label) => compareRawData is iterable ? id in compareRawData : id == compareRawData) -%}
-								{{- displayOptions.display_template|emsco_generate_from_template({ data: compareData, dataField: dataField, choices: choices })|raw -}}
+								{%- set compareItems = items|default([])|filter( item => compareRawData is iterable ? item.id in compareRawData : item.id == compareRawData)|reverse|reverse -%}
+								{{- displayOptions.display_template|emsco_generate_from_template({ data: compareData, items: compareItems, dataField: dataField, choices: choices })|raw -}}
 							{%- endif -%}
 						</div>
 						<div class="col-md-6 bg-gray-light">
-							{{- displayOptions.display_template|emsco_generate_from_template({ data: data, dataField: dataField, choices: choices })|raw -}}
+							{{- displayOptions.display_template|emsco_generate_from_template({ data: data, items: dataItems, dataField: dataField, choices: choices })|raw -}}
 						</div>
 					</div>
 				{%- else -%}
-					{{- displayOptions.display_template|emsco_generate_from_template({ data: data, dataField: dataField, choices: choices|default([]) })|raw -}}
+					{{- displayOptions.display_template|emsco_generate_from_template({ data: data, items: dataItems, dataField: dataField, choices: choices|default([]) })|raw -}}
 				{%- endif -%}
 			{%- else -%}
 				{%- set diffChoice = emsco_diff_choice(dataField.rawData, choiceLabels|default([]), choiceValues|default([]), compare, dataField.fieldType.name, compareRawData) -%}

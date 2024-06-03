@@ -1293,7 +1293,7 @@ class DataService
         $this->em->flush();
     }
 
-    public function trashPutBack(ContentType $contentType, string ...$ouuids): null|int
+    public function trashPutBack(ContentType $contentType, string ...$ouuids): ?int
     {
         $revisionIds = [];
         $revisions = $this->revRepository->findTrashRevisions($contentType, ...$ouuids);

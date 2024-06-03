@@ -1,4 +1,4 @@
-{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain translationDomain|default('EMSCoreBundle') %}
 
 <a  class="{% if btnClass is defined %}{{ btnClass }}{% else %}btn btn-sm btn-{{ btnType|default('default') }}{% endif %} {%  if disabled is defined and disabled %}disabled{% endif %}" href="{{ url }}"
 	{% if target is defined %}

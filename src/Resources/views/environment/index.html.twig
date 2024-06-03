@@ -253,7 +253,7 @@
                                     <th class="text-center">{{ 'view.environment.index.total_label'|trans }}</th>
                                     <th>{{ 'view.environment.index.action_label'|trans }}</th>
                                 </tr>
-                                {% for name, alias in unreferencedAliases %}
+                                {% for name, alias in unreferencedAliases|sort %}
                                     <tr>
                                         <td class="text-center">{{ loop.index }}.</td>
                                         <td>{{ name }}</td>
@@ -321,7 +321,7 @@
                                     <th class="text-center">{{ 'view.environment.index.total_label'|trans }}</th>
                                     <th>{{ 'view.environment.index.action_label'|trans }}</th>
                                 </tr>
-                                {% for index in orphanIndexes %}
+                                {% for index in orphanIndexes|sort %}
                                     <tr>
                                         <td class="text-center">{{ loop.index }}.</td>
                                         <td>{{ index.name }}</td>

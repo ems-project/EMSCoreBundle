@@ -10,12 +10,6 @@
     <route id="emsco_data_search_in_my_circles" path="/in-my-circles/{name}"
            controller="EMS\CoreBundle\Controller\ContentManagement\DataController::inMyCirclesAction"
            methods="GET"/>
-    <route id="emsco_data_put_back" path="/put-back/{contentType}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::putBackAction"
-           methods="POST"/>
-    <route id="emsco_data_empty_trash" path="/empty-trash/{contentType}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::emptyTrashAction"
-           methods="POST"/>
     <route id="emsco_data_view" path="/view/{environmentName}/{type}/{ouuid}"
            controller="EMS\CoreBundle\Controller\ContentManagement\DataController::viewDataAction"
            methods="GET"/>
@@ -87,9 +81,6 @@
     <route id="emsco_data_add" path="/add/{contentType}"
            controller="EMS\CoreBundle\Controller\ContentManagement\DataController::addAction"
            methods="GET|POST"/>
-    <route id="emsco_data_trash" path="/trash/{contentType}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::trashAction"
-           methods="GET|POST"/>
     <route id="emsco_data_duplicate_with_jsoncontent" path="/duplicate-json/{contentType}/{ouuid}"
            controller="EMS\CoreBundle\Controller\ContentManagement\DataController::duplicateWithJsonContentAction"
            methods="POST"/>
@@ -141,15 +132,7 @@
     <route id="ems_search_in_my_circles" path="/in-my-circles/{name}"
            controller="EMS\CoreBundle\Controller\ContentManagement\DataController::inMyCirclesAction"
            methods="GET"/>
-    <route id="ems_data_trash" path="/trash/{contentType}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::trashAction"
-           methods="GET"/>
-    <route id="ems_data_put_back" path="/put-back/{contentType}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::putBackAction"
-           methods="POST"/>
-    <route id="ems_data_empty_trash" path="/empty-trash/{contentType}/{ouuid}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\DataController::emptyTrashAction"
-           methods="POST"/>
+
     <route id="data.view" path="/view/{environmentName}/{type}/{ouuid}"
            controller="EMS\CoreBundle\Controller\ContentManagement\DataController::viewDataAction"
            methods="GET"/>

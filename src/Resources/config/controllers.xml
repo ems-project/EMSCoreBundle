@@ -382,6 +382,15 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Revision\TrashController" public="true">
+            <argument type="service" id="ems.service.data" />
+            <argument type="service" id="emsco.data_table.factory" />
+            <argument type="service" id="emsco.logger" />
+            <argument>%ems_core.template_namespace%</argument>
+            <call method="setContainer"/>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
 
         <!-- Search -->
         <service id="EMS\CoreBundle\Controller\Search\QuerySearchController" public="true">

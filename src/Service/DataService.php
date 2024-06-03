@@ -1283,70 +1283,36 @@ class DataService
         $em->flush();
     }
 
-    /**
-     * @throws LockedException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PrivilegeException
-     */
-    public function emptyTrash(ContentType $contentType, string $ouuid): void
+    public function trashEmpty(ContentType $contentType, string ...$ouuids): void
     {
-        /** @var EntityManager $em */
-        $em = $this->doctrine->getManager();
+        $revisions = $this->revRepository->findTrashRevisions($contentType, ...$ouuids);
 
-        /** @var RevisionRepository $repository */
-        $repository = $em->getRepository(Revision::class);
-
-        $revisions = $repository->findBy([
-                'ouuid' => $ouuid,
-                'contentType' => $contentType,
-                'deleted' => true,
-        ]);
-
-        /** @var Revision $revision */
         foreach ($revisions as $revision) {
             $this->lockRevision($revision);
-            $em->remove($revision);
+            $this->em->remove($revision);
         }
-        $em->flush();
+        $this->em->flush();
     }
 
-    /**
-     * @throws LockedException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     * @throws PrivilegeException
-     */
-    public function putBack(ContentType $contentType, string $ouuid): ?int
+    public function trashPutBack(ContentType $contentType, string ...$ouuids): null|int
     {
-        /** @var EntityManager $em */
-        $em = $this->doctrine->getManager();
+        $revisionIds = [];
+        $revisions = $this->revRepository->findTrashRevisions($contentType, ...$ouuids);
 
-        /** @var RevisionRepository $repository */
-        $repository = $em->getRepository(Revision::class);
-
-        $revisions = $repository->findBy([
-                'ouuid' => $ouuid,
-                'contentType' => $contentType,
-                'deleted' => true,
-        ]);
-
-        $out = null;
-        /** @var Revision $revision */
         foreach ($revisions as $revision) {
             $this->lockRevision($revision);
             $revision->setDeleted(false);
             $revision->setDeletedBy(null);
             if (null === $revision->getEndTime()) {
                 $revision->setDraft(true);
-                $out = $revision->getId();
+                $revisionIds[] = $revision->getId();
                 $this->auditLogger->notice('log.revision.restored', LogRevisionContext::update($revision));
             }
-            $em->persist($revision);
+            $this->em->persist($revision);
         }
-        $em->flush();
+        $this->em->flush();
 
-        return $out;
+        return 1 === \count($ouuids) ? \array_shift($revisionIds) : null;
     }
 
     /**

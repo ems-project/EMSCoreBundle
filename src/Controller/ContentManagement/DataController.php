@@ -14,7 +14,6 @@ use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
-use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Exception\DuplicateOuuidException;
@@ -160,36 +159,6 @@ class DataController extends AbstractController
             'query' => null,
         ], [
             'search_form' => \json_decode($formEncoded, true, 512, JSON_THROW_ON_ERROR),
-        ]);
-    }
-
-    public function trashAction(ContentType $contentType): Response
-    {
-        if (!$this->isGranted($contentType->role(ContentTypeRoles::TRASH))) {
-            throw $this->createAccessDeniedException('Trash not granted!');
-        }
-
-        return $this->render("@$this->templateNamespace/data/trash.html.twig", [
-            'contentType' => $contentType,
-            'revisions' => $this->dataService->getAllDeleted($contentType),
-        ]);
-    }
-
-    public function putBackAction(ContentType $contentType, string $ouuid): RedirectResponse
-    {
-        $revId = $this->dataService->putBack($contentType, $ouuid);
-
-        return $this->redirectToRoute(Routes::EDIT_REVISION, [
-            'revisionId' => $revId,
-        ]);
-    }
-
-    public function emptyTrashAction(ContentType $contentType, string $ouuid): RedirectResponse
-    {
-        $this->dataService->emptyTrash($contentType, $ouuid);
-
-        return $this->redirectToRoute('ems_data_trash', [
-            'contentType' => $contentType->getId(),
         ]);
     }
 

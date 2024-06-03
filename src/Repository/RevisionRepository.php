@@ -823,6 +823,24 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
+     * @return Revision[]
+     */
+    public function findTrashRevisions(ContentType $contentType, string ...$ouuids): array
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->join('r.contentType', 'c')
+            ->andWhere($qb->expr()->eq('c.id', ':content_type_id'))
+            ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(true)))
+            ->setParameter('content_type_id', $contentType->getId())
+            ->setParameter('ouuids', $ouuids, ArrayParameterType::STRING)
+        ;
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
      * @param string[] $circles
      */
     public function countDraftInProgress(string $searchValue, ?ContentType $contentType, array $circles = [], bool $isAdmin = false): int

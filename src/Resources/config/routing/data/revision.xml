@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="emsco_data_trash" path="/trash/{contentType}"
+           controller="EMS\CoreBundle\Controller\Revision\TrashController::trash"
+           methods="GET|POST"/>
+    <route id="emsco_data_put_back" path="/put-back/{contentType}/{ouuid}"
+           controller="EMS\CoreBundle\Controller\Revision\TrashController::putBack"
+           methods="POST"/>
+    <route id="emsco_data_empty_trash" path="/empty-trash/{contentType}/{ouuid}"
+           controller="EMS\CoreBundle\Controller\Revision\TrashController::emptyTrash"
+           methods="POST"/>
+
+    <!-- deprecated routes -->
+    <route id="ems_data_trash" path="/trash/{contentType}"
+           controller="EMS\CoreBundle\Controller\Revision\TrashController::trash"
+           methods="GET"/>
+    <route id="ems_data_put_back" path="/put-back/{contentType}/{ouuid}"
+           controller="EMS\CoreBundle\Controller\Revision\TrashController::putBack"
+           methods="POST"/>
+    <route id="ems_data_empty_trash" path="/empty-trash/{contentType}/{ouuid}"
+           controller="EMS\CoreBundle\Controller\Revision\TrashController::emptyTrash"
+           methods="POST"/>
+</routes>

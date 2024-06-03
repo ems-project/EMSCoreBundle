@@ -1135,23 +1135,13 @@ Reorder: Reorder
         ' It is not possible to update the object unique identifier later':
             '': 'About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is not possible to update the object unique identifier later.'
 'Template is missing': 'Template is missing'
-OUUID: OUUID
 Locked: Locked
-'Last update': 'Last update'
 By: By
 Revisions: Revisions
 'Edit draft': 'Edit draft'
 'Discard this draft ?': 'Discard this draft ?'
 Discard: Discard
 Revision: Revision
-'Trash for content type %name%': 'Trash for content type %name%'
-'Deleted by': 'Deleted by'
-'Put it back ?': 'Put it back ?'
-'Put back': 'Put back'
-'Empty Trash ?': 'Empty Trash ?'
-'Empty Trash': 'Empty Trash'
-Empty: Empty
-'The trash is empty': 'The trash is empty'
 Documentation: Documentation
 Filters: Filters
 'Edit %entity_name%': 'Edit %entity_name%'

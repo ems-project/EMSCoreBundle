@@ -8,7 +8,11 @@ final class TableAction
 {
     private string $cssClass = 'btn btn-default';
 
-    public function __construct(private readonly string $name, private readonly string $icon, private readonly string $labelKey, private readonly string $confirmationKey)
+    public function __construct(
+        private readonly string $name,
+        private readonly string $icon,
+        private readonly string $labelKey,
+        private readonly ?string $confirmationKey = null)
     {
     }
 
@@ -22,7 +26,7 @@ final class TableAction
         return $this->labelKey;
     }
 
-    public function getConfirmationKey(): string
+    public function getConfirmationKey(): ?string
     {
         return $this->confirmationKey;
     }

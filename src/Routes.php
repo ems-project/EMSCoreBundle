@@ -48,6 +48,8 @@ class Routes
     final public const DATA_PRIVATE_VIEW = 'emsco_data_private_view';
     final public const DATA_ADD = 'emsco_data_add';
     final public const DATA_TRASH = 'emsco_data_trash';
+    final public const DATA_TRASH_PUT_BACK = 'emsco_data_put_back';
+    final public const DATA_TRASH_EMPTY = 'emsco_data_empty_trash';
     final public const DATA_ADD_REVISION_TO_RELEASE = 'emsco_data_add_revision_to_release';
     final public const SCHEDULE_INDEX = 'emsco_schedule_index';
     final public const SCHEDULE_ADD = 'emsco_schedule_add';

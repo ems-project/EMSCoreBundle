@@ -34,6 +34,11 @@ class UserService implements EntityServiceInterface
     ) {
     }
 
+    public function isSuper(): bool
+    {
+        return $this->authorizationChecker->isGranted('ROLE_SUPER');
+    }
+
     public function searchUser(string $search): ?UserInterface
     {
         /** @var UserInterface[] $cache */

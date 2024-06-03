@@ -91,6 +91,7 @@ final class TableType extends AbstractType
                         ],
                         'icon' => $action->getIcon(),
                         'label' => $action->getLabelKey(),
+                        'translation_domain' => $data->getTranslationDomain(),
                     ]);
             }
         }

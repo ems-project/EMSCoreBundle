@@ -60,7 +60,7 @@ class CheckboxFieldType extends DataFieldType
     {
         $out = parent::viewTransform($dataField);
 
-        return ['value' => ((null !== $out && !empty($out) && $out) ? true : false)];
+        return ['value' => ((null !== $out && !empty($out)) ? true : false)];
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -148,7 +148,7 @@ class CalendarController extends AbstractController
         $events = [];
         foreach ($this->elasticaService->search($search)->getResponse()->getData()['hits']['hits'] ?? [] as $item) {
             $source = $item['_source'];
-            if ($field['mappingOptions']['nested'] ?? true) {
+            if ($field->getMappingOption('nested', true)) {
                 $source = $source[$field->getName()] ?? [];
             }
             $event = [
@@ -158,9 +158,9 @@ class CalendarController extends AbstractController
                     'type' => $contentType->getName(),
                     'ouuid' => $item['id'] ?? 'not-found',
                 ]),
-                'start' => $source[$field['mappingOptions']['fromDateMachineName'] ?? 'not-found'] ?? null,
-                'end' => $source[$field['mappingOptions']['toDateMachineName'] ?? 'not-found'] ?? null,
-                'allDay' => !($field['displayOptions']['timePicker'] ?? false),
+                'start' => $source[$field->getMappingOption('fromDateMachineName', 'not-found')] ?? null,
+                'end' => $source[$field->getMappingOption('toDateMachineName', 'not-found')] ?? null,
+                'allDay' => !$field->getDisplayOption('timePicker', false),
             ];
             if ($contentType->hasColorField() && isset($item['_source'][$contentType->giveColorField()])) {
                 $color = new Color((string) $item['_source'][$contentType->giveColorField()]);

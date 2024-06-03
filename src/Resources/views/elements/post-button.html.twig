@@ -1,4 +1,4 @@
-{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain translationDomain|default('EMSCoreBundle') %}
 {%- set settings = {
 	'form': (destinationFormName|default(false)),
 	'action': (action is defined ? action|json_encode : false),

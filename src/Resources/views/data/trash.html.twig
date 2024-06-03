@@ -1,90 +1,13 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-revision' %}
 
-{% block title %}{{ 'Trash for content type %name%'|trans({'%name%': contentType.singularName}) }}{% endblock %}
-{% block pagetitle %}{{ 'Trash for content type %name%'|trans({'%name%': contentType.singularName}) }}{% endblock %}
+{% block title %}{{ 'revision.trash.title'|trans({'%name%': contentType.singularName}) }}{% endblock %}
+{% block pagetitle %}{{ 'revision.trash.title'|trans({'%name%': contentType.singularName}) }}{% endblock %}
 
 
 {% block body %}
-
-{% if revisions %}
-<div class="row">
-	<div class="col-md-12">
-		<div class="box ">
-			<div class="box-header with-border text-{{ contentType.color }}">
-				<i class=" {% if contentType.icon %}{{ contentType.icon }}{% else %}fa fa-book{% endif %}"></i>
-				<h3 class="box-title"> {{ contentType.pluralName }} in trash</h3>
-			</div>
-			<!-- /.box-header -->
-			<div class="box-body">
-				<div class="table-responsive">
-				<table class="table table-condensed table-striped">
-					<tbody>
-						<tr>
-							<th class="text-center" style="width: 10px">{{ '#'|trans }}</th>
-                            {% if emsco_is_super() %}<th>{{ 'OUUID'|trans }}</th>{% endif %}
-							<th>{{ 'Label'|trans }}</th>
-							<th>{{ 'Deleted by'|trans }}</th>
-							<th>{{ 'Last update'|trans }}</th>
-							<th>{{ 'Action'|trans }}</th>
-						</tr>
-						{% for revision in revisions %}
-							<tr>
-								<td class="text-center">{{ loop.index }}.</td>
-                                {% if emsco_is_super() %}<td>{{ revision.ouuid }}</td>{% endif %}
-								<td>
-								{% if revision.contentType.labelField is defined and revision.rawData and attribute(revision.rawData, revision.contentType.labelField) is defined %}
-									{{ attribute(revision.rawData, revision.contentType.labelField) }}
-								{% endif %}
-								</td>
-								<td>
-									{{ revision.deletedBy|default('N/A')|emsco_display_name }}
-								</td>
-								<td>
-									{{ revision.modified|date(date_time_format) }}
-								</td>
-								<td>
-
-									<div class="btn-group">
-                                        {% include '@EMSCore/elements/post-button.html.twig' with {
-											'url': path('ems_data_put_back', {
-												'contentType': revision.contentType.id,
-												'ouuid': revision.ouuid
-											}),
-											'message': 'Put it back ?'|trans,
-											'label': 'Put back'|trans,
-											'icon': 'recycle'
-										}%}
-                                        {% include '@EMSCore/elements/post-button.html.twig' with {
-											'url': path('ems_data_empty_trash', {
-												'contentType': revision.contentType.id,
-												'ouuid': revision.ouuid
-											}),
-											'message': 'Empty Trash ?'|trans,
-											'label': 'Empty Trash'|trans,
-											'icon': 'trash'
-										}%}
-				                    </div>
-
-
-								</td>
-							</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-				</div>
-
-			</div>
-			<!-- /.box-body -->
-		</div>
-	</div>
-</div>
-{% else %}
-	<div class="callout callout-success">
-    	<h4>{{ 'Empty'|trans }}</h4>
-		<p>{{ 'The trash is empty'|trans }}</p>
-    </div>
-{% endif %}
-{% include '@EMSCore/app/menu.html.twig' with {
-	'item':  'data-draft-' ~ contentType.id
-}%}
+    {% form_theme form '@EMSCore/form/forms.html.twig' %}
+    {{ form(form, {
+		'table_title_icon': contentType.icon|default('fa fa-book'),
+		'table_title': 'revision.trash.sub_title'|trans({ '%pluralName%': contentType.pluralName })
+	}) }}
 {% endblock %}

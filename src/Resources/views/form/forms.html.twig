@@ -203,7 +203,7 @@
                         {% if action.icon|default(false) %}
                             <span class="{{ action.icon starts with 'glyphicon-' ? "glyphicon #{action.icon}" : "fa fa-#{action.icon}" }}"></span>&nbsp;
                         {% endif %}
-                        {% if action.label|default(false) %}{{ action.label|trans }}{% endif %}
+                        {% if action.label|default(false) %}{{ action.label|trans({}, table.translationDomain) }}{% endif %}
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
@@ -247,6 +247,7 @@
                     'itemLabel': attribute(line.data, table.labelAttribute),
                     'icon': action.icon,
                     'group_class': loop.last ? 'pull-right' : '',
+                    'translationDomain': table.translationDomain
                 }%}
             {% endif %}
         {% else %}
@@ -256,6 +257,7 @@
                 'itemLabel': attribute(line.data, table.labelAttribute),
                 'btnType': action.buttonType,
                 'icon': action.icon,
+                'translationDomain': table.translationDomain
             }%}
         {% endif %}
     {% endif %}
@@ -268,23 +270,28 @@
         <div class="col-md-12">
             {{ form_start(form) }}
             <div class="box ">
-                {% if form.vars.title_label|default(false) %}
+                {% if table_title is defined or form.vars.title_label|default(false) %}
                     <div class="box-header with-border">
-                        <h2 class="box-title">{{ form.vars.title_label|trans }}</h2>
+                        <h2 class="box-title">
+                            {% if table_title_icon is defined %}<i class="{{ table_title_icon }}"></i>&nbsp;{% endif %}
+                            {{ table_title|default(form.vars.title_label|trans) }}
+                        </h2>
                     </div>
                 {% endif %}
-                <div class="box-header with-border">
-                    <div class="btn-group  pull-right">
-                        {% if toolbar is defined %}
-                            {{ toolbar }}
-                        {% endif %}
-                        {%  if table.sortable and table.supportsTableActions %}
-                            <button type="button" class="btn" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder">
-                                <i class="fa fa-reorder"></i> {{ reorder_label|default(form.vars.reorder_label)|trans }}
-                            </button>
-                        {% endif %}
+                {% if toolbar is defined or (table.sortable and table.supportsTableActions) %}
+                    <div class="box-header with-border">
+                        <div class="btn-group  pull-right">
+                            {% if toolbar is defined %}
+                                {{ toolbar }}
+                            {% endif %}
+                            {%  if table.sortable and table.supportsTableActions %}
+                                <button type="button" class="btn" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder">
+                                    <i class="fa fa-reorder"></i> {{ reorder_label|default(form.vars.reorder_label)|trans }}
+                                </button>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
+                {% endif %}
                 <div class="box-body with-border">
                     <div class="table-responsive">
                         <table class="table table-condensed table-striped" data-datatable="{{ table.frontendOptions|json_encode|e('html_attr') }}">
@@ -298,11 +305,12 @@
                                 {% endif %}
                                 {% for column in table.columns %}
                                     <th class="nowrap" data-orderable="{{ column.orderable ? 'true' : 'false' }}" data-name="{{  column.attribute }}">
+                                        {% set columnTitle = column.titleKey|trans(column.transLabelOptions, column.translationDomain) %}
                                         {% if column.iconClass %}
-                                            <i class="{{ column.iconClass }}" aria-hidden="true" title="{{ column.titleKey|trans(column.transLabelOptions)|e('html_attr') }}"></i>
-                                            <span class="sr-only">{{ column.titleKey|trans }}</span>
+                                            <i class="{{ column.iconClass }}" aria-hidden="true" title="{{ columnTitle|e('html_attr') }}"></i>
+                                            <span class="sr-only">{{ columnTitle }}</span>
                                         {% else %}
-                                            {{ column.titleKey|trans(column.transLabelOptions) }}
+                                            {{ columnTitle }}
                                         {% endif %}
                                     </th>
                                 {% endfor %}

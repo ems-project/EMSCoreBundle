@@ -32,6 +32,8 @@
             prefix="/datatable"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/data/file.xml"
             prefix="/data/file"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/data/revision.xml"
+            prefix="/data"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/edit.xml"
             prefix="/data"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/search.xml"/>

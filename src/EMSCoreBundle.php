@@ -20,6 +20,7 @@ class EMSCoreBundle extends Bundle
     final public const TRANS_USER_DOMAIN = 'emsco-user';
     final public const TRANS_ENVIRONMENT_DOMAIN = 'emsco-environment';
     final public const TRANS_MIMETYPES = 'emsco-mimetypes';
+    final public const TRANS_REVISION = 'emsco-revision';
 
     final public const FONTAWESOME_VERSION = '4';
 

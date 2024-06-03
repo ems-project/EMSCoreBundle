@@ -770,13 +770,10 @@ class AppExtension extends AbstractExtension
 
     public function displayName(?string $username): string
     {
-        if (null === $username || '' === $username) {
-            return 'N/A';
-        }
-        /** @var ?UserInterface $user */
-        $user = $this->userService->getUser($username);
-
-        return $user ? $user->getDisplayName() : $username;
+        return match ($username) {
+            null, '' => 'N/A',
+            default => $this->userService->searchUser($username)?->getDisplayName() ?? $username
+        };
     }
 
     public function srcPath(string $input, bool $asFileName = false): ?string
@@ -828,7 +825,7 @@ class AppExtension extends AbstractExtension
 
     public function isSuper(): bool
     {
-        return $this->authorizationChecker->isGranted('ROLE_SUPER');
+        return $this->userService->isSuper();
     }
 
     /**

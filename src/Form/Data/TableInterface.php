@@ -65,4 +65,6 @@ interface TableInterface extends \Countable, \IteratorAggregate
     public function getExportFileName(): string;
 
     public function getExportDisposition(): string;
+
+    public function getTranslationDomain(): string;
 }

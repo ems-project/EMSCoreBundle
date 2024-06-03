@@ -1,0 +1,15 @@
+revision:
+    property:
+        ouuid: 'ouuid'
+        label: 'label'
+        deleted_by: 'Deleted by'
+        modified: 'Last update'
+    trash:
+        title: 'Trash for content type %name%'
+        sub_title: '%pluralName% in trash'
+        put_back: 'Put back'
+        put_back_confirm: 'Put back "%label%" ?'
+        put_back_selected: 'Put back selected'
+        empty: 'Remove trash'
+        empty_confirm: 'Remove trash "%label%" ?'
+        empty_selected: 'Remove selected'

@@ -125,7 +125,7 @@ class JSONFieldType extends DataFieldType
     public function generateMapping(FieldType $current): array
     {
         if (!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])) {
-            return [$current->getName(), Json::decode($current->getMappingOptions()['mappingOptions'])];
+            return [$current->getName() => Json::decode($current->getMappingOptions()['mappingOptions'])];
         }
 
         return [];

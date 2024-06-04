@@ -450,4 +450,9 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
     {
         return $this->processor->generateLocalImage($filename, $config);
     }
+
+    public function saveContents(string $contents, string $filename, string $mimetype, int $usageType): string
+    {
+        return $this->storageManager->saveContents($contents, $filename, $mimetype, $usageType);
+    }
 }

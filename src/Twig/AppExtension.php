@@ -14,6 +14,7 @@ use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Processor\Config;
+use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CommonBundle\Twig\RequestRuntime;
 use EMS\CommonBundle\Twig\TextRuntime;
@@ -122,6 +123,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_get_form', [FormRuntime::class, 'getFormByName']),
             new TwigFunction('emsco_form', [FormRuntime::class, 'handleForm']),
             new TwigFunction('emsco_get_data_field', [FormRuntime::class, 'getDataField']),
+            new TwigFunction('emsco_save_contents', $this->saveContents(...)),
             new TwigFunction('emsco_get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
             new TwigFunction('emsco_search', $this->search(...)),
             // deprecated
@@ -273,6 +275,21 @@ class AppExtension extends AbstractExtension
     public function getFile(string $hash): ?string
     {
         return $this->fileService->getFile($hash);
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function saveContents(string $content, string $filename, string $mimetype, int $usage = StorageInterface::STORAGE_USAGE_ASSET): array
+    {
+        $hash = $this->fileService->saveContents($content, $filename, $mimetype, $usage);
+
+        return [
+            EmsFields::CONTENT_FILE_HASH_FIELD => $hash,
+            EmsFields::CONTENT_FILE_SIZE_FIELD => \strlen($content),
+            EmsFields::CONTENT_FILE_NAME_FIELD => $filename,
+            EmsFields::CONTENT_MIME_TYPE_FIELD => $mimetype,
+        ];
     }
 
     /**

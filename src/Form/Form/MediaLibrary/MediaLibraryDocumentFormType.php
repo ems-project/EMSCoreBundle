@@ -21,9 +21,16 @@ class MediaLibraryDocumentFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $data = $builder->getData();
         $builder->add('name', TextType::class);
 
-        if ($options['data'] instanceof MediaLibraryFile) {
+        if ($data instanceof MediaLibraryFile) {
+            if ($data->hasName()) {
+                $builder
+                    ->add('name', HiddenType::class)
+                    ->add('filename', TextType::class, ['constraints' => new NotBlank()]);
+            }
+
             $builder
                 ->add('filesize', HiddenType::class, [
                     'constraints' => new NotBlank(),

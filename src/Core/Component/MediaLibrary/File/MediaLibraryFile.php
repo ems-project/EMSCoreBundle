@@ -30,6 +30,28 @@ class MediaLibraryFile extends MediaLibraryDocument
         ]);
     }
 
+    public function getFilename(): ?string
+    {
+        if (null === $this->name) {
+            return null;
+        }
+
+        $fileInfo = \pathinfo($this->name);
+
+        return $fileInfo['filename'] ?? null;
+    }
+
+    public function setFilename(?string $filename): void
+    {
+        if (null === $this->name || null === $filename) {
+            return;
+        }
+
+        $extension = \pathinfo($this->name, PATHINFO_EXTENSION);
+
+        $this->setName($extension ? $filename.'.'.$extension : $filename);
+    }
+
     public function getFileHash(): ?string
     {
         return $this->file[EmsFields::CONTENT_FILE_HASH_FIELD] ?? null;

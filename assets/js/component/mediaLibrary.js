@@ -191,7 +191,7 @@ export default class MediaLibrary {
 
         ajaxModal.load({ url: `${this.#pathPrefix}/file/${fileId}/rename`, size: 'sm'}, (json) => {
             if (!json.hasOwnProperty('success') || json.success === false) return;
-            if (json.hasOwnProperty('fileRow')) fileRow.outerHTML = json.fileRow;
+            if (json.hasOwnProperty('fileRow')) fileRow.closest('li').innerHTML = json.fileRow;
 
             this._getHeader().then(() => {
                 ajaxModal.close();

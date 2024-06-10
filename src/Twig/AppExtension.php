@@ -34,6 +34,7 @@ use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
 use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Repository\SequenceRepository;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
@@ -825,7 +826,7 @@ class AppExtension extends AbstractExtension
 
     public function internalLinks(string $input, bool $asFileName = false): ?string
     {
-        $url = $this->router->generate('data.link', ['key' => 'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
+        $url = $this->router->generate(Routes::DATA_LINK, ['key' => 'object:'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $out = \preg_replace('/ems:\/\/object:/i', $url, $input);
 
         if (null === $out) {

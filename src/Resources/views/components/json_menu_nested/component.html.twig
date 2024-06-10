@@ -3,7 +3,7 @@
 {# @var template \EMS\CoreBundle\Core\Component\JsonMenuNested\Template\JsonMenuNestedTemplate #}
 {# @var config   \EMS\CoreBundle\Core\Component\JsonMenuNested\Config\JsonMenuNestedConfig #}
 
-<div class="json-menu-nested-component" id="{{ id }}" data-hash="{{ hash }}">
+<div class="json-menu-nested-component" id="{{ id }}" data-hash="{{ hash }}" {% if config.activeItemId %}data-active-item-id="{{ config.activeItemId }}"{% endif %}>
     <div class="jmn-node-loading"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
     {{ template.block('jmn_layout_top', _context)|raw }}
     <div class="jmn-wrapper">

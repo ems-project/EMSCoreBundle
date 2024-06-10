@@ -28,6 +28,7 @@ class JsonMenuNestedConfigFactory extends AbstractConfigFactory
      *     context_block: ?string,
      *     template: ?string,
      *     locale: ?string,
+     *     active_item_id: ?string,
      *     columns: JsonMenuNestedColumn[]
      * } $options
      */
@@ -58,6 +59,7 @@ class JsonMenuNestedConfigFactory extends AbstractConfigFactory
         $config->template = $options['template'];
         $config->columns = $options['columns'];
         $config->locale = $options['locale'];
+        $config->activeItemId = $options['active_item_id'];
 
         return $config;
     }
@@ -74,6 +76,7 @@ class JsonMenuNestedConfigFactory extends AbstractConfigFactory
                 'context_block' => null,
                 'template' => null,
                 'locale' => null,
+                'active_item_id' => null,
             ])
             ->setNormalizer('ems_link', function (Options $options, EMSLink|string $value): EMSLink {
                 return \is_string($value) ? EMSLink::fromText($value) : $value;

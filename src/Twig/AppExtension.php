@@ -125,6 +125,8 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_form', [FormRuntime::class, 'handleForm']),
             new TwigFunction('emsco_get_data_field', [FormRuntime::class, 'getDataField']),
             new TwigFunction('emsco_save_contents', $this->saveContents(...)),
+            new TwigFunction('emsco_notice', $this->notice(...)),
+            new TwigFunction('emsco_warning', $this->warning(...)),
             // deprecated
             new TwigFunction('cant_be_finalized', $this->cantBeFinalized(...), ['deprecated' => true, 'alternative' => 'emsco_cant_be_finalized']),
             new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames'], ['deprecated' => true, 'alternative' => 'emsco_get_default_environment_names']),
@@ -1140,5 +1142,21 @@ class AppExtension extends AbstractExtension
     public function skipNotificationException(string $message = 'This notification has been skipped'): never
     {
         throw new SkipNotificationException($message);
+    }
+
+    /**
+     * @param mixed[] $context
+     */
+    public function notice(string $message, array $context = []): void
+    {
+        $this->logger->notice($message, $context);
+    }
+
+    /**
+     * @param mixed[] $context
+     */
+    public function warning(string $message, array $context = []): void
+    {
+        $this->logger->warning($message, $context);
     }
 }

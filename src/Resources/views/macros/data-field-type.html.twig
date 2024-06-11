@@ -625,7 +625,7 @@
 				<div class="panel panel-default">
 					<div class="panel-body {{ color }}">
 						{% if doCompare  %}
-							<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|emsco_get_string(dataField.fieldType.name)|emsco_internal_links }}</pre>
+							<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|emsco_get_string(dataField.fieldType.name)|default('')|emsco_internal_links }}</pre>
 							<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|emsco_internal_links }}</pre>
 						{% else %}
 							<pre class="ems-code-editor" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|emsco_internal_links }}</pre>
@@ -685,7 +685,7 @@
             <div class="panel panel-default">
                 <div class="panel-body {{ color }}">
                     {% if doCompare  %}
-                        <pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|emsco_get_string(dataField.fieldType.name)|emsco_internal_links }}</pre>
+                        <pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|emsco_get_string(dataField.fieldType.name)|default('')|emsco_internal_links }}</pre>
                         <pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|json_encode|emsco_internal_links }}</pre>
                     {% else %}
                         <pre class="ems-code-editor" data-language="ace/mode/json" data-them="ace/theme/chrome">

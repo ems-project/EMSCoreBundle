@@ -17,7 +17,9 @@ export default class JsonMenuNestedComponent {
         this.#pathPrefix = `/component/json-menu-nested/${element.dataset.hash}`;
         this._addClickListeners();
         this._addClickLongPressListeners();
-        this.load();
+        this.load({
+            activeItemId: ('activeItemId' in element.dataset ? element.dataset.activeItemId : null)
+        });
     }
 
     load({ activeItemId = null, loadChildrenId: loadChildrenId = null} = {}) {

@@ -996,9 +996,17 @@ orientation:
 ems:
     view:
         data_link: 'Custom data link'
-        report: 'Report view'
-        hierarchical: 'Hierarchical view'
+        keywords: 'Keywords view'
+        criteria: 'Criteria view'
+        export: 'Export view'
         sorter: 'Sorter view'
+        hierarchical: 'Hierarchical view'
+        report: 'Report view'
+        calendar: 'Calendar view'
+        gallery: 'Gallery view'
+        importer: 'Importer view'
+        definition:
+            default_overview: 'Default overview'
 schedule:
     name: Name
     cron: Cron

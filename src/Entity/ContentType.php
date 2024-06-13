@@ -11,6 +11,7 @@ use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\ContentType\ContentTypeSettings;
 use EMS\CoreBundle\Core\ContentType\Version\VersionFields;
 use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
+use EMS\CoreBundle\Core\ContentType\ViewDefinition;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
@@ -879,7 +880,14 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 
     public function getFirstViewByType(string $type): ?View
     {
-        $view = $this->views->filter(fn (View $view) => $view->getType() == $type)->first();
+        $view = $this->views->filter(fn (View $view) => $view->getType() === $type)->first();
+
+        return $view instanceof View ? $view : null;
+    }
+
+    public function getViewByDefinition(ViewDefinition $viewDefinition): ?View
+    {
+        $view = $this->views->filter(fn (View $view) => $view->getDefinition() === $viewDefinition->value)->first();
 
         return $view instanceof View ? $view : null;
     }

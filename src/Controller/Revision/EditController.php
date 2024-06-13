@@ -19,6 +19,7 @@ use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
+use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
@@ -43,6 +44,7 @@ class EditController extends AbstractController
         private readonly RevisionService $revisionService,
         private readonly TranslatorInterface $translator,
         private readonly DataTableFactory $dataTableFactory,
+        private readonly ContentTypeService $contentTypeService,
         private readonly string $templateNamespace
     ) {
     }
@@ -311,9 +313,7 @@ class EditController extends AbstractController
         $this->dataService->lockRevision($revision);
         $this->revisionService->archive($revision, $user->getUsername());
 
-        return $this->redirectToRoute('data.root', [
-            'name' => $contentType->getName(),
-        ]);
+        return $this->contentTypeService->redirectOverview($contentType);
     }
 
     private function reorderCollection(mixed &$input): void

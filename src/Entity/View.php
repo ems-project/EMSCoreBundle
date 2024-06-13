@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
+use EMS\CoreBundle\Core\ContentType\ViewDefinition;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\Helpers\Standard\DateTime;
@@ -79,6 +80,11 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
      * @ORM\Column(name="role", type="string", length=100, nullable=true)
      */
     protected ?string $role = null;
+
+    /**
+     * @ORM\Column(name="definition", type="string", nullable=true)
+     */
+    protected ?string $definition = null;
 
     public function __construct()
     {
@@ -219,5 +225,15 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     public function setLabel(string $label): void
     {
         $this->label = $label;
+    }
+
+    public function getDefinition(): ?string
+    {
+        return $this->definition;
+    }
+
+    public function setDefinition(?ViewDefinition $definition): void
+    {
+        $this->definition = $definition?->value;
     }
 }

@@ -1223,27 +1223,14 @@ class DataService
 
     public function delete(string $type, string $ouuid, ?string $username = null): void
     {
+        $contentType = $this->contentTypeService->giveByName($type);
+
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
-
-        /** @var ContentTypeRepository $contentTypeRepo */
-        $contentTypeRepo = $em->getRepository(ContentType::class);
-
-        $contentTypes = $contentTypeRepo->findBy([
-                'deleted' => false,
-                'name' => $type,
-        ]);
-        if (!$contentTypes || 1 != \count($contentTypes)) {
-            throw new NotFoundHttpException('Content Type not found');
-        }
-
         /** @var RevisionRepository $repository */
         $repository = $em->getRepository(Revision::class);
 
-        $revisions = $repository->findBy([
-                'ouuid' => $ouuid,
-                'contentType' => $contentTypes[0],
-        ]);
+        $revisions = $repository->findBy(['ouuid' => $ouuid, 'contentType' => $contentType]);
 
         $username ??= $this->userService->getCurrentUser()->getUsername();
 
@@ -1281,6 +1268,8 @@ class DataService
             $em->persist($revision);
         }
         $em->flush();
+
+        $this->elasticaService->refresh($contentType->giveEnvironment()->getAlias());
     }
 
     public function trashEmpty(ContentType $contentType, string ...$ouuids): void

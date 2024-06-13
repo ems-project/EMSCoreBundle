@@ -10,6 +10,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
+use EMS\CoreBundle\Core\ContentType\ViewDefinition;
 use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Core\UI\MenuEntry;
 use EMS\CoreBundle\EMSCoreBundle;
@@ -28,7 +29,9 @@ use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
 use EMS\CoreBundle\Routes;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -51,6 +54,7 @@ class ContentTypeService implements EntityServiceInterface
         private readonly RevisionRepository $revisionRepository,
         private readonly TokenStorageInterface $tokenStorage,
         private readonly TranslatorInterface $translator,
+        private readonly RouterInterface $router,
         private readonly ?string $circleContentTypeName)
     {
     }
@@ -496,7 +500,9 @@ class ContentTypeService implements EntityServiceInterface
                 || (!$this->authorizationChecker->isGranted($roles[ContentTypeRoles::VIEW])) && !$contentType->getRootContentType()) {
                 continue;
             }
-            $menuEntry = new MenuEntry($contentType->getPluralName(), $contentType->getIcon() ?? 'fa fa-book', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()], $contentType->getColor());
+
+            [$routeOverview, $routeOverviewParams] = $this->getRedirectOverviewRoute($contentType);
+            $menuEntry = new MenuEntry($contentType->getPluralName(), $contentType->getIcon() ?? 'fa fa-book', $routeOverview, $routeOverviewParams, $contentType->getColor());
             if (isset($counters[$contentType->getId()])) {
                 $menuEntry->setBadge(\strval($counters[$contentType->getId()]));
             }
@@ -531,7 +537,8 @@ class ContentTypeService implements EntityServiceInterface
             return;
         }
 
-        $search = $menuEntry->addChild('sidebar_menu.content_type.search', 'fa fa-search', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()]);
+        [$routeOverview, $routeOverviewParams] = $this->getRedirectOverviewRoute($contentType);
+        $search = $menuEntry->addChild('sidebar_menu.content_type.search', 'fa fa-search', $routeOverview, $routeOverviewParams);
         $search->setTranslation(['%plural%' => $contentType->getPluralName()]);
 
         if (null === $circleContentType || null === $contentType->getCirclesField() || '' === $contentType->getCirclesField() || empty($user->getCircles())) {
@@ -744,5 +751,29 @@ class ContentTypeService implements EntityServiceInterface
         $this->revisionRepository->switchEnvironments($contentType, $target, $username);
         $contentType->setEnvironment($target);
         $this->persist($contentType);
+    }
+
+    /**
+     * @return array{0: string, 1: array<string, string|int>}
+     */
+    public function getRedirectOverviewRoute(ContentType $contentType): array
+    {
+        $defaultOverviewView = $contentType->getViewByDefinition(ViewDefinition::DEFAULT_OVERVIEW);
+
+        if ($defaultOverviewView) {
+            return [
+                $defaultOverviewView->isPublic() ? Routes::DATA_PUBLIC_VIEW : Routes::DATA_PRIVATE_VIEW,
+                ['viewId' => $defaultOverviewView->getId()],
+            ];
+        }
+
+        return [Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()]];
+    }
+
+    public function redirectOverview(ContentType $contentType): RedirectResponse
+    {
+        [$routeName, $routeParams] = $this->getRedirectOverviewRoute($contentType);
+
+        return new RedirectResponse($this->router->generate($routeName, $routeParams));
     }
 }

@@ -91,8 +91,6 @@ class MediaLibraryFolderRenameCommand extends AbstractMediaLibraryCommand
         $jobOutput?->progress(100);
         $progressBar->finish();
 
-        $this->mediaLibraryService->refresh();
-
         return self::EXECUTE_SUCCESS;
     }
 }

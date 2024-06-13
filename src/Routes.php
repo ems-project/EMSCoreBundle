@@ -38,6 +38,8 @@ class Routes
     final public const RELEASE_ADD_REVISIONS = 'emsco_release_add_revisions';
     final public const RELEASE_NON_MEMBER_REVISION_AJAX = 'emsco_release_ajax_data_table_non_member_revision';
     final public const VIEW_INDEX = 'emsco_view_index';
+    final public const VIEW_DEFINE = 'emsco_view_define';
+    final public const VIEW_UNDEFINE = 'emsco_view_undefine';
     final public const VIEW_EDIT = 'emsco_view_edit';
     final public const VIEW_ADD = 'emsco_view_add';
     final public const VIEW_DELETE = 'emsco_view_delete';

@@ -355,6 +355,7 @@
             <argument type="service" id="ems.service.revision" />
             <argument type="service" id="translator" />
             <argument type="service" id="emsco.data_table.factory" />
+            <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>

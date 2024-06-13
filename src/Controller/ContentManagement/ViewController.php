@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CoreBundle\Core\ContentType\ViewDefinition;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\View\ViewManager;
 use EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeViewDataTableType;
@@ -72,6 +73,20 @@ class ViewController extends AbstractController
             'contentType' => $contentType,
             'form' => $form->createView(),
         ]);
+    }
+
+    public function define(View $view, string $definition): Response
+    {
+        $this->viewManager->define($view, ViewDefinition::from($definition));
+
+        return $this->redirectToRoute(Routes::VIEW_INDEX, ['type' => $view->getContentType()->getName()]);
+    }
+
+    public function undefine(View $view): Response
+    {
+        $this->viewManager->undefine($view);
+
+        return $this->redirectToRoute(Routes::VIEW_INDEX, ['type' => $view->getContentType()->getName()]);
     }
 
     /** @deprecated */

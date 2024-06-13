@@ -9,6 +9,7 @@ use EMS\CommonBundle\Contracts\ExpressionServiceInterface;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Contracts\Revision\RevisionServiceInterface;
 use EMS\CoreBundle\Core\ContentType\ContentTypeFields;
@@ -41,7 +42,8 @@ class RevisionService implements RevisionServiceInterface
         private readonly PublishService $publishService,
         private readonly ContentTypeService $contentTypeService,
         private readonly UserManager $userManager,
-        private readonly ExpressionServiceInterface $expressionService
+        private readonly ExpressionServiceInterface $expressionService,
+        private readonly ElasticaService $elasticaService,
     ) {
     }
 
@@ -55,6 +57,7 @@ class RevisionService implements RevisionServiceInterface
 
         if ($flush) {
             $this->revisionRepository->save($revision);
+            $this->elasticaService->refresh($revision->giveContentType()->giveEnvironment()->getAlias());
         }
 
         return true;

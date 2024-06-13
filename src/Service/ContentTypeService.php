@@ -537,8 +537,7 @@ class ContentTypeService implements EntityServiceInterface
             return;
         }
 
-        [$routeOverview, $routeOverviewParams] = $this->getRedirectOverviewRoute($contentType);
-        $search = $menuEntry->addChild('sidebar_menu.content_type.search', 'fa fa-search', $routeOverview, $routeOverviewParams);
+        $search = $menuEntry->addChild('sidebar_menu.content_type.search', 'fa fa-search', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()]);
         $search->setTranslation(['%plural%' => $contentType->getPluralName()]);
 
         if (null === $circleContentType || null === $contentType->getCirclesField() || '' === $contentType->getCirclesField() || empty($user->getCircles())) {

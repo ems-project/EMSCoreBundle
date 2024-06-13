@@ -19,8 +19,18 @@ class JsonClass implements \JsonSerializable
      * @param array<mixed>         $constructorArguments
      * @param string[]             $replacedFields
      */
-    public function __construct(private array $properties, private readonly string $class, private readonly array $constructorArguments = [], private array $replacedFields = [])
-    {
+    public function __construct(
+        private array $properties,
+        private readonly string $class,
+        private readonly array $constructorArguments = [],
+        private array $replacedFields = []
+    ) {
+        $proxyFields = ['__initializer__', '__cloner__', '__isInitialized__'];
+        $this->properties = \array_filter(
+            $this->properties,
+            static fn ($v, $k) => !\in_array($k, $proxyFields, true),
+            \ARRAY_FILTER_USE_BOTH
+        );
     }
 
     public static function fromJsonString(string $jsonString): self

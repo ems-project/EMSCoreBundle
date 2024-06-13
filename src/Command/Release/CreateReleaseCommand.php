@@ -11,10 +11,10 @@ use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Commands;
+use EMS\CoreBundle\Core\Revision\Release\ReleaseRevisionType;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Release;
-use EMS\CoreBundle\Entity\ReleaseRevision;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\ReleaseService;
@@ -96,12 +96,7 @@ class CreateReleaseCommand extends AbstractCommand
         foreach ($this->searchDocuments($search) as $document) {
             $revision = $this->revisionService->getByEmsLink(EMSLink::fromText($document->getEmsId()));
             if (null !== $revision && !$revision->isPublished($this->target->getName())) {
-                $releaseRevision = new ReleaseRevision();
-                $releaseRevision->setRelease($release);
-                $releaseRevision->setRevisionOuuid($document->getId());
-                $releaseRevision->setContentType($this->contentType);
-                $releaseRevision->setRevision($revision);
-                $release->addRevision($releaseRevision);
+                $release->addRevision($revision, ReleaseRevisionType::PUBLISH);
                 ++$revisionCount;
             }
         }

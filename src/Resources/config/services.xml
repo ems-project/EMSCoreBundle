@@ -304,6 +304,7 @@
             <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService"/>
             <argument type="service" id="emsco.manager.user"/>
             <argument type="service" id="EMS\CommonBundle\Contracts\ExpressionServiceInterface"/>
+            <argument type="service" id="ems_common.service.elastica" />
         </service>
         <service id="ems.service.alias" class="EMS\CoreBundle\Service\AliasService">
             <argument type="service" id="logger" />
@@ -355,6 +356,7 @@
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
             <argument type="service" id="security.token_storage" />
             <argument type="service" id="translator" />
+            <argument type="service" id="router.default" />
             <argument>%ems_core.circles_object%</argument>
             <tag name="emsco.entity.service" priority="60" />
         </service>

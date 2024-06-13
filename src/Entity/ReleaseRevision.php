@@ -5,24 +5,25 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
+use EMS\CoreBundle\Core\Revision\Release\ReleaseRevisionType;
 
 class ReleaseRevision implements EntityInterface
 {
     use IdentifierIntegerTrait;
 
-    private Release $release;
-    private ?Revision $revision = null;
-    private ?Revision $revisionBeforePublish = null;
+    private ?Revision $rollbackRevision = null;
     private string $revisionOuuid;
     private ContentType $contentType;
+    private string $type;
 
-    public static function createFromRevision(Revision $revision): self
-    {
-        $releaseRevision = new self();
-        $releaseRevision->setContentType($revision->giveContentType());
-        $releaseRevision->setRevisionOuuid($revision->giveOuuid());
-
-        return $releaseRevision;
+    public function __construct(
+        private readonly Release $release,
+        private Revision $revision,
+        ReleaseRevisionType $type
+    ) {
+        $this->revisionOuuid = $this->revision->giveOuuid();
+        $this->contentType = $this->revision->giveContentType();
+        $this->type = $type->value;
     }
 
     public function getRevisionOuuid(): string
@@ -30,30 +31,16 @@ class ReleaseRevision implements EntityInterface
         return $this->revisionOuuid;
     }
 
-    public function setRevisionOuuid(string $revisionOuuid): ReleaseRevision
-    {
-        $this->revisionOuuid = $revisionOuuid;
-
-        return $this;
-    }
-
-    public function setRevision(?Revision $revision): ReleaseRevision
+    public function setRevision(Revision $revision): ReleaseRevision
     {
         $this->revision = $revision;
 
         return $this;
     }
 
-    public function getRevision(): ?Revision
+    public function getRevision(): Revision
     {
         return $this->revision;
-    }
-
-    public function setRelease(Release $release): ReleaseRevision
-    {
-        $this->release = $release;
-
-        return $this;
     }
 
     public function getRelease(): Release
@@ -61,26 +48,19 @@ class ReleaseRevision implements EntityInterface
         return $this->release;
     }
 
-    public function setContentType(ContentType $contentType): ReleaseRevision
-    {
-        $this->contentType = $contentType;
-
-        return $this;
-    }
-
     public function getContentType(): ContentType
     {
         return $this->contentType;
     }
 
-    public function setRevisionBeforePublish(?Revision $revisionBeforePublish): void
+    public function setRollbackRevision(?Revision $rollbackRevision): void
     {
-        $this->revisionBeforePublish = $revisionBeforePublish;
+        $this->rollbackRevision = $rollbackRevision;
     }
 
-    public function getRevisionBeforePublish(): ?Revision
+    public function getRollbackRevision(): ?Revision
     {
-        return $this->revisionBeforePublish;
+        return $this->rollbackRevision;
     }
 
     public function getEmsId(): string
@@ -91,5 +71,10 @@ class ReleaseRevision implements EntityInterface
     public function getName(): string
     {
         return $this->getRevisionOuuid();
+    }
+
+    public function getType(): ReleaseRevisionType
+    {
+        return ReleaseRevisionType::from($this->type);
     }
 }

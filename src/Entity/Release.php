@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
+use EMS\CoreBundle\Core\Revision\Release\ReleaseRevisionType;
 use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -20,7 +21,6 @@ class Release implements EntityInterface
     final public const APPLIED_STATUS = 'applied';
     final public const CANCELED_STATUS = 'canceled';
     final public const SCHEDULED_STATUS = 'scheduled';
-    final public const ROLLBACKED_STATUS = 'rollbacked';
 
     private ?\DateTime $executionDate = null;
     private string $status = Release::WIP_STATUS;
@@ -95,9 +95,15 @@ class Release implements EntityInterface
         return $this->environmentTarget;
     }
 
-    public function addRevision(ReleaseRevision $revision): Release
+    public function addRevision(Revision $revision, ReleaseRevisionType $type): Release
     {
-        $this->revisions[] = $revision;
+        $releaseRevision = new ReleaseRevision(
+            release: $this,
+            revision: $revision,
+            type: $type
+        );
+
+        $this->revisions[] = $releaseRevision;
 
         return $this;
     }

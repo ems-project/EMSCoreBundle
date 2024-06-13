@@ -41,17 +41,13 @@
 {% endblock revision %}
 
 {% block action %}
-    {% if data.revision %}
-        {{ 'release.release-revisison.publish'|trans }}
-    {% else %}
-        {{ 'release.release-revisison.unpublish'|trans }}
-    {% endif %}
+    {{ "release.release-revisison.#{data.type.value}"|trans }}
 {% endblock action %}
 
 {% block previous %}
-    {% if data.revisionBeforePublish %}
-        <a href="{{ path('emsco_view_revisions', {ouuid: data.revisionBeforePublish.ouuid, type: data.revisionBeforePublish.contentType.name, revisionId: data.revisionBeforePublish.id}) }}">
-            {{ 'release.release-revisison.revision'|trans({ '%date%' : data.revisionBeforePublish.created|date(date_time_format) ,'%user%' : data.revisionBeforePublish.finalizedBy|default('')|emsco_display_name }) }}
+    {% if data.rollbackRevision %}
+        <a href="{{ path('emsco_view_revisions', {ouuid: data.rollbackRevision.ouuid, type: data.rollbackRevision.contentType.name, revisionId: data.rollbackRevision.id}) }}">
+            {{ 'release.release-revisison.revision'|trans({ '%date%' : data.rollbackRevision.created|date(date_time_format) ,'%user%' : data.rollbackRevision.finalizedBy|default('')|emsco_display_name }) }}
         </a>
     {% else %}
         <span class="text-muted">
@@ -65,15 +61,15 @@
     {% if data.revision %}
         {% set info = data.revision.emsLink|emsco_document_info %}
         {% set revision = info.getRevision(data.release.environmentTarget) %}
-        {% set stil_in_target = (data.revision.id is same as (revision.id)) %}
+        {% set stil_in_target = (data.revision.id is same as (revision.id|default(null))) %}
     {% else %}
         {% set info = data.emsId|emsco_document_info %}
         {% set revisionTarget = info.getRevision(data.release.environmentTarget.name) %}
         {% set stil_in_target = (revisionTarget ? true : false) %}
     {% endif %}
     {%  if stil_in_target %}
-        <i class="fa fa-check-square"><span class="sr-only"</span>{{ 'release.release-revisison.still_in_target'|trans({'%target%': data.release.environmentTarget.label}) }}</i>
+        <i class="fa fa-check-square"><span class="sr-only">{{ 'release.release-revisison.still_in_target'|trans({'%target%': data.release.environmentTarget.label}) }}</span></i>
     {% else %}
-        <i class="fa fa-square-o"><span class="sr-only"</span>{{ 'release.release-revisison.no_more_in_target'|trans({'%target%': data.release.environmentTarget.label})  }}</i>
+        <i class="fa fa-square-o"><span class="sr-only">{{ 'release.release-revisison.no_more_in_target'|trans({'%target%': data.release.environmentTarget.label})  }}</span></i>
     {% endif %}
 {% endblock stil_in_target %}

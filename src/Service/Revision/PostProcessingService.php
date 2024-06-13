@@ -172,7 +172,7 @@ final class PostProcessingService
             }
             if (null !== $out && false !== $out && (!\is_array($out) || !empty($out))) {
                 $objectArray[$fieldType->getName()] = $out;
-            } elseif (isset($objectArray[$fieldType->getName()])) {
+            } elseif (\array_key_exists($fieldType->getName(), $objectArray)) {
                 unset($objectArray[$fieldType->getName()]);
             }
             $found = true;

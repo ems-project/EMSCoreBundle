@@ -347,9 +347,7 @@ class DataController extends AbstractController
 
         $this->dataService->delete($type, $ouuid);
 
-        return $this->redirectToRoute('data.root', [
-            'name' => $type,
-        ]);
+        return $this->contentTypeService->redirectOverview($contentType);
     }
 
     public function discardDraft(Revision $revision): ?int
@@ -710,9 +708,7 @@ class DataController extends AbstractController
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
             ]);
 
-            return $this->redirectToRoute('data.root', [
-                'name' => $contentType->getName(),
-            ]);
+            return $this->contentTypeService->redirectOverview($contentType);
         }
 
         return $this->intNewDocumentFromArray($contentType, $jsonContent);
@@ -739,9 +735,7 @@ class DataController extends AbstractController
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
             ]);
 
-            return $this->redirectToRoute('data.root', [
-                'name' => $contentType->getName(),
-            ]);
+            return $this->contentTypeService->redirectOverview($contentType);
         }
     }
 

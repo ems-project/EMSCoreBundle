@@ -21,6 +21,12 @@
     <route id="emsco_view_delete" path="/delete/{view}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::delete"
            methods="POST"/>
+    <route id="emsco_view_define" path="/{view}/define/{definition}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::define"
+           methods="POST"/>
+    <route id="emsco_view_undefine" path="/{view}/undefine"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::undefine"
+           methods="POST"/>
 
     <route id="view.index" path="/{type}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::indexDeprecated"

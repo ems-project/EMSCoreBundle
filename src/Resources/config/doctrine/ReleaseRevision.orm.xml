@@ -9,15 +9,16 @@
     </id>
 
     <field name="revisionOuuid" column="revision_ouuid" length="255"/>
+    <field name="type" length="255"/>
 
     <many-to-one field="release" target-entity="EMS\CoreBundle\Entity\Release" inversed-by="revisions">
       <join-column name="release_id"/>
     </many-to-one>
     <many-to-one field="revision" target-entity="EMS\CoreBundle\Entity\Revision" inversed-by="releases">
-      <join-column name="revision_id"/>
+      <join-column name="revision_id" nullable="false"/>
     </many-to-one>
-    <many-to-one field="revisionBeforePublish" target-entity="EMS\CoreBundle\Entity\Revision">
-      <join-column name="revision_before_publish_id"/>
+    <many-to-one field="rollbackRevision" target-entity="EMS\CoreBundle\Entity\Revision">
+      <join-column name="rollback_revision_id"/>
     </many-to-one>
     <many-to-one field="contentType" target-entity="EMS\CoreBundle\Entity\ContentType">
       <join-column name="content_type_id"/>

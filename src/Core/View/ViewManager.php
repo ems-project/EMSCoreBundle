@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Core\View;
 
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CoreBundle\Core\ContentType\ViewDefinition;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Repository\ViewRepository;
@@ -64,6 +65,28 @@ class ViewManager implements EntityServiceInterface
         }
         $view->setName(Encoder::webalize($view->getName()));
         $this->viewRepository->create($view);
+    }
+
+    public function define(View $view, ViewDefinition $definition): void
+    {
+        $currentDefinition = $this->viewRepository->findOneBy([
+            'definition' => $definition->value,
+            'contentType' => $view->getContentType(),
+        ]);
+
+        if (null !== $currentDefinition) {
+            $currentDefinition->setDefinition(null);
+            $this->update($view);
+        }
+
+        $view->setDefinition($definition);
+        $this->update($view);
+    }
+
+    public function undefine(View $view): void
+    {
+        $view->setDefinition(null);
+        $this->update($view);
     }
 
     /**

@@ -18,6 +18,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class ReleaseType extends AbstractType
 {
+    public const BTN_SAVE = 'save';
+    public const BTN_SAVE_CLOSE = 'saveAndClose';
+
     public function __construct(private readonly EnvironmentService $environmentService)
     {
     }
@@ -32,9 +35,7 @@ final class ReleaseType extends AbstractType
             ->add('name', TextType::class, [
                 'required' => true,
                 'empty_data' => '',
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
+                'row_attr' => ['class' => 'col-md-3'],
             ])
             ->add('execution_date', DateTimeType::class, [
                 'required' => false,
@@ -46,45 +47,23 @@ final class ReleaseType extends AbstractType
                     'data-date-days-of-week-disabled' => '',
                     'data-date-disabled-hours' => '',
                 ],
-                'row_attr' => [
-                    'class' => 'col-md-6',
-                ],
+                'row_attr' => ['class' => 'col-md-6'],
             ])
             ->add('environmentSource', ChoiceType::class, [
-                'attr' => [
-                    'class' => 'select2',
-                ],
+                'attr' => ['class' => 'select2'],
                 'choices' => $this->environmentService->getEnvironments(),
                 'required' => true,
                 'choice_label' => fn (Environment $value) => '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getLabel(),
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
-                'choice_value' => function (?Environment $value) {
-                    if (null != $value) {
-                        return $value->getId();
-                    }
-
-                    return $value;
-                },
+                'row_attr' => ['class' => 'col-md-3'],
+                'choice_value' => static fn (?Environment $value) => $value?->getId(),
             ])
             ->add('environmentTarget', ChoiceType::class, [
-                'attr' => [
-                    'class' => 'select2',
-                ],
+                'attr' => ['class' => 'select2'],
                 'choices' => $this->environmentService->getEnvironments(),
                 'required' => true,
                 'choice_label' => fn (Environment $value) => '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getLabel(),
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
-                'choice_value' => function (?Environment $value) {
-                    if (null != $value) {
-                        return $value->getId();
-                    }
-
-                    return $value;
-                },
+                'row_attr' => ['class' => 'col-md-3'],
+                'choice_value' => static fn (?Environment $value) => $value?->getId(),
             ]);
 
         if ($options['add'] ?? false) {
@@ -96,17 +75,13 @@ final class ReleaseType extends AbstractType
                 'label' => 'release.add.save',
             ]);
         } else {
-            $builder->add('save', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn btn-default btn-sm',
-                ],
+            $builder->add(self::BTN_SAVE, SubmitEmsType::class, [
+                'attr' => ['class' => 'btn btn-default btn-sm'],
                 'icon' => 'fa fa-save',
                 'label' => 'release.edit.save',
             ])
-            ->add('saveAndClose', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn btn-default btn-sm',
-                ],
+            ->add(self::BTN_SAVE_CLOSE, SubmitEmsType::class, [
+                'attr' => ['class' => 'btn btn-default btn-sm'],
                 'icon' => 'fa fa-save',
                 'label' => 'release.edit.saveAndClose',
             ]);

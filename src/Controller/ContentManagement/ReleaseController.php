@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CoreBundle\Controller\AbstractCoreController;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\Core\Revision\Release\ReleaseRevisionType;
 use EMS\CoreBundle\DataTable\Type\Release\ReleaseOverviewDataTableType;
 use EMS\CoreBundle\DataTable\Type\Release\ReleasePickDataTableType;
 use EMS\CoreBundle\DataTable\Type\Release\ReleaseRevisionDataTableType;
@@ -18,17 +20,11 @@ use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ReleaseService;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\ClickableInterface;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class ReleaseController extends AbstractController
+final class ReleaseController extends AbstractCoreController
 {
-    public const ROLLBACK_ACTION = 'rollback_action';
-
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly ReleaseService $releaseService,
@@ -43,14 +39,10 @@ final class ReleaseController extends AbstractController
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
-                match ($action->getName()) {
-                    TableAbstract::DELETE_ACTION => $this->releaseService->deleteByIds($table->getSelected()),
-                    default => $this->logger->error('log.controller.release.unknown_action'),
-                };
-            } else {
-                $this->logger->error('log.controller.release.unknown_action');
-            }
+            match ($this->getClickedButtonName($form)) {
+                TableAbstract::DELETE_ACTION => $this->releaseService->deleteByIds($table->getSelected()),
+                default => $this->logger->error('log.controller.release.unknown_action'),
+            };
 
             return $this->redirectToRoute(Routes::RELEASE_INDEX);
         }
@@ -62,9 +54,7 @@ final class ReleaseController extends AbstractController
 
     public function add(Request $request): Response
     {
-        $form = $this->createForm(ReleaseType::class, new Release(), [
-            'add' => true,
-        ]);
+        $form = $this->createForm(ReleaseType::class, new Release(), ['add' => true]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $release = $this->releaseService->add($form->getViewData());
@@ -86,16 +76,13 @@ final class ReleaseController extends AbstractController
         $revisionsForm = $this->createForm(TableType::class, $revisionsTable, [
             'title_label' => 'release.revision.view.title',
         ]);
+
         $revisionsForm->handleRequest($request);
         if ($revisionsForm->isSubmitted() && $revisionsForm->isValid()) {
-            if ($revisionsForm instanceof Form && ($action = $revisionsForm->getClickedButton()) instanceof SubmitButton) {
-                match ($action->getName()) {
-                    TableAbstract::REMOVE_ACTION => $this->releaseService->removeRevisions($release, $revisionsTable->getSelected()),
-                    default => $this->logger->error('log.controller.release.unknown_action'),
-                };
-            } else {
-                $this->logger->error('log.controller.release.unknown_action');
-            }
+            match ($this->getClickedButtonName($revisionsForm)) {
+                TableAbstract::REMOVE_ACTION => $this->releaseService->removeRevisions($release, $revisionsTable->getSelected()),
+                default => $this->logger->error('log.controller.release.unknown_action'),
+            };
 
             return $this->redirectToRoute(Routes::RELEASE_EDIT, ['release' => $release->getId()]);
         }
@@ -104,13 +91,11 @@ final class ReleaseController extends AbstractController
         $releaseForm->handleRequest($request);
         if ($releaseForm->isSubmitted() && $releaseForm->isValid()) {
             $this->releaseService->update($release);
-            $saveAnbClose = $releaseForm->get('saveAndClose');
-            if (!$saveAnbClose instanceof ClickableInterface) {
-                throw new \RuntimeException('Unexpected non clickable object');
-            }
-            $nextAction = $saveAnbClose->isClicked() ? Routes::RELEASE_INDEX : Routes::RELEASE_EDIT;
 
-            return $this->redirectToRoute($nextAction, ['release' => $release->getId()]);
+            return match ($this->getClickedButtonName($releaseForm)) {
+                ReleaseType::BTN_SAVE_CLOSE => $this->redirectToRoute(Routes::RELEASE_INDEX, ['release' => $release->getId()]),
+                default => $this->redirectToRoute(Routes::RELEASE_EDIT, ['release' => $release->getId()])
+            };
         }
 
         return $this->render("@$this->templateNamespace/release/edit.html.twig", [
@@ -129,21 +114,15 @@ final class ReleaseController extends AbstractController
         $form = $this->createForm(TableType::class, $table, [
             'title_label' => 'release.revision.view.title',
         ]);
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
-                switch ($action->getName()) {
-                    case self::ROLLBACK_ACTION:
-                        $rollback = $this->releaseService->rollback($release, $table->getSelected());
+            if (ReleaseRevisionDataTableType::ACTION_ROLLBACK === $this->getClickedButtonName($form)) {
+                $rollback = $this->releaseService->rollback($release, $table->getSelected());
 
-                        return $this->redirectToRoute(Routes::RELEASE_EDIT, ['release' => $rollback->getId()]);
-                    default:
-                        $this->logger->error('log.controller.release.unknown_action');
-                }
-            } else {
-                $this->logger->error('log.controller.release.unknown_action');
+                return $this->redirectToRoute(Routes::RELEASE_EDIT, ['release' => $rollback->getId()]);
             }
+
+            $this->logger->error('log.controller.release.unknown_action');
 
             return $this->redirectToRoute(Routes::RELEASE_VIEW, ['release' => $release->getId()]);
         }
@@ -186,28 +165,27 @@ final class ReleaseController extends AbstractController
 
     public function addRevision(Release $release, string $type, string $emsLinkToAdd): Response
     {
-        $this->releaseService->addRevisions($release, $type, [$emsLinkToAdd]);
+        $releaseType = ReleaseRevisionType::from($type);
+        $this->releaseService->addRevisions($release, $releaseType, [$emsLinkToAdd]);
 
         return $this->redirectToRoute(Routes::RELEASE_EDIT, ['release' => $release->getId()]);
     }
 
     public function addRevisions(Request $request, Release $release, string $type): Response
     {
-        $tableType = match ($type) {
-            'publish' => ReleaseRevisionsPublishDataTableType::class,
-            'unpublish' => ReleaseRevisionsUnpublishDataTableType::class,
-            default => throw new \RuntimeException('invalid type')
+        $releaseType = ReleaseRevisionType::from($type);
+
+        $tableType = match ($releaseType) {
+            ReleaseRevisionType::PUBLISH => ReleaseRevisionsPublishDataTableType::class,
+            ReleaseRevisionType::UNPUBLISH => ReleaseRevisionsUnpublishDataTableType::class
         };
         $table = $this->dataTableFactory->create($tableType, ['release_id' => $release->getId()]);
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
-                match ($action->getName()) {
-                    TableAbstract::ADD_ACTION => $this->releaseService->addRevisions($release, $type, $table->getSelected()),
-                    default => $this->logger->error('log.controller.release.unknown_action'),
-                };
+            if (TableAbstract::ADD_ACTION === $this->getClickedButtonName($form)) {
+                $this->releaseService->addRevisions($release, $releaseType, $table->getSelected());
             } else {
                 $this->logger->error('log.controller.release.unknown_action');
             }
@@ -217,13 +195,13 @@ final class ReleaseController extends AbstractController
 
         return $this->render("@$this->templateNamespace/release/revisions.html.twig", [
             'form' => $form->createView(),
-            'type' => $type,
+            'type' => $releaseType->value,
         ]);
     }
 
     public function releasePublish(Release $release): Response
     {
-        $this->releaseService->publishRelease($release);
+        $this->releaseService->executeRelease($release);
 
         return $this->redirectToRoute(Routes::RELEASE_INDEX);
     }

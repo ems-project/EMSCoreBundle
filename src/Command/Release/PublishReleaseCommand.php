@@ -42,7 +42,7 @@ class PublishReleaseCommand extends AbstractCommand
         }
 
         foreach ($releases as $release) {
-            $this->releaseService->publishRelease($release, true);
+            $this->releaseService->executeRelease($release, true);
             $output->writeln(\sprintf('Release %s has been published', $release->getName()));
         }
 

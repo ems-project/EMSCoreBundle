@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use EMS\CoreBundle\Core\Revision\Release\ReleaseRevisionType;
 
 /**
  * @ORM\Table(name="release_revision")
@@ -25,25 +26,11 @@ class ReleaseRevision implements EntityInterface
     private int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Release", inversedBy="revisions")
-     *
-     * @ORM\JoinColumn(name="release_id", referencedColumnName="id")
-     */
-    private Release $release;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Revision", inversedBy="releases")
-     *
-     * @ORM\JoinColumn(name="revision_id", referencedColumnName="id", nullable=true)
-     */
-    private ?Revision $revision = null;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Revision")
      *
-     * @ORM\JoinColumn(name="revision_before_publish_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="rollback_revision_id", referencedColumnName="id", nullable=true)
      */
-    private ?Revision $revisionBeforePublish = null;
+    private ?Revision $rollbackRevision = null;
 
     /**
      * @ORM\Column(name="revision_ouuid", type="string", length=255)
@@ -57,13 +44,29 @@ class ReleaseRevision implements EntityInterface
      */
     private ContentType $contentType;
 
-    public static function createFromRevision(Revision $revision): self
-    {
-        $releaseRevision = new self();
-        $releaseRevision->setContentType($revision->giveContentType());
-        $releaseRevision->setRevisionOuuid($revision->giveOuuid());
+    /**
+     * @ORM\Column(name="type", type="text")
+     */
+    private string $type;
 
-        return $releaseRevision;
+    public function __construct(
+        /**
+         * @ORM\ManyToOne(targetEntity="Release", inversedBy="revisions")
+         *
+         * @ORM\JoinColumn(name="release_id", referencedColumnName="id")
+         */
+        private readonly Release $release,
+        /**
+         * @ORM\ManyToOne(targetEntity="Revision", inversedBy="releases")
+         *
+         * @ORM\JoinColumn(name="revision_id", referencedColumnName="id", nullable=false)
+         */
+        private Revision $revision,
+        ReleaseRevisionType $type
+    ) {
+        $this->revisionOuuid = $this->revision->giveOuuid();
+        $this->contentType = $this->revision->giveContentType();
+        $this->type = $type->value;
     }
 
     public function getId(): int
@@ -76,30 +79,16 @@ class ReleaseRevision implements EntityInterface
         return $this->revisionOuuid;
     }
 
-    public function setRevisionOuuid(string $revisionOuuid): ReleaseRevision
-    {
-        $this->revisionOuuid = $revisionOuuid;
-
-        return $this;
-    }
-
-    public function setRevision(?Revision $revision): ReleaseRevision
+    public function setRevision(Revision $revision): ReleaseRevision
     {
         $this->revision = $revision;
 
         return $this;
     }
 
-    public function getRevision(): ?Revision
+    public function getRevision(): Revision
     {
         return $this->revision;
-    }
-
-    public function setRelease(Release $release): ReleaseRevision
-    {
-        $this->release = $release;
-
-        return $this;
     }
 
     public function getRelease(): Release
@@ -107,26 +96,19 @@ class ReleaseRevision implements EntityInterface
         return $this->release;
     }
 
-    public function setContentType(ContentType $contentType): ReleaseRevision
-    {
-        $this->contentType = $contentType;
-
-        return $this;
-    }
-
     public function getContentType(): ContentType
     {
         return $this->contentType;
     }
 
-    public function setRevisionBeforePublish(?Revision $revisionBeforePublish): void
+    public function setRollbackRevision(?Revision $rollbackRevision): void
     {
-        $this->revisionBeforePublish = $revisionBeforePublish;
+        $this->rollbackRevision = $rollbackRevision;
     }
 
-    public function getRevisionBeforePublish(): ?Revision
+    public function getRollbackRevision(): ?Revision
     {
-        return $this->revisionBeforePublish;
+        return $this->rollbackRevision;
     }
 
     public function getEmsId(): string
@@ -137,5 +119,10 @@ class ReleaseRevision implements EntityInterface
     public function getName(): string
     {
         return $this->getRevisionOuuid();
+    }
+
+    public function getType(): ReleaseRevisionType
+    {
+        return ReleaseRevisionType::from($this->type);
     }
 }

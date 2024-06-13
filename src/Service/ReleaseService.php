@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
-use Doctrine\ORM\NoResultException;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
+use EMS\CoreBundle\Core\Revision\Release\ReleaseRevisionType;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
 use EMS\CoreBundle\Entity\Revision;
@@ -63,10 +63,7 @@ final class ReleaseService implements EntityServiceInterface
             return;
         }
 
-        $releaseRevision = ReleaseRevision::createFromRevision($revision);
-        $releaseRevision->setRelease($release);
-        $releaseRevision->setRevision($revision);
-        $release->addRevision($releaseRevision);
+        $release->addRevision($revision, ReleaseRevisionType::PUBLISH);
 
         $this->releaseRepository->create($release);
         $this->logger->notice('log.data.revision.added_to_release', [...['release' => $release->getName()], ...LogRevisionContext::read($revision)]);
@@ -90,16 +87,13 @@ final class ReleaseService implements EntityServiceInterface
 
         try {
             $this->dataService->getRevisionByEnvironment($revision->giveOuuid(), $revision->giveContentType(), $release->getEnvironmentTarget());
-        } catch (NoResultException) {
+        } catch (\Throwable) {
             $this->logger->notice('log.data.revision.document_not_in_target', [...['target' => $release->getEnvironmentTarget()->getName()], ...LogRevisionContext::read($revision)]);
 
             return;
         }
 
-        $releaseRevision = ReleaseRevision::createFromRevision($revision);
-        $releaseRevision->setRelease($release);
-        $releaseRevision->setRevision(null);
-        $release->addRevision($releaseRevision);
+        $release->addRevision($revision, ReleaseRevisionType::UNPUBLISH);
 
         $this->releaseRepository->create($release);
         $this->logger->notice('log.data.revision.added_to_release', [...['release' => $release->getName()], ...LogRevisionContext::read($revision)]);
@@ -108,30 +102,25 @@ final class ReleaseService implements EntityServiceInterface
     /**
      * @param array<string> $emsLinks
      */
-    public function addRevisions(Release $release, string $type, array $emsLinks): void
+    public function addRevisions(Release $release, ReleaseRevisionType $type, array $emsLinks): void
     {
         foreach ($emsLinks as $emsLink) {
             $emsLinkObject = EMSLink::fromText($emsLink);
-            $releaseRevision = new ReleaseRevision();
-            $releaseRevision->setRelease($release);
-            $releaseRevision->setRevisionOuuid($emsLinkObject->getOuuid());
-
             $contentType = $this->contentTypeService->giveByName($emsLinkObject->getContentType());
-            $releaseRevision->setContentType($contentType);
 
-            if ('publish' === $type) {
-                try {
-                    $revision = $this->dataService->getRevisionByEnvironment($emsLinkObject->getOuuid(), $contentType, $release->getEnvironmentSource());
-                } catch (NoResultException) {
-                    $revision = null;
-                }
-                $releaseRevision->setRevision($revision);
-            } elseif ('unpublish' === $type) {
-                $releaseRevision->setRevision(null);
+            $environment = match ($type) {
+                ReleaseRevisionType::PUBLISH => $release->getEnvironmentSource(),
+                ReleaseRevisionType::UNPUBLISH => $release->getEnvironmentTarget()
+            };
+
+            try {
+                $revision = $this->dataService->getRevisionByEnvironment($emsLinkObject->getOuuid(), $contentType, $environment);
+                $release->addRevision($revision, $type);
+            } catch (\Throwable) {
+                continue;
             }
-
-            $release->addRevision($releaseRevision);
         }
+
         $this->releaseRepository->create($release);
     }
 
@@ -140,8 +129,10 @@ final class ReleaseService implements EntityServiceInterface
      */
     public function removeRevisions(Release $release, array $ids): void
     {
+        $revisionIds = \array_map('intval', $ids);
+
         foreach ($release->getRevisions() as $releaseRevision) {
-            if (\in_array($releaseRevision->getId(), $ids)) {
+            if (\in_array($releaseRevision->getId(), $revisionIds, true)) {
                 $this->releaseRevisionService->remove($releaseRevision);
             }
         }
@@ -224,7 +215,7 @@ final class ReleaseService implements EntityServiceInterface
         return $this->releaseRepository->findReadyAndDue();
     }
 
-    public function publishRelease(Release $release, bool $command = false): void
+    public function executeRelease(Release $release, bool $command = false): void
     {
         if (Release::READY_STATUS !== $release->getStatus()) {
             $this->logger->error('log.service.release.not.ready', [
@@ -235,23 +226,35 @@ final class ReleaseService implements EntityServiceInterface
         }
 
         foreach ($release->getRevisions() as $releaseRevision) {
-            try {
-                $revisionToRemove = $this->dataService->getRevisionByEnvironment($releaseRevision->getRevisionOuuid(), $releaseRevision->getContentType(), $release->getEnvironmentTarget());
-            } catch (NoResultException) {
-                $revisionToRemove = null;
-            }
-            $releaseRevision->setRevisionBeforePublish($revisionToRemove);
-
-            $revision = $releaseRevision->getRevision();
-            if (null === $revision && null !== $revisionToRemove) {
-                $this->publishService->unpublish($revisionToRemove, $release->getEnvironmentTarget(), $command);
-            } elseif (null !== $revision) {
-                $this->publishService->publish($revision, $release->getEnvironmentTarget(), 'SYSTEM_RELEASE');
-            }
+            match ($releaseRevision->getType()) {
+                ReleaseRevisionType::PUBLISH => $this->executePublish($release, $releaseRevision),
+                ReleaseRevisionType::UNPUBLISH => $this->executeUnpublish($release, $releaseRevision, $command)
+            };
         }
 
         $release->setStatus(Release::APPLIED_STATUS);
         $this->update($release);
+    }
+
+    private function executePublish(Release $release, ReleaseRevision $releaseRevision): void
+    {
+        try {
+            $rollbackRevision = $this->dataService->getRevisionByEnvironment(
+                ouuid: $releaseRevision->getRevisionOuuid(),
+                contentType: $releaseRevision->getContentType(),
+                environment: $release->getEnvironmentTarget()
+            );
+        } catch (\Throwable) {
+            $rollbackRevision = null;
+        }
+
+        $releaseRevision->setRollbackRevision($rollbackRevision);
+        $this->publishService->publish($releaseRevision->getRevision(), $release->getEnvironmentTarget(), 'SYSTEM_RELEASE');
+    }
+
+    private function executeUnpublish(Release $release, ReleaseRevision $releaseRevision, bool $command): void
+    {
+        $this->publishService->unpublish($releaseRevision->getRevision(), $release->getEnvironmentTarget(), $command);
     }
 
     /**
@@ -259,24 +262,38 @@ final class ReleaseService implements EntityServiceInterface
      */
     public function rollback(Release $release, array $ids): Release
     {
-        $revisions = $this->releaseRevisionService->getByIds($ids);
+        $releaseRevisions = $this->releaseRevisionService->getByIds($ids);
         $rollback = new Release();
         $rollback->setEnvironmentSource($release->getEnvironmentSource());
         $rollback->setEnvironmentTarget($release->getEnvironmentTarget());
         $rollback->setName(\sprintf('Rollback "%s"', $release->getName()));
         $rollback->setStatus(Release::WIP_STATUS);
-        foreach ($revisions as $revision) {
-            $releaseRevision = new ReleaseRevision();
-            $releaseRevision->setRelease($rollback);
-            $releaseRevision->setRevisionBeforePublish(null);
-            $releaseRevision->setRevision($revision->getRevisionBeforePublish());
-            $releaseRevision->setContentType($revision->getContentType());
-            $releaseRevision->setRevisionOuuid($revision->getRevisionOuuid());
-            $release->addRevision($releaseRevision);
+
+        foreach ($releaseRevisions as $releaseRevision) {
+            match ($releaseRevision->getType()) {
+                ReleaseRevisionType::PUBLISH => $this->rollBackPublish($rollback, $releaseRevision),
+                ReleaseRevisionType::UNPUBLISH => $this->rollBackUnpublish($rollback, $releaseRevision)
+            };
         }
         $this->update($rollback);
 
         return $rollback;
+    }
+
+    private function rollBackPublish(Release $rollBackRelease, ReleaseRevision $releaseRevision): void
+    {
+        $rollbackRevision = $releaseRevision->getRollbackRevision();
+
+        if ($rollbackRevision) {
+            $rollBackRelease->addRevision($rollbackRevision, ReleaseRevisionType::PUBLISH);
+        } else {
+            $rollBackRelease->addRevision($releaseRevision->getRevision(), ReleaseRevisionType::UNPUBLISH);
+        }
+    }
+
+    private function rollBackUnpublish(Release $rollBackRelease, ReleaseRevision $releaseRevision): void
+    {
+        $rollBackRelease->addRevision($releaseRevision->getRevision(), ReleaseRevisionType::PUBLISH);
     }
 
     public function getById(int $id): Release

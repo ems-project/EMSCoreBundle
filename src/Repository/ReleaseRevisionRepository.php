@@ -87,13 +87,14 @@ final class ReleaseRevisionRepository extends ServiceEntityRepository
     public function findByRelease(Release $release, int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
     {
         $qb = $this->createQueryBuilder('rr');
-        $qb->where($qb->expr()->eq('rr.release', ':release'))
-            ->setParameters([
-                'release' => $release,
-            ]);
-        $qb->orderBy(\sprintf('rr.%s', $orderField ?? 'id'), $orderDirection);
-        $qb->setFirstResult($from);
-        $qb->setMaxResults($size);
+        $qb
+            ->join('rr.revision', 'r')
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
+            ->andWhere($qb->expr()->eq('rr.release', ':release'))
+            ->orderBy(\sprintf('rr.%s', $orderField ?? 'id'), $orderDirection)
+            ->setFirstResult($from)
+            ->setMaxResults($size)
+            ->setParameters(['release' => $release]);
 
         return $qb->getQuery()->execute();
     }
@@ -101,14 +102,14 @@ final class ReleaseRevisionRepository extends ServiceEntityRepository
     public function countByRelease(Release $release, string $searchValue): int
     {
         $qb = $this->createQueryBuilder('rr');
-        $qb->where($qb->expr()->eq('rr.release', ':release'))
-            ->setParameters([
-                'release' => $release,
-            ]);
-        $qb->select('count(rr)');
-        $query = $qb->getQuery();
+        $qb
+            ->select('count(rr)')
+            ->join('rr.revision', 'r')
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
+            ->andWhere($qb->expr()->eq('rr.release', ':release'))
+            ->setParameters(['release' => $release]);
 
-        return \intval($query->getSingleScalarResult());
+        return \intval($qb->getQuery()->getSingleScalarResult());
     }
 
     /**

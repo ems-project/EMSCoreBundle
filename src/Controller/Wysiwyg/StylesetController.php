@@ -68,7 +68,7 @@ class StylesetController extends AbstractController
             $sha1 = $styleSet->giveAssetsHash();
             $directory = $this->assetHelperRuntime->setVersion($sha1);
             $filename = \implode(DIRECTORY_SEPARATOR, [$directory, $css]);
-            $cssContents = File::getFileContents($filename);
+            $cssContents = File::fromFilename($filename)->getContents();
             $source .= $this->compilePrefixedCss($name, $cssContents, $directory);
         }
         $response->setContent($source);
@@ -90,7 +90,7 @@ class StylesetController extends AbstractController
         $sha1 = $styleSet->giveAssetsHash();
         $directory = $this->assetHelperRuntime->setVersion($sha1);
         $filename = \implode(DIRECTORY_SEPARATOR, [$directory, $css]);
-        $cssContents = File::getFileContents($filename);
+        $cssContents = File::fromFilename($filename)->getContents();
         $response->setContent($this->compilePrefixedCss($name, $cssContents, $directory));
 
         return $response;

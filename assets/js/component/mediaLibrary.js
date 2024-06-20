@@ -176,7 +176,7 @@ export default class MediaLibrary {
             }
             ajaxModal.modal.addEventListener('ajax-modal-close', onClose);
 
-            ajaxModal.load({ url: `${this.#pathPrefix}/file/${fileId}/view`, size: 'lg', noLoading: true }, () => {
+            ajaxModal.load({ url: `${this.#pathPrefix}/file/${fileId}/view`, size: 'auto-size', noLoading: true }, () => {
                 navigation('prev', 'previousSibling', fileId);
                 navigation('next','nextSibling', fileId);
                 document.addEventListener('keydown', onKeydown);

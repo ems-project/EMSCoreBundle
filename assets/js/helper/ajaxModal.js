@@ -85,7 +85,7 @@ class AjaxModal {
     load(options, callback, errorCallback = null)
     {
         let dialog = this.modal.querySelector('.modal-dialog');
-        dialog.classList.remove('modal-xs', 'modal-sm', 'modal-md', 'modal-lg');
+        dialog.classList.remove('modal-xs', 'modal-sm', 'modal-md', 'modal-lg', 'modal-auto-size');
         if (options.hasOwnProperty('size')) {
             dialog.classList.add('modal-'+options.size);
         } else {

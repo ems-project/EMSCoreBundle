@@ -80,16 +80,15 @@ export default class MediaLibrary {
     _addEventListeners() {
         this.element.onkeyup = (event) => {
             if (event.shiftKey) this.#selectionLastFile = null;
-            if (event.target.classList.contains('media-lib-search')) this._onSearchInput(event.target, 500);
+            if (event.target.classList.contains('media-lib-search')) this._onSearchInput(event.target, 1000);
         }
 
         this.element.onclick = (event) => {
             if (this.isLoading()) return;
 
-            if (event.target.id === 'media_lib_search') return;
-
             let classList = event.target.classList;
 
+            if (classList.contains('media-lib-search')) return;
             if (classList.contains('media-lib-file')) this._onClickFile(event.target, event);
             if (classList.contains('media-lib-folder')) this._onClickFolder(event.target);
 
@@ -176,7 +175,7 @@ export default class MediaLibrary {
             }
             ajaxModal.modal.addEventListener('ajax-modal-close', onClose);
 
-            ajaxModal.load({ url: `${this.#pathPrefix}/file/${fileId}/view`, size: 'lg', noLoading: true }, () => {
+            ajaxModal.load({ url: `${this.#pathPrefix}/file/${fileId}/view`, size: 'auto-size', noLoading: true }, () => {
                 navigation('prev', 'previousSibling', fileId);
                 navigation('next','nextSibling', fileId);
                 document.addEventListener('keydown', onKeydown);

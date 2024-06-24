@@ -11,19 +11,26 @@ class MediaLibraryConfig implements ConfigInterface
 {
     public const DEFAULT_SEARCH_FILE_QUERY = [
         'bool' => [
-            'minimum_should_match' => 1,
-            'should' => [
-                ['multi_match' => [
-                    'fields' => ['live_search', 'live_search._2gram', 'live_search._3gram'],
-                    'query' => '%query%',
-                    'operator' => 'and',
-                    'type' => 'bool_prefix',
-                ]],
-                ['query_string' => ['default_field' => '_all', 'query' => '%query%']],
-                ['wildcard' => ['_all' => ['value' => '%query%']]],
+            'must' => [
+                [
+                    'nested' => [
+                        'path' => 'media_file',
+                        'query' => [
+                            'bool' => [
+                                'minimum_should_match' => 1,
+                                'should' => [
+                                    ['query_string' => ['default_field' => 'media_file.filename', 'query' => '%query%']],
+                                    ['wildcard' => ['media_file.filename' => ['value' => '*%query_escaped%*']]],
+                                    ['match' => ['media_file.filename' => '%query%']],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ],
     ];
+
     public const DEFAULT_SEARCH_SIZE = 100;
     /** @var array<string, mixed> */
     public array $context = [];

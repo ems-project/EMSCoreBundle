@@ -217,14 +217,12 @@
             {% if mediaFile.fileMimetype starts with 'image/' %}
                 <img src="{{ url }}" alt="{{ mediaFile.giveName }}"/>
             {% else %}
-                <div class="embed-responsive embed-responsive-16by9">
-                    <object data="{{ url }}" type="{{ mediaFile.fileMimetype }}">
-                        <div class="alert alert-info" role="alert">
-                            {{ fallback|default('media_library.file.view.fallback'|trans) }}
-                            <a href="{{ url }}">{{ fallback|default('media_library.file.view.download'|trans) }}</a>
-                        </div>
-                    </object>
-                </div>
+                <object data="{{ url }}" type="{{ mediaFile.fileMimetype }}">
+                    <div class="alert alert-info" role="alert">
+                        {{ fallback|default('media_library.file.view.fallback'|trans) }}
+                        <a href="{{ url }}">{{ fallback|default('media_library.file.view.download'|trans) }}</a>
+                    </div>
+                </object>
             {% endif %}
         </div>
         <div class="media-lib-preview-info">

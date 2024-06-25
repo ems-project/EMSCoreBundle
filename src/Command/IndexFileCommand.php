@@ -11,6 +11,7 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
+use EMS\Helpers\File\TempFile;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -198,7 +199,8 @@ class IndexFileCommand extends EmsCommand
                     $fileContent = \base64_decode((string) $rawData['content']);
 
                     if (\sha1($fileContent) === $rawData[EmsFields::CONTENT_FILE_HASH_FIELD]) {
-                        $file = $this->fileService->temporaryFilename($rawData[EmsFields::CONTENT_FILE_HASH_FIELD]);
+                        $tempFile = TempFile::create();
+                        $file = $tempFile->path;
                         \file_put_contents($file, $fileContent);
                         try {
                             $this->fileService->uploadFile($rawData[EmsFields::CONTENT_FILE_NAME_FIELD] ?? 'filename.bin', $rawData[EmsFields::CONTENT_MIME_TYPE_FIELD] ?? 'application/bin', $file, self::SYSTEM_USERNAME);

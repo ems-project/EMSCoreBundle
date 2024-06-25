@@ -73,8 +73,8 @@ class MailerService
         if (\count($template->getReplyTo()) > 0) {
             $email->replyTo(...$template->getReplyTo());
         }
-        foreach ($template->getAttachments() as $file) {
-            $email->attachFromPath($file);
+        foreach ($template->getAttachments() as $attachment) {
+            $email->attachFromPath($attachment->getPath(), $attachment->getName(), $attachment->getContentType());
         }
 
         if ('html' === $type) {

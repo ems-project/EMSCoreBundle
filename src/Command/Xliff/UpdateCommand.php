@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Xliff;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CommonBundle\Storage\StorageManager;
+use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Exception\XliffException;
@@ -13,12 +16,15 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Internationalization\XliffService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use EMS\Helpers\File\TempFile;
+use EMS\Helpers\Html\MimeTypes;
 use EMS\Xliff\Xliff\Entity\InsertReport;
 use EMS\Xliff\Xliff\Inserter;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class UpdateCommand extends AbstractCommand
 {
@@ -31,6 +37,7 @@ final class UpdateCommand extends AbstractCommand
     public const OPTION_LOCALE_FIELD = 'locale-field';
     public const OPTION_DRY_RUN = 'dry-run';
     public const OPTION_CURRENT_REVISION_ONLY = 'current-revision-only';
+    public const OPTION_BASE_URL = 'base-url';
 
     private string $xliffFilename;
     private ?Environment $publishTo = null;
@@ -39,13 +46,15 @@ final class UpdateCommand extends AbstractCommand
     private ?string $localeField;
     private bool $dryRun = false;
     private bool $currentRevisionOnly = false;
+    private ?string $baseUrl = null;
 
     public function __construct(
         private readonly EnvironmentService $environmentService,
         private readonly XliffService $xliffService,
         private readonly PublishService $publishService,
         private readonly RevisionService $revisionService,
-        private readonly StorageManager $storageManager
+        private readonly StorageManager $storageManager,
+        private readonly AssetRuntime $assetRuntime,
     ) {
         parent::__construct();
     }
@@ -59,7 +68,8 @@ final class UpdateCommand extends AbstractCommand
             ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', null)
             ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field', null)
             ->addOption(self::OPTION_DRY_RUN, null, InputOption::VALUE_NONE, 'If set nothing is saved in the database')
-            ->addOption(self::OPTION_CURRENT_REVISION_ONLY, null, InputOption::VALUE_NONE, 'Translations will be updated only is the source revision is still a current revision');
+            ->addOption(self::OPTION_CURRENT_REVISION_ONLY, null, InputOption::VALUE_NONE, 'Translations will be updated only is the source revision is still a current revision')
+            ->addOption(self::OPTION_BASE_URL, null, InputOption::VALUE_OPTIONAL, 'Base url, in order to generate a download link to the error report');
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
@@ -118,12 +128,30 @@ final class UpdateCommand extends AbstractCommand
         }
         $this->io->progressFinish();
 
-        if ($insertReport->countErrors() > 0) {
-            $output->writeln(\sprintf('%d documents faced an issue', $insertReport->countErrors()));
-            $filename = \tempnam(\sys_get_temp_dir(), 'xliff_update_report_').'.zip';
-            $insertReport->export($filename);
-            $output->writeln(\sprintf('See %s for details', $filename));
+        if (0 === $insertReport->countErrors()) {
+            return self::EXECUTE_SUCCESS;
         }
+
+        $output->writeln(\sprintf('%d documents faced issue(s)', $insertReport->countErrors()));
+        $tempFile = TempFile::create();
+        $insertReport->export($tempFile->path);
+        $hash = $this->storageManager->saveFile($tempFile->path, StorageInterface::STORAGE_USAGE_CONFIG);
+
+        $url = ($this->baseUrl ?? '').$this->assetRuntime->assetPath(
+            [
+                EmsFields::CONTENT_FILE_HASH_FIELD => $hash,
+                EmsFields::CONTENT_FILE_NAME_FIELD => 'xliff_update_report.zip',
+                EmsFields::CONTENT_MIME_TYPE_FIELD => MimeTypes::APPLICATION_ZIP->value,
+            ],
+            [],
+            'ems_asset',
+            EmsFields::CONTENT_FILE_HASH_FIELD,
+            EmsFields::CONTENT_FILE_NAME_FIELD,
+            EmsFields::CONTENT_MIME_TYPE_FIELD,
+            UrlGeneratorInterface::ABSOLUTE_PATH
+        );
+        $output->writeln('');
+        $output->writeln(\sprintf('The XLIFF export is available at %s', $url));
 
         return self::EXECUTE_SUCCESS;
     }

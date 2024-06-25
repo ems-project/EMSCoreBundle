@@ -44,31 +44,14 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
 
     public function getFile(string $hash): ?string
     {
-        $filename = \sprintf('%s%sEMS_cached_%s', \sys_get_temp_dir(), DIRECTORY_SEPARATOR, $hash);
-        if (\file_exists($filename) && $this->storageManager->computeFileHash($filename) === $hash) {
-            return $filename;
-        }
-        $stream = $this->getResource($hash);
-
-        if (null === $stream) {
+        if (!$this->storageManager->head($hash)) {
             return null;
         }
-
-        if (!$handle = \fopen($filename, 'w')) {
-            throw new \RuntimeException(\sprintf('Can\'t open a temporary file %s', $filename));
+        try {
+            return $this->storageManager->getFile($hash)->getFilename();
+        } catch (NotFoundException) {
+            return null;
         }
-
-        while (!$stream->eof()) {
-            if (false === \fwrite($handle, $stream->read(8192))) {
-                throw new \RuntimeException(\sprintf('Can\'t write in temporary file %s', $filename));
-            }
-        }
-
-        if (false === \fclose($handle)) {
-            throw new \RuntimeException(\sprintf('Can\'t close the temporary file %s', $filename));
-        }
-
-        return $filename;
     }
 
     public function getResource(string $hash): ?StreamInterface
@@ -313,11 +296,6 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
         $em->flush($uploadedAsset);
 
         return $uploadedAsset;
-    }
-
-    public function temporaryFilename(string $hash): string
-    {
-        return \sys_get_temp_dir().DIRECTORY_SEPARATOR.$hash;
     }
 
     private function saveFile(string $filename, UploadedAsset $uploadedAsset): UploadedAsset

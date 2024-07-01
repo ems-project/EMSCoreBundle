@@ -399,7 +399,7 @@ class ContentTypeController extends AbstractController
 
         $inputContentType = $request->request->all('content_type');
         try {
-            $mapping = $this->mappingService->getMapping([$environment->getName()]);
+            $mapping = $this->mappingService->getMapping($environment);
         } catch (\Throwable) {
             $this->logger->warning('log.contenttype.mapping.not_found', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),

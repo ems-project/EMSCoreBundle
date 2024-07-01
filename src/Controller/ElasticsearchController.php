@@ -11,6 +11,7 @@ use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\Document\DataLinks;
 use EMS\CoreBundle\Entity\ContentType;
@@ -402,7 +403,8 @@ class ElasticsearchController extends AbstractController
         /** @var ExportDocuments */
         $exportDocuments = $form->getData();
         $command = \sprintf(
-            "ems:contenttype:export %s %s '%s'%s --environment=%s --baseUrl=%s",
+            "%s %s %s '%s'%s --environment=%s --baseUrl=%s",
+            Commands::CONTENT_TYPE_EXPORT,
             $contentType->getName(),
             $exportDocuments->getFormat(),
             $exportDocuments->getQuery(),

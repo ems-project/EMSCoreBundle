@@ -65,7 +65,7 @@ class HierarchicalViewType extends ViewType
         /** @var View $view */
         $view = $options['view'];
         $environment = $view->getContentType()->giveEnvironment();
-        $mapping = $this->mapping->getMapping([$environment->getName()]);
+        $mapping = $this->mapping->getMapping($environment);
 
         $fieldType = new FieldType();
 

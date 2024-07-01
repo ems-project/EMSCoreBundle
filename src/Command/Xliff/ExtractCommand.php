@@ -10,6 +10,8 @@ use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CommonBundle\Storage\Service\StorageInterface;
+use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Mail\MailerService;
@@ -17,6 +19,8 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Internationalization\XliffService;
+use EMS\Helpers\File\TempFile;
+use EMS\Helpers\Html\MimeTypes;
 use EMS\Helpers\Standard\Json;
 use EMS\Xliff\Xliff\Extractor;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -52,7 +56,7 @@ final class ExtractCommand extends AbstractCommand
     public const ARGUMENT_FIELDS = 'fields';
     public const OPTION_BULK_SIZE = 'bulk-size';
     public const OPTION_XLIFF_VERSION = 'xliff-version';
-    public const OPTION_FILENAME = 'filename';
+    public const OPTION_BASENAME = 'basename';
     public const OPTION_BASE_URL = 'base-url';
     public const OPTION_TRANSLATION_FIELD = 'translation-field';
     public const OPTION_LOCALE_FIELD = 'locale-field';
@@ -63,7 +67,7 @@ final class ExtractCommand extends AbstractCommand
     public const OPTION_MAIL_CC = 'mail-cc';
     public const OPTION_MAIL_REPLY_TO = 'mail-reply-to';
     private const MAIL_TEMPLATE = '@EMSCore/email/xliff/extract.email.html.twig';
-    private string $xliffFilename;
+    private string $xliffBasename;
     private ?string $baseUrl = null;
     private string $xliffVersion;
     private ?string $translationField = null;
@@ -82,6 +86,7 @@ final class ExtractCommand extends AbstractCommand
         private readonly XliffService $xliffService,
         private readonly AssetRuntime $assetRuntime,
         private readonly MailerService $mailerService,
+        private readonly StorageManager $storageManager,
         private readonly int $defaultBulkSize,
     ) {
         parent::__construct();
@@ -98,7 +103,7 @@ final class ExtractCommand extends AbstractCommand
             ->addOption(self::OPTION_BULK_SIZE, null, InputOption::VALUE_REQUIRED, 'Size of the elasticsearch scroll request', $this->defaultBulkSize)
             ->addOption(self::OPTION_TARGET_ENVIRONMENT, null, InputOption::VALUE_OPTIONAL, 'Environment with the target documents')
             ->addOption(self::OPTION_XLIFF_VERSION, null, InputOption::VALUE_OPTIONAL, 'XLIFF format version: '.\implode(' ', Extractor::XLIFF_VERSIONS), Extractor::XLIFF_1_2)
-            ->addOption(self::OPTION_FILENAME, null, InputOption::VALUE_OPTIONAL, 'Generate the XLIFF specified file')
+            ->addOption(self::OPTION_BASENAME, null, InputOption::VALUE_OPTIONAL, 'XLIFF export file basename', 'ems-extract.xlf')
             ->addOption(self::OPTION_BASE_URL, null, InputOption::VALUE_OPTIONAL, 'Base url, in order to generate a download link to the XLIFF file')
             ->addOption(self::OPTION_LOCALE_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the locale', null)
             ->addOption(self::OPTION_ENCODING, null, InputOption::VALUE_OPTIONAL, 'Encoding used to generate the XLIFF file', 'UTF-8')
@@ -124,8 +129,7 @@ final class ExtractCommand extends AbstractCommand
         $this->fields = $this->getArgumentStringArray(self::ARGUMENT_FIELDS);
         $this->sourceEnvironment = $this->environmentService->giveByName($this->getArgumentString(self::ARGUMENT_SOURCE_ENVIRONMENT));
         $this->targetEnvironment = $this->getOptionStringNull(self::OPTION_TARGET_ENVIRONMENT) ? $this->environmentService->giveByName($this->getOptionString(self::OPTION_TARGET_ENVIRONMENT)) : $this->sourceEnvironment;
-        $xliffFilename = $this->getOptionStringNull(self::OPTION_FILENAME);
-        $this->xliffFilename = $xliffFilename ?? \tempnam(\sys_get_temp_dir(), 'ems-extract-').'.xlf';
+        $this->xliffBasename = $this->getOptionString(self::OPTION_BASENAME);
         $this->baseUrl = $this->getOptionStringNull(self::OPTION_BASE_URL);
         $this->xliffVersion = $this->getOptionString(self::OPTION_XLIFF_VERSION);
         $this->translationField = $this->getOptionStringNull(self::OPTION_TRANSLATION_FIELD);
@@ -170,36 +174,34 @@ final class ExtractCommand extends AbstractCommand
             }
         }
         $this->io->progressFinish();
-
-        if (!$extractor->saveXML($this->xliffFilename, $this->encoding)) {
-            throw new \RuntimeException(\sprintf('Unexpected error while saving the XLIFF to the file %s', $this->xliffFilename));
+        $tempFile = TempFile::create();
+        if (!$extractor->saveXML($tempFile->path, $this->encoding)) {
+            throw new \RuntimeException(\sprintf('Unexpected error while saving the XLIFF to the file %s', $this->xliffBasename));
         }
-        $this->sendEmail($this->xliffFilename);
+        $this->sendEmail($tempFile);
 
-        if (null !== $this->baseUrl) {
-            $this->xliffFilename = $this->baseUrl.$this->assetRuntime->assetPath(
-                [
-                    EmsFields::CONTENT_FILE_NAME_FIELD_ => \basename($this->xliffFilename),
-                    EmsFields::CONTENT_FILE_HASH_FIELD_ => \sha1_file($this->xliffFilename),
-                ],
-                [
-                    EmsFields::ASSET_CONFIG_FILE_NAMES => [$this->xliffFilename],
-                ],
-                'ems_asset',
-                EmsFields::CONTENT_FILE_HASH_FIELD,
-                EmsFields::CONTENT_FILE_NAME_FIELD,
-                EmsFields::CONTENT_MIME_TYPE_FIELD,
-                UrlGeneratorInterface::ABSOLUTE_PATH
-            );
-        }
+        $hash = $this->storageManager->saveFile($tempFile->path, StorageInterface::STORAGE_USAGE_CONFIG);
 
+        $url = ($this->baseUrl ?? '').$this->assetRuntime->assetPath(
+            [
+                EmsFields::CONTENT_FILE_HASH_FIELD => $hash,
+                EmsFields::CONTENT_FILE_NAME_FIELD => \basename($this->xliffBasename),
+                EmsFields::CONTENT_MIME_TYPE_FIELD => MimeTypes::APPLICATION_XML->value,
+            ],
+            [],
+            'ems_asset',
+            EmsFields::CONTENT_FILE_HASH_FIELD,
+            EmsFields::CONTENT_FILE_NAME_FIELD,
+            EmsFields::CONTENT_MIME_TYPE_FIELD,
+            UrlGeneratorInterface::ABSOLUTE_PATH
+        );
         $output->writeln('');
-        $output->writeln('XLIFF file: '.$this->xliffFilename);
+        $output->writeln(\sprintf('The XLIFF export is available at %s', $url));
 
         return self::EXECUTE_SUCCESS;
     }
 
-    private function sendEmail(string $xliffFilename): void
+    private function sendEmail(TempFile $tempFile): void
     {
         if (null === $this->mailTo && null === $this->mailCC) {
             return;
@@ -230,7 +232,7 @@ final class ExtractCommand extends AbstractCommand
             'query' => $this->searchQuery,
             'fields' => $this->fields,
         ]);
-        $mailTemplate->addAttachment($xliffFilename);
+        $mailTemplate->addAttachment($tempFile->path, \basename($this->xliffBasename), MimeTypes::APPLICATION_XML->value);
 
         $this->mailerService->sendMailTemplate($mailTemplate);
     }

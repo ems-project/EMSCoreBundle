@@ -19,7 +19,7 @@ final class MailTemplate
     private array $cc = [];
     /** @var array<mixed> */
     private array $bcc = [];
-    /** @var string[] */
+    /** @var MailAttachment[] */
     private array $attachments = [];
     /** @var array<mixed> */
     private array $replyTo = [];
@@ -151,15 +151,15 @@ final class MailTemplate
         return $this;
     }
 
-    public function addAttachment(string $attachmentFilename): self
+    public function addAttachment(string $attachmentFilename, ?string $name = null, ?string $contentType = null): self
     {
-        $this->attachments[] = $attachmentFilename;
+        $this->attachments[] = new MailAttachment($attachmentFilename, $name, $contentType);
 
         return $this;
     }
 
     /**
-     * @return string[]
+     * @return MailAttachment[]
      */
     public function getAttachments(): array
     {

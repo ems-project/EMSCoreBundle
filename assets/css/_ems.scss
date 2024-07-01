@@ -1,6 +1,6 @@
 
 table#CriteriaUpdateCustomViewTable > tbody > tr > td {
-	min-width: 150px;	
+	min-width: 150px;
 }
 
 
@@ -170,4 +170,19 @@ div.core-js-progress {
 
 button > * {
   pointer-events: none; /* icons clickable inside button, js using event.target */
+}
+
+.modal-dialog {
+  max-width: 100%;
+  display: inline-block;
+  &.modal-auto-size { width: auto!important; }
+}
+
+.modal {
+  z-index: -1;
+  display: flex !important;
+  justify-content: center;
+  align-items: start;
+
+  &.in { z-index: 1050; }
 }

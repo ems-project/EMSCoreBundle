@@ -350,7 +350,8 @@ class MediaLibraryService
             $jsonSearchFileQuery = Json::encode($this->getConfig()->searchFileQuery);
 
             $searchFileQuery = Json::decode(u($jsonSearchFileQuery)
-                ->replace('%query%', Json::escape(QueryStringEscaper::escape($searchValue)))
+                ->replace('%query%', $searchValue)
+                ->replace('%query_escaped%', Json::escape(QueryStringEscaper::escape($searchValue)))
                 ->toString());
 
             if (!isset($searchFileQuery['bool'])) {

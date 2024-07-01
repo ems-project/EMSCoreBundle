@@ -2,7 +2,7 @@
 
 namespace EMS\CoreBundle\Helper;
 
-use Symfony\Component\Filesystem\Filesystem;
+use EMS\Helpers\File\TempDirectory;
 use Symfony\Component\Mime\MimeTypes;
 
 class Archive
@@ -47,13 +47,8 @@ class Archive
 
     private function getWorkingDirectory(): string
     {
-        if (!$workingDirectory = \tempnam(\sys_get_temp_dir(), 'ArchiveHelper')) {
-            throw new \Exception('Unable to get tempdir');
-        }
-        $filesystem = new Filesystem();
-        $filesystem->remove($workingDirectory);
-        $filesystem->mkdir($workingDirectory);
+        $tempDirectory = TempDirectory::create();
 
-        return $workingDirectory;
+        return $tempDirectory->path;
     }
 }

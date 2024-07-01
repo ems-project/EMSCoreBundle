@@ -255,7 +255,6 @@
         <service id="ems.service.mapping" class="EMS\CoreBundle\Service\Mapping">
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems_common.elastica.client" />
-            <argument type="service" id="ems.service.environment" />
             <argument type="service" id="ems.form.fieldtype.fieldtypetype" />
             <argument type="service" id="ems.service.elasticsearch" />
             <argument type="service" id="ems_common.service.elastica" />

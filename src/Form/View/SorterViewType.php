@@ -64,7 +64,7 @@ class SorterViewType extends ViewType
         $mapping = [];
 
         if (null !== $environment = $view->getContentType()->getEnvironment()) {
-            $mapping = $this->mapping->getMapping([$environment->getName()]);
+            $mapping = $this->mapping->getMapping($environment);
         }
 
         $builder

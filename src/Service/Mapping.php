@@ -11,6 +11,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Form\FieldType\FieldTypeType;
 use Psr\Log\LoggerInterface;
 
@@ -42,7 +43,7 @@ class Mapping
     final public const INSTANCE_ID_META_FIELD = 'instance_id';
     final public const PUBLISHED_DATETIME_FIELD = '_published_datetime';
 
-    public function __construct(private readonly LoggerInterface $logger, private readonly Client $elasticaClient, private readonly EnvironmentService $environmentService, private readonly FieldTypeType $fieldTypeType, private readonly ElasticsearchService $elasticsearchService, private readonly ElasticaService $elasticaService, private readonly string $instanceId)
+    public function __construct(private readonly LoggerInterface $logger, private readonly Client $elasticaClient, private readonly FieldTypeType $fieldTypeType, private readonly ElasticsearchService $elasticsearchService, private readonly ElasticaService $elasticaService, private readonly string $instanceId)
     {
     }
 
@@ -114,20 +115,14 @@ class Mapping
     }
 
     /**
-     * @param string[] $environmentNames
-     *
      * @return ?array<string, mixed>
      */
-    public function getMapping(array $environmentNames): ?array
+    public function getMapping(Environment ...$environments): ?array
     {
         $mergeMapping = [];
-        foreach ($environmentNames as $environmentName) {
+        foreach ($environments as $environment) {
             try {
-                $environment = $this->environmentService->getByName($environmentName);
-                if (false === $environment) {
-                    continue;
-                }
-                $mappings = $this->elasticaClient->getIndex($environment->getAlias())->getMapping();
+                $mappings = $this->elasticaService->getIndex($environment->getAlias())->getMapping();
 
                 if (isset($mappings['properties'])) {
                     $mergeMapping = $this->mergeMappings($mappings['properties'], $mergeMapping);

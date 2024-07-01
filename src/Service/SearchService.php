@@ -57,7 +57,12 @@ class SearchService
 
     public function generateSearch(Search $search): CommonSearch
     {
-        $mapping = $this->mapping->getMapping($search->getEnvironments());
+        $environments = \array_filter(
+            \array_map(fn (string $name) => $this->environmentService->giveByName($name), $search->getEnvironments()),
+            fn (Environment $e) => $this->elasticaService->hasIndex($e->getAlias())
+        );
+
+        $mapping = $this->mapping->getMapping(...$environments);
 
         $boolQuery = $this->elasticaService->getBoolQuery();
 
@@ -92,15 +97,7 @@ class SearchService
             $boolQuery = null;
         }
 
-        $indexes = [];
-        foreach ($search->getEnvironments() as $environmentName) {
-            $environment = $this->environmentService->getByName($environmentName);
-            if (!$environment instanceof Environment) {
-                throw new \RuntimeException(\sprintf('Environment %s not found', $environmentName));
-            }
-            $indexes[] = $environment->getAlias();
-        }
-
+        $indexes = \array_map(static fn (Environment $e) => $e->getAlias(), $environments);
         $commonSearch = new CommonSearch($indexes, $this->elasticaService->filterByContentTypes($boolQuery, $search->getContentTypes()));
 
         $sortBy = $search->getSortBy();
@@ -120,8 +117,7 @@ class SearchService
 
     public function getDocument(ContentType $contentType, string $ouuid, ?Environment $environment = null): ElasticsearchDocument
     {
-        $environment ??= $contentType->giveEnvironment();
-        $index = $this->contentTypeService->getIndex($contentType, $environment);
+        $index = $environment?->getAlias() ?? $contentType->giveEnvironment()->getAlias();
         $searchQuery = null;
 
         if ($contentType->hasVersionTags() && null !== $dateToField = $contentType->getVersionDateToField()) {

@@ -258,7 +258,7 @@ class ExportDocumentsCommand extends AbstractCommand
                 EmsFields::CONTENT_MIME_TYPE_FIELD => MimeTypes::APPLICATION_ZIP->value,
             ],
             [],
-                    'ems_asset',
+            'ems_asset',
             EmsFields::CONTENT_FILE_HASH_FIELD,
             EmsFields::CONTENT_FILE_NAME_FIELD,
             EmsFields::CONTENT_MIME_TYPE_FIELD,

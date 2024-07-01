@@ -46,7 +46,7 @@ class Mapping
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly Client $elasticaClient,
-        private readonly  FieldTypeType $fieldTypeType,
+        private readonly FieldTypeType $fieldTypeType,
         private readonly ElasticsearchService $elasticsearchService,
         private readonly ElasticaService $elasticaService,
         private readonly string $instanceId,

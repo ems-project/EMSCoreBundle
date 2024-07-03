@@ -10,6 +10,7 @@ use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use EMS\Helpers\File\File;
 use EMS\Helpers\Html\Headers;
 use EMS\Helpers\Standard\Json;
+use EMS\Helpers\Standard\Type;
 use ScssPhp\ScssPhp\Compiler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,7 +70,7 @@ class StylesetController extends AbstractController
             $directory = $this->assetHelperRuntime->setVersion($sha1);
             $filename = \implode(DIRECTORY_SEPARATOR, [$directory, $css]);
             $cssContents = File::fromFilename($filename)->getContents();
-            $source .= $this->compilePrefixedCss($name, $cssContents, $directory);
+            $source .= $this->compilePrefixedCss($name, $cssContents, Type::string($directory));
         }
         $response->setContent($source);
 
@@ -91,7 +92,7 @@ class StylesetController extends AbstractController
         $directory = $this->assetHelperRuntime->setVersion($sha1);
         $filename = \implode(DIRECTORY_SEPARATOR, [$directory, $css]);
         $cssContents = File::fromFilename($filename)->getContents();
-        $response->setContent($this->compilePrefixedCss($name, $cssContents, $directory));
+        $response->setContent($this->compilePrefixedCss($name, $cssContents, Type::string($directory)));
 
         return $response;
     }

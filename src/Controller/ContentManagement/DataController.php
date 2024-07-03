@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\NoResultException;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Helper\MimeTypeHelper;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
@@ -222,7 +223,7 @@ class DataController extends AbstractController
     public function publicKey(): Response
     {
         $response = new Response();
-        $response->headers->set('Content-Type', 'text/plain');
+        $response->headers->set('Content-Type', MimeTypeHelper::TEXT_PLAIN);
         $response->setContent($this->dataService->getPublicKey());
 
         return $response;

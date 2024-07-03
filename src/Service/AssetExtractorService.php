@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Common\Converter;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Helper\MimeTypeHelper;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Entity\CacheAssetExtractor;
 use EMS\CoreBundle\Helper\AssetExtractor\ExtractedData;
@@ -145,7 +146,7 @@ class AssetExtractorService implements CacheWarmerInterface
                 $result = $client->put(self::CONTENT_EP, [
                     'body' => $body,
                     'headers' => [
-                        'Accept' => 'text/plain',
+                        'Accept' => MimeTypeHelper::TEXT_PLAIN,
                     ],
                 ]);
                 $out->setContent($result->getBody()->__toString());

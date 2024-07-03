@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Helper\MimeTypeHelper;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Entity\Environment;
@@ -500,7 +501,7 @@ class NotificationService
             $notification->setResponseEmailed(new \DateTime());
         }
 
-        $contentType = $notification->getTemplate()->getEmailContentType() ?? 'text/plain';
+        $contentType = $notification->getTemplate()->getEmailContentType() ?? MimeTypeHelper::TEXT_PLAIN;
         if ('text/html' === $contentType) {
             $email->html($body);
         } else {

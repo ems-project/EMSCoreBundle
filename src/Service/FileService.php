@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Helper\MimeTypeHelper;
 use EMS\CommonBundle\Storage\HashMismatchException;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CommonBundle\Storage\Processor\Config;
@@ -67,7 +68,7 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
             $lastUploaded = $this->uploadedAssetRepository->getLastUploadedByHash($hash);
         }
         $config = $this->processor->configFactory($hash, [
-            EmsFields::ASSET_CONFIG_MIME_TYPE => $request->query->get('type', null !== $lastUploaded ? $lastUploaded->getType() : 'application/octet-stream'),
+            EmsFields::ASSET_CONFIG_MIME_TYPE => $request->query->get('type', null !== $lastUploaded ? $lastUploaded->getType() : MimeTypeHelper::APPLICATION_OCTET_STREAM),
             EmsFields::ASSET_CONFIG_DISPOSITION => $disposition,
         ]);
         $filename = $request->query->get('name', null !== $lastUploaded ? $lastUploaded->getName() : 'filename');

@@ -24,7 +24,6 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionNewDraftEvent;
 use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
-use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\DataStateException;
 use EMS\CoreBundle\Exception\DuplicateOuuidException;
 use EMS\CoreBundle\Exception\HasNotCircleException;
@@ -754,15 +753,10 @@ class DataService
         $objectArray = $revision->getRawData();
 
         $this->updateDataStructure($revision->giveContentType()->getFieldType(), $form->get('data')->getNormData());
-        $this->setCircles($revision);
-        try {
-            if ($computeFields && $this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->giveContentType(), $revision->giveContentType()->getName(), $revision->getOuuid())) {
-                $revision->setRawData($objectArray);
-            }
-            $this->setCircles($revision);
-        } catch (CantBeFinalizedException $e) {
-            $form->addError(new FormError($e->getMessage()));
+        if ($computeFields && $this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->giveContentType(), $revision->giveContentType()->getName(), $revision->getOuuid())) {
+            $revision->setRawData($objectArray);
         }
+        $this->setCircles($revision);
 
         $previousObjectArray = null;
 
@@ -822,7 +816,7 @@ class DataService
      */
     private function logFormErrors(FormInterface $form): void
     {
-        $formErrors = $form->getErrors(true, true);
+        $formErrors = $form->getErrors(true);
         /** @var FormError $formError */
         foreach ($formErrors as $formError) {
             $fieldForm = $formError->getOrigin();

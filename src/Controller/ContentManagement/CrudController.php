@@ -353,7 +353,7 @@ class CrudController extends AbstractController
         return $this->json($users);
     }
 
-    public function index(Request $request, string $name, ?string $ouuid = null, string $replaceOrMerge = 'replace'): Response
+    public function index(Request $request, string $name, ?string $ouuid = null, string $replaceOrMerge = 'replace'): JsonResponse
     {
         $revision = null;
         if (null !== $ouuid) {
@@ -366,21 +366,22 @@ class CrudController extends AbstractController
         $rawData = Json::decode(Type::string($request->getContent()));
         if (null === $revision) {
             $contentType = $this->contentTypeService->giveByName($name);
-            $draft = $this->dataService->createData($ouuid, $rawData, $contentType);
+            $revision = $this->dataService->createData($ouuid, $rawData, $contentType);
         } else {
-            $draft = $this->dataService->replaceData($revision, $rawData, $replaceOrMerge);
+            $revision = $this->dataService->replaceData($revision, $rawData, $replaceOrMerge);
         }
-        $newRevision = $this->dataService->finalizeDraft($draft);
+
+        $this->dataService->finalizeDraft($revision, $form);
 
         if ($request->query->getBoolean('refresh')) {
-            $this->dataService->refresh($draft->giveContentType()->giveEnvironment());
+            $this->dataService->refresh($revision->giveContentType()->giveEnvironment());
         }
 
-        return new JsonResponse([
-            'success' => !$newRevision->getDraft(),
-            'ouuid' => $newRevision->giveOuuid(),
-            'type' => $newRevision->giveContentType()->getName(),
-            'revision_id' => $newRevision->getId(),
+        return $this->flashMessageLogger->buildJsonResponse([
+            'success' => !$revision->getDraft(),
+            'ouuid' => $revision->getOuuid(),
+            'type' => $revision->giveContentType()->getName(),
+            'revision_id' => $revision->getId(),
         ]);
     }
 

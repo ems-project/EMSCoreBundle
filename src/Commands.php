@@ -6,8 +6,10 @@ namespace EMS\CoreBundle;
 
 final class Commands
 {
-    public const CONTENT_TYPE_TRANSFORM = 'emsco:contenttype:transform';
+    public const CONTENT_TYPE_LOCK = 'ems:contenttype:lock';
+    public const CONTENT_TYPE_RECOMPUTE = 'ems:contenttype:recompute';
     public const CONTENT_TYPE_SWITCH_DEFAULT_ENV = 'emsco:contenttype:switch-default-env';
+    public const CONTENT_TYPE_TRANSFORM = 'emsco:contenttype:transform';
     public const CONTENT_TYPE_EXPORT = 'emsco:contenttype:export';
 
     public const ENVIRONMENT_ALIGN = 'emsco:environment:align';

@@ -6,7 +6,7 @@
 
     <services>
         <!-- EMS content-type -->
-        <service id="ems.contenttype.lock" class="EMS\CoreBundle\Command\LockCommand">
+        <service id="ems.contenttype.lock" class="EMS\CoreBundle\Command\ContentType\LockCommand">
             <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
@@ -230,14 +230,13 @@
             <argument type="service" id="ems.service.index"/>
             <tag name="console.command"/>
         </service>
-        <service id="ems.environment.recompute" class="EMS\CoreBundle\Command\RecomputeCommand">
+        <service id="ems.environment.recompute" class="EMS\CoreBundle\Command\ContentType\RecomputeCommand">
             <argument type="service" id="ems.service.data"/>
             <argument type="service" id="doctrine"/>
             <argument type="service" id="form.factory"/>
             <argument type="service" id="ems.service.publish"/>
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.contenttype"/>
-            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
             <argument type="service" id="ems.service.index"/>
             <argument type="service" id="ems.service.search"/>

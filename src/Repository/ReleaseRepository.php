@@ -117,12 +117,13 @@ final class ReleaseRepository extends ServiceEntityRepository
     public function findReadyAndDue(): array
     {
         $qb = $this->createQueryBuilder('r');
-        $qb->where('r.status = :status')
-        ->andWhere('r.executionDate <= :dateTime')
-        ->setParameters([
-            'status' => Release::READY_STATUS,
-            'dateTime' => new \DateTime(),
-        ]);
+        $qb
+            ->andWhere($qb->expr()->eq('r.status', ':status'))
+            ->andWhere($qb->expr()->lte('r.executionDate', ':dateTime'))
+            ->setParameters([
+                'status' => Release::READY_STATUS,
+                'dateTime' => new \DateTime(),
+            ]);
 
         return $qb->getQuery()->execute();
     }

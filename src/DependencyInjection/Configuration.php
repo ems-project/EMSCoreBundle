@@ -39,6 +39,7 @@ class Configuration implements ConfigurationInterface
     final public const FALLBACK_LOCALE = 'en';
     final public const TEMPLATE_NAMESPACE = 'EMSCore';
     final public const DYNAMIC_MAPPING = 'false';
+    final public const IMAGE_MAX_SIZE = 2048;
 
     public function getConfigTreeBuilder(): TreeBuilder
     {
@@ -87,6 +88,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('custom_user_options_form')->defaultValue(null)->end()
                 ->scalarNode('template_namespace')->defaultValue(self::TEMPLATE_NAMESPACE)->end()
                 ->scalarNode('dynamic_mapping')->defaultValue(self::DYNAMIC_MAPPING)->end()
+                ->scalarNode('image_max_size')->defaultValue(self::IMAGE_MAX_SIZE)->end()
             ->end()
         ;
 

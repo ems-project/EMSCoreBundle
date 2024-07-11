@@ -1,6 +1,7 @@
 import ajaxModal from "./../helper/ajaxModal";
 import ProgressBar from "../helper/progressBar";
 import FileUploader from "@elasticms/file-uploader";
+import {resizeImage} from "../helper/resizeImage";
 
 export default class MediaLibrary {
     id;
@@ -607,7 +608,7 @@ export default class MediaLibrary {
             this.#elements.listUploads.appendChild(liUpload);
 
             this._getFileHash(file, progressBar)
-                .then((fileHash) => this._createFile(file, fileHash))
+                .then((fileHash) => this._resizeImage(file, fileHash))
                 .then(() => {
                     progressBar.status('Finished');
                     setTimeout(() => {
@@ -626,12 +627,24 @@ export default class MediaLibrary {
                 });
         });
     }
-    async _createFile(file, fileHash) {
+    async _resizeImage(file, fileHash) {
+        resizeImage(this.#options.hashAlgo, this.#options.urlInitUpload, file).then((response) => {
+            if (null === response) {
+                this._createFile(file, fileHash)
+            } else {
+                this._createFile(file, fileHash, response.hash)
+            }
+        }).catch(() => {
+            this._createFile(file, fileHash)
+        })
+    }
+    async _createFile(file, fileHash, resizedHash = null) {
         const formData = new FormData();
         formData.append('name', file.name);
         formData.append('filesize', file.size);
         formData.append('fileMimetype', file.type);
         formData.append('fileHash', fileHash);
+        formData.append('fileResizedHash', resizedHash);
 
         const path = this.#activeFolderId ? `/add-file/${this.#activeFolderId}` : '/add-file';
         await this._post(path, formData, true)

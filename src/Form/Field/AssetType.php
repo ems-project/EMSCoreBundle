@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\Field;
 
+use EMS\CommonBundle\Helper\EmsFields;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -32,6 +33,12 @@ class AssetType extends AbstractType
                     'class' => 'sha1',
                 ],
                 'required' => $options['required'],
+            ])
+            ->add(EmsFields::CONTENT_IMAGE_RESIZED_HASH_FIELD, HiddenType::class, [
+                'attr' => [
+                    'class' => 'resized-image-hash',
+                ],
+                'required' => false,
             ])
             ->add('mimetype', TextType::class, [
                 'attr' => [

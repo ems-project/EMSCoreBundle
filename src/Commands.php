@@ -38,7 +38,6 @@ final class Commands
     public const NOTIFICATION_BULK_ACTION = 'emsco:notification:bulk-action';
     public const NOTIFICATION_SEND = 'emsco:notification:send';
 
-    public const RELEASE_PUBLISH = 'emsco:release:publish';
     public const RELEASE_CREATE = 'emsco:release:create';
 
     public const REVISION_ARCHIVE = 'emsco:revision:archive';

@@ -102,6 +102,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             'time_format' => $configs[0]['time_format'] ?? Configuration::TIME_FORMAT,
             'trigger_job_from_web' => $configs[0]['trigger_job_from_web'] ?? Configuration::TRIGGER_JOB_FROM_WEB,
             'routes' => (new \ReflectionClass(Routes::class))->getConstants(),
+            'image_max_size' => $configs[0]['image_max_size'] ?? Configuration::IMAGE_MAX_SIZE,
         ];
 
         if (!empty($configs[0]['template_options'])) {

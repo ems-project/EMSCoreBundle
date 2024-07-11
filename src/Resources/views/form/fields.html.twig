@@ -965,6 +965,7 @@
 								<label>{{ 'view.form.fields.asset.file-hash'|trans }}</label>
 								<div class="form-control asset-hash-signature">{% if fileItem.sha1.vars.value is defined %}{{ fileItem.sha1.vars.value }}{% endif %}</div>
 								{{- form_row(fileItem.sha1) -}}
+								{{- form_row(fileItem._image_resized_hash) -}}
 								{{- form_row(fileItem.mimetype) -}}
 							</div>
 						</div>
@@ -1178,7 +1179,7 @@
             	<img
             		data-src="{{ path('ems_asset_processor', {'hash':'_asset_hash_', 'processor': 'preview', 'type':'_asset_mimetype_', 'name': '_asset_name_' }) }}"
             		{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}
-            			src="{{ path('ems_asset_processor', {'hash':form.vars.value.sha1, 'processor': 'preview', 'type':form.vars.value.mimetype, 'name':form.vars.value.filename }) }}"
+            			src="{{ path('ems_asset_processor', {'hash': form.vars.value._image_resized_hash ?? form.vars.value.sha1, 'processor': 'preview', 'type':form.vars.value.mimetype, 'name':form.vars.value.filename }) }}"
             		{% endif %}
             		class="img-responsive center-block" alt="Preview of the field {{ form_label(form)|striptags }}"
             	>
@@ -1189,7 +1190,7 @@
 	<div class="panel-footer">
 		<div class="btn-group">
 			<input type="file" id="upload-{{ form.vars.id }}" class="file-uploader-input">
-			<label for="upload-{{ form.vars.id }}"><i class="fa fa-upload"></i> Upload file</label>
+			<label class="btn btn-default" for="upload-{{ form.vars.id }}"><i class="fa fa-upload"></i> Upload file</label>
 		</div>
 		<button type="button" data-href="{{ path('ems_core_uploaded_file_wysiwyg_modal') }}"  class="btn btn-small btn-default file-browse-server"><i class="fa fa-folder-open-o"></i><span class="sr-only">{{ 'view.form.fields.asset.browse-server'|trans }}</span></button>
 		<div class="btn-group">

@@ -41,6 +41,9 @@ class MediaLibraryDocumentFormType extends AbstractType
                 ->add('fileHash', HiddenType::class, [
                     'constraints' => new NotBlank(),
                 ])
+                ->add('fileResizedHash', HiddenType::class, [
+                    'empty_data' => null,
+                ])
             ;
         }
     }

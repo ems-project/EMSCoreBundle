@@ -57,6 +57,11 @@ class MediaLibraryFile extends MediaLibraryDocument
         return $this->file[EmsFields::CONTENT_FILE_HASH_FIELD] ?? null;
     }
 
+    public function getFileResizedHash(): ?string
+    {
+        return $this->file[EmsFields::CONTENT_IMAGE_RESIZED_HASH_FIELD] ?? null;
+    }
+
     public function getFilesize(): ?int
     {
         return $this->file[EmsFields::CONTENT_FILE_SIZE_FIELD] ?? null;
@@ -71,6 +76,12 @@ class MediaLibraryFile extends MediaLibraryDocument
     {
         $this->file[EmsFields::CONTENT_FILE_HASH_FIELD] = $fileHash;
         $this->setFileProperty(EmsFields::CONTENT_FILE_HASH_FIELD, $fileHash);
+    }
+
+    public function setFileResizedHash(?string $fileHash): void
+    {
+        $this->file[EmsFields::CONTENT_IMAGE_RESIZED_HASH_FIELD] = $fileHash;
+        $this->setFileProperty(EmsFields::CONTENT_IMAGE_RESIZED_HASH_FIELD, $fileHash);
     }
 
     public function setFilesize(?int $filesize): void

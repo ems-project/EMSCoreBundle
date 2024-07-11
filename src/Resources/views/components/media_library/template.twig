@@ -215,7 +215,9 @@
     <div class="media-lib-preview-modal" data-type="{{ mediaFile.fileMimetype }}">
         <div class="media-lib-preview-file">
             {% if mediaFile.fileMimetype starts with 'image/' %}
-                <img src="{{ url }}" alt="{{ mediaFile.giveName }}"/>
+                <img src="{{ ems_asset_path(mediaFile.file, {
+                    _config_type: 'image'
+                }) }}" alt="{{ mediaFile.giveName }}"/>
             {% else %}
                 <object data="{{ url }}" type="{{ mediaFile.fileMimetype }}">
                     <div class="alert alert-info" role="alert">

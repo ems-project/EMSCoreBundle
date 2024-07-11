@@ -6,6 +6,7 @@ import PickFileFromServer from './module/pickFileFromServer';
 import FileUploader from "@elasticms/file-uploader";
 import Datatables from "./module/datatables";
 import {tooltipDataLinks} from "./helper/tooltip";
+import {resizeImage} from "./helper/resizeImage";
 
 
 export default class EmsListeners {
@@ -273,11 +274,41 @@ export default class EmsListeners {
         }
     }
 
+    _resizeImage(fileHandler, container, previewUrl){
+        const self = this;
+        const mainDiv = $(container);
+        const metaFields = (typeof mainDiv.data('meta-fields') !== 'undefined');
+        const contentInput = mainDiv.find(".content");
+        const resizedImageHashInput = mainDiv.find(".resized-image-hash");
+        const previewLink = mainDiv.find(".img-responsive");
+
+        resizeImage(this.hashAlgo, this.initUpload, fileHandler).then((response) => {
+            if (null === response) {
+                $(resizedImageHashInput).val('')
+                previewLink.attr('src', previewUrl);
+            } else {
+                $(resizedImageHashInput).val(response.hash)
+                previewLink.attr('src', response.url);
+            }
+        }).catch((errorMessage) => {
+            console.error(errorMessage)
+            $(resizedImageHashInput).val('')
+            previewLink.attr('src', previewUrl);
+        }).finally(() => {
+            if(metaFields && $(contentInput).length) {
+                self.fileDataExtrator(container);
+            }
+            else if(typeof self.onChangeCallback === "function"){
+                self.onChangeCallback();
+            }
+        })
+    }
 
     initFileUploader(fileHandler, container){
         const mainDiv = $(container);
         const metaFields = (typeof mainDiv.data('meta-fields') !== 'undefined');
         const sha1Input = mainDiv.find(".sha1");
+        const resizedImageHashInput = mainDiv.find(".resized-image-hash");
         const typeInput = mainDiv.find(".type");
         const nameInput = mainDiv.find(".name");
         const progressBar = mainDiv.find(".progress-bar");
@@ -306,6 +337,7 @@ export default class EmsListeners {
             emsListener: this,
             onHashAvailable: function(hash, type, name){
                 $(sha1Input).val(hash);
+                $(resizedImageHashInput).val('');
                 $(assetHashSignature).empty().append(hash);
                 $(typeInput).val(type);
                 $(nameInput).val(name);
@@ -329,14 +361,17 @@ export default class EmsListeners {
             },
             onUploaded: function(assetUrl, previewUrl){
                 viewButton.attr('href', assetUrl);
-                previewLink.attr('src', previewUrl);
                 viewButton.removeClass("disabled");
                 clearButton.removeClass("disabled");
                 previewTab.removeClass('hidden');
                 uploadTab.addClass('hidden');
 
 
-                if(metaFields && $(contentInput).length) {
+                const imageTypes = ['image/png','image/jpeg','image/webp']
+                if(imageTypes.includes(fileHandler.type)) {
+                    self._resizeImage(fileHandler, container, previewUrl);
+                }
+                else if(metaFields && $(contentInput).length) {
                     self.fileDataExtrator(container);
                 }
                 else if(typeof self.onChangeCallback === "function"){
@@ -353,6 +388,7 @@ export default class EmsListeners {
                     $(progressNumber).html('Error code : '+code);
                 }
                 $(sha1Input).val('');
+                $(resizedImageHashInput).val('');
                 $(assetHashSignature).empty();
                 $(typeInput).val('');
                 $(nameInput).val('');
@@ -432,6 +468,7 @@ export default class EmsListeners {
     onAssetData(row, data){
         const mainDiv = $(row);
         const sha1Input = mainDiv.find(".sha1");
+        const resizedImageHashInput = mainDiv.find(".resized-image-hash");
         const metaFields = (typeof mainDiv.data('meta-fields') !== 'undefined');
         const typeInput = mainDiv.find(".type");
         const nameInput = mainDiv.find(".name");
@@ -447,6 +484,7 @@ export default class EmsListeners {
         const uploadTab = mainDiv.find(".asset-upload-tab");
         const previewLink = mainDiv.find(".img-responsive");
         sha1Input.val(data.sha1);
+        resizedImageHashInput.val('');
         assetHashSignature.empty().append(data.sha1);
         typeInput.val(data.mimetype);
         nameInput.val(data.filename);
@@ -486,6 +524,7 @@ export default class EmsListeners {
         target.find(".clear-asset-button").click(function() {
             const parent = $(this).closest('.file-uploader-row');
             const sha1Input = $(parent).find(".sha1");
+            const resizedImageHashInput = $(parent).find(".resized-image-hash");
             const typeInput = $(parent).find(".type");
             const nameInput = $(parent).find(".name");
             const progressBar = $(parent).find(".progress-bar");
@@ -502,6 +541,7 @@ export default class EmsListeners {
 
             $(parent).find(".file-uploader-input").val('');
             sha1Input.val('');
+            resizedImageHashInput.val('');
             assetHashSignature.empty();
             typeInput.val('');
             nameInput.val('');

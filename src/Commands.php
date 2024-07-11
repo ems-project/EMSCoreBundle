@@ -14,8 +14,8 @@ final class Commands
 
     public const ENVIRONMENT_ALIGN = 'emsco:environment:align';
     public const ENVIRONMENT_UNPUBLISH = 'emsco:environment:unpublish';
+    public const JOB_RUN = 'emsco:job:run';
 
-    public const RELEASE_PUBLISH = 'emsco:release:publish';
     public const RELEASE_CREATE = 'emsco:release:create';
 
     public const REVISION_ARCHIVE = 'emsco:revision:archive';

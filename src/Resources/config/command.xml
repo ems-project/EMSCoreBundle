@@ -79,10 +79,6 @@
             <tag name="console.command"/>
         </service>
         <!-- EMSCO release -->
-        <service id="emsco.release.publish" class="EMS\CoreBundle\Command\Release\PublishReleaseCommand">
-            <argument type="service" id="ems.service.release"/>
-            <tag name="console.command"/>
-        </service>
         <service id="emsco.release.create" class="EMS\CoreBundle\Command\Release\CreateReleaseCommand">
             <argument type="service" id="ems.service.release"/>
             <argument type="service" id="ems.service.environment"/>
@@ -337,6 +333,7 @@
         </service>
         <service id="ems.job.run" class="EMS\CoreBundle\Command\JobCommand">
             <argument type="service" id="ems.service.job"/>
+            <argument type="service" id="ems.service.release"/>
             <argument>%ems_core.date_time_format%</argument>
             <argument>%ems_core.clean_jobs_time_string%</argument>
             <tag name="console.command"/>

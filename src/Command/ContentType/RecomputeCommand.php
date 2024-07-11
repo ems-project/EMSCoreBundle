@@ -2,17 +2,18 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Command;
+namespace EMS\CoreBundle\Command\ContentType;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\RevisionType;
-use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -20,15 +21,14 @@ use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\Helpers\Standard\Json;
+use EMS\Helpers\Standard\Type;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Form\FormFactoryInterface;
 
 #[AsCommand(
@@ -37,57 +37,60 @@ use Symfony\Component\Form\FormFactoryInterface;
     hidden: false,
     aliases: ['ems:contenttype:recompute']
 )]
-final class RecomputeCommand extends Command
+final class RecomputeCommand extends AbstractCommand
 {
+    private EntityManager $em;
+    private Connection $conn;
     private ContentType $contentType;
-    private bool $optionDeep;
-    private bool $forceFlag;
-    private bool $cronFlag;
+    private bool $isChanged;
+    private bool $isDeep;
+    private bool $isForce;
+    private bool $isCron;
+    private bool $isContinue;
+    private bool $isMissing;
+    private bool $isAlign;
     private ?string $ouuid = null;
-    private readonly EntityManager $em;
-    private SymfonyStyle $io;
     private string $query;
 
     private const ARGUMENT_CONTENT_TYPE = 'contentType';
+    private const OPTION_CHANGED = 'changed';
     private const OPTION_FORCE = 'force';
     private const OPTION_MISSING = 'missing';
     private const OPTION_CONTINUE = 'continue';
-    private const OPTION_NOALIGN = 'no-align';
+    private const OPTION_NO_ALIGN = 'no-align';
     private const OPTION_CRON = 'cron';
     private const OPTION_OUUID = 'ouuid';
     private const OPTION_DEEP = 'deep';
     private const OPTION_QUERY = 'query';
+
     private const LOCK_BY = 'SYSTEM_RECOMPUTE';
 
     public function __construct(
         private readonly DataService $dataService,
-        Registry $doctrine,
+        private readonly Registry $doctrine,
         private readonly FormFactoryInterface $formFactory,
         private readonly PublishService $publishService,
         protected LoggerInterface $logger,
         private readonly ContentTypeService $contentTypeService,
-        private readonly ContentTypeRepository $contentTypeRepository,
         private readonly RevisionRepository $revisionRepository,
         private readonly IndexService $indexService,
         private readonly SearchService $searchService
     ) {
         parent::__construct();
-
-        /** @var EntityManager $em */
-        $em = $doctrine->getManager();
-        $this->em = $em;
     }
 
     protected function configure(): void
     {
         $this
+
             ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'content type to recompute')
+            ->addOption(self::OPTION_CHANGED, null, InputOption::VALUE_NONE, 'only create new revision if the hash changed after recompute')
             ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
             ->addOption(self::OPTION_MISSING, null, InputOption::VALUE_NONE, 'will recompute the objects that are missing in their default environment only')
             ->addOption(self::OPTION_CONTINUE, null, InputOption::VALUE_NONE, 'continue a recompute')
-            ->addOption(self::OPTION_NOALIGN, null, InputOption::VALUE_NONE, "don't keep the revisions aligned to all already aligned environments")
+            ->addOption(self::OPTION_NO_ALIGN, null, InputOption::VALUE_NONE, "don't keep the revisions aligned to all already aligned environments")
             ->addOption(self::OPTION_CRON, null, InputOption::VALUE_NONE, 'optimized for automated recurring recompute calls, tries --continue, when no locks are found for user runs command without --continue')
-            ->addOption(self::OPTION_OUUID, null, InputOption::VALUE_OPTIONAL, 'recompute a specific revision ouuid', null)
+            ->addOption(self::OPTION_OUUID, null, InputOption::VALUE_OPTIONAL, 'recompute a specific revision ouuid')
             ->addOption(self::OPTION_DEEP, null, InputOption::VALUE_NONE, 'deep recompute form will be submitted and transformers triggered')
             ->addOption(self::OPTION_QUERY, null, InputOption::VALUE_OPTIONAL, 'ES query', '{}')
         ;
@@ -95,57 +98,39 @@ final class RecomputeCommand extends Command
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->io = new SymfonyStyle($input, $output);
+        parent::initialize($input, $output);
+
         $this->io->title('content-type recompute command');
 
-        $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
-        if (!\is_string($contentTypeName)) {
-            throw new \RuntimeException('Unexpected content type name');
-        }
-        $contentType = $this->contentTypeRepository->findByName($contentTypeName);
-        if (!$contentType instanceof ContentType) {
-            throw new \RuntimeException('Content type not found');
-        }
-        $this->contentType = $contentType;
+        /** @var EntityManager $em */
+        $em = $this->doctrine->getManager();
+        $this->em = $em;
+        $this->conn = $em->getConnection();
 
-        if (!$input->getOption(self::OPTION_CONTINUE) || $input->getOption(self::OPTION_CRON)) {
-            $forceFlag = $input->getOption(self::OPTION_FORCE);
-            if (!\is_bool($forceFlag)) {
-                throw new \RuntimeException('Unexpected force option');
-            }
-            $this->forceFlag = $forceFlag;
-            $cronFlag = $input->getOption(self::OPTION_CRON);
-            if (!\is_bool($cronFlag)) {
-                throw new \RuntimeException('Unexpected cron option');
-            }
-            $this->cronFlag = $cronFlag;
-            $this->ouuid = $input->getOption(self::OPTION_OUUID) ? \strval($input->getOption(self::OPTION_OUUID)) : null;
-        }
+        $contentTypeName = $this->getArgumentString(self::ARGUMENT_CONTENT_TYPE);
+        $this->contentType = $this->contentTypeService->giveByName($contentTypeName);
+
+        $this->isChanged = $this->getOptionBool(self::OPTION_CHANGED);
+        $this->isDeep = $this->getOptionBool(self::OPTION_DEEP);
+        $this->isForce = $this->getOptionBool(self::OPTION_FORCE);
+        $this->isCron = $this->getOptionBool(self::OPTION_CRON);
+        $this->isContinue = $this->getOptionBool(self::OPTION_CONTINUE);
+        $this->isMissing = $this->getOptionBool(self::OPTION_MISSING);
+        $this->isAlign = false === $this->getOptionBool(self::OPTION_NO_ALIGN);
+        $this->ouuid = $this->getOptionStringNull(self::OPTION_OUUID);
 
         if (null !== $input->getOption(self::OPTION_QUERY)) {
             $this->query = \strval($input->getOption('query'));
-            try {
-                Json::decode($this->query);
-            } catch (\Throwable) {
-                throw new \RuntimeException(\sprintf('Invalid json query %s', $this->query));
-            }
+            Json::decode($this->query, 'Invalid json query');
         }
-
-        $this->optionDeep = \boolval($input->getOption(self::OPTION_DEEP));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!$this->em instanceof EntityManager) {
-            $output->writeln('The entity manager might not be configured correctly');
+        $this->conn->setAutoCommit(false);
 
-            return -1;
-        }
-        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
-        $this->em->getConnection()->setAutoCommit(false);
-
-        if (!$input->getOption(self::OPTION_CONTINUE) || $input->getOption(self::OPTION_CRON)) {
-            $this->lock($output, $this->contentType, $this->query, $this->forceFlag, $this->cronFlag, $this->ouuid);
+        if (!$this->isContinue || $this->isCron) {
+            $this->lock($this->contentType, $this->query, $this->isForce, $this->isCron, $this->ouuid);
         }
 
         $page = 0;
@@ -156,23 +141,14 @@ final class RecomputeCommand extends Command
         $progress->start();
 
         $missingInIndex = false;
-        if ($input->getOption(self::OPTION_MISSING)) {
+        if ($this->isMissing) {
             $missingInIndex = $this->contentTypeService->getIndex($this->contentType);
         }
 
         do {
-            $transactionActive = false;
             /** @var Revision $revision */
             foreach ($paginator as $revision) {
-                $revisionType = $this->formFactory->create(RevisionType::class, null, [
-                    'migration' => true,
-                    'content_type' => $this->contentType,
-                ]);
-
-                $revisionId = $revision->getId();
-                if (!\is_int($revisionId)) {
-                    throw new \RuntimeException('Unexpected null revision id');
-                }
+                $revisionId = Type::integer($revision->getId());
 
                 if ($missingInIndex) {
                     try {
@@ -183,17 +159,19 @@ final class RecomputeCommand extends Command
                     } catch (NotFoundException) {
                     }
                 }
-                $transactionActive = true;
 
-                /** @var Revision $revision */
                 $newRevision = $revision->convertToDraft();
-                $revisionType->setData($newRevision); // bind new revision on form
+                $revisionType = $this->formFactory->create(RevisionType::class, $newRevision, [
+                    'migration' => true,
+                    'content_type' => $this->contentType,
+                ]);
 
-                if ($this->optionDeep) {
+                if ($this->isDeep) {
                     $newRevision->setRawData([]);
-                    $viewData = $this->dataService->getSubmitData($revisionType->get('data')); // get view data of new revision
-                    $revisionType->submit(['data' => $viewData]); // submit new revision (reverse model transformers called
+                    $viewData = $this->dataService->getSubmitData($revisionType->get('data'));
+                    $revisionType->submit(['data' => $viewData]);
                 }
+
                 $notifications = [];
                 foreach ($revision->getNotifications() as $notification) {
                     if (Notification::PENDING !== $notification->getStatus()) {
@@ -205,17 +183,23 @@ final class RecomputeCommand extends Command
 
                 $objectArray = $newRevision->getRawData();
 
-                // @todo maybe improve the data binding like the migration?
-
                 $this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $this->contentType, $this->contentType->getName(), $newRevision->getOuuid(), true);
                 $newRevision->setRawData($objectArray);
 
                 $revision->close(new \DateTime('now'));
                 $newRevision->setDraft(false);
-                $newRevision->setFinalizedBy(self::LOCK_BY);
-                $newRevision->setRawDataFinalizedBy(self::LOCK_BY);
 
                 $this->dataService->sign($revision);
+                $this->dataService->sign($newRevision);
+
+                if ($this->isChanged && $revision->getHash() === $newRevision->getHash()) {
+                    $this->revisionRepository->unlockRevision($revisionId);
+                    $progress->advance();
+                    continue;
+                }
+
+                $newRevision->setFinalizedBy(self::LOCK_BY);
+                $newRevision->setRawDataFinalizedBy(self::LOCK_BY);
                 $this->dataService->sign($newRevision);
 
                 $this->em->persist($revision);
@@ -234,7 +218,7 @@ final class RecomputeCommand extends Command
                     $this->em->flush($notification);
                 }
 
-                if (!$input->getOption('no-align')) {
+                if (!$this->isAlign) {
                     foreach ($revision->getEnvironments() as $environment) {
                         $this->logger->info('published to {env}', ['env' => $environment->getName()]);
                         $this->publishService->publish($newRevision, $environment, self::LOCK_BY);
@@ -242,18 +226,15 @@ final class RecomputeCommand extends Command
                 }
 
                 $this->revisionRepository->unlockRevision($revisionId);
-                $newRevisionId = $newRevision->getId();
-                if (!\is_int($newRevisionId)) {
-                    throw new \RuntimeException('Unexpected null revision id');
-                }
-                $this->revisionRepository->unlockRevision($newRevisionId);
+                $this->revisionRepository->unlockRevision(Type::integer($newRevision->getId()));
 
                 $progress->advance();
             }
 
-            if ($transactionActive) {
+            if ($this->conn->isTransactionActive()) {
                 $this->em->commit();
             }
+
             $this->em->clear();
 
             $paginator = $this->revisionRepository->findAllLockedRevisions($this->contentType, self::LOCK_BY, $page, $limit);
@@ -261,31 +242,28 @@ final class RecomputeCommand extends Command
         } while ($iterator instanceof \ArrayIterator && $iterator->count());
 
         $progress->finish();
-        $output->writeln('');
+        $this->io->newLine();
 
-        $this->em->getConnection()->setAutoCommit(true);
+        $this->conn->setAutoCommit(true);
 
-        return 0;
+        return self::EXECUTE_SUCCESS;
     }
 
-    private function lock(OutputInterface $output, ContentType $contentType, string $query, bool $force = false, bool $ifEmpty = false, ?string $ouuid = null): int
+    private function lock(ContentType $contentType, string $query, bool $force = false, bool $ifEmpty = false, ?string $ouuid = null): void
     {
-        $application = $this->getApplication();
-        if (null === $application) {
-            throw new \RuntimeException('Application instance not found');
-        }
-        $command = $application->find('ems:contenttype:lock');
-        $arguments = [
-            'command' => 'ems:contenttype:lock',
-            'contentType' => $contentType->getName(),
-            'time' => '+1day',
-            '--user' => self::LOCK_BY,
-            '--force' => $force,
-            '--if-empty' => $ifEmpty,
-            '--ouuid' => $ouuid,
-            '--query' => $query,
-        ];
-
-        return $command->run(new ArrayInput($arguments), $output);
+        $this->runCommand(
+            command: Commands::CONTENT_TYPE_LOCK,
+            args: [
+                LockCommand::ARGUMENT_CONTENT_TYPE => $contentType->getName(),
+                LockCommand::ARGUMENT_TIME => '+1day',
+            ],
+            options: [
+                LockCommand::OPTION_USER => self::LOCK_BY,
+                LockCommand::OPTION_FORCE => $force,
+                LockCommand::OPTION_IF_EMPTY => $ifEmpty,
+                LockCommand::OPTION_OUUID => $ouuid,
+                LockCommand::OPTION_QUERY => $query,
+            ]
+        );
     }
 }

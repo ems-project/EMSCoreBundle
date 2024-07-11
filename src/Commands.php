@@ -10,7 +10,8 @@ final class Commands
     public const ASSET_EXTRACT = 'emsco:asset:extract';
     public const ASSET_CLEAN = 'emsco:asset:clean';
     public const ASSET_HEAD = 'emsco:asset:head';
-    public const CONTENT_TYPE_TRANSFORM = 'emsco:contenttype:transform';
+    public const CONTENT_TYPE_LOCK = 'ems:contenttype:lock';
+    public const CONTENT_TYPE_RECOMPUTE = 'ems:contenttype:recompute';
     public const CONTENT_TYPE_SWITCH_DEFAULT_ENV = 'emsco:contenttype:switch-default-env';
     public const CONTENT_TYPE_RECOMPUTE = 'emsco:contenttype:recompute';
     public const CONTENT_TYPE_CLEAN = 'emsco:contenttype:clean';
@@ -18,6 +19,7 @@ final class Commands
     public const CONTENT_TYPE_MIGRATE = 'emsco:contenttype:migrate';
     public const CONTENT_TYPE_LOCK = 'emsco:contenttype:lock';
     public const CONTENT_TYPE_IMPORT = 'emsco:contenttype:import';
+    public const CONTENT_TYPE_TRANSFORM = 'emsco:contenttype:transform';
     public const CONTENT_TYPE_EXPORT = 'emsco:contenttype:export';
     public const DELETE_ORPHANS = 'emsco:delete:orphans';
 

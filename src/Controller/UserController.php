@@ -270,8 +270,8 @@ class UserController extends AbstractController
                 $user->getEmailNotification() ? 'Y' : 'N',
                 $user->getEmail(),
                 $user->isEnabled() ? 'Y' : 'N',
-                $user->getExpirationDate()?->format($this->dateTimeFormat),
                 $user->getLastLogin()?->format($this->dateTimeFormat),
+                $user->getExpirationDate()?->format($this->dateTimeFormat),
                 \implode(', ', $user->getRoles()),
             ];
         }

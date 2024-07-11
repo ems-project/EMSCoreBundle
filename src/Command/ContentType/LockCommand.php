@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Command;
+namespace EMS\CoreBundle\Command\ContentType;
 
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
@@ -36,18 +36,21 @@ final class LockCommand extends Command
     private string $query;
     private \DateTime $until;
 
-    private const ARGUMENT_CONTENT_TYPE = 'contentType';
-    private const ARGUMENT_TIME = 'time';
-    private const OPTION_QUERY = 'query';
-    private const OPTION_USER = 'user';
-    private const OPTION_FORCE = 'force';
-    private const OPTION_IF_EMPTY = 'if-empty';
-    private const OPTION_OUUID = 'ouuid';
+    public const ARGUMENT_CONTENT_TYPE = 'contentType';
+    public const ARGUMENT_TIME = 'time';
+    public const OPTION_QUERY = 'query';
+    public const OPTION_USER = 'user';
+    public const OPTION_FORCE = 'force';
+    public const OPTION_IF_EMPTY = 'if-empty';
+    public const OPTION_OUUID = 'ouuid';
 
     public const RESULT_SUCCESS = 0;
 
-    public function __construct(private readonly ContentTypeRepository $contentTypeRepository, private readonly ElasticaService $elasticaService, private readonly RevisionRepository $revisionRepository)
-    {
+    public function __construct(
+        private readonly ContentTypeRepository $contentTypeRepository,
+        private readonly ElasticaService $elasticaService,
+        private readonly RevisionRepository $revisionRepository
+    ) {
         parent::__construct();
     }
 
@@ -60,7 +63,7 @@ final class LockCommand extends Command
             ->addOption(self::OPTION_USER, null, InputOption::VALUE_REQUIRED, 'lock username', 'EMS_COMMAND')
             ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
             ->addOption(self::OPTION_IF_EMPTY, null, InputOption::VALUE_NONE, 'lock if there are no pending locks for the same user')
-            ->addOption(self::OPTION_OUUID, null, InputOption::VALUE_OPTIONAL, 'lock a specific ouuid', null)
+            ->addOption(self::OPTION_OUUID, null, InputOption::VALUE_OPTIONAL, 'lock a specific ouuid')
         ;
     }
 
@@ -92,17 +95,13 @@ final class LockCommand extends Command
 
         $by = $input->getOption(self::OPTION_USER);
         if (!\is_string($by)) {
-            throw new \RuntimeException('Unexpected user name');
+            throw new \RuntimeException('Unexpected username');
         }
         $this->by = $by;
 
         if (null !== $input->getOption(self::OPTION_QUERY)) {
             $this->query = \strval($input->getOption('query'));
-            try {
-                Json::decode($this->query);
-            } catch (\Throwable) {
-                throw new \RuntimeException(\sprintf('Invalid json query %s', $this->query));
-            }
+            Json::decode($this->query, 'Invalid json query');
         }
 
         $this->force = true === $input->getOption(self::OPTION_FORCE);

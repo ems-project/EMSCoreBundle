@@ -405,7 +405,7 @@ class DataService
 
     public static function isInternalField(string $fieldName): bool
     {
-        return \in_array($fieldName, ['_ems_internal_deleted', 'remove_collection_item']);
+        return '_ems_internal_deleted' === $fieldName;
     }
 
     public function generateInputValues(DataField $dataField): void

@@ -616,7 +616,9 @@
 		<div class="panel-heading ems-handle">
 			{{ form_label(form) }}
 	  		<div class="btn-group pull-right">
-	  			{{- form_widget(form.remove_collection_item) -}}
+				<button type="button" class="btn btn-danger btn-sm remove-content-button">
+					<span class="fa fa-trash"></span>&nbsp;Remove
+				</button>
                 {% if collapsible %}
                     <div class="pull-right">
                         <div class="btn-group toggle-group" role="group">
@@ -631,7 +633,7 @@
 
 	  	<div class="panel-body {% if collapsible %}collapse{% endif %}">
 	  		<div class="row">
-	  		{% for child in form.iterator|filter(c => c.vars.name not in ['remove_collection_item', '_ems_internal_deleted']) %}
+	  		{% for child in form.iterator|filter(c => c.vars.name not in ['_ems_internal_deleted']) %}
 				<div class="{% if child.vars.data.fieldType.options.displayOptions.class is defined %}{{ child.vars.data.fieldType.options.displayOptions.class }}{% endif %}">
     				{{- form_row(child) -}}
 				</div>

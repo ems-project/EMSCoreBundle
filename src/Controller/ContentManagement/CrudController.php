@@ -51,15 +51,15 @@ class CrudController extends AbstractController
                 $this->dataService->refresh($newRevision->giveContentType()->giveEnvironment());
             }
         } catch (\Exception $e) {
-            if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
+            if ($e instanceof NotFoundHttpException || $e instanceof BadRequestHttpException) {
                 throw $e;
-            } else {
-                $this->logger->error('log.crud.create_error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                    EmsFields::LOG_EXCEPTION_FIELD => $e,
-                ]);
             }
+
+            $this->logger->error('log.crud.create_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
 
             return $this->flashMessageLogger->buildJsonResponse([
                 'success' => false,

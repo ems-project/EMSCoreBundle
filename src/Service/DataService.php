@@ -49,7 +49,6 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -405,7 +404,7 @@ class DataService
 
     public static function isInternalField(string $fieldName): bool
     {
-        return \in_array($fieldName, ['_ems_internal_deleted', 'remove_collection_item']);
+        return '_ems_internal_deleted' === $fieldName;
     }
 
     public function generateInputValues(DataField $dataField): void
@@ -443,36 +442,14 @@ class DataService
         $newRevision->setEndTime(null);
         $newRevision->setDeleted(false);
         $newRevision->setDraft(true);
-        if ($byARealUser) {
-            $token = $this->tokenStorage->getToken();
-            if (null === $token) {
-                throw new \RuntimeException('Unexpected null token');
-            }
-            $newRevision->setLockBy($token->getUserIdentifier());
-        } else {
-            $newRevision->setLockBy('DATA_SERVICE');
-        }
+
+        $lockBy = $byARealUser ? $this->userService->getCurrentUser()->getUserIdentifier() : 'DATA_SERVICE';
+        $newRevision->setLockBy($lockBy);
+
         $newRevision->setLockUntil($until);
         $newRevision->setRawData($rawdata);
 
-        $em = $this->doctrine->getManager();
-        if (!empty($ouuid)) {
-            $revisionRepository = $em->getRepository(Revision::class);
-            $anotherObject = $revisionRepository->findOneBy([
-                'contentType' => $contentType,
-                'ouuid' => $newRevision->getOuuid(),
-                'endTime' => null,
-            ]);
-
-            if (!empty($anotherObject)) {
-                throw new ConflictHttpException('Duplicate OUUID '.$ouuid.' for this content type');
-            }
-        }
-
-        $em->persist($newRevision);
-        $em->flush();
-
-        return $newRevision;
+        return $this->createNewRevision($newRevision);
     }
 
     /**
@@ -933,14 +910,8 @@ class DataService
     public function newDocument(ContentType $contentType, ?string $ouuid = null, ?array $rawData = null, ?string $username = null): Revision
     {
         $this->hasCreateRights($contentType);
-        /** @var RevisionRepository $revisionRepository */
-        $revisionRepository = $this->em->getRepository(Revision::class);
 
         $revision = new Revision();
-
-        if (null !== $ouuid && $revisionRepository->countRevisions($ouuid, $contentType)) {
-            throw new DuplicateOuuidException();
-        }
 
         if (!empty($contentType->getDefaultValue())) {
             try {
@@ -1025,10 +996,7 @@ class DataService
         }
         $this->setMetaFields($revision);
 
-        $this->em->persist($revision);
-        $this->em->flush();
-
-        return $revision;
+        return $this->createNewRevision($revision);
     }
 
     /**
@@ -1278,25 +1246,23 @@ class DataService
         $this->em->flush();
     }
 
-    public function trashPutBack(ContentType $contentType, string ...$ouuids): ?int
+    public function trashPutBackAsDraft(ContentType $contentType, string ...$ouuids): ?Revision
     {
-        $revisionIds = [];
         $revisions = $this->revRepository->findTrashRevisions($contentType, ...$ouuids);
 
         foreach ($revisions as $revision) {
-            $this->lockRevision($revision);
             $revision->setDeleted(false);
             $revision->setDeletedBy(null);
             if (null === $revision->getEndTime()) {
+                $this->lockRevision($revision);
                 $revision->setDraft(true);
-                $revisionIds[] = $revision->getId();
                 $this->auditLogger->notice('log.revision.restored', LogRevisionContext::update($revision));
             }
             $this->em->persist($revision);
         }
         $this->em->flush();
 
-        return 1 === \count($ouuids) ? \array_shift($revisionIds) : null;
+        return 1 === \count($ouuids) ? \array_shift($revisions) : null;
     }
 
     /**
@@ -1985,5 +1951,37 @@ class DataService
     public function getAllDrafts(): array
     {
         return $this->revRepository->findAllDrafts();
+    }
+
+    private function createNewRevision(Revision $revision): Revision
+    {
+        $ouuid = $revision->getOuuid();
+        $contentType = $revision->giveContentType();
+
+        $currentRevision = $ouuid ? $this->revRepository->getCurrentRevision($contentType, $ouuid) : null;
+        if ($ouuid && $currentRevision && !$currentRevision->getDeleted()) {
+            throw new DuplicateOuuidException($ouuid, $contentType->getName());
+        }
+
+        $this->em->getConnection()->beginTransaction();
+
+        try {
+            $restoredDraft = $currentRevision ? $this->trashPutBackAsDraft($contentType, $currentRevision->giveOuuid()) : null;
+
+            if ($restoredDraft) {
+                $restoredDraft->setDraft(false);
+                $restoredDraft->setEndTime($revision->getStartTime());
+                $this->unlockRevision($restoredDraft);
+            }
+
+            $this->em->persist($revision);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Throwable $e) {
+            $this->em->getConnection()->rollBack();
+            throw $e;
+        }
+
+        return $revision;
     }
 }

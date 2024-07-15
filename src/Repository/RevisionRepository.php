@@ -349,12 +349,15 @@ class RevisionRepository extends EntityRepository
 
     public function countRevisions(string $ouuid, ContentType $contentType): int
     {
-        $qb = $this->createQueryBuilder('r')
-            ->select('COUNT(r)');
-        $qb->where($qb->expr()->eq('r.ouuid', ':ouuid'));
-        $qb->andWhere($qb->expr()->eq('r.contentType', ':contentType'));
-        $qb->setParameter('ouuid', $ouuid);
-        $qb->setParameter('contentType', $contentType);
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->select('COUNT(r.id)')
+            ->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))
+            ->andWhere($qb->expr()->eq('r.contentType', ':contentType'))
+            ->setParameters([
+                'ouuid' => $ouuid,
+                'contentType' => $contentType,
+            ]);
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
@@ -475,20 +478,19 @@ class RevisionRepository extends EntityRepository
 
     public function getCurrentRevision(ContentType $contentType, string $ouuid): ?Revision
     {
-        $qb = $this->createQueryBuilder('r')->select()
-            ->where('r.contentType = ?2')
-            ->andWhere('r.ouuid = ?3')
-            ->andWhere('r.endTime is null')
-            ->setParameter(2, $contentType)
-            ->setParameter(3, $ouuid);
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))
+            ->andWhere($qb->expr()->eq('r.contentType', ':contentType'))
+            ->andWhere($qb->expr()->isNull('r.endTime'))
+            ->setParameters([
+                'ouuid' => $ouuid,
+                'contentType' => $contentType,
+            ]);
 
-        /** @var Revision[] $currentRevision */
-        $currentRevision = $qb->getQuery()->execute();
-        if (isset($currentRevision[0])) {
-            return $currentRevision[0];
-        } else {
-            return null;
-        }
+        $revision = $qb->getQuery()->getOneOrNullResult();
+
+        return $revision instanceof Revision ? $revision : null;
     }
 
     public function publishRevision(Revision $revision, bool $draft = false): int
@@ -833,6 +835,7 @@ class RevisionRepository extends EntityRepository
             ->andWhere($qb->expr()->eq('c.id', ':content_type_id'))
             ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
             ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(true)))
+            ->orderBy('r.startTime', 'DESC')
             ->setParameter('content_type_id', $contentType->getId())
             ->setParameter('ouuids', $ouuids, ArrayParameterType::STRING)
         ;

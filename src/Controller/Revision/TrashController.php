@@ -81,9 +81,13 @@ class TrashController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $revisionId = $this->dataService->trashPutBack($contentType, $ouuid);
+        $restoredRevision = $this->dataService->trashPutBackAsDraft($contentType, $ouuid);
 
-        return $this->redirectToRoute(Routes::EDIT_REVISION, ['revisionId' => $revisionId]);
+        if (!$restoredRevision) {
+            throw new \RuntimeException(\sprintf('Put back failed for ouuid "%s"', $ouuid));
+        }
+
+        return $this->redirectToRoute(Routes::EDIT_REVISION, ['revisionId' => $restoredRevision->getId()]);
     }
 
     private function emptyTrashSelection(ContentType $contentType, string ...$ouuids): Response
@@ -103,10 +107,10 @@ class TrashController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        $revisionId = $this->dataService->trashPutBack($contentType, ...$ouuids);
+        $restoredRevision = $this->dataService->trashPutBackAsDraft($contentType, ...$ouuids);
 
-        if ($revisionId) {
-            return $this->redirectToRoute(Routes::EDIT_REVISION, ['revisionId' => $revisionId]);
+        if ($restoredRevision) {
+            return $this->redirectToRoute(Routes::EDIT_REVISION, ['revisionId' => $restoredRevision->getId()]);
         }
 
         return $this->redirectToRoute(Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentType->getId()]);

@@ -6,7 +6,6 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
-use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -77,14 +76,6 @@ class CollectionItemFieldType extends DataFieldType
                     ->addModelTransformer(new DataFieldModelTransformer($fieldType, $this->formRegistry));
             }
         }
-
-        $builder->add('remove_collection_item', SubmitEmsType::class, [
-            'attr' => [
-                'class' => 'btn btn-danger btn-sm remove-content-button',
-            ],
-            'label' => 'Remove',
-            'icon' => 'fa fa-trash',
-        ]);
     }
 
     public function buildObjectArray(DataField $data, array &$out): void

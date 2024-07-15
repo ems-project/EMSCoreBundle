@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\CoreBundle\Controller\AbstractCoreController;
+use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Revision\Release\ReleaseRevisionType;
 use EMS\CoreBundle\DataTable\Type\Release\ReleaseOverviewDataTableType;
@@ -20,11 +20,14 @@ use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ReleaseService;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class ReleaseController extends AbstractCoreController
+final class ReleaseController extends AbstractController
 {
+    use CoreControllerTrait;
+
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly ReleaseService $releaseService,

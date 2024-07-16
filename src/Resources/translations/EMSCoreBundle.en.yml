@@ -78,10 +78,6 @@ log:
             unknown_action: 'Unknown action'
         uploaded-file-logs:
             unknown_action: 'Unknown action'
-        draft-in-progress:
-            discard_draft: 'Draft "%revision%" has been deleted'
-            unknown_action: 'Unknown action'
-            draft-not-found: 'Draft (%revisionId%) not found'
         schedule:
             unknown_action: 'Unknown action'
     crud:

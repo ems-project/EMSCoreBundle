@@ -9,7 +9,7 @@ use EMS\CoreBundle\Core\DataTable\Type\AbstractQueryTableType;
 use EMS\CoreBundle\Core\DataTable\Type\DataTableFilterFormInterface;
 use EMS\CoreBundle\Core\DataTable\Type\DataTableTypeCollection;
 use EMS\CoreBundle\Core\DataTable\Type\DataTableTypeInterface;
-use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Core\DataTable\Type\QueryServiceTypeInterface;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\QueryTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -75,8 +75,9 @@ class DataTableFactory
         $ajaxUrl = $this->generateUrl('ajax_table', $ajaxParams);
 
         $table = match (true) {
-            $type instanceof AbstractEntityTableType => $this->buildEntityTable($type, $options, $ajaxUrl, $context),
-            $type instanceof AbstractQueryTableType => $this->buildQueryTable($type, $options, $ajaxUrl, $context),
+            $type instanceof AbstractEntityTableType => $this->buildEntityTable($type, $ajaxUrl, $context),
+            $type instanceof AbstractQueryTableType => $this->buildQueryTable($type, $ajaxUrl, $context),
+            $type instanceof QueryServiceTypeInterface => $this->buildQueryServiceType($type, $ajaxUrl, $context),
             default => throw new \RuntimeException('Unknown dataTableType')
         };
 
@@ -90,10 +91,7 @@ class DataTableFactory
         return $table;
     }
 
-    /**
-     * @param array<string, mixed> $options
-     */
-    private function buildEntityTable(AbstractEntityTableType $type, array $options, string $ajaxUrl, mixed $context): EntityTable
+    private function buildEntityTable(AbstractEntityTableType $type, string $ajaxUrl, mixed $context): EntityTable
     {
         $table = new EntityTable(
             $this->templateNamespace,
@@ -103,16 +101,12 @@ class DataTableFactory
             $type->getLoadMaxRows()
         );
 
-        $table->setTranslationDomain($options['translation_domain']);
         $type->build($table);
 
         return $table;
     }
 
-    /**
-     * @param array<string, mixed> $options
-     */
-    private function buildQueryTable(AbstractQueryTableType $type, array $options, string $ajaxUrl, mixed $context): QueryTable
+    private function buildQueryTable(AbstractQueryTableType $type, string $ajaxUrl, mixed $context): QueryTable
     {
         $table = new QueryTable(
             $this->templateNamespace,
@@ -123,7 +117,22 @@ class DataTableFactory
             $type->getLoadMaxRows()
         );
 
-        $table->setTranslationDomain($options['translation_domain']);
+        $type->build($table);
+
+        return $table;
+    }
+
+    private function buildQueryServiceType(QueryServiceTypeInterface $type, string $ajaxUrl, mixed $context): QueryTable
+    {
+        $table = new QueryTable(
+            $this->templateNamespace,
+            $type,
+            $type->getQueryName(),
+            $ajaxUrl,
+            $context,
+            $type->getLoadMaxRows()
+        );
+
         $type->build($table);
 
         return $table;
@@ -223,7 +232,6 @@ class DataTableFactory
         $optionsResolver
             ->setDefaults([
                 'roles' => [],
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             ])
             ->setAllowedTypes('roles', 'string[]');
 

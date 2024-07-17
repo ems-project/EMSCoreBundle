@@ -53,7 +53,8 @@
             <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.revision.drafts" class="EMS\CoreBundle\DataTable\Type\Revision\RevisionDraftsDataTableType">
-            <argument type="service" id="ems_core.core_revision.draft_in_progress" />
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
+            <argument type="service" id="security.authorization_checker" />
             <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
             <argument type="service" id="ems.service.user" />
             <tag name="emsco.datatable" />
@@ -64,7 +65,7 @@
             <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.revision_trash" class="EMS\CoreBundle\DataTable\Type\Revision\RevisionTrashDataTableType">
-            <argument type="service" id="emsco.revision.query_service" />
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
             <argument type="service" id="ems.service.user" />
             <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
             <argument type="service" id="security.authorization_checker" />

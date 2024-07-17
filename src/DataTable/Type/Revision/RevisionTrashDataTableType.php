@@ -4,58 +4,62 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\DataTable\Type\Revision;
 
+use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
-use EMS\CoreBundle\Core\DataTable\Type\AbstractQueryTableType;
-use EMS\CoreBundle\Core\Revision\RevisionQueryService;
-use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Core\DataTable\Type\AbstractTableType;
+use EMS\CoreBundle\Core\DataTable\Type\QueryServiceTypeInterface;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\QueryTable;
 use EMS\CoreBundle\Form\Data\UserTableColumn;
+use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class RevisionTrashDataTableType extends AbstractQueryTableType
+use function Symfony\Component\Translation\t;
+
+class RevisionTrashDataTableType extends AbstractTableType implements QueryServiceTypeInterface
 {
     public const ACTION_EMPTY_TRASH = 'empty-trash';
     public const ACTION_PUT_BACK = 'put-back';
 
     public function __construct(
-        RevisionQueryService $queryService,
+        private readonly RevisionRepository $revisionRepository,
         private readonly UserService $userService,
         private readonly ContentTypeService $contentTypeService,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
     ) {
-        parent::__construct($queryService);
     }
 
     public function build(QueryTable $table): void
     {
         /** @var ContentType $contentType */
-        $contentType = $table->getContext()['content_type'];
+        $contentType = $table->getContext();
 
-        $table->setIdField('ouuid');
-        $table->setExtraFrontendOption(['searching' => false]);
+        $table
+            ->setIdField('ouuid')
+            ->setLabelAttribute('label')
+            ->setExtraFrontendOption(['order' => [$this->userService->isSuper() ? 3 : 4, 'desc']])
+            ->setDefaultOrder('modified', 'desc');
 
+        $table->addColumn(t('field.label', [], 'emsco-core'), 'label');
         if ($this->userService->isSuper()) {
-            $table->addColumn('revision.property.ouuid', 'ouuid');
+            $table->addColumn(t('revision.field.ouuid', [], 'emsco-core'), 'ouuid');
         }
+        $table->addColumnDefinition(new UserTableColumn(t('field.deleted_by', [], 'emsco-core'), 'deletedBy'));
+        $table->addColumnDefinition(new DatetimeTableColumn(t('field.modified', [], 'emsco-core'), 'modified'));
 
-        $table->addColumn('revision.property.label', 'revision_label');
-        $table->addColumnDefinition(new UserTableColumn('revision.property.deleted_by', 'deleted_by'));
-        $table->addColumnDefinition(new DatetimeTableColumn('revision.property.modified', 'modified'));
-
-        $table->setLabelAttribute('revision_label');
+        $table->setLabelAttribute('label');
 
         if ($this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::CREATE))) {
             $table->addDynamicItemPostAction(
                 route: Routes::DATA_TRASH_PUT_BACK,
-                labelKey: 'revision.trash.put_back',
+                labelKey: t('revision.trash.put_back', [], 'emsco-core'),
                 icon: 'recycle',
-                messageKey: 'revision.trash.put_back_confirm',
+                messageKey: t('revision.trash.put_back_confirm', [], 'emsco-core'),
                 routeParameters: [
                     'contentType' => 'content_type_id',
                     'ouuid' => 'ouuid',
@@ -64,15 +68,15 @@ class RevisionTrashDataTableType extends AbstractQueryTableType
             $table->addTableAction(
                 name: self::ACTION_PUT_BACK,
                 icon: 'fa fa-recycle',
-                labelKey: 'revision.trash.put_back_selected'
+                labelKey: t('revision.trash.put_back_selected', [], 'emsco-core')
             );
         }
 
         $table->addDynamicItemPostAction(
             route: Routes::DATA_TRASH_EMPTY,
-            labelKey: 'revision.trash.empty',
+            labelKey: t('button.delete', [], 'emsco-core'),
             icon: 'trash',
-            messageKey: 'revision.trash.empty_confirm',
+            messageKey: t('revision.trash.delete_confirm', [], 'emsco-core'),
             routeParameters: [
                 'contentType' => 'content_type_id',
                 'ouuid' => 'ouuid',
@@ -81,33 +85,70 @@ class RevisionTrashDataTableType extends AbstractQueryTableType
         $table->addTableAction(
             name: self::ACTION_EMPTY_TRASH,
             icon: 'fa fa-trash',
-            labelKey: 'revision.trash.empty_selected'
+            labelKey: t('table.delete_selected', [], 'emsco-core'),
+            confirmationKey: t('table.delete_selected_confirm', [], 'emsco-core'),
         )->setCssClass('btn btn-outline-danger');
     }
 
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        $optionsResolver
-            ->setDefault('translation_domain', EMSCoreBundle::TRANS_REVISION)
-            ->setRequired(['content_type_name']);
+        $optionsResolver->setRequired(['content_type_name']);
     }
 
     /**
      * @param array{'content_type_name': string} $options
-     *
-     * @return array{'content_type': ContentType, 'deleted'?: bool, 'current'?: bool}
      */
-    public function getContext(array $options): array
+    public function getContext(array $options): ContentType
     {
-        return [
-            'content_type' => $this->contentTypeService->giveByName($options['content_type_name']),
-            'deleted' => true,
-            'current' => true,
-        ];
+        return $this->contentTypeService->giveByName($options['content_type_name']);
     }
 
     public function getQueryName(): string
     {
         return 'revision_trash';
+    }
+
+    public function isQuerySortable(): bool
+    {
+        return false;
+    }
+
+    public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
+    {
+        if (!$context instanceof ContentType) {
+            throw new \RuntimeException('Unexpected context');
+        }
+
+        $qb = $this->createQueryBuilder($context, $searchValue);
+        $qb->setFirstResult($from)->setMaxResults($size);
+
+        if (null !== $orderField) {
+            $qb->orderBy(\sprintf('r.%s', $orderField), $orderDirection);
+        }
+
+        return $qb->getQuery()->execute();
+    }
+
+    public function countQuery(string $searchValue = '', mixed $context = null): int
+    {
+        if (!$context instanceof ContentType) {
+            throw new \RuntimeException('Unexpected context');
+        }
+
+        return (int) $this->createQueryBuilder($context, $searchValue)
+            ->select('count(r.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    private function createQueryBuilder(ContentType $contentType, string $searchValue = ''): QueryBuilder
+    {
+        return $this->revisionRepository->makeQueryBuilder(
+            contentTypeName: $contentType->getName(),
+            isDeleted: true,
+            isAdmin: $this->authorizationChecker->isGranted('ROLE_ADMIN'),
+            circles: $this->userService->getCurrentUser()->getCircles(),
+            searchValue: $searchValue
+        );
     }
 }

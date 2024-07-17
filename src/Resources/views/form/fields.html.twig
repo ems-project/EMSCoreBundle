@@ -139,12 +139,29 @@
             {% set label = name|humanize %}
         {%- endif -%}
     {%- endif -%}
-    <button type="{{ type|default('submit') }}" {{ block('button_attributes') }}>
-    	{%- if icon -%}
-			<span class="{{ icon }}"></span>&nbsp;
-		{% endif %}
-		{{ translation_domain is same as(false) ? label : label|trans(label_translation_parameters|default({}), translation_domain) }}
-  	</button>
+	{% if confirm is defined and confirm != null %}
+		<div class="btn-group">
+			<button type="button" class="{{ confirm_class|default('btn btn-outline-danger') }} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				{%- if icon -%}
+					<span class="{{ icon }}"></span>&nbsp;
+				{% endif %}
+				{{ translation_domain is same as(false) ? label : label|trans(label_translation_parameters|default({}), translation_domain) }}
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+				<li>
+					<button type="{{ type|default('submit') }}" {{ block('button_attributes') }}>{{ confirm|trans }}</button>
+				</li>
+			</ul>
+		</div>
+	{% else %}
+		<button type="{{ type|default('submit') }}" {{ block('button_attributes') }}>
+			{%- if icon -%}
+				<span class="{{ icon }}"></span>&nbsp;
+			{% endif %}
+			{{ translation_domain is same as(false) ? label : label|trans(label_translation_parameters|default({}), translation_domain) }}
+		</button>
+	{% endif %}
 {%- endblock submitems_widget -%}
 
 

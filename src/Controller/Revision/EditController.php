@@ -9,7 +9,6 @@ use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
-use EMS\CoreBundle\Core\Revision\DraftInProgress;
 use EMS\CoreBundle\DataTable\Type\Revision\RevisionDraftsDataTableType;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
@@ -264,16 +263,22 @@ class EditController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             match ($this->getClickedButtonName($form)) {
-                DraftInProgress::DISCARD_SELECTED_DRAFT => $this->discardRevisions($table, $contentTypeId),
+                RevisionDraftsDataTableType::DISCARD_SELECTED_DRAFT => $this->discardRevisions($table, $contentTypeId),
                 default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
             };
 
             return $this->redirectToRoute(Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentTypeId->getId()]);
         }
 
-        return $this->render("@$this->templateNamespace/data/draft-in-progress.html.twig", [
+        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
             'form' => $form->createView(),
             'contentType' => $contentTypeId,
+            'icon' => 'fa fa-fire',
+            'title' => t('revision.draft.title', ['pluralName' => $contentTypeId->getPluralName()], 'emsco-core'),
+            'breadcrumb' => [
+                'contentType' => $contentTypeId,
+                'page' => t('revision.draft.label', [], 'emsco-core'),
+            ],
         ]);
     }
 

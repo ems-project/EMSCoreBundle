@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Core\DataTable;
 
 use EMS\CommonBundle\Elasticsearch\ElasticaLogger;
 use EMS\CoreBundle\Form\Data\ElasticaTable;
-use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableInterface;
 use EMS\CoreBundle\Form\Data\TableRowInterface;
 use EMS\Helpers\Standard\Json;
@@ -16,8 +15,11 @@ use Twig\TemplateWrapper;
 
 final class TableRenderer
 {
-    public function __construct(private readonly Environment $twig, private readonly TranslatorInterface $translator, private readonly ElasticaLogger $elasticaLogger)
-    {
+    public function __construct(
+        private readonly Environment $twig,
+        private readonly TranslatorInterface $translator,
+        private readonly ElasticaLogger $elasticaLogger
+    ) {
     }
 
     /**
@@ -28,11 +30,7 @@ final class TableRenderer
         $headers = [];
 
         foreach ($table->getColumns() as $column) {
-            if ($table instanceof EntityTable) {
-                $headers[] = $this->translator->trans($column->getTitleKey(), [], 'EMSCoreBundle');
-            } else {
-                $headers[] = $column->getTitleKey();
-            }
+            $headers[] = $column->getTitleKey()->trans($this->translator);
         }
 
         return $headers;

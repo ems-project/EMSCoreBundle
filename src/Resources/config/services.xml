@@ -184,15 +184,6 @@
             <argument type="service" id="EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface"/>
         </service>
         <service id="ems_core.service.uploaded-file" alias="EMS\CoreBundle\Service\DatatableService"/>
-        <service id="ems_core.core_revision.draft_in_progress" class="EMS\CoreBundle\Core\Revision\DraftInProgress">
-            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
-            <argument type="service" id="emsco.manager.user" />
-            <argument type="service" id="security.authorization_checker" />
-        </service>
-        <service id="emsco.revision.query_service" class="EMS\CoreBundle\Core\Revision\RevisionQueryService">
-            <argument type="service" id="doctrine" />
-            <argument type="service" id="ems.service.revision" />
-        </service>
 
         <service id="ems_core.core_ui.flash_message_logger" class="EMS\CoreBundle\Core\UI\FlashMessageLogger">
             <argument type="service" id="request_stack" />
@@ -300,6 +291,7 @@
             <argument type="service" id="emsco.manager.user"/>
             <argument type="service" id="EMS\CommonBundle\Contracts\ExpressionServiceInterface"/>
             <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="translator" />
         </service>
         <service id="ems.service.alias" class="EMS\CoreBundle\Service\AliasService">
             <argument type="service" id="logger" />

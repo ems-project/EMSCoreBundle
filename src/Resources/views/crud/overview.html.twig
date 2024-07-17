@@ -1,0 +1,30 @@
+{% extends '@EMSCore/base.html.twig' %}
+
+{% block title %}{{ title|trans }}{% endblock %}
+{% block pagetitle %}{{ pageTitle|default(title)|trans }}{% endblock %}
+
+{% block breadcrumb %}
+	{% if breadcrumb is defined %}
+		<ol class="breadcrumb">
+			{% for name, item in breadcrumb %}
+				{% if name == 'contentType' %}
+					<li>{{ t('content_type.plural', [], 'emsco-core')|trans }}</li>
+					<li>
+						<i class="{{ item.icon|default('fa fa-book') }}"></i>&nbsp;{{ item.pluralName }}
+					</li>
+				{% elseif name == 'page' %}
+					<li>{% if icon is defined %}<i class="{{ icon }}"></i>{% endif %}&nbsp;{{ item|trans }}</li>
+				{% endif %}
+			{% endfor %}
+		</ol>
+	{% endif %}
+{% endblock %}
+
+{% block body %}
+	{% set tableOptions = {} %}
+	{% if tableIcon is defined %}{% set tableOptions = tableOptions|merge({ 'table_title_icon': tableIcon }) %}{% endif %}
+	{% if tableTitle is defined %}{% set tableOptions = tableOptions|merge({ 'table_title': tableTitle|trans }) %}{% endif %}
+
+	{% form_theme form '@EMSCore/form/forms.html.twig' %}
+	{{ form(form, tableOptions) }}
+{% endblock %}

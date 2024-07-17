@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Form\Data;
 
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Form\Data\Condition\ConditionInterface;
+use Symfony\Component\Translation\TranslatableMessage;
 
 class TableColumn
 {
@@ -27,9 +28,8 @@ class TableColumn
     private string $orderField;
     /** @var array<string, mixed> */
     private array $transLabelOptions = [];
-    private string $translationDomain = EMSCoreBundle::TRANS_DOMAIN;
 
-    public function __construct(private readonly string $titleKey, string $attribute)
+    public function __construct(private readonly string|TranslatableMessage $titleKey, string $attribute)
     {
         $this->orderField = $this->attribute = $attribute;
     }
@@ -47,9 +47,13 @@ class TableColumn
         return $this->conditions;
     }
 
-    public function getTitleKey(): string
+    public function getTitleKey(): TranslatableMessage
     {
-        return $this->titleKey;
+        if ($this->titleKey instanceof TranslatableMessage) {
+            return $this->titleKey;
+        }
+
+        return new TranslatableMessage($this->titleKey, $this->transLabelOptions, EMSCoreBundle::TRANS_DOMAIN);
     }
 
     public function getAttribute(): string
@@ -261,15 +265,5 @@ class TableColumn
     public function getTransLabelOptions(): array
     {
         return $this->transLabelOptions;
-    }
-
-    public function setTranslationDomain(string $translationDomain): void
-    {
-        $this->translationDomain = $translationDomain;
-    }
-
-    public function getTranslationDomain(): string
-    {
-        return $this->translationDomain;
     }
 }

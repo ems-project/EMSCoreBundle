@@ -234,25 +234,13 @@ class RevisionRepository extends EntityRepository
      */
     public function draftCounterGroupedByContentType(array $circles, bool $isAdmin): array
     {
-        $qb = $this->createQueryBuilderDrafts($circles, $isAdmin);
+        $qb = $this->makeQueryBuilder(isDraft: true, isAdmin: $isAdmin, circles: $circles);
         $qb
-            ->select('c.id content_type_id', 'count(c.id) counter')
+            ->select('c.id content_type_id')
+            ->addSelect('count(c.id) counter')
             ->groupBy('c.id');
 
         return $qb->getQuery()->getResult();
-    }
-
-    /**
-     * @return iterable|Revision[]
-     */
-    public function findAllDraftsByContentTypeName(string $contentTypeName): iterable
-    {
-        $qb = $this->createQueryBuilderDrafts();
-        $qb
-            ->andWhere($qb->expr()->eq('c.name', ':content_type_name'))
-            ->setParameter('content_type_name', $contentTypeName);
-
-        yield from $qb->getQuery()->toIterable();
     }
 
     /**
@@ -793,35 +781,9 @@ class RevisionRepository extends EntityRepository
     /**
      * @return Revision[]
      */
-    public function findDraftsByContentType(ContentType $contentType): array
-    {
-        $qbSelect = $this->createQueryBuilder('s');
-        $qbSelect
-            ->andWhere($qbSelect->expr()->eq('s.contentType', ':content_type'))
-            ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(true)))
-            ->andWhere($qbSelect->expr()->eq('s.deleted', $qbSelect->expr()->literal(false)))
-            ->andWhere($qbSelect->expr()->isNull('s.endTime'))
-            ->orderBy('s.id', 'asc')
-            ->setParameters(['content_type' => $contentType])
-        ;
-
-        return $qbSelect->getQuery()->execute();
-    }
-
-    /**
-     * @return Revision[]
-     */
     public function findAllDrafts(): array
     {
-        $qbSelect = $this->createQueryBuilder('s');
-        $qbSelect
-            ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(true)))
-            ->andWhere($qbSelect->expr()->eq('s.deleted', $qbSelect->expr()->literal(false)))
-            ->andWhere($qbSelect->expr()->isNull('s.endTime'))
-            ->orderBy('s.id', 'asc')
-        ;
-
-        return $qbSelect->getQuery()->execute();
+        return $this->makeQueryBuilder(isDraft: true)->orderBy('r.id', 'asc')->getQuery()->execute();
     }
 
     /**
@@ -829,56 +791,16 @@ class RevisionRepository extends EntityRepository
      */
     public function findTrashRevisions(ContentType $contentType, string ...$ouuids): array
     {
-        $qb = $this->createQueryBuilder('r');
+        $qb = $this->makeQueryBuilder(
+            contentTypeName: $contentType->getName(),
+            isDeleted: true,
+            isCurrent: null
+        );
+
         $qb
-            ->join('r.contentType', 'c')
-            ->andWhere($qb->expr()->eq('c.id', ':content_type_id'))
             ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
-            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(true)))
             ->orderBy('r.startTime', 'DESC')
-            ->setParameter('content_type_id', $contentType->getId())
-            ->setParameter('ouuids', $ouuids, ArrayParameterType::STRING)
-        ;
-
-        return $qb->getQuery()->execute();
-    }
-
-    /**
-     * @param string[] $circles
-     */
-    public function countDraftInProgress(string $searchValue, ?ContentType $contentType, array $circles = [], bool $isAdmin = false): int
-    {
-        $qb = $this->createQueryBuilderDrafts($circles, $isAdmin, $searchValue);
-        $qb->select('count(r.id)');
-
-        if (null !== $contentType) {
-            $qb->andWhere($qb->expr()->eq('c.id', ':content_type_id'));
-            $qb->setParameter('content_type_id', $contentType->getId());
-        }
-
-        return (int) $qb->getQuery()->getSingleScalarResult();
-    }
-
-    /**
-     * @param string[] $circles
-     *
-     * @return Revision[]
-     */
-    public function getDraftInProgress(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, ?ContentType $contentType, array $circles = [], bool $isAdmin = false): array
-    {
-        $qb = $this->createQueryBuilderDrafts($circles, $isAdmin, $searchValue);
-        $qb
-            ->setFirstResult($from)
-            ->setMaxResults($size);
-
-        if (null !== $contentType) {
-            $qb->andWhere($qb->expr()->eq('c.id', ':content_type_id'));
-            $qb->setParameter('content_type_id', $contentType->getId());
-        }
-
-        if (null !== $orderField) {
-            $qb->orderBy(\sprintf('r.%s', $orderField), $orderDirection);
-        }
+            ->setParameter('ouuids', $ouuids, ArrayParameterType::STRING);
 
         return $qb->getQuery()->execute();
     }
@@ -1077,18 +999,35 @@ class RevisionRepository extends EntityRepository
     /**
      * @param string[] $circles
      */
-    private function createQueryBuilderDrafts(array $circles = [], bool $isAdmin = false, string $searchValue = ''): QueryBuilder
-    {
+    public function makeQueryBuilder(
+        string $contentTypeName = null,
+        ?bool $isCurrent = true,
+        ?bool $isDeleted = false,
+        ?bool $isDraft = false,
+        ?bool $isAdmin = null,
+        array $circles = [],
+        string $searchValue = ''
+    ): QueryBuilder {
         $qb = $this->createQueryBuilder('r');
-        $qb
-            ->join('r.contentType', 'c')
-            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
-            ->andWhere($qb->expr()->andX(
-                $qb->expr()->eq('r.draft', $qb->expr()->literal(true)),
-                $qb->expr()->isNull('r.endTime')
-            ));
+        $qb->join('r.contentType', 'c');
 
-        if (!$isAdmin) {
+        if ($contentTypeName) {
+            $qb
+                ->andWhere($qb->expr()->eq('c.name', ':content_type_name'))
+                ->setParameter('content_type_name', $contentTypeName);
+        }
+
+        if ($isCurrent) {
+            $qb->andWhere($qb->expr()->isNull('r.endTime'));
+        }
+        if (null !== $isDeleted) {
+            $qb->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal($isDeleted)));
+        }
+        if (null !== $isDraft) {
+            $qb->andWhere($qb->expr()->eq('r.draft', $qb->expr()->literal($isDraft)));
+        }
+
+        if (false === $isAdmin) {
             $inCircles = $qb->expr()->orX();
             $inCircles->add($qb->expr()->isNull('r.circles'));
             foreach ($circles as $counter => $circle) {

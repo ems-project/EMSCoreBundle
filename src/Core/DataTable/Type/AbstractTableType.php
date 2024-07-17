@@ -13,6 +13,8 @@ abstract class AbstractTableType implements DataTableTypeInterface
 {
     protected DataTableFormat $format = DataTableFormat::TABLE;
 
+    public const LOAD_MAX_ROWS = 400;
+
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
     }
@@ -46,5 +48,10 @@ abstract class AbstractTableType implements DataTableTypeInterface
     public function setFormat(DataTableFormat $format): void
     {
         $this->format = $format;
+    }
+
+    public function getLoadMaxRows(): int
+    {
+        return self::LOAD_MAX_ROWS;
     }
 }

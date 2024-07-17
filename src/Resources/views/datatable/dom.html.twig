@@ -22,7 +22,7 @@
                 </th>
             {% endfor %}
             {% if datatable.itemActions|length > 0 %}
-                <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
+                <th class="nowrap" data-orderable="false">{{ 'table.actions'|trans({}, 'emsco-core') }}</th>
             {% endif %}
         </tr>
         </thead>

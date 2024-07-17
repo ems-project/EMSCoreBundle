@@ -1,5 +1,17 @@
+content_type:
+    plural: 'Content Types'
 core:
     version: 'Version {core} with Symfony {symfony}'
+button:
+    add: Add
+    delete: Delete
+    close: Close
+    reorder: Reorder
+field:
+    deleted_by: 'Deleted by'
+    label: Label
+    modified: 'Last update'
+    modified_by: 'Updated by'
 log:
     error:
         invalid_table_action: 'Unknown table action'
@@ -7,3 +19,30 @@ log:
         draft_deleted: 'Draft "{revision}" has been deleted'
     warning:
         draft_not_found: 'Draft not found with id "{revisionId}"'
+revision:
+    draft:
+        delete: 'Delete this draft'
+        delete_confirm: 'Modifications made in this draft will be lost'
+        delete_selected: 'Delete selected drafts'
+        delete_selected_confirm: 'All modifications made on those drafts will lost'
+        edit: 'Edit draft'
+        label: 'Draft in progress'
+        title: '{pluralName} drafts in progress'
+        view: 'View draft in progress'
+    field:
+        locked: 'Locked until'
+        locked_by: 'Locked by'
+        ouuid: Ouuid
+    new: 'New {contentType}'
+    trash:
+        delete_confirm: 'Remove trash "{label}" ?'
+        label: Trash
+        put_back: 'Put back'
+        put_back_confirm: 'Put back "{label}" ?'
+        put_back_selected: 'Put back selected'
+        title: '{pluralName} in trash'
+table:
+    actions: Actions
+    delete_selected: 'Delete selected'
+    delete_selected_confirm: 'Are you sure?'
+    select_all: 'Select all'

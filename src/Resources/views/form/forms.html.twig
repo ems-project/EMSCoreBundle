@@ -69,6 +69,20 @@
     </td>
 {% endblock emsco_form_table_column_data_datetime %}
 
+{% block emsco_form_table_column_data_value_revision_display %}
+    {%- if column.valid(line.data)  -%}
+        {{- block('emsco_form_table_column_data_label_prefix') -}}
+        {{- line.data|emsco_display -}}
+        {{- block('emsco_form_table_column_data_label_suffix') -}}
+    {%- endif -%}
+{% endblock emsco_form_table_column_data_value_revision_display %}
+
+{% block emsco_form_table_column_data_revision_display %}
+    <td data-order="{{ line.data|emsco_display }}">
+        {{- block(column.tableDataValueBlock()) -}}
+    </td>
+{% endblock emsco_form_table_column_data_revision_display %}
+
 {% block emsco_form_table_column_data_value_roles %}
     {%- set value = attribute(line.data, column.attribute)|default([]) -%}
     {%- if value is iterable and column.valid(line.data)  -%}
@@ -112,7 +126,7 @@
     {%- set value = attribute(line.data, column.attribute)|default(false) -%}
     {%- if value and column.valid(line.data)  -%}
         {{- block('emsco_form_table_column_data_label_prefix') -}}
-        {{- (column.keyPrefix|default('') ~ value)|trans({}, column.domain) -}}
+        {{- value|trans({}, column.domain) -}}
         {{- block('emsco_form_table_column_data_label_suffix') -}}
     {%- endif -%}
 {% endblock emsco_form_table_column_data_value_translation %}
@@ -203,7 +217,7 @@
                         {% if action.icon|default(false) %}
                             <span class="{{ action.icon starts with 'glyphicon-' ? "glyphicon #{action.icon}" : "fa fa-#{action.icon}" }}"></span>&nbsp;
                         {% endif %}
-                        {% if action.label|default(false) %}{{ action.label|trans({}, table.translationDomain) }}{% endif %}
+                        {% if action.label|default(false) %}{{ action.label|trans }}{% endif %}
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
@@ -237,27 +251,24 @@
         {% else %}
             {% set routeParameters = action.routeParameters|merge({(table.attributeName): line.data.id}) %}
         {% endif %}
+        {% set itemLabel = attribute(line.data, table.labelAttribute) %}
         {% if action.post %}
             {% if action.route != 'EMS_user_apikey' or 'ROLE_API' in line.data.roles  %}
                 {% include '@EMSCore/elements/post-button.html.twig' with {
                     'url': path(action.route, routeParameters),
-                    'message': action.messageKey,
-                    'label': action.labelKey,
+                    'message': action.messageKey(itemLabel),
+                    'label': action.labelKey(itemLabel),
                     'btnType': action.buttonType,
-                    'itemLabel': attribute(line.data, table.labelAttribute),
                     'icon': action.icon,
-                    'group_class': loop.last ? 'pull-right' : '',
-                    'translationDomain': table.translationDomain
-                }%}
+                    'group_class': loop.last ? 'pull-right' : ''
+                } %}
             {% endif %}
         {% else %}
             {% include '@EMSCore/elements/get-button.html.twig' with {
                 'url':  path(action.route, routeParameters),
-                'label': action.labelKey,
-                'itemLabel': attribute(line.data, table.labelAttribute),
+                'label': action.labelKey(itemLabel),
                 'btnType': action.buttonType,
                 'icon': action.icon,
-                'translationDomain': table.translationDomain
             }%}
         {% endif %}
     {% endif %}
@@ -299,13 +310,13 @@
                             <tr role="row">
                                 {% if table.supportsTableActions %}
                                     <th class="fit" data-orderable="false" data-name="_checkbox">
-                                        <label class="sr-only" for="select-all">{{ 'form.header.checkbo.select-all'|trans }}</label>
+                                        <label class="sr-only" for="select-all">{{ 'table.select_all'|trans({}, 'emsco-core') }}</label>
                                         <input type="checkbox" value="" data-grouped-checkbox-target=".{{ table.attributeName|e('html_attr') }}-to-select" id="select-all">
                                     </th>
                                 {% endif %}
                                 {% for column in table.columns %}
                                     <th class="nowrap" data-orderable="{{ column.orderable ? 'true' : 'false' }}" data-name="{{  column.attribute }}">
-                                        {% set columnTitle = column.titleKey|trans(column.transLabelOptions, column.translationDomain) %}
+                                        {% set columnTitle = column.titleKey|trans %}
                                         {% if column.iconClass %}
                                             <i class="{{ column.iconClass }}" aria-hidden="true" title="{{ columnTitle|e('html_attr') }}"></i>
                                             <span class="sr-only">{{ columnTitle }}</span>
@@ -315,7 +326,7 @@
                                     </th>
                                 {% endfor %}
                                 {% if table.itemActions|length > 0 %}
-                                    <th class="nowrap" data-orderable="false">{{ 'table.index.column.actions'|trans }}</th>
+                                    <th class="nowrap" data-orderable="false">{{ 'table.actions'|trans({}, 'emsco-core') }}</th>
                                 {% endif %}
                             </tr>
                             </thead>
@@ -385,7 +396,7 @@
                             <div class="modal-footer">
                                 <div class="btn-group">
                                     {{ form_widget(form.reorderAction) }}
-                                    <button type="button" class="btn" data-dismiss="modal"><i class="fa fa-close"></i> {{ 'table.index.button.close'|trans }}</button>
+                                    <button type="button" class="btn" data-dismiss="modal"><i class="fa fa-close"></i> {{ t('button.close', [], 'emsco-core')|trans }}</button>
                                 </div>
                             </div>
                         </div>

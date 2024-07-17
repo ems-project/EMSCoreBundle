@@ -84,10 +84,6 @@ log:
             unknown_action: 'Unknown action'
         uploaded-file-logs:
             unknown_action: 'Unknown action'
-        draft-in-progress:
-            discard_draft: 'Draft "%revision%" has been deleted'
-            unknown_action: 'Unknown action'
-            draft-not-found: 'Draft (%revisionId%) not found'
         schedule:
             unknown_action: 'Unknown action'
     crud:
@@ -425,9 +421,6 @@ form:
     wysiwyg_style_set:
         table_default_css:
             title: 'Default Table class attribute (deprecated)'
-    header:
-        checkbox:
-            select-all: 'Select all'
 ROLE_ADMIN: Administrator
 ROLE_ALLOW_ALIGN: 'Align Environment'
 ROLE_API: API
@@ -751,10 +744,7 @@ table:
     index:
         button:
             add: Add
-            close: Close
-            reorder: Reorder
         column:
-            actions: Actions
             loop_count: '#'
         empty: 'Nothing to show here'
 task:
@@ -1129,20 +1119,6 @@ wysiwyg:
     invalid_config_format: 'Format not valid: %msg%'
 revision:
     draft-in-progress:
-        column:
-            label: Label
-            created: Created
-            modified: 'Last update'
-            auto-save-by: By
-            locked: 'Locked until'
-            locked-by: 'Locked by'
-            view-revision: 'View draft in progress'
-            edit-draft: 'Edit draft'
-            discard-draft: 'Delete this draft'
-            confirm-discard-draft: 'Modifications made in this draft will be lost'
-        action:
-            discard-selected-draft: 'Delete selected drafts'
-            discard-selected-confirm: 'All modifications made on those drafts will lost'
         title: '%contentType% in progress'
         breadcrumb: '%contentType% in progress'
     version_tag: 'Yes as %version_tag%'

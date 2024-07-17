@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Field;
 
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -25,6 +27,8 @@ class SubmitEmsType extends SubmitType
             'compound' => false,
             'icon' => null,
             'message' => null,
+            'confirm' => null,
+            'confirm_class' => null,
         ]);
     }
 
@@ -36,5 +40,7 @@ class SubmitEmsType extends SubmitType
     {
         $view->vars['icon'] = $options['icon'];
         $view->vars['message'] = $options['message'];
+        $view->vars['confirm'] = $options['confirm'];
+        $view->vars['confirm_class'] = $options['confirm_class'];
     }
 }

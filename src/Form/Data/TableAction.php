@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
+use Symfony\Component\Translation\TranslatableMessage;
+
 final class TableAction
 {
     private string $cssClass = 'btn btn-default';
@@ -11,8 +13,8 @@ final class TableAction
     public function __construct(
         private readonly string $name,
         private readonly string $icon,
-        private readonly string $labelKey,
-        private readonly ?string $confirmationKey = null)
+        private readonly TranslatableMessage $labelKey,
+        private readonly ?TranslatableMessage $confirmationKey = null)
     {
     }
 
@@ -21,12 +23,12 @@ final class TableAction
         return $this->name;
     }
 
-    public function getLabelKey(): string
+    public function getLabelKey(): TranslatableMessage
     {
         return $this->labelKey;
     }
 
-    public function getConfirmationKey(): ?string
+    public function getConfirmationKey(): ?TranslatableMessage
     {
         return $this->confirmationKey;
     }

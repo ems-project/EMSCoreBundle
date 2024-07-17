@@ -1,4 +1,4 @@
-{% trans_default_domain translationDomain|default('EMSCoreBundle') %}
+{% trans_default_domain 'EMSCoreBundle' %}
 {%- set settings = {
 	'form': (destinationFormName|default(false)),
 	'action': (action is defined ? action|json_encode : false),
@@ -12,7 +12,7 @@
 				<span class="{{ icon starts with 'glyphicon-' ? "glyphicon #{icon}" : "fa fa-#{icon}" }}"></span>&nbsp;
 			{% endif %}
 			{% if label is defined %}
-				{{ label|trans({'%label%' : itemLabel|default('%label%')}) }}
+				{{ label|trans }}
 			{% elseif rawlabel is defined %}
 				{{ rawlabel|raw }}
 			{% endif %}
@@ -22,7 +22,7 @@
 		<li>
 			<a href="{{ url }}"
 			   data-post-settings="{{ settings|json_encode|escape('html_attr') }}"
-			   class="core-post-button">{{ message|trans({'%label%' : itemLabel|default('%label%')}) }}</a>
+			   class="core-post-button">{{ message|trans }}</a>
 		</li>
 	  </ul>
 	</div>

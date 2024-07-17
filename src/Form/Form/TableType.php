@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Form\Data\TableAction;
 use EMS\CoreBundle\Form\Data\TableInterface;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -17,6 +16,8 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 final class TableType extends AbstractType
 {
@@ -74,25 +75,24 @@ final class TableType extends AbstractType
                 'entry_options' => [],
                 'data' => $choices,
             ])->add(self::REORDER_ACTION, SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn btn-default',
-                ],
+                'attr' => ['class' => 'btn btn-default'],
                 'icon' => 'fa fa-reorder',
-                'label' => 'table.index.button.reorder',
+                'label' => t('button.reorder', [], 'emsco-core'),
             ]);
         }
         if ($data->supportsTableActions()) {
             /** @var TableAction $action */
             foreach ($data->getTableActions() as $action) {
-                $builder
-                    ->add($action->getName(), SubmitEmsType::class, [
-                        'attr' => [
-                            'class' => $action->getCssClass(),
-                        ],
-                        'icon' => $action->getIcon(),
-                        'label' => $action->getLabelKey(),
-                        'translation_domain' => $data->getTranslationDomain(),
-                    ]);
+                $submitOptions = ['icon' => $action->getIcon(), 'label' => $action->getLabelKey()];
+
+                if ($confirmationKey = $action->getConfirmationKey()) {
+                    $submitOptions['confirm'] = $confirmationKey;
+                    $submitOptions['confirm_class'] = $action->getCssClass();
+                } else {
+                    $submitOptions['attr'] = ['class' => $action->getCssClass()];
+                }
+
+                $builder->add($action->getName(), SubmitEmsType::class, $submitOptions);
             }
         }
     }
@@ -101,7 +101,6 @@ final class TableType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => TableInterface::class,
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             'reorder_label' => 'table.index.button.reorder',
             'add_label' => 'table.index.button.add',
             'title_label' => false,

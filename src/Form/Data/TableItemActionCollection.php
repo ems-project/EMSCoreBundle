@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
+use Symfony\Component\Translation\TranslatableMessage;
+
 /**
  * @implements \IteratorAggregate<TableItemAction|TableItemActionCollection>
  */
@@ -37,7 +39,7 @@ final class TableItemActionCollection implements \IteratorAggregate, \Countable
     /**
      * @param array<mixed> $routeParameters
      */
-    public function addItemGetAction(string $route, string $labelKey, string $icon, array $routeParameters = []): TableItemAction
+    public function addItemGetAction(string $route, string|TranslatableMessage $labelKey, string $icon, array $routeParameters = []): TableItemAction
     {
         $action = TableItemAction::getAction($route, $labelKey, $icon, $routeParameters);
         $this->itemActions[] = $action;
@@ -48,7 +50,7 @@ final class TableItemActionCollection implements \IteratorAggregate, \Countable
     /**
      * @param array<string, mixed> $routeParameters
      */
-    public function addItemPostAction(string $route, string $labelKey, string $icon, ?string $messageKey = null, array $routeParameters = []): TableItemAction
+    public function addItemPostAction(string $route, string|TranslatableMessage $labelKey, string $icon, string|TranslatableMessage|null $messageKey = null, array $routeParameters = []): TableItemAction
     {
         $action = TableItemAction::postAction($route, $labelKey, $icon, $messageKey, $routeParameters);
         $this->itemActions[] = $action;
@@ -59,7 +61,7 @@ final class TableItemActionCollection implements \IteratorAggregate, \Countable
     /**
      * @param array<string, string> $routeParameters
      */
-    public function addDynamicItemPostAction(string $route, string $labelKey, string $icon, ?string $messageKey = null, array $routeParameters = []): TableItemAction
+    public function addDynamicItemPostAction(string $route, string|TranslatableMessage $labelKey, string $icon, string|TranslatableMessage|null $messageKey = null, array $routeParameters = []): TableItemAction
     {
         $action = TableItemAction::postDynamicAction($route, $labelKey, $icon, $messageKey, $routeParameters);
         $this->itemActions[] = $action;
@@ -70,7 +72,7 @@ final class TableItemActionCollection implements \IteratorAggregate, \Countable
     /**
      * @param array<string, string> $routeParameters
      */
-    public function addDynamicItemGetAction(string $route, string $labelKey, string $icon, array $routeParameters = []): TableItemAction
+    public function addDynamicItemGetAction(string $route, string|TranslatableMessage $labelKey, string $icon, array $routeParameters = []): TableItemAction
     {
         $action = TableItemAction::getDynamicAction($route, $labelKey, $icon, $routeParameters);
         $this->itemActions[] = $action;

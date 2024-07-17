@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
+use EMS\CoreBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\QueryServiceInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class QueryTable extends TableAbstract
 {
@@ -45,9 +47,11 @@ class QueryTable extends TableAbstract
         $this->massAction = $massAction;
     }
 
-    public function setIdField(string $idField): void
+    public function setIdField(string $idField): self
     {
         $this->idField = $idField;
+
+        return $this;
     }
 
     public function getIdField(): string
@@ -63,11 +67,20 @@ class QueryTable extends TableAbstract
     }
 
     /**
-     * @return \Traversable<string, QueryRow>
+     * @return \Traversable<string, QueryRow|EntityRow>
      */
     public function getIterator(): \Traversable
     {
+        $idPropertyAccessor = new PropertyAccessor();
+
         foreach ($this->service->query($this->getFrom(), $this->getSize(), $this->getOrderField(), $this->getOrderDirection(), $this->getSearchValue(), $this->context) as $data) {
+            if ($data instanceof EntityInterface) {
+                $id = $idPropertyAccessor->getValue($data, $this->idField);
+
+                yield \strval($id) => new EntityRow($data);
+                continue;
+            }
+
             $id = $data[$this->idField] ?? null;
             if (null === $id) {
                 continue;

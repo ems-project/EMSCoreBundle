@@ -160,7 +160,7 @@ class MediaLibraryService
 
         $this->revisionService->lock($revision, $user, new \DateTime('+1 hour'));
 
-        $command = \vsprintf('%s --hash=%s --username=%s -- %s', [
+        $command = \vsprintf("%s --hash=%s --username='%s' -- %s", [
             Commands::MEDIA_LIB_FOLDER_DELETE,
             $this->getConfig()->getHash(),
             $user->getUserIdentifier(),
@@ -179,7 +179,7 @@ class MediaLibraryService
 
         $this->revisionService->lock($revision, $user, new \DateTime('+1 hour'));
 
-        $command = \vsprintf("%s --hash=%s --username=%s -- %s '%s'", [
+        $command = \vsprintf("%s --hash=%s --username='%s' -- %s '%s'", [
             Commands::MEDIA_LIB_FOLDER_RENAME,
             $this->getConfig()->getHash(),
             $user->getUserIdentifier(),

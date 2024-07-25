@@ -47,8 +47,8 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
             ->setDefaultOrder('modified', 'desc');
 
         $table->addColumnDefinition(new RevisionDisplayTableColumn(t('field.label', [], 'emsco-core'), 'label'))->setOrderField('labelField');
-        $table->addColumnDefinition(new DatetimeTableColumn(t('field.modified', [], 'emsco-core'), 'draftSaveDate'));
-        $table->addColumnDefinition(new UserTableColumn(t('field.modified_by', [], 'emsco-core'), 'autoSaveBy'));
+        $table->addColumnDefinition(new DatetimeTableColumn(t('field.date_modified', [], 'emsco-core'), 'draftSaveDate'));
+        $table->addColumnDefinition(new UserTableColumn(t('field.user_modified', [], 'emsco-core'), 'autoSaveBy'));
 
         $lockUntil = new DatetimeTableColumn(t('revision.field.locked', [], 'emsco-core'), 'lockUntil');
         $condition = new DateInFuture('lockUntil');
@@ -78,7 +78,7 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
             route: Routes::DISCARD_DRAFT,
             labelKey: t('revision.draft.delete', [], 'emsco-core'),
             icon: 'trash',
-            messageKey: t('revision.draft.delete_confirm', [], 'emsco-core'),
+            messageKey: t('type.delete_confirm', ['type' => 'draft'], 'emsco-core'),
             routeParameters: ['revisionId' => 'id']
         )->addCondition($inMyCircles)->setButtonType('outline-danger');
 
@@ -86,8 +86,8 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
             $table->addTableAction(
                 name: self::DISCARD_SELECTED_DRAFT,
                 icon: 'fa fa-trash',
-                labelKey: t('revision.draft.delete_selected', [], 'emsco-core'),
-                confirmationKey: t('revision.draft.delete_selected_confirm', [], 'emsco-core'),
+                labelKey: t('action.delete_selected', [], 'emsco-core'),
+                confirmationKey: t('type.delete_selected_confirm', ['type' => 'draft'], 'emsco-core'),
             )->setCssClass('btn btn-outline-danger');
         }
     }

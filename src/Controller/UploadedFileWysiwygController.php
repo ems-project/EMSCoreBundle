@@ -6,8 +6,9 @@ namespace EMS\CoreBundle\Controller;
 
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\AjaxService;
-use EMS\CoreBundle\DataTable\Type\WysiwygUploadedFileDataTableType;
+use EMS\CoreBundle\DataTable\Type\UploadedAsset\UploadedAssetDataTableType;
 use EMS\CoreBundle\Form\Form\TableType;
+use EMS\CoreBundle\Roles;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +24,10 @@ final class UploadedFileWysiwygController extends AbstractController
 
     public function index(Request $request): Response
     {
-        $table = $this->dataTableFactory->create(WysiwygUploadedFileDataTableType::class);
+        $table = $this->dataTableFactory->create(UploadedAssetDataTableType::class, [
+            'location' => UploadedAssetDataTableType::LOCATION_WYSIWYG_BROWSER,
+            'roles' => [Roles::ROLE_USER],
+        ]);
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
 
@@ -35,7 +39,10 @@ final class UploadedFileWysiwygController extends AbstractController
 
     public function modal(): Response
     {
-        $table = $this->dataTableFactory->create(WysiwygUploadedFileDataTableType::class);
+        $table = $this->dataTableFactory->create(UploadedAssetDataTableType::class, [
+            'location' => UploadedAssetDataTableType::LOCATION_FILE_MODAL,
+            'roles' => [Roles::ROLE_USER],
+        ]);
         $form = $this->createForm(TableType::class, $table);
 
         return $this->ajax->newAjaxModel("@$this->templateNamespace/uploaded-file-wysiwyg/modal.html.twig")

@@ -25,10 +25,14 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use ZipStream\ZipStream;
 
-class FileService implements EntityServiceInterface, QueryServiceInterface
+class FileService implements EntityServiceInterface
 {
-    public function __construct(private readonly Registry $doctrine, private readonly StorageManager $storageManager, private readonly Processor $processor, private readonly UploadedAssetRepository $uploadedAssetRepository)
-    {
+    public function __construct(
+        private readonly Registry $doctrine,
+        private readonly StorageManager $storageManager,
+        private readonly Processor $processor,
+        private readonly UploadedAssetRepository $uploadedAssetRepository
+    ) {
     }
 
     /**
@@ -76,9 +80,21 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
         return $this->processor->getStreamedResponse($request, $config, $filename, true);
     }
 
-    public function removeFileEntity(string $hash): void
+    public function delete(UploadedAsset $uploadedAsset): void
     {
-        $this->uploadedAssetRepository->removeByHash($hash);
+        $this->uploadedAssetRepository->remove($uploadedAsset);
+    }
+
+    /**
+     * @param array<string> $ids
+     */
+    public function deleteByIds(array $ids): void
+    {
+        $uploadedAssets = $this->uploadedAssetRepository->findByIds($ids);
+
+        foreach ($uploadedAssets as $uploadedAsset) {
+            $this->uploadedAssetRepository->remove($uploadedAsset);
+        }
     }
 
     /**
@@ -118,16 +134,6 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
         );
 
         return $response;
-    }
-
-    /**
-     * @param array<string> $ids
-     */
-    public function removeSingleFileEntity(array $ids): void
-    {
-        foreach ($ids as $id) {
-            $this->uploadedAssetRepository->removeById($id);
-        }
     }
 
     /**
@@ -330,11 +336,14 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
 
     public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
-        if (null !== $context && ($context['available'] ?? false)) {
-            return $this->uploadedAssetRepository->getAvailable($from, $size, $orderField, $orderDirection, $searchValue);
+        $qb = $this->uploadedAssetRepository->makeQueryBuilder(searchValue: $searchValue);
+        $qb->setFirstResult($from)->setMaxResults($size);
+
+        if (null !== $orderField) {
+            $qb->orderBy(\sprintf('ua.%s', $orderField), $orderDirection);
         }
 
-        return $this->uploadedAssetRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
+        return $qb->getQuery()->execute();
     }
 
     public function getEntityName(): string
@@ -352,7 +361,10 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
 
     public function count(string $searchValue = '', $context = null): int
     {
-        return $this->uploadedAssetRepository->searchCount($searchValue, null !== $context && ($context['available'] ?? false));
+        return (int) $this->uploadedAssetRepository->makeQueryBuilder(searchValue: $searchValue)
+            ->select('count(ua.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**
@@ -363,21 +375,6 @@ class FileService implements EntityServiceInterface, QueryServiceInterface
         foreach ($ids as $id) {
             $this->uploadedAssetRepository->toggleVisibility($id);
         }
-    }
-
-    public function isQuerySortable(): bool
-    {
-        return false;
-    }
-
-    public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
-    {
-        return $this->uploadedAssetRepository->query($from, $size, $orderField, $orderDirection, $searchValue);
-    }
-
-    public function countQuery(string $searchValue = '', mixed $context = null): int
-    {
-        return $this->uploadedAssetRepository->countGroupByHashQuery($searchValue);
     }
 
     /**

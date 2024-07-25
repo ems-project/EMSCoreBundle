@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="emsco_uploaded_asset_admin_overview" path="/"
+           controller="EMS\CoreBundle\Controller\UploadedFileController::adminOverview"
+           methods="GET|POST"/>
+    <route id="emsco_uploaded_asset_admin_toggle_visibility" path="/show-hide/{assetId}"
+           controller="EMS\CoreBundle\Controller\UploadedFileController::adminToggleVisibility"
+           methods="POST"/>
+    <route id="emsco_uploaded_asset_admin_delete" path="/delete/{uploadedAsset}"
+           controller="EMS\CoreBundle\Controller\UploadedFileController::adminDelete"
+           methods="POST"/>
+</routes>

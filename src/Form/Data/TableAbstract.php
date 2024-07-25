@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\TranslatableMessage;
@@ -33,6 +32,8 @@ abstract class TableAbstract implements TableInterface
     private TableItemActionCollection $itemActionCollection;
     /** @var TableAction[] */
     private array $tableActions = [];
+    /** @var TableAction[] */
+    private array $toolbarActions = [];
     private ?string $orderField = null;
     private string $orderDirection = 'asc';
     private string $searchValue = '';
@@ -146,7 +147,7 @@ abstract class TableAbstract implements TableInterface
         return $this->columns;
     }
 
-    public function addItemActionCollection(?string $labelKey = null, ?string $icon = null): TableItemActionCollection
+    public function addItemActionCollection(null|string|TranslatableMessage $labelKey = null, ?string $icon = null): TableItemActionCollection
     {
         $itemActionCollection = new TableItemActionCollection($labelKey, $icon);
         $this->itemActionCollection->addItemActionCollection($itemActionCollection);
@@ -173,7 +174,7 @@ abstract class TableAbstract implements TableInterface
     /**
      * @param array<string, string> $routeParameters
      */
-    public function addDynamicItemPostAction(string $route, string|TranslatableMessage $labelKey, string $icon, string|TranslatableMessage $messageKey, array $routeParameters = []): TableItemAction
+    public function addDynamicItemPostAction(string $route, string|TranslatableMessage $labelKey, string $icon, null|string|TranslatableMessage $messageKey = null, array $routeParameters = []): TableItemAction
     {
         return $this->itemActionCollection->addDynamicItemPostAction($route, $labelKey, $icon, $messageKey, $routeParameters);
     }
@@ -193,17 +194,24 @@ abstract class TableAbstract implements TableInterface
 
     public function addTableAction(string $name, string $icon, string|TranslatableMessage $labelKey, null|string|TranslatableMessage $confirmationKey = null): TableAction
     {
-        if (!$labelKey instanceof TranslatableMessage) {
-            $labelKey = new TranslatableMessage($labelKey, [], EMSCoreBundle::TRANS_DOMAIN);
-        }
-        if (null !== $confirmationKey && !$confirmationKey instanceof TranslatableMessage) {
-            $confirmationKey = new TranslatableMessage($confirmationKey, [], EMSCoreBundle::TRANS_DOMAIN);
-        }
-
-        $action = new TableAction($name, $icon, $labelKey, $confirmationKey);
+        $action = TableAction::create($name, $icon, $labelKey, $confirmationKey);
         $this->tableActions[] = $action;
 
         return $action;
+    }
+
+    /**
+     * @param array<string, string> $routeParams
+     */
+    public function addToolbarAction(TranslatableMessage $label, string $icon, string $routeName, array $routeParams = []): TableAction
+    {
+        $toolbarAction = TableAction::create($label->getMessage(), $icon, $label);
+        $toolbarAction->setRoute($routeName, $routeParams);
+        $toolbarAction->setCssClass('btn btn-primary');
+
+        $this->toolbarActions[] = $toolbarAction;
+
+        return $toolbarAction;
     }
 
     /**
@@ -212,6 +220,14 @@ abstract class TableAbstract implements TableInterface
     public function getTableActions(): iterable
     {
         return $this->tableActions;
+    }
+
+    /**
+     * @return TableAction[]
+     */
+    public function getToolbarActions(): array
+    {
+        return $this->toolbarActions;
     }
 
     public function setDefaultOrder(string $orderField, string $direction = 'asc'): self

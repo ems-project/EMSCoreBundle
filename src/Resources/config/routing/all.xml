@@ -16,9 +16,9 @@
             prefix="/channel-admin"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/component.xml"
             prefix="/component"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/uploaded-file.xml"
+    <import resource="@EMSCoreBundle/Resources/config/routing/publisher/uploaded-asset.xml"
             prefix="/publisher/uploaded-file"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/uploaded-file-logs.xml"
+    <import resource="@EMSCoreBundle/Resources/config/routing/admin/uploaded-asset.xml"
             prefix="/admin/uploaded-file-logs"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/uploaded-file-wysiwyg.xml"
             prefix="/browser/uploaded-file"/>
@@ -40,8 +40,6 @@
     <import resource="@EMSCoreBundle/Resources/config/routing/task.xml"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/admin/view.xml"
             prefix="/admin/view"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/admin/file.xml"
-            prefix="/admin/file"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/views.xml"
             prefix="/views"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/admin/job.xml"

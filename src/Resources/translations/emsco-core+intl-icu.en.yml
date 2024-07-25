@@ -1,16 +1,77 @@
-button:
+action:
+    add: Add
     close: Close
+    define: Define
     delete: Delete
+    delete_selected: 'Delete selected'
+    details: Details
+    download_selected: 'Download selected'
+    edit: Edit
     reorder: Reorder
-content_type:
-    plural: 'Content Types'
+    select_all: 'Select all'
+    toggle_visibility: 'Toggle visibility'
+    toggle_visibility_selected: 'Toggle visibility selected'
 core:
+    dashboard:
+        define: |-
+            {define, select,
+                quick_search    {As quick search}
+                landing_page    {As landing page}
+                browser_image   {As image browser}
+                browser_object  {As object browser}
+                browser_file    {As file browser}
+                other           {Undefine}    
+            }
+        definition: |-
+            {value, select,
+                quick_search    {Quick search}
+                landing_page    {Landing page}
+                browser_image   {Image browser}
+                browser_object  {Object browser}
+                browser_file    {File browser}
+                other           {Unknown}    
+            }
     version: 'Version {core} with Symfony {symfony}'
 field:
-    deleted_by: 'Deleted by'
+    alias: Alias
+    available: Available
+    channel: Channel
+    context: Context
+    date_created: 'Date creation'
+    date_modified: 'Date modified'
+    date_upload: 'Date upload'
+    definition: Definition
+    extra: Extra
+    file:
+        size: Size
+        type: Type
+    hash: 'Hash signature'
+    hidden: Hidden
     label: Label
-    modified: 'Last update'
-    modified_by: 'Updated by'
+    last_seen: 'Last seen'
+    message: Message
+    name: Name
+    public_access: 'Public Access'
+    severity: Severity
+    type: Type
+    user: User
+    user_deleted: 'Deleted by'
+    user_impersonator: Impersonator
+    user_modified: 'Modified by'
+    user_uploaded: 'Uploaded by'
+key:
+    actions: Actions
+    admin: Admin
+    channels: Channels
+    content_types: 'Content Types'
+    dashboards: Dashboards
+    forms: Forms
+    logs: Logs
+    loop_count: '#'
+    publishers: Publishers
+    query_searches: QuerySearch
+    uploaded_files: 'Uploaded Files'
+    uploaded_files_logs: 'Uploaded Files Logs'
 log:
     error:
         invalid_table_action: 'Unknown table action'
@@ -21,9 +82,6 @@ log:
 revision:
     draft:
         delete: 'Delete this draft'
-        delete_confirm: 'Modifications made in this draft will be lost'
-        delete_selected: 'Delete selected drafts'
-        delete_selected_confirm: 'All modifications made on those drafts will lost'
         edit: 'Edit draft'
         label: 'Draft in progress'
         title: '{pluralName} drafts in progress'
@@ -34,14 +92,57 @@ revision:
         ouuid: Ouuid
     new: 'New {contentType}'
     trash:
-        delete_confirm: 'Remove trash "{label}" ?'
         label: Trash
         put_back: 'Put back'
         put_back_confirm: 'Put back "{label}" ?'
         put_back_selected: 'Put back selected'
         title: '{pluralName} in trash'
-table:
-    actions: Actions
-    delete_selected: 'Delete selected'
-    delete_selected_confirm: 'Are you sure?'
-    select_all: 'Select all'
+type:
+    delete_confirm: |-
+        {type, select,
+            channel       {Delete the "{label}" channel?}
+            dashboard     {Delete the "{label}" dashboard?}
+            draft         {Modifications made in this draft will be lost}
+            form          {Delete the "{label}" form?}
+            log           {Delete log?}  
+            trash         {Delete trash "{label}" ?}
+            uploaded_file {Delete "{label}" ?}
+            query_search  {Delete the "{label}" QuerySearch?}
+            other         {Are you sure?}    
+        }
+    delete_selected_confirm: |-
+        {type, select,
+            channel       {Delete all selected channels?}
+            dashboard     {Delete all selected dashboards?}
+            draft         {All modifications made on selected drafts will lost?}
+            form          {Delete all selected forms?}
+            log           {Delete all selected logs?}  
+            trash         {Delete all selected trashes?}
+            uploaded_file {Delete all selected uploaded files?}
+            query_search  {Delete all selected QuerySearch?}
+            other         {Delete all selected?}    
+        }
+    reorder: |-
+        {type, select,
+            channel      {Reorder channels}
+            dashboard    {Reorder dashboards}
+            form         {Reorder forms}
+            query_search {Reorder QuerySearch}
+            other        {Reorder}
+        }
+    title_overview: |-
+        {type, select,
+            channel       {List of channels}
+            dashboard     {List of dashboards}
+            form          {List of forms}
+            log           {Logs}  
+            query_search  {List of QuerySearch}  
+            other         {Overview}    
+        }
+    title_sub: |-
+        {type, select,
+            dashboard     {Customize the lobby}
+            form          {Reusable components}
+            log           {Who did what}
+            other         {}    
+        }

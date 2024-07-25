@@ -49,10 +49,8 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
         if ($this->userService->isSuper()) {
             $table->addColumn(t('revision.field.ouuid', [], 'emsco-core'), 'ouuid');
         }
-        $table->addColumnDefinition(new UserTableColumn(t('field.deleted_by', [], 'emsco-core'), 'deletedBy'));
-        $table->addColumnDefinition(new DatetimeTableColumn(t('field.modified', [], 'emsco-core'), 'modified'));
-
-        $table->setLabelAttribute('label');
+        $table->addColumnDefinition(new UserTableColumn(t('field.user_deleted', [], 'emsco-core'), 'deletedBy'));
+        $table->addColumnDefinition(new DatetimeTableColumn(t('field.date_modified', [], 'emsco-core'), 'modified'));
 
         if ($this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::CREATE))) {
             $table->addDynamicItemPostAction(
@@ -74,9 +72,9 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
 
         $table->addDynamicItemPostAction(
             route: Routes::DATA_TRASH_EMPTY,
-            labelKey: t('button.delete', [], 'emsco-core'),
+            labelKey: t('action.delete', [], 'emsco-core'),
             icon: 'trash',
-            messageKey: t('revision.trash.delete_confirm', [], 'emsco-core'),
+            messageKey: t('type.delete_confirm', ['type' => 'trash'], 'emsco-core'),
             routeParameters: [
                 'contentType' => 'content_type_id',
                 'ouuid' => 'ouuid',
@@ -85,8 +83,8 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
         $table->addTableAction(
             name: self::ACTION_EMPTY_TRASH,
             icon: 'fa fa-trash',
-            labelKey: t('table.delete_selected', [], 'emsco-core'),
-            confirmationKey: t('table.delete_selected_confirm', [], 'emsco-core'),
+            labelKey: t('action.delete_selected', [], 'emsco-core'),
+            confirmationKey: t('type.delete_selected_confirm', ['type' => 'trash'], 'emsco-core'),
         )->setCssClass('btn btn-outline-danger');
     }
 

@@ -14,6 +14,8 @@ use EMS\CoreBundle\Form\Data\UserTableColumn;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
 
+use function Symfony\Component\Translation\t;
+
 class LogDataTableType extends AbstractEntityTableType
 {
     public function __construct(LogManager $logManager)
@@ -28,18 +30,51 @@ class LogDataTableType extends AbstractEntityTableType
 
     public function build(EntityTable $table): void
     {
-        $table->setLabelAttribute('id');
-        $table->addColumnDefinition(new DatetimeTableColumn('log.index.column.created', 'created'));
-        $table->addColumn('log.index.column.channel', 'channel');
-        $table->addColumn('log.index.column.level_name', 'levelName');
-        $table->addColumn('log.index.column.message', 'message');
-        $table->addColumnDefinition(new UserTableColumn('log.index.column.username', 'username'));
-        $table->addColumnDefinition(new UserTableColumn('log.index.column.impersonator', 'impersonator'));
-        $table->addItemGetAction(Routes::LOG_VIEW, 'view.actions.view', 'eye');
-        $table->addItemPostAction(Routes::LOG_DELETE, 'view.actions.delete', 'trash', 'view.actions.delete_confirm')->setButtonType('outline-danger');
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'log.actions.delete_selected', 'log.actions.delete_selected_confirm')
-            ->setCssClass('btn btn-outline-danger');
-        $table->setDefaultOrder('created', 'desc');
+        $table->setDefaultOrder('created', 'desc')->setLabelAttribute('id');
+
+        $table->addColumnDefinition(new DatetimeTableColumn(
+            titleKey: t('field.date_created', [], 'emsco-core'),
+            attribute: 'created'
+        ));
+        $table->addColumn(
+            titleKey: t('field.channel', [], 'emsco-core'),
+            attribute: 'channel'
+        );
+        $table->addColumn(
+            titleKey: t('field.severity', [], 'emsco-core'),
+            attribute: 'levelName'
+        );
+        $table->addColumn(
+            titleKey: t('field.message', [], 'emsco-core'),
+            attribute: 'message'
+        );
+        $table->addColumnDefinition(new UserTableColumn(
+            titleKey: t('field.user', [], 'emsco-core'),
+            attribute: 'username'
+        ));
+        $table->addColumnDefinition(new UserTableColumn(
+            titleKey: t('field.user_impersonator', [], 'emsco-core'),
+            attribute: 'impersonator'
+        ));
+
+        $table->addItemGetAction(
+            route: Routes::LOG_VIEW,
+            labelKey: t('action.details', [], 'emsco-core'),
+            icon: 'eye'
+        );
+        $table->addItemPostAction(
+            route: Routes::LOG_DELETE,
+            labelKey: t('action.delete', [], 'emsco-core'),
+            icon: 'trash',
+            messageKey: t('type.delete_confirm', ['type' => 'log'], 'emsco-core')
+        )->setButtonType('outline-danger');
+
+        $table->addTableAction(
+            name: TableAbstract::DELETE_ACTION,
+            icon: 'fa fa-trash',
+            labelKey: t('action.delete_selected', [], 'emsco-core'),
+            confirmationKey: t('type.delete_selected_confirm', ['type' => 'log'], 'emsco-core')
+        )->setCssClass('btn btn-outline-danger');
     }
 
     public function getRoles(): array

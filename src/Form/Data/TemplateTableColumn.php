@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\Data;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
 
 class TemplateTableColumn extends TableColumn
 {
@@ -63,7 +64,7 @@ class TemplateTableColumn extends TableColumn
                 self::CELL_CLASS => '',
                 self::CELL_RENDER => true,
             ])
-            ->setAllowedTypes(self::LABEL, ['string'])
+            ->setAllowedTypes(self::LABEL, ['string', TranslatableMessage::class])
             ->setAllowedTypes(self::TEMPLATE, ['string'])
             ->setAllowedTypes(self::ORDER_FIELD, ['string', 'null'])
             ->setAllowedTypes(self::CELL_TYPE, ['string'])

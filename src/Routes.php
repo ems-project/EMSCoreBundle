@@ -59,6 +59,11 @@ class Routes
     final public const SCHEDULE_EDIT = 'emsco_schedule_edit';
     final public const SCHEDULE_DUPLICATE = 'emsco_schedule_duplicate';
     final public const SCHEDULE_DELETE = 'emsco_schedule_delete';
+    final public const UPLOAD_ASSET_PUBLISHER_OVERVIEW = 'emsco_uploaded_asset_publisher_overview';
+    final public const UPLOAD_ASSET_PUBLISHER_HIDE = 'emsco_uploaded_asset_publisher_hide';
+    final public const UPLOAD_ASSET_ADMIN_OVERVIEW = 'emsco_uploaded_asset_admin_overview';
+    final public const UPLOAD_ASSET_ADMIN_TOGGLE_VISIBILITY = 'emsco_uploaded_asset_admin_toggle_visibility';
+    final public const UPLOAD_ASSET_ADMIN_DELETE = 'emsco_uploaded_asset_admin_delete';
     final public const USER_INDEX = 'emsco_user_index';
     final public const USER_ADD = 'emsco_user_add';
     final public const USER_EDIT = 'emsco_user_edit';

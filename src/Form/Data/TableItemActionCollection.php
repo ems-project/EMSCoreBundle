@@ -16,7 +16,7 @@ final class TableItemActionCollection implements \IteratorAggregate, \Countable
     private array $itemActions = [];
 
     public function __construct(
-        public ?string $label = null,
+        public null|string|TranslatableMessage $label = null,
         public ?string $icon = null
     ) {
     }

@@ -251,7 +251,7 @@
 
         <!-- Dashboard -->
         <service id="EMS\CoreBundle\Controller\Dashboard\DashboardController" public="true">
-            <argument type="service" id="logger"/>
+            <argument type="service" id="emsco.logger"/>
             <argument type="service" id="ems.dashboard.manager" />
             <argument type="service" id="emsco.data_table.factory" />
             <argument>%ems_core.template_namespace%</argument>
@@ -268,7 +268,7 @@
 
         <!-- Form -->
         <service id="EMS\CoreBundle\Controller\Form\FormController" public="true">
-            <argument type="service" id="logger"/>
+            <argument type="service" id="emsco.logger"/>
             <argument type="service" id="ems.form.manager" />
             <argument type="service" id="ems.form.field-type.manager" />
             <argument type="service" id="emsco.data_table.factory" />
@@ -305,7 +305,7 @@
         <service id="EMS\CoreBundle\Controller\Log\LogController" public="true">
             <argument type="service" id="ems.log.manager" />
             <argument type="service" id="emsco.data_table.factory" />
-            <argument type="service" id="logger" />
+            <argument type="service" id="emsco.logger" />
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
@@ -476,7 +476,7 @@
 
         <!-- Controllers -->
         <service id="EMS\CoreBundle\Controller\ChannelController" public="true">
-            <argument type="service" id="logger" />
+            <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.channel" />
             <argument type="service" id="emsco.data_table.factory" />
             <argument>%ems_core.template_namespace%</argument>
@@ -544,7 +544,7 @@
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\QuerySearchController" public="true">
-            <argument type="service" id="logger" />
+            <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.query_search" />
             <argument type="service" id="emsco.data_table.factory" />
             <argument>%ems_core.template_namespace%</argument>

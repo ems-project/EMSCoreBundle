@@ -113,18 +113,17 @@
             <argument type="service" id="ems.service.query_search" />
             <tag name="emsco.datatable" />
         </service>
-        <service id="emsco.data_table.uploaded_file_log" class="EMS\CoreBundle\DataTable\Type\UploadedFileLogDataTableType">
+        <service id="emsco.data_table.uploaded_asset" class="EMS\CoreBundle\DataTable\Type\UploadedAsset\UploadedAssetDataTableType">
+            <argument type="service" id="ems.repository.uploaded_asset_repository" />
+            <argument type="service" id="router" />
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.uploaded_asset.admin" class="EMS\CoreBundle\DataTable\Type\UploadedAsset\UploadedAssetAdminDataTableType">
             <argument type="service" id="ems.service.file" />
             <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.user" class="EMS\CoreBundle\DataTable\Type\UserDataTableType">
             <argument type="service" id="ems.service.user" />
-            <argument>%ems_core.circles_object%</argument>
-            <tag name="emsco.datatable" />
-        </service>
-        <service id="emsco.data_table.wysiwyg_uploaded_file" class="EMS\CoreBundle\DataTable\Type\WysiwygUploadedFileDataTableType">
-            <argument type="service" id="ems.service.file" />
-            <argument type="service" id="router" />
             <argument>%ems_core.circles_object%</argument>
             <tag name="emsco.datatable" />
         </service>

@@ -1,17 +1,14 @@
 {% extends '@EMSCore/base-light.html.twig' %}
-{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain 'emsco-core' %}
 
-{% block title %}{{ 'uploaded-file.index.title'|trans }}{% endblock %}
+{% block title %}{{ 'key.uploaded_files'|trans }}{% endblock %}
 {% block pagetitle %}{{ block('title') }}{% endblock %}
 {% block subtitle %}{% endblock %}
 {% block containerClass %}{% endblock %}
 
 {% block body %}
-
     {% form_theme form '@EMSCore/form/forms.html.twig' %}
-    {{ form(form, {
-        reorder_label: 'uploaded-file.index.reorder'
-    }) }}
+    {{ form(form) }}
 {% endblock %}
 
 {% block javascripts %}

@@ -94,46 +94,6 @@ class UploadedAssetRepository extends EntityRepository
     }
 
     /**
-     * @return array<UploadedAsset>
-     */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
-    {
-        $qb = $this->createQueryBuilder('ua');
-        $qb->setFirstResult($from)
-            ->setMaxResults($size);
-
-        if (null !== $orderField) {
-            $qb->orderBy(\sprintf('ua.%s', $orderField), $orderDirection);
-        }
-
-        $this->addSearchFilters($qb, $searchValue);
-
-        return $qb->getQuery()->execute();
-    }
-
-    /**
-     * @return array<UploadedAsset>
-     */
-    public function getAvailable(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
-    {
-        $qb = $this->createQueryBuilder('ua');
-        $qb->where($qb->expr()->eq('ua.available', ':true'));
-        $qb->setFirstResult($from)
-        ->setMaxResults($size);
-        $qb->setParameters([
-            ':true' => true,
-        ]);
-
-        if (null !== $orderField) {
-            $qb->orderBy(\sprintf('ua.%s', $orderField), $orderDirection);
-        }
-
-        $this->addSearchFilters($qb, $searchValue);
-
-        return $qb->getQuery()->execute();
-    }
-
-    /**
      * @param array<string> $ids
      *
      * @return array<UploadedAsset>
@@ -146,26 +106,6 @@ class UploadedAssetRepository extends EntityRepository
             ->orderBy('ua.created', 'desc');
 
         return $qb->getQuery()->execute();
-    }
-
-    public function removeByHash(string $hash): void
-    {
-        $qb = $this->createQueryBuilder('ua');
-        $qb->delete();
-        $qb->where($qb->expr()->eq('ua.sha1', ':hash'));
-        $qb->setParameters([
-            ':hash' => $hash,
-        ]);
-        $qb->getQuery()->execute();
-    }
-
-    public function removeById(string $id): void
-    {
-        /** @var UploadedAsset $uploadedAsset */
-        $uploadedAsset = $this->findOneBy([
-            'id' => $id,
-        ]);
-        $this->remove($uploadedAsset);
     }
 
     public function remove(UploadedAsset $uploadedAsset): void
@@ -193,39 +133,6 @@ class UploadedAssetRepository extends EntityRepository
         throw new \RuntimeException(\sprintf('Unexpected class object %s', UploadedAsset::class));
     }
 
-    public function searchCount(string $searchValue = '', bool $availableOnly = false): int
-    {
-        $qb = $this->createQueryBuilder('ua');
-        $qb->select('count(ua.id)');
-        $this->addSearchFilters($qb, $searchValue);
-        if ($availableOnly) {
-            $qb->where($qb->expr()->eq('ua.available', ':true'));
-            $qb->setParameters([
-                ':true' => true,
-            ]);
-        }
-
-        try {
-            return \intval($qb->getQuery()->getSingleScalarResult());
-        } catch (NonUniqueResultException) {
-            return 0;
-        }
-    }
-
-    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
-    {
-        if (\strlen($searchValue) > 0) {
-            $or = $qb->expr()->orX(
-                $qb->expr()->like('LOWER(ua.user)', ':term'),
-                $qb->expr()->like('LOWER(ua.sha1)', ':term'),
-                $qb->expr()->like('LOWER(ua.type)', ':term'),
-                $qb->expr()->like('LOWER(ua.name)', ':term')
-            );
-            $qb->andWhere($or)
-                ->setParameter(':term', '%'.\strtolower($searchValue).'%');
-        }
-    }
-
     public function update(UploadedAsset $UploadedAsset): void
     {
         $this->getEntityManager()->persist($UploadedAsset);
@@ -242,46 +149,6 @@ class UploadedAssetRepository extends EntityRepository
         }
         $uploadedAsset->setHidden(!$uploadedAsset->isHidden());
         $this->update($uploadedAsset);
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
-    {
-        $qb = $this->createQueryBuilder('ua');
-        $qb->select('ua.sha1 as id', 'max(ua.name) as name', 'max(ua.size) as size', 'max(ua.type) as type', 'min(ua.created) as created', 'max(ua.modified) as modified');
-        $qb->setFirstResult($from)
-            ->setMaxResults($size);
-        $qb->andWhere($qb->expr()->eq('ua.hidden', ':false'));
-        $qb->andWhere($qb->expr()->eq('ua.available', ':true'));
-        $qb->setParameters([
-            ':false' => false,
-            ':true' => true,
-        ]);
-        $this->addSearchFilters($qb, $searchValue);
-        $qb->groupBy('ua.sha1');
-
-        if (null !== $orderField) {
-            $qb->orderBy(\sprintf('%s', $orderField), $orderDirection);
-        }
-
-        return $qb->getQuery()->getArrayResult();
-    }
-
-    public function countGroupByHashQuery(string $searchValue): int
-    {
-        $qb = $this->createQueryBuilder('ua');
-        $qb->select('count(DISTINCT ua.sha1)');
-        $qb->andWhere($qb->expr()->eq('ua.hidden', ':false'));
-        $qb->andWhere($qb->expr()->eq('ua.available', ':true'));
-        $qb->setParameters([
-            ':false' => false,
-            ':true' => true,
-        ]);
-        $this->addSearchFilters($qb, $searchValue);
-
-        return \intval($qb->getQuery()->getSingleScalarResult());
     }
 
     /**
@@ -321,5 +188,33 @@ class UploadedAssetRepository extends EntityRepository
         $qb->groupBy('ua.sha1');
 
         return \array_map(fn ($value): string => \strval($value['id'] ?? null), $qb->getQuery()->getScalarResult());
+    }
+
+    public function makeQueryBuilder(
+        ?bool $hidden = null,
+        ?bool $available = null,
+        string $searchValue = ''
+    ): QueryBuilder {
+        $qb = $this->createQueryBuilder('ua');
+
+        if (null !== $hidden) {
+            $qb->andWhere($qb->expr()->eq('ua.hidden', $qb->expr()->literal($hidden)));
+        }
+        if (null !== $available) {
+            $qb->andWhere($qb->expr()->eq('ua.available', $qb->expr()->literal($available)));
+        }
+
+        if ('' !== $searchValue) {
+            $qb
+                ->andWhere($qb->expr()->orX(
+                    $qb->expr()->like('LOWER(ua.user)', ':term'),
+                    $qb->expr()->like('LOWER(ua.sha1)', ':term'),
+                    $qb->expr()->like('LOWER(ua.type)', ':term'),
+                    $qb->expr()->like('LOWER(ua.name)', ':term')
+                ))
+                ->setParameter(':term', '%'.\strtolower($searchValue).'%');
+        }
+
+        return $qb;
     }
 }

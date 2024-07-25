@@ -4,28 +4,32 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Form;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
+use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Form\FieldTypeManager;
 use EMS\CoreBundle\Core\Form\FormManager;
 use EMS\CoreBundle\DataTable\Type\FormDataTableType;
 use EMS\CoreBundle\Entity\Form;
-use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\FormType;
 use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Routes;
 use EMS\Helpers\Standard\Json;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Form as ComponentForm;
 use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Symfony\Component\Translation\t;
+
 class FormController extends AbstractController
 {
+    use CoreControllerTrait;
+
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly FormManager $formManager,
         private readonly FieldTypeManager $fieldTypeManager,
         private readonly DataTableFactory $dataTableFactory,
@@ -37,30 +41,32 @@ class FormController extends AbstractController
     {
         $table = $this->dataTableFactory->create(FormDataTableType::class);
 
-        $form = $this->createForm(TableType::class, $table);
+        $form = $this->createForm(TableType::class, $table, [
+            'reorder_label' => t('type.reorder', ['type' => 'form'], 'emsco-core'),
+        ]);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form instanceof ComponentForm && ($action = $form->getClickedButton()) instanceof SubmitButton) {
-                switch ($action->getName()) {
-                    case EntityTable::DELETE_ACTION:
-                        $this->formManager->deleteByIds($table->getSelected());
-                        break;
-                    case TableType::REORDER_ACTION:
-                        $newOrder = TableType::getReorderedKeys($form->getName(), $request);
-                        $this->formManager->reorderByIds($newOrder);
-                        break;
-                    default:
-                        $this->logger->error('log.controller.channel.unknown_action');
-                }
-            } else {
-                $this->logger->error('log.controller.channel.unknown_action');
-            }
+            match ($this->getClickedButtonName($form)) {
+                TableAbstract::DELETE_ACTION => $this->formManager->deleteByIds($table->getSelected()),
+                TableType::REORDER_ACTION => $this->formManager->reorderByIds(
+                    ids: TableType::getReorderedKeys($form->getName(), $request)
+                ),
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+            };
 
             return $this->redirectToRoute(Routes::FORM_ADMIN_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/admin-form/index.html.twig", [
+        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
             'form' => $form->createView(),
+            'icon' => 'fa fa-keyboard-o',
+            'title' => t('type.title_overview', ['type' => 'form'], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'form'], 'emsco-core'),
+            'breadcrumb' => [
+                'admin' => t('key.admin', [], 'emsco-core'),
+                'page' => t('key.forms', [], 'emsco-core'),
+            ],
         ]);
     }
 

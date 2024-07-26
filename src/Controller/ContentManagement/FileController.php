@@ -17,7 +17,6 @@ use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -53,16 +52,6 @@ class FileController extends AbstractController
     public function downloadFile(string $sha1, Request $request): Response
     {
         return $this->fileService->getStreamResponse($sha1, ResponseHeaderBag::DISPOSITION_ATTACHMENT, $request);
-    }
-
-    public function softDeleteFile(Request $request, string $id): Response
-    {
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            throw new AccessDeniedException($request->getPathInfo());
-        }
-        $this->fileService->removeSingleFileEntity([$id]);
-
-        return $this->redirectToRoute('ems_core_uploaded_file_logs');
     }
 
     public function extractFileContentForced(Request $request, string $sha1): Response

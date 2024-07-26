@@ -6,6 +6,7 @@
 {% endblock type %}
 
 {% block definition %}
-    {% trans_default_domain 'EMSCoreBundle' %}
-    {% if line.data.definition %}{{ "dashboard.definition.#{line.data.definition}"|trans }}{% endif %}
+    {% if line.data.definition %}
+        {{ t('core.dashboard.definition', {'value': line.data.definition}, 'emsco-core')|trans }}
+    {% endif %}
 {% endblock definition %}

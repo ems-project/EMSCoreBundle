@@ -272,7 +272,6 @@ class EditController extends AbstractController
 
         return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
             'form' => $form->createView(),
-            'contentType' => $contentTypeId,
             'icon' => 'fa fa-fire',
             'title' => t('revision.draft.title', ['pluralName' => $contentTypeId->getPluralName()], 'emsco-core'),
             'breadcrumb' => [

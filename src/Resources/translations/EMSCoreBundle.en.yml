@@ -76,13 +76,7 @@ log:
         unreferenced_not_found: 'Unreferenced content type not found'
         updated: 'The content type %contenttype% has been updated'
     controller:
-        channel:
-            unknown_action: 'Unknown action'
-        query_search:
-            unknown_action: 'Unknown action'
         release:
-            unknown_action: 'Unknown action'
-        uploaded-file-logs:
             unknown_action: 'Unknown action'
         schedule:
             unknown_action: 'Unknown action'
@@ -247,17 +241,6 @@ log:
 form:
     field-type-type:
         root: 'Form''s root'
-    actions:
-        reorder: 'Reorder'
-        delete_selected: 'Delete selected forms'
-        delete_confirm: 'Are you sure?'
-        delete: Delete
-        edit: Edit
-    index:
-        reorder: Reorder
-        column:
-            name: Name
-            label: Label
     analyzer:
         char_filter:
             html_strip: 'HTML Strip'
@@ -435,34 +418,6 @@ ROLE_SUPER_ADMIN: 'Super Admin'
 ROLE_SUPER_AUTHOR: 'Super Author'
 ROLE_SUPER_PUBLISHER: 'Super Publisher'
 ROLE_SUPER_USER: 'Super User'
-dashboard:
-    index:
-        reorder: Reorder
-        column:
-            name: Name
-            label: Label
-            type: Type
-            definition: Definition
-            public: Public
-    definition:
-        quick_search: 'Quick search'
-        landing_page: 'Landing page'
-        browser_image: 'Image browser'
-        browser_object: 'Object browser'
-        browser_file: 'File browser'
-    actions:
-        define:
-            title: 'Define'
-            quick_search: 'As quick search'
-            landing_page: 'As landing page'
-            browser_image: 'As image browser'
-            browser_object: 'As object browser'
-            browser_file: 'As file browser'
-        undefine: 'Undefine'
-        delete_selected: 'Deleted selected'
-        edit: Edit
-        delete: Delete
-        delete_confirm: 'Do you confirm'
 ROLE_SUPER_WEBMASTER: 'Super Webmaster'
 ROLE_TASK_MANAGER: 'Task Manager'
 ROLE_TRADUCTOR: Traductor
@@ -487,26 +442,12 @@ action:
             type: Type
         reorder: Reorder
 channel:
-    actions:
-        delete: Delete
-        delete_confirm: 'Delete the "%label%" channel?'
-        delete_selected: 'Delete selected'
-        delete_selected_confirm: 'Delete all selected channels?'
-        edit: Edit
     add:
         save: Create
         title: 'Add a channel'
     edit:
         save: Save
         title: 'Edit a channel'
-    index:
-        column:
-            alias: Alias
-            label: Label
-            name: Name
-            public: 'Public access'
-        reorder: 'Reorder channels'
-        title: 'List of channels'
     menu: Channels
 environment:
     index:
@@ -602,26 +543,12 @@ form_submissions:
         success: 'Form submission with id "%id%" has been deleted!'
     title: 'Form Submissions'
 query_search:
-    actions:
-        delete: Delete
-        delete_confirm: 'Delete the "%label%" QuerySearch?'
-        delete_selected: 'Delete selected'
-        delete_selected_confirm: 'Delete all selected QuerySearch?'
-        edit: Edit
     add:
         save: Create
         title: 'Add a QuerySearch'
     edit:
         save: Save
         title: 'Edit a QuerySearch'
-    index:
-        column:
-            alias: Alias
-            label: Label
-            name: Name
-            public: 'Public access'
-        reorder: 'Reorder QuerySearch'
-        title: 'List of QuerySearch'
     menu: QuerySearch
 release:
     actions:
@@ -856,38 +783,6 @@ task:
         version_next_tag: New versions
         submit: Search
         reset: Clear
-uploaded-file:
-    action:
-        download_selected: 'Download selected'
-        hide-show: Hide/Show
-        soft-delete: Delete
-        delete: Delete
-    hide-show-confirm: 'Toggle file visibility ?'
-    uploaded-file:
-        hide-show: 'Toggle visibility'
-        download_selected: 'Download selected'
-        soft_delete_selected: 'Delete selected'
-        delete-all_confirm: 'Selected files will be removed'
-    index:
-        column:
-            available: Available
-            created: 'Uploaded at'
-            head_last: 'Last seen'
-            hidden: Hidden
-            modified: 'Last modified'
-            name: Name
-            sha1: 'Hash signature'
-            size: Size
-            kind: Kind
-            date-modified: 'Date modified'
-            date-added: 'Date added'
-            type: 'Mime type'
-            username: By
-        title: 'Uploaded Files'
-    menu: 'Uploaded files'
-    soft-delete-confirm: 'Are you sure you want to delete this file?'
-    delete-all: 'Delete selected'
-    delete-confirm: 'This will be removed'
 user:
     action:
         delete: Delete

@@ -77,7 +77,7 @@ final class TableType extends AbstractType
             ])->add(self::REORDER_ACTION, SubmitEmsType::class, [
                 'attr' => ['class' => 'btn btn-default'],
                 'icon' => 'fa fa-reorder',
-                'label' => t('button.reorder', [], 'emsco-core'),
+                'label' => t('action.reorder', [], 'emsco-core'),
             ]);
         }
         if ($data->supportsTableActions()) {
@@ -101,8 +101,8 @@ final class TableType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => TableInterface::class,
-            'reorder_label' => 'table.index.button.reorder',
-            'add_label' => 'table.index.button.add',
+            'reorder_label' => t('action.reorder', [], 'emsco-core'),
+            'add_label' => t('action.add', [], 'emsco-core'),
             'title_label' => false,
         ]);
     }

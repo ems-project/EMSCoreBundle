@@ -4,25 +4,27 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\DataTable\Type\QuerySearchDataTableType;
 use EMS\CoreBundle\Entity\QuerySearch;
-use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\QuerySearchType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Service\QuerySearchService;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Symfony\Component\Translation\t;
+
 final class QuerySearchController extends AbstractController
 {
+    use CoreControllerTrait;
+
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly QuerySearchService $querySearchService,
         private readonly DataTableFactory $dataTableFactory,
         private readonly string $templateNamespace
@@ -33,30 +35,31 @@ final class QuerySearchController extends AbstractController
     {
         $table = $this->dataTableFactory->create(QuerySearchDataTableType::class);
 
-        $form = $this->createForm(TableType::class, $table);
+        $form = $this->createForm(TableType::class, $table, [
+            'reorder_label' => t('type.reorder', ['type' => 'query_search'], 'emsco-core'),
+        ]);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
-                switch ($action->getName()) {
-                    case EntityTable::DELETE_ACTION:
-                        $this->querySearchService->deleteByIds($table->getSelected());
-                        break;
-                    case TableType::REORDER_ACTION:
-                        $newOrder = TableType::getReorderedKeys($form->getName(), $request);
-                        $this->querySearchService->reorderByIds($newOrder);
-                        break;
-                    default:
-                        $this->logger->error('log.controller.query_search.unknown_action');
-                }
-            } else {
-                $this->logger->error('log.controller.query_search.unknown_action');
-            }
+            match ($this->getClickedButtonName($form)) {
+                TableAbstract::DELETE_ACTION => $this->querySearchService->deleteByIds($table->getSelected()),
+                TableType::REORDER_ACTION => $this->querySearchService->reorderByIds(
+                    ids: TableType::getReorderedKeys($form->getName(), $request)
+                ),
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+            };
 
             return $this->redirectToRoute('ems_core_query_search_index');
         }
 
-        return $this->render("@$this->templateNamespace/query-search/index.html.twig", [
+        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
             'form' => $form->createView(),
+            'icon' => 'fa fa-list-alt',
+            'title' => t('type.title_overview', ['type' => 'query_search'], 'emsco-core'),
+            'breadcrumb' => [
+                'admin' => t('key.admin', [], 'emsco-core'),
+                'page' => t('key.query_searches', [], 'emsco-core'),
+            ],
         ]);
     }
 

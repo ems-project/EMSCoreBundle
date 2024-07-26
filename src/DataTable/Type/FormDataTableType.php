@@ -11,6 +11,8 @@ use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
 
+use function Symfony\Component\Translation\t;
+
 class FormDataTableType extends AbstractEntityTableType
 {
     public function __construct(FormManager $entityService)
@@ -21,15 +23,40 @@ class FormDataTableType extends AbstractEntityTableType
     public function build(EntityTable $table): void
     {
         $table->setLabelAttribute('label');
-        $table->addColumn('table.index.column.loop_count', 'orderKey');
-        $table->addColumn('form.index.column.name', 'name');
-        $table->addColumn('form.index.column.label', 'label');
-        $table->addItemGetAction(Routes::FORM_ADMIN_EDIT, 'form.actions.edit', 'pencil');
-        $table->addItemGetAction(Routes::FORM_ADMIN_REORDER, 'form.actions.reorder', 'reorder');
-        $table->addItemPostAction(Routes::FORM_ADMIN_DELETE, 'form.actions.delete', 'trash', 'form.actions.delete_confirm')->setButtonType('outline-danger');
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'form.actions.delete_selected', 'form.actions.delete_selected_confirm')
-            ->setCssClass('btn btn-outline-danger');
-        $table->setDefaultOrder('orderKey');
+        $table->setDefaultOrder('orderKey')->setLabelAttribute('label');
+
+        $table->addColumn(t('key.loop_count', [], 'emsco-core'), 'orderKey');
+        $table->addColumn(t('field.label', [], 'emsco-core'), 'label');
+        $table->addColumn(t('field.name', [], 'emsco-core'), 'name');
+
+        $table->addItemGetAction(
+            route: Routes::FORM_ADMIN_EDIT,
+            labelKey: t('action.edit', [], 'emsco-core'),
+            icon: 'pencil'
+        );
+        $table->addItemGetAction(
+            route: Routes::FORM_ADMIN_REORDER,
+            labelKey: t('action.reorder', [], 'emsco-core'),
+            icon: 'reorder'
+        );
+        $table->addItemPostAction(
+            route: Routes::FORM_ADMIN_DELETE,
+            labelKey: t('action.delete', [], 'emsco-core'),
+            icon: 'trash',
+            messageKey: t('type.delete_confirm', ['type' => 'form'], 'emsco-core')
+        )->setButtonType('outline-danger');
+
+        $table->addToolbarAction(
+            label: t('action.add', [], 'emsco-core'),
+            icon: 'fa fa-plus',
+            routeName: Routes::FORM_ADMIN_ADD
+        );
+        $table->addTableAction(
+            name: TableAbstract::DELETE_ACTION,
+            icon: 'fa fa-trash',
+            labelKey: t('action.delete_selected', [], 'emsco-core'),
+            confirmationKey: t('type.delete_selected_confirm', ['type' => 'form'], 'emsco-core')
+        )->setCssClass('btn btn-outline-danger');
     }
 
     public function getRoles(): array

@@ -22,7 +22,7 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
     /** @var array<mixed> */
     protected array $options = [];
     /** @var int */
-    protected $orderKey;
+    protected $orderKey = 0;
 
     public function __construct()
     {

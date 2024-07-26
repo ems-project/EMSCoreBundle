@@ -22,7 +22,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
     /** @var array<mixed> */
     protected array $options = [];
     /** @var int */
-    protected $orderKey;
+    protected $orderKey = 0;
 
     public function __construct()
     {

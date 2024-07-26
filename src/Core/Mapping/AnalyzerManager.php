@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Core\Mapping;
 
 use EMS\CommonBundle\Entity\EntityInterface;
@@ -13,19 +15,60 @@ class AnalyzerManager implements EntityServiceInterface
     {
     }
 
-    public function isSortable(): bool
+    public function count(string $searchValue = '', $context = null): int
     {
-        return true;
+        return (int) $this->analyzerRepository->makeQueryBuilder(searchValue: $searchValue)
+            ->select('count(a.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    {
+        $analyzer = Analyzer::fromJson($json);
+        if (null !== $name && $analyzer->getName() !== $name) {
+            throw new \RuntimeException(\sprintf('Analyzer name mismatched: %s vs %s', $analyzer->getName(), $name));
+        }
+        $this->analyzerRepository->update($analyzer);
+
+        return $analyzer;
+    }
+
+    public function delete(Analyzer $analyzer): void
+    {
+        $this->analyzerRepository->delete($analyzer);
+    }
+
+    public function deleteByIds(string ...$ids): void
+    {
+        $analyzers = $this->analyzerRepository->getByIds(...$ids);
+        foreach ($analyzers as $analyzer) {
+            $this->analyzerRepository->delete($analyzer);
+        }
+    }
+
+    public function deleteByItemName(string $name): string
+    {
+        $analyzer = $this->analyzerRepository->findByName($name);
+        if (null === $analyzer) {
+            throw new \RuntimeException(\sprintf('Analyzer %s not found', $name));
+        }
+        $id = $analyzer->getId();
+        $this->analyzerRepository->delete($analyzer);
+
+        return \strval($id);
     }
 
     public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
-        return $this->analyzerRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
-    }
+        $qb = $this->analyzerRepository->makeQueryBuilder(searchValue: $searchValue);
+        $qb->setFirstResult($from)->setMaxResults($size);
 
-    public function getEntityName(): string
-    {
-        return 'analyzer';
+        if (null !== $orderField) {
+            $qb->orderBy(\sprintf('a.%s', $orderField), $orderDirection);
+        }
+
+        return $qb->getQuery()->execute();
     }
 
     public function getAliasesName(): array
@@ -41,14 +84,39 @@ class AnalyzerManager implements EntityServiceInterface
         ];
     }
 
-    public function count(string $searchValue = '', $context = null): int
-    {
-        return $this->analyzerRepository->counter($searchValue);
-    }
-
     public function getByItemName(string $name): ?EntityInterface
     {
         return $this->analyzerRepository->findByName($name);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'analyzer';
+    }
+
+    public function isSortable(): bool
+    {
+        return true;
+    }
+
+    public function reorderByIds(string ...$ids): void
+    {
+        $counter = 1;
+
+        foreach ($ids as $id) {
+            $analyzer = $this->analyzerRepository->getById($id);
+            $analyzer->setOrderKey($counter++);
+            $this->analyzerRepository->update($analyzer);
+        }
+    }
+
+    public function update(Analyzer $analyzer): void
+    {
+        if (0 === $analyzer->getOrderKey()) {
+            $analyzer->setOrderKey($this->count() + 1);
+        }
+
+        $this->analyzerRepository->update($analyzer);
     }
 
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
@@ -57,28 +125,5 @@ class AnalyzerManager implements EntityServiceInterface
         $this->analyzerRepository->update($analyzer);
 
         return $analyzer;
-    }
-
-    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
-    {
-        $analyzer = Analyzer::fromJson($json);
-        if (null !== $name && $analyzer->getName() !== $name) {
-            throw new \RuntimeException(\sprintf('Analyzer name mismatched: %s vs %s', $analyzer->getName(), $name));
-        }
-        $this->analyzerRepository->update($analyzer);
-
-        return $analyzer;
-    }
-
-    public function deleteByItemName(string $name): string
-    {
-        $analyzer = $this->analyzerRepository->findByName($name);
-        if (null === $analyzer) {
-            throw new \RuntimeException(\sprintf('Analyzer %s not found', $name));
-        }
-        $id = $analyzer->getId();
-        $this->analyzerRepository->delete($analyzer);
-
-        return \strval($id);
     }
 }

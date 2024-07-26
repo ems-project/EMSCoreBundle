@@ -2,18 +2,21 @@
 
 {% block title %}{{ title|trans }}{% endblock %}
 {% block pagetitle %}{{ pageTitle|default(title)|trans }}{% endblock %}
+{% block subtitle %}{% if subTitle is defined %}<small>{{ subTitle|trans }}</small>{% endif %}{% endblock %}
 
 {% block breadcrumb %}
 	{% if breadcrumb is defined %}
 		<ol class="breadcrumb">
 			{% for name, item in breadcrumb %}
 				{% if name == 'contentType' %}
-					<li>{{ t('content_type.plural', [], 'emsco-core')|trans }}</li>
+					<li>{{ t('key.content_types', [], 'emsco-core')|trans }}</li>
 					<li>
 						<i class="{{ item.icon|default('fa fa-book') }}"></i>&nbsp;{{ item.pluralName }}
 					</li>
 				{% elseif name == 'page' %}
 					<li>{% if icon is defined %}<i class="{{ icon }}"></i>{% endif %}&nbsp;{{ item|trans }}</li>
+				{% else %}
+					<li>{{ item|trans }}</li>
 				{% endif %}
 			{% endfor %}
 		</ol>

@@ -2,184 +2,122 @@
 
 namespace EMS\CoreBundle\Controller;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
-use EMS\CoreBundle\DataTable\Type\UploadedFileLogDataTableType;
-use EMS\CoreBundle\Form\Data\BytesTableColumn;
-use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
-use EMS\CoreBundle\Form\Data\QueryTable;
+use EMS\CoreBundle\DataTable\Type\UploadedAsset\UploadedAssetAdminDataTableType;
+use EMS\CoreBundle\DataTable\Type\UploadedAsset\UploadedAssetDataTableType;
+use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Form\Data\TableAbstract;
-use EMS\CoreBundle\Form\Data\TranslationTableColumn;
 use EMS\CoreBundle\Form\Form\TableType;
-use EMS\CoreBundle\Helper\DataTableRequest;
+use EMS\CoreBundle\Roles;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\FileService;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\SubmitButton;
-use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Symfony\Component\Translation\t;
+
 class UploadedFileController extends AbstractController
 {
-    /** @var string */
-    final public const SOFT_DELETE_ACTION = 'soft_delete';
-    /** @var string */
-    final public const HIDE_ACTION = 'hide';
+    use CoreControllerTrait;
 
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly FileService $fileService,
         private readonly DataTableFactory $dataTableFactory,
         private readonly string $templateNamespace
     ) {
     }
 
-    public function ajaxDataTableGroupedByHash(Request $request): Response
+    public function adminOverview(Request $request): Response
     {
-        $table = $this->initFileTable();
-        $dataTableRequest = DataTableRequest::fromRequest($request);
-        $table->resetIterator($dataTableRequest);
-
-        return $this->render("@$this->templateNamespace/datatable/ajax.html.twig", [
-            'dataTableRequest' => $dataTableRequest,
-            'table' => $table,
-        ], new JsonResponse());
-    }
-
-    public function index(Request $request): Response
-    {
-        $table = $this->initFileTable();
+        $table = $this->dataTableFactory->create(UploadedAssetAdminDataTableType::class);
 
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
-                switch ($action->getName()) {
-                    case TableAbstract::DOWNLOAD_ACTION:
-                        $ids = $this->fileService->hashesToIds($table->getSelected());
 
-                        return $this->downloadMultiple($ids);
-                    case self::HIDE_ACTION:
-                        if (!$this->isGranted('ROLE_PUBLISHER')) {
-                            throw new AccessDeniedException($request->getPathInfo());
-                        }
-                        $this->fileService->hideByHashes($table->getSelected());
-                }
-            } else {
-                $this->logger->error('log.controller.uploaded-file.unknown_action');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $fileIds = $table->getSelected();
+
+            if (TableAbstract::DOWNLOAD_ACTION === $this->getClickedButtonName($form)) {
+                return $this->fileService->createDownloadForMultiple(fileIds: $fileIds);
             }
 
-            return $this->redirectToRoute('ems_core_uploaded_file_index');
+            match ($this->getClickedButtonName($form)) {
+                TableAbstract::DELETE_ACTION => $this->fileService->deleteByIds($fileIds),
+                UploadedAssetAdminDataTableType::TOGGLE_VISIBILITY_ACTION => $this->fileService->toggleFileEntitiesVisibility($fileIds),
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+            };
+
+            return $this->redirectToRoute(Routes::UPLOAD_ASSET_ADMIN_OVERVIEW);
         }
 
-        return $this->render("@$this->templateNamespace/uploaded-file/index.html.twig", [
+        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
             'form' => $form->createView(),
+            'icon' => 'fa fa-upload',
+            'title' => t('key.uploaded_files_logs', [], 'emsco-core'),
+            'breadcrumb' => [
+                'admin' => t('key.admin', [], 'emsco-core'),
+                'page' => t('key.uploaded_files', [], 'emsco-core'),
+            ],
         ]);
     }
 
-    public function logs(Request $request): Response
+    public function adminDelete(UploadedAsset $uploadedAsset): Response
     {
-        $table = $this->dataTableFactory->create(UploadedFileLogDataTableType::class);
+        $this->fileService->delete($uploadedAsset);
 
-        $form = $this->createForm(TableType::class, $table);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
-                switch ($action->getName()) {
-                    case TableAbstract::DOWNLOAD_ACTION:
-                        return $this->downloadMultiple($table->getSelected());
-                    case self::HIDE_ACTION:
-                        if (!$this->isGranted('ROLE_PUBLISHER')) {
-                            throw new AccessDeniedException($request->getPathInfo());
-                        }
-                        $this->fileService->toggleFileEntitiesVisibility($table->getSelected());
-                        break;
-                    case self::SOFT_DELETE_ACTION:
-                        if (!$this->isGranted('ROLE_ADMIN')) {
-                            throw new AccessDeniedException($request->getPathInfo());
-                        }
-                        $this->fileService->removeSingleFileEntity($table->getSelected());
-                        break;
-                }
-            } else {
-                $this->logger->error('log.controller.uploaded-file-logs.unknown_action');
-            }
-
-            return $this->redirectToRoute('ems_core_uploaded_file_logs');
-        }
-
-        return $this->render("@$this->templateNamespace/uploaded-file-logs/index.html.twig", [
-            'form' => $form->createView(),
-        ]);
+        return $this->redirectToRoute(Routes::UPLOAD_ASSET_ADMIN_OVERVIEW);
     }
 
-    public function hideByHash(Request $request, string $hash): Response
+    public function adminToggleVisibility(string $assetId): Response
     {
-        if (!$this->isGranted('ROLE_PUBLISHER')) {
-            throw new AccessDeniedException($request->getPathInfo());
-        }
-        $this->fileService->hideByHashes([$hash]);
-
-        return $this->redirectToRoute('ems_core_uploaded_file_index');
-    }
-
-    public function showHide(Request $request, string $assetId): Response
-    {
-        if (!$this->isGranted('ROLE_PUBLISHER')) {
-            throw new AccessDeniedException($request->getPathInfo());
-        }
         $this->fileService->toggleFileEntitiesVisibility([$assetId]);
 
-        return $this->redirectToRoute('ems_core_uploaded_file_logs');
+        return $this->redirectToRoute(Routes::UPLOAD_ASSET_ADMIN_OVERVIEW);
     }
 
-    /**
-     * @param array<string> $fileIds
-     */
-    private function downloadMultiple(array $fileIds): Response
+    public function publisherIndex(Request $request): Response
     {
-        try {
-            $response = $this->fileService->createDownloadForMultiple($fileIds);
-        } catch (\Throwable $e) {
-            $this->logger->error($e->getMessage(), ['exception' => $e]);
+        $table = $this->dataTableFactory->create(UploadedAssetDataTableType::class, [
+            'location' => UploadedAssetDataTableType::LOCATION_PUBLISHER_OVERVIEW,
+            'roles' => [Roles::ROLE_PUBLISHER],
+        ]);
 
-            return $this->redirectToRoute('ems_core_uploaded_file_index');
+        $form = $this->createForm(TableType::class, $table);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (TableAbstract::DOWNLOAD_ACTION === $this->getClickedButtonName($form)) {
+                return $this->fileService->createDownloadForMultiple(
+                    fileIds: $this->fileService->hashesToIds($table->getSelected())
+                );
+            }
+
+            match ($this->getClickedButtonName($form)) {
+                UploadedAssetDataTableType::HIDE_ACTION => $this->fileService->hideByHashes($table->getSelected()),
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+            };
+
+            return $this->redirectToRoute(Routes::UPLOAD_ASSET_PUBLISHER_OVERVIEW);
         }
 
-        return $response;
+        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
+            'form' => $form->createView(),
+            'icon' => 'fa fa-upload',
+            'title' => t('key.uploaded_files', [], 'emsco-core'),
+            'breadcrumb' => [
+                'publishers' => t('key.publishers', [], 'emsco-core'),
+                'page' => t('key.uploaded_files', [], 'emsco-core'),
+            ],
+        ]);
     }
 
-    private function initFileTable(): QueryTable
+    public function publisherHideByHash(string $hash): Response
     {
-        $table = new QueryTable($this->templateNamespace, $this->fileService, 'uploaded-files-grouped-by-hash', $this->generateUrl('ems_core_uploaded_file_ajax'));
-        $table->addColumn('uploaded-file.index.column.name', 'name')
-            ->setRoute('ems_file_download', function (array $data) {
-                if (!\is_string($data['id'] ?? null) || !\is_string($data['type'] ?? null) || !\is_string($data['name'] ?? null)) {
-                    return null;
-                }
+        $this->fileService->hideByHashes([$hash]);
 
-                return [
-                    'sha1' => $data['id'],
-                    'type' => $data['type'],
-                    'name' => $data['name'],
-                ];
-            });
-        $table->addColumnDefinition(new BytesTableColumn('uploaded-file.index.column.size', 'size'))->setCellClass('text-right');
-        $table->addColumnDefinition(new TranslationTableColumn('uploaded-file.index.column.kind', 'type', 'emsco-mimetypes'));
-        $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.date-added', 'created'));
-        $table->addColumnDefinition(new DatetimeTableColumn('uploaded-file.index.column.date-modified', 'modified'));
-        $table->setDefaultOrder('name', 'asc');
-
-        $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'uploaded-file.uploaded-file.download_selected', 'uploaded-file.uploaded-file.download_selected_confirm');
-        if ($this->isGranted('ROLE_PUBLISHER')) {
-            $table->addDynamicItemPostAction('ems_core_uploaded_file_hide_by_hash', 'uploaded-file.action.delete', 'trash', 'uploaded-file.delete-confirm', ['hash' => 'id'])
-                ->setButtonType('outline-danger');
-            $table->addTableAction(self::HIDE_ACTION, 'fa fa-trash', 'uploaded-file.delete-all', 'uploaded-file.uploaded-file.delete-all_confirm')
-                ->setCssClass('btn btn-outline-danger');
-        }
-
-        return $table;
+        return $this->redirectToRoute(Routes::UPLOAD_ASSET_PUBLISHER_OVERVIEW);
     }
 }

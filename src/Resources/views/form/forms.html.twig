@@ -289,15 +289,20 @@
                         </h2>
                     </div>
                 {% endif %}
-                {% if toolbar is defined or (table.sortable and table.supportsTableActions) %}
+                {% if toolbar is defined or (table.sortable and table.supportsTableActions) or table.toolbarActions|length > 0 %}
                     <div class="box-header with-border">
                         <div class="btn-group  pull-right">
                             {% if toolbar is defined %}
                                 {{ toolbar }}
                             {% endif %}
-                            {%  if table.sortable and table.supportsTableActions %}
-                                <button type="button" class="btn" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder">
-                                    <i class="fa fa-reorder"></i> {{ reorder_label|default(form.vars.reorder_label)|trans }}
+                            {% for toolbarAction in table.toolbarActions %}
+                                <a class="{{ toolbarAction.cssClass }}" href="{{ path(toolbarAction.routeName, toolbarAction.routeParams) }}">
+                                    <i class="{{ toolbarAction.icon }}"></i>&nbsp;{{ toolbarAction.labelKey|trans }}
+                                </a>
+                            {% endfor %}
+                            {%  if attribute(form, 'reorderAction') is defined %}
+                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder">
+                                    <i class="fa fa-reorder"></i>&nbsp;{{ form.reorderAction.vars.label|trans }}
                                 </button>
                             {% endif %}
                         </div>
@@ -310,7 +315,7 @@
                             <tr role="row">
                                 {% if table.supportsTableActions %}
                                     <th class="fit" data-orderable="false" data-name="_checkbox">
-                                        <label class="sr-only" for="select-all">{{ 'table.select_all'|trans({}, 'emsco-core') }}</label>
+                                        <label class="sr-only" for="select-all">{{ 'action.select_all'|trans({}, 'emsco-core') }}</label>
                                         <input type="checkbox" value="" data-grouped-checkbox-target=".{{ table.attributeName|e('html_attr') }}-to-select" id="select-all">
                                     </th>
                                 {% endif %}
@@ -326,7 +331,7 @@
                                     </th>
                                 {% endfor %}
                                 {% if table.itemActions|length > 0 %}
-                                    <th class="nowrap" data-orderable="false">{{ 'table.actions'|trans({}, 'emsco-core') }}</th>
+                                    <th class="nowrap" data-orderable="false">{{ 'key.actions'|trans({}, 'emsco-core') }}</th>
                                 {% endif %}
                             </tr>
                             </thead>
@@ -366,6 +371,13 @@
                                 {{ toolbar }}
                             </div>
                         {% endif %}
+                        {% for toolbarAction in table.toolbarActions %}
+                            <div class="btn-group">
+                                <a class="{{ toolbarAction.cssClass }}" href="{{ path(toolbarAction.routeName, toolbarAction.routeParams) }}">
+                                    <i class="{{ toolbarAction.icon }}"></i>&nbsp;{{ toolbarAction.labelKey|trans }}
+                                </a>
+                            </div>
+                        {% endfor %}
                     </div>
                 {% endif %}
             </div>
@@ -395,8 +407,8 @@
                             </div>
                             <div class="modal-footer">
                                 <div class="btn-group">
-                                    {{ form_widget(form.reorderAction) }}
-                                    <button type="button" class="btn" data-dismiss="modal"><i class="fa fa-close"></i> {{ t('button.close', [], 'emsco-core')|trans }}</button>
+                                    {{ form_widget(form.reorderAction, { 'attr': { 'class': 'btn btn-primary' } }) }}
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-close"></i> {{ t('action.close', [], 'emsco-core')|trans }}</button>
                                 </div>
                             </div>
                         </div>

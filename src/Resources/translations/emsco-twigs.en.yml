@@ -16,7 +16,6 @@ view:
         class.channel: 'fa fa-eye'
         class.release: 'fa fa-cube'
         class.query_search: 'fa fa-list-alt'
-        class.uploaded-file: 'fa fa-upload'
         class.dashboard: 'fa fa-dashboard'
     elements:
         side-menu:
@@ -199,15 +198,9 @@ form_submissions:
 not-applicable: N/A
 task:
     tab_tasks: Tasks
-uploaded-file-logs:
-    index:
-        title: 'Uploaded file logs'
-    menu: 'Uploaded file logs'
 dashboard:
     menu: Dashboards
     tagline: 'Customize the lobby'
-    index:
-        title: 'List of dashboards'
     add:
         title: 'Add a dashboard'
     edit:
@@ -227,6 +220,7 @@ ems_core:
             icon: 'glyphicon glyphicon-export'
             label: Export
         revision_task:
+            icon: 'fa fa-sticky-note'
             label: 'Revision tasks'
 release:
     release-revisison:

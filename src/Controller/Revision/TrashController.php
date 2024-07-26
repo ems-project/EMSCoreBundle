@@ -58,8 +58,6 @@ class TrashController extends AbstractController
         }
 
         return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'contentType' => $contentType,
-            'revisions' => $this->dataService->getAllDeleted($contentType),
             'form' => $form->createView(),
             'icon' => 'fa fa-trash',
             'title' => t('revision.trash.title', ['pluralName' => $contentType->getPluralName()], 'emsco-core'),

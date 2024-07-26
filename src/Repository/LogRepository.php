@@ -82,7 +82,7 @@ class LogRepository extends ServiceEntityRepository
             ->setMaxResults($context->size);
         $this->addSearchFilters($qb, $context);
 
-        if (\in_array($context->orderField, ['created', 'message', 'level', 'level_name', 'channel', 'formatted', 'username'])) {
+        if (\in_array($context->orderField, ['created', 'message', 'level', 'levelName', 'channel', 'formatted', 'username'])) {
             $qb->orderBy(\sprintf('log.%s', $context->orderField), $context->orderDirection);
         }
 
@@ -95,7 +95,7 @@ class LogRepository extends ServiceEntityRepository
             $qb
                 ->andWhere($qb->expr()->orX(
                     $qb->expr()->like('log.message', ':term'),
-                    $qb->expr()->like('log.level_name', ':term'),
+                    $qb->expr()->like('log.levelName', ':term'),
                     $qb->expr()->like('log.username', ':term')
                 ))
                 ->setParameter(':term', '%'.$context->searchValue.'%');

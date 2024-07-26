@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Core\Mapping;
 
 use EMS\CommonBundle\Entity\EntityInterface;
@@ -13,46 +15,12 @@ class FilterManager implements EntityServiceInterface
     {
     }
 
-    public function isSortable(): bool
-    {
-        return true;
-    }
-
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
-    {
-        return $this->filterRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
-    }
-
-    public function getEntityName(): string
-    {
-        return 'filter';
-    }
-
-    public function getAliasesName(): array
-    {
-        return [
-            'filters',
-            'Filter',
-            'Filters',
-        ];
-    }
-
     public function count(string $searchValue = '', $context = null): int
     {
-        return $this->filterRepository->counter($searchValue);
-    }
-
-    public function getByItemName(string $name): ?EntityInterface
-    {
-        return $this->filterRepository->findByName($name);
-    }
-
-    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
-    {
-        $filter = Filter::fromJson($json, $entity);
-        $this->filterRepository->update($filter);
-
-        return $filter;
+        return (int) $this->filterRepository->makeQueryBuilder(searchValue: $searchValue)
+            ->select('count(f.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
@@ -66,6 +34,19 @@ class FilterManager implements EntityServiceInterface
         return $filter;
     }
 
+    public function delete(Filter $filter): void
+    {
+        $this->filterRepository->delete($filter);
+    }
+
+    public function deleteByIds(string ...$ids): void
+    {
+        $filters = $this->filterRepository->getByIds(...$ids);
+        foreach ($filters as $filter) {
+            $this->filterRepository->delete($filter);
+        }
+    }
+
     public function deleteByItemName(string $name): string
     {
         $filter = $this->filterRepository->findByName($name);
@@ -76,5 +57,69 @@ class FilterManager implements EntityServiceInterface
         $this->filterRepository->delete($filter);
 
         return \strval($id);
+    }
+
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    {
+        $qb = $this->filterRepository->makeQueryBuilder(searchValue: $searchValue);
+        $qb->setFirstResult($from)->setMaxResults($size);
+
+        if (null !== $orderField) {
+            $qb->orderBy(\sprintf('f.%s', $orderField), $orderDirection);
+        }
+
+        return $qb->getQuery()->execute();
+    }
+
+    public function getAliasesName(): array
+    {
+        return [
+            'filters',
+            'Filter',
+            'Filters',
+        ];
+    }
+
+    public function getByItemName(string $name): ?EntityInterface
+    {
+        return $this->filterRepository->findByName($name);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'filter';
+    }
+
+    public function isSortable(): bool
+    {
+        return true;
+    }
+
+    public function reorderByIds(string ...$ids): void
+    {
+        $counter = 1;
+
+        foreach ($ids as $id) {
+            $filter = $this->filterRepository->getById($id);
+            $filter->setOrderKey($counter++);
+            $this->filterRepository->update($filter);
+        }
+    }
+
+    public function update(Filter $filter): void
+    {
+        if (0 === $filter->getOrderKey()) {
+            $filter->setOrderKey($this->count() + 1);
+        }
+
+        $this->filterRepository->update($filter);
+    }
+
+    public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
+    {
+        $filter = Filter::fromJson($json, $entity);
+        $this->filterRepository->update($filter);
+
+        return $filter;
     }
 }

@@ -63,7 +63,7 @@ class Analyzer extends JsonDeserializer implements \JsonSerializable, EntityInte
      *
      * @ORM\Column(name="order_key", type="integer", nullable=true)
      */
-    protected $orderKey;
+    protected $orderKey = 0;
 
     public function __construct()
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -19,68 +21,66 @@ class AnalyzerRepository extends ServiceEntityRepository
         parent::__construct($registry, Analyzer::class);
     }
 
-    public function findByName(string $name): ?Analyzer
-    {
-        return $this->findOneBy(['name' => $name]);
-    }
-
-    public function update(Analyzer $analyzer): void
-    {
-        $this->getEntityManager()->persist($analyzer);
-        $this->getEntityManager()->flush();
-    }
-
-    /**
-     * @return Analyzer[]
-     */
-    public function findAll()
-    {
-        return $this->findBy([], ['orderKey' => 'asc']);
-    }
-
-    /**
-     * @return Analyzer[]
-     */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
-    {
-        $qb = $this->createQueryBuilder('analyzer')
-            ->setFirstResult($from)
-            ->setMaxResults($size);
-        $this->addSearchFilters($qb, $searchValue);
-
-        if (\in_array($orderField, ['label', 'name'])) {
-            $qb->orderBy(\sprintf('analyzer.%s', $orderField), $orderDirection);
-        } else {
-            $qb->orderBy('analyzer.orderKey', $orderDirection);
-        }
-
-        return $qb->getQuery()->execute();
-    }
-
-    public function counter(string $searchValue = ''): int
-    {
-        $qb = $this->createQueryBuilder('analyzer');
-        $qb->select('count(analyzer.id)');
-        $this->addSearchFilters($qb, $searchValue);
-
-        return \intval($qb->getQuery()->getSingleScalarResult());
-    }
-
     public function delete(Analyzer $analyzer): void
     {
         $this->getEntityManager()->remove($analyzer);
         $this->getEntityManager()->flush();
     }
 
-    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    /**
+     * @return Analyzer[]
+     */
+    public function findAll(): array
     {
-        if (\strlen($searchValue) > 0) {
-            $or = $qb->expr()->orX(
-                $qb->expr()->like('analyzer.label', ':term'),
-                $qb->expr()->like('analyzer.name', ':term'),
-            );
-            $qb->andWhere($or)
-                ->setParameter(':term', '%'.$searchValue.'%');
+        return $this->findBy([], ['orderKey' => 'asc']);
+    }
+
+    public function findByName(string $name): ?Analyzer
+    {
+        return $this->findOneBy(['name' => $name]);
+    }
+
+    public function getById(string $id): Analyzer
+    {
+        if (null === $analyzer = $this->find($id)) {
+            throw new \RuntimeException('Analyzer not found');
         }
+
+        return $analyzer;
+    }
+
+    /**
+     * @return Analyzer[]
+     */
+    public function getByIds(string ...$ids): array
+    {
+        $qb = $this->createQueryBuilder('a');
+        $qb
+            ->andWhere($qb->expr()->in('a.id', ':ids'))
+            ->setParameter('ids', $ids);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function makeQueryBuilder(string $searchValue = ''): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        if ('' !== $searchValue) {
+            $qb
+                ->andWhere($qb->expr()->orX(
+                    $qb->expr()->like('a.label', ':term'),
+                    $qb->expr()->like('a.name', ':term'),
+                ))
+                ->setParameter(':term', '%'.\strtolower($searchValue).'%');
+        }
+
+        return $qb;
+    }
+
+    public function update(Analyzer $analyzer): void
+    {
+        $this->getEntityManager()->persist($analyzer);
+        $this->getEntityManager()->flush();
     }
 }

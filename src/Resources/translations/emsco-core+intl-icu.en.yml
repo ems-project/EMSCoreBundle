@@ -7,6 +7,7 @@ action:
     details: Details
     download_selected: 'Download selected'
     edit: Edit
+    export: Export
     reorder: Reorder
     select_all: 'Select all'
     toggle_visibility: 'Toggle visibility'
@@ -62,9 +63,11 @@ field:
 key:
     actions: Actions
     admin: Admin
+    analyzers: Analyzers
     channels: Channels
     content_types: 'Content Types'
     dashboards: Dashboards
+    filters: Filters
     forms: Forms
     logs: Logs
     loop_count: '#'
@@ -100,9 +103,11 @@ revision:
 type:
     delete_confirm: |-
         {type, select,
+            analyzer      {Delete the "{label}" analyzer?}
             channel       {Delete the "{label}" channel?}
             dashboard     {Delete the "{label}" dashboard?}
             draft         {Modifications made in this draft will be lost}
+            filter        {Delete the "{label}" filter?}
             form          {Delete the "{label}" form?}
             log           {Delete log?}  
             trash         {Delete trash "{label}" ?}
@@ -112,9 +117,11 @@ type:
         }
     delete_selected_confirm: |-
         {type, select,
+            analyzer      {Delete all selected analyzers?}  
             channel       {Delete all selected channels?}
             dashboard     {Delete all selected dashboards?}
             draft         {All modifications made on selected drafts will lost?}
+            filter        {Delete all selected filters?}  
             form          {Delete all selected forms?}
             log           {Delete all selected logs?}  
             trash         {Delete all selected trashes?}
@@ -124,16 +131,20 @@ type:
         }
     reorder: |-
         {type, select,
+            analyzer     {Reorder analyzers}
             channel      {Reorder channels}
             dashboard    {Reorder dashboards}
+            filter       {Reorder filters}
             form         {Reorder forms}
             query_search {Reorder QuerySearch}
             other        {Reorder}
         }
     title_overview: |-
         {type, select,
+            analyzer      {List of analyzers}
             channel       {List of channels}
             dashboard     {List of dashboards}
+            filter        {List of filters}
             form          {List of forms}
             log           {Logs}  
             query_search  {List of QuerySearch}  
@@ -141,7 +152,9 @@ type:
         }
     title_sub: |-
         {type, select,
+            analyzer      {Expert mode}  
             dashboard     {Customize the lobby}
+            filter        {Expert mode}  
             form          {Reusable components}
             log           {Who did what}
             other         {}    

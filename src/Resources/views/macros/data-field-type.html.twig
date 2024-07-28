@@ -350,9 +350,13 @@
 
 	<div class="row">
 		{% for child in dataField.getChildren|filter(c => false == c.fieldType.deleted) %}
-			<div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-				{{ _self.renderDataFieldBlock(child, source, compare, compareRawData, '', path, locale) }}
-			</div>
+            {% if child.fieldType.type in ['EMS\\CoreBundle\\Form\\DataField\\FormFieldType'] %}
+                {{ _self.renderDataFieldBlock(child, source, compare, compareRawData, '', path, locale) }}
+            {% else %}
+                <div class="{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class  %}{{ child.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
+                    {{ _self.renderDataFieldBlock(child, source, compare, compareRawData, '', path, locale) }}
+                </div>
+            {% endif %}
 			{% if child.fieldType.displayOptions.lastOfRow is defined and child.fieldType.displayOptions.lastOfRow %}
                 <div class="clearfix"></div>
 			{% endif %}

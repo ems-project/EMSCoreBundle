@@ -126,6 +126,13 @@
             <argument type="service" id="ems.service.file"/>
             <tag name="console.command"/>
         </service>
+        <service id="emsco.command.asset.refresh_file_field" class="EMS\CoreBundle\Command\Asset\RefreshFileFieldCommand">
+            <argument type="service" id="ems.service.revision"/>
+            <argument type="service" id="ems_common.storage.manager"/>
+            <argument type="service" id="ems.service.file"/>
+            <argument>%ems_core.image_max_size%</argument>
+            <tag name="console.command"/>
+        </service>
 
         <service id="ems_core.command_user.abstract_user_command" class="EMS\CoreBundle\Command\User\AbstractUserCommand" abstract="true">
             <argument type="service" id="emsco.manager.user" />

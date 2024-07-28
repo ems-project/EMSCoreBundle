@@ -95,7 +95,7 @@
                 {% if dataField.fieldType.displayOptions.imageAssetConfigIdentifier is defined and dataField.fieldType.displayOptions.imageAssetConfigIdentifier %}
                     {% set path = path('ems_asset_processor', {'hash':attribute(compareRawData, dataField.fieldType.name).sha1, 'processor': dataField.fieldType.displayOptions.imageAssetConfigIdentifier, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) %}
                 {% endif %}
-				<a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}">
+				<a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}" target="_blank">
 					<del class="diffmod">
 						<img src="{{ path }}" class="img-responsive pad bg-red" alt="Image of the field {{ dataField.fieldType.name }}">
 					</del>
@@ -103,7 +103,7 @@
             {% else %}
 				<div class="pad bg-red">
 					<strong class="">
-						<del class="diffmod"><a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}" class="text-gray">{{ attribute(compareRawData, dataField.fieldType.name).filename }}</a></del>
+						<del class="diffmod"><a href="{{ path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) }}" class="text-gray" target="_blank">{{ attribute(compareRawData, dataField.fieldType.name).filename }}</a></del>
 					</strong>
 				</div>
             {% endif %}
@@ -120,7 +120,7 @@
 				{% if doCompare %}
 					<ins class="diffmod">
                 {% endif %}
-					<a href="{{ ems_asset_path(dataField.rawData) }}">
+					<a href="{{ ems_asset_path(dataField.rawData) }}" target="_blank">
 						<img src="{{ path }}" class="img-responsive pad  {{ compareColor }}" alt="Image of the field {{ dataField.fieldType.name }}">
 					</a>
 				{% if doCompare %}
@@ -129,7 +129,7 @@
 				{% else %}
 					<div class="pad {{ compareColor }}">
 						<strong>
-							<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype|default('application/bin'), 'name':dataField.rawData.filename|default('filename.bin') }) }}" class="{% if doCompare %}text-gray{% endif %}">
+							<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype|default('application/bin'), 'name':dataField.rawData.filename|default('filename.bin') }) }}" class="{% if doCompare %}text-gray{% endif %}" target="_blank">
 								{% if doCompare %}
 									<ins class="diffmod">
 								{% endif %}

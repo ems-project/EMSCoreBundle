@@ -93,15 +93,20 @@ class IndexedAssetFieldType extends DataFieldType
                     'type' => 'nested',
                     'properties' => [
                             EmsFields::CONTENT_MIME_TYPE_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                            EmsFields::CONTENT_MIME_TYPE_FIELD_ => $this->elasticsearchService->getKeywordMapping(),
                             EmsFields::CONTENT_FILE_HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
+                            EmsFields::CONTENT_FILE_HASH_FIELD_ => $this->elasticsearchService->getKeywordMapping(),
                             EmsFields::CONTENT_FILE_NAME_FIELD => $this->elasticsearchService->getIndexedStringMapping(),
+                            EmsFields::CONTENT_FILE_NAME_FIELD_ => $this->elasticsearchService->getIndexedStringMapping(),
                             EmsFields::CONTENT_FILE_SIZE_FIELD => $this->elasticsearchService->getLongMapping(),
+                            EmsFields::CONTENT_FILE_SIZE_FIELD_ => $this->elasticsearchService->getLongMapping(),
+                            EmsFields::CONTENT_FILE_ALGO_FIELD_ => $this->elasticsearchService->getKeywordMapping(),
                             EmsFields::CONTENT_IMAGE_RESIZED_HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
-                            '_content' => $mapping[$current->getName()],
-                            '_author' => $mapping[$current->getName()],
-                            '_title' => $mapping[$current->getName()],
-                            '_date' => $this->elasticsearchService->getDateTimeMapping(),
-                            '_language' => $this->elasticsearchService->getKeywordMapping(),
+                            EmsFields::CONTENT_FILE_CONTENT => $mapping[$current->getName()],
+                            EmsFields::CONTENT_FILE_AUTHOR => $mapping[$current->getName()],
+                            EmsFields::CONTENT_FILE_TITLE => $mapping[$current->getName()],
+                            EmsFields::CONTENT_FILE_DATE => $this->elasticsearchService->getDateTimeMapping(),
+                            EmsFields::CONTENT_FILE_LANGUAGE => $this->elasticsearchService->getKeywordMapping(),
                     ],
             ],
         ];
@@ -112,6 +117,9 @@ class IndexedAssetFieldType extends DataFieldType
      */
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
+        if (\is_array($data)) {
+            AssetFieldType::loadFromForm($data, $this->fileService->getAlgo());
+        }
         $dataField = parent::reverseViewTransform($data, $fieldType);
         $this->testDataField($dataField);
 
@@ -165,20 +173,12 @@ class IndexedAssetFieldType extends DataFieldType
         return $out;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function modelTransform($data, FieldType $fieldType): DataField
     {
-        if (\is_array($data)) {
-            foreach ($data as $id => $content) {
-                if (!\in_array($id, [EmsFields::CONTENT_FILE_HASH_FIELD, EmsFields::CONTENT_FILE_NAME_FIELD, EmsFields::CONTENT_FILE_SIZE_FIELD, EmsFields::CONTENT_MIME_TYPE_FIELD,  EmsFields::CONTENT_IMAGE_RESIZED_HASH_FIELD, EmsFields::CONTENT_FILE_DATE, EmsFields::CONTENT_FILE_AUTHOR, EmsFields::CONTENT_FILE_LANGUAGE, EmsFields::CONTENT_FILE_CONTENT, EmsFields::CONTENT_FILE_TITLE], true)) {
-                    unset($data[$id]);
-                } elseif ('sha1' !== $id && empty($data[$id])) {
-                    unset($data[$id]);
-                }
-            }
+        if (!\is_array($data)) {
+            $data = [];
         }
+        AssetFieldType::loadFromDb($data);
 
         return parent::reverseViewTransform($data, $fieldType);
     }

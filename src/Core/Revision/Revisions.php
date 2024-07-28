@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Core\Revision;
 use Doctrine\ORM\QueryBuilder;
 use DoctrineBatchUtils\BatchProcessing\SimpleBatchIteratorAggregate;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\Helpers\Standard\Type;
 
 /**
  * @implements \IteratorAggregate<int, Revision>
@@ -57,5 +58,14 @@ final class Revisions implements \IteratorAggregate
         foreach ($this->getIterator() as $revision) {
             $batch($revision);
         }
+    }
+
+    public function count(): int
+    {
+        $qb = clone $this->qb;
+        $qb->select('count(r.id)');
+        $count = Type::integer($qb->getQuery()->getSingleScalarResult());
+
+        return $count;
     }
 }

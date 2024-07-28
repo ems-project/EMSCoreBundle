@@ -484,7 +484,7 @@ export default class EmsListeners {
         const uploadTab = mainDiv.find(".asset-upload-tab");
         const previewLink = mainDiv.find(".img-responsive");
         sha1Input.val(data.sha1);
-        resizedImageHashInput.val('');
+        resizedImageHashInput.val(data._image_resized_hash ?? '');
         assetHashSignature.empty().append(data.sha1);
         typeInput.val(data.mimetype);
         nameInput.val(data.filename);

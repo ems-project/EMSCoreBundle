@@ -721,6 +721,9 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
      */
     public function setDirty($dirty)
     {
+        if ($dirty && null !== $this->getEnvironment() && !$this->giveEnvironment()->getManaged()) {
+            throw new \RuntimeException(\sprintf('The referenced content type %s can\'t be set as dirty', $this->name));
+        }
         $this->dirty = $dirty;
 
         return $this;
@@ -1049,8 +1052,12 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 
     public function reset(int $nextOrderKey): void
     {
+        $dirty = true;
+        if (null !== $this->getEnvironment() && !$this->giveEnvironment()->getManaged()) {
+            $dirty = false;
+        }
         $this->setActive(false);
-        $this->setDirty(true);
+        $this->setDirty($dirty);
         $this->getFieldType()->updateAncestorReferences($this, null);
         if ($this->getOrderKey() < 1) {
             $this->setOrderKey($nextOrderKey);
@@ -1062,8 +1069,8 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->getFieldType()->removeCircularReference();
 
         $json = new JsonClass(\get_object_vars($this), self::class);
+        $json->updateProperty('environment', null === $this->getEnvironment() ? null : $this->giveEnvironment()->getName());
         $json->removeProperty('id');
-        $json->removeProperty('environment');
         $json->removeProperty('created');
         $json->removeProperty('modified');
         $json->removeProperty('dirty');

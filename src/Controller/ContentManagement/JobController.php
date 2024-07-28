@@ -2,13 +2,18 @@
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CoreBundle\Controller\CoreControllerTrait;
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\DataTable\Type\Job\JobDataTableType;
 use EMS\CoreBundle\Entity\Job;
+use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\JobType;
+use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Helper\EmsCoreResponse;
 use EMS\CoreBundle\Service\JobService;
 use EMS\Helpers\Standard\Json;
-use Psr\Log\LoggerInterface;
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 use SensioLabs\AnsiConverter\Theme\Theme;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,12 +25,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+use function Symfony\Component\Translation\t;
+
 class JobController extends AbstractController
 {
+    use CoreControllerTrait;
+
     public function __construct(
-        private readonly LoggerInterface $logger,
         private readonly JobService $jobService,
-        private readonly int $pagingSize,
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly bool $triggerJobFromWeb,
         private readonly string $templateNamespace
     ) {
@@ -33,19 +42,30 @@ class JobController extends AbstractController
 
     public function index(Request $request): Response
     {
-        $size = $this->pagingSize;
-        $page = $request->query->getInt('page', 1);
-        $from = ($page - 1) * $size;
-        $total = $this->jobService->count();
-        $lastPage = \ceil($total / $size);
+        $table = $this->dataTableFactory->create(JobDataTableType::class);
+        $form = $this->createForm(TableType::class, $table);
+        $form->handleRequest($request);
 
-        return $this->render("@$this->templateNamespace/job/index.html.twig", [
-            'jobs' => $this->jobService->scroll($size, $from),
-            'page' => $page,
-            'size' => $size,
-            'from' => $from,
-            'lastPage' => $lastPage,
-            'paginationPath' => 'job.index',
+        if ($form->isSubmitted() && $form->isValid()) {
+            match ($this->getClickedButtonName($form)) {
+                TableAbstract::DELETE_ACTION => $this->jobService->deleteByIds(...$table->getSelected()),
+                JobDataTableType::ACTION_CLEAN => $this->jobService->clean(),
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+            };
+
+            return $this->redirectToRoute('job.index');
+        }
+
+        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
+            'form' => $form->createView(),
+            'icon' => 'fa fa-file-text-o',
+            'title' => t('type.title_overview', ['type' => 'job'], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'job'], 'emsco-core'),
+            'breadcrumb' => [
+                'admin' => t('key.admin', [], 'emsco-core'),
+                'jobs' => t('key.jobs', [], 'emsco-core'),
+                'page' => t('key.job_logs', [], 'emsco-core'),
+            ],
         ]);
     }
 
@@ -96,16 +116,9 @@ class JobController extends AbstractController
         return $this->redirectToRoute('job.index');
     }
 
-    public function clean(): RedirectResponse
-    {
-        $this->jobService->clean();
-
-        return $this->redirectToRoute('job.index');
-    }
-
     public function startJob(Job $job, Request $request, UserInterface $user): Response
     {
-        if ($job->getUser() != $user->getUserIdentifier()) {
+        if ($job->getUser() !== $user->getUserIdentifier()) {
             throw new AccessDeniedHttpException();
         }
 

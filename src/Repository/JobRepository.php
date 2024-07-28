@@ -46,6 +46,19 @@ class JobRepository extends EntityRepository
         return \intval($qb->getQuery()->getSingleScalarResult());
     }
 
+    /**
+     * @return Job[]
+     */
+    public function getByIds(string ...$ids): array
+    {
+        $qb = $this->createQueryBuilder('j');
+        $qb
+            ->andWhere($qb->expr()->in('j.id', ':ids'))
+            ->setParameter('ids', $ids);
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function save(Job $job): void
     {
         $this->getEntityManager()->persist($job);

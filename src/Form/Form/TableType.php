@@ -75,7 +75,7 @@ final class TableType extends AbstractType
                 'entry_options' => [],
                 'data' => $choices,
             ])->add(self::REORDER_ACTION, SubmitEmsType::class, [
-                'attr' => ['class' => 'btn btn-default'],
+                'attr' => ['class' => 'btn btn-sm btn-default'],
                 'icon' => 'fa fa-reorder',
                 'label' => t('action.reorder', [], 'emsco-core'),
             ]);

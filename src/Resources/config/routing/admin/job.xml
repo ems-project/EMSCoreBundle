@@ -6,7 +6,7 @@
 
     <route id="emsco_job_index" path="/"
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::index"
-           methods="GET"
+           methods="GET|POST"
            format="html"/>
     <route id="emsco_job_add" path="/add"
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::create"
@@ -14,10 +14,6 @@
            format="html"/>
     <route id="job.emsco_job_delete" path="/delete/{job}"
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::delete"
-           methods="POST"
-           format="html"/>
-    <route id="emsco_job_clean" path="/clean"
-           controller="EMS\CoreBundle\Controller\ContentManagement\JobController::clean"
            methods="POST"
            format="html"/>
     <route id="emsco_job_admin_start" path="/start/{job}"
@@ -53,10 +49,6 @@
            format="html"/>
     <route id="job.delete" path="/delete/{job}"
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::delete"
-           methods="POST"
-           format="html"/>
-    <route id="job.clean" path="/clean"
-           controller="EMS\CoreBundle\Controller\ContentManagement\JobController::clean"
            methods="POST"
            format="html"/>
     <route id="job.start" path="/start/{job}"

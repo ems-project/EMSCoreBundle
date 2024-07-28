@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\DataTable\Type\Revision;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Core\DataTable\Type\AbstractTableType;
 use EMS\CoreBundle\Core\DataTable\Type\QueryServiceTypeInterface;
+use EMS\CoreBundle\DataTable\Type\DataTableTypeTrait;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Form\Data\Condition\DateInFuture;
 use EMS\CoreBundle\Form\Data\Condition\InMyCircles;
@@ -26,6 +27,8 @@ use function Symfony\Component\Translation\t;
 
 class RevisionDraftsDataTableType extends AbstractTableType implements QueryServiceTypeInterface
 {
+    use DataTableTypeTrait;
+
     final public const DISCARD_SELECTED_DRAFT = 'DISCARD_SELECTED_DRAFT';
 
     public function __construct(
@@ -83,12 +86,7 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
         )->addCondition($inMyCircles)->setButtonType('outline-danger');
 
         if (null !== $contentType && (null === $contentType->getCirclesField() || '' === $contentType->getCirclesField())) {
-            $table->addTableAction(
-                name: self::DISCARD_SELECTED_DRAFT,
-                icon: 'fa fa-trash',
-                labelKey: t('action.delete_selected', [], 'emsco-core'),
-                confirmationKey: t('type.delete_selected_confirm', ['type' => 'draft'], 'emsco-core'),
-            )->setCssClass('btn btn-outline-danger');
+            $this->addTableActionDelete($table, 'draft', self::DISCARD_SELECTED_DRAFT);
         }
     }
 

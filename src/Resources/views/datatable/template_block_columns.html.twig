@@ -1,0 +1,9 @@
+{% block jobStatus %}
+    {% set p = line.data.progress %}
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="{{ p }}" aria-valuemin="0" aria-valuemax="100" style="{{ "width: #{p}%;" }}">
+            {{ "#{p}%" }}
+        </div>
+    </div>
+    <div>{{ line.data.status }}</div>
+{% endblock jobStatus %}

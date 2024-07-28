@@ -8,6 +8,7 @@ use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\DataTable\Type\AbstractTableType;
 use EMS\CoreBundle\Core\DataTable\Type\QueryServiceTypeInterface;
+use EMS\CoreBundle\DataTable\Type\DataTableTypeTrait;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\QueryTable;
@@ -23,6 +24,8 @@ use function Symfony\Component\Translation\t;
 
 class RevisionTrashDataTableType extends AbstractTableType implements QueryServiceTypeInterface
 {
+    use DataTableTypeTrait;
+
     public const ACTION_EMPTY_TRASH = 'empty-trash';
     public const ACTION_PUT_BACK = 'put-back';
 
@@ -80,12 +83,8 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
                 'ouuid' => 'ouuid',
             ]
         )->setButtonType('outline-danger');
-        $table->addTableAction(
-            name: self::ACTION_EMPTY_TRASH,
-            icon: 'fa fa-trash',
-            labelKey: t('action.delete_selected', [], 'emsco-core'),
-            confirmationKey: t('type.delete_selected_confirm', ['type' => 'trash'], 'emsco-core'),
-        )->setCssClass('btn btn-outline-danger');
+
+        $this->addTableActionDelete($table, 'trash', self::ACTION_EMPTY_TRASH);
     }
 
     public function configureOptions(OptionsResolver $optionsResolver): void

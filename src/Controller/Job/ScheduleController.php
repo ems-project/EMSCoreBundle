@@ -4,27 +4,30 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Job;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
+use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Job\ScheduleManager;
-use EMS\CoreBundle\DataTable\Type\JobScheduleDataTableType;
+use EMS\CoreBundle\DataTable\Type\Job\JobScheduleDataTableType;
 use EMS\CoreBundle\Entity\Schedule;
-use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\ScheduleType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Routes;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\SubmitButton;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Symfony\Component\Translation\t;
+
 final class ScheduleController extends AbstractController
 {
+    use CoreControllerTrait;
+
     public function __construct(
         private readonly ScheduleManager $scheduleManager,
-        private readonly LoggerInterface $logger,
         private readonly DataTableFactory $dataTableFactory,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly string $templateNamespace
     ) {
     }
@@ -32,31 +35,33 @@ final class ScheduleController extends AbstractController
     public function index(Request $request): Response
     {
         $table = $this->dataTableFactory->create(JobScheduleDataTableType::class);
+        $form = $this->createForm(TableType::class, $table, [
+            'reorder_label' => t('type.reorder', ['type' => 'job_schedule'], 'emsco-core'),
+        ]);
 
-        $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form instanceof Form && ($action = $form->getClickedButton()) instanceof SubmitButton) {
-                switch ($action->getName()) {
-                    case EntityTable::DELETE_ACTION:
-                        $this->scheduleManager->deleteByIds($table->getSelected());
-                        break;
-                    case TableType::REORDER_ACTION:
-                        $newOrder = TableType::getReorderedKeys($form->getName(), $request);
-                        $this->scheduleManager->reorderByIds($newOrder);
-                        break;
-                    default:
-                        $this->logger->error('log.controller.schedule.unknown_action');
-                }
-            } else {
-                $this->logger->error('log.controller.schedule.unknown_action');
-            }
+            match ($this->getClickedButtonName($form)) {
+                TableAbstract::DELETE_ACTION => $this->scheduleManager->deleteByIds($table->getSelected()),
+                TableType::REORDER_ACTION => $this->scheduleManager->reorderByIds(
+                    ids: TableType::getReorderedKeys($form->getName(), $request)
+                ),
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+            };
 
             return $this->redirectToRoute(Routes::SCHEDULE_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/schedule/index.html.twig", [
+        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
             'form' => $form->createView(),
+            'icon' => 'fa fa-calendar-o',
+            'title' => t('type.title_overview', ['type' => 'job_schedule'], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'job_schedule'], 'emsco-core'),
+            'breadcrumb' => [
+                'admin' => t('key.admin', [], 'emsco-core'),
+                'jobs' => t('key.jobs', [], 'emsco-core'),
+                'page' => t('key.schedule', [], 'emsco-core'),
+            ],
         ]);
     }
 

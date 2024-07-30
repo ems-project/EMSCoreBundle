@@ -9,7 +9,6 @@ use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\DataTable\Type\AbstractEntityTableType;
 use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Form\Data\EntityTable;
-use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
@@ -18,6 +17,8 @@ use function Symfony\Component\Translation\t;
 
 class DashboardDataTableType extends AbstractEntityTableType
 {
+    use DataTableTypeTrait;
+
     public function __construct(DashboardManager $entityService, private readonly string $templateNamespace)
     {
         parent::__construct($entityService);
@@ -25,12 +26,8 @@ class DashboardDataTableType extends AbstractEntityTableType
 
     public function build(EntityTable $table): void
     {
-        $table->setDefaultOrder('orderKey')->setLabelAttribute('label');
-
-        $table->addColumn(t('key.loop_count', [], 'emsco-core'), 'orderKey');
-        $columnLabel = $table->addColumn(t('field.label', [], 'emsco-core'), 'label');
-        $columnLabel->setItemIconCallback(fn (Dashboard $dashboard) => $dashboard->getIcon());
-        $table->addColumn(t('field.name', [], 'emsco-core'), 'name');
+        $this->addColumnsOrderLabelName($table);
+        $table->getColumnByName('label')?->setItemIconCallback(fn (Dashboard $dashboard) => $dashboard->getIcon());
 
         $table->addColumnDefinition(new TemplateBlockTableColumn(
             label: t('field.type', [], 'emsco-core'),
@@ -43,11 +40,7 @@ class DashboardDataTableType extends AbstractEntityTableType
             template: "@$this->templateNamespace/dashboard/columns.html.twig")
         );
 
-        $table->addItemGetAction(
-            route: Routes::DASHBOARD_ADMIN_EDIT,
-            labelKey: t('action.edit', [], 'emsco-core'),
-            icon: 'pencil'
-        );
+        $this->addItemEdit($table, Routes::DASHBOARD_ADMIN_EDIT);
 
         $defineAction = $table->addItemActionCollection(t('action.define', [], 'emsco-core'), 'gear');
         foreach (DashboardDefinition::cases() as $dashboardDefinition) {
@@ -64,24 +57,10 @@ class DashboardDataTableType extends AbstractEntityTableType
             icon: 'eraser'
         );
 
-        $table->addItemPostAction(
-            route: Routes::DASHBOARD_ADMIN_DELETE,
-            labelKey: t('action.delete', [], 'emsco-core'),
-            icon: 'trash',
-            messageKey: t('type.delete_confirm', ['type' => 'dashboard'], 'emsco-core')
-        )->setButtonType('outline-danger');
-
-        $table->addToolbarAction(
-            label: t('action.add', [], 'emsco-core'),
-            icon: 'fa fa-plus',
-            routeName: Routes::DASHBOARD_ADMIN_ADD,
-        );
-        $table->addTableAction(
-            name: TableAbstract::DELETE_ACTION,
-            icon: 'fa fa-trash',
-            labelKey: t('action.delete_selected', [], 'emsco-core'),
-            confirmationKey: t('type.delete_selected_confirm', ['type' => 'dashboard'], 'emsco-core')
-        )->setCssClass('btn btn-outline-danger');
+        $this
+            ->addItemDelete($table, 'dashboard', Routes::DASHBOARD_ADMIN_DELETE)
+            ->addTableToolbarActionAdd($table, Routes::DASHBOARD_ADMIN_ADD)
+            ->addTableActionDelete($table, 'dashboard');
     }
 
     public function getRoles(): array

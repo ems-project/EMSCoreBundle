@@ -52,7 +52,7 @@ class SwitchDefaultCommand extends AbstractCommand
         if ($this->target === $this->contentType->giveEnvironment()) {
             $this->io->warning('The target environment is already the default environment');
 
-            return self::EXECUTE_ERROR;
+            return self::EXECUTE_SUCCESS;
         }
         if (!$this->target->getManaged()) {
             $this->io->warning('The target environment is a managed environment');

@@ -1,15 +1,19 @@
 action:
     add: Add
+    clean: Clean
     close: Close
+    confirmation: 'Do you confirm?'
     define: Define
     delete: Delete
     delete_selected: 'Delete selected'
     details: Details
     download_selected: 'Download selected'
+    duplicate: Duplicate
     edit: Edit
     export: Export
     reorder: Reorder
     select_all: 'Select all'
+    status: Status
     toggle_visibility: 'Toggle visibility'
     toggle_visibility_selected: 'Toggle visibility selected'
 core:
@@ -37,9 +41,13 @@ field:
     alias: Alias
     available: Available
     channel: Channel
+    command: Command
     context: Context
+    cron: Cron
     date_created: 'Date creation'
     date_modified: 'Date modified'
+    date_run_next: 'Date next run'
+    date_run_previous: 'Date previous run'
     date_upload: 'Date upload'
     definition: Definition
     extra: Extra
@@ -54,6 +62,8 @@ field:
     name: Name
     public_access: 'Public Access'
     severity: Severity
+    status: Status
+    tag: Tag
     type: Type
     user: User
     user_deleted: 'Deleted by'
@@ -69,10 +79,13 @@ key:
     dashboards: Dashboards
     filters: Filters
     forms: Forms
+    job_logs: 'Jobs logs'
+    jobs: Jobs
     logs: Logs
     loop_count: '#'
     publishers: Publishers
     query_searches: QuerySearch
+    schedule: Schedule
     uploaded_files: 'Uploaded Files'
     uploaded_files_logs: 'Uploaded Files Logs'
 log:
@@ -109,6 +122,8 @@ type:
             draft         {Modifications made in this draft will be lost}
             filter        {Delete the "{label}" filter?}
             form          {Delete the "{label}" form?}
+            job           {Delete the job?}
+            job_schedule  {Delete the "{label}" scheduled job?}
             log           {Delete log?}  
             trash         {Delete trash "{label}" ?}
             uploaded_file {Delete "{label}" ?}
@@ -123,6 +138,8 @@ type:
             draft         {All modifications made on selected drafts will lost?}
             filter        {Delete all selected filters?}  
             form          {Delete all selected forms?}
+            job           {Delete all selected jobs?}
+            job_schedule  {Delete all selected job schedules?}
             log           {Delete all selected logs?}  
             trash         {Delete all selected trashes?}
             uploaded_file {Delete all selected uploaded files?}
@@ -136,6 +153,7 @@ type:
             dashboard    {Reorder dashboards}
             filter       {Reorder filters}
             form         {Reorder forms}
+            job_schedule {Reorder job schedules} 
             query_search {Reorder QuerySearch}
             other        {Reorder}
         }
@@ -146,6 +164,8 @@ type:
             dashboard     {List of dashboards}
             filter        {List of filters}
             form          {List of forms}
+            job           {Jobs list}
+            job_schedule  {Schedule}  
             log           {Logs}  
             query_search  {List of QuerySearch}  
             other         {Overview}    
@@ -156,6 +176,8 @@ type:
             dashboard     {Customize the lobby}
             filter        {Expert mode}  
             form          {Reusable components}
+            job           {Running process}  
+            job_schedule  {When you are not at work}  
             log           {Who did what}
             other         {}    
         }

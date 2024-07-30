@@ -425,7 +425,9 @@ class EnvironmentService implements EntityServiceInterface
         if ($environment->getName() !== $name) {
             throw new \RuntimeException(\sprintf('Unexpected mismatched environment name : %s vs %s', $name, $environment->getName()));
         }
-        $environment->setAlias($this->generateAlias($environment));
+        if ($environment->getManaged()) {
+            $environment->setAlias($this->generateAlias($environment));
+        }
 
         $this->environmentRepository->save($environment);
 
@@ -442,7 +444,9 @@ class EnvironmentService implements EntityServiceInterface
         if (null !== $name && $environment->getName() !== $name) {
             throw new \RuntimeException(\sprintf('Unexpected mismatched environment name : %s vs %s', $name, $environment->getName()));
         }
-        $environment->setAlias($this->generateAlias($environment));
+        if ($environment->getManaged()) {
+            $environment->setAlias($this->generateAlias($environment));
+        }
 
         $this->environmentRepository->create($environment);
 

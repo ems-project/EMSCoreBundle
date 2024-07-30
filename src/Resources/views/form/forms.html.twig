@@ -291,7 +291,7 @@
                 {% endif %}
                 {% if toolbar is defined or (table.sortable and table.supportsTableActions) or table.toolbarActions|length > 0 %}
                     <div class="box-header with-border">
-                        <div class="btn-group  pull-right">
+                        <div class="btn-group pull-right">
                             {% if toolbar is defined %}
                                 {{ toolbar }}
                             {% endif %}
@@ -301,7 +301,7 @@
                                 </a>
                             {% endfor %}
                             {%  if attribute(form, 'reorderAction') is defined %}
-                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder">
+                                <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder">
                                     <i class="fa fa-reorder"></i>&nbsp;{{ form.reorderAction.vars.label|trans }}
                                 </button>
                             {% endif %}
@@ -360,24 +360,22 @@
                 {% if table.supportsTableActions or toolbar is defined %}
                     <div class="box-footer with-border">
                         {% if table.supportsTableActions %}
-                            <div class="btn-group">
-                                {% for action in table.tableActions %}
-                                    {{ form_widget(attribute(form, action.name)) }}
-                                {% endfor %}
-                            </div>
+                            {% for action in table.tableActions %}
+                                {{ form_widget(attribute(form, action.name)) }}
+                            {% endfor %}
                         {% endif %}
                         {% if toolbar is defined %}
                             <div class="btn-group">
                                 {{ toolbar }}
                             </div>
                         {% endif %}
-                        {% for toolbarAction in table.toolbarActions %}
-                            <div class="btn-group">
+                        <div class="btn-group">
+                            {% for toolbarAction in table.toolbarActions %}
                                 <a class="{{ toolbarAction.cssClass }}" href="{{ path(toolbarAction.routeName, toolbarAction.routeParams) }}">
                                     <i class="{{ toolbarAction.icon }}"></i>&nbsp;{{ toolbarAction.labelKey|trans }}
                                 </a>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
                 {% endif %}
             </div>
@@ -407,8 +405,8 @@
                             </div>
                             <div class="modal-footer">
                                 <div class="btn-group">
-                                    {{ form_widget(form.reorderAction, { 'attr': { 'class': 'btn btn-primary' } }) }}
-                                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-close"></i> {{ t('action.close', [], 'emsco-core')|trans }}</button>
+                                    {{ form_widget(form.reorderAction, { 'attr': { 'class': 'btn btn-sm btn-primary' } }) }}
+                                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"><i class="fa fa-close"></i> {{ t('action.close', [], 'emsco-core')|trans }}</button>
                                 </div>
                             </div>
                         </div>

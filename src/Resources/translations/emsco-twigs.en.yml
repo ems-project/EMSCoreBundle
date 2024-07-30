@@ -254,10 +254,6 @@ schedule:
     list:
         menu: Schedule
     tagline: 'When you are not at work'
-    index:
-        reorder: Reorder
-        title: Schedule
-        add_button: 'Add a schedule'
     add:
         title: 'Add a schedule'
     edit:

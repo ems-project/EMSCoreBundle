@@ -28,6 +28,7 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\ViewRepository;
 use EMS\CoreBundle\Routes;
+use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -329,12 +330,25 @@ class ContentTypeService implements EntityServiceInterface
         return $this->importContentType($updatedContentType);
     }
 
-    public function contentTypeFromJson(string $json, Environment $environment, ?ContentType $contentType = null): ContentType
+    public function contentTypeFromJson(string $json, Environment $environment = null, ?ContentType $contentType = null): ContentType
     {
         $meta = JsonClass::fromJsonString($json);
         $contentType = $meta->jsonDeserialize($contentType);
         if (!$contentType instanceof ContentType) {
             throw new \Exception(\sprintf('ContentType expected for import, got %s', $meta->getClass()));
+        }
+
+        if (null !== $environment) {
+            $contentType->setEnvironment($environment);
+
+            return $contentType;
+        }
+
+        $environmentName = Json::decode($json)['properties']['environment'] ?? null;
+        if (\is_string($environmentName)) {
+            $environment = $this->environmentService->giveByName($environmentName);
+        } else {
+            $environment = $this->getFirstEnvironment();
         }
         $contentType->setEnvironment($environment);
 
@@ -641,18 +655,7 @@ class ContentTypeService implements EntityServiceInterface
 
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
-        $firstEnvironment = null;
-        foreach ($this->environmentService->getEnvironments() as $environment) {
-            if (!$environment->getManaged() || $environment->getSnapshot()) {
-                continue;
-            }
-            $firstEnvironment = $environment;
-            break;
-        }
-        if (null === $firstEnvironment) {
-            throw new \RuntimeException('At least one managed environment is required');
-        }
-        $contentType = $this->contentTypeFromJson($json, $firstEnvironment);
+        $contentType = $this->contentTypeFromJson($json);
         if (null !== $name && $contentType->getName() !== $name) {
             throw new \RuntimeException(\sprintf('Unexpected mismatched content type name : %s vs %s', $name, $contentType->getName()));
         }
@@ -772,5 +775,22 @@ class ContentTypeService implements EntityServiceInterface
         [$routeName, $routeParams] = $this->getRedirectOverviewRoute($contentType);
 
         return new RedirectResponse($this->router->generate($routeName, $routeParams));
+    }
+
+    private function getFirstEnvironment(): Environment
+    {
+        $firstEnvironment = null;
+        foreach ($this->environmentService->getEnvironments() as $environment) {
+            if (!$environment->getManaged() || $environment->getSnapshot()) {
+                continue;
+            }
+            $firstEnvironment = $environment;
+            break;
+        }
+        if (null === $firstEnvironment) {
+            throw new \RuntimeException('At least one managed environment is required');
+        }
+
+        return $firstEnvironment;
     }
 }

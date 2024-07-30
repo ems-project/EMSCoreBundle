@@ -78,8 +78,6 @@ log:
     controller:
         release:
             unknown_action: 'Unknown action'
-        schedule:
-            unknown_action: 'Unknown action'
     crud:
         create_error: 'The revision for contenttype %contenttype% can not be created, reason: %error_message%'
         delete_error: 'The revision %revision_id% for contenttype %contenttype% can not be deleted, reason: %error_message%'
@@ -1148,18 +1146,5 @@ Views: Views
 'no revision in %env%': 'no revision in %env%'
 'Unpublish in %env%': 'Unpublish in %env%'
 'replace by revision %date%': 'replace by revision %date%'
-schedule:
-    index:
-        column:
-            name: Name
-            command: Command
-            cron: Cron
-            previous-run: 'Previous run'
-            next-run: 'Next run'
-            tag: 'Tag'
-        reorder: Prioritize
-    actions:
-        delete_selected: 'Delete selected'
-        delete_selected_confirm: 'Do you confirm ?'
 pick-a-release:
     title: 'Pick a release for "%label%"'

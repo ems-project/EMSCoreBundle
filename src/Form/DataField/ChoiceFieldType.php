@@ -84,6 +84,7 @@ class ChoiceFieldType extends DataFieldType
     {
         parent::buildView($view, $form, $options);
         $view->vars['attr'] = [
+            'disabled' => $this->isDisabled($options),
             'data-linked-collection' => $options['linked_collection'],
             'data-collection-label-field' => $options['collection_label_field'],
             'data-multiple' => $options['multiple'],

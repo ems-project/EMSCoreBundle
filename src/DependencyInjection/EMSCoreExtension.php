@@ -76,6 +76,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.custom_user_options_form', $config['custom_user_options_form']);
         $container->setParameter('ems_core.template_namespace', $config['template_namespace']);
         $container->setParameter('ems_core.dynamic_mapping', $config['dynamic_mapping']);
+        $container->setParameter('ems_core.image_max_size', $config['image_max_size']);
 
         $container->setParameter('ems_core.security.firewall.core', $config['security']['firewall']['core']);
         $container->setParameter('ems_core.security.firewall.api', $config['security']['firewall']['api']);

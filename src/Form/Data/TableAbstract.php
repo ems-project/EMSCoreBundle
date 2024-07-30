@@ -124,10 +124,20 @@ abstract class TableAbstract implements TableInterface
         $this->reordered = $reordered;
     }
 
-    public function addColumn(string|TranslatableMessage $titleKey, string $attribute): TableColumn
+    public function getColumnByName(string $name): ?TableColumn
+    {
+        return $this->columns[$name] ?? null;
+    }
+
+    public function addColumn(string|TranslatableMessage $titleKey, string $attribute, ?string $name = null): TableColumn
     {
         $column = new TableColumn($titleKey, $attribute);
-        $this->columns[] = $column;
+
+        if ($name) {
+            $this->columns[$name] = $column;
+        } else {
+            $this->columns[] = $column;
+        }
 
         return $column;
     }

@@ -10,6 +10,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Core\DataTable\Type\AbstractTableType;
 use EMS\CoreBundle\Core\DataTable\Type\QueryServiceTypeInterface;
+use EMS\CoreBundle\DataTable\Type\DataTableTypeTrait;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Form\Data\BytesTableColumn;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
@@ -27,6 +28,8 @@ use function Symfony\Component\Translation\t;
 
 class UploadedAssetDataTableType extends AbstractTableType implements QueryServiceTypeInterface
 {
+    use DataTableTypeTrait;
+
     public const HIDE_ACTION = 'hide';
 
     public const LOCATION_WYSIWYG_BROWSER = 'wysiwyg_browser';
@@ -135,13 +138,9 @@ class UploadedAssetDataTableType extends AbstractTableType implements QueryServi
                 name: TableAbstract::DOWNLOAD_ACTION,
                 icon: 'fa fa-download',
                 labelKey: t('action.download_selected', [], 'emsco-core')
-            );
-            $table->addTableAction(
-                name: self::HIDE_ACTION,
-                icon: 'fa fa-trash',
-                labelKey: t('action.delete_selected', [], 'emsco-core'),
-                confirmationKey: t('type.delete_selected_confirm', ['type' => 'uploaded_file'], 'emsco-core'),
-            )->setCssClass('btn btn-outline-danger');
+            )->setCssClass('btn btn-sm btn-default');
+
+            $this->addTableActionDelete($table, 'uploaded_file', self::HIDE_ACTION);
         }
     }
 

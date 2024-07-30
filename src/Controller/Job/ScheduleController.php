@@ -29,6 +29,7 @@ final class ScheduleController extends AbstractController
         private readonly ScheduleManager $scheduleManager,
         private readonly DataTableFactory $dataTableFactory,
         private readonly LocalizedLoggerInterface $logger,
+        private readonly FlashMessageLogger $flashMessageLogger,
         private readonly string $templateNamespace
     ) {
     }

@@ -330,7 +330,7 @@ class ContentTypeService implements EntityServiceInterface
         return $this->importContentType($updatedContentType);
     }
 
-    public function contentTypeFromJson(string $json, Environment $environment = null, ?ContentType $contentType = null): ContentType
+    public function contentTypeFromJson(string $json, ?Environment $environment = null, ?ContentType $contentType = null): ContentType
     {
         $meta = JsonClass::fromJsonString($json);
         $contentType = $meta->jsonDeserialize($contentType);

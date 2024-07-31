@@ -28,7 +28,9 @@ class JobDataTableType extends AbstractEntityTableType
 
     public function build(EntityTable $table): void
     {
-        $table->setLabelAttribute('id');
+        $table
+            ->setDefaultOrder('created', 'desc')
+            ->setLabelAttribute('id');
 
         $table->addColumnDefinition(new DatetimeTableColumn(
             titleKey: t('field.date_created', [], 'emsco-core'),

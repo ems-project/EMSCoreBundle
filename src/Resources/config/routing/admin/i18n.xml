@@ -4,16 +4,16 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="i18n_index" path="/"
+    <route id="emsco_i18n_index" path="/"
            controller="EMS\CoreBundle\Controller\I18nController::index"
-           methods="GET"/>
-    <route id="i18n_new" path="/new"
-           controller="EMS\CoreBundle\Controller\I18nController::new"
            methods="GET|POST"/>
-    <route id="i18n_edit" path="/{id}/edit"
+    <route id="emsco_i18n_add" path="/add"
+           controller="EMS\CoreBundle\Controller\I18nController::add"
+           methods="GET|POST"/>
+    <route id="emsco_i18n_edit" path="/{i18n}/edit"
            controller="EMS\CoreBundle\Controller\I18nController::edit"
            methods="GET|POST"/>
-    <route id="i18n_delete" path="/{id}"
+    <route id="emsco_i18n_delete" path="/{i18n}/delete"
            controller="EMS\CoreBundle\Controller\I18nController::delete"
            methods="POST"/>
 </routes>

@@ -24,10 +24,31 @@
 {% endblock %}
 
 {% block body %}
-	{% set tableOptions = {} %}
-	{% if tableIcon is defined %}{% set tableOptions = tableOptions|merge({ 'table_title_icon': tableIcon }) %}{% endif %}
-	{% if tableTitle is defined %}{% set tableOptions = tableOptions|merge({ 'table_title': tableTitle|trans }) %}{% endif %}
+	{% if datatables is defined %}
+		{{ block('renderDatatables') }}
+	{% elseif form is defined %}
+		{% set tableOptions = {} %}
+		{% if tableIcon is defined %}{% set tableOptions = tableOptions|merge({ 'table_title_icon': tableIcon }) %}{% endif %}
+		{% if tableTitle is defined %}{% set tableOptions = tableOptions|merge({ 'table_title': tableTitle|trans }) %}{% endif %}
 
-	{% form_theme form '@EMSCore/form/forms.html.twig' %}
-	{{ form(form, tableOptions) }}
+		{% form_theme form '@EMSCore/form/forms.html.twig' %}
+		{{ form(form, tableOptions) }}
+	{% endif %}
 {% endblock %}
+
+{% block renderDatatables %}
+<div class="row">
+	{% for datatable in datatables %}
+		<div class="col-md-6">
+			<div>
+				{% set tableOptions = {} %}
+				{% if datatable.icon is defined %}{% set tableOptions = tableOptions|merge({ 'table_title_icon': datatable.icon }) %}{% endif %}
+				{% if datatable.title is defined %}{% set tableOptions = tableOptions|merge({ 'table_title': datatable.title|trans }) %}{% endif %}
+
+				{% form_theme datatable.form '@EMSCore/form/forms.html.twig' %}
+				{{ form(datatable.form, tableOptions) }}
+			</div>
+		</div>
+	{% endfor %}
+</div>
+{% endblock renderDatatables %}

@@ -35,6 +35,7 @@ class AnalyzerDataTableType extends AbstractEntityTableType
         );
 
         $this
+            ->addColumnsCreatedModifiedDate($table)
             ->addItemDelete($table, 'analyzer', Routes::ANALYZER_DELETE)
             ->addTableToolbarActionAdd($table, Routes::ANALYZER_ADD)
             ->addTableActionDelete($table, 'analyzer');

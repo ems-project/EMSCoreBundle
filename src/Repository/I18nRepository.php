@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -19,48 +21,9 @@ class I18nRepository extends ServiceEntityRepository
         parent::__construct($registry, I18n::class);
     }
 
-    public function countWithFilter(?string $identifier): int
+    public function delete(I18n $i18n): void
     {
-        $qb = $this->createQueryBuilder('i')
-        ->select('COUNT(i)');
-
-        if (null != $identifier) {
-            $qb->where('i.identifier LIKE :identifier')
-            ->setParameter('identifier', '%'.$identifier.'%');
-        }
-
-        return (int) $qb->getQuery()->getSingleScalarResult();
-    }
-
-    /**
-     * @return iterable|I18n[]
-     */
-    public function findByWithFilter(int $limit, int $from, ?string $identifier): iterable
-    {
-        $qb = $this->createQueryBuilder('i')
-        ->select('i');
-
-        if (null != $identifier) {
-            $qb->where('i.identifier LIKE :identifier')
-            ->setParameter('identifier', '%'.$identifier.'%');
-        }
-
-        $qb->orderBy('i.identifier', 'ASC')
-        ->setFirstResult($from)
-        ->setMaxResults($limit);
-
-        return $qb->getQuery()->getResult();
-    }
-
-    public function update(I18n $styleSet): void
-    {
-        $this->getEntityManager()->persist($styleSet);
-        $this->getEntityManager()->flush();
-    }
-
-    public function delete(I18n $styleSet): void
-    {
-        $this->getEntityManager()->remove($styleSet);
+        $this->getEntityManager()->remove($i18n);
         $this->getEntityManager()->flush();
     }
 
@@ -72,35 +35,32 @@ class I18nRepository extends ServiceEntityRepository
     /**
      * @return I18n[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    public function getByIds(string ...$ids): array
     {
-        $qb = $this->createQueryBuilder('i18n')
-            ->setFirstResult($from)
-            ->setMaxResults($size);
-        $this->addSearchFilters($qb, $searchValue);
-        $qb->orderBy('i18n.identifier', $orderDirection);
+        $qb = $this->createQueryBuilder('i');
+        $qb
+            ->andWhere($qb->expr()->in('i.id', ':ids'))
+            ->setParameter('ids', $ids);
 
-        return $qb->getQuery()->execute();
+        return $qb->getQuery()->getResult();
     }
 
-    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    public function makeQueryBuilder(string $searchValue = ''): QueryBuilder
     {
-        if (\strlen($searchValue) > 0) {
-            $or = $qb->expr()->orX(
-                $qb->expr()->like('i18n.identifier', ':term'),
-                $qb->expr()->like('i18n.content', ':term'),
-            );
-            $qb->andWhere($or)
-                ->setParameter(':term', '%'.$searchValue.'%');
+        $qb = $this->createQueryBuilder('i');
+
+        if ('' !== $searchValue) {
+            $qb
+                ->andWhere($qb->expr()->like('i.identifier', ':term'))
+                ->setParameter(':term', '%'.\strtolower($searchValue).'%');
         }
+
+        return $qb;
     }
 
-    public function counter(string $searchValue = ''): int
+    public function update(I18n $i18n): void
     {
-        $qb = $this->createQueryBuilder('i18n');
-        $qb->select('count(i18n.id)');
-        $this->addSearchFilters($qb, $searchValue);
-
-        return \intval($qb->getQuery()->getSingleScalarResult());
+        $this->getEntityManager()->persist($i18n);
+        $this->getEntityManager()->flush();
     }
 }

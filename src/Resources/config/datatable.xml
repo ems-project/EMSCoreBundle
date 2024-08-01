@@ -109,6 +109,11 @@
             <argument type="service" id="ems.form_submission" />
             <tag name="emsco.datatable" />
         </service>
+        <service id="emsco.data_table.i18n" class="EMS\CoreBundle\DataTable\Type\I18nDataTableType">
+            <argument type="service" id="EMS\CoreBundle\Service\I18nService" />
+            <argument>%ems_core.template_namespace%</argument>
+            <tag name="emsco.datatable" />
+        </service>
         <service id="emsco.data_table.job" class="EMS\CoreBundle\DataTable\Type\Job\JobDataTableType">
             <argument type="service" id="EMS\CoreBundle\Service\JobService" />
             <argument>%ems_core.template_namespace%</argument>

@@ -20,6 +20,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+use function Symfony\Component\String\u;
+
 class JobService implements EntityServiceInterface
 {
     private readonly ObjectManager $em;
@@ -141,7 +143,9 @@ class JobService implements EntityServiceInterface
             $application->setAutoExit(false);
 
             $command = ($job->getCommand() ?? 'list');
-            $input = new StringInput($command);
+            $escapedCommand = u($command)->replace('\\', '\\\\')->toString();
+
+            $input = new StringInput($escapedCommand);
 
             $application->run($input, $output);
         } catch (\Exception $e) {

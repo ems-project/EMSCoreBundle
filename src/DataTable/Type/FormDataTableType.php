@@ -34,6 +34,7 @@ class FormDataTableType extends AbstractEntityTableType
         );
 
         $this
+            ->addColumnsCreatedModifiedDate($table)
             ->addItemDelete($table, 'form', Routes::FORM_ADMIN_DELETE)
             ->addTableToolbarActionAdd($table, Routes::FORM_ADMIN_ADD)
             ->addTableActionDelete($table, 'form');

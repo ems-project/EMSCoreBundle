@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\DataTable\Type;
 
+use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 
 use function Symfony\Component\Translation\t;
@@ -17,6 +18,20 @@ trait DataTableTypeTrait
         $table->addColumn(t('key.loop_count', [], 'emsco-core'), 'orderKey');
         $table->addColumn(t('field.label', [], 'emsco-core'), 'label', 'label');
         $table->addColumn(t('field.name', [], 'emsco-core'), 'name', 'name');
+
+        return $this;
+    }
+
+    public function addColumnsCreatedModifiedDate(TableAbstract $table): self
+    {
+        $table->addColumnDefinition(new DatetimeTableColumn(
+            titleKey: t('field.date_created', [], 'emsco-core'),
+            attribute: 'created'
+        ));
+        $table->addColumnDefinition(new DatetimeTableColumn(
+            titleKey: t('field.date_modified', [], 'emsco-core'),
+            attribute: 'modified'
+        ));
 
         return $this;
     }

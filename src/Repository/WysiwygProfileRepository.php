@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -20,48 +22,15 @@ class WysiwygProfileRepository extends ServiceEntityRepository
         parent::__construct($registry, WysiwygProfile::class);
     }
 
-    /**
-     * @return WysiwygProfile[]
-     */
-    public function findAll(): array
-    {
-        return parent::findBy([], ['orderKey' => 'asc']);
-    }
-
-    public function update(WysiwygProfile $profile): void
-    {
-        $this->getEntityManager()->persist($profile);
-        $this->getEntityManager()->flush();
-    }
-
     public function delete(WysiwygProfile $profile): void
     {
         $this->getEntityManager()->remove($profile);
         $this->getEntityManager()->flush();
     }
 
-    /**
-     * @param string[] $ids
-     *
-     * @return WysiwygProfile[]
-     */
-    public function getByIds(array $ids): array
-    {
-        $queryBuilder = $this->createQueryBuilder('wysiwyg_profile');
-        $queryBuilder->where('wysiwyg_profile.id IN (:ids)')
-            ->setParameter('ids', $ids);
-
-        return $queryBuilder->getQuery()->getResult();
-    }
-
     public function findById(int $id): ?WysiwygProfile
     {
         return $this->find($id);
-    }
-
-    public function getByName(string $name): ?WysiwygProfile
-    {
-        return $this->findOneBy(['name' => $name]);
     }
 
     public function getById(string $id): WysiwygProfile
@@ -73,48 +42,40 @@ class WysiwygProfileRepository extends ServiceEntityRepository
         return $wysiwygProfile;
     }
 
-    public function create(WysiwygProfile $wysiwygProfile): void
-    {
-        $this->getEntityManager()->persist($wysiwygProfile);
-        $this->getEntityManager()->flush();
-    }
-
     /**
      * @return WysiwygProfile[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    public function getByIds(string ...$ids): array
     {
-        $qb = $this->createQueryBuilder('profile')
-            ->setFirstResult($from)
-            ->setMaxResults($size);
-        $this->addSearchFilters($qb, $searchValue);
+        $qb = $this->createQueryBuilder('p');
+        $qb
+            ->andWhere($qb->expr()->in('p.id', ':ids'))
+            ->setParameter('ids', $ids);
 
-        if (\in_array($orderField, ['name'])) {
-            $qb->orderBy(\sprintf('profile.%s', $orderField), $orderDirection);
-        } else {
-            $qb->orderBy('profile.orderKey', $orderDirection);
-        }
-
-        return $qb->getQuery()->execute();
+        return $qb->getQuery()->getResult();
     }
 
-    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    public function getByName(string $name): ?WysiwygProfile
     {
-        if (\strlen($searchValue) > 0) {
-            $or = $qb->expr()->orX(
-                $qb->expr()->like('profile.name', ':term'),
-            );
-            $qb->andWhere($or)
-                ->setParameter(':term', '%'.$searchValue.'%');
-        }
+        return $this->findOneBy(['name' => $name]);
     }
 
-    public function counter(string $searchValue = ''): int
+    public function makeQueryBuilder(string $searchValue = ''): QueryBuilder
     {
-        $qb = $this->createQueryBuilder('profile');
-        $qb->select('count(profile.id)');
-        $this->addSearchFilters($qb, $searchValue);
+        $qb = $this->createQueryBuilder('p');
 
-        return \intval($qb->getQuery()->getSingleScalarResult());
+        if ('' !== $searchValue) {
+            $qb
+                ->andWhere($qb->expr()->like('p.name', ':term'))
+                ->setParameter(':term', '%'.\strtolower($searchValue).'%');
+        }
+
+        return $qb;
+    }
+
+    public function update(WysiwygProfile $profile): void
+    {
+        $this->getEntityManager()->persist($profile);
+        $this->getEntityManager()->flush();
     }
 }

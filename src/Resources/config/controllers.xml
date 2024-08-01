@@ -539,7 +539,8 @@
         </service>
         <service id="EMS\CoreBundle\Controller\I18nController" public="true">
             <argument type="service" id="ems.service.i18n" />
-            <argument>%ems_core.paging_size%</argument>
+            <argument type="service" id="emsco.data_table.factory" />
+            <argument type="service" id="emsco.logger" />
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
@@ -625,13 +626,13 @@
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\WysiwygController" public="true">
-            <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.wysiwyg_profile" />
             <argument type="service" id="ems.service.wysiwyg_styles_set" />
-            <argument type="service" id="translator" />
-            <argument>%ems_core.template_namespace%</argument>
             <argument type="service" id="emsco.data_table.factory" />
             <argument type="service" id="form.factory" />
+            <argument type="service" id="emsco.logger" />
+            <argument type="service" id="translator" />
+            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>

@@ -185,9 +185,6 @@ final class RecomputeCommand extends AbstractCommand
                 $this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $this->contentType, $this->contentType->getName(), $newRevision->getOuuid(), true);
                 $newRevision->setRawData($objectArray);
 
-                $revision->close(new \DateTime('now'));
-                $newRevision->setDraft(false);
-
                 $this->dataService->sign($revision);
                 $this->dataService->sign($newRevision);
 
@@ -196,6 +193,9 @@ final class RecomputeCommand extends AbstractCommand
                     $progress->advance();
                     continue;
                 }
+
+                $revision->close(new \DateTime('now'));
+                $newRevision->setDraft(false);
 
                 $newRevision->setFinalizedBy(self::LOCK_BY);
                 $newRevision->setRawDataFinalizedBy(self::LOCK_BY);

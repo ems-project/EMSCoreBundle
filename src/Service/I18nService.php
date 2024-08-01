@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Service;
 
 use EMS\CommonBundle\Entity\EntityInterface;
@@ -12,18 +14,23 @@ class I18nService implements EntityServiceInterface
     {
     }
 
-    /**
-     * @param array<string>|null $filters
-     */
-    public function counter(?array $filters = null): int
+    public function count(string $searchValue = '', $context = null): int
     {
-        $identifier = null;
+        return (int) $this->repository->makeQueryBuilder(searchValue: $searchValue)
+            ->select('count(i.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
-        if (null != $filters && isset($filters['identifier']) && !empty($filters['identifier'])) {
-            $identifier = $filters['identifier'];
+    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
+    {
+        $i18n = I18n::fromJson($json);
+        if (null !== $name && $i18n->getIdentifier() !== $name) {
+            throw new \RuntimeException(\sprintf('I18n name mismatched: %s vs %s', $i18n->getIdentifier(), $name));
         }
+        $this->repository->update($i18n);
 
-        return $this->repository->countWithFilter($identifier);
+        return $i18n;
     }
 
     public function delete(I18n $i18n): void
@@ -31,39 +38,36 @@ class I18nService implements EntityServiceInterface
         $this->repository->delete($i18n);
     }
 
-    /**
-     * @param array<string>|null $filters
-     *
-     * @return iterable|I18n[]
-     */
-    public function findAll(int $from, int $limit, ?array $filters = null): iterable
+    public function deleteByIds(string ...$ids): void
     {
-        $identifier = null;
-
-        if (null != $filters && isset($filters['identifier']) && !empty($filters['identifier'])) {
-            $identifier = $filters['identifier'];
+        $filters = $this->repository->getByIds(...$ids);
+        foreach ($filters as $filter) {
+            $this->delete($filter);
         }
-
-        return $this->repository->findByWithFilter($limit, $from, $identifier);
     }
 
-    public function isSortable(): bool
+    public function deleteByItemName(string $name): string
     {
-        return false;
+        $i18n = $this->repository->findByIdentifier($name);
+        if (null === $i18n) {
+            throw new \RuntimeException(\sprintf('I18n %s not found', $name));
+        }
+        $id = $i18n->getId();
+        $this->repository->delete($i18n);
+
+        return \strval($id);
     }
 
     public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
-        if (null !== $context) {
-            throw new \RuntimeException('Unexpected not null context');
+        $qb = $this->repository->makeQueryBuilder(searchValue: $searchValue);
+        $qb->setFirstResult($from)->setMaxResults($size);
+
+        if (null !== $orderField) {
+            $qb->orderBy(\sprintf('i.%s', $orderField), $orderDirection);
         }
 
-        return $this->repository->get($from, $size, $orderField, $orderDirection, $searchValue);
-    }
-
-    public function getEntityName(): string
-    {
-        return 'i18n';
+        return $qb->getQuery()->execute();
     }
 
     public function getAliasesName(): array
@@ -74,28 +78,6 @@ class I18nService implements EntityServiceInterface
             'Internationalization',
             'Internationalizations',
         ];
-    }
-
-    public function count(string $searchValue = '', $context = null): int
-    {
-        if (null !== $context) {
-            throw new \RuntimeException('Unexpected not null context');
-        }
-
-        return $this->repository->counter($searchValue);
-    }
-
-    public function getByItemName(string $name): ?I18n
-    {
-        return $this->repository->findByIdentifier($name);
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function getAsChoiceList(string $name): array
-    {
-        return \array_flip($this->getAsList($name));
     }
 
     /**
@@ -115,6 +97,26 @@ class I18nService implements EntityServiceInterface
         return $choice;
     }
 
+    public function getByItemName(string $name): ?I18n
+    {
+        return $this->repository->findByIdentifier($name);
+    }
+
+    public function getEntityName(): string
+    {
+        return 'i18n';
+    }
+
+    public function isSortable(): bool
+    {
+        return false;
+    }
+
+    public function update(I18n $i18n): void
+    {
+        $this->repository->update($i18n);
+    }
+
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         if (!$entity instanceof I18n) {
@@ -124,33 +126,5 @@ class I18nService implements EntityServiceInterface
         $this->repository->update($i18n);
 
         return $i18n;
-    }
-
-    public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
-    {
-        $i18n = I18n::fromJson($json);
-        if (null !== $name && $i18n->getIdentifier() !== $name) {
-            throw new \RuntimeException(\sprintf('I18n name mismatched: %s vs %s', $i18n->getIdentifier(), $name));
-        }
-        $this->repository->update($i18n);
-
-        return $i18n;
-    }
-
-    public function deleteByItemName(string $name): string
-    {
-        $i18n = $this->repository->findByIdentifier($name);
-        if (null === $i18n) {
-            throw new \RuntimeException(\sprintf('I18n %s not found', $name));
-        }
-        $id = $i18n->getId();
-        $this->repository->delete($i18n);
-
-        return \strval($id);
-    }
-
-    public function save(I18n $i18n): void
-    {
-        $this->repository->update($i18n);
     }
 }

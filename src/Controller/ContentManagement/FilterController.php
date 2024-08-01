@@ -34,7 +34,7 @@ class FilterController extends AbstractController
     ) {
     }
 
-    public function addAction(Request $request): Response
+    public function add(Request $request): Response
     {
         $filter = new Filter();
         $form = $this->createForm(FilterType::class, $filter);
@@ -51,7 +51,7 @@ class FilterController extends AbstractController
         ]);
     }
 
-    public function deleteAction(Filter $filter): Response
+    public function delete(Filter $filter): Response
     {
         $this->filterManager->delete($filter);
         $this->logger->notice('log.filter.deleted', ['filter_name' => $filter->getName()]);
@@ -59,7 +59,7 @@ class FilterController extends AbstractController
         return $this->redirectToRoute(Routes::FILTER_INDEX);
     }
 
-    public function editAction(Filter $filter, Request $request): Response
+    public function edit(Filter $filter, Request $request): Response
     {
         $form = $this->createForm(FilterType::class, $filter);
         $form->handleRequest($request);
@@ -88,7 +88,7 @@ class FilterController extends AbstractController
         return $response;
     }
 
-    public function indexAction(Request $request): Response
+    public function index(Request $request): Response
     {
         $table = $this->dataTableFactory->create(FilterDataTableType::class);
 

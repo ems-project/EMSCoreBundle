@@ -1,3 +1,14 @@
+{% block dashboardType %}
+    <i class="{{ [line.data.type, 'icon']|join('.')|trans({}, 'emsco-twigs') }}"></i>&nbsp;&nbsp;
+    {{ [line.data.type, 'label']|join('.')|trans({}, 'emsco-twigs') }}
+{% endblock dashboardType %}
+
+{% block dashboardDefinition %}
+    {% if line.data.definition %}
+        {{ t('core.dashboard.definition', {'value': line.data.definition}, 'emsco-core')|trans }}
+    {% endif %}
+{% endblock dashboardDefinition %}
+
 {% block jobStatus %}
     {% set p = line.data.progress %}
     <div class="progress">
@@ -7,3 +18,45 @@
     </div>
     <div>{{ line.data.status }}</div>
 {% endblock jobStatus %}
+
+{% block i18nTranslations %}
+    {% set modalId = "modal-i18n-#{data.id}" %}
+    <a data-toggle="modal" data-target="#{{ modalId }}" class="btn btn-sm btn-default">
+        <i class="fa fa-eye"></i>&nbsp;
+        {{ data.content|length }}
+    </a>
+    <div class="modal fade" id="{{ modalId }}" tabindex="-1" role="dialog" aria-labelledby="{{ modalId }}-title">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'emsco-core') }}">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="{{ modalId }}-title">
+                        <i class="fa fa-language"></i>
+                        {{ 'type.title_overview'|trans({'type': 'i18n_translations', 'key': data.identifier }, 'emsco-core') }}
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-striped">
+                            <tbody>
+                            <tr>
+                                <th>{{ 'field.locale'|trans({}, 'emsco-core') }}</th>
+                                <th>{{ 'field.text'|trans({}, 'emsco-core') }}</th>
+                            </tr>
+                            {% for translation in data.content %}
+                                <tr>
+                                    <td>{{ translation.locale }}</td>
+                                    <td>{{ translation.text }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock i18nTranslations %}
+

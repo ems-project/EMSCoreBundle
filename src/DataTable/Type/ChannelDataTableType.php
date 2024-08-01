@@ -34,6 +34,7 @@ class ChannelDataTableType extends AbstractEntityTableType
         $table->addColumnDefinition(new BoolTableColumn(t('field.public_access', [], 'emsco-core'), 'public'));
 
         $this
+            ->addColumnsCreatedModifiedDate($table)
             ->addItemEdit($table, 'ems_core_channel_edit')
             ->addItemDelete($table, 'channel', 'ems_core_channel_delete')
             ->addTableToolbarActionAdd($table, 'ems_core_channel_add')

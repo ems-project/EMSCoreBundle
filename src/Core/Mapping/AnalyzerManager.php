@@ -43,7 +43,7 @@ class AnalyzerManager implements EntityServiceInterface
     {
         $analyzers = $this->analyzerRepository->getByIds(...$ids);
         foreach ($analyzers as $analyzer) {
-            $this->analyzerRepository->delete($analyzer);
+            $this->delete($analyzer);
         }
     }
 

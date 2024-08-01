@@ -1,56 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Controller;
 
-use EMS\CommonBundle\Common\Standard\Type;
-use EMS\CoreBundle\Entity\Form\I18nFilter;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\DataTable\Type\I18nDataTableType;
 use EMS\CoreBundle\Entity\I18n;
-use EMS\CoreBundle\Form\Form\I18nFormType;
+use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\I18nType;
+use EMS\CoreBundle\Form\Form\TableType;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\I18nService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Symfony\Component\Translation\t;
+
 class I18nController extends AbstractController
 {
-    public function __construct(private readonly I18nService $i18nService, private readonly int $pagingSize, private readonly string $templateNamespace)
-    {
+    use CoreControllerTrait;
+
+    public function __construct(
+        private readonly I18nService $i18nService,
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly LocalizedLoggerInterface $logger,
+        private readonly string $templateNamespace
+    ) {
     }
 
-    public function indexAction(Request $request): Response
-    {
-        $filters = $request->query->all('i18n_form');
-
-        $i18nFilter = new I18nFilter();
-
-        $form = $this->createForm(I18nFormType::class, $i18nFilter, [
-                 'method' => 'GET',
-         ]);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted()) {
-            $form->getData();
-        }
-
-        $count = $this->i18nService->counter($filters);
-        $paging_size = Type::integer($this->pagingSize);
-        $lastPage = \ceil($count / $paging_size);
-        $page = $request->query->getInt('page', 1);
-
-        $i18ns = $this->i18nService->findAll(($page - 1) * $paging_size, $paging_size, $filters);
-
-        return $this->render("@$this->templateNamespace/i18n/index.html.twig", [
-            'i18nkeys' => $i18ns,
-            'lastPage' => $lastPage,
-            'paginationPath' => 'i18n_index',
-            'filterform' => $form->createView(),
-            'page' => $page,
-            'paging_size' => $paging_size,
-        ]);
-    }
-
-    public function newAction(Request $request): Response
+    public function add(Request $request): Response
     {
         $i18n = new I18n();
         $i18n->setContent([['locale' => '', 'text' => '']]);
@@ -59,9 +40,9 @@ class I18nController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->i18nService->save($i18n);
+            $this->i18nService->update($i18n);
 
-            return $this->redirectToRoute('i18n_index', ['id' => $i18n->getId()]);
+            return $this->redirectToRoute(Routes::I18N_INDEX);
         }
 
         return $this->render("@$this->templateNamespace/i18n/new.html.twig", [
@@ -70,7 +51,14 @@ class I18nController extends AbstractController
         ]);
     }
 
-    public function editAction(Request $request, I18n $i18n): Response
+    public function delete(I18n $i18n): Response
+    {
+        $this->i18nService->delete($i18n);
+
+        return $this->redirectToRoute(Routes::I18N_INDEX);
+    }
+
+    public function edit(Request $request, I18n $i18n): Response
     {
         if (empty($i18n->getContent())) {
             $i18n->setContent([
@@ -86,9 +74,9 @@ class I18nController extends AbstractController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             // renumber array elements
             $i18n->setContent(\array_values($i18n->getContent()));
-            $this->i18nService->save($i18n);
+            $this->i18nService->update($i18n);
 
-            return $this->redirectToRoute('i18n_index');
+            return $this->redirectToRoute(Routes::I18N_INDEX);
         }
 
         return $this->render("@$this->templateNamespace/i18n/edit.html.twig", [
@@ -97,10 +85,30 @@ class I18nController extends AbstractController
         ]);
     }
 
-    public function deleteAction(I18n $i18n): Response
+    public function index(Request $request): Response
     {
-        $this->i18nService->delete($i18n);
+        $table = $this->dataTableFactory->create(I18nDataTableType::class);
 
-        return $this->redirectToRoute('i18n_index');
+        $form = $this->createForm(TableType::class, $table);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            match ($this->getClickedButtonName($form)) {
+                TableAbstract::DELETE_ACTION => $this->i18nService->deleteByIds(...$table->getSelected()),
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+            };
+
+            return $this->redirectToRoute(Routes::FILTER_INDEX);
+        }
+
+        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
+            'form' => $form->createView(),
+            'icon' => 'fa fa-language',
+            'title' => t('type.title_overview', ['type' => 'i18n'], 'emsco-core'),
+            'breadcrumb' => [
+                'admin' => t('key.admin', [], 'emsco-core'),
+                'page' => t('key.i18n', [], 'emsco-core'),
+            ],
+        ]);
     }
 }

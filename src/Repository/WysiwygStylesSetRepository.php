@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -20,6 +22,12 @@ class WysiwygStylesSetRepository extends ServiceEntityRepository
         parent::__construct($registry, WysiwygStylesSet::class);
     }
 
+    public function delete(WysiwygStylesSet $styleSet): void
+    {
+        $this->getEntityManager()->remove($styleSet);
+        $this->getEntityManager()->flush();
+    }
+
     /**
      * @return WysiwygStylesSet[]
      */
@@ -28,35 +36,9 @@ class WysiwygStylesSetRepository extends ServiceEntityRepository
         return parent::findBy([], ['orderKey' => 'asc']);
     }
 
-    public function update(WysiwygStylesSet $styleSet): void
-    {
-        $this->getEntityManager()->persist($styleSet);
-        $this->getEntityManager()->flush();
-    }
-
-    public function delete(WysiwygStylesSet $styleSet): void
-    {
-        $this->getEntityManager()->remove($styleSet);
-        $this->getEntityManager()->flush();
-    }
-
     public function findById(int $id): ?WysiwygStylesSet
     {
         return $this->find($id);
-    }
-
-    /**
-     * @param string[] $ids
-     *
-     * @return WysiwygStylesSet[]
-     */
-    public function getByIds(array $ids): array
-    {
-        $queryBuilder = $this->createQueryBuilder('wysiwyg_styles_set');
-        $queryBuilder->where('wysiwyg_styles_set.id IN (:ids)')
-            ->setParameter('ids', $ids);
-
-        return $queryBuilder->getQuery()->getResult();
     }
 
     public function getById(string $id): WysiwygStylesSet
@@ -68,53 +50,40 @@ class WysiwygStylesSetRepository extends ServiceEntityRepository
         return $wysiwygStylesSet;
     }
 
+    /**
+     * @return WysiwygStylesSet[]
+     */
+    public function getByIds(string ...$ids): array
+    {
+        $qb = $this->createQueryBuilder('s');
+        $qb
+            ->andWhere($qb->expr()->in('s.id', ':ids'))
+            ->setParameter('ids', $ids);
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function getByName(string $name): ?WysiwygStylesSet
     {
         return $this->findOneBy(['name' => $name]);
     }
 
-    /**
-     * @return WysiwygStylesSet[]
-     */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    public function makeQueryBuilder(string $searchValue = ''): QueryBuilder
     {
-        $qb = $this->createQueryBuilder('styleset')
-            ->setFirstResult($from)
-            ->setMaxResults($size);
-        $this->addSearchFilters($qb, $searchValue);
+        $qb = $this->createQueryBuilder('s');
 
-        if (\in_array($orderField, ['name'])) {
-            $qb->orderBy(\sprintf('styleset.%s', $orderField), $orderDirection);
-        } else {
-            $qb->orderBy('styleset.orderKey', $orderDirection);
+        if ('' !== $searchValue) {
+            $qb
+                ->andWhere($qb->expr()->like('s.name', ':term'))
+                ->setParameter(':term', '%'.\strtolower($searchValue).'%');
         }
 
-        return $qb->getQuery()->execute();
+        return $qb;
     }
 
-    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    public function update(WysiwygStylesSet $styleSet): void
     {
-        if (\strlen($searchValue) > 0) {
-            $or = $qb->expr()->orX(
-                $qb->expr()->like('styleset.name', ':term'),
-            );
-            $qb->andWhere($or)
-                ->setParameter(':term', '%'.$searchValue.'%');
-        }
-    }
-
-    public function create(WysiwygStylesSet $wysiwygStylesSet): void
-    {
-        $this->getEntityManager()->persist($wysiwygStylesSet);
+        $this->getEntityManager()->persist($styleSet);
         $this->getEntityManager()->flush();
-    }
-
-    public function counter(string $searchValue = ''): int
-    {
-        $qb = $this->createQueryBuilder('styleset');
-        $qb->select('count(styleset.id)');
-        $this->addSearchFilters($qb, $searchValue);
-
-        return \intval($qb->getQuery()->getSingleScalarResult());
     }
 }

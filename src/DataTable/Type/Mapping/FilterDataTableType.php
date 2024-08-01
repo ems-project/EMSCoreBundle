@@ -35,6 +35,7 @@ class FilterDataTableType extends AbstractEntityTableType
         );
 
         $this
+            ->addColumnsCreatedModifiedDate($table)
             ->addItemDelete($table, 'filter', Routes::FILTER_DELETE)
             ->addTableToolbarActionAdd($table, Routes::FILTER_ADD)
             ->addTableActionDelete($table, 'filter');

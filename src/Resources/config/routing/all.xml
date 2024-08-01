@@ -48,8 +48,8 @@
             prefix="/job"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/wysiwyg.xml"
             prefix="/wysiwyg"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/wysiwyg-options.xml"
-            prefix="/wysiwyg-options"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/admin/wysiwyg.xml"
+            prefix="/admin/wysiwyg"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/user/user.xml"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/profile.xml"
             prefix="/profile"/>
@@ -57,8 +57,6 @@
             prefix="/admin/log"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/template-deprecated.xml"
             prefix="/template"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/i18n.xml"
-            prefix="/i18n"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/environment.xml"
             prefix="/environment"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/publisher.xml"
@@ -77,6 +75,8 @@
             prefix="/admin/analyzer"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/admin/filter.xml"
             prefix="/admin/filter"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/admin/i18n.xml"
+            prefix="/admin/i18n"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/content-type.xml"
             prefix="/content-type"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/elasticsearch.xml"

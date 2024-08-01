@@ -445,11 +445,6 @@
             <argument type="service" id="ems_common.storage.processor"/>
             <argument type="service" id="ems.repository.uploaded_asset_repository"/>
         </service>
-        <service id="ems.service.helper" class="EMS\CoreBundle\Service\HelperService">
-            <argument type="service" id="doctrine"/>
-            <argument type="service" id="request_stack"/>
-            <argument>%ems_core.paging_size%</argument>
-        </service>
         <service id="ems.service.elasticsearch" class="EMS\CoreBundle\Service\ElasticsearchService">
             <argument type="service" id="ems_common.service.elastica"/>
         </service>
@@ -536,7 +531,6 @@
         <service id="EMS\CoreBundle\Service\SearchFieldOptionService" alias="ems.service.search_field_option" />
         <service id="EMS\CoreBundle\Service\WysiwygStylesSetService" alias="ems.service.wysiwyg_styles_set" />
         <service id="EMS\CoreBundle\Service\NotificationService" alias="ems.service.notification" />
-        <service id="EMS\CoreBundle\Service\HelperService" alias="ems.service.helper" />
         <service id="EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory" alias="ems.form.factories.objectChoiceListFactory" />
         <service id="EMS\CoreBundle\Core\Revision\Task\TaskManager" alias="emsco.revision.task.manager" />
     </services>

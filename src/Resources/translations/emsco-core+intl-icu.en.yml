@@ -56,14 +56,18 @@ field:
         type: Type
     hash: 'Hash signature'
     hidden: Hidden
+    key: Key
     label: Label
     last_seen: 'Last seen'
+    locale: Locale
     message: Message
     name: Name
     public_access: 'Public Access'
     severity: Severity
     status: Status
     tag: Tag
+    text: Text
+    translations: Translations
     type: Type
     user: User
     user_deleted: 'Deleted by'
@@ -79,6 +83,7 @@ key:
     dashboards: Dashboards
     filters: Filters
     forms: Forms
+    i18n: I18N
     job_logs: 'Jobs logs'
     jobs: Jobs
     logs: Logs
@@ -88,6 +93,7 @@ key:
     schedule: Schedule
     uploaded_files: 'Uploaded Files'
     uploaded_files_logs: 'Uploaded Files Logs'
+    wysiwyg: WYSIWYG
 log:
     error:
         invalid_table_action: 'Unknown table action'
@@ -116,59 +122,71 @@ revision:
 type:
     delete_confirm: |-
         {type, select,
-            analyzer      {Delete the "{label}" analyzer?}
-            channel       {Delete the "{label}" channel?}
-            dashboard     {Delete the "{label}" dashboard?}
-            draft         {Modifications made in this draft will be lost}
-            filter        {Delete the "{label}" filter?}
-            form          {Delete the "{label}" form?}
-            job           {Delete the job?}
-            job_schedule  {Delete the "{label}" scheduled job?}
-            log           {Delete log?}  
-            trash         {Delete trash "{label}" ?}
-            uploaded_file {Delete "{label}" ?}
-            query_search  {Delete the "{label}" QuerySearch?}
-            other         {Are you sure?}    
+            analyzer          {Delete the "{label}" analyzer?}
+            channel           {Delete the "{label}" channel?}
+            dashboard         {Delete the "{label}" dashboard?}
+            draft             {Modifications made in this draft will be lost}
+            filter            {Delete the "{label}" filter?}
+            form              {Delete the "{label}" form?}
+            i18n              {Delete the "{label}" i18n key?}
+            job               {Delete the job?}
+            job_schedule      {Delete the "{label}" scheduled job?}
+            log               {Delete log?}  
+            trash             {Delete trash "{label}" ?}
+            uploaded_file     {Delete "{label}" ?}
+            query_search      {Delete the "{label}" QuerySearch?}
+            wysiwyg_profile   {Delete the "{label}" WYSIWYG profile?}
+            wysiwyg_style_set {Delete the "{label}" WYSIWYG style set?}
+            other             {Are you sure?}    
         }
     delete_selected_confirm: |-
         {type, select,
-            analyzer      {Delete all selected analyzers?}  
-            channel       {Delete all selected channels?}
-            dashboard     {Delete all selected dashboards?}
-            draft         {All modifications made on selected drafts will lost?}
-            filter        {Delete all selected filters?}  
-            form          {Delete all selected forms?}
-            job           {Delete all selected jobs?}
-            job_schedule  {Delete all selected job schedules?}
-            log           {Delete all selected logs?}  
-            trash         {Delete all selected trashes?}
-            uploaded_file {Delete all selected uploaded files?}
-            query_search  {Delete all selected QuerySearch?}
-            other         {Delete all selected?}    
+            analyzer          {Delete all selected analyzers?}  
+            channel           {Delete all selected channels?}
+            dashboard         {Delete all selected dashboards?}
+            draft             {All modifications made on selected drafts will lost?}
+            filter            {Delete all selected filters?}  
+            form              {Delete all selected forms?}
+            i18n              {Delete all selected i18n keys?}
+            job               {Delete all selected jobs?}
+            job_schedule      {Delete all selected job schedules?}
+            log               {Delete all selected logs?}  
+            trash             {Delete all selected trashes?}
+            uploaded_file     {Delete all selected uploaded files?}
+            query_search      {Delete all selected QuerySearch?}
+            wysiwyg_profile   {Delete all selected WYSIWYG profiles?}
+            wysiwyg_style_set {Delete all selected WYSIWYG style sets?}
+            other             {Delete all selected?}    
         }
     reorder: |-
         {type, select,
-            analyzer     {Reorder analyzers}
-            channel      {Reorder channels}
-            dashboard    {Reorder dashboards}
-            filter       {Reorder filters}
-            form         {Reorder forms}
-            job_schedule {Reorder job schedules} 
-            query_search {Reorder QuerySearch}
-            other        {Reorder}
+            analyzer          {Reorder analyzers}
+            channel           {Reorder channels}
+            dashboard         {Reorder dashboards}
+            filter            {Reorder filters}
+            form              {Reorder forms}
+            job_schedule      {Reorder job schedules} 
+            query_search      {Reorder QuerySearch}
+            wysiwyg_profile   {Reorder WYSIWYG profiles}
+            wysiwyg_style_set {Reorder WYSIWYG style sets}
+            other             {Reorder}
         }
     title_overview: |-
         {type, select,
-            analyzer      {List of analyzers}
-            channel       {List of channels}
-            dashboard     {List of dashboards}
-            filter        {List of filters}
-            form          {List of forms}
-            job           {Jobs list}
-            job_schedule  {Schedule}  
-            log           {Logs}  
-            query_search  {List of QuerySearch}  
-            other         {Overview}    
+            analyzer          {List of analyzers}
+            channel           {List of channels}
+            dashboard         {List of dashboards}
+            filter            {List of filters}
+            form              {List of forms}
+            i18n              {I18n list}
+            i18n_translations {Translations for key "{key}"}        
+            job               {Jobs list}
+            job_schedule      {Schedule}  
+            log               {Logs}  
+            query_search      {List of QuerySearch}
+            wysiwyg_profile   {WYSIWYG profiles}
+            wysiwyg_style_set {WYSIWYG style sets}
+            other             {Overview}    
         }
     title_sub: |-
         {type, select,

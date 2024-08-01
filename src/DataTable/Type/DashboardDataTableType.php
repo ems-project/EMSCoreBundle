@@ -31,13 +31,13 @@ class DashboardDataTableType extends AbstractEntityTableType
 
         $table->addColumnDefinition(new TemplateBlockTableColumn(
             label: t('field.type', [], 'emsco-core'),
-            blockName: 'type',
-            template: "@$this->templateNamespace/dashboard/columns.html.twig")
+            blockName: 'dashboardType',
+            template: "@$this->templateNamespace/datatable/template_block_columns.html.twig")
         );
         $table->addColumnDefinition(new TemplateBlockTableColumn(
             label: t('field.definition', [], 'emsco-core'),
-            blockName: 'definition',
-            template: "@$this->templateNamespace/dashboard/columns.html.twig")
+            blockName: 'dashboardDefinition',
+            template: "@$this->templateNamespace/datatable/template_block_columns.html.twig")
         );
 
         $this->addItemEdit($table, Routes::DASHBOARD_ADMIN_EDIT);
@@ -58,6 +58,7 @@ class DashboardDataTableType extends AbstractEntityTableType
         );
 
         $this
+            ->addColumnsCreatedModifiedDate($table)
             ->addItemDelete($table, 'dashboard', Routes::DASHBOARD_ADMIN_DELETE)
             ->addTableToolbarActionAdd($table, Routes::DASHBOARD_ADMIN_ADD)
             ->addTableActionDelete($table, 'dashboard');

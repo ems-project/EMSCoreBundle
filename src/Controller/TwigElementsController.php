@@ -114,9 +114,9 @@ class TwigElementsController extends AbstractController
         $menu->addChild('view.elements.side-menu.chanel-admin.index-link', 'fa fa-eye', 'ems_core_channel_index')->setTranslation([]);
         $menu->addChild('view.elements.side-menu.dashboard-admin.index-link', 'fa fa-dashboard', Routes::DASHBOARD_ADMIN_INDEX)->setTranslation([]);
         $menu->addChild('view.elements.side-menu.query_search.index-link', 'fa fa-list-alt', 'ems_core_query_search_index')->setTranslation([]);
-        $menu->addChild('views.elements.side-menu-html.wysiwyg', 'fa fa-edit', 'ems_wysiwyg_index')->setTranslation([]);
+        $menu->addChild('views.elements.side-menu-html.wysiwyg', 'fa fa-edit', Routes::WYSIWYG_INDEX)->setTranslation([]);
         $menu->addChild('views.elements.side-menu-html.search', 'fa fa-search', 'ems_search_options_index')->setTranslation([]);
-        $menu->addChild('views.elements.side-menu-html.i18n', 'fa fa-language', 'i18n_index')->setTranslation([]);
+        $menu->addChild('views.elements.side-menu-html.i18n', 'fa fa-language', Routes::I18N_INDEX)->setTranslation([]);
         $jobMenu = $menu->addChild('views.elements.side-menu-html.jobs', 'fa fa-terminal', 'job.index');
         $jobMenu->setTranslation([]);
         $jobMenu->addChild('views.elements.side-menu-html.create-job', 'fa fa-plus', 'job.add')->setTranslation([]);

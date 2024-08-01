@@ -28,6 +28,7 @@ class QuerySearchDataTableType extends AbstractEntityTableType
         $table->addColumn(t('field.name', [], 'emsco-core'), 'name');
 
         $this
+            ->addColumnsCreatedModifiedDate($table)
             ->addItemEdit($table, 'ems_core_query_search_edit')
             ->addItemDelete($table, 'query_search', 'ems_core_query_search_delete')
             ->addTableToolbarActionAdd($table, 'ems_core_query_search_add')

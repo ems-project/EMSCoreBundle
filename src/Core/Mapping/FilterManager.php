@@ -43,7 +43,7 @@ class FilterManager implements EntityServiceInterface
     {
         $filters = $this->filterRepository->getByIds(...$ids);
         foreach ($filters as $filter) {
-            $this->filterRepository->delete($filter);
+            $this->delete($filter);
         }
     }
 

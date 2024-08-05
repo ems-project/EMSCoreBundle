@@ -644,7 +644,7 @@ export default class MediaLibrary {
         formData.append('filesize', file.size);
         formData.append('fileMimetype', file.type);
         formData.append('fileHash', fileHash);
-        formData.append('fileResizedHash', resizedHash);
+        formData.append('fileResizedHash', resizedHash ?? '');
 
         const path = this.#activeFolderId ? `/add-file/${this.#activeFolderId}` : '/add-file';
         await this._post(path, formData, true)

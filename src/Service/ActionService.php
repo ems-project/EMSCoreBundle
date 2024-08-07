@@ -40,20 +40,16 @@ final class ActionService implements EntityServiceInterface
         ]);
     }
 
-    /**
-     * @param string[] $ids
-     */
-    public function deleteByIds(array $ids): void
+    public function deleteByIds(string ...$ids): void
     {
-        foreach ($this->templateRepository->getByIds($ids) as $channel) {
-            $this->delete($channel);
+        $actions = $this->templateRepository->getByIds(...$ids);
+
+        foreach ($actions as $action) {
+            $this->delete($action);
         }
     }
 
-    /**
-     * @param string[] $ids
-     */
-    public function reorderByIds(array $ids): void
+    public function reorderByIds(string ...$ids): void
     {
         $counter = 1;
         foreach ($ids as $id) {

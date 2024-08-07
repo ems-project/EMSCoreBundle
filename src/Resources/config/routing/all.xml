@@ -10,8 +10,6 @@
     <import resource="@EMSCoreBundle/Resources/config/routing/public.xml"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/dashboard.xml"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/form.xml"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/action.xml"
-            prefix="/action"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/channel.xml"
             prefix="/channel-admin"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/component.xml"
@@ -38,8 +36,7 @@
             prefix="/data"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/search.xml"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/task.xml"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/admin/view.xml"
-            prefix="/admin/view"/>
+
     <import resource="@EMSCoreBundle/Resources/config/routing/views.xml"
             prefix="/views"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/admin/job.xml"
@@ -55,8 +52,6 @@
             prefix="/profile"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/log.xml"
             prefix="/admin/log"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/template-deprecated.xml"
-            prefix="/template"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/environment.xml"
             prefix="/environment"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/publisher.xml"
@@ -77,8 +72,12 @@
             prefix="/admin/filter"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/admin/i18n.xml"
             prefix="/admin/i18n"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/content-type.xml"
-            prefix="/content-type"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/admin/content-type.xml"
+            prefix="/admin/content-type"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/admin/action.xml"
+            prefix="/admin/content-type/action"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/admin/view.xml"
+            prefix="/admin/content-type/view"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/elasticsearch.xml"
             prefix="/elasticsearch"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/public-key.xml"/>

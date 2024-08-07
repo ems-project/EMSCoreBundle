@@ -5,18 +5,23 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\DataTable\Type\ContentType;
 
 use EMS\CoreBundle\Core\DataTable\Type\AbstractEntityTableType;
+use EMS\CoreBundle\DataTable\Type\DataTableTypeTrait;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
-use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Roles;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ActionService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 class ContentTypeActionDataTableType extends AbstractEntityTableType
 {
+    use DataTableTypeTrait;
+
     public function __construct(
         ActionService $entityService,
         private readonly ContentTypeService $contentTypeService
@@ -28,16 +33,23 @@ class ContentTypeActionDataTableType extends AbstractEntityTableType
     {
         /** @var ContentType $contentType */
         $contentType = $table->getContext();
+        $routeParams = ['contentType' => $contentType->getId()];
 
-        $table->addColumn('table.index.column.loop_count', 'orderKey');
-        $table->addColumnDefinition(new BoolTableColumn('action.index.column.public', 'public'));
-        $table->addColumn('action.index.column.name', 'name');
-        $table->addColumn('action.index.column.label', 'label')
-            ->setItemIconCallback(fn (Template $action) => $action->getIcon());
-        $table->addColumn('action.index.column.type', 'renderOption');
-        $table->addItemGetAction('ems_core_action_edit', 'action.actions.edit', 'pencil', ['contentType' => $contentType]);
-        $table->addItemPostAction('ems_core_action_delete', 'action.actions.delete', 'trash', 'action.actions.delete_confirm', ['contentType' => $contentType->getId()]);
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'action.actions.delete_selected', 'action.actions.delete_selected_confirm');
+        $this->addColumnsOrderLabelName($table);
+        $table->getColumnByName('label')?->setItemIconCallback(fn (Template $action) => $action->getIcon());
+        $table->addColumn(t('field.type', [], 'emsco-core'), 'renderOption');
+
+        $table->addColumnDefinition(new BoolTableColumn(
+            titleKey: t('field.public_access', [], 'emsco-core'),
+            attribute: 'public'
+        ));
+
+        $this
+            ->addColumnsCreatedModifiedDate($table)
+            ->addItemEdit($table, Routes::ADMIN_CONTENT_TYPE_ACTION_EDIT, $routeParams)
+            ->addItemDelete($table, 'content_type_action', Routes::ADMIN_CONTENT_TYPE_ACTION_DELETE, $routeParams)
+            ->addTableToolbarActionAdd($table, Routes::ADMIN_CONTENT_TYPE_ACTION_ADD, $routeParams)
+            ->addTableActionDelete($table, 'content_type_action');
     }
 
     public function getRoles(): array

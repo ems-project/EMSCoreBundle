@@ -18,6 +18,7 @@ class TableColumn
     private ?\Closure $itemIconCallback = null;
     private string $cellType = 'td';
     private string $cellClass = '';
+    private ?\Closure $dataClassCallback = null;
     private bool $cellRender = true;
     /** @var array <string, \Closure> */
     private array $htmlAttributes = [];
@@ -114,6 +115,16 @@ class TableColumn
         $this->cellClass = $cellClass;
 
         return $this;
+    }
+
+    public function setDataClassCallback(\Closure $callback): void
+    {
+        $this->dataClassCallback = $callback;
+    }
+
+    public function getDataClass(mixed $data): ?string
+    {
+        return $this->dataClassCallback?->call($this, $data);
     }
 
     /**

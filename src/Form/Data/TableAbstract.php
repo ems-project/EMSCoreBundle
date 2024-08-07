@@ -302,6 +302,17 @@ abstract class TableAbstract implements TableInterface
         foreach ($this->getColumns() as $column) {
             $columnOptions[] = \array_merge($column->getFrontendOptions(), ['targets' => $columnTarget++]);
         }
+
+        if ($this->itemActionCollection->count() > 0) {
+            $columnOptions[] = [
+                'cellType' => 'td',
+                'className' => '',
+                'targets' => \count($this->columns),
+                'orderable' => false,
+                'searchable' => false,
+            ];
+        }
+
         $options['columnDefs'] = $columnOptions;
 
         $options = \array_merge($options, $this->extraFrontendOption);

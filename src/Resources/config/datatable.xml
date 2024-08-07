@@ -7,6 +7,17 @@
         <defaults public="false" />
 
         <!-- Types -->
+        <service id="emsco.data_table.content_type" class="EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeDataTableType">
+            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
+            <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService"/>
+            <argument>%ems_core.template_namespace%</argument>
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.content_type_unreferenced" class="EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeUnreferencedDataTableType">
+            <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService"/>
+            <argument>%ems_core.template_namespace%</argument>
+            <tag name="emsco.datatable" />
+        </service>
         <service id="emsco.data_table.content_type.action" class="EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeActionDataTableType">
             <argument type="service" id="ems.service.action"/>
             <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService"/>

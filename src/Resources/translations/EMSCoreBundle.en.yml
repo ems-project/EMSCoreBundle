@@ -12,9 +12,6 @@ log:
             delete: 'The environment %name% has been deleted'
         channel:
             delete: 'The channel %name% has been deleted'
-        content-type:
-            get-unreferenced-content-type:
-                unexpected-error: 'Unexpected error while get unreferenced content type from environment %environment%: %error_message%'
         release:
             delete: 'The Release %name% has been deleted'
             not:
@@ -61,13 +58,10 @@ log:
         mapping:
             not_found: 'Content type %contenttype%''s mapping not found'
         not_found: 'Content type %contenttype% not found'
-        referenced: 'The content type %contenttype% has been referenced'
-        reordered: 'Content types have been reordered'
         subfield:
             added: 'A subfield %field_name% has been added'
             name_mandatory: 'The subfield name is mandatory'
             name_not_valid: 'The subfield is not valid : (format: %field_format%)'
-        unreferenced_not_found: 'Unreferenced content type not found'
         updated: 'The content type %contenttype% has been updated'
     controller:
         release:
@@ -419,20 +413,6 @@ ROLE_USER: User
 ROLE_USER_MANAGEMENT: 'User Management'
 ROLE_USER_READ: 'User read'
 ROLE_WEBMASTER: Webmaster
-action:
-    actions:
-        delete: Delete
-        delete_confirm: 'Delete the "%label%" action?'
-        delete_selected: 'Delete selected'
-        delete_selected_confirm: 'Delete all selected actions?'
-        edit: Edit
-    index:
-        column:
-            name: Name
-            label: Label
-            public: Public
-            type: Type
-        reorder: Reorder
 channel:
     add:
         save: Create
@@ -512,6 +492,7 @@ form-submission:
         export_selected: 'Export selected'
         process: 'Delete Submission'
     index:
+        delete_selected: 'Delete selected'
         column:
             created: 'Created At'
             expire_date: 'Expire Date'
@@ -916,25 +897,6 @@ view:
     user:
         index:
             title: 'User list'
-    index:
-        reorder: 'Reorder views'
-        column:
-            name: Name
-            label: Label
-            type: Type
-            definition: Definition
-    actions:
-        define:
-            title: 'Define'
-            default_overview: 'As default overview'
-        undefine: 'Undefine'
-        edit: Edit
-        duplicate: Duplicate
-        duplicate_confirm: 'Do you confirm?'
-        delete: Delete
-        delete_confirm: 'Do you confirm?'
-        delete_selected: 'Delete selected views'
-        view: Details
 views:
     elements:
         object-views-button:

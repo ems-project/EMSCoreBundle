@@ -25,7 +25,7 @@ class PublishedRevisionsQueryService implements QueryServiceInterface
     ) {
     }
 
-    public function isQuerySortable(): bool
+    public function isSortable(): bool
     {
         return false;
     }

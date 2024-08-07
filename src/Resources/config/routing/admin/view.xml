@@ -4,41 +4,27 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_view_index" path="/{type}"
+    <route id="emsco_admin_content_type_view_index" path="/{contentType}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::index"
            methods="GET|POST"
            format="html"/>
-    <route id="emsco_view_add" path="/add/{type}"
+    <route id="emsco_admin_content_type_view_add" path="/add/{contentType}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::add"
            methods="GET|POST"/>
-    <route id="emsco_view_edit" path="/edit/{view}.{_format}"
+    <route id="emsco_admin_content_type_view_edit" path="/edit/{view}.{_format}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::edit"
            methods="GET|POST"
            format="html"/>
-    <route id="emsco_view_duplicate" path="/duplicate/{view}"
+    <route id="emsco_admin_content_type_view_duplicate" path="/duplicate/{view}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::duplicate"
            methods="POST"/>
-    <route id="emsco_view_delete" path="/delete/{view}"
+    <route id="emsco_admin_content_type_view_delete" path="/delete/{view}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::delete"
            methods="POST"/>
-    <route id="emsco_view_define" path="/{view}/define/{definition}"
+    <route id="emsco_admin_content_type_view_define" path="/{view}/define/{definition}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::define"
            methods="POST"/>
-    <route id="emsco_view_undefine" path="/{view}/undefine"
+    <route id="emsco_admin_content_type_view_undefine" path="/{view}/undefine"
            controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::undefine"
-           methods="POST"/>
-
-    <route id="view.index" path="/{type}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::indexDeprecated"
-           methods="GET|POST"/>
-    <route id="view.add" path="/add/{type}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::addDeprecated"
-           methods="GET|POST"/>
-    <route id="view.edit" path="/edit/{id}.{_format}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::editDeprecated"
-           methods="GET|POST"
-           format="html"/>
-    <route id="view.remove" path="/delete/{id}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ViewController::deleteDeprecated"
            methods="POST"/>
 </routes>

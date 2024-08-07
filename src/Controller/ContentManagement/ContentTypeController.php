@@ -4,35 +4,40 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Controller\CoreControllerTrait;
+use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Form\FieldTypeManager;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeDataTableType;
+use EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeUnreferencedDataTableType;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Form\ContentTypeJsonUpdate;
 use EMS\CoreBundle\Entity\Form\EditFieldType;
 use EMS\CoreBundle\Exception\ElasticmsException;
+use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\DataField\SubfieldType;
 use EMS\CoreBundle\Form\Field\IconTextType;
-use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\ContentTypeStructureType;
 use EMS\CoreBundle\Form\Form\ContentTypeType;
 use EMS\CoreBundle\Form\Form\ContentTypeUpdateType;
 use EMS\CoreBundle\Form\Form\EditFieldTypeType;
 use EMS\CoreBundle\Form\Form\ReorderType;
+use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\Mapping;
 use EMS\Helpers\Standard\Json;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Button;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Form;
@@ -44,11 +49,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use function Symfony\Component\Translation\t;
+
 class ContentTypeController extends AbstractController
 {
+    use CoreControllerTrait;
+
     public function __construct(
-        private readonly LoggerInterface $logger,
         private readonly ContentTypeService $contentTypeService,
+        private readonly DataTableFactory $dataTableFactory,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly Mapping $mappingService,
         private readonly FieldTypeManager $fieldTypeManager,
         private readonly ContentTypeRepository $contentTypeRepository,
@@ -83,8 +93,8 @@ class ContentTypeController extends AbstractController
 
             $this->contentTypeService->updateFromJson($contentType, $json, $jsonUpdate->isDeleteExitingTemplates(), $jsonUpdate->isDeleteExitingViews());
 
-            return $this->redirectToRoute('contenttype.edit', [
-                'id' => $contentType->getId(),
+            return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_EDIT, [
+                'contentType' => $contentType->getId(),
             ]);
         }
 
@@ -94,24 +104,11 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    public function removeAction(int $id): RedirectResponse
+    public function removeAction(ContentType $contentType): RedirectResponse
     {
-        $contentType = $this->contentTypeRepository->findById($id);
+        $this->contentTypeService->softDelete($contentType);
 
-        if (null === $contentType) {
-            throw new NotFoundHttpException('Content Type not found');
-        }
-
-        // TODO test if there something published for this content type
-        $contentType->setActive(false)->setDeleted(true);
-        $this->contentTypeRepository->save($contentType);
-
-        $this->logger->warning('log.contenttype.deleted', [
-            EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
-        ]);
-
-        return $this->redirectToRoute('contenttype.index');
+        return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
     }
 
     public function activateAction(ContentType $contentType): Response
@@ -122,13 +119,13 @@ class ContentTypeController extends AbstractController
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
             ]);
 
-            return $this->redirectToRoute('contenttype.index');
+            return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
         }
 
         $contentType->setActive(true);
         $this->contentTypeRepository->save($contentType);
 
-        return $this->redirectToRoute('contenttype.index');
+        return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
     }
 
     public function disableAction(ContentType $contentType): Response
@@ -136,15 +133,14 @@ class ContentTypeController extends AbstractController
         $contentType->setActive(false);
         $this->contentTypeRepository->save($contentType);
 
-        return $this->redirectToRoute('contenttype.index');
+        return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
     }
 
-    public function refreshMappingAction(ContentType $id): Response
+    public function refreshMappingAction(ContentType $contentType): Response
     {
-        $this->contentTypeService->updateMapping($id);
-        $this->contentTypeService->persist($id);
+        $this->contentTypeService->updateMapping($contentType);
 
-        return $this->redirectToRoute('contenttype.index');
+        return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
     }
 
     public function addAction(Request $request): Response
@@ -227,8 +223,8 @@ class ContentTypeController extends AbstractController
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
             ]);
 
-            return $this->redirectToRoute('contenttype.edit', [
-                'id' => $contentType->getId(),
+            return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_EDIT, [
+                'contentType' => $contentType->getId(),
             ]);
         }
 
@@ -239,93 +235,73 @@ class ContentTypeController extends AbstractController
 
     public function indexAction(Request $request): Response
     {
-        $contentTypes = $this->contentTypeRepository->findAll();
+        $table = $this->dataTableFactory->create(ContentTypeDataTableType::class);
 
-        $builder = $this->createFormBuilder([])
-            ->add('reorder', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary ',
-                ],
-                'icon' => 'fa fa-reorder',
-            ]);
-
-        $names = [];
-        foreach ($contentTypes as $contentType) {
-            $names[] = $contentType->getName();
-        }
-
-        $builder->add('contentTypeNames', CollectionType::class, [
-            // each entry in the array will be an "email" field
-            'entry_type' => HiddenType::class,
-            // these options are passed to each "email" type
-            'entry_options' => [],
-            'data' => $names,
+        $form = $this->createForm(TableType::class, $table, [
+            'reorder_label' => t('type.reorder', ['type' => 'content_type'], 'emsco-core'),
         ]);
+        $form->handleRequest($request);
 
-        $form = $builder->getForm();
+        if ($form->isSubmitted() && $form->isValid()) {
+            match ($this->getClickedButtonName($form)) {
+                ContentTypeDataTableType::ACTION_ACTIVATE => $this->contentTypeService->activateByIds(...$table->getSelected()),
+                ContentTypeDataTableType::ACTION_DEACTIVATE => $this->contentTypeService->deactivateByIds(...$table->getSelected()),
+                ContentTypeDataTableType::ACTION_UPDATE_MAPPING => $this->contentTypeService->updateMappingByIds(...$table->getSelected()),
+                TableAbstract::DELETE_ACTION => $this->contentTypeService->softDeleteById(...$table->getSelected()),
+                TableType::REORDER_ACTION => $this->contentTypeService->reorderByIds(
+                    ...TableType::getReorderedKeys($form->getName(), $request)
+                ),
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+            };
 
-        if ($request->isMethod('POST')) {
-            $form = $request->get('form');
-            if (isset($form['contentTypeNames']) && \is_array($form['contentTypeNames'])) {
-                $counter = 1;
-                foreach ($form['contentTypeNames'] as $name) {
-                    /** @var ContentType $contentType */
-                    $contentType = $this->contentTypeRepository->findOneBy([
-                        'deleted' => false,
-                        'name' => $name,
-                    ]);
-                    $contentType->setOrderKey($counter);
-                    $this->contentTypeRepository->save($contentType);
-                    ++$counter;
-                }
-
-                $this->logger->notice('log.contenttype.reordered', [
-                    EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                ]);
-            }
-
-            return $this->redirectToRoute('contenttype.index');
+            return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/contenttype/index.html.twig", [
+        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
             'form' => $form->createView(),
+            'icon' => 'fa fa-sitemap',
+            'title' => t('type.title_overview', ['type' => 'content_type'], 'emsco-core'),
+            'breadcrumb' => Navigation::admin()->contentTypes(),
         ]);
     }
 
-    public function unreferencedAction(Request $request): Response
+    public function addReferencedIndex(): Response
     {
-        if ($request->isMethod('POST')) {
-            if (null != $request->get('envId') && null != $request->get('name')) {
-                $defaultEnvironment = $this->environmentRepository->findOneById($request->get('envId'));
-                if ($defaultEnvironment instanceof Environment) {
-                    $contentType = new ContentType();
-                    $contentType->setName($request->get('name'));
-                    $contentType->setPluralName($contentType->getName());
-                    $contentType->setSingularName($contentType->getName());
-                    $contentType->setEnvironment($defaultEnvironment);
-                    $contentType->setActive(true);
-                    $contentType->setDirty(false);
-                    $contentType->setOrderKey($this->contentTypeRepository->countContentType());
-                    $this->contentTypeRepository->save($contentType);
+        $table = $this->dataTableFactory->create(ContentTypeUnreferencedDataTableType::class);
+        $form = $this->createForm(TableType::class, $table);
 
-                    $this->logger->warning('log.contenttype.referenced', [
-                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                    ]);
+        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
+            'form' => $form->createView(),
+            'title' => t('action.add_referenced_content_type', [], 'emsco-core'),
+            'breadcrumb' => Navigation::admin()->contentTypes()->add(
+                label: t('action.add_referenced', [], 'emsco-core'),
+                icon: 'fa fa-plus',
+                route: Routes::ADMIN_CONTENT_TYPE_ADD_REFERENCED_INDEX,
+            ),
+        ]);
+    }
 
-                    return $this->redirectToRoute('contenttype.edit', [
-                        'id' => $contentType->getId(),
-                    ]);
-                }
-            }
-            $this->logger->warning('log.contenttype.unreferenced_not_found', [
-            ]);
+    public function addReferenced(Environment $environment, string $name): RedirectResponse
+    {
+        $contentType = new ContentType();
+        $contentType->setName($name);
+        $contentType->setPluralName($name);
+        $contentType->setSingularName($name);
+        $contentType->setEnvironment($environment);
+        $contentType->setActive(true);
+        $contentType->setDirty(false);
+        $contentType->setOrderKey($this->contentTypeService->count());
 
-            return $this->redirectToRoute('contenttype.unreferenced');
-        }
+        $this->contentTypeService->update($contentType);
 
-        return $this->render("@$this->templateNamespace/contenttype/unreferenced.html.twig", [
-            'referencedContentTypes' => $this->contentTypeService->getUnreferencedContentTypes(),
+        $this->logger->messageNotice(t(
+            message: 'log.notice.content_type_referenced',
+            parameters: ['contentType' => $contentType->getSingularName(), 'environment' => $environment->getLabel()],
+            domain: 'emsco-core'
+        ));
+
+        return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_EDIT, [
+            'contentType' => $contentType->getId(),
         ]);
     }
 
@@ -370,7 +346,7 @@ class ContentTypeController extends AbstractController
             $structure = \json_decode((string) $data['items'], true, 512, JSON_THROW_ON_ERROR);
             $this->contentTypeService->reorderFields($contentType, $structure);
 
-            return $this->redirectToRoute('contenttype.edit', ['id' => $contentType->getId()]);
+            return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_EDIT, ['contentType' => $contentType->getId()]);
         }
 
         return $this->render("@$this->templateNamespace/contenttype/reorder.html.twig", [
@@ -379,23 +355,9 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    public function editAction(int $id, Request $request): Response
+    public function editAction(ContentType $contentType, Request $request): Response
     {
-        $contentType = $this->contentTypeRepository->findById($id);
-
-        if (null === $contentType) {
-            $this->logger->error('log.contenttype.not_found', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $id,
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-            ]);
-
-            return $this->redirectToRoute('contenttype.index');
-        }
-
-        $environment = $contentType->getEnvironment();
-        if (null === $environment) {
-            throw new \RuntimeException('Unexpected null environment');
-        }
+        $environment = $contentType->giveEnvironment();
 
         $inputContentType = $request->request->all('content_type');
         try {
@@ -430,19 +392,19 @@ class ContentTypeController extends AbstractController
                     ]);
                 }
                 if (\array_key_exists('saveAndClose', $inputContentType)) {
-                    return $this->redirectToRoute('contenttype.index');
+                    return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
                 } elseif (\array_key_exists('saveAndEditStructure', $inputContentType)) {
-                    return $this->redirectToRoute('contenttype.structure', [
-                        'id' => $id,
+                    return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_STRUCTURE, [
+                        'id' => $contentType->getId(),
                     ]);
                 } elseif (\array_key_exists('saveAndReorder', $inputContentType)) {
-                    return $this->redirectToRoute('ems_contenttype_reorder', [
-                        'contentType' => $id,
+                    return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_REORDER, [
+                        'contentType' => $contentType->getId(),
                     ]);
                 }
 
-                return $this->redirectToRoute('contenttype.edit', [
-                    'id' => $id,
+                return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_EDIT, [
+                    'contentType' => $contentType->getId(),
                 ]);
             }
         }
@@ -470,7 +432,7 @@ class ContentTypeController extends AbstractController
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
             ]);
 
-            return $this->redirectToRoute('contenttype.index');
+            return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
         }
 
         $inputContentType = $request->request->all('content_type_structure');
@@ -504,17 +466,17 @@ class ContentTypeController extends AbstractController
                     ]);
                 }
                 if (\array_key_exists('saveAndClose', $inputContentType)) {
-                    return $this->redirectToRoute('contenttype.edit', [
-                        'id' => $id,
+                    return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_EDIT, [
+                        'contentType' => $id,
                     ]);
                 }
                 if (\array_key_exists('saveAndReorder', $inputContentType)) {
-                    return $this->redirectToRoute('ems_contenttype_reorder', [
+                    return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_REORDER, [
                         'contentType' => $id,
                     ]);
                 }
 
-                return $this->redirectToRoute('contenttype.structure', [
+                return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_STRUCTURE, [
                     'id' => $id,
                 ]);
             } else {
@@ -522,7 +484,7 @@ class ContentTypeController extends AbstractController
                 $contentType->getFieldType()->updateOrderKeys();
                 $this->contentTypeRepository->save($contentType);
 
-                return $this->redirectToRoute('contenttype.structure', \array_filter([
+                return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_STRUCTURE, \array_filter([
                     'id' => $id,
                     'open' => $openModal,
                 ]));
@@ -568,7 +530,7 @@ class ContentTypeController extends AbstractController
             }
 
             if ('saveAndClose' === $action) {
-                return $this->redirectToRoute('ems_contenttype_reorder', [
+                return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_REORDER, [
                     'contentType' => $contentType->getId(),
                 ]);
             }
@@ -604,7 +566,7 @@ class ContentTypeController extends AbstractController
             }
         }
 
-        return $this->redirectToRoute('ems_contenttype_field_edit', [
+        return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_EDIT, [
             'contentType' => $contentType->getId(),
             'field' => $field->getId(),
         ]);

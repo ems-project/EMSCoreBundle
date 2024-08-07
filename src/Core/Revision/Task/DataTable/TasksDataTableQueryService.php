@@ -35,9 +35,9 @@ class TasksDataTableQueryService implements QueryServiceInterface
     ) {
     }
 
-    public function isQuerySortable(): bool
+    public function isSortable(): bool
     {
-        return true;
+        return false;
     }
 
     /**

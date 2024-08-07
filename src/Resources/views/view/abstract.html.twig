@@ -3,9 +3,9 @@
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
-        <li><a href="{{ path('contenttype.index') }}"><i class="{{ 'content-type.icon.class'|trans }}"></i> {{ 'content-type.menu'|trans }}</a></li>
-        <li><a href="{{ path("contenttype.edit", {id: contentType.id}) }}"><i class="{{ contentType.icon }}"></i> {{ 'content-type.edit'|trans({'%type%': contentType.singularName}) }}</a></li>
-        <li><a href="{{ path("view.index", {type: contentType.name}) }}"><i class="{{ 'view.icon.class'|trans }}"></i> {{ 'view.list.menu'|trans({'%type%': contentType.singularName}) }}</a></li>
+        <li><a href="{{ path('emsco_admin_content_type_index') }}"><i class="{{ 'content-type.icon.class'|trans }}"></i> {{ 'content-type.menu'|trans }}</a></li>
+        <li><a href="{{ path("emsco_admin_content_type_edit", {contentType: contentType.id}) }}"><i class="{{ contentType.icon }}"></i> {{ 'content-type.edit'|trans({'%type%': contentType.singularName}) }}</a></li>
+        <li><a href="{{ path("emsco_admin_content_type_view_index", {contentType: contentType.id}) }}"><i class="{{ 'view.icon.class'|trans }}"></i> {{ 'view.list.menu'|trans({'%type%': contentType.singularName}) }}</a></li>
         {% block breadcrumb_items %}{% endblock breadcrumb_items %}
     </ol>
 {% endblock %}

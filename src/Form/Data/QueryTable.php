@@ -132,4 +132,9 @@ class QueryTable extends TableAbstract
     {
         return $this->queryName;
     }
+
+    public function isSortable(): bool
+    {
+        return $this->service->isSortable();
+    }
 }

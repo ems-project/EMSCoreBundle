@@ -170,7 +170,7 @@ class UploadedAssetDataTableType extends AbstractTableType implements QueryServi
         return 'uploaded_asset';
     }
 
-    public function isQuerySortable(): bool
+    public function isSortable(): bool
     {
         return false;
     }

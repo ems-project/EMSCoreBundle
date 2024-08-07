@@ -193,11 +193,17 @@
 {% endblock emsco_form_table_column_data_value %}
 
 {% block emsco_form_table_column_data %}
-    {% if column.cellRender %}
-        <td>{{ block(column.tableDataValueBlock()) }}</td>
-    {% else %}
-        {{ block(column.tableDataValueBlock()) }}
-    {% endif %}
+    {%- set data = block(column.tableDataValueBlock()) -%}
+    {%- set dataClass = column.dataClass(line.data) -%}
+    {%- if dataClass is not null -%}
+        {%- set data -%}<span class="{{ dataClass }}">{{ data|raw }}</span>{%- endset -%}
+    {%- endif -%}
+
+    {%- if column.cellRender -%}
+        <td>{{ data|raw }}</td>
+    {%- else -%}
+        {{ data|raw }}
+    {%- endif -%}
 {% endblock emsco_form_table_column_data %}
 
 {% block emsco_form_table_column_action_checkbox %}
@@ -347,7 +353,7 @@
                                         {{ block(column.tableDataBlock()) }}
                                     {% endfor %}
                                     {% if table.itemActions|length > 0 %}
-                                        <td data-search="">
+                                        <td>
                                             {{ block('emsco_form_table_column_row_actions') }}
                                         </td>
                                     {% endif %}

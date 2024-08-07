@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller;
 
-use EMS\CommonBundle\Common\Log\LocalizedLogger;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\DataTable\Type\Wysiwyg\WysiwygProfileDataTableType;
 use EMS\CoreBundle\DataTable\Type\Wysiwyg\WysiwygStylesSetDataTableType;
@@ -39,7 +39,7 @@ class WysiwygController extends AbstractController
         private readonly WysiwygStylesSetService $wysiwygStylesSetService,
         private readonly DataTableFactory $dataTableFactory,
         private readonly FormFactoryInterface $formFactory,
-        private readonly LocalizedLogger $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly TranslatorInterface $translator,
         private readonly string $templateNamespace,
     ) {

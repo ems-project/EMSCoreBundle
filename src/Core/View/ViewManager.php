@@ -4,19 +4,24 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\View;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Core\ContentType\ViewDefinition;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Repository\ViewRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
-use Psr\Log\LoggerInterface;
+
+use function Symfony\Component\Translation\t;
 
 class ViewManager implements EntityServiceInterface
 {
-    public function __construct(private readonly ViewRepository $viewRepository, private readonly LoggerInterface $logger)
-    {
+    public function __construct(
+        private readonly ViewRepository $viewRepository,
+        private readonly LocalizedLoggerInterface $logger
+    ) {
     }
 
     public function isSortable(): bool
@@ -89,10 +94,7 @@ class ViewManager implements EntityServiceInterface
         $this->update($view);
     }
 
-    /**
-     * @param string[] $ids
-     */
-    public function reorderByIds(array $ids): void
+    public function reorderByIds(string ...$ids): void
     {
         $counter = 1;
         foreach ($ids as $id) {
@@ -102,25 +104,25 @@ class ViewManager implements EntityServiceInterface
         }
     }
 
-    /**
-     * @param string[] $ids
-     */
-    public function deleteByIds(array $ids): void
+    public function deleteByIds(string ...$ids): void
     {
-        foreach ($this->viewRepository->getByIds($ids) as $view) {
+        $views = $this->viewRepository->getByIds(...$ids);
+
+        foreach ($views as $view) {
             $this->delete($view);
         }
     }
 
     public function delete(View $view): void
     {
-        $name = $view->getName();
-        $label = $view->getLabel();
         $this->viewRepository->delete($view);
-        $this->logger->warning('log.service.view.delete', [
-            'name' => $name,
-            'label' => $label,
-        ]);
+        $this->logger->messageNotice(
+            message: t('log.notice.content_type_view_deleted', ['view' => $view->getLabel()], 'emsco-core'),
+            context: [
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
+                EmsFields::LOG_CONTENTTYPE_FIELD => $view->getContentType()->getId(),
+            ]
+        );
     }
 
     public function getByItemName(string $name): ?EntityInterface

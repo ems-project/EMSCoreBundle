@@ -192,7 +192,7 @@
 
         <service id="ems.view.manager" class="EMS\CoreBundle\Core\View\ViewManager">
             <argument type="service" id="ems.repository.view"/>
-            <argument type="service" id="logger"/>
+            <argument type="service" id="emsco.logger"/>
         </service>
         <service id="ems.schedule.manager" class="EMS\CoreBundle\Core\Job\ScheduleManager">
             <argument type="service" id="ems.repository.schedule"/>
@@ -334,8 +334,9 @@
             <tag name="emsco.entity.service" priority="80" />
         </service>
         <service id="EMS\CoreBundle\Service\ContentTypeService">
+            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
             <argument type="service" id="doctrine" />
-            <argument type="service" id="logger" />
+            <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.mapping" />
             <argument type="service" id="ems_common.service.elastica" />
             <argument type="service" id="ems.service.environment" />

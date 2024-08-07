@@ -1,8 +1,12 @@
 action:
+    activate: Activate
     add: Add
+    add_referenced: 'Add referenced'
+    add_referenced_content_type: 'Add a reference content type'
     clean: Clean
     close: Close
     confirmation: 'Do you confirm?'
+    deactivate: Deactivate
     define: Define
     delete: Delete
     delete_selected: 'Delete selected'
@@ -16,7 +20,33 @@ action:
     status: Status
     toggle_visibility: 'Toggle visibility'
     toggle_visibility_selected: 'Toggle visibility selected'
+    update_mapping: 'Update mapping'
 core:
+    content_type:
+        view_define: |-
+            {define, select,
+                default_overview {As default overview}
+                other            {Undefine}    
+            }
+        view_definition: |-
+            {value, select,
+                default_overview {Default overview}
+                other            {Undefined}
+            }
+        view_type: |-
+            {value, select,
+                data_link    {Custom data link}
+                keywords     {Keywords view}
+                criteria     {Criteria view}
+                export       {Export view}
+                sorter       {Sorter view}
+                hierarchical {Hierarchical view}
+                report       {Report view}
+                calendar     {Calendar view}
+                gallery      {Gallery view}
+                importer     {Importer view}
+                other        {Unknown type}
+            }
     dashboard:
         define: |-
             {define, select,
@@ -43,6 +73,7 @@ field:
     channel: Channel
     command: Command
     context: Context
+    count: Count
     cron: Cron
     date_created: 'Date creation'
     date_modified: 'Date modified'
@@ -50,20 +81,26 @@ field:
     date_run_previous: 'Date previous run'
     date_upload: 'Date upload'
     definition: Definition
+    environment_default: 'Default environment'
+    environment_external: 'External environment'
     extra: Extra
     file:
         size: Size
         type: Type
     hash: 'Hash signature'
     hidden: Hidden
+    is_active: Active
+    is_dirty: Dirty
     key: Key
     label: Label
     last_seen: 'Last seen'
     locale: Locale
     message: Message
     name: Name
+    plural: Plural
     public_access: 'Public Access'
     severity: Severity
+    singular: Singular
     status: Status
     tag: Tag
     text: Text
@@ -91,13 +128,19 @@ key:
     publishers: Publishers
     query_searches: QuerySearch
     schedule: Schedule
+    structure: Structure
     uploaded_files: 'Uploaded Files'
     uploaded_files_logs: 'Uploaded Files Logs'
+    views: Views
     wysiwyg: WYSIWYG
 log:
     error:
+        content_type_add_unreferenced: 'Unexpected error while getting unreferenced content type(s) from external environment {environment}: {error}'
         invalid_table_action: 'Unknown table action'
     notice:
+        content_type_deleted: 'Content type "{contentType}" has been deleted'
+        content_type_referenced: 'Referenced content type "{contentType}" from "{environment}" environment'
+        content_type_view_deleted: 'View "{view}" has been deleted'
         draft_deleted: 'Draft "{revision}" has been deleted'
     warning:
         draft_not_found: 'Draft not found with id "{revisionId}"'
@@ -120,73 +163,103 @@ revision:
         put_back_selected: 'Put back selected'
         title: '{pluralName} in trash'
 type:
+    confirm: |-
+        {type, select,
+            content_type_mapping        {Try to update the "{label}" mapping?}
+            content_type_mapping_all    {Update mapping for all selected content types?}
+            content_type_activate       {Activate "{label}" content type?}
+            content_type_activate_all   {Activate all selected content types?}
+            content_type_deactivate     {Deactivate "{label}" content type?}
+            content_type_deactivate_all {Deactivate all selected content types?}
+            content_type_referenced_add {Add referenced "{label}" content type?}
+            other                       {Are you sure?}  
+        }
     delete_confirm: |-
         {type, select,
-            analyzer          {Delete the "{label}" analyzer?}
-            channel           {Delete the "{label}" channel?}
-            dashboard         {Delete the "{label}" dashboard?}
-            draft             {Modifications made in this draft will be lost}
-            filter            {Delete the "{label}" filter?}
-            form              {Delete the "{label}" form?}
-            i18n              {Delete the "{label}" i18n key?}
-            job               {Delete the job?}
-            job_schedule      {Delete the "{label}" scheduled job?}
-            log               {Delete log?}  
-            trash             {Delete trash "{label}" ?}
-            uploaded_file     {Delete "{label}" ?}
-            query_search      {Delete the "{label}" QuerySearch?}
-            wysiwyg_profile   {Delete the "{label}" WYSIWYG profile?}
-            wysiwyg_style_set {Delete the "{label}" WYSIWYG style set?}
-            other             {Are you sure?}    
+            analyzer            {Delete the "{label}" analyzer?}
+            channel             {Delete the "{label}" channel?}
+            content_type        {Delete the "{label}" content type?}
+            content_type_action {Delete the "{label}" action?}
+            content_type_view   {Delete the "{label}" view?}
+            dashboard           {Delete the "{label}" dashboard?}
+            draft               {Modifications made in this draft will be lost}
+            filter              {Delete the "{label}" filter?}
+            form                {Delete the "{label}" form?}
+            i18n                {Delete the "{label}" i18n key?}
+            job                 {Delete the job?}
+            job_schedule        {Delete the "{label}" scheduled job?}
+            log                 {Delete log?}  
+            trash               {Delete trash "{label}" ?}
+            uploaded_file       {Delete "{label}" ?}
+            query_search        {Delete the "{label}" QuerySearch?}
+            wysiwyg_profile     {Delete the "{label}" WYSIWYG profile?}
+            wysiwyg_style_set   {Delete the "{label}" WYSIWYG style set?}
+            other               {Are you sure?}    
         }
     delete_selected_confirm: |-
         {type, select,
-            analyzer          {Delete all selected analyzers?}  
-            channel           {Delete all selected channels?}
-            dashboard         {Delete all selected dashboards?}
-            draft             {All modifications made on selected drafts will lost?}
-            filter            {Delete all selected filters?}  
-            form              {Delete all selected forms?}
-            i18n              {Delete all selected i18n keys?}
-            job               {Delete all selected jobs?}
-            job_schedule      {Delete all selected job schedules?}
-            log               {Delete all selected logs?}  
-            trash             {Delete all selected trashes?}
-            uploaded_file     {Delete all selected uploaded files?}
-            query_search      {Delete all selected QuerySearch?}
-            wysiwyg_profile   {Delete all selected WYSIWYG profiles?}
-            wysiwyg_style_set {Delete all selected WYSIWYG style sets?}
-            other             {Delete all selected?}    
+            analyzer            {Delete all selected analyzers?}  
+            channel             {Delete all selected channels?}
+            content_type        {Delete all selected content types?}
+            content_type_action {Delete all selected actions?}
+            content_type_view   {Delete all selected views?}
+            dashboard           {Delete all selected dashboards?}
+            draft               {All modifications made on selected drafts will lost?}
+            filter              {Delete all selected filters?}  
+            form                {Delete all selected forms?}
+            i18n                {Delete all selected i18n keys?}
+            job                 {Delete all selected jobs?}
+            job_schedule        {Delete all selected job schedules?}
+            log                 {Delete all selected logs?}  
+            trash               {Delete all selected trashes?}
+            uploaded_file       {Delete all selected uploaded files?}
+            query_search        {Delete all selected QuerySearch?}
+            wysiwyg_profile     {Delete all selected WYSIWYG profiles?}
+            wysiwyg_style_set   {Delete all selected WYSIWYG style sets?}
+            other               {Delete all selected?}    
         }
     reorder: |-
         {type, select,
-            analyzer          {Reorder analyzers}
-            channel           {Reorder channels}
-            dashboard         {Reorder dashboards}
-            filter            {Reorder filters}
-            form              {Reorder forms}
-            job_schedule      {Reorder job schedules} 
-            query_search      {Reorder QuerySearch}
-            wysiwyg_profile   {Reorder WYSIWYG profiles}
-            wysiwyg_style_set {Reorder WYSIWYG style sets}
-            other             {Reorder}
+            analyzer            {Reorder analyzers}
+            channel             {Reorder channels}
+            content_type        {Reorder content types}
+            content_type_action {Reorder content types actions}
+            content_type_view   {Reorder content types views}
+            dashboard           {Reorder dashboards}
+            filter              {Reorder filters}
+            form                {Reorder forms}
+            job_schedule        {Reorder job schedules} 
+            query_search        {Reorder QuerySearch}
+            wysiwyg_profile     {Reorder WYSIWYG profiles}
+            wysiwyg_style_set   {Reorder WYSIWYG style sets}
+            other               {Reorder}
+        }
+    selection: |-
+        {type, select,
+            content_type_mapping    {Update mapping selected}
+            content_type_activate   {Activate selected}
+            content_type_deactivate {Deactivate selected}
+            other                   {action selection}    
         }
     title_overview: |-
         {type, select,
-            analyzer          {List of analyzers}
-            channel           {List of channels}
-            dashboard         {List of dashboards}
-            filter            {List of filters}
-            form              {List of forms}
-            i18n              {I18n list}
-            i18n_translations {Translations for key "{key}"}        
-            job               {Jobs list}
-            job_schedule      {Schedule}  
-            log               {Logs}  
-            query_search      {List of QuerySearch}
-            wysiwyg_profile   {WYSIWYG profiles}
-            wysiwyg_style_set {WYSIWYG style sets}
-            other             {Overview}    
+            analyzer            {List of analyzers}
+            channel             {List of channels}
+            content_type        {List all content types}  
+            content_type_action {{contentType} actions}  
+            content_type_view   {{contentType} views}  
+            dashboard           {List of dashboards}
+            filter              {List of filters}
+            form                {List of forms}
+            i18n                {I18n list}
+            i18n_translations   {Translations for key "{key}"}        
+            job                 {Jobs list}
+            job_schedule        {Schedule}  
+            log                 {Logs}  
+            query_search        {List of QuerySearch}
+            wysiwyg_profile     {WYSIWYG profiles}
+            wysiwyg_style_set   {WYSIWYG style sets}
+            other               {Overview}    
         }
     title_sub: |-
         {type, select,

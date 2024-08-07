@@ -59,17 +59,14 @@ class ViewRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string[] $ids
-     *
      * @return View[]
      */
-    public function getByIds(array $ids): array
+    public function getByIds(string ...$ids): array
     {
-        $queryBuilder = $this->createQueryBuilder('view');
-        $queryBuilder->where('view.id IN (:ids)')
-            ->setParameter('ids', $ids);
+        $qb = $this->createQueryBuilder('v');
+        $qb->andWhere('v.id IN (:ids)')->setParameter('ids', $ids);
 
-        return $queryBuilder->getQuery()->getResult();
+        return $qb->getQuery()->getResult();
     }
 
     public function getById(string $id): View

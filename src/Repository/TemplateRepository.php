@@ -76,17 +76,14 @@ class TemplateRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string[] $ids
-     *
      * @return Template[]
      */
-    public function getByIds(array $ids): array
+    public function getByIds(string ...$ids): array
     {
-        $queryBuilder = $this->createQueryBuilder('template');
-        $queryBuilder->where('template.id IN (:ids)')
-            ->setParameter('ids', $ids);
+        $qb = $this->createQueryBuilder('a');
+        $qb->andWhere('a.id IN (:ids)')->setParameter('ids', $ids);
 
-        return $queryBuilder->getQuery()->getResult();
+        return $qb->getQuery()->getResult();
     }
 
     /**

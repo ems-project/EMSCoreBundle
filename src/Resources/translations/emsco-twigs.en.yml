@@ -49,9 +49,6 @@ view:
         menu: Views
     edit:
         title: 'Edit view "%name%" for %type%'
-    index:
-        title: '%type%''s views'
-        add_button: 'Add a View'
     profile:
         show:
             alt:
@@ -68,9 +65,6 @@ view:
                 profile:
                     title: 'Your profile'
                 cancel: Cancel
-    actions:
-        delete: __view.actions.delete
-        delete_confirm: __view.actions.delete_confirm
 views:
     data:
         edit-revision-html:

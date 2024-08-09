@@ -226,7 +226,7 @@ abstract class TableAbstract implements TableInterface
         return $toolbarAction;
     }
 
-    public function addMassAction(string $name, TranslatableMessage $label, string $icon, null|string|TranslatableMessage $confirmationKey = null): TableAction
+    public function addMassAction(string $name, TranslatableMessage $label, string $icon, string|TranslatableMessage|null $confirmationKey = null): TableAction
     {
         $massAction = TableAction::create($name, $icon, $label, $confirmationKey);
         $massAction->setCssClass('btn btn-sm btn-outline-danger');

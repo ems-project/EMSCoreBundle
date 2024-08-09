@@ -49,7 +49,7 @@ class JobController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             match ($this->getClickedButtonName($form)) {
                 TableAbstract::DELETE_ACTION => $this->jobService->deleteByIds(...$table->getSelected()),
-                JobDataTableType::ACTION_CLEAN => $this->jobService->clean(),
+                JobDataTableType::ACTION_DELETE_ALL => $this->jobService->clean(),
                 default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
             };
 

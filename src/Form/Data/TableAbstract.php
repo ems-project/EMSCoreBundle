@@ -34,6 +34,8 @@ abstract class TableAbstract implements TableInterface
     private array $tableActions = [];
     /** @var TableAction[] */
     private array $toolbarActions = [];
+    /** @var TableAction[] */
+    private array $massActions = [];
     private ?string $orderField = null;
     private string $orderDirection = 'asc';
     private string $searchValue = '';
@@ -217,11 +219,26 @@ abstract class TableAbstract implements TableInterface
     {
         $toolbarAction = TableAction::create($label->getMessage(), $icon, $label);
         $toolbarAction->setRoute($routeName, $routeParams);
-        $toolbarAction->setCssClass('btn btn-primary');
+        $toolbarAction->setCssClass('btn btn-sm btn-primary');
 
         $this->toolbarActions[] = $toolbarAction;
 
         return $toolbarAction;
+    }
+
+    public function addMassAction(string $name, TranslatableMessage $label, string $icon, null|string|TranslatableMessage $confirmationKey = null): TableAction
+    {
+        $massAction = TableAction::create($name, $icon, $label, $confirmationKey);
+        $massAction->setCssClass('btn btn-sm btn-outline-danger');
+
+        $this->massActions[] = $massAction;
+
+        return $massAction;
+    }
+
+    public function getTableMassActions(): iterable
+    {
+        return $this->massActions;
     }
 
     /**
@@ -307,7 +324,7 @@ abstract class TableAbstract implements TableInterface
             $columnOptions[] = [
                 'cellType' => 'td',
                 'className' => '',
-                'targets' => \count($this->columns),
+                'targets' => $columnTarget,
                 'orderable' => false,
                 'searchable' => false,
             ];

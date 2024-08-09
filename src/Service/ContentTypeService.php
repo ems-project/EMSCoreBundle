@@ -556,7 +556,13 @@ class ContentTypeService implements EntityServiceInterface
             }
 
             [$routeOverview, $routeOverviewParams] = $this->getRedirectOverviewRoute($contentType);
-            $menuEntry = new MenuEntry($contentType->getPluralName(), $contentType->getIcon() ?? 'fa fa-book', $routeOverview, $routeOverviewParams, $contentType->getColor());
+            $menuEntry = new MenuEntry(
+                label: $contentType->getPluralName(),
+                icon: $contentType->getIcon() ?? 'fa fa-book',
+                route: $routeOverview,
+                routeParameters: $routeOverviewParams,
+                color: $contentType->getColor()
+            );
             if (isset($counters[$contentType->getId()])) {
                 $menuEntry->setBadge(\strval($counters[$contentType->getId()]));
             }

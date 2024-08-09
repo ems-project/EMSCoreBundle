@@ -52,6 +52,15 @@ class Navigation
         );
     }
 
+    public function environments(): self
+    {
+        return $this->add(
+            label: t('key.environments', [], 'emsco-core'),
+            icon: 'fa fa-database',
+            route: Routes::ADMIN_ENVIRONMENT_INDEX
+        );
+    }
+
     public function contentTypes(): self
     {
         return $this->add(

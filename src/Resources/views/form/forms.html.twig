@@ -363,7 +363,7 @@
                         </table>
                     </div>
                 </div>
-                {% if table.supportsTableActions or toolbar is defined %}
+                {% if table.supportsTableActions or toolbar is defined or table.tableMassActions|length > 0 %}
                     <div class="box-footer with-border">
                         {% if table.supportsTableActions %}
                             {% for action in table.tableActions %}
@@ -376,10 +376,10 @@
                             </div>
                         {% endif %}
                         <div class="btn-group">
-                            {% for toolbarAction in table.toolbarActions %}
-                                <a class="{{ toolbarAction.cssClass }}" href="{{ path(toolbarAction.routeName, toolbarAction.routeParams) }}">
-                                    <i class="{{ toolbarAction.icon }}"></i>&nbsp;{{ toolbarAction.labelKey|trans }}
-                                </a>
+                            {% for massAction in table.tableMassActions %}
+                                {% if attribute(form, massAction.name) is defined %}
+                                    {{ form_widget(attribute(form, massAction.name)) }}
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>

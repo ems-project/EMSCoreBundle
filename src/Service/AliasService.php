@@ -231,6 +231,8 @@ class AliasService
      */
     public function getOrphanIndexes(): array
     {
+        $this->build();
+
         return $this->orphanIndexes;
     }
 

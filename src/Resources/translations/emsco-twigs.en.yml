@@ -19,14 +19,8 @@ view:
         class.dashboard: 'fa fa-dashboard'
     elements:
         side-menu:
-            chanel-admin:
-                index-link: Channels
             release-admin:
                 index-link: Releases
-            query_search:
-                index-link: QuerySearch
-            dashboard-admin:
-                index-link: Dashboards
             user:
                 searches: Searches
                 name: '%name%'
@@ -139,23 +133,11 @@ views:
             user-management: 'User management'
             users: Users
             admin: Admin
-            content-types: 'Content types'
-            environments: Environments
-            forms: Forms
             search: Search
-            i18n: I18N
-            jobs: Jobs
             create-job: 'New job'
-            analyzers: Analyzers
-            filters: Filters
             other: Other
             status: Status
             documentation: Documentation
-            wysiwyg: WYSIWYG
-            uploaded-files-logs: 'Uploaded file logs'
-            audit-logs: Logs
-            logs: 'Job''s logs'
-            schedule: Schedule
         object-toolbar-html:
             view-draft-in-progress: 'View draft in progress'
             view-current-revision: 'View current revision'

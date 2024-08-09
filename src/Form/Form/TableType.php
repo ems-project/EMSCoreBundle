@@ -63,6 +63,10 @@ final class TableType extends AbstractType
                 'multiple' => true,
                 'label' => false,
             ]);
+        } else {
+            foreach ($data->getTableMassActions() as $massAction) {
+                $this->addAction($builder, $massAction);
+            }
         }
 
         if (0 === $data->count()) {
@@ -83,16 +87,7 @@ final class TableType extends AbstractType
         if ($data->supportsTableActions()) {
             /** @var TableAction $action */
             foreach ($data->getTableActions() as $action) {
-                $submitOptions = ['icon' => $action->getIcon(), 'label' => $action->getLabelKey()];
-
-                if ($confirmationKey = $action->getConfirmationKey()) {
-                    $submitOptions['confirm'] = $confirmationKey;
-                    $submitOptions['confirm_class'] = $action->getCssClass();
-                } else {
-                    $submitOptions['attr'] = ['class' => $action->getCssClass()];
-                }
-
-                $builder->add($action->getName(), SubmitEmsType::class, $submitOptions);
+                $this->addAction($builder, $action);
             }
         }
     }
@@ -122,5 +117,19 @@ final class TableType extends AbstractType
     public function getBlockPrefix(): string
     {
         return 'emsco_form_table_type';
+    }
+
+    private function addAction(FormBuilderInterface $builder, TableAction $action): void
+    {
+        $submitOptions = ['icon' => $action->getIcon(), 'label' => $action->getLabelKey()];
+
+        if ($confirmationKey = $action->getConfirmationKey()) {
+            $submitOptions['confirm'] = $confirmationKey;
+            $submitOptions['confirm_class'] = $action->getCssClass();
+        } else {
+            $submitOptions['attr'] = ['class' => $action->getCssClass()];
+        }
+
+        $builder->add($action->getName(), SubmitEmsType::class, $submitOptions);
     }
 }

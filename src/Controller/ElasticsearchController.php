@@ -7,7 +7,6 @@ use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
-use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search as CommonSearch;
@@ -43,7 +42,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
@@ -101,7 +99,7 @@ class ElasticsearchController extends AbstractController
                 'index_name' => $name,
             ]);
 
-            return $this->redirectToRoute('environment.index');
+            return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
         }
 
         return $this->render("@$this->templateNamespace/elasticsearch/add-alias.html.twig", [
@@ -269,22 +267,6 @@ class ElasticsearchController extends AbstractController
         }
 
         return $this->redirectToRoute('elasticsearch.search', ['searchId' => $id]);
-    }
-
-    public function deleteIndexAction(string $name): RedirectResponse
-    {
-        try {
-            $this->indexService->deleteIndex($name);
-            $this->logger->notice('log.elasticsearch.index_deleted', [
-                'index_name' => $name,
-            ]);
-        } catch (NotFoundException) {
-            $this->logger->warning('log.elasticsearch.index_not_found', [
-                'index_name' => $name,
-            ]);
-        }
-
-        return $this->redirectToRoute('environment.index');
     }
 
     /** @deprecated */

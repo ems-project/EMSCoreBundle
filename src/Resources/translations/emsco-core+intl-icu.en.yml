@@ -1,9 +1,9 @@
 action:
     activate: Activate
     add: Add
+    add_alias: 'Add alias'
     add_referenced: 'Add referenced'
     add_referenced_content_type: 'Add a reference content type'
-    clean: Clean
     close: Close
     confirmation: 'Do you confirm?'
     deactivate: Deactivate
@@ -21,6 +21,7 @@ action:
     toggle_visibility: 'Toggle visibility'
     toggle_visibility_selected: 'Toggle visibility selected'
     update_mapping: 'Update mapping'
+    delete_all: 'Delete all'
 core:
     content_type:
         view_define: |-
@@ -118,6 +119,7 @@ key:
     channels: Channels
     content_types: 'Content Types'
     dashboards: Dashboards
+    environments: Environments
     filters: Filters
     forms: Forms
     i18n: I18N
@@ -125,6 +127,8 @@ key:
     jobs: Jobs
     logs: Logs
     loop_count: '#'
+    orphan_indexes: 'Orphan indexes'
+    overview: Overview
     publishers: Publishers
     query_searches: QuerySearch
     schedule: Schedule
@@ -137,13 +141,17 @@ log:
     error:
         content_type_add_unreferenced: 'Unexpected error while getting unreferenced content type(s) from external environment {environment}: {error}'
         invalid_table_action: 'Unknown table action'
+        delete_failed: 'Delete failed'
     notice:
         content_type_deleted: 'Content type "{contentType}" has been deleted'
         content_type_referenced: 'Referenced content type "{contentType}" from "{environment}" environment'
         content_type_view_deleted: 'View "{view}" has been deleted'
         draft_deleted: 'Draft "{revision}" has been deleted'
+        deleted_orphan_index: 'The index "{index}" has been deleted'
+        deleted_orphan_indexes: 'Orphan indexes have been deleted'
     warning:
         draft_not_found: 'Draft not found with id "{revisionId}"'
+        index_not_found: 'Index "{index}" not found'
 revision:
     draft:
         delete: 'Delete this draft'
@@ -172,6 +180,8 @@ type:
             content_type_deactivate     {Deactivate "{label}" content type?}
             content_type_deactivate_all {Deactivate all selected content types?}
             content_type_referenced_add {Add referenced "{label}" content type?}
+            delete_all_job              {Delete all jobs?}
+            delete_all_orphan_index     {Delete all orphan indexes?}
             other                       {Are you sure?}  
         }
     delete_confirm: |-
@@ -186,6 +196,7 @@ type:
             filter              {Delete the "{label}" filter?}
             form                {Delete the "{label}" form?}
             i18n                {Delete the "{label}" i18n key?}
+            orphan_index        {Delete the orphan index "{label}"?}
             job                 {Delete the job?}
             job_schedule        {Delete the "{label}" scheduled job?}
             log                 {Delete log?}  
@@ -208,6 +219,7 @@ type:
             filter              {Delete all selected filters?}  
             form                {Delete all selected forms?}
             i18n                {Delete all selected i18n keys?}
+            orphan_index        {Delete all selected orphan indexes?}
             job                 {Delete all selected jobs?}
             job_schedule        {Delete all selected job schedules?}
             log                 {Delete all selected logs?}  

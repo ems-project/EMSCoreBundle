@@ -119,8 +119,6 @@ log:
         cluster_yellow: 'There is something wrong with the cluster, status color: %color_status%'
         default_search: 'This search has been defined as default search'
         default_search_for_content_type: 'This search has been defined as default search form for the content type %contenttype%'
-        index_deleted: 'The index %index_name% has been deleted'
-        index_not_found: 'Index %index_name% not found'
         not_able_to_deserialize_filters: 'Error during the deserialization of the filters'
         paging_limit_exceeded: 'The paging is limited to the first %paging% items'
         search_deleted: 'A search has been deleted'
@@ -152,9 +150,6 @@ log:
     filter:
         deleted: 'The filter %filter_name% has been deleted'
     index:
-        delete_orphan_index: 'Elasticsearch index %index_name% has been deleted'
-        index_with_aliases: 'The index %index_name% is referenced by %counter% aliases and can''t be deleted'
-        index_not_found: 'Elasticsearch index %index_name% not found'
         column:
             created: Created
             channel: Channel
@@ -809,7 +804,6 @@ view:
     environment:
         index:
             action_label: Action
-            add_alias_button: 'Add alias'
             add_environment_button: 'Add Environment'
             add_managed_alias_button: 'Add managed alias'
             alias_label: Alias
@@ -821,11 +815,7 @@ view:
             confirm_dettach: 'Do you want to detach %name%?'
             count_label: '#'
             delete_alias_confirm: 'Do you want to delete the alias %name%?'
-            delete_all_button: 'Delete all'
-            delete_all_ophan_indexes_confirm: 'Do you confirm?'
             delete_button: Delete
-            delete_index_button: Delete
-            delete_index_confirm: 'Are you sure to delete the index %name%?'
             delete_managed_environemnt_button: Delete
             dettach_button: Detach
             edit_button: Edit
@@ -841,12 +831,10 @@ view:
             name_label: Name
             no_environment_yet: 'There is no environment defined yet.'
             no_external_environment_yet: 'There is no external environment defined yet.'
-            orphan_index_title: 'Orphan indexes'
             pagetitle: 'All Environments'
             rebuild_button: Rebuild
             reorder_button: Reorder
             reorder_title: Reorder
-            there_is_no_orphan_index: 'There is no orphan indexes'
             title: 'All Environments'
             total_in_ems: 'Total in ems'
             total_indexed_label: 'Total in ES'

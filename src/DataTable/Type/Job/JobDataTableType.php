@@ -17,7 +17,7 @@ use function Symfony\Component\Translation\t;
 class JobDataTableType extends AbstractEntityTableType
 {
     use DataTableTypeTrait;
-    public const ACTION_CLEAN = 'clean';
+    public const ACTION_DELETE_ALL = 'delete_all';
 
     public function __construct(
         JobService $jobService,
@@ -62,12 +62,12 @@ class JobDataTableType extends AbstractEntityTableType
             ->addTableToolbarActionAdd($table, 'job.add')
             ->addTableActionDelete($table, 'job');
 
-        $table->addTableAction(
-            name: self::ACTION_CLEAN,
+        $table->addMassAction(
+            name: self::ACTION_DELETE_ALL,
+            label: t('action.delete_all', [], 'emsco-core'),
             icon: 'fa fa-eraser',
-            labelKey: t('action.clean', [], 'emsco-core'),
-            confirmationKey: t('action.confirmation', [], 'emsco-core')
-        )->setCssClass('btn btn-sm btn-default');
+            confirmationKey: t('type.confirm', ['type' => 'delete_all_job'], 'emsco-core')
+        );
     }
 
     public function getRoles(): array

@@ -1,9 +1,11 @@
-
 {% block sidebarMenu %}
+    {# @var menu \EMS\CoreBundle\Core\UI\MenuEntry #}
+
     {% trans_default_domain 'emsco-twigs' %}
     <li {% if menu.hasChildren %}class="treeview"{% endif %}>
+        {% set menuLabel = menu.labelTranslation is not null ? menu.labelTranslation|trans : menu.label %}
         <a href="{{ path(menu.route, menu.routeParameters) }}"{% if menu.color %} class="text-{{ menu.color }}"{% endif %}>
-            <i class="{{ menu.icon }}"></i>&nbsp;<span>{% if menu.translation %}{{ menu.label|trans(menu.parameters) }}{% else %}{{ menu.label }}{% endif %}</span>
+            <i class="{{ menu.icon }}"></i>&nbsp;<span>{{ menuLabel }}</span>
             {% if menu.hasBadge %}
                 <span class="label {{ menu.badgeColor ? 'bg-'~menu.badgeColor : 'label-default' }} pull-right-container">{{ menu.badge }}</span>
             {% elseif menu.hasChildren %}

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\DataTable\Type;
+namespace EMS\CoreBundle\DataTable\Type\Environment;
 
 use EMS\CoreBundle\Core\DataTable\Type\AbstractEntityTableType;
 use EMS\CoreBundle\Core\Environment\EnvironmentManagedEntityService;
@@ -10,6 +10,7 @@ use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
 use EMS\CoreBundle\Roles;
+use EMS\CoreBundle\Routes;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EnvironmentDataTableType extends AbstractEntityTableType
@@ -33,12 +34,12 @@ class EnvironmentDataTableType extends AbstractEntityTableType
         $table->addColumn('environment.index.column.total_indexed_label', 'total');
         $table->addColumn('environment.index.column.total_in_ems', 'counter');
         $table->addColumn('environment.index.column.total_mark_has_deleted', 'deletedRevision');
-        $table->addItemGetAction('environment.rebuild', 'environment.actions.rebuild_button', 'recycle', ['id' => 'id'])
+        $table->addItemGetAction(Routes::ADMIN_ENVIRONMENT_REBUILD, 'environment.actions.rebuild_button', 'recycle', ['id' => 'id'])
             ->setDynamic(true)
             ->setButtonType('primary');
-        $table->addItemGetAction('environment.view', 'environment.actions.view_button', 'eye', ['id' => 'id'])->setDynamic(true);
-        $table->addItemGetAction('environment.edit', 'environment.actions.edit_button', 'edit', ['id' => 'id'])->setDynamic(true);
-        $table->addItemPostAction('environment.remove', 'environment.actions.delete', 'trash', 'environment.actions.delete_confirm', ['id' => 'id'])
+        $table->addItemGetAction(Routes::ADMIN_ENVIRONMENT_VIEW, 'environment.actions.view_button', 'eye', ['id' => 'id'])->setDynamic(true);
+        $table->addItemGetAction(Routes::ADMIN_ENVIRONMENT_EDIT, 'environment.actions.edit_button', 'edit', ['id' => 'id'])->setDynamic(true);
+        $table->addItemPostAction(Routes::ADMIN_ENVIRONMENT_REMOVE, 'environment.actions.delete', 'trash', 'environment.actions.delete_confirm', ['id' => 'id'])
             ->setDynamic(true)
             ->setButtonType('outline-danger');
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'environment.actions.delete_selected', 'environment.actions.delete_selected_confirm');

@@ -304,7 +304,6 @@
             <argument type="service" id="ems.service.alias" />
             <argument type="service" id="ems_common.elastica.client" />
             <argument type="service" id="ems.service.contenttype" />
-            <argument type="service" id="logger" />
         </service>
         <service id="ems.elasticsearch.bulker" class="EMS\CoreBundle\Elasticsearch\Bulker">
             <argument type="service" id="ems_common.elastica.client" />

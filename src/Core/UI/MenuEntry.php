@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\UI;
 
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
+
 class MenuEntry
 {
     private ?string $badge = null;
@@ -19,21 +23,49 @@ class MenuEntry
     /**
      * @param array<string, mixed> $routeParameters
      */
-    public function __construct(private readonly string $label, private readonly string $icon, private string $route, private array $routeParameters = [], private readonly ?string $color = null)
-    {
+    public function __construct(
+        private readonly string|TranslatableMessage $label,
+        private readonly string $icon,
+        private string $route,
+        private array $routeParameters = [],
+        private readonly ?string $color = null
+    ) {
     }
 
     /**
      * @param array<string, mixed> $routeParameters
      */
-    public function addChild(string $getLabel, string $getIcon, string $route, array $routeParameters = [], ?string $color = null): MenuEntry
+    public function addChild(string|TranslatableMessage $label, string $icon, string $route, array $routeParameters = [], ?string $color = null): MenuEntry
     {
-        return $this->children[] = new MenuEntry($getLabel, $getIcon, $route, $routeParameters, $color);
+        return $this->children[] = new MenuEntry(
+            label: $label,
+            icon: $icon,
+            route: $route,
+            routeParameters: $routeParameters,
+            color: $color
+        );
     }
 
     public function getLabel(): string
     {
+        if ($this->label instanceof TranslatableMessage) {
+            return $this->label->getMessage();
+        }
+
         return $this->label;
+    }
+
+    public function getLabelTranslation(): ?TranslatableMessage
+    {
+        if ($this->label instanceof TranslatableMessage) {
+            return $this->label;
+        }
+
+        if (!$this->isTranslation()) {
+            return null;
+        }
+
+        return t($this->label, $this->parameters, 'emsco-twigs');
     }
 
     public function getIcon(): string

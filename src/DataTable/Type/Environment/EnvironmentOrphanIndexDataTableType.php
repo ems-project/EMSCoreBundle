@@ -2,52 +2,59 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\DataTable\Type\ContentType;
+namespace EMS\CoreBundle\DataTable\Type\Environment;
 
 use EMS\CoreBundle\Core\DataTable\ArrayDataSource;
 use EMS\CoreBundle\Core\DataTable\Type\AbstractTableType;
 use EMS\CoreBundle\Core\DataTable\Type\QueryServiceTypeInterface;
 use EMS\CoreBundle\DataTable\Type\DataTableTypeTrait;
 use EMS\CoreBundle\Form\Data\QueryTable;
-use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
-use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\AliasService;
 
 use function Symfony\Component\Translation\t;
 
-class ContentTypeUnreferencedDataTableType extends AbstractTableType implements QueryServiceTypeInterface
+class EnvironmentOrphanIndexDataTableType extends AbstractTableType implements QueryServiceTypeInterface
 {
     use DataTableTypeTrait;
 
-    public function __construct(
-        private readonly ContentTypeService $contentTypeService,
-        private readonly string $templateNamespace
-    ) {
+    public const ACTION_DELETE_ALL = 'delete_all';
+
+    public function __construct(private readonly AliasService $aliasService)
+    {
     }
 
     public function build(QueryTable $table): void
     {
+        $table->setIdField('name');
         $table->setDefaultOrder('name')->setLabelAttribute('name');
 
         $table->addColumn(t('field.name', [], 'emsco-core'), 'name');
-
-        $table->addColumnDefinition(new TemplateBlockTableColumn(
-            label: t('field.environment_external', [], 'emsco-core'),
-            blockName: 'contentTypeEnvironment',
-            template: "@$this->templateNamespace/datatable/template_block_columns.html.twig",
-            orderField: 'environmentLabel'
-        ));
-
         $table->addColumn(t('field.count', [], 'emsco-core'), 'count');
 
-        $table->addDynamicItemPostAction(
-            route: Routes::ADMIN_CONTENT_TYPE_ADD_REFERENCED,
-            labelKey: t('action.add_referenced', [], 'emsco-core'),
+        $table->addDynamicItemGetAction(
+            route: 'elasticsearch.alias.add',
+            labelKey: t('action.add_alias', [], 'emsco-core'),
             icon: 'plus',
-            messageKey: t('type.confirm', ['type' => 'content_type_referenced_add'], 'emsco-core'),
-            routeParameters: ['environment' => 'environmentId', 'name' => 'name']
+            routeParameters: ['name' => 'name']
         )->setButtonType('primary');
+
+        $table->addDynamicItemPostAction(
+            route: Routes::ADMIN_ELASTIC_ORPHAN_DELETE,
+            labelKey: t('action.delete', [], 'emsco-core'),
+            icon: 'trash',
+            messageKey: t('type.delete_confirm', ['type' => 'orphan_index'], 'emsco-core'),
+            routeParameters: ['name' => 'name']
+        )->setButtonType('outline-danger');
+
+        $this->addTableActionDelete($table, 'orphan_index');
+        $table->addMassAction(
+            name: self::ACTION_DELETE_ALL,
+            label: t('action.delete_all', [], 'emsco-core'),
+            icon: 'fa fa-eraser',
+            confirmationKey: t('type.confirm', ['type' => 'delete_all_orphan_index'], 'emsco-core')
+        );
     }
 
     public function getRoles(): array
@@ -57,7 +64,7 @@ class ContentTypeUnreferencedDataTableType extends AbstractTableType implements 
 
     public function getQueryName(): string
     {
-        return 'contentTypeUnreferenced';
+        return 'EnvironmentOrphanIndex';
     }
 
     public function isSortable(): bool
@@ -70,7 +77,7 @@ class ContentTypeUnreferencedDataTableType extends AbstractTableType implements 
         $dataSource = $this->getDataSource($searchValue);
 
         if (null !== $orderField) {
-            return $dataSource->sort($orderField, $orderDirection)->data;
+            return $dataSource->sort(\sprintf('[%s]', $orderField), $orderDirection)->data;
         }
 
         return $dataSource->data;
@@ -86,7 +93,7 @@ class ContentTypeUnreferencedDataTableType extends AbstractTableType implements 
         static $dataSource = null;
 
         if (null === $dataSource) {
-            $dataSource = new ArrayDataSource($this->contentTypeService->getUnreferencedContentTypes());
+            $dataSource = new ArrayDataSource($this->aliasService->getOrphanIndexes());
         }
 
         return $dataSource->search($searchValue);

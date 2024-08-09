@@ -2,11 +2,12 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CoreBundle\Service\IndexService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DeleteOrphanIndexesCommand extends EmsCommand
+class DeleteOrphanIndexesCommand extends AbstractCommand
 {
     protected static $defaultName = 'ems:delete:orphans';
 
@@ -22,8 +23,14 @@ class DeleteOrphanIndexesCommand extends EmsCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->indexService->deleteOrphanIndexes();
+        try {
+            $this->indexService->deleteOrphanIndexes();
 
-        return 0;
+            return self::EXECUTE_SUCCESS;
+        } catch (\Throwable $e) {
+            $this->io->error($e->getMessage());
+
+            return self::EXECUTE_ERROR;
+        }
     }
 }

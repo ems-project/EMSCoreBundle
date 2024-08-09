@@ -18,7 +18,4 @@
            methods="POST">
         <default key="contentType" xsi:nil="true"/>
     </route>
-    <route id="elasticsearch.index.delete" path="/index/delete/{name}"
-           controller="EMS\CoreBundle\Controller\ElasticsearchController::deleteIndexAction"
-           methods="POST"/>
 </routes>

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\UI;
 
+use Symfony\Component\Translation\TranslatableMessage;
+
 class Menu
 {
     /** @var MenuEntry[] */
@@ -19,9 +21,15 @@ class Menu
     /**
      * @param array<string, mixed> $routeParameters
      */
-    public function addChild(string $getLabel, string $getIcon, string $route, array $routeParameters = [], ?string $color = null): MenuEntry
+    public function addChild(string|TranslatableMessage $label, string $icon, string $route, array $routeParameters = [], ?string $color = null): MenuEntry
     {
-        return $this->children[] = new MenuEntry($getLabel, $getIcon, $route, $routeParameters, $color);
+        return $this->children[] = new MenuEntry(
+            label: $label,
+            icon: $icon,
+            route: $route,
+            routeParameters: $routeParameters,
+            color: $color
+        );
     }
 
     public function addMenuEntry(MenuEntry $menuEntry): void

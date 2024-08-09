@@ -4,44 +4,47 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_contenttype_update_from_json" path="/json-update/{contentType}"
+    <route id="emsco_admin_content_type_update_from_json" path="/json-update/{contentType}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::updateFromJson"
            methods="GET|POST"
            format="html"/>
-    <route id="contenttype.remove" path="/remove/{id}"
+    <route id="emsco_admin_content_type_remove" path="/remove/{contentType}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::remove"
            methods="POST"/>
-    <route id="contenttype.activate" path="/activate/{contentType}"
+    <route id="emsco_admin_content_type_activate" path="/activate/{contentType}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::activate"
            methods="POST"/>
-    <route id="contenttype.desactivate" path="/disable/{contentType}"
+    <route id="emsco_admin_content_type_deactivate" path="/disable/{contentType}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::disable"
            methods="POST"/>
-    <route id="contenttype.refreshmapping" path="/refresh-mapping/{id}"
+    <route id="emsco_admin_content_type_refresh_mapping" path="/refresh-mapping/{contentType}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::refreshMapping"
            methods="POST"/>
-    <route id="contenttype.add" path="/add"
+    <route id="emsco_admin_content_type_add" path="/add"
            controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::add"
            methods="GET|POST"/>
-    <route id="contenttype.index" path="/"
+    <route id="emsco_admin_content_type_add_referenced_index" path="/add-referenced"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::addReferencedIndex"
+           methods="GET"/>
+    <route id="emsco_admin_content_type_add_referenced" path="/add-referenced/{environment}/{name}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::addReferenced"
+           methods="POST"/>
+    <route id="emsco_admin_content_type_index" path="/"
            controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::index"
            methods="GET|POST"/>
-    <route id="contenttype.unreferenced" path="/unreferenced"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::unreferenced"
+    <route id="emsco_admin_content_type_edit_field" path="/{contentType}/field/{field}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::editFieldAction"
            methods="GET|POST"/>
-    <route id="ems_contenttype_field_edit" path="/{contentType}/field/{field}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::editField"
-           methods="GET|POST"/>
-    <route id="ems_contenttype_reorder" path="/reorder/{contentType}"
+    <route id="emsco_admin_content_type_reorder" path="/reorder/{contentType}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::reorder"
            methods="GET|POST"/>
-    <route id="contenttype.edit" path="/{id}"
+    <route id="emsco_admin_content_type_edit" path="/{contentType}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::edit"
            methods="GET|POST"/>
-    <route id="contenttype.structure" path="/structure/{id}"
+    <route id="emsco_admin_content_type_structure" path="/structure/{id}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::editStructure"
            methods="GET|POST"/>
-    <route id="contenttype.export" path="/export/{contentType}.{_format}"
+    <route id="emsco_admin_content_type_export" path="/export/{contentType}.{_format}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::export"
            methods="GET"
            format="json"/>

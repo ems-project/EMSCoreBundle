@@ -24,7 +24,7 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
     ) {
     }
 
-    public function isQuerySortable(): bool
+    public function isSortable(): bool
     {
         return false;
     }
@@ -91,11 +91,6 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
                 'name' => $releaseRevision->getRelease()->getName(),
             ]);
         }
-    }
-
-    public function isSortable(): bool
-    {
-        return false;
     }
 
     public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array

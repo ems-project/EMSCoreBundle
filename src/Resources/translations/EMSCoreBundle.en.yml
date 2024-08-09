@@ -18,9 +18,6 @@ log:
             delete: 'The environment %name% has been deleted'
         channel:
             delete: 'The channel %name% has been deleted'
-        content-type:
-            get-unreferenced-content-type:
-                unexpected-error: 'Unexpected error while get unreferenced content type from environment %environment%: %error_message%'
         release:
             delete: 'The Release %name% has been deleted'
             not:
@@ -67,13 +64,10 @@ log:
         mapping:
             not_found: 'Content type %contenttype%''s mapping not found'
         not_found: 'Content type %contenttype% not found'
-        referenced: 'The content type %contenttype% has been referenced'
-        reordered: 'Content types have been reordered'
         subfield:
             added: 'A subfield %field_name% has been added'
             name_mandatory: 'The subfield name is mandatory'
             name_not_valid: 'The subfield is not valid : (format: %field_format%)'
-        unreferenced_not_found: 'Unreferenced content type not found'
         updated: 'The content type %contenttype% has been updated'
     controller:
         release:
@@ -131,8 +125,6 @@ log:
         cluster_yellow: 'There is something wrong with the cluster, status color: %color_status%'
         default_search: 'This search has been defined as default search'
         default_search_for_content_type: 'This search has been defined as default search form for the content type %contenttype%'
-        index_deleted: 'The index %index_name% has been deleted'
-        index_not_found: 'Index %index_name% not found'
         not_able_to_deserialize_filters: 'Error during the deserialization of the filters'
         paging_limit_exceeded: 'The paging is limited to the first %paging% items'
         search_deleted: 'A search has been deleted'
@@ -164,9 +156,6 @@ log:
     filter:
         deleted: 'The filter %filter_name% has been deleted'
     index:
-        delete_orphan_index: 'Elasticsearch index %index_name% has been deleted'
-        index_with_aliases: 'The index %index_name% is referenced by %counter% aliases and can''t be deleted'
-        index_not_found: 'Elasticsearch index %index_name% not found'
         column:
             created: Created
             channel: Channel
@@ -425,20 +414,6 @@ ROLE_USER: User
 ROLE_USER_MANAGEMENT: 'User Management'
 ROLE_USER_READ: 'User read'
 ROLE_WEBMASTER: Webmaster
-action:
-    actions:
-        delete: Delete
-        delete_confirm: 'Delete the "%label%" action?'
-        delete_selected: 'Delete selected'
-        delete_selected_confirm: 'Delete all selected actions?'
-        edit: Edit
-    index:
-        column:
-            name: Name
-            label: Label
-            public: Public
-            type: Type
-        reorder: Reorder
 channel:
     add:
         save: Create
@@ -518,6 +493,7 @@ form-submission:
         export_selected: 'Export selected'
         process: 'Delete Submission'
     index:
+        delete_selected: 'Delete selected'
         column:
             created: 'Created At'
             expire_date: 'Expire Date'
@@ -834,7 +810,6 @@ view:
     environment:
         index:
             action_label: Action
-            add_alias_button: 'Add alias'
             add_environment_button: 'Add Environment'
             add_managed_alias_button: 'Add managed alias'
             alias_label: Alias
@@ -846,11 +821,7 @@ view:
             confirm_dettach: 'Do you want to detach %name%?'
             count_label: '#'
             delete_alias_confirm: 'Do you want to delete the alias %name%?'
-            delete_all_button: 'Delete all'
-            delete_all_ophan_indexes_confirm: 'Do you confirm?'
             delete_button: Delete
-            delete_index_button: Delete
-            delete_index_confirm: 'Are you sure to delete the index %name%?'
             delete_managed_environemnt_button: Delete
             dettach_button: Detach
             edit_button: Edit
@@ -866,12 +837,10 @@ view:
             name_label: Name
             no_environment_yet: 'There is no environment defined yet.'
             no_external_environment_yet: 'There is no external environment defined yet.'
-            orphan_index_title: 'Orphan indexes'
             pagetitle: 'All Environments'
             rebuild_button: Rebuild
             reorder_button: Reorder
             reorder_title: Reorder
-            there_is_no_orphan_index: 'There is no orphan indexes'
             title: 'All Environments'
             total_in_ems: 'Total in ems'
             total_indexed_label: 'Total in ES'

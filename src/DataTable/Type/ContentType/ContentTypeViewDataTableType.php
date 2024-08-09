@@ -7,13 +7,12 @@ namespace EMS\CoreBundle\DataTable\Type\ContentType;
 use EMS\CoreBundle\Core\ContentType\ViewDefinition;
 use EMS\CoreBundle\Core\DataTable\Type\AbstractEntityTableType;
 use EMS\CoreBundle\Core\View\ViewManager;
-use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\DataTable\Type\DataTableTypeTrait;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\View;
+use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
-use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
-use EMS\CoreBundle\Form\Data\TranslationTableColumn;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -23,6 +22,8 @@ use function Symfony\Component\Translation\t;
 
 class ContentTypeViewDataTableType extends AbstractEntityTableType
 {
+    use DataTableTypeTrait;
+
     public function __construct(
         ViewManager $entityService,
         private readonly ContentTypeService $contentTypeService,
@@ -33,27 +34,51 @@ class ContentTypeViewDataTableType extends AbstractEntityTableType
 
     public function build(EntityTable $table): void
     {
-        $table->addColumn('table.index.column.loop_count', 'orderKey');
-        $table->addColumnDefinition(new TemplateBlockTableColumn(t('field.public_access', [], 'emsco-core'), 'public', "@$this->templateNamespace/view/columns.html.twig"));
-        $table->addColumn('view.index.column.name', 'name');
-        $table->addColumn('view.index.column.label', 'label')->setItemIconCallback(fn (View $view) => $view->getIcon() ?? '');
-        $table->addColumnDefinition(new TranslationTableColumn('view.index.column.type', 'type', EMSCoreBundle::TRANS_FORM_DOMAIN));
+        /** @var ContentType $contentType */
+        $contentType = $table->getContext();
 
-        $definitionColumn = new TranslationTableColumn('view.index.column.definition', 'definition', EMSCoreBundle::TRANS_FORM_DOMAIN);
-        $definitionColumn->setKeyPrefix('ems.view.definition');
-        $table->addColumnDefinition($definitionColumn);
+        $this->addColumnsOrderLabelName($table);
+        $table->getColumnByName('label')?->setItemIconCallback(fn (View $view) => $view->getIcon());
 
-        $table->addItemGetAction(Routes::VIEW_EDIT, 'view.actions.edit', 'pencil');
-        $table->addItemPostAction(Routes::VIEW_DUPLICATE, 'view.actions.duplicate', 'pencil', 'view.actions.duplicate_confirm');
+        $table->addColumnDefinition(new TemplateBlockTableColumn(
+            label: t('field.type', [], 'emsco-core'),
+            blockName: 'contentTypeViewType',
+            template: "@$this->templateNamespace/datatable/template_block_columns.html.twig")
+        );
+        $table->addColumnDefinition(new TemplateBlockTableColumn(
+            label: t('field.definition', [], 'emsco-core'),
+            blockName: 'contentTypeViewDefinition',
+            template: "@$this->templateNamespace/datatable/template_block_columns.html.twig")
+        );
 
-        $defineAction = $table->addItemActionCollection('view.actions.define.title', 'gear');
-        $defineAction->addItemPostAction(Routes::VIEW_DEFINE, 'view.actions.define.default_overview', 'list', null, ['definition' => ViewDefinition::DEFAULT_OVERVIEW->value]);
-        $defineAction->addItemPostAction(Routes::VIEW_UNDEFINE, 'view.actions.undefine', 'eraser', null);
+        $table->addColumnDefinition(new BoolTableColumn(t('field.public_access', [], 'emsco-core'), 'public'));
 
-        $table->addItemPostAction(Routes::VIEW_DELETE, 'view.actions.delete', 'trash', 'view.actions.delete_confirm')->setButtonType('outline-danger');
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'view.actions.delete_selected', 'view.actions.delete_selected_confirm')
-            ->setCssClass('btn btn-outline-danger');
-        $table->setDefaultOrder('orderKey');
+        $this->addItemEdit($table, Routes::ADMIN_CONTENT_TYPE_VIEW_EDIT);
+        $table->addItemPostAction(
+            route: Routes::ADMIN_CONTENT_TYPE_VIEW_DUPLICATE,
+            labelKey: t('action.duplicate', [], 'emsco-core'),
+            icon: 'pencil',
+            messageKey: t('action.confirmation', [], 'emsco-core')
+        );
+
+        $defineAction = $table->addItemActionCollection(t('action.define', [], 'emsco-core'), 'gear');
+        $defineAction->addItemPostAction(
+            route: Routes::ADMIN_CONTENT_TYPE_VIEW_DEFINE,
+            labelKey: t('core.content_type.view_define', ['define' => ViewDefinition::DEFAULT_OVERVIEW->value], 'emsco-core'),
+            icon: ViewDefinition::DEFAULT_OVERVIEW->getIcon(),
+            routeParameters: ['definition' => ViewDefinition::DEFAULT_OVERVIEW->value]
+        );
+        $defineAction->addItemPostAction(
+            route: Routes::ADMIN_CONTENT_TYPE_VIEW_UNDEFINE,
+            labelKey: t('core.dashboard.define', ['define' => null], 'emsco-core'),
+            icon: 'eraser'
+        );
+
+        $this
+            ->addColumnsCreatedModifiedDate($table)
+            ->addItemDelete($table, 'content_type_view', Routes::ADMIN_CONTENT_TYPE_VIEW_DELETE)
+            ->addTableToolbarActionAdd($table, Routes::ADMIN_CONTENT_TYPE_VIEW_ADD, ['contentType' => $contentType->getId()])
+            ->addTableActionDelete($table, 'content_type_view');
     }
 
     public function getRoles(): array

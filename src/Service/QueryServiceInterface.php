@@ -6,7 +6,7 @@ namespace EMS\CoreBundle\Service;
 
 interface QueryServiceInterface
 {
-    public function isQuerySortable(): bool;
+    public function isSortable(): bool;
 
     /**
      * @return mixed[]

@@ -27,4 +27,9 @@ final class NotFoundException extends NotFoundHttpException
     {
         return new self(\sprintf('Channel with name %s not found!', $channelName));
     }
+
+    public static function index(string $indexName): self
+    {
+        return new self(\sprintf('Index with name %s not found!', $indexName));
+    }
 }

@@ -11,12 +11,15 @@ use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
-use Psr\Log\LoggerInterface;
+use EMS\CoreBundle\Exception\NotFoundException;
 
 final class IndexService
 {
-    public function __construct(private readonly AliasService $aliasService, private readonly Client $client, private readonly ContentTypeService $contentTypeService, private readonly LoggerInterface $logger)
-    {
+    public function __construct(
+        private readonly AliasService $aliasService,
+        private readonly Client $client,
+        private readonly ContentTypeService $contentTypeService
+    ) {
     }
 
     public function deleteOrphanIndexes(): void
@@ -27,26 +30,29 @@ final class IndexService
         }
     }
 
+    public function deleteIndexes(string ...$indexes): void
+    {
+        foreach ($indexes as $index) {
+            $this->deleteIndex($index);
+        }
+    }
+
     public function deleteIndex(string $indexName): void
     {
         try {
             $index = $this->client->getIndex($indexName);
-            if (!empty($index->getAliases())) {
-                $this->logger->error('log.index.index_with_aliases', [
-                    'index_name' => $indexName,
-                    'counter' => \count($index->getAliases()),
-                ]);
+            $countAliases = \count($index->getAliases());
 
-                return;
+            if ($countAliases > 0) {
+                throw new \RuntimeException(\sprintf('The index "%s" can not be deleted because is referenced by %s aliases', $indexName, $countAliases));
             }
+
             $index->delete();
-            $this->logger->notice('log.index.delete_orphan_index', [
-                'index_name' => $indexName,
-            ]);
-        } catch (\RuntimeException) {
-            $this->logger->notice('log.index.index_not_found', [
-                'index_name' => $indexName,
-            ]);
+        } catch (ResponseException $e) {
+            match ($e->getResponse()->getStatus()) {
+                404 => throw NotFoundException::index($indexName),
+                default => throw $e
+            };
         }
     }
 

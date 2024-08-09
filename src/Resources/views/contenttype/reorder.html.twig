@@ -5,8 +5,8 @@
 
 {% block breadcrumb %}
 	<ol class="breadcrumb">
-		<li><a href="{{ path("contenttype.index") }}"><i class="fa fa-cubes"></i> Content Types</a></li>
-		<li><a href="{{ path("contenttype.edit", {id: contentType.id}) }}"><i class="{{ contentType.icon }}"></i> Edit {{ contentType.singularName }}</a></li>
+		<li><a href="{{ path("emsco_admin_content_type_index") }}"><i class="fa fa-cubes"></i> Content Types</a></li>
+		<li><a href="{{ path("emsco_admin_content_type_edit", {contentType: contentType.id}) }}"><i class="{{ contentType.icon }}"></i> Edit {{ contentType.singularName }}</a></li>
    		<li class="active">{{ 'Reorder'|trans }}</li>
    	</ol>
 {% endblock %}
@@ -23,7 +23,7 @@
 				</h2>
 
 				<div class="btn-group  pull-right">
-					<a class="btn btn-xs btn-primary" href="{{ path('ems_contenttype_field_edit', { contentType: contentType.id, field: contentType.fieldType.id }) }}">
+					<a class="btn btn-xs btn-primary" href="{{ path('emsco_admin_content_type_edit_field', { contentType: contentType.id, field: contentType.fieldType.id }) }}">
 						<i class="fa fa-edit"></i>
                         {{ 'view.contenttype.reorder_item.edit_main_container_button'|trans() }}
 					</a>
@@ -32,7 +32,7 @@
             {{ form_start(form) }}
 				<div class="box-body no-padding">
 					<ol class="nested-sortable vertical" id="root-list" data-nested-max-level="15" data-nested-is-tree="true">
-						{% include "@EMSCore/contenttype/reorder_item.html.twig" with {
+						{% include "@EMSAdminUI/bootstrap5/contenttype/reorder_item.html.twig" with {
 							parent: contentType.fieldType
 						} %}
 					</ol>

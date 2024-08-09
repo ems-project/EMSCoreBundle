@@ -7,7 +7,7 @@
 
 					<div class="btn-group  pull-right">
                         {% if contentType is defined %}
-                            <a class="btn btn-xs btn-primary" href="{{ path('ems_contenttype_field_edit', { contentType: contentType.id, field: child.id }) }}">
+                            <a class="btn btn-xs btn-primary" href="{{ path('emsco_admin_content_type_edit_field', { contentType: contentType.id, field: child.id }) }}">
                                 <i class="fa fa-edit"></i>
                                 {{ 'view.contenttype.reorder_item.edit_field_button'|trans({'%name%': child.name}) }}
                             </a>

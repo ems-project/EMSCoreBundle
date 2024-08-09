@@ -105,7 +105,7 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
         return 'revision_trash';
     }
 
-    public function isQuerySortable(): bool
+    public function isSortable(): bool
     {
         return false;
     }

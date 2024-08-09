@@ -14,6 +14,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Symfony\Component\Translation\t;
+
 class TwigElementsController extends AbstractController
 {
     final public const ASSET_EXTRACTOR_STATUS_CACHE_ID = 'status.asset_extractor.result';
@@ -108,24 +110,32 @@ class TwigElementsController extends AbstractController
         if (!$this->isGranted('ROLE_ADMIN')) {
             return $menu;
         }
-        $menu->addChild('views.elements.side-menu-html.content-types', 'fa fa-sitemap', 'contenttype.index')->setTranslation([]);
-        $menu->addChild('views.elements.side-menu-html.forms', 'fa fa-keyboard-o', Routes::FORM_ADMIN_INDEX)->setTranslation([]);
-        $menu->addChild('views.elements.side-menu-html.environments', 'fa fa-database', 'environment.index')->setTranslation([]);
-        $menu->addChild('view.elements.side-menu.chanel-admin.index-link', 'fa fa-eye', 'ems_core_channel_index')->setTranslation([]);
-        $menu->addChild('view.elements.side-menu.dashboard-admin.index-link', 'fa fa-dashboard', Routes::DASHBOARD_ADMIN_INDEX)->setTranslation([]);
-        $menu->addChild('view.elements.side-menu.query_search.index-link', 'fa fa-list-alt', 'ems_core_query_search_index')->setTranslation([]);
-        $menu->addChild('views.elements.side-menu-html.wysiwyg', 'fa fa-edit', Routes::WYSIWYG_INDEX)->setTranslation([]);
+        $menu->addChild(t('key.content_types', [], 'emsco-core'), 'fa fa-sitemap', Routes::ADMIN_CONTENT_TYPE_INDEX)->setTranslation([]);
+        $menu->addChild(t('key.forms', [], 'emsco-core'), 'fa fa-keyboard-o', Routes::FORM_ADMIN_INDEX)->setTranslation([]);
+
+        $environmentMenu = $menu->addChild(
+            label: t('key.environments', [], 'emsco-core'),
+            icon: 'fa fa-database',
+            route: Routes::ADMIN_ENVIRONMENT_INDEX
+        );
+        $environmentMenu->addChild(t('key.overview', [], 'emsco-core'), 'fa fa-list-ul', Routes::ADMIN_ENVIRONMENT_INDEX);
+        $environmentMenu->addChild(t('key.orphan_indexes', [], 'emsco-core'), 'fa fa-chain-broken', Routes::ADMIN_ELASTIC_ORPHAN);
+
+        $menu->addChild(t('key.channels', [], 'emsco-core'), 'fa fa-eye', 'ems_core_channel_index');
+        $menu->addChild(t('key.dashboards', [], 'emsco-core'), 'fa fa-dashboard', Routes::DASHBOARD_ADMIN_INDEX);
+        $menu->addChild(t('key.query_searches', [], 'emsco-core'), 'fa fa-list-alt', 'ems_core_query_search_index');
+        $menu->addChild(t('key.wysiwyg', [], 'emsco-core'), 'fa fa-edit', Routes::WYSIWYG_INDEX);
         $menu->addChild('views.elements.side-menu-html.search', 'fa fa-search', 'ems_search_options_index')->setTranslation([]);
-        $menu->addChild('views.elements.side-menu-html.i18n', 'fa fa-language', Routes::I18N_INDEX)->setTranslation([]);
-        $jobMenu = $menu->addChild('views.elements.side-menu-html.jobs', 'fa fa-terminal', 'job.index');
+        $menu->addChild(t('key.i18n', [], 'emsco-core'), 'fa fa-language', Routes::I18N_INDEX);
+        $jobMenu = $menu->addChild(t('key.jobs', [], 'emsco-core'), 'fa fa-terminal', 'job.index');
         $jobMenu->setTranslation([]);
         $jobMenu->addChild('views.elements.side-menu-html.create-job', 'fa fa-plus', 'job.add')->setTranslation([]);
-        $jobMenu->addChild('views.elements.side-menu-html.logs', 'fa fa-file-text-o', 'job.index')->setTranslation([]);
-        $jobMenu->addChild('views.elements.side-menu-html.schedule', 'fa fa-calendar-o', Routes::SCHEDULE_INDEX)->setTranslation([]);
-        $menu->addChild('views.elements.side-menu-html.analyzers', 'fa fa-signal', Routes::ANALYZER_INDEX)->setTranslation([]);
-        $menu->addChild('views.elements.side-menu-html.filters', 'fa fa-filter', Routes::FILTER_INDEX)->setTranslation([]);
-        $menu->addChild('views.elements.side-menu-html.audit-logs', 'fa fa-file-text', Routes::LOG_INDEX)->setTranslation([]);
-        $menu->addChild('views.elements.side-menu-html.uploaded-files-logs', 'fa fa-upload', Routes::UPLOAD_ASSET_ADMIN_OVERVIEW)->setTranslation([]);
+        $jobMenu->addChild(t('key.job_logs', [], 'emsco-core'), 'fa fa-file-text-o', 'job.index');
+        $jobMenu->addChild(t('key.schedule', [], 'emsco-core'), 'fa fa-calendar-o', Routes::SCHEDULE_INDEX);
+        $menu->addChild(t('key.analyzers', [], 'emsco-core'), 'fa fa-signal', Routes::ANALYZER_INDEX);
+        $menu->addChild(t('key.filters', [], 'emsco-core'), 'fa fa-filter', Routes::FILTER_INDEX);
+        $menu->addChild(t('key.logs', [], 'emsco-core'), 'fa fa-file-text', Routes::LOG_INDEX);
+        $menu->addChild(t('key.uploaded_files_logs', [], 'emsco-core'), 'fa fa-upload', Routes::UPLOAD_ASSET_ADMIN_OVERVIEW);
 
         return $menu;
     }

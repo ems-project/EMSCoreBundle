@@ -4,17 +4,17 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="ems_core_action_index" path="/{contentType}"
+    <route id="emsco_admin_content_type_action_index" path="/{contentType}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ActionController::index"
            methods="GET|POST"/>
-    <route id="ems_core_action_add" path="/{contentType}/add"
+    <route id="emsco_admin_content_type_action_add" path="/{contentType}/add"
            controller="EMS\CoreBundle\Controller\ContentManagement\ActionController::add"
            methods="GET|POST"/>
-    <route id="ems_core_action_edit" path="/{contentType}/edit/{action}.{_format}"
+    <route id="emsco_admin_content_type_action_edit" path="/{contentType}/edit/{action}.{_format}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ActionController::edit"
            format="html"
            methods="GET|POST"/>
-    <route id="ems_core_action_delete" path="/{contentType}/delete/{action}"
+    <route id="emsco_admin_content_type_action_delete" path="/{contentType}/delete/{action}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ActionController::delete"
            methods="POST"/>
 </routes>

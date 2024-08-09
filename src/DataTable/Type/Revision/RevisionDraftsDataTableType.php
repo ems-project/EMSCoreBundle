@@ -105,7 +105,7 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
         return 'draft_in_progress';
     }
 
-    public function isQuerySortable(): bool
+    public function isSortable(): bool
     {
         return false;
     }

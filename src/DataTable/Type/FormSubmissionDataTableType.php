@@ -31,7 +31,7 @@ class FormSubmissionDataTableType extends AbstractEntityTableType
         $table->addItemGetAction('form.submissions.download', 'form-submission.form-submissions.download', 'download');
         $table->addItemPostAction('form.submissions.process', 'form-submission.form-submissions.process', 'check', 'form-submission.form-submissions.confirm');
 
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'action.actions.delete_selected', 'form-submission.form-submissions.delete_selected_confirm');
+        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'form-submission.index.delete_selected', 'form-submission.form-submissions.delete_selected_confirm');
         $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'form-submission.form-submissions.download_selected', 'form-submission.form-submissions.download_selected_confirm');
         $table->addTableAction(TableAbstract::EXPORT_ACTION, 'fa fa-file-excel-o', 'form-submission.form-submissions.export_selected', 'form-submission.form-submissions.export_selected_confirm');
         $table->setDefaultOrder('created', 'desc');

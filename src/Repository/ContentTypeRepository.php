@@ -65,6 +65,62 @@ class ContentTypeRepository extends EntityRepository
          ->getSingleScalarResult();
     }
 
+    public function getById(string $id): ContentType
+    {
+        if (null === $contentType = $this->find($id)) {
+            throw new \RuntimeException('Content type not found');
+        }
+
+        return $contentType;
+    }
+
+    /**
+     * @return ContentType[]
+     */
+    public function getByIds(string ...$ids): array
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb
+            ->andWhere($qb->expr()->in('c.id', ':ids'))
+            ->setParameter('ids', $ids);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function makeQueryBuilder(
+        ?bool $isActive = null,
+        ?bool $isDirty = null,
+        ?bool $isDeleted = false,
+        string $searchValue = ''
+    ): QueryBuilder {
+        $qb = $this->createQueryBuilder('c');
+        $qb->join('c.environment', 'e');
+
+        if (null !== $isDeleted) {
+            $qb->andWhere($qb->expr()->eq('c.deleted', $qb->expr()->literal($isDeleted)));
+        }
+        if (null !== $isActive) {
+            $qb->andWhere($qb->expr()->eq('c.active', $qb->expr()->literal($isActive)));
+        }
+        if (null !== $isDirty) {
+            $qb->andWhere($qb->expr()->eq('c.dirty', $qb->expr()->literal($isDirty)));
+        }
+
+        if ('' !== $searchValue) {
+            $qb
+                ->andWhere($qb->expr()->orX(
+                    $qb->expr()->like('LOWER(c.name)', ':term'),
+                    $qb->expr()->like('LOWER(c.singularName)', ':term'),
+                    $qb->expr()->like('LOWER(c.pluralName)', ':term'),
+                    $qb->expr()->like('LOWER(e.name)', ':term'),
+                    $qb->expr()->like('LOWER(e.label)', ':term'),
+                ))
+                ->setParameter(':term', '%'.\strtolower($searchValue).'%');
+        }
+
+        return $qb;
+    }
+
     /**
      * @throws NonUniqueResultException
      */

@@ -8,10 +8,10 @@
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
-        <li><a href="{{ path("contenttype.index") }}"><i class="fa fa-cubes"></i> {{ 'view.menu.breadcrumb.content-types'|trans }}</a></li>
-        <li><a href="{{ path("contenttype.edit", {id: contentType.id}) }}"><i class="{{ contentType.icon|default('fa fa-square') }}"></i> {{ contentType.singularName }}</a></li>
-        {% if app.request.get('_route') != 'ems_core_action_index' %}
-            <li><a href="{{ path("ems_core_action_index", {contentType: contentType.id}) }}">{{ block('folderTitle') }}</a></li>
+        <li><a href="{{ path("emsco_admin_content_type_index") }}"><i class="fa fa-cubes"></i> {{ 'view.menu.breadcrumb.content-types'|trans }}</a></li>
+        <li><a href="{{ path("emsco_admin_content_type_edit", {contentType: contentType.id}) }}"><i class="{{ contentType.icon|default('fa fa-square') }}"></i> {{ contentType.singularName }}</a></li>
+        {% if app.request.get('_route') != 'emsco_admin_content_type_action_index' %}
+            <li><a href="{{ path("emsco_admin_content_type_action_index", {contentType: contentType.id}) }}">{{ block('folderTitle') }}</a></li>
         {% endif %}
         <li class="active">{{ block('title') }}</li>
     </ol>

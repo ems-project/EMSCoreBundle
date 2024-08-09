@@ -5,8 +5,9 @@
 {% block subtitle %}{% if subTitle is defined %}<small>{{ subTitle|trans }}</small>{% endif %}{% endblock %}
 
 {% block breadcrumb %}
-	{% if breadcrumb is defined %}
-		<ol class="breadcrumb">
+	{# @var item \EMS\CoreBundle\Core\UI\Page\BreadcrumbItem #}
+	<ol class="breadcrumb">
+		{% if breadcrumb is iterable %}
 			{% for name, item in breadcrumb %}
 				{% if name == 'contentType' %}
 					<li>{{ t('key.content_types', [], 'emsco-core')|trans }}</li>
@@ -19,8 +20,22 @@
 					<li>{{ item|trans }}</li>
 				{% endif %}
 			{% endfor %}
-		</ol>
-	{% endif %}
+		{% else %}
+			{% for item in breadcrumb.items %}
+				{%- set label -%}
+					{% if item.icon %}<i class="{{ item.icon }}"></i>&nbsp;{% endif %}
+					{{ item.label ? item.label|trans : item.text|default('...') }}
+				{%- endset -%}
+				<li class="{{ html_classes({ 'active': loop.last }) }}">
+					{% if item.route and loop.last == false %}
+						<a href="{{ path(item.route, item.routeParams) }}">{{ label|raw }}</a>
+					{% else %}
+						{{ label|raw }}
+					{% endif %}
+				</li>
+			{% endfor %}
+		{% endif %}
+	</ol>
 {% endblock %}
 
 {% block body %}

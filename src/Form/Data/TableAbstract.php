@@ -182,7 +182,7 @@ abstract class TableAbstract implements TableInterface
     }
 
     /**
-     * @param array<string, string> $routeParameters
+     * @param array<string, string|int> $routeParameters
      */
     public function addDynamicItemPostAction(string $route, string|TranslatableMessage $labelKey, string $icon, null|string|TranslatableMessage $messageKey = null, array $routeParameters = []): TableItemAction
     {

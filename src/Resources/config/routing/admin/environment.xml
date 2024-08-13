@@ -4,25 +4,19 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="emsco_admin_environment_alias_attach" path="/attach/{name}"
-           controller="EMS\CoreBundle\Controller\Admin\EnvironmentController::attach"
-           methods="POST"/>
-    <route id="emsco_admin_environment_alias_remove" path="/remove/alias/{name}"
-           controller="EMS\CoreBundle\Controller\Admin\EnvironmentController::removeAlias"
-           methods="POST"/>
-    <route id="emsco_admin_environment_remove" path="/remove/{id}"
+    <route id="emsco_admin_environment_remove" path="/remove/{environment}"
            controller="EMS\CoreBundle\Controller\Admin\EnvironmentController::remove"
            methods="POST"/>
     <route id="emsco_admin_environment_add" path="/add"
            controller="EMS\CoreBundle\Controller\Admin\EnvironmentController::add"
            methods="GET|POST"/>
-    <route id="emsco_admin_environment_edit" path="/edit/{id}"
+    <route id="emsco_admin_environment_edit" path="/edit/{environment}"
            controller="EMS\CoreBundle\Controller\Admin\EnvironmentController::edit"
            methods="GET|POST"/>
-    <route id="emsco_admin_environment_view" path="/{id}"
+    <route id="emsco_admin_environment_view" path="/{environment}"
            controller="EMS\CoreBundle\Controller\Admin\EnvironmentController::view"
            methods="GET|POST"/>
-    <route id="emsco_admin_environment_rebuild" path="/rebuild/{id}"
+    <route id="emsco_admin_environment_rebuild" path="/rebuild/{environment}"
            controller="EMS\CoreBundle\Controller\Admin\EnvironmentController::rebuild"
            methods="GET|POST"/>
     <route id="emsco_admin_environment_index" path="/"

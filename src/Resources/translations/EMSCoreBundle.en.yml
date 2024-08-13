@@ -135,7 +135,6 @@ log:
         too_many_document_result: 'Found %total% results for the document %contenttype%:%ouuid% in the environment %environment%'
     environment:
         alia_missing: 'The alias for the environment %environment% is missing, consider to rebuild a brand new alias'
-        alias_attached: 'The alias %alias% has been attached'
         alias_not_found: 'Alias %alias% not found'
         alias_removed: 'The alias %alias% has been removed'
         aligned: 'Environment %environment% and %with_environment% are aligned for those content types'
@@ -422,25 +421,6 @@ channel:
         save: Save
         title: 'Edit a channel'
     menu: Channels
-environment:
-    index:
-        reorder: 'Reorder environments'
-        column:
-            label: Label
-            alias: Alias
-            name: Name
-            index: Index
-            total_indexed_label: "Total in ES"
-            total_in_ems: 'Total in ems'
-            total_mark_has_deleted: 'Total deleted'
-    actions:
-        rebuild_button: Rebuild
-        view_button: View
-        edit_button: Edit
-        delete: Delete
-        delete_confirm: 'Delete the "%label%" environment?'
-        delete_selected: 'Delete selected'
-        delete_selected_confirm: 'Delete all selected environments?'
 command:
     reindex:
         end: 'The content type %contenttype%''s documents have been reindexed in %environment% (index: %index%)'
@@ -807,47 +787,6 @@ view:
                 index-link: Releases
             query_search:
                 index-link: QuerySearch
-    environment:
-        index:
-            action_label: Action
-            add_environment_button: 'Add Environment'
-            add_managed_alias_button: 'Add managed alias'
-            alias_label: Alias
-            all_indexes_are_referenced: 'All aliases are referenced'
-            attach_alias_confirm: 'Attache the alias %name%?'
-            attach_button: Atach
-            close_modal_button: Close
-            confirm_delete: 'Do you want to delete %name%?'
-            confirm_dettach: 'Do you want to detach %name%?'
-            count_label: '#'
-            delete_alias_confirm: 'Do you want to delete the alias %name%?'
-            delete_button: Delete
-            delete_managed_environemnt_button: Delete
-            dettach_button: Detach
-            edit_button: Edit
-            environment_breadcrumb: Environments
-            environment_index_count: '{0} There are no index|{1} There is one index|]1,Inf[ There are %count% indexes'
-            environment_indexes_modal_title: Indexes
-            external_environments_title: 'External environments'
-            index_breadcrumb: List
-            indexes_label: Indexes
-            label: Label
-            local_environment_label: 'Local Environments'
-            managed_alias_title: 'Managed alias'
-            name_label: Name
-            no_environment_yet: 'There is no environment defined yet.'
-            no_external_environment_yet: 'There is no external environment defined yet.'
-            pagetitle: 'All Environments'
-            rebuild_button: Rebuild
-            reorder_button: Reorder
-            reorder_title: Reorder
-            title: 'All Environments'
-            total_in_ems: 'Total in ems'
-            total_indexed_label: 'Total in ES'
-            total_label: Total
-            total_mark_has_deleted: 'Total deleted'
-            unreferenced_aliases_title: 'Unreferenced aliases'
-            view_button: View
     form:
         fields:
             asset:

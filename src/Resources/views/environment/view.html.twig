@@ -36,7 +36,7 @@
 						'icon': 'close'
 					}%}
                     {% include '@EMSCore/elements/get-button.html.twig' with {
-							'url': path('emsco_admin_environment_edit', {'id': environment.id}),
+							'url': path('emsco_admin_environment_edit', {'environment': environment.id}),
 							'label': 'Edit',
 							'icon': 'pencil'
 						}%}

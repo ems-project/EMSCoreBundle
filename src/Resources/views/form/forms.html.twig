@@ -287,17 +287,15 @@
         <div class="col-md-12">
             {{ form_start(form) }}
             <div class="box ">
-                {% if table_title is defined or form.vars.title_label|default(false) %}
-                    <div class="box-header with-border">
-                        <h2 class="box-title">
-                            {% if table_title_icon is defined %}<i class="{{ table_title_icon }}"></i>&nbsp;{% endif %}
-                            {{ table_title|default(form.vars.title_label|trans) }}
-                        </h2>
-                    </div>
-                {% endif %}
-                {% if toolbar is defined or (table.sortable and table.supportsTableActions) or table.toolbarActions|length > 0 %}
-                    <div class="box-header with-border">
-                        <div class="btn-group pull-right">
+                {% if table_title is defined or form.vars.title_label|default(false) or toolbar is defined or (table.sortable and table.supportsTableActions) or table.toolbarActions|length > 0 %}
+                    <div class="box-header with-border" style="display: flex; align-items: center;">
+                        {% if table_title is defined or form.vars.title_label|default(false) %}
+                            <h2 class="box-title">
+                                {% if table_title_icon is defined %}<i class="{{ table_title_icon }}"></i>&nbsp;{% endif %}
+                                {{ table_title|default(form.vars.title_label|trans) }}
+                            </h2>
+                        {% endif %}
+                        <div class="btn-group" style="margin-left: auto;">
                             {% if toolbar is defined %}
                                 {{ toolbar }}
                             {% endif %}
@@ -385,7 +383,7 @@
                     </div>
                 {% endif %}
             </div>
-            {%  if attribute(form, 'reordered') is defined and table.supportsTableActions %}
+            {%  if attribute(form, 'reordered') is defined %}
                 <div class="modal fade" id="{{ table.attributeName|e('html_attr') }}_modal_reorder" tabindex="-1" role="dialog" aria-labelledby="{{ table.attributeName|e('html_attr') }}_modal_reorder_label">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">

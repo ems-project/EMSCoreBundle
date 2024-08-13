@@ -12,7 +12,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ManagedAliasController extends AbstractController
 {
@@ -47,13 +46,9 @@ class ManagedAliasController extends AbstractController
         ]);
     }
 
-    public function edit(Request $request, int $id): Response
+    public function edit(Request $request, ManagedAlias $managedAlias): Response
     {
-        $managedAlias = $this->aliasService->getManagedAlias($id);
-
-        if (!$managedAlias) {
-            throw new NotFoundHttpException('Unknow managed alias');
-        }
+        $managedAlias = $this->aliasService->getManagedAliasByName($managedAlias->getName());
 
         $form = $this->createForm(ManagedAliasType::class, $managedAlias);
         $form->handleRequest($request);
@@ -73,18 +68,15 @@ class ManagedAliasController extends AbstractController
         ]);
     }
 
-    public function remove(int $id): Response
+    public function remove(ManagedAlias $managedAlias): Response
     {
-        $managedAlias = $this->aliasService->getManagedAlias($id);
+        $managedAlias = $this->aliasService->getManagedAliasByName($managedAlias->getAlias());
 
-        if ($managedAlias) {
-            $name = $managedAlias->getName();
-            $this->aliasService->removeAlias($managedAlias->getAlias());
-            $this->managedAliasRepository->delete($managedAlias);
-            $this->logger->notice('log.managed_alias.deleted', [
-                'managed_alias_name' => $name,
-            ]);
-        }
+        $this->aliasService->removeAlias($managedAlias->getAlias());
+        $this->managedAliasRepository->delete($managedAlias);
+        $this->logger->notice('log.managed_alias.deleted', [
+            'managed_alias_name' => $managedAlias->getName(),
+        ]);
 
         return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
     }

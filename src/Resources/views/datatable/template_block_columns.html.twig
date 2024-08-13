@@ -1,8 +1,48 @@
-{% block contentTypeEnvironment %}
-    <span class="badge {% if data.environmentColor is not null %}{{ "bg-#{data.environmentColor}" }}{% endif %}">
-        {{- data.environmentLabel -}}
+{% block environmentName %}
+    {% set color = data.environmentColor|default(data.color|default('')) %}
+    <span class="badge {% if color is not null %}{{ "bg-#{color}" }}{% endif %}">
+        {{- data.environmentLabel|default(data.label|default('')) -}}
     </span>
-{% endblock contentTypeEnvironment %}
+{% endblock environmentName %}
+
+{% block environmentIndex %}
+    {{ data.indexes|map((i) => i.name)|join(', ') }}
+{% endblock environmentIndex %}
+
+{% block environmentIndexesModal %}
+    {% set modalId = "modal-environment-#{table.attributeName}-#{data.id|default(data.name)}" %}
+    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#{{ modalId }}">
+        {{ 'core.environment.index_count'|trans({'indexes': data.indexes|length }, 'emsco-core') }}
+    </button>
+    <div class="modal fade" id="{{ modalId }}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'emsco-core') }}">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">{{ 'field.indexes'|trans({}, 'emsco-core') }}</h4>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+                        {% for index in data.indexes %}
+                            <li class="list-group-item">
+                                <span class="badge">{{ index.buildDate|date(date_time_format) }}</span>
+                                <span class="badge">{{ index.count }}</span>
+                                {{ index.name }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">
+                        {{ 'action.close'|trans({}, 'emsco-core') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock environmentIndexesModal %}
 
 {% block contentTypeViewType %}
     {% if line.data.type %}

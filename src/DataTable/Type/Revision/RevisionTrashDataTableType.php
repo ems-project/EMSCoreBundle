@@ -62,7 +62,7 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
                 icon: 'recycle',
                 messageKey: t('revision.trash.put_back_confirm', [], 'emsco-core'),
                 routeParameters: [
-                    'contentType' => 'content_type_id',
+                    'contentType' => $contentType->getId(),
                     'ouuid' => 'ouuid',
                 ]
             );
@@ -79,7 +79,7 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
             icon: 'trash',
             messageKey: t('type.delete_confirm', ['type' => 'trash'], 'emsco-core'),
             routeParameters: [
-                'contentType' => 'content_type_id',
+                'contentType' => $contentType->getId(),
                 'ouuid' => 'ouuid',
             ]
         )->setButtonType('outline-danger');

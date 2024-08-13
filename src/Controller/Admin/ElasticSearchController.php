@@ -9,10 +9,14 @@ use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\DataTable\Type\Environment\EnvironmentOrphanIndexDataTableType;
+use EMS\CoreBundle\DataTable\Type\Environment\EnvironmentUnreferencedAliasDataTableType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Exception\NotFoundException;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Routes;
+use EMS\CoreBundle\Service\AliasService;
+use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -27,6 +31,8 @@ class ElasticSearchController extends AbstractController
 
     public function __construct(
         private readonly IndexService $indexService,
+        private readonly AliasService $aliasService,
+        private readonly EnvironmentService $environmentService,
         private readonly DataTableFactory $dataTableFactory,
         private readonly LocalizedLoggerInterface $logger,
         private readonly string $templateNamespace,
@@ -61,6 +67,23 @@ class ElasticSearchController extends AbstractController
         ]);
     }
 
+    public function unreferencedAliases(): Response
+    {
+        $table = $this->dataTableFactory->create(EnvironmentUnreferencedAliasDataTableType::class);
+        $form = $this->createForm(TableType::class, $table);
+
+        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
+            'form' => $form->createView(),
+            'icon' => 'fa fa-chain',
+            'title' => t('key.unreferenced_aliases', [], 'emsco-core'),
+            'breadcrumb' => Navigation::admin()->environments()->add(
+                label: t('key.unreferenced_aliases', [], 'emsco-core'),
+                icon: 'fa fa-chain',
+                route: Routes::ADMIN_ELASTIC_ORPHAN
+            ),
+        ]);
+    }
+
     public function deleteOrphanIndex(string $name): RedirectResponse
     {
         try {
@@ -75,6 +98,44 @@ class ElasticSearchController extends AbstractController
         }
 
         return $this->redirectToRoute(Routes::ADMIN_ELASTIC_ORPHAN);
+    }
+
+    public function attach(string $name): Response
+    {
+        if (!$this->indexService->hasIndex($name)) {
+            $this->logger->messageWarning(t('log.warning.index_not_found', ['index' => $name], 'emsco-core'));
+
+            return $this->redirectToRoute(Routes::ADMIN_ELASTIC_UNREFERENCED_ALIASES);
+        }
+
+        if (false !== $this->environmentService->getByName($name)) {
+            $this->logger->messageWarning(t('log.warning.duplicate_environment', ['name' => $name], 'emsco-core'));
+
+            return $this->redirectToRoute(Routes::ADMIN_ELASTIC_UNREFERENCED_ALIASES);
+        }
+
+        $environment = new Environment();
+        $environment->setName($name);
+        $environment->setAlias($name);
+        // TODO: setCircles
+        $environment->setManaged(false);
+
+        $this->environmentService->updateEnvironment($environment);
+
+        $this->logger->messageNotice(t('log.notice.alias_attached', ['alias' => $name], 'emsco-core'));
+
+        return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_EDIT, [
+            'id' => $environment->getId(),
+        ]);
+    }
+
+    public function deleteAlias(string $name): Response
+    {
+        if ($this->aliasService->removeAlias($name)) {
+            $this->logger->notice('log.environment.alias_removed', ['alias' => $name]);
+        }
+
+        return $this->redirectToRoute(Routes::ADMIN_ELASTIC_UNREFERENCED_ALIASES);
     }
 
     private function deleteOrphanIndexes(string ...$indexes): void

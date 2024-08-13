@@ -52,7 +52,7 @@ final class TableItemAction
     }
 
     /**
-     * @param array<string, string> $routeParameters
+     * @param array<string, string|int> $routeParameters
      */
     public static function postDynamicAction(string $route, string|TranslatableMessage $labelKey, string $icon, null|string|TranslatableMessage $messageKey, array $routeParameters = []): TableItemAction
     {

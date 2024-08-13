@@ -9,6 +9,7 @@ use Elasticsearch\Endpoints\Indices\UpdateAliases;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\Environment\Index;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
@@ -18,16 +19,21 @@ use Psr\Log\LoggerInterface;
 class AliasService
 {
     private const COUNTER_AGGREGATION = 'counter_aggregation';
-    /** @var array<string, array{name: string, total: int, indexes: array<mixed>, environment: string, managed: bool}> */
+    /** @var array<string, array{name: string, total: int, indexes: Index[], environment: string, managed: bool}> */
     private array $aliases = [];
-    /** @var array<array{name: string, count: int}> */
+    /** @var Index[] */
     private array $orphanIndexes = [];
     private bool $isBuild = false;
     /** @var array<string, int> */
     private array $counterIndexes = [];
 
-    public function __construct(private readonly LoggerInterface $logger, private readonly Client $elasticaClient, private readonly EnvironmentRepository $envRepo, private readonly ManagedAliasRepository $managedAliasRepo, private readonly ElasticaService $elasticaService)
-    {
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly Client $elasticaClient,
+        private readonly EnvironmentRepository $envRepo,
+        private readonly ManagedAliasRepository $managedAliasRepo,
+        private readonly ElasticaService $elasticaService
+    ) {
     }
 
     /**
@@ -81,13 +87,11 @@ class AliasService
     }
 
     /**
-     * @return array{name: string, total: int, indexes: array<mixed>, environment: string, managed: bool}
+     * @return array{name: string, total: int, indexes: Index[], environment: string, managed: bool}
      */
     public function getAlias(string $name): array
     {
-        if (!$this->isBuild) {
-            $this->build();
-        }
+        $this->build();
 
         return $this->aliases[$name];
     }
@@ -97,28 +101,9 @@ class AliasService
      */
     public function getAliases(): array
     {
-        if (!$this->isBuild) {
-            $this->build();
-        }
+        $this->build();
 
         return $this->aliases;
-    }
-
-    public function getManagedAlias(int $id): ?ManagedAlias
-    {
-        if (!$this->isBuild) {
-            $this->build();
-        }
-
-        /** @var ManagedAlias|null $managedAlias */
-        $managedAlias = $this->managedAliasRepo->find($id);
-
-        if (null !== $managedAlias && $this->hasAlias($managedAlias->getAlias())) {
-            $alias = $this->getAlias($managedAlias->getAlias());
-            $managedAlias->setIndexes($alias['indexes']);
-        }
-
-        return $managedAlias;
     }
 
     public function getManagedAliasByName(string $name): ManagedAlias
@@ -131,6 +116,8 @@ class AliasService
         if (null === $managedAlias) {
             throw new \RuntimeException('Unexpected null managed alias');
         }
+
+        $this->build();
 
         if ($this->hasAlias($managedAlias->getAlias())) {
             $alias = $this->getAlias($managedAlias->getAlias());
@@ -145,6 +132,8 @@ class AliasService
      */
     public function getManagedAliases(): array
     {
+        $this->build();
+
         /** @var ManagedAlias[] $managedAliases */
         $managedAliases = $this->managedAliasRepo->findAll();
 
@@ -221,9 +210,11 @@ class AliasService
      */
     public function getUnreferencedAliases(): array
     {
+        $this->build();
+
         $aliases = $this->getAliases();
 
-        return \array_filter($aliases, fn (array $alias) => null === $alias['environment'] && false === $alias['managed']);
+        return \array_filter($aliases, static fn (array $alias) => null === $alias['environment'] && false === $alias['managed']);
     }
 
     /**
@@ -340,7 +331,7 @@ class AliasService
         $alias = $this->getAlias($name);
 
         foreach ($alias['indexes'] as $index) {
-            $indexesToRemove[] = $index['name'];
+            $indexesToRemove[] = $index->name;
         }
 
         $this->updateAlias($name, ['remove' => $indexesToRemove]);
@@ -355,12 +346,14 @@ class AliasService
     {
         if ($this->hasAlias($name)) {
             $this->aliases[$name]['indexes'][$index] = $this->getIndex($index);
+            $this->aliases[$name]['countIndexes'] = \count($this->aliases[$name]['indexes']);
 
             return;
         }
 
         $this->aliases[$name] = [
             'name' => $name,
+            'countIndexes' => 1,
             'indexes' => [$index => $this->getIndex($index)],
             'total' => $this->count($name),
             'environment' => $env['name'] ?? null,
@@ -373,12 +366,9 @@ class AliasService
         $this->orphanIndexes[] = $this->getIndex($name);
     }
 
-    /**
-     * @return array{name: string, count: int}
-     */
-    private function getIndex(string $name): array
+    private function getIndex(string $name): Index
     {
-        return ['name' => $name, 'count' => $this->count($name)];
+        return new Index(name: $name, count: $this->count($name));
     }
 
     private function count(string $name): int

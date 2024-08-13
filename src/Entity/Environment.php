@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
+use EMS\CoreBundle\Core\Environment\Index;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\Helpers\Standard\DateTime;
@@ -49,7 +50,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     protected string $alias = '';
 
     /**
-     * @var array<mixed>
+     * @var array<string, Index>
      */
     protected array $indexes = [];
 
@@ -366,6 +367,17 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getNewIndexName(): string
     {
         return \sprintf('%s_%s', $this->getAlias(), (new \DateTimeImmutable())->format('Ymd_His'));
+    }
+
+    public function getBuildDate(): ?\DateTimeInterface
+    {
+        $indexes = $this->indexes;
+
+        if (1 === \count($indexes)) {
+            return \array_shift($indexes)->getBuildDate();
+        }
+
+        return null;
     }
 
     /**

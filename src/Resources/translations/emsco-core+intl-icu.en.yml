@@ -4,24 +4,27 @@ action:
     add_alias: 'Add alias'
     add_referenced: 'Add referenced'
     add_referenced_content_type: 'Add a reference content type'
+    attach: Attach
     close: Close
     confirmation: 'Do you confirm?'
     deactivate: Deactivate
     define: Define
     delete: Delete
+    delete_all: 'Delete all'
     delete_selected: 'Delete selected'
     details: Details
     download_selected: 'Download selected'
     duplicate: Duplicate
     edit: Edit
     export: Export
+    rebuild: Rebuild
     reorder: Reorder
     select_all: 'Select all'
     status: Status
     toggle_visibility: 'Toggle visibility'
     toggle_visibility_selected: 'Toggle visibility selected'
     update_mapping: 'Update mapping'
-    delete_all: 'Delete all'
+    view: View
 core:
     content_type:
         view_define: |-
@@ -67,6 +70,13 @@ core:
                 browser_file    {File browser}
                 other           {Unknown}    
             }
+    environment:
+        index_count: |-
+            {indexes, plural, 
+                =0      {There are no index}
+                =1      {There is one index}
+                other   {There are # indexes}
+            }
     version: 'Version {core} with Symfony {symfony}'
 field:
     alias: Alias
@@ -76,6 +86,7 @@ field:
     context: Context
     count: Count
     cron: Cron
+    date_build: 'Date build'
     date_created: 'Date creation'
     date_modified: 'Date modified'
     date_run_next: 'Date next run'
@@ -90,6 +101,8 @@ field:
         type: Type
     hash: 'Hash signature'
     hidden: Hidden
+    index: Index
+    indexes: Indexes
     is_active: Active
     is_dirty: Dirty
     key: Key
@@ -105,6 +118,10 @@ field:
     status: Status
     tag: Tag
     text: Text
+    total: Total
+    total_deleted: 'Total deleted'
+    total_elastic: 'Total in ES'
+    total_ems: 'Total in EMS'
     translations: Translations
     type: Type
     user: User
@@ -120,6 +137,8 @@ key:
     content_types: 'Content Types'
     dashboards: Dashboards
     environments: Environments
+    environments_external: 'External environments'
+    environments_local: 'Local environments'
     filters: Filters
     forms: Forms
     i18n: I18N
@@ -127,12 +146,14 @@ key:
     jobs: Jobs
     logs: Logs
     loop_count: '#'
+    managed_aliases: 'Managed aliases'
     orphan_indexes: 'Orphan indexes'
     overview: Overview
     publishers: Publishers
     query_searches: QuerySearch
     schedule: Schedule
     structure: Structure
+    unreferenced_aliases: 'Unreferenced aliases'
     uploaded_files: 'Uploaded Files'
     uploaded_files_logs: 'Uploaded Files Logs'
     views: Views
@@ -140,17 +161,19 @@ key:
 log:
     error:
         content_type_add_unreferenced: 'Unexpected error while getting unreferenced content type(s) from external environment {environment}: {error}'
-        invalid_table_action: 'Unknown table action'
         delete_failed: 'Delete failed'
+        invalid_table_action: 'Unknown table action'
     notice:
+        alias_attached: 'The alias "{alias}" has been attached'
         content_type_deleted: 'Content type "{contentType}" has been deleted'
         content_type_referenced: 'Referenced content type "{contentType}" from "{environment}" environment'
         content_type_view_deleted: 'View "{view}" has been deleted'
-        draft_deleted: 'Draft "{revision}" has been deleted'
         deleted_orphan_index: 'The index "{index}" has been deleted'
         deleted_orphan_indexes: 'Orphan indexes have been deleted'
+        draft_deleted: 'Draft "{revision}" has been deleted'
     warning:
         draft_not_found: 'Draft not found with id "{revisionId}"'
+        duplicate_environment: 'Environment "{name}" already exists!'
         index_not_found: 'Index "{index}" not found'
 revision:
     draft:
@@ -173,6 +196,7 @@ revision:
 type:
     confirm: |-
         {type, select,
+            attach_alias                {Attach the alias "{label}"?}
             content_type_mapping        {Try to update the "{label}" mapping?}
             content_type_mapping_all    {Update mapping for all selected content types?}
             content_type_activate       {Activate "{label}" content type?}
@@ -186,26 +210,30 @@ type:
         }
     delete_confirm: |-
         {type, select,
-            analyzer            {Delete the "{label}" analyzer?}
-            channel             {Delete the "{label}" channel?}
-            content_type        {Delete the "{label}" content type?}
-            content_type_action {Delete the "{label}" action?}
-            content_type_view   {Delete the "{label}" view?}
-            dashboard           {Delete the "{label}" dashboard?}
-            draft               {Modifications made in this draft will be lost}
-            filter              {Delete the "{label}" filter?}
-            form                {Delete the "{label}" form?}
-            i18n                {Delete the "{label}" i18n key?}
-            orphan_index        {Delete the orphan index "{label}"?}
-            job                 {Delete the job?}
-            job_schedule        {Delete the "{label}" scheduled job?}
-            log                 {Delete log?}  
-            trash               {Delete trash "{label}" ?}
-            uploaded_file       {Delete "{label}" ?}
-            query_search        {Delete the "{label}" QuerySearch?}
-            wysiwyg_profile     {Delete the "{label}" WYSIWYG profile?}
-            wysiwyg_style_set   {Delete the "{label}" WYSIWYG style set?}
-            other               {Are you sure?}    
+            analyzer             {Delete the "{label}" analyzer?}
+            alias                {Do you want to delete the alias "{label}"?}
+            channel              {Delete the "{label}" channel?}
+            content_type         {Delete the "{label}" content type?}
+            content_type_action  {Delete the "{label}" action?}
+            content_type_view    {Delete the "{label}" view?}
+            dashboard            {Delete the "{label}" dashboard?}
+            draft                {Modifications made in this draft will be lost}
+            environment          {Delete the "{label}" environment?}
+            environment_external {Delete the "{label}" external environment?}
+            filter               {Delete the "{label}" filter?}
+            form                 {Delete the "{label}" form?}
+            i18n                 {Delete the "{label}" i18n key?}
+            orphan_index         {Delete the orphan index "{label}"?}
+            job                  {Delete the job?}
+            job_schedule         {Delete the "{label}" scheduled job?}
+            log                  {Delete log?}  
+            managed_alias        {Delete the "{label}" managed alias?}
+            trash                {Delete trash "{label}" ?}
+            uploaded_file        {Delete "{label}" ?}
+            query_search         {Delete the "{label}" QuerySearch?}
+            wysiwyg_profile      {Delete the "{label}" WYSIWYG profile?}
+            wysiwyg_style_set    {Delete the "{label}" WYSIWYG style set?}
+            other                {Are you sure?}    
         }
     delete_selected_confirm: |-
         {type, select,
@@ -216,6 +244,7 @@ type:
             content_type_view   {Delete all selected views?}
             dashboard           {Delete all selected dashboards?}
             draft               {All modifications made on selected drafts will lost?}
+            environment         {Delete all selected environments?}
             filter              {Delete all selected filters?}  
             form                {Delete all selected forms?}
             i18n                {Delete all selected i18n keys?}
@@ -238,6 +267,7 @@ type:
             content_type_action {Reorder content types actions}
             content_type_view   {Reorder content types views}
             dashboard           {Reorder dashboards}
+            environment         {Reorder environments}
             filter              {Reorder filters}
             form                {Reorder forms}
             job_schedule        {Reorder job schedules} 
@@ -261,6 +291,7 @@ type:
             content_type_action {{contentType} actions}  
             content_type_view   {{contentType} views}  
             dashboard           {List of dashboards}
+            environment         {Overview}
             filter              {List of filters}
             form                {List of forms}
             i18n                {I18n list}

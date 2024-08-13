@@ -7,7 +7,9 @@ namespace EMS\CoreBundle\DataTable\Type\Environment;
 use EMS\CoreBundle\Core\DataTable\ArrayDataSource;
 use EMS\CoreBundle\Core\DataTable\Type\AbstractTableType;
 use EMS\CoreBundle\Core\DataTable\Type\QueryServiceTypeInterface;
+use EMS\CoreBundle\Core\Environment\Index;
 use EMS\CoreBundle\DataTable\Type\DataTableTypeTrait;
+use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\QueryTable;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
@@ -32,6 +34,11 @@ class EnvironmentOrphanIndexDataTableType extends AbstractTableType implements Q
 
         $table->addColumn(t('field.name', [], 'emsco-core'), 'name');
         $table->addColumn(t('field.count', [], 'emsco-core'), 'count');
+
+        $table->addColumnDefinition(new DatetimeTableColumn(
+            titleKey: t('field.date_build', [], 'emsco-core'),
+            attribute: 'build_date'
+        ));
 
         $table->addDynamicItemGetAction(
             route: 'elasticsearch.alias.add',
@@ -77,10 +84,10 @@ class EnvironmentOrphanIndexDataTableType extends AbstractTableType implements Q
         $dataSource = $this->getDataSource($searchValue);
 
         if (null !== $orderField) {
-            return $dataSource->sort(\sprintf('[%s]', $orderField), $orderDirection)->data;
+            return $dataSource->sort(\sprintf('[%s]', $orderField), $orderDirection)->getData($from, $size);
         }
 
-        return $dataSource->data;
+        return $dataSource->getData($from, $size);
     }
 
     public function countQuery(string $searchValue = '', mixed $context = null): int
@@ -93,7 +100,11 @@ class EnvironmentOrphanIndexDataTableType extends AbstractTableType implements Q
         static $dataSource = null;
 
         if (null === $dataSource) {
-            $dataSource = new ArrayDataSource($this->aliasService->getOrphanIndexes());
+            $dataSource = new ArrayDataSource(\array_map(static fn (Index $index) => [
+                'name' => $index->name,
+                'build_date' => $index->getBuildDate(),
+                'count' => $index->count,
+            ], $this->aliasService->getOrphanIndexes()));
         }
 
         return $dataSource->search($searchValue);

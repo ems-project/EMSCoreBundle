@@ -84,7 +84,10 @@ class CreateEnvironmentCommand extends Command
         $this->io->note(\sprintf('Creation of the environment "%s"...', $environmentName));
         try {
             $updateReferrers = \boolval($input->getOption(self::OPTION_UPDATE_REFERRERS));
-            $environment = $this->environmentService->createEnvironment($environmentName, $updateReferrers);
+            $environment = $this->environmentService->createEnvironment(
+                name: $environmentName,
+                updateReferrers: $updateReferrers
+            );
         } catch (\Exception $e) {
             $this->io->error($e->getMessage());
 

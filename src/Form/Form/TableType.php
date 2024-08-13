@@ -73,7 +73,7 @@ final class TableType extends AbstractType
             return;
         }
 
-        if ($data->isSortable() && $data->count() > 1) {
+        if (false !== $options['reorder_label'] && $data->isSortable() && $data->count() > 1) {
             $builder->add('reordered', CollectionType::class, [
                 'entry_type' => HiddenType::class,
                 'entry_options' => [],

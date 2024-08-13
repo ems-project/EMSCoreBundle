@@ -19,13 +19,33 @@ class ArrayDataSource implements \Countable
         return \count($this->data);
     }
 
+    /**
+     * @return array<int, array<string, mixed>|object>
+     */
+    public function getData(int $from, int $size): array
+    {
+        return \array_slice($this->data, $from, $size);
+    }
+
     public function search(string $term): self
     {
+        if ('' === $term) {
+            return $this;
+        }
+
         $filterData = \array_filter($this->data, static function (array|object $data) use ($term) {
             $pattern = '/'.\preg_quote($term, '/').'/i';
             $values = \is_object($data) ? \get_object_vars($data) : $data;
 
             foreach ($values as $value) {
+                if (\is_array($value)) {
+                    continue;
+                }
+
+                if ($value instanceof \DateTimeInterface) {
+                    $value = $value->format(\DateTimeInterface::ATOM);
+                }
+
                 if (\preg_match($pattern, (string) $value)) {
                     return true;
                 }
@@ -48,6 +68,13 @@ class ArrayDataSource implements \Countable
             $propertyAccessor = new PropertyAccessor();
             $aValue = $propertyAccessor->getValue($a, $propertyPath);
             $bValue = $propertyAccessor->getValue($b, $propertyPath);
+
+            if ($aValue instanceof \DateTimeInterface) {
+                $aValue = $aValue->getTimestamp();
+            }
+            if ($bValue instanceof \DateTimeInterface) {
+                $bValue = $bValue->getTimestamp();
+            }
 
             if (\is_int($aValue) && \is_int($bValue)) {
                 $result = $aValue <=> $bValue;

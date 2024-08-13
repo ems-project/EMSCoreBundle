@@ -10,4 +10,13 @@
     <route id="emsco_admin_elastic_orphan_delete" path="/orphan/delete/{name}"
            controller="EMS\CoreBundle\Controller\Admin\ElasticSearchController::deleteOrphanIndex"
            methods="POST"/>
+    <route id="emsco_admin_elastic_unreferenced_aliases" path="/unreferenced-aliases"
+           controller="EMS\CoreBundle\Controller\Admin\ElasticSearchController::unreferencedAliases"
+           methods="GET"/>
+    <route id="emsco_admin_elastic_alias_attach" path="/alias/attach/{name}"
+           controller="EMS\CoreBundle\Controller\Admin\ElasticSearchController::attach"
+           methods="POST"/>
+    <route id="emsco_admin_elastic_alias_delete" path="/alias/delete/{name}"
+           controller="EMS\CoreBundle\Controller\Admin\ElasticSearchController::deleteAlias"
+           methods="POST"/>
 </routes>

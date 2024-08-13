@@ -44,7 +44,6 @@ class AlignManagedAliases extends Command
             throw new \RuntimeException('Source name as to be a string');
         }
 
-        $this->aliasService->build();
         $source = $this->aliasService->getManagedAliasByName($sourceName);
         $target = $this->aliasService->getManagedAliasByName($targetName);
 

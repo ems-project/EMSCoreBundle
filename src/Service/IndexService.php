@@ -26,7 +26,7 @@ final class IndexService
     {
         $this->aliasService->build();
         foreach ($this->aliasService->getOrphanIndexes() as $index) {
-            $this->deleteIndex($index['name']);
+            $this->deleteIndex($index->name);
         }
     }
 
@@ -138,9 +138,8 @@ final class IndexService
     {
         $endpoint = new Exists();
         $endpoint->setIndex($name);
-        $result = $this->client->requestEndpoint($endpoint);
 
-        return $result->isOk();
+        return $this->client->requestEndpoint($endpoint)->isOk();
     }
 
     /**

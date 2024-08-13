@@ -68,4 +68,10 @@ class ArrayDataSourceTest extends TestCase
             (object) ['id' => 1, 'color' => 'red'],
         ], $this->sourceObjects->sort('id', 'desc')->data);
     }
+
+    public function testSizing(): void
+    {
+        $this->assertEquals([['id' => 3, 'color' => 'green']], $this->sourceArrays->getData(2, 1));
+        $this->assertEquals([(object) ['id' => 2, 'color' => 'blue']], $this->sourceObjects->getData(1, 1));
+    }
 }

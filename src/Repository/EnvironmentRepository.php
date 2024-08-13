@@ -5,7 +5,6 @@ namespace EMS\CoreBundle\Repository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\ReadableCollection;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
@@ -63,46 +62,33 @@ class EnvironmentRepository extends EntityRepository
     }
 
     /**
-     * @return array<array{environment: Environment, counter: int}>
+     * @return array<int, int>
      */
-    public function getEnvironmentsStats(): array
+    public function countRevisionsById(?bool $deleted = null): array
     {
-        $qb = $this->createQueryBuilder('e')
-        ->select('e as environment', 'count(r) as counter')
-        ->leftJoin('e.revisions', 'r')
-        ->groupBy('e.id')
-        ->orderBy('e.orderKey', 'ASC');
+        $qb = $this->_em->getConnection()->createQueryBuilder();
+        $qb
+            ->select('e.id', 'count(er.revision_id)')
+            ->from('environment', 'e')
+            ->leftJoin('e', 'environment_revision', 'er', 'e.id = er.environment_id')
+            ->join('er', 'revision', 'r', 'r.id = er.revision_id')
+            ->andWhere($qb->expr()->eq('e.managed', $qb->expr()->literal(true)))
+            ->groupBy('e.id');
 
-        return $qb->getQuery()->getResult();
-    }
-
-    public function getDeletedRevisionsPerEnvironment(Environment $environment): int
-    {
-        $qb = $this->createQueryBuilder('e');
-        $qb->select('count(r) as counter')
-            ->leftJoin('e.revisions', 'r')
-            ->where($qb->expr()->eq('r.deleted', ':true'))
-            ->andWhere($qb->expr()->eq('e', ':environment'))
-            ->groupBy('e.id')
-            ->orderBy('e.orderKey', 'ASC')
-            ->setParameters([
-                ':true' => true,
-                ':environment' => $environment,
-            ]);
-
-        try {
-            return (int) $qb->getQuery()->getSingleScalarResult();
-        } catch (\Throwable) {
-            return 0;
+        if ($deleted) {
+            $qb->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(true)));
         }
+
+        /** @var array<int, int> $result */
+        $result = $qb->fetchAllKeyValue();
+
+        return $result;
     }
 
     /**
-     * @param string[] $ids
-     *
      * @return Environment[]
      */
-    public function getByIds(array $ids): array
+    public function getByIds(string ...$ids): array
     {
         $queryBuilder = $this->createQueryBuilder('environment');
         $queryBuilder
@@ -110,36 +96,6 @@ class EnvironmentRepository extends EntityRepository
             ->setParameter('ids', $ids);
 
         return $queryBuilder->getQuery()->getResult();
-    }
-
-    public function countRevisionPerEnvironment(Environment $env): int
-    {
-        $qb = $this->createQueryBuilder('e');
-
-        $qb->select('count(r) as counter')
-        ->where($qb->expr()->eq('e.id', $env->getId()))
-        ->leftJoin('e.revisions', 'r')
-        ->groupBy('e.id');
-
-        try {
-            return (int) $qb->getQuery()->getSingleScalarResult();
-        } catch (NonUniqueResultException) {
-            return 0;
-        }
-    }
-
-    /**
-     * @return array<array{alias: string}>
-     */
-    public function findManagedIndexes(): array
-    {
-        $qb = $this->createQueryBuilder('e');
-        $qb->select('e.alias alias');
-        $qb->where($qb->expr()->eq('e.managed', ':true'));
-        $qb->setParameters([':true' => true]);
-        $qb->orderBy('e.orderKey', 'ASC');
-
-        return $qb->getQuery()->getResult();
     }
 
     public function findByName(string $name): ?Environment
@@ -170,56 +126,6 @@ class EnvironmentRepository extends EntityRepository
         }
 
         return $out;
-    }
-
-    /**
-     * @return Environment[]
-     */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, ?bool $isManaged = null): array
-    {
-        $qb = $this->createQueryBuilder('e')
-            ->setFirstResult($from)
-            ->setMaxResults($size);
-        $this->addSearchFilters($qb, $searchValue);
-
-        if (null !== $isManaged) {
-            $qb->andWhere($qb->expr()->eq('e.managed', $qb->expr()->literal($isManaged)));
-        }
-
-        if (\in_array($orderField, ['name', 'label'])) {
-            $qb->orderBy(\sprintf('e.%s', $orderField), $orderDirection);
-        } else {
-            $qb->orderBy('e.orderKey', $orderDirection);
-        }
-
-        return $qb->getQuery()->execute();
-    }
-
-    public function counter(string $searchValue = '', ?bool $isManaged = null): int
-    {
-        $qb = $this->createQueryBuilder('e');
-        $qb->select('count(e.id)');
-        $this->addSearchFilters($qb, $searchValue);
-
-        if (null !== $isManaged) {
-            $qb->andWhere($qb->expr()->eq('e.managed', $qb->expr()->literal($isManaged)));
-        }
-
-        try {
-            return \intval($qb->getQuery()->getSingleScalarResult());
-        } catch (NonUniqueResultException) {
-            return 0;
-        }
-    }
-
-    public function create(Environment $environment): void
-    {
-        if (!$environment->hasOrderKey() && $environment->getManaged()) {
-            $environment->setOrderKey($this->counter() + 1);
-        }
-
-        $this->getEntityManager()->persist($environment);
-        $this->getEntityManager()->flush();
     }
 
     public function delete(Environment $environment): void
@@ -264,21 +170,29 @@ class EnvironmentRepository extends EntityRepository
         return new ArrayCollection($qb->getQuery()->getResult());
     }
 
-    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
-    {
-        if (\strlen($searchValue) > 0) {
-            $or = $qb->expr()->orX(
-                $qb->expr()->like('e.label', ':term'),
-                $qb->expr()->like('e.name', ':term')
-            );
-            $qb->andWhere($or)
-                ->setParameter(':term', '%'.$searchValue.'%');
-        }
-    }
-
     public function save(Environment $environment): void
     {
         $this->_em->persist($environment);
         $this->_em->flush();
+    }
+
+    public function makeQueryBuilder(?bool $isManaged = false, string $searchValue = ''): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        if (null !== $isManaged) {
+            $qb->andWhere($qb->expr()->eq('e.managed', $qb->expr()->literal($isManaged)));
+        }
+
+        if ('' !== $searchValue) {
+            $qb
+                ->andWhere($qb->expr()->orX(
+                    $qb->expr()->like('LOWER(e.name)', ':term'),
+                    $qb->expr()->like('LOWER(e.label)', ':term'),
+                ))
+                ->setParameter(':term', '%'.\strtolower($searchValue).'%');
+        }
+
+        return $qb;
     }
 }

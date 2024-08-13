@@ -6,12 +6,14 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ReadableCollection;
+use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\Environment\EnvironmentsRevision;
 use EMS\CoreBundle\Entity\Analyzer;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Filter;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
@@ -39,6 +41,7 @@ class EnvironmentService implements EntityServiceInterface
         private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly LoggerInterface $logger,
         private readonly ElasticaService $elasticaService,
+        private readonly AliasService $aliasService,
         private readonly string $instanceId
     ) {
         $environmentRepository = $doctrine->getRepository(Environment::class);
@@ -48,7 +51,7 @@ class EnvironmentService implements EntityServiceInterface
         $this->environmentRepository = $environmentRepository;
     }
 
-    public function createEnvironment(string $name, bool $updateReferrers = false): Environment
+    public function createEnvironment(string $name, string $color = 'default', bool $updateReferrers = false): Environment
     {
         if (!$this->validateEnvironmentName($name)) {
             throw new \Exception('An environment name must respects the following regex /^[a-z][a-z0-9\-_]*$/');
@@ -56,17 +59,12 @@ class EnvironmentService implements EntityServiceInterface
 
         $environment = new Environment();
         $environment->setName($name);
+        $environment->setColor($color);
         $environment->setAlias($this->generateAlias($environment));
         $environment->setManaged(true);
         $environment->setUpdateReferrers($updateReferrers);
-
-        try {
-            $em = $this->doctrine->getManager();
-            $em->persist($environment);
-            $em->flush();
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
-        }
+        $environment->setOrderKey($this->count(context: ['managed' => true]));
+        $this->environmentRepository->save($environment);
 
         $this->logger->notice('log.environment.created', [
             EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
@@ -84,9 +82,7 @@ class EnvironmentService implements EntityServiceInterface
     {
         $environment->setSnapshot($value);
 
-        $em = $this->doctrine->getManager();
-        $em->persist($environment);
-        $em->flush();
+        $this->environmentRepository->save($environment);
     }
 
     /**
@@ -226,22 +222,6 @@ class EnvironmentService implements EntityServiceInterface
         ];
     }
 
-    /**
-     * @return array<mixed>
-     */
-    public function getEnvironmentsStats(): array
-    {
-        /** @var EnvironmentRepository $repo */
-        $repo = $this->doctrine->getManager()->getRepository(Environment::class);
-        $stats = $repo->getEnvironmentsStats();
-
-        foreach ($stats as &$item) {
-            $item['deleted'] = $repo->getDeletedRevisionsPerEnvironment($item['environment']);
-        }
-
-        return $stats;
-    }
-
     public function getAliasByName(string $name): Environment|false
     {
         return $this->getByName($name);
@@ -263,29 +243,6 @@ class EnvironmentService implements EntityServiceInterface
         }
 
         return $environment;
-    }
-
-    public function giveById(int $id): Environment
-    {
-        $environment = $this->getEnvironmentsById()[$id] ?? false;
-
-        if (!$environment) {
-            throw new \RuntimeException(\sprintf('Could not find environment with the id "%d"', $id));
-        }
-
-        return $environment;
-    }
-
-    /**
-     * @deprecated cant find usage of this function, should be removed if proven so!
-     */
-    public function getById(int $id): Environment|false
-    {
-        if (isset($this->getEnvironmentsById()[$id])) {
-            return $this->getEnvironmentsById()[$id];
-        }
-
-        return false;
     }
 
     /**
@@ -350,10 +307,7 @@ class EnvironmentService implements EntityServiceInterface
         $em->flush();
     }
 
-    /**
-     * @param string[] $ids
-     */
-    public function reorderByIds(array $ids): void
+    public function reorderByIds(string ...$ids): void
     {
         $counter = 1;
         foreach ($ids as $id) {
@@ -363,23 +317,51 @@ class EnvironmentService implements EntityServiceInterface
         }
     }
 
-    /**
-     * @param string[] $ids
-     */
-    public function deleteByIds(array $ids): void
+    public function deleteByIds(string ...$ids): void
     {
-        foreach ($this->environmentRepository->getByIds($ids) as $environment) {
+        foreach ($this->environmentRepository->getByIds(...$ids) as $environment) {
             $this->delete($environment);
         }
     }
 
-    public function delete(Environment $environment): void
+    public function delete(Environment $environment): bool
     {
-        $name = $environment->getName();
+        if (0 !== $environment->getRevisions()->count()) {
+            $this->logger->error('log.environment.not_empty', [EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName()]);
+
+            return false;
+        }
+
+        $linked = false;
+        /** @var ContentType $contentType */
+        foreach ($environment->getContentTypesHavingThisAsDefault() as $contentType) {
+            if (!$contentType->getDeleted()) {
+                $linked = true;
+                break;
+            }
+        }
+
+        if ($linked) {
+            $this->logger->error('log.environment.is_default', [EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName()]);
+
+            return false;
+        }
+
+        /** @var EntityManager $em */
+        $em = $this->doctrine->getManager();
+
+        /** @var ContentType $contentType */
+        foreach ($environment->getContentTypesHavingThisAsDefault() as $contentType) {
+            $contentType->getFieldType()->setContentType();
+            $em->persist($contentType->getFieldType());
+            $em->remove($contentType);
+        }
         $this->environmentRepository->delete($environment);
-        $this->logger->warning('log.service.environment.delete', [
-            'name' => $name,
+        $this->logger->notice('log.environment.deleted', [
+            EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
         ]);
+
+        return true;
     }
 
     public function isSortable(): bool
@@ -389,7 +371,26 @@ class EnvironmentService implements EntityServiceInterface
 
     public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
-        return $this->environmentRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
+        $qb = $this->environmentRepository->makeQueryBuilder(
+            isManaged: \is_array($context) ? ($context['managed'] ?? false) : null,
+            searchValue: $searchValue
+        );
+        $qb
+            ->select('e')
+            ->setFirstResult($from)
+            ->setMaxResults($size);
+
+        if (null !== $orderField) {
+            $qb->orderBy(\sprintf('e.%s', $orderField), $orderDirection);
+        }
+
+        $environments = $qb->getQuery()->getResult();
+
+        if (\is_array($context) && ($context['stats'] ?? false) === true) {
+            $this->applyStats(...$environments);
+        }
+
+        return $environments;
     }
 
     public function getEntityName(): string
@@ -411,7 +412,14 @@ class EnvironmentService implements EntityServiceInterface
 
     public function count(string $searchValue = '', $context = null): int
     {
-        return $this->environmentRepository->counter($searchValue);
+        return (int) $this->environmentRepository
+            ->makeQueryBuilder(
+                isManaged: \is_array($context) ? ($context['managed'] ?? false) : null,
+                searchValue: $searchValue
+            )
+            ->select('count(e.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     public function getByItemName(string $name): ?EntityInterface
@@ -456,7 +464,7 @@ class EnvironmentService implements EntityServiceInterface
             $environment->setAlias($this->generateAlias($environment));
         }
 
-        $this->environmentRepository->create($environment);
+        $this->environmentRepository->save($environment);
 
         return $environment;
     }
@@ -479,5 +487,42 @@ class EnvironmentService implements EntityServiceInterface
         $this->environmentRepository->delete($environment);
 
         return \strval($id);
+    }
+
+    private function applyStats(Environment ...$environments): void
+    {
+        $stats = $this->getStats();
+
+        foreach ($environments as $environment) {
+            $environment->setCounter($stats['revisions'][$environment->getId()] ?? 0);
+            $environment->setDeletedRevision($stats['revisions_deleted'][$environment->getId()] ?? 0);
+
+            try {
+                if ($this->aliasService->hasAlias($environment->getAlias())) {
+                    $alias = $this->aliasService->getAlias($environment->getAlias());
+                    $environment->setIndexes($alias['indexes']);
+                    $environment->setTotal($alias['total']);
+                }
+            } catch (\Throwable $e) {
+                $this->logger->error($e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * @return array{'revisions': array<int, int>, 'revisions_deleted': array<int, int>}
+     */
+    private function getStats(): array
+    {
+        static $stats = null;
+
+        if (null === $stats) {
+            $stats = [
+                'revisions' => $this->environmentRepository->countRevisionsById(),
+                'revisions_deleted' => $this->environmentRepository->countRevisionsById(deleted: true),
+            ];
+        }
+
+        return $stats;
     }
 }

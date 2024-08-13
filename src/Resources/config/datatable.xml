@@ -30,11 +30,20 @@
             <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.environment" class="EMS\CoreBundle\DataTable\Type\Environment\EnvironmentDataTableType">
-            <argument type="service" id="emsco.core.environment.managed_entity"/>
+            <argument type="service" id="EMS\CoreBundle\Service\EnvironmentService"/>
+            <argument>%ems_core.template_namespace%</argument>
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.environment_managed_alias" class="EMS\CoreBundle\DataTable\Type\Environment\EnvironmentManagedAliasDataTableType">
+            <argument type="service" id="ems.service.alias"/>
             <argument>%ems_core.template_namespace%</argument>
             <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.environment_orphan_index" class="EMS\CoreBundle\DataTable\Type\Environment\EnvironmentOrphanIndexDataTableType">
+            <argument type="service" id="ems.service.alias"/>
+            <tag name="emsco.datatable" />
+        </service>
+        <service id="emsco.data_table.environment_unreferenced_alias" class="EMS\CoreBundle\DataTable\Type\Environment\EnvironmentUnreferencedAliasDataTableType">
             <argument type="service" id="ems.service.alias"/>
             <argument>%ems_core.template_namespace%</argument>
             <tag name="emsco.datatable" />

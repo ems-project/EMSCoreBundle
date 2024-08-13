@@ -53,9 +53,11 @@
     <import resource="@EMSCoreBundle/Resources/config/routing/log.xml"
             prefix="/admin/log"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/admin/elasticsearch.xml"
-            prefix="/admin/elastic-search/"/>
+            prefix="/admin/elasticsearch/"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/admin/environment.xml"
             prefix="/admin/environment"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/admin/managed-alias.xml"
+            prefix="/admin/environment/managed-alias"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/publisher.xml"
             prefix="/publisher"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/publish.xml"
@@ -64,8 +66,6 @@
             prefix="/revision"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/search-options.xml"
             prefix="/search-options"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/managed-alias.xml"
-            prefix="/environment/managed-alias"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/admin/analyzer.xml"
             prefix="/admin/analyzer"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/admin/filter.xml"

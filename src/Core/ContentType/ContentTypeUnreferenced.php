@@ -11,7 +11,7 @@ use EMS\Helpers\Standard\Hash;
 class ContentTypeUnreferenced implements EntityInterface
 {
     public readonly int $environmentId;
-    public readonly string $environmentColor;
+    public readonly ?string $environmentColor;
     public readonly string $environmentLabel;
 
     public function __construct(

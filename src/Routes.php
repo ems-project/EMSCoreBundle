@@ -31,16 +31,20 @@ class Routes
     final public const ADMIN_CONTENT_TYPE_VIEW_EDIT = 'emsco_admin_content_type_view_edit';
     final public const ADMIN_CONTENT_TYPE_VIEW_INDEX = 'emsco_admin_content_type_view_index';
     final public const ADMIN_CONTENT_TYPE_VIEW_UNDEFINE = 'emsco_admin_content_type_view_undefine';
+    final public const ADMIN_ELASTIC_ALIAS_ATTACH = 'emsco_admin_elastic_alias_attach';
+    final public const ADMIN_ELASTIC_ALIAS_DELETE = 'emsco_admin_elastic_alias_delete';
+    final public const ADMIN_ELASTIC_ORPHAN = 'emsco_admin_elastic_orphan';
+    final public const ADMIN_ELASTIC_ORPHAN_DELETE = 'emsco_admin_elastic_orphan_delete';
+    final public const ADMIN_ELASTIC_UNREFERENCED_ALIASES = 'emsco_admin_elastic_unreferenced_aliases';
     final public const ADMIN_ENVIRONMENT_ADD = 'emsco_admin_environment_add';
-    final public const ADMIN_ENVIRONMENT_ALIAS_ATTACH = 'emsco_admin_environment_alias_attach';
-    final public const ADMIN_ENVIRONMENT_ALIAS_REMOVE = 'emsco_admin_environment_alias_remove';
     final public const ADMIN_ENVIRONMENT_EDIT = 'emsco_admin_environment_edit';
     final public const ADMIN_ENVIRONMENT_INDEX = 'emsco_admin_environment_index';
     final public const ADMIN_ENVIRONMENT_REBUILD = 'emsco_admin_environment_rebuild';
     final public const ADMIN_ENVIRONMENT_REMOVE = 'emsco_admin_environment_remove';
     final public const ADMIN_ENVIRONMENT_VIEW = 'emsco_admin_environment_view';
-    final public const ADMIN_ELASTIC_ORPHAN = 'emsco_admin_elastic_orphan';
-    final public const ADMIN_ELASTIC_ORPHAN_DELETE = 'emsco_admin_elastic_orphan_delete';
+    final public const ADMIN_MANAGED_ALIAS_ADD = 'emsco_admin_managed_alias_add';
+    final public const ADMIN_MANAGED_ALIAS_DELETE = 'emsco_admin_managed_alias_delete';
+    final public const ADMIN_MANAGED_ALIAS_EDIT = 'emsco_admin_managed_alias_edit';
 
     final public const AUTH_TOKEN_LOGIN = 'emsco_auth_token_login';
     final public const EDIT_REVISION = 'emsco_edit_revision';

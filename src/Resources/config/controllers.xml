@@ -12,20 +12,18 @@
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.index" />
             <argument type="service" id="ems.service.mapping" />
-            <argument type="service" id="ems.service.alias" />
             <argument type="service" id="ems.service.job" />
-            <argument type="service" id="EMS\CoreBundle\Repository\EnvironmentRepository" />
-            <argument type="service" id="ems.repository.field_type" />
-            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository" />
-            <argument>%ems_core.instance_id%</argument>
+            <argument type="service" id="emsco.data_table.factory" />
+            <argument type="service" id="form.factory" />
             <argument>%ems_core.circles_object%</argument>
             <argument>%ems_core.template_namespace%</argument>
-            <argument type="service" id="emsco.data_table.factory" />
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Admin\ElasticSearchController" public="true">
             <argument type="service" id="ems.service.index" />
+            <argument type="service" id="ems.service.alias" />
+            <argument type="service" id="EMS\CoreBundle\Service\EnvironmentService" />
             <argument type="service" id="emsco.data_table.factory" />
             <argument type="service" id="emsco.logger" />
             <argument>%ems_core.template_namespace%</argument>

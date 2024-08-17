@@ -1,7 +1,7 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Edit "{{ contentType.singularName }}"  structure{% endblock %}
-{% block pagetitle %}Edit "{{ contentType.singularName }}" structure{% endblock %} 
+{% block pagetitle %}Edit "{{ contentType.singularName }}" structure{% endblock %}
 
 {% block breadcrumb %}
 	<ol class="breadcrumb">
@@ -14,10 +14,10 @@
 {% block body %}
 
 	{{ form_start(form) }}
-	
+
 	<div class="row">
 		<div class="col-md-12">
-		
+
 			<div class="box ">
 				<div class="box-header with-border">
 					<i class="fa fa-sitemap"></i>
@@ -31,9 +31,9 @@
 				</div>
 
 
-										
+
 				</div>
-				<!-- /.box-body -->		
+				<!-- /.box-body -->
 				<div class="box-footer">
 					<div class="btn-group pull-right">
 						{{ form_widget(form.save) }}

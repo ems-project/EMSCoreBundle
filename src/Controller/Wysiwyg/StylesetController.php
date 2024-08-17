@@ -42,7 +42,7 @@ class StylesetController extends AbstractController
             throw new \RuntimeException('There is too much CSS specified to generate a prefixed CSS');
         }
         $etags = [];
-        foreach ($this->wysiwygStylesSetService->get(0, $size, 'order', 'asc', '') as $styleSet) {
+        foreach ($this->wysiwygStylesSetService->get(0, $size, 'orderKey', 'asc', '') as $styleSet) {
             if (!$styleSet instanceof WysiwygStylesSet) {
                 throw new \RuntimeException('Unexpected non WysiwygStylesSet entity');
             }
@@ -57,7 +57,7 @@ class StylesetController extends AbstractController
         }
 
         $source = '';
-        foreach ($this->wysiwygStylesSetService->get(0, $size, 'order', 'asc', '') as $styleSet) {
+        foreach ($this->wysiwygStylesSetService->get(0, $size, 'orderKey', 'asc', '') as $styleSet) {
             if (!$styleSet instanceof WysiwygStylesSet) {
                 throw new \RuntimeException('Unexpected non WysiwygStylesSet entity');
             }

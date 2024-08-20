@@ -180,9 +180,11 @@ button > * {
 
 .modal {
   z-index: -1;
-  display: flex !important;
   justify-content: center;
   align-items: start;
 
-  &.in { z-index: 1050; }
+  &.in {
+    display: flex !important;
+    z-index: 1050;
+  }
 }

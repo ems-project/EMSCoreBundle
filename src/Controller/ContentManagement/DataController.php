@@ -308,6 +308,11 @@ class DataController extends AbstractController
 
     public function newDraft(Request $request, string $type, string $ouuid): RedirectResponse
     {
+        $contentType = $this->contentTypeService->giveByName($type);
+        if (!$this->isGranted($contentType->role(ContentTypeRoles::EDIT))) {
+            throw $this->createAccessDeniedException('Edit role not granted!');
+        }
+
         return $this->redirectToRoute(Routes::EDIT_REVISION, [
             'revisionId' => $this->dataService->initNewDraft($type, $ouuid)->getId(),
             'item' => $request->get('item'),

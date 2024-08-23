@@ -26,10 +26,6 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     protected ContentType $contentType;
     protected bool $public = false;
     protected ?string $role = null;
-
-    /**
-     * @ORM\Column(name="definition", type="string", nullable=true)
-     */
     protected ?string $definition = null;
 
     public function __construct()

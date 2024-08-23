@@ -108,6 +108,15 @@ final class FormRepository extends ServiceEntityRepository
 
     public function getByName(string $name): ?Form
     {
-        return $this->findOneBy(['name' => $name]);
+        $qb = $this->createQueryBuilder('form');
+        $qb
+            ->addSelect('fieldType')
+            ->leftJoin('form.fieldType', 'fieldType')
+            ->andWhere($qb->expr()->eq('form.name', ':name'))
+            ->setParameter('name', $name);
+
+        $form = $qb->getQuery()->getOneOrNullResult();
+
+        return $form instanceof Form ? $form : null;
     }
 }

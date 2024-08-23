@@ -167,7 +167,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function viewDataAction(string $environmentName, string $type, string $ouuid): Response
+    public function viewData(string $environmentName, string $type, string $ouuid): Response
     {
         $environment = $this->environmentService->getByName($environmentName);
         if (false === $environment) {

@@ -63,7 +63,7 @@
 {% block media_lib_file %}
     <div><a href="{{- mediaFile.urlView -}}" download="{{- mediaFile.name -}}" data-ems-id="{{- mediaFile.emsId -}}">{{- mediaFile.name -}}</a></div>
     <div>{{- mediaFile.file.mimetype|trans({}, 'emsco-mimetypes') -}}</div>
-    <div class="text-right">{{- mediaFile.file.filesize|format_bytes -}}</div>
+    <div class="text-right">{{- mediaFile.file.filesize|ems_format_bytes -}}</div>
 {% endblock media_lib_file %}
 
 {% block media_lib_folder_rows %}

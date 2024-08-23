@@ -14,6 +14,7 @@
     <field name="icon" length="255" nullable="true"/>
     <field name="options" type="json" nullable="true"/>
     <field name="orderKey" column="order_key" type="integer"/>
+    <field name="definition" length="255" nullable="true"/>
     <field name="public" type="boolean">
       <options>
         <option name="default">0</option>

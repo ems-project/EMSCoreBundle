@@ -46,5 +46,8 @@
     <route id="emsco_api_analyze" path="/analyze"
            controller="EMS\CoreBundle\Controller\Api\Search\SearchController::analyze"
            methods="POST"/>
+    <route id="emsco_api_has_index" path="/has-index"
+           controller="EMS\CoreBundle\Controller\Api\Search\SearchController::hasIndex"
+           methods="POST"/>
 
 </routes>

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Document;
 
 use EMS\CommonBundle\Common\EMSLink;
-use EMS\CommonBundle\Common\Standard\Type;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use EMS\CoreBundle\Form\View\DataLinkViewType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\SearchService;
+use EMS\Helpers\Standard\Type;
 use Symfony\Component\HttpFoundation\Request;
 
 final class DataLinksFactory

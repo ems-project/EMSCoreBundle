@@ -195,6 +195,16 @@ class SearchController
         ]);
     }
 
+    public function hasIndex(Request $request): Response
+    {
+        $json = Json::decode((string) $request->getContent());
+        $index = Type::string($json['index'] ?? null);
+
+        return new JsonResponse([
+            'exist' => $this->elasticaService->hasIndex($index),
+        ]);
+    }
+
     /**
      * @param array<mixed> $json
      */

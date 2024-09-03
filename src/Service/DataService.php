@@ -179,7 +179,7 @@ class DataService
 
         $revision->setLockBy($lockerUsername);
 
-        $lockTime ??= $username ? new \DateTime('+30 seconds') : new \DateTime($this->lockTime);
+        $lockTime ??= new \DateTime($this->lockTime);
         $revision->setLockUntil($lockTime);
 
         $em->flush();
@@ -429,10 +429,10 @@ class DataService
      *
      * @throws \Exception
      */
-    public function createData(?string $ouuid, array $rawdata, ContentType $contentType, bool $byARealUser = true): Revision
+    public function createData(?string $ouuid, array $rawdata, ContentType $contentType): Revision
     {
         $now = new \DateTime();
-        $until = $now->add(new \DateInterval($byARealUser ? 'PT5M' : 'PT1M')); // +5 minutes
+        $until = new \DateTime($this->lockTime);
         $newRevision = new Revision();
         $newRevision->setContentType($contentType);
         if (null !== $ouuid) {
@@ -442,8 +442,7 @@ class DataService
         $newRevision->setEndTime(null);
         $newRevision->setDeleted(false);
         $newRevision->setDraft(true);
-
-        $lockBy = $byARealUser ? $this->userService->getCurrentUser()->getUserIdentifier() : 'DATA_SERVICE';
+        $lockBy = $this->userService->getCurrentUser()->getUserIdentifier();
         $newRevision->setLockBy($lockBy);
 
         $newRevision->setLockUntil($until);
@@ -1475,7 +1474,7 @@ class DataService
     public function getEmptyRevision(ContentType $contentType, ?string $user = null): Revision
     {
         $now = new \DateTime();
-        $until = $now->add(new \DateInterval('PT5M')); // +5 minutes
+        $until = new \DateTime($this->lockTime);
         $newRevision = new Revision();
         $newRevision->setContentType($contentType);
         $newRevision->addEnvironment($contentType->giveEnvironment());

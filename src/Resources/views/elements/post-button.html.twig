@@ -5,9 +5,11 @@
 	'name': (name is defined  ? name|json_encode : false),
 	'value': (value is defined  ? value|json_encode : false),
 }|filter(v => v != false) -%}
+{% set attributes = attributes|default([])|map((v,k) => "#{k}=#{v}")|join(' ') %}
+
 {% if message is defined and message != null %}
 	<div class="btn-group{% if group_class is defined %} {{ group_class }}{% endif %}">
-	  <button type="button" class="btn {% if class is defined %}{{ class }}{% else %}btn-sm{% endif %} btn-{{ btnType|default('primary') }} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	  <button type="button" class="{% if btnClass is defined %}{{ btnClass }}{% else %}btn btn-sm btn-{{ btnType|default('primary') }}{% endif %} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			{% if icon is defined %}
 				<span class="{{ icon starts with 'glyphicon-' ? "glyphicon #{icon}" : "fa fa-#{icon}" }}"></span>&nbsp;
 			{% endif %}
@@ -20,19 +22,32 @@
 	  </button>
 	  <ul class="dropdown-menu">
 		<li>
-			<a href="{{ url }}"
-			   data-post-settings="{{ settings|json_encode|escape('html_attr') }}"
-			   class="core-post-button">{{ message|trans }}</a>
+			{% if url is defined %}
+				<a href="{{ url }}"
+				   data-post-settings="{{ settings|json_encode|escape('html_attr') }}"
+				   class="core-post-button" {{ attributes }}>{{ message|trans }}</a>
+			{% else %}
+				<button {{ attributes }}>{{ message|trans }}</button>
+			{% endif %}
 		</li>
 	  </ul>
 	</div>
 {% else %}
-	<a class="core-post-button {% if btnClass is defined %}{{ btnClass }}{% else %}btn btn-sm btn-{{ btnType|default('primary') }}{% endif %}"
-		data-post-settings="{{ settings|json_encode|escape('html_attr') }}"
-		href="{{ url }}">
-		{% if icon is defined %}
-			<span class="{{ icon starts with 'glyphicon-' ? "glyphicon #{icon}" : "fa fa-#{icon}" }}"></span>&nbsp;
-		{% endif %}
-		{% if label is defined %}{{ label|trans }}{% endif %}
-	</a>
+	{% if url is defined %}
+		<a class="core-post-button {% if btnClass is defined %}{{ btnClass }}{% else %}btn btn-sm btn-{{ btnType|default('primary') }}{% endif %}"
+			data-post-settings="{{ settings|json_encode|escape('html_attr') }}"
+			href="{{ url }}" {{ attributes }}>
+			{% if icon is defined %}
+				<span class="{{ icon starts with 'glyphicon-' ? "glyphicon #{icon}" : "fa fa-#{icon}" }}"></span>&nbsp;
+			{% endif %}
+			{% if label is defined %}{{ label|trans }}{% endif %}
+		</a>
+	{% else %}
+		<button class="{% if btnClass is defined %}{{ btnClass }}{% else %}btn btn-sm btn-{{ btnType|default('primary') }}{% endif %}" {{ attributes }}>
+			{% if icon is defined %}
+				<span class="{{ icon starts with 'glyphicon-' ? "glyphicon #{icon}" : "fa fa-#{icon}" }}"></span>&nbsp;
+			{% endif %}
+			{% if label is defined %}{{ label|trans }}{% endif %}
+		</button>
+	{% endif %}
 {% endif %}

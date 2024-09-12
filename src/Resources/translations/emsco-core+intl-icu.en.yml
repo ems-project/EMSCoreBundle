@@ -7,6 +7,7 @@ action:
     attach: Attach
     close: Close
     confirmation: 'Do you confirm?'
+    create: Create
     deactivate: Deactivate
     define: Define
     delete: Delete
@@ -19,6 +20,8 @@ action:
     export: Export
     rebuild: Rebuild
     reorder: Reorder
+    save: Save
+    save_close: 'Save and Close'
     select_all: 'Select all'
     status: Status
     toggle_visibility: 'Toggle visibility'
@@ -88,6 +91,7 @@ field:
     cron: Cron
     date_build: 'Date build'
     date_created: 'Date creation'
+    date_execution: 'Execution date'
     date_modified: 'Date modified'
     date_run_next: 'Date next run'
     date_run_previous: 'Date previous run'
@@ -113,6 +117,8 @@ field:
     name: Name
     plural: Plural
     public_access: 'Public Access'
+    release_environment_source: 'Source environment for publication'
+    release_environment_target: 'Environment for publication or unpublish'
     severity: Severity
     singular: Singular
     status: Status

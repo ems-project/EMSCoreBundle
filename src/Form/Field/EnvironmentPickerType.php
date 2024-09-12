@@ -39,7 +39,7 @@ class EnvironmentPickerType extends ChoiceType
 
         foreach ($environments as $env) {
             if (($env->getManaged() || !$options['managedOnly']) && !\in_array($env->getName(), $options['ignore'])) {
-                $keys[] = $env->getName();
+                $keys[$env->getName()] = $env;
                 $this->choices[$env->getName()] = $env;
             }
         }

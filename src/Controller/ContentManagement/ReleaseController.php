@@ -57,10 +57,11 @@ final class ReleaseController extends AbstractController
 
     public function add(Request $request): Response
     {
-        $form = $this->createForm(ReleaseType::class, new Release(), ['add' => true]);
+        $release = new Release();
+        $form = $this->createForm(ReleaseType::class, $release, ['add' => true]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $release = $this->releaseService->add($form->getViewData());
+            $release = $this->releaseService->add($release);
 
             return $this->redirectToRoute(Routes::RELEASE_EDIT, ['release' => $release->getId()]);
         }

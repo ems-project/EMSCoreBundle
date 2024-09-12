@@ -15,6 +15,8 @@ use EMS\CoreBundle\Service\ReleaseService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 class ReleasePickDataTableType extends AbstractEntityTableType
 {
     public function __construct(
@@ -31,9 +33,19 @@ class ReleasePickDataTableType extends AbstractEntityTableType
         $revision = $table->getContext();
 
         $table->setDefaultOrder('executionDate', 'desc');
-        $table->addColumn('release.index.column.name', 'name');
-        $table->addColumnDefinition(new DatetimeTableColumn('release.index.column.execution_date', 'executionDate'));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.status', 'status', "@$this->templateNamespace/release/columns/revisions.html.twig"));
+        $table->addColumn(
+            titleKey: t('field.name', [], 'emsco-core'),
+            attribute: 'name'
+        );
+        $table->addColumnDefinition(new DatetimeTableColumn(
+            titleKey: t('field.date_execution', [], 'emsco-core'),
+            attribute: 'executionDate')
+        );
+        $table->addColumnDefinition(new TemplateBlockTableColumn(
+            label: t('field.status', [], 'emsco-core'),
+            blockName: 'status',
+            template: "@$this->templateNamespace/release/columns/revisions.html.twig")
+        );
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', "@$this->templateNamespace/release/columns/revisions.html.twig"))->setCellClass('text-right');
 
         $table->addItemPostAction(Routes::DATA_ADD_REVISION_TO_RELEASE, 'data.actions.add_to_release_publish', 'plus', 'data.actions.add_to_release_confirm', ['revision' => $revision->getId(), 'type' => 'publish'])->setButtonType('primary');

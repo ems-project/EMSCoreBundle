@@ -173,9 +173,16 @@ class MediaLibraryController
         $folderId = $request->get('folderId');
         $folder = $folderId ? $this->mediaLibraryService->getFolder($folderId) : null;
 
+        $sortOrder = $request->get('sortOrder');
+        if ($sortOrder && !\in_array($sortOrder, ['asc', 'desc'])) {
+            $sortOrder = 'asc';
+        }
+
         return new JsonResponse($this->mediaLibraryService->renderFiles(
             from: $request->query->getInt('from'),
             folder: $folder,
+            sortId: $request->get('sortId'),
+            sortOrder: $sortOrder,
             searchValue: $request->get('search')
         ));
     }

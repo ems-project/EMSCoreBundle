@@ -236,14 +236,21 @@ class MediaLibraryService
      *     remaining?: bool,
      *     header?: string,
      *     rowHeader?: string,
-     *     rows?: string
+     *     rows?: string,
+     *     sort?: array{id: string, order: string}
      * }
      */
-    public function renderFiles(int $from, ?MediaLibraryFolder $folder = null, ?string $searchValue = null): array
+    public function renderFiles(int $from, ?MediaLibraryFolder $folder = null, ?string $sortId = null, ?string $sortOrder = null, ?string $searchValue = null): array
     {
         $path = $folder ? $folder->getPath()->getValue().'/' : '/';
 
-        $findFiles = $this->findFilesByPath($path, $from, $searchValue);
+        $findFiles = $this->findFilesByPath(
+            path: $path,
+            from: $from,
+            sortId: $sortId,
+            sortOrder: $sortOrder,
+            searchValue: $searchValue
+        );
         $template = $this->templateFactory->create($this->getConfig(), \array_filter([
             'folder' => $folder,
             'mediaFiles' => $findFiles['files'],
@@ -255,6 +262,7 @@ class MediaLibraryService
             'header' => 0 === $from ? $this->renderHeader(folder: $folder, searchValue: $searchValue) : null,
             'rowHeader' => 0 === $from ? $template->block('media_lib_file_header_row') : null,
             'rows' => $template->block('media_lib_file_rows'),
+            'sort' => $findFiles['sort'] ?? null,
         ]);
     }
 
@@ -312,10 +320,6 @@ class MediaLibraryService
         $search = new Search([$this->getConfig()->contentType->giveEnvironment()->getAlias()], $query);
         $search->setContentTypes([$this->getConfig()->contentType->getName()]);
 
-        if ($this->getConfig()->fieldPathOrder) {
-            $search->setSort([$this->getConfig()->fieldPathOrder => ['order' => 'asc']]);
-        }
-
         return $search;
     }
 
@@ -335,9 +339,14 @@ class MediaLibraryService
     }
 
     /**
-     * @return array{ files: MediaLibraryFile[], total: int, total_documents: int}
+     * @return array{
+     *     files: MediaLibraryFile[],
+     *     total: int,
+     *     total_documents: int,
+     *     sort: null|array{id: string, order: string}
+     * }
      */
-    private function findFilesByPath(string $path, int $from, ?string $searchValue = null): array
+    private function findFilesByPath(string $path, int $from, ?string $sortId = null, ?string $sortOrder = null, ?string $searchValue = null): array
     {
         $hashField = \sprintf('%s.%s', $this->getConfig()->fieldFile, EmsFields::CONTENT_FILE_HASH_FIELD);
 
@@ -365,10 +374,17 @@ class MediaLibraryService
         $search->setFrom($from);
         $search->setSize($this->getConfig()->searchSize);
 
+        if ($configSort = $this->getConfig()->getSort($sortId)) {
+            $searchOrder = $configSort->getOrder($sortOrder);
+            $search->setSort($configSort->getQuery($searchOrder));
+            $sort = ['id' => $configSort->id, 'order' => $searchOrder];
+        }
+
         $result = Response::fromResultSet($this->elasticaService->search($search));
 
         return [
             'files' => $this->fileFactory->createFromDocumentCollection($this->getConfig(), $result->getDocumentCollection()),
+            'sort' => $sort ?? null,
             'total' => $result->getTotal(),
             'total_documents' => $result->getTotalDocuments(),
         ];

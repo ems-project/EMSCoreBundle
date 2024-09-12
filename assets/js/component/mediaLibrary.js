@@ -17,6 +17,8 @@ export default class MediaLibrary {
     #dragFiles = [];
     #debounceTimer = null;
     #searchValue = null;
+    #sortId = null;
+    #sortOrder = null;
 
     constructor (element, options) {
         this.id = element.id;
@@ -106,6 +108,7 @@ export default class MediaLibrary {
 
             if (classList.contains('btn-home')) this._onClickButtonHome(event.target);
             if (classList.contains('breadcrumb-item')) this._onClickBreadcrumbItem(event.target);
+            if (event.target.dataset.hasOwnProperty('sortId')) this._onClickFileSort(event.target);
 
             const keepSelection = ['media-lib-file', 'btn-file-rename', 'btn-file-delete', 'btn-files-delete', 'btn-files-move', 'btn-file-view'];
             if (!keepSelection.some(className => classList.contains(className))) {
@@ -131,6 +134,15 @@ export default class MediaLibrary {
         const selection = this._selectFiles(item, event);
         const fileId = selection.length === 1 ? item.dataset.id : null;
         this._getHeader(fileId).then(() => { this.loading(false); });
+    }
+    _onClickFileSort(target) {
+        this.#sortId = target.dataset.sortId;
+        this.#sortOrder = 'asc';
+        if (target.dataset.hasOwnProperty('sortOrder')) {
+            this.#sortOrder = target.dataset.sortOrder === 'asc' ? 'desc' : 'asc';
+        }
+
+        this._getFiles().then(() => this.loading(false));
     }
     _onClickButtonFileView(button) {
         const getSiblingFile = (fileId, sibling) => {
@@ -449,6 +461,8 @@ export default class MediaLibrary {
 
         const query = new URLSearchParams({ from: from.toString() });
         if (this.#searchValue) query.append('search', this.#searchValue);
+        if (this.#sortId) query.append('sortId', this.#sortId);
+        if (this.#sortOrder) query.append('sortOrder', this.#sortOrder);
         const path = this.#activeFolderId ? `/files/${this.#activeFolderId}` : '/files';
 
         return this._get(`${path}?${query.toString()}`).then((files) => { this._appendFiles(files) });
@@ -483,7 +497,10 @@ export default class MediaLibrary {
             this._refreshHeader(json.header);
             this.#activeFolderHeader = json.header;
         }
-        if (json.hasOwnProperty('rowHeader'))  this.#elements.listFiles.innerHTML += json.rowHeader;
+        if (json.hasOwnProperty('rowHeader')) {
+            this.#elements.listFiles.innerHTML += json.rowHeader;
+            if (json.hasOwnProperty('sort')) this._displaySort(json.sort.id, json.sort.order);
+        }
         if (json.hasOwnProperty('totalRows'))  this.#loadedFiles += json.totalRows;
         if (json.hasOwnProperty('rows'))  this.#elements.listFiles.innerHTML += json.rows;
 
@@ -513,6 +530,11 @@ export default class MediaLibrary {
             searchBox.value = '';
             searchBox.value = val;
         }
+    }
+    _displaySort(sortId, sortOrder) {
+        const sortElement = this.#elements.listFiles.querySelector(`[data-sort-id="${sortId}"]`);
+        if (!sortElement) return;
+        sortElement.dataset.sortOrder = sortOrder;
     }
 
     _onDragUpload(event) {

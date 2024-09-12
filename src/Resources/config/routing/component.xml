@@ -63,8 +63,8 @@
     </route>
 
     <!-- Media library -->
-    <route id="emsco.media_library.header" path="/media-lib/{hash}/header"
-           controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::getHeader"
+    <route id="emsco.media_library.layout" path="/media-lib/{hash}/layout"
+           controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::getLayout"
            methods="GET">
         <requirement key="hash">.*</requirement>
     </route>

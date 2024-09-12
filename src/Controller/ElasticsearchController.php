@@ -337,7 +337,9 @@ class ElasticsearchController extends AbstractController
             $ouuids = [];
             foreach ($circles as $circle) {
                 \preg_match('/(?P<type>\w+):(?P<ouuid>\w+)/', $circle, $matches);
-                $ouuids[] = $matches['ouuid'];
+                if (isset($matches['ouuid'])) {
+                    $ouuids[] = $matches['ouuid'];
+                }
             }
             $query = $commonSearch->getQuery();
             $boolQuery = $this->elasticaService->getBoolQuery();

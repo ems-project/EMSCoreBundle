@@ -83,7 +83,7 @@ export default class MediaLibrary {
 
     _addEventListeners() {
         document.addEventListener('keydown', (event) => {
-            if (event.ctrlKey && event.key === 'a') this._selectAllFiles(event);
+            if ((event.ctrlKey || event.metaKey) && event.key === 'a') this._selectAllFiles(event);
         });
 
         this.element.onkeyup = (event) => {
@@ -466,6 +466,7 @@ export default class MediaLibrary {
         }
 
         const query = new URLSearchParams({ from: from.toString() });
+        if (this.getSelectionFiles().length > 0) query.append('selectionFiles', this.getSelectionFiles().length.toString());
         if (this.#searchValue) query.append('search', this.#searchValue);
         if (this.#sortId) query.append('sortId', this.#sortId);
         if (this.#sortOrder) query.append('sortOrder', this.#sortOrder);
@@ -734,12 +735,28 @@ export default class MediaLibrary {
         observer.observe(divLoadMore);
     }
 
-    _selectFile(item) {
-        item.classList.add('active');
-        item.draggable = true;
-        ['dragstart', 'dragend'].forEach((dragEvent) => {
-            item.addEventListener(dragEvent, (event) => this._onDragFile(event));
-        });
+    _selectFile(item, deselect = false) {
+        if (!item._dragEventHandlers) item._dragEventHandlers = {};
+
+        if (!item.classList.contains('active')) {
+            item.classList.add('active');
+            item.draggable = true;
+            ['dragstart', 'dragend'].forEach((dragEvent) => {
+                if (!item._dragEventHandlers[dragEvent]) {
+                    item._dragEventHandlers[dragEvent] = (event) => this._onDragFile(event);
+                    item.addEventListener(dragEvent, item._dragEventHandlers[dragEvent]);
+                }
+            });
+        } else if (deselect) {
+            item.classList.remove('active');
+            item.draggable = false;
+            ['dragstart', 'dragend'].forEach((dragEvent) => {
+                if (item._dragEventHandlers[dragEvent]) {
+                    item.removeEventListener(dragEvent, item._dragEventHandlers[dragEvent]);
+                    delete item._dragEventHandlers[dragEvent];
+                }
+            });
+        }
     }
     _selectFiles(item, event) {
         if (event.shiftKey && this.#selectionLastFile !== null) {
@@ -751,8 +768,8 @@ export default class MediaLibrary {
             files.forEach((f, index) => {
                 if (index >= start && index <= end) this._selectFile(f);
             });
-        } else if (event.ctrlKey) {
-            this._selectFile(item);
+        } else if (event.ctrlKey || event.metaKey) {
+            this._selectFile(item, true);
         } else {
             this._selectFilesReset(false);
             this._selectFile(item);

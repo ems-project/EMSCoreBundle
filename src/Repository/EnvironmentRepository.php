@@ -170,6 +170,19 @@ class EnvironmentRepository extends EntityRepository
         return new ArrayCollection($qb->getQuery()->getResult());
     }
 
+    /**
+     * @return ArrayCollection<int, int>
+     */
+    public function findDefaultEnvironmentIds(): ArrayCollection
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb
+            ->select('DISTINCT e.id')
+            ->join('e.contentTypesHavingThisAsDefault', 'c');
+
+        return new ArrayCollection($qb->getQuery()->getSingleColumnResult());
+    }
+
     public function save(Environment $environment): void
     {
         $this->_em->persist($environment);

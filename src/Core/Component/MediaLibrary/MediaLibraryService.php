@@ -237,7 +237,7 @@ class MediaLibraryService
     /**
      * @return array<mixed>
      */
-    public function renderFiles(int $from, ?MediaLibraryFolder $folder = null, ?string $sortId = null, ?string $sortOrder = null, ?string $searchValue = null): array
+    public function renderFiles(int $from, ?MediaLibraryFolder $folder = null, ?string $sortId = null, ?string $sortOrder = null, int $selectionFiles = 0, ?string $searchValue = null): array
     {
         $findFiles = $this->findFiles(
             from: $from,
@@ -260,7 +260,12 @@ class MediaLibraryService
                 'rows' => $template->block('media_lib_file_rows'),
                 'sort' => $findFiles['sort'] ?? null,
             ],
-            ...$this->renderLayout(loaded: ($from + $findFiles['total_documents']), folder: $folder, searchValue: $searchValue),
+            ...$this->renderLayout(
+                loaded: ($from + $findFiles['total_documents']),
+                folder: $folder,
+                selectionFiles: $selectionFiles,
+                searchValue: $searchValue
+            ),
         ]);
     }
 

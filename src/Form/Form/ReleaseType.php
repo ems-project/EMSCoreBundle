@@ -34,6 +34,7 @@ final class ReleaseType extends AbstractType
             ])
             ->add('environmentTarget', EnvironmentPickerType::class, [
                 'userPublishEnvironments' => true,
+                'defaultEnvironment' => false,
                 'managedOnly' => true,
                 'label' => t('field.release_environment_target', [], 'emsco-core'),
             ])
@@ -51,6 +52,7 @@ final class ReleaseType extends AbstractType
             ])
             ->add('environmentSource', EnvironmentPickerType::class, [
                 'userPublishEnvironments' => true,
+                'defaultEnvironment' => true,
                 'managedOnly' => true,
                 'label' => t('field.release_environment_source', [], 'emsco-core'),
             ])

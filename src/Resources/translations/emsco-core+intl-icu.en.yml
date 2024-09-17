@@ -117,8 +117,8 @@ field:
     name: Name
     plural: Plural
     public_access: 'Public Access'
-    release_environment_source: 'Source environment for publication'
-    release_environment_target: 'Environment for publication or unpublish'
+    release_environment_source: 'Source Environment for publication'
+    release_environment_target: 'Environment for (un)publication'
     severity: Severity
     singular: Singular
     status: Status

@@ -39,9 +39,9 @@
 {%- endblock media_lib_file_header_row -%}
 
 {%- block media_lib_file_header -%}
-    <div>Name</div>
-    <div>Type</div>
-    <div class="text-right">Size</div>
+    <div data-sort-id="name">Name</div>
+    <div data-sort-id="type">Type</div>
+    <div data-sort-id="size" class="text-right">Size</div>
 {%- endblock media_lib_file_header -%}
 
 {%- block media_lib_file_rows -%}
@@ -94,7 +94,21 @@
 {% endblock media_lib_folder %}
 
 {%- block media_lib_footer -%}
-    <div class="media-lib-container"></div>
+    <div class="media-lib-container">
+        {% if mediaInfo is defined %}
+            {% if mediaInfo.searchTotal is defined and mediaInfo.searchSize is defined %}
+                {% set info = "Search result #{mediaInfo.loaded} of #{mediaInfo.searchTotal} (#{mediaInfo.searchSize|format_bytes})" %}
+            {% else %}
+                {% set info = "Files #{mediaInfo.loaded} of #{mediaInfo.folderTotal} (#{mediaInfo.folderSize|format_bytes})" %}
+            {% endif %}
+            {% if selectionFiles > 1 %}
+                {% set info = info ~ " | #{selectionFiles} files selected" %}
+            {% elseif selectionFiles == 1 %}
+                {% set info = info ~ " | #{selectionFiles} file selected" %}
+            {% endif %}
+            {{ info }}
+        {% endif %}
+    </div>
 {%- endblock media_lib_footer -%}
 
 {%- block media_lib_button_home -%}

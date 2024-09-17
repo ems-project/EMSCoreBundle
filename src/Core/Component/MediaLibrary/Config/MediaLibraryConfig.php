@@ -36,7 +36,6 @@ class MediaLibraryConfig implements ConfigInterface
     public array $context = [];
     /** @var array<mixed> */
     public array $defaultValue = [];
-    public ?string $fieldPathOrder = null;
     /** @var array<mixed> */
     public array $searchFileQuery = [];
     /** @var array<mixed> */
@@ -44,13 +43,17 @@ class MediaLibraryConfig implements ConfigInterface
     public int $searchSize = self::DEFAULT_SEARCH_SIZE;
     public ?string $template = null;
 
+    /**
+     * @param array<string, MediaLibraryConfigSort> $sort
+     */
     public function __construct(
         private readonly string $hash,
         private readonly string $id,
         public readonly ContentType $contentType,
         public readonly string $fieldPath,
         public readonly string $fieldFolder,
-        public readonly string $fieldFile
+        public readonly string $fieldFile,
+        private readonly array $sort = []
     ) {
     }
 
@@ -62,5 +65,16 @@ class MediaLibraryConfig implements ConfigInterface
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getSort(?string $id): ?MediaLibraryConfigSort
+    {
+        if (isset($this->sort[$id])) {
+            return $this->sort[$id];
+        }
+
+        $defaultSorts = \array_filter($this->sort, static fn (MediaLibraryConfigSort $sort) => null !== $sort->defaultOrder);
+
+        return \array_shift($defaultSorts);
     }
 }

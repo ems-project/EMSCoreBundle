@@ -173,9 +173,16 @@ class MediaLibraryController
         $folderId = $request->get('folderId');
         $folder = $folderId ? $this->mediaLibraryService->getFolder($folderId) : null;
 
+        $sortOrder = $request->get('sortOrder');
+        if ($sortOrder && !\in_array($sortOrder, ['asc', 'desc'])) {
+            $sortOrder = 'asc';
+        }
+
         return new JsonResponse($this->mediaLibraryService->renderFiles(
             from: $request->query->getInt('from'),
             folder: $folder,
+            sortId: $request->get('sortId'),
+            sortOrder: $sortOrder,
             searchValue: $request->get('search')
         ));
     }
@@ -185,18 +192,17 @@ class MediaLibraryController
         return new JsonResponse(['folders' => $this->mediaLibraryService->renderFolders()]);
     }
 
-    public function getHeader(Request $request): JsonResponse
+    public function getLayout(Request $request): JsonResponse
     {
         $query = $request->query;
 
-        return new JsonResponse([
-            'header' => $this->mediaLibraryService->renderHeader(
-                folder: $query->has('folderId') ? $query->get('folderId') : null,
-                file: $query->has('fileId') ? $query->get('fileId') : null,
-                selectionFiles: $query->has('selectionFiles') ? $query->getInt('selectionFiles') : 0,
-                searchValue: $query->get('search')
-            ),
-        ]);
+        return new JsonResponse($this->mediaLibraryService->renderLayout(
+            loaded: $request->query->getInt('loaded'),
+            folder: $query->has('folderId') ? $query->get('folderId') : null,
+            file: $query->has('fileId') ? $query->get('fileId') : null,
+            selectionFiles: $query->has('selectionFiles') ? $query->getInt('selectionFiles') : 0,
+            searchValue: $query->get('search')
+        ));
     }
 
     public function moveFile(Request $request, string $fileId): JsonResponse

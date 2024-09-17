@@ -436,10 +436,6 @@
             <argument type="service" id="ems.service.user" />
             <tag name="form.type"/>
         </service>
-        <service id="ems.form.form.releasetype" class="EMS\CoreBundle\Form\Form\ReleaseType">
-            <argument type="service" id="ems.service.environment" />
-            <tag name="form.type"/>
-        </service>
         <service id="emsco.form.revision.task.filters" class="EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType">
             <tag name="form.type"/>
         </service>

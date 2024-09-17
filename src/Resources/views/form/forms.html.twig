@@ -208,9 +208,15 @@
 
 {% block emsco_form_table_column_action_checkbox %}
     {% set id = table.idField is defined ? attribute(line.data, table.idField) : line.data.id %}
-    {% for chekbox in form.selected|filter(f => f.vars.value == id) %}
-        {{ form_widget(chekbox) }}
-    {%  endfor %}
+    {% if form is defined %}
+        {% for chekbox in form.selected|filter(f => f.vars.value == id) %}
+            {{ form_widget(chekbox) }}
+        {% endfor %}
+    {% else %}
+        <label for="emsco_datatable_selected_{{ id }}" class="{{ (table.id ~ '-select')|e('html_attr') }}-to-select">
+            <input type="checkbox" id="emsco_datatable_selected_{{ id }}" name="{{ (table.id ~ '-select')|e('html_attr') }}[]" value="{{ id }}" />
+        </label>
+    {% endif %}
 {% endblock emsco_form_table_column_action_checkbox %}
 
 {% block emsco_form_table_column_row_actions %}

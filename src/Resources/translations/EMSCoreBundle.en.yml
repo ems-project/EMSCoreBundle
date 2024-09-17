@@ -353,11 +353,6 @@ form:
             environments: Environments
             label: Label
             name: Name
-        release:
-            environmentSource: 'Environment source'
-            environmentTarget: 'Environment target'
-            execution_date: 'Execution date'
-            name: Name
         revision-type:
             copy-label: Copy
             paste-label: Paste
@@ -520,19 +515,11 @@ release:
         set_status_wip: 'Rework release'
         show: View
     add:
-        save: Create
         title: 'Add a Release'
     edit:
-        save: Save
-        saveAndClose: 'Save and Close'
         title: 'Edit a Release'
     index:
         column:
-            env_source: 'Environment source'
-            env_target: 'Environment target'
-            execution_date: 'Execution date'
-            name: Name
-            status: Status
             docs_count: '# Documents'
         title: 'List of Releases'
     menu: Releases

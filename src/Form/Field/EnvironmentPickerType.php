@@ -29,9 +29,22 @@ class EnvironmentPickerType extends ChoiceType
             $environments = $this->environmentService->getEnvironments();
         }
 
+        $defaultEnvironment = $options['defaultEnvironment'];
+        if (\is_bool($defaultEnvironment)) {
+            $defaultEnvironmentIds = $this->environmentService->getDefaultEnvironmentIds();
+            $filterDefaultEnvironments = \array_filter($environments, static fn (Environment $e) => match ($defaultEnvironment) {
+                true => $defaultEnvironmentIds->contains($e->getId()),
+                false => !$defaultEnvironmentIds->contains($e->getId())
+            });
+
+            if (\count($filterDefaultEnvironments) > 0) {
+                $environments = $filterDefaultEnvironments;
+            }
+        }
+
         foreach ($environments as $environment) {
-            if (($environment->getManaged() || !$options['managedOnly']) && !\in_array($environment->getName(), $options['ignore'])) {
-                $choices[$env->getName()] = $environment;
+            if (($environment->getManaged() || !$options['managedOnly']) && !\in_array($environment->getName(), $options['ignore'], true)) {
+                $choices[$environment->getName()] = $environment;
             }
         }
         $options['choices'] = $choices;
@@ -43,23 +56,27 @@ class EnvironmentPickerType extends ChoiceType
     {
         parent::configureOptions($resolver);
 
-        $resolver->setDefaults([
-            'attr' => [
+        $resolver
+            ->setDefaults([
+                'attr' => [
                 'class' => 'select2',
             ],
-            'choice_label' => fn (Environment $value) => \sprintf('<i class="fa fa-square text-%s"></i>&nbsp;%s', $value->getColor(), $value->getLabel()),
-            'choice_value' => function ($value) {
-                if ($value instanceof Environment) {
+                'choice_label' => fn (Environment $value) => \sprintf('<i class="fa fa-square text-%s"></i>&nbsp;%s', $value->getColor(), $value->getLabel()),
+                'choice_value' => function ($value) {
+                    if ($value instanceof Environment) {
                     return $value->getName();
                 }
 
-                return $value;
+                    return $value;
             },
-            'multiple' => false,
-            'managedOnly' => true,
-            'userPublishEnvironments' => true,
-            'ignore' => [],
-            'choice_translation_domain' => false,
-        ]);
+                'multiple' => false,
+                'managedOnly' => true,
+                'userPublishEnvironments' => true,
+                'defaultEnvironment' => null,
+                'ignore' => [],
+                'choice_translation_domain' => false,
+            ])
+            ->setAllowedTypes('defaultEnvironment', ['null', 'bool'])
+        ;
     }
 }

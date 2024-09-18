@@ -139,6 +139,14 @@ class EnvironmentService implements EntityServiceInterface
     }
 
     /**
+     * @return ArrayCollection<int, int>
+     */
+    public function getDefaultEnvironmentIds(): ArrayCollection
+    {
+        return $this->environmentRepository->findDefaultEnvironmentIds();
+    }
+
+    /**
      * @deprecated  https://github.com/ems-project/EMSCoreBundle/issues/281
      *
      * @return array<string, Environment>
@@ -275,9 +283,7 @@ class EnvironmentService implements EntityServiceInterface
             });
         }
 
-        $userPublishEnvironments = new ArrayCollection($circleEnvironments);
-
-        return $userPublishEnvironments->filter(function (Environment $e) {
+        return (new ArrayCollection($circleEnvironments))->filter(function (Environment $e) {
             $role = $e->getRolePublish();
 
             return null === $role || $this->authorizationChecker->isGranted($role);

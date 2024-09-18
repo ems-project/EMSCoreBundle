@@ -218,7 +218,7 @@ class MediaLibraryController
             throw new \RuntimeException('Missing target folder id');
         }
 
-        $folder = $targetFolderId ? $this->mediaLibraryService->getFolder($targetFolderId) : null;
+        $folder = 'home' !== $targetFolderId ? $this->mediaLibraryService->getFolder($targetFolderId) : null;
         $this->mediaLibraryService->moveFile($file, $folder);
 
         $form = $this->formFactory->create(MediaLibraryDocumentFormType::class, $file, ['csrf_protection' => false]);

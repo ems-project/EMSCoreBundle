@@ -140,7 +140,13 @@ class MediaLibraryService
     public function getFolders(): MediaLibraryFolders
     {
         $query = $this->elasticaService->getBoolQuery();
-        $query->addMustNot((new NestedQuery())->setPath($this->getConfig()->fieldFile)->setQuery(new Exists($this->getConfig()->fieldFile)));
+        $query->addMustNot(
+            (new NestedQuery())
+                ->setPath($this->getConfig()->fieldFile)
+                ->setQuery(new Exists($this->getConfig()->fieldFile))
+        );
+        $query->addMust(new Exists($this->getConfig()->fieldPath));
+        $query->addMust(new Exists($this->getConfig()->fieldFolder));
 
         $folders = new MediaLibraryFolders($this->getConfig());
         $scroll = $this->elasticaService->scroll($this->buildSearch($query));

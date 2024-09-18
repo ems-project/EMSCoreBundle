@@ -59,16 +59,16 @@ class EnvironmentPickerType extends ChoiceType
         $resolver
             ->setDefaults([
                 'attr' => [
-                'class' => 'select2',
-            ],
+                    'class' => 'select2',
+                ],
                 'choice_label' => fn (Environment $value) => \sprintf('<i class="fa fa-square text-%s"></i>&nbsp;%s', $value->getColor(), $value->getLabel()),
                 'choice_value' => function ($value) {
                     if ($value instanceof Environment) {
-                    return $value->getName();
-                }
+                        return $value->getName();
+                    }
 
                     return $value;
-            },
+                },
                 'multiple' => false,
                 'managedOnly' => true,
                 'userPublishEnvironments' => true,

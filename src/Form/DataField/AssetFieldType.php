@@ -51,6 +51,9 @@ class AssetFieldType extends DataFieldType
                      EmsFields::CONTENT_FILE_SIZE_FIELD_ => EmsFields::CONTENT_FILE_SIZE_FIELD,
                      EmsFields::CONTENT_MIME_TYPE_FIELD_ => EmsFields::CONTENT_MIME_TYPE_FIELD,
                  ] as $newField => $oldField) {
+            if (!isset($data[$newField]) && isset($data[$oldField])) {
+                $data[$newField] = $data[$oldField];
+            }
             if (!isset($data[$newField])) {
                 continue;
             }
@@ -59,10 +62,12 @@ class AssetFieldType extends DataFieldType
         foreach ($data as $id => $content) {
             if (!\in_array($id, [EmsFields::CONTENT_FILE_HASH_FIELD_, EmsFields::CONTENT_FILE_NAME_FIELD_, EmsFields::CONTENT_FILE_SIZE_FIELD_, EmsFields::CONTENT_MIME_TYPE_FIELD_,  EmsFields::CONTENT_FILE_HASH_FIELD, EmsFields::CONTENT_FILE_NAME_FIELD, EmsFields::CONTENT_FILE_SIZE_FIELD, EmsFields::CONTENT_MIME_TYPE_FIELD,  EmsFields::CONTENT_IMAGE_RESIZED_HASH_FIELD, EmsFields::CONTENT_FILE_DATE, EmsFields::CONTENT_FILE_AUTHOR, EmsFields::CONTENT_FILE_LANGUAGE, EmsFields::CONTENT_FILE_CONTENT, EmsFields::CONTENT_FILE_TITLE], true)) {
                 unset($data[$id]);
-            } elseif (EmsFields::CONTENT_FILE_HASH_FIELD_ !== $id && empty($data[$id])) {
-                unset($data[EmsFields::CONTENT_FILE_HASH_FIELD_]);
-                unset($data[EmsFields::CONTENT_FILE_HASH_FIELD]);
             }
+        }
+
+        if (empty($data[EmsFields::CONTENT_FILE_HASH_FIELD_])) {
+            unset($data[EmsFields::CONTENT_FILE_HASH_FIELD_]);
+            unset($data[EmsFields::CONTENT_FILE_HASH_FIELD]);
         }
     }
 

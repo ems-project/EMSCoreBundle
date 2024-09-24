@@ -8,8 +8,10 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\WysiwygStylesSetPickerType;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
+use EMS\Helpers\Standard\Type;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -115,13 +117,20 @@ class WysiwygFieldType extends DataFieldType
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
-
         $out = \preg_replace_callback(
             '/('.\preg_quote(\substr($path, 0, \strlen($path) - 8), '/').')([^\n\r"\'\?]*)/i',
             fn ($matches) => 'ems://asset:'.$matches[2],
             $data
         );
-        if (empty($out)) {
+
+        $path = $this->router->generate(Routes::DATA_LINK, ['key' => '__KEY__'], UrlGeneratorInterface::ABSOLUTE_PATH);
+        $out = \preg_replace_callback(
+            '/('.\preg_quote(\substr($path, 0, \strlen($path) - 7), '/').')(?P<key>[^\n\r"\'\?]*)/i',
+            fn ($matches) => 'ems://'.$matches['key'],
+            $out
+        );
+
+        if ('' === $out) {
             $out = null;
         }
 
@@ -145,6 +154,12 @@ class WysiwygFieldType extends DataFieldType
             '/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
             fn ($matches) => $path.$matches[2],
             $out
+        );
+        $path = $this->router->generate(Routes::DATA_LINK, ['key' => '__KEY__'], UrlGeneratorInterface::ABSOLUTE_PATH);
+        $out = \preg_replace_callback(
+            '/ems:\/\/(?P<key>file:([^\n\r"\'\?]*))/i',
+            fn ($matches) => \str_replace('__KEY__', $matches['key'], $path),
+            Type::string($out)
         );
 
         return $out;

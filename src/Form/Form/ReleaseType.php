@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -37,6 +38,7 @@ final class ReleaseType extends AbstractType
                 'defaultEnvironment' => false,
                 'managedOnly' => true,
                 'label' => t('field.release_environment_target', [], 'emsco-core'),
+                'choice_callback' => fn (Environment $environment) => $environment,
             ])
             ->add('execution_date', DateTimeType::class, [
                 'required' => false,
@@ -55,6 +57,7 @@ final class ReleaseType extends AbstractType
                 'defaultEnvironment' => true,
                 'managedOnly' => true,
                 'label' => t('field.release_environment_source', [], 'emsco-core'),
+                'choice_callback' => fn (Environment $environment) => $environment,
             ])
         ;
 

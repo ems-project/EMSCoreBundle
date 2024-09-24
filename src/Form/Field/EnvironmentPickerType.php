@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class EnvironmentPickerType extends ChoiceType
 {
     /** @var array<mixed> */
-    private array $choices = [];
+    private array $environments = [];
 
     public function __construct(private readonly EnvironmentService $service)
     {
@@ -29,7 +29,7 @@ class EnvironmentPickerType extends ChoiceType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $keys = [];
+        $choices = [];
 
         if ($options['userPublishEnvironments']) {
             $environments = $this->service->getUserPublishEnvironments()->toArray();
@@ -52,17 +52,17 @@ class EnvironmentPickerType extends ChoiceType
 
         foreach ($environments as $env) {
             if (($env->getManaged() || !$options['managedOnly']) && !\in_array($env->getName(), $options['ignore'], true)) {
-                $keys[$env->getName()] = $env;
-                $this->choices[$env->getName()] = $env;
+                $choices[$env->getName()] = $env;
+                $this->environments[$env->getName()] = $env;
             }
         }
-        $options['choices'] = $keys;
+        $options['choices'] = \array_map($options['choice_callback'], $choices);
         parent::buildForm($builder, $options);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $this->choices = [];
+        $this->environments = [];
         parent::configureOptions($resolver);
 
         $resolver
@@ -73,7 +73,7 @@ class EnvironmentPickerType extends ChoiceType
                 ],
                 'choice_attr' => function ($category, $key, $index) {
                     /** @var Environment $dataFieldType */
-                    $dataFieldType = $this->choices[$index];
+                    $dataFieldType = $this->environments[$index];
 
                     return [
                         'data-content' => '<span class="text-'.$dataFieldType->getColor().'"><i class="fa fa-square"></i>&nbsp;&nbsp;'.$dataFieldType->getLabel().'</span>',
@@ -86,6 +86,7 @@ class EnvironmentPickerType extends ChoiceType
                 'defaultEnvironment' => null,
                 'ignore' => [],
                 'choice_translation_domain' => false,
+                'choice_callback' => fn (Environment $e) => $e->getName(),
             ])
             ->setAllowedTypes('defaultEnvironment', ['null', 'bool'])
         ;

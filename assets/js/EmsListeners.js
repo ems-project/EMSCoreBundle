@@ -756,12 +756,13 @@ export default class EmsListeners {
     addA2LixLibSfCollection()
     {
         jquery(this.target).find('.a2lix_lib_sf_collection').each(function () {
+            const langRemove = $(this).data('lang-remove')
             a2lix_lib.sfCollection.init({
                 collectionsSelector: '#' + $(this).attr('id'),
-                manageRemoveEntry: true,
+                manageRemoveEntry: undefined !== langRemove,
                 lang: {
                     add: $(this).data('lang-add'),
-                    remove: $(this).data('lang-remove'),
+                    remove: langRemove ?? '',
                 }
             });
         });

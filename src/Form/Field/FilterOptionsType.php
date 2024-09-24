@@ -184,11 +184,13 @@ class FilterOptionsType extends AbstractType
             'attr' => [
                 'class' => 'a2lix_lib_sf_collection filter_option fields-to-display-for fields-to-display-for-synonym',
                 'data-lang-add' => 'Add synonyms',
-                'data-lang-remove' => 'X',
                 'data-entry-remove-class' => 'btn btn-danger',
             ],
             'entry_options' => [
                 'label' => false,
+                'row_attr' => [
+                    'class' => 'input-group filter-container',
+                ],
             ],
             'allow_add' => true,
             'allow_delete' => true,

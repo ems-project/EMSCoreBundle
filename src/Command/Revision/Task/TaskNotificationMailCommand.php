@@ -42,7 +42,7 @@ final class TaskNotificationMailCommand extends AbstractCommand
             ->addOption(self::OPTION_SUBJECT, null, InputOption::VALUE_REQUIRED, 'Set mail subject', 'notification tasks')
             ->addOption(self::OPTION_DEADLINE_START, null, InputOption::VALUE_REQUIRED, 'Start deadline from now "-1 days"')
             ->addOption(self::OPTION_DEADLINE_END, null, InputOption::VALUE_REQUIRED, 'End deadline from now "+1 days"')
-            ->addOption(self::OPTION_INCLUDE_TASK_MANAGERS, null, InputOption::VALUE_NONE, 'Include task managers')
+            ->addOption(self::OPTION_INCLUDE_TASK_MANAGERS, null, InputOption::VALUE_NONE, 'Include task admins/managers')
             ->addOption(self::OPTION_LIMIT, null, InputOption::VALUE_REQUIRED, 'limit the results inside mail', 10)
         ;
     }

@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Repository\RevisionRepository;
@@ -14,7 +15,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CleanAssetCommand extends EmsCommand
+class CleanAssetCommand extends AbstractCommand
 {
     protected static $defaultName = 'ems:asset:clean';
 
@@ -36,8 +37,6 @@ class CleanAssetCommand extends EmsCommand
         $repository = $em->getRepository(UploadedAsset::class);
         /** @var RevisionRepository $revRepo */
         $revRepo = $em->getRepository(Revision::class);
-
-        $this->formatStyles($output);
 
         $progress = new ProgressBar($output, $repository->countHashes());
         $progress->start();

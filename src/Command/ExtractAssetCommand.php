@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use Psr\Log\LoggerInterface;
@@ -12,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
-class ExtractAssetCommand extends EmsCommand
+class ExtractAssetCommand extends AbstractCommand
 {
     protected static $defaultName = 'ems:asset:extract';
 

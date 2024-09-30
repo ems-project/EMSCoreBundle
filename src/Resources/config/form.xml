@@ -51,6 +51,7 @@
             <argument type="service" id="security.authorization_checker" />
             <argument type="service" id="form.registry" />
             <argument type="service" id="ems.service.elasticsearch" />
+            <argument type="service" id="emsco.manager.user" />
             <tag name="ems.form.datafieldtype" alias="tabs" />
             <tag name="form.type"/>
         </service>
@@ -190,7 +191,7 @@
             <argument type="service" id="security.authorization_checker" />
             <argument type="service" id="form.registry" />
             <argument type="service" id="ems.service.elasticsearch" />
-            <argument type="service" id="ems.service.user" />
+            <argument type="service" id="emsco.manager.user" />
             <tag name="ems.form.datafieldtype" alias="multiplexed_tab_container" />
             <tag name="form.type"/>
         </service>

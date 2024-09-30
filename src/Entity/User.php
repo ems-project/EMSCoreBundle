@@ -135,7 +135,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      * @ORM\Column(name="user_options", type="json", nullable=true)
      */
     protected ?array $userOptions = [];
-    private const DEFAULT_LOCALE = 'en';
+    public const DEFAULT_LOCALE = 'en';
 
     public function __construct()
     {
@@ -164,6 +164,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
             'circles' => $this->getCircles(),
             'lastLogin' => $this->getLastLogin()?->format('c'),
             'expirationDate' => $this->getExpirationDate()?->format('c'),
+            'language' => $this->getLanguage(),
             'locale' => $this->getLocale(),
             'localePreferred' => $this->getLocalePreferred(),
             'userOptions' => $this->userOptions,
@@ -179,6 +180,17 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         $now = new \DateTime('now');
 
         return $now > $this->expirationDate;
+    }
+
+    public function getLanguage(): string
+    {
+        if ($this->localePreferred) {
+            $preferredLanguage = \strstr($this->localePreferred, '_', true);
+
+            return $preferredLanguage ?: self::DEFAULT_LOCALE;
+        }
+
+        return $this->getLocale();
     }
 
     public function getLocale(): string

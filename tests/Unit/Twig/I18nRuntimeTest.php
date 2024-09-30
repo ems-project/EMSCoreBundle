@@ -2,22 +2,22 @@
 
 namespace EMS\CoreBundle\Tests\Twig;
 
+use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Service\I18nService;
-use EMS\CoreBundle\Service\UserService;
 use EMS\CoreBundle\Twig\I18nRuntime;
 use PHPUnit\Framework\TestCase;
 
 class I18nRuntimeTest extends TestCase
 {
-    private readonly I18nService $service;
+    private readonly UserManager $service;
     private I18nRuntime $i18nRuntime;
 
     public function setUp(): void
     {
         $this->i18nService = $this->createMock(I18nService::class);
-        $this->userService = $this->createMock(UserService::class);
-        $this->i18nRuntime = new I18nRuntime($this->i18nService, $this->userService, 'en');
+        $this->userManager = $this->createMock(UserManager::class);
+        $this->i18nRuntime = new I18nRuntime($this->i18nService, $this->userManager);
     }
 
     public function testFindAllI18nIsNull()

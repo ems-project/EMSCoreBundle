@@ -420,8 +420,8 @@
         {% set values = [locale]|merge(values|filter(v => v != locale))  %}
     {% endif %}
 
-	{% if dataField.fieldType.displayOptions.localePreferredFirst|default(false) and app.user.localePreferred|default(false) and app.user.localePreferred in values %}
-		{% set values = values|sort((a, b) => a == app.user.localePreferred ? -1 : b == app.user.localePreferred ? 1 : 0) %}
+	{% if dataField.fieldType.displayOptions.localePreferredFirst|default(false) and app.user.language in values %}
+		{% set values = values|sort((a, b) => a == app.user.language ? -1 : b == app.user.language ? 1 : 0) %}
 	{% endif %}
 
 	<div class="nav-tabs-custom">
@@ -471,7 +471,14 @@
 	<div class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
 			{% set counter = 1 %}
-            {% for child in dataField.getChildren|filter(child => not child.fieldType.deleted) %}
+
+			{% set tabs = dataField.getChildren|filter(child => not child.fieldType.deleted) %}
+			{% set tabsLocalePreferredFirst = dataField.fieldType.displayOptions.localePreferredFirst|default(false) %}
+			{% if tabsLocalePreferredFirst and app.user.language in tabs|keys %}
+				{% set tabs = tabs|sort((a, b) => a.fieldType.name == app.user.language ? -1 : b.fieldType.name == app.user.language ? 1 : 0) %}
+			{% endif %}
+
+            {% for child in tabs %}
 				{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == child.fieldType.type|default(null) %}
 					{% set labels = child.fieldType.displayOptions.labels|default('')|replace({"\r":''})|split('\n') %}
 					{% set values = child.fieldType.displayOptions.values|default('')|replace({"\r":''})|split('\n')%}
@@ -479,8 +486,8 @@
 					{% for value in values %}
 						{% set choices = choices|merge({(value): attribute(labels, loop.index0)|default(value)}) %}
 					{% endfor %}
-					{% if child.fieldType.displayOptions.localePreferredFirst|default(false) and app.user.localePreferred|default(false) and app.user.localePreferred in values %}
-						{% set values = values|sort((a, b) => a == app.user.localePreferred ? -1 : b == app.user.localePreferred ? 1 : 0) %}
+					{% if child.fieldType.displayOptions.localePreferredFirst|default(false) and app.user.language in values %}
+						{% set values = values|sort((a, b) => a == app.user.language ? -1 : b == app.user.language ? 1 : 0) %}
 					{% endif %}
 
 					{% for value in values %}
@@ -511,7 +518,7 @@
 		</ul>
 		<div class="tab-content">
 			{% set counter = 1 %}
-			{% for child in dataField.getChildren|filter(child => not child.fieldType.deleted) %}
+			{% for child in tabs %}
 				{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == child.fieldType.type|default(null) %}
 					{% for key, item in  child.getChildren %}
 						{% with {

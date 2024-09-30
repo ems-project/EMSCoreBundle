@@ -19,6 +19,7 @@
 {%- block jmn_title -%}{%- endblock jmn_title -%}
 
 {%- block jmn_actions -%}
+    {% set dropDown = 'left' %}
     {{ template.block('jmn_button_add', _context)|raw }}
 {%- endblock jmn_actions -%}
 
@@ -96,7 +97,7 @@
 {%- endblock jmn_item_title -%}
 
 {%- block jmn_button_item_edit -%}
-    <button class="jmn-btn-edit" data-modal-size="md">{{- buttonLabel|default('Edit') -}}</button>
+    <button class="jmn-btn-edit" data-modal-size="{{- buttonModalSize|default('md') -}}">{{- buttonLabel|default('Edit') -}}</button>
 {%- endblock jmn_button_item_edit -%}
 
 {%- block jmn_button_item_delete -%}
@@ -108,13 +109,13 @@
 {%- endblock jmn_button_item_move -%}
 
 {%- block jmn_button_item_view -%}
-    <button class="jmn-btn-view" data-modal-size="md">{{- buttonLabel|default('View') -}}</button>
+    <button class="jmn-btn-view" data-modal-size="{{- buttonModalSize|default('md') -}}">{{- buttonLabel|default('View') -}}</button>
 {%- endblock jmn_button_item_view -%}
 
 {%- block jmn_button_item_add -%}
-    <button class="jmn-btn-add" data-add="{{ addNode.id }}" data-modal-size="md">
+    <button class="jmn-btn-add" data-add="{{ addNode.id }}" data-modal-size="{{- buttonModalSize|default('md') -}}">
         {% if addNode.icon %}<i class="{{ addNode.icon }}"></i>{% endif %}
-        {{- buttonLabel|default("New #{addNode.type}") -}}
+        {{- buttonLabel|default("New #{addNode.label}") -}}
     </button>
 {%- endblock jmn_button_item_add -%}
 
@@ -140,13 +141,12 @@
     {% set node = node|default(config.nodes.root) %}
     {% set addNodes = config.nodes.children(node) %}
     {% set addMenu = template.block('jmn_button_add_menu', _context)|raw %}
-
-    {% if addNodes|length > 0 or addMenu|length > 0 %}
+    {% if addNodes|length > 0 and addMenu|length > 0 %}
         <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-sm btn-default dropdown-toggle jmn-dropdown jmn-dropdown-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{- buttonLabel|default('Add') -}}
             </button>
-            <ul class="dropdown-menu pull-right">
+            <ul class="{{ html_classes('dropdown-menu', { 'pull-right': (dropDown|default('right') == 'right') }) }}">
                 {{ addMenu|raw }}
             </ul>
         </div>
@@ -160,7 +160,7 @@
 {%- endblock jmn_button_add_menu -%}
 
 {%- block jmn_modal_title -%}
-    {% set modalTitle = modalTitle|default("#{action|capitalize} #{node.type|default('')|capitalize}") %}
+    {% set modalTitle = modalTitle|default("#{action|capitalize} #{node.label|default}") %}
     {% if node.icon|default(false) %}<i class="{{ node.icon }}"></i>&nbsp;{% endif %}
     {{- modalTitle -}}
 {%- endblock jmn_modal_title -%}

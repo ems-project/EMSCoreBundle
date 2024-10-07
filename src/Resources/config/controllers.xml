@@ -515,6 +515,7 @@
             <argument type="service" id="ems.service.asset_extractor" />
             <argument type="service" id="ems.service.environment" />
             <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.revision" />
             <argument type="service" id="ems.service.search" />
             <argument type="service" id="security.authorization_checker" />
             <argument type="service" id="ems.service.job" />

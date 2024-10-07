@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Service\Revision;
 
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Contracts\ExpressionServiceInterface;
-use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -133,7 +132,7 @@ class RevisionService implements RevisionServiceInterface
         return $this->revisionRepository->deleteOldest($contentType, $ouuid);
     }
 
-    public function display(Revision|Document|string $value, ?string $expression = null): string
+    public function display(Revision|DocumentInterface|string $value, ?string $expression = null): string
     {
         if (\is_string($value)) {
             if (null === $object = $this->getByEmsLink(EMSLink::fromText($value))) {
@@ -145,12 +144,12 @@ class RevisionService implements RevisionServiceInterface
 
         $contentType = match (true) {
             ($object instanceof Revision) => $object->giveContentType(),
-            ($object instanceof Document) => $this->contentTypeService->giveByName($object->getContentType())
+            ($object instanceof DocumentInterface) => $this->contentTypeService->giveByName($object->getContentType())
         };
 
         $rawData = match (true) {
             ($object instanceof Revision) => $object->getRawData(),
-            ($object instanceof Document) => $object->getSource()
+            ($object instanceof DocumentInterface) => $object->getSource()
         };
 
         $expression = $expression ?? $contentType->getFields()[ContentTypeFields::DISPLAY];
@@ -174,7 +173,7 @@ class RevisionService implements RevisionServiceInterface
                 domain: 'emsco-core'
             )->trans($this->translator),
             ($object instanceof Revision) => $object->giveOuuid(),
-            ($object instanceof Document) => $object->getId()
+            ($object instanceof DocumentInterface) => $object->getId()
         };
     }
 

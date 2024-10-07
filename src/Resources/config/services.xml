@@ -104,6 +104,7 @@
         <service id="ems.service.query_search" alias="EMS\CoreBundle\Service\QuerySearchService"/>
         <service id="EMS\CoreBundle\Service\QuerySearchService">
             <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.revision" />
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems.repository.query_search"/>
             <argument type="service" id="logger"/>
@@ -381,6 +382,7 @@
         <service id="ems.service.objectchoicecache" class="EMS\CoreBundle\Service\ObjectChoiceCacheService">
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.revision"/>
             <argument type="service" id="security.authorization_checker"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="ems_common.service.elastica"/>

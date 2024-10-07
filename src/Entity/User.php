@@ -9,6 +9,7 @@ use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CoreBundle\Core\User\UserOptions;
 use EMS\CoreBundle\Roles;
 use EMS\Helpers\Standard\DateTime;
+use EMS\Helpers\Standard\Locale;
 use EMS\Helpers\Standard\Type;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -185,9 +186,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     public function getLanguage(): string
     {
         if ($this->localePreferred) {
-            $preferredLanguage = \strstr($this->localePreferred, '_', true);
-
-            return $preferredLanguage ?: self::DEFAULT_LOCALE;
+            return Locale::getLanguage($this->localePreferred, self::DEFAULT_LOCALE);
         }
 
         return $this->getLocale();

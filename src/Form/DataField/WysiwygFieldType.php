@@ -11,6 +11,7 @@ use EMS\CoreBundle\Form\Field\WysiwygStylesSetPickerType;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
+use EMS\Helpers\Standard\Locale;
 use EMS\Helpers\Standard\Type;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -83,8 +84,7 @@ class WysiwygFieldType extends DataFieldType
         }
 
         if (isset($options['language'])) {
-            $splitLanguage = \explode('_', \strval($options['language']));
-            $attr['data-lang'] = \array_shift($splitLanguage);
+            $attr['data-lang'] = Locale::getLanguage($options['language']);
         }
 
         $attr['data-referrer-ems-id'] = $options['referrer-ems-id'] ?? false;

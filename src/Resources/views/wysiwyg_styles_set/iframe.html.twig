@@ -13,7 +13,10 @@
         {% endif %}
     {% endapply %}
 </head>
-<body class="wysiwyg-preview">
+<body class="wysiwyg-preview"
+      data-field="{{ field }}"
+      data-field-path="{{ fieldPath|e('html_attr') }}"
+      {% if emsLink %}data-document-url="{{ path('emsco_interface_document_get', { interface: 'json', name: emsLink.contentType, ouuid: emsLink.ouuid }) }}"{% endif %} >
 {% if null != styleSet.contentJs %}
     <script src="{{ asset(styleSet.contentJs, styleSet.saveDir == null ? 'emsch' : null) }}"></script>
 {% endif %}

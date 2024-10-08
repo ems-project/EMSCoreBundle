@@ -251,12 +251,18 @@ import JsonMenuNestedComponent from "./component/jsonMenuNestedComponent";
     function initJsonMenuNestedComponent() {
         const elements = document.getElementsByClassName('json-menu-nested-component');
 
-        window.jsonMenuNestedComponents = [];
+        let jsonMenuNestedComponents = [];
         [].forEach.call(elements, function (element) {
-            const component = new JsonMenuNestedComponent(element);
-            if (component.id in window.jsonMenuNestedComponents) throw new Error(`duplicate id : ${component.id}`);
-            window.jsonMenuNestedComponents[component.id] = component;
+            const component = new JsonMenuNestedComponent(element)
+            if (component.id in jsonMenuNestedComponents) throw new Error(`duplicate id : ${component.id}`)
+            jsonMenuNestedComponents[component.id] = component
         });
+
+        document.addEventListener('jmn.copy', (e) => {
+            Object.values(jsonMenuNestedComponents).forEach((component) => component.onCopy(e.detail))
+        })
+
+        window.jsonMenuNestedComponents = jsonMenuNestedComponents
     }
 
     function initMediaLibrary() {

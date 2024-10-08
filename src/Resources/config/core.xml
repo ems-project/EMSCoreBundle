@@ -32,6 +32,7 @@
             <argument type="service" id="ems.service.revision" />
             <argument type="service" id="ems.service.user" />
             <argument type="service" id="ems_common.service.elastica" />
+            <argument type="service" id="request_stack"/>
         </service>
 
         <!-- Media Library -->

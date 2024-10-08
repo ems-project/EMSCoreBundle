@@ -44,6 +44,7 @@ class JsonMenuNestedConfigFactory extends AbstractConfigFactory
         }
 
         $jsonMenuNested = JsonMenuNested::fromStructure($structure ?? '{}');
+        $jsonMenuNested->setType($fieldType->getName());
         $jsonMenuNestedNodes = new JsonMenuNestedNodes($fieldType);
 
         $config = new JsonMenuNestedConfig(

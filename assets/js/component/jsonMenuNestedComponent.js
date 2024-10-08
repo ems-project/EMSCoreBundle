@@ -4,16 +4,23 @@ import ajaxModal from "../helper/ajaxModal";
 export default class JsonMenuNestedComponent {
     id;
     #tree;
+    #top;
+    #header;
+    #footer;
     element;
     #pathPrefix;
     #loadParentIds = [];
     #sortableLists = {};
     modalSize = 'md';
+    #dragBlocked = false;
 
     constructor (element) {
         this.id = element.id;
         this.element = element;
         this.#tree = element.querySelector('.jmn-tree');
+        this.#top = element.querySelector('.jmn-top');
+        this.#header = element.querySelector('.jmn-header');
+        this.#footer = element.querySelector('.jmn-footer');
         this.#pathPrefix = `/component/json-menu-nested/${element.dataset.hash}`;
         this._addClickListeners();
         this._addClickLongPressListeners();
@@ -22,16 +29,26 @@ export default class JsonMenuNestedComponent {
         });
     }
 
-    load({ activeItemId = null, loadChildrenId: loadChildrenId = null} = {}) {
+    load({
+        activeItemId = null,
+        copyItemId = null,
+        loadChildrenId = null
+    } = {}) {
         this._post('/render', {
             active_item_id: activeItemId,
+            copy_item_id: copyItemId,
             load_parent_ids: this.#loadParentIds,
             load_children_id: loadChildrenId
         }).then((json) => {
-            if (!json.hasOwnProperty('tree') || !json.hasOwnProperty('load_parent_ids')) return;
+            const { tree, loadParentIds, top, header, footer } = json;
 
-            this.#loadParentIds = json.load_parent_ids;
-            this.#tree.innerHTML = json.tree;
+            if (top) this.#top.innerHTML = top;
+            if (header) this.#header.innerHTML = header;
+            if (footer) this.#footer.innerHTML = footer;
+
+            if (!tree || !loadParentIds) return;
+            this.#loadParentIds = loadParentIds;
+            this.#tree.innerHTML = tree;
 
             let eventCanceled = this._dispatchEvent('jmn-load', { data: json, elements: this._sortables() });
             if (!eventCanceled) this.loading(false);
@@ -43,9 +60,9 @@ export default class JsonMenuNestedComponent {
     itemAdd(itemId, add, position = null) {
         return this._post(`/item/${itemId}/add`, { 'position': position, 'add': add });
     }
-    itemDelete(nodeId) {
-        this._post(`/item/${nodeId}/delete`).then((json) => {
-            let eventCanceled = this._dispatchEvent('jmn-delete', { data: json, nodeId: nodeId  });
+    itemDelete(itemId) {
+        this._post(`/item/${itemId}/delete`).then((json) => {
+            let eventCanceled = this._dispatchEvent('jmn-delete', { data: json, itemId: itemId  });
             if (!eventCanceled) this.load();
         });
     }
@@ -64,6 +81,8 @@ export default class JsonMenuNestedComponent {
             if (element.classList.contains('jmn-btn-edit')) this._onClickButtonEdit(element, itemId);
             if (element.classList.contains('jmn-btn-view')) this._onClickButtonView(element, itemId);
             if (element.classList.contains('jmn-btn-delete')) this._onClickButtonDelete(itemId);
+            if (element.classList.contains('jmn-btn-copy')) this._onClickButtonCopy(itemId);
+            if (element.classList.contains('jmn-btn-paste')) this._onClickButtonPaste(itemId);
 
             if (element.dataset.hasOwnProperty('jmnModalCustom')) this._onClickModalCustom(element, itemId);
         }, true);
@@ -79,6 +98,28 @@ export default class JsonMenuNestedComponent {
     }
     _onClickButtonDelete(itemId) {
         this.itemDelete(itemId);
+    }
+    _onClickButtonCopy(itemId) {
+        this._post(`/item/${itemId}/copy`).then((json) => {
+            const {success, copyId} = json
+            if (!success) return
+            document.dispatchEvent(new CustomEvent('jmn.copy', {
+                cancelable: true,
+                detail: { copyId: copyId, originalId: itemId }
+            }))
+        })
+    }
+    _onClickButtonPaste(itemId) {
+        this._post(`/item/${itemId}/paste`).then((json) => {
+            const { success, pasteId } = json
+            if (!success) return
+
+            this.load({ activeItemId: json.pasteId })
+        })
+    }
+
+    onCopy({ originalId } = event) {
+        this.load({ activeItemId: originalId });
     }
     _onClickModalCustom(element, itemId) {
         const modalCustomName = element.dataset.jmnModalCustom;
@@ -152,10 +193,28 @@ export default class JsonMenuNestedComponent {
             || !targetList.dataset.hasOwnProperty('types')) return false;
 
         const types = JSON.parse(targetList.dataset.types);
+        const allowedMove = types.includes(dragged.dataset.type);
 
-        return types.includes(dragged.dataset.type);
+        let eventCanceled = this._dispatchEvent('jmn-move', {
+            dragged: dragged,
+            from: event.from,
+            to: event.to,
+            allowed: allowedMove
+        });
+
+        if (eventCanceled) {
+            this.#dragBlocked = true;
+            return false;
+        }
+
+        return allowedMove;
     }
     _onMoveEnd(event) {
+        if (this.#dragBlocked) {
+            this.#dragBlocked = false;
+            return;
+        }
+
         const itemId = event.item.dataset.id;
         const targetComponent =  window.jsonMenuNestedComponents[event.to.closest('.json-menu-nested-component').id];
         const fromComponent =  window.jsonMenuNestedComponents[event.from.closest('.json-menu-nested-component').id];

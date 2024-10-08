@@ -19,9 +19,13 @@ class LocaleFormExtension extends AbstractTypeExtension
         $resolver
             ->setDefaults(['locale' => 'en'])
             ->setNormalizer('locale', function (Options $options, ?string $value) {
-                $language = $options['language'] ?? null;
+                try {
+                    $language = $options['language'] ?? null;
 
-                return ($language) ? Locale::getLanguage($language) : $value;
+                    return ($language) ? Locale::getLanguage($language) : $value;
+                } catch (\Throwable) {
+                    return $value;
+                }
             });
     }
 

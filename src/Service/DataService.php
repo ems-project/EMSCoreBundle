@@ -1413,7 +1413,10 @@ class DataService
             $finalizationDate = $objectArray[Mapping::FINALIZATION_DATETIME_FIELD];
         }
 
-        $builder = $this->formFactory->createBuilder(RevisionType::class, $reloadRevision, ['raw_data' => $reloadRevision->getRawData()]);
+        $builder = $this->formFactory->createBuilder(RevisionType::class, $reloadRevision, [
+            'raw_data' => $reloadRevision->getRawData(),
+            'with_warning' => false,
+        ]);
         $form = $builder->getForm();
 
         $objectArray = $reloadRevision->getRawData();

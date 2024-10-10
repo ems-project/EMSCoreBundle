@@ -153,6 +153,11 @@ class ReindexCommand extends AbstractCommand
             do {
                 /** @var Revision $revision */
                 foreach ($paginator as $revision) {
+                    if ($revision->isLocked()) {
+                        $progress->advance();
+                        continue;
+                    }
+
                     if ($revision->getDeleted()) {
                         ++$this->deleted;
                         $this->logger->warning('log.reindex.revision.deleted_but_referenced', [

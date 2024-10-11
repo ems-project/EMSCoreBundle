@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Service\Revision;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Contracts\ExpressionServiceInterface;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
+use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException as CommonNotFoundException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Common\DocumentInfo;
@@ -135,7 +136,7 @@ class RevisionService implements RevisionServiceInterface
     public function display(Revision|DocumentInterface|string $value, ?string $expression = null): string
     {
         if (\is_string($value)) {
-            if (null === $object = $this->getByEmsLink(EMSLink::fromText($value))) {
+            if (null === $object = $this->resolveEmsLink(EMSLink::fromText($value))) {
                 return $value;
             }
         } else {
@@ -234,6 +235,30 @@ class RevisionService implements RevisionServiceInterface
         }
 
         return $this->get($emsLink->getOuuid(), $emsLink->getContentType(), $dateTime);
+    }
+
+    private function resolveEmsLink(EMSLink $emsLink): null|Revision|DocumentInterface
+    {
+        if (!$emsLink->isValid()) {
+            return null;
+        }
+
+        $contentType = $this->contentTypeService->giveByName($emsLink->getContentType());
+        $environment = $contentType->giveEnvironment();
+
+        if ($environment->getManaged()) {
+            return $this->getByEmsLink($emsLink);
+        }
+
+        try {
+            return $this->elasticaService->getDocument(
+                index: $environment->getAlias(),
+                contentType: $contentType->getName(),
+                id: $emsLink->getOuuid()
+            );
+        } catch (CommonNotFoundException) {
+            return null;
+        }
     }
 
     public function getCurrentRevisionForDocument(DocumentInterface $document): ?Revision

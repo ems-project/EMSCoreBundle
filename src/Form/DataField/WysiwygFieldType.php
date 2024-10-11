@@ -72,12 +72,15 @@ class WysiwygFieldType extends DataFieldType
             $contentCss ??= $styleSet->getContentCss();
             $assets = $styleSet->getAssets();
             $hash = $assets['sha1'] ?? null;
-            if (null !== $assets && \is_string($hash)) {
-                $saveDir = $styleSet->getSaveDir();
-                $this->assetRuntime->unzip($hash, $saveDir ?? \sprintf('bundles/%s', $hash));
-                if (null === $saveDir) {
-                    $contentCss = \sprintf('/bundles/%s/%s', $hash, $styleSet->getContentCss());
-                }
+            $saveDir = $styleSet->getSaveDir();
+            if (null !== $assets && \is_string($hash) && null !== $saveDir) {
+                $this->assetRuntime->unzip($hash, $saveDir);
+            }
+            if (null === $saveDir && $contentCss) {
+                $contentCss = $this->router->generate('ems_asset_in_archive', [
+                    'hash' => $hash,
+                    'path' => $contentCss,
+                ]);
             }
             $attr['data-table-default-css'] = $styleSet->getTableDefaultCss();
         }

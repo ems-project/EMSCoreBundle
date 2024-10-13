@@ -15,6 +15,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -31,6 +32,18 @@ class FileController extends AbstractController
         private readonly string $templateNamespace,
         private readonly string $themeColor,
     ) {
+    }
+
+    public function getHashAlgo(): JsonResponse
+    {
+        return new JsonResponse(['hash_algo' => $this->fileService->getAlgo()]);
+    }
+
+    public function heads(Request $request): JsonResponse
+    {
+        $hashes = Json::decode($request->getContent());
+
+        return new JsonResponse($this->fileService->heads(...$hashes));
     }
 
     public function viewFileAction(string $sha1, Request $request): Response

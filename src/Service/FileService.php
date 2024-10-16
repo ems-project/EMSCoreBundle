@@ -158,9 +158,9 @@ class FileService implements EntityServiceInterface
     }
 
     /**
-     * @return string[]
+     * @return \Traversable<int, string>
      */
-    public function heads(string ...$hashes): array
+    public function heads(string ...$hashes): \Traversable
     {
         return $this->storageManager->heads(...$hashes);
     }

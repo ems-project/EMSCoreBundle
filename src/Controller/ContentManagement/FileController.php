@@ -43,7 +43,9 @@ class FileController extends AbstractController
     {
         $hashes = Json::decode($request->getContent());
 
-        return new JsonResponse($this->fileService->heads(...$hashes));
+        $heads = \iterator_to_array($this->fileService->heads(...$hashes));
+
+        return new JsonResponse($heads);
     }
 
     public function viewFileAction(string $sha1, Request $request): Response

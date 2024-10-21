@@ -61,6 +61,7 @@ class AssetController extends AbstractController
 
     public function proxyAssetForChannel(Request $request, string $requestPath): Response
     {
+        @\trigger_error(\sprintf('The route entry %s::proxyAssetForChannel is deprecated, please use EMS\CommonBundle\Controller\FileController::assetInArchive', self::class), E_USER_DEPRECATED);
         $this->closeSession($request);
         $referer = $request->headers->get('Referer', null);
         if (!\is_string($referer)) {

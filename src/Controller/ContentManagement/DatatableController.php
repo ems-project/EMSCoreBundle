@@ -25,8 +25,7 @@ final class DatatableController extends AbstractController
         private readonly DataTableFactory $dataTableFactory,
         private readonly TableRenderer $tableRenderer,
         private readonly TableExporter $tableExporter,
-        private readonly TokenStorageInterface $tokenStorage,
-        private readonly string $templateNamespace
+        private readonly TokenStorageInterface $tokenStorage
     ) {
     }
 
@@ -36,10 +35,12 @@ final class DatatableController extends AbstractController
         $dataTableRequest = DataTableRequest::fromRequest($request);
         $table->resetIterator($dataTableRequest);
 
-        return $this->render("@$this->templateNamespace/datatable/ajax.html.twig", [
-            'dataTableRequest' => $dataTableRequest,
-            'table' => $table,
-        ], new JsonResponse());
+        return new JsonResponse([
+            'data' => $this->tableRenderer->buildRows($table),
+            'draw' => $dataTableRequest->getDraw(),
+            'recordsFiltered' => $table->count(),
+            'recordsTotal' => $table->totalCount(),
+        ]);
     }
 
     public function ajaxExport(Request $request, string $format, string $hash, ?string $optionsCacheKey = null): Response

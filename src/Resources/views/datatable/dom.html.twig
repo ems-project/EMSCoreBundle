@@ -26,23 +26,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for line in datatable %}
-            <tr>
-                {% if datatable.supportsTableActions %}
-                    <td class="{{ datatable.attributeName|e('html_attr') }}-to-select">
-                        {{ block('emsco_form_table_column_action_checkbox') }}
-                    </td>
-                {% endif %}
-                {% for column in datatable.columns %}
-                    {{ block(column.tableDataBlock()) }}
-                {% endfor %}
-                {% if datatable.itemActions|length > 0 %}
-                    <td data-search="">
-                        {{ block('emsco_form_table_column_row_actions') }}
-                    </td>
-                {% endif %}
-            </tr>
-        {%  endfor %}
+            {# ajax loaded always #}
         </tbody>
     </table>
 </div>

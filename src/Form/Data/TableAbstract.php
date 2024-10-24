@@ -284,7 +284,7 @@ abstract class TableAbstract implements TableInterface
         if ($this->supportsTableActions()) {
             $columnIndex = 1;
         }
-        if (!$this->isSortable() && null !== $this->orderField) {
+        if (null !== $this->orderField && !$this->isSortable()) {
             $counter = $columnIndex;
             foreach ($this->getColumns() as $column) {
                 if ($this->orderField === $column->getAttribute()) {
@@ -296,7 +296,7 @@ abstract class TableAbstract implements TableInterface
         }
         $options = [];
 
-        if (null !== $columnIndex) {
+        if (null !== $this->orderField && null !== $columnIndex) {
             $options['order'] = [[$columnIndex, $this->orderDirection]];
         }
 

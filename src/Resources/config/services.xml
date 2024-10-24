@@ -209,11 +209,6 @@
             <argument>%ems_core.template_namespace%</argument>
             <tag name="twig.runtime"/>
         </service>
-        <service id="emsco.core.revision.query.published_revisions" class="EMS\CoreBundle\Core\Revision\Query\PublishedRevisionsQueryService">
-            <argument type="service" id="doctrine" />
-            <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
-            <argument type="service" id="ems.service.revision" />
-        </service>
 
         <service id="ems.log.manager" class="EMS\CoreBundle\Core\Log\LogManager">
             <argument type="service" id="ems.repository.log"/>

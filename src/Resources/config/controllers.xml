@@ -172,7 +172,6 @@
             <argument type="service" id="ems_core.core_data_table.table_renderer" />
             <argument type="service" id="ems_core.core_data_table.table_exporter" />
             <argument type="service" id="security.token_storage" />
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>

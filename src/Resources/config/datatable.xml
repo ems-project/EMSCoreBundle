@@ -63,8 +63,10 @@
             <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.release.unpublish" class="EMS\CoreBundle\DataTable\Type\Release\ReleaseRevisionsUnpublishDataTableType">
-            <argument type="service" id="emsco.core.revision.query.published_revisions"/>
             <argument type="service" id="ems.service.release"/>
+            <argument type="service" id="ems.service.revision"/>
+            <argument type="service" id="ems_common.service.elastica"/>
+            <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService"/>
             <argument>%ems_core.template_namespace%</argument>
             <tag name="emsco.datatable" />
         </service>

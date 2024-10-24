@@ -361,8 +361,9 @@ class MediaLibraryService
     private function buildSearchValueQuery(string $searchValue): AbstractQuery
     {
         $jsonSearchFileQuery = Json::encode($this->getConfig()->searchFileQuery);
+
         $searchFileQuery = Json::decode(u($jsonSearchFileQuery)
-            ->replace('%query%', $searchValue)
+            ->replace('%query%', Json::escape($searchValue))
             ->replace('%query_escaped%', Json::escape(QueryStringEscaper::escape($searchValue)))
             ->toString());
 

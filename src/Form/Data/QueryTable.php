@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
+use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CoreBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Helper\DataTableRequest;
 use EMS\CoreBundle\Service\QueryServiceInterface;
@@ -67,7 +68,7 @@ class QueryTable extends TableAbstract
     }
 
     /**
-     * @return \Traversable<string, QueryRow|EntityRow>
+     * @return \Traversable<string, QueryRow|EntityRow|ElasticaRow>
      */
     public function getIterator(): \Traversable
     {
@@ -78,6 +79,10 @@ class QueryTable extends TableAbstract
                 $id = $idPropertyAccessor->getValue($data, $this->idField);
 
                 yield \strval($id) => new EntityRow($data);
+                continue;
+            }
+            if ($data instanceof DocumentInterface) {
+                yield $data->getDocumentEmsId() => new ElasticaRow($data);
                 continue;
             }
 

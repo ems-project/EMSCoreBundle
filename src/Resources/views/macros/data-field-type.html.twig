@@ -144,7 +144,7 @@
 			{% elseif dataField.rawData.files is defined and dataField.rawData.files is iterable %}
 				<ul class="nav nav-stacked">
 					{% for item in dataField.rawData.files %}
-						<li><a href="{{ ems_asset_path(item) }}" target="_blank">{{ item.filename }}</a></li>
+						<li><a href="{{ ems_asset_path(item) }}" target="_blank"{% if item._title|default %} title="{{ item._title }}"{% endif %}>{{ item.filename }}</a></li>
 					{% endfor %}
 				</ul>
 			{% endif %}

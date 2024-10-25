@@ -831,8 +831,6 @@ revision:
     draft-in-progress:
         title: '%contentType% in progress'
         breadcrumb: '%contentType% in progress'
-    version_tag: 'Yes as %version_tag%'
-    version_tag.empty: 'No (Silent publish)'
 'An Error Occurred': 'An Error Occurred'
 'Oops! An Error Occurred': 'Oops! An Error Occurred'
 'The server returned a %status_code%': 'The server returned a %status_code%'

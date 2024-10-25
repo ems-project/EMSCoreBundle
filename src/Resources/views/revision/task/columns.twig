@@ -11,10 +11,10 @@
 {%- block label -%}{{ data.revision_label }}{%- endblock -%}
 
 {%- block version_next_tag -%}
-    {%- if data.revision_version_next_tag -%}
-        {{- 'revision.version_tag'|trans({ '%version_tag%': data.revision_version_next_tag }) -}}
+    {%- if data.revision_version_next_tag is null or data.revision_version_next_tag == 'silent' -%}
+        {{- 'field.revision_version_tag_empty'|trans({}, 'emsco-core') -}}
     {%- else -%}
-        {{- 'revision.version_tag.empty'|trans -}}
+        {{- 'field.revision_version_tag'|trans({'version_tag': data.revision_version_next_tag}, 'emsco-core') -}}
     {%- endif -%}
 {%- endblock -%}
 

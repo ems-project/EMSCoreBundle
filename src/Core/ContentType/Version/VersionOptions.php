@@ -14,6 +14,7 @@ class VersionOptions implements \ArrayAccess
 
     final public const DATES_READ_ONLY = 'dates_read_only';
     final public const DATES_INTERVAL_ONE_DAY = 'dates_interval_one_day';
+    final public const NOT_BLANK_NEW_VERSION = 'not_blank_new_version';
 
     /**
      * @param array<string, bool> $data
@@ -22,6 +23,7 @@ class VersionOptions implements \ArrayAccess
     {
         $this->options[self::DATES_READ_ONLY] = $data[self::DATES_READ_ONLY] ?? true;
         $this->options[self::DATES_INTERVAL_ONE_DAY] = $data[self::DATES_INTERVAL_ONE_DAY] ?? false;
+        $this->options[self::NOT_BLANK_NEW_VERSION] = $data[self::NOT_BLANK_NEW_VERSION] ?? false;
     }
 
     /**

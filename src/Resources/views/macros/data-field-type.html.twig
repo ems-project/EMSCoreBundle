@@ -1343,10 +1343,10 @@
 			{% endif %}
 		</dt>
 		<dd>
-			{% if dataField.rawData %}
-				{% set translateRaw = 'revision.version_tag'|trans({'%version_tag%': dataField.rawData})  %}
+			{% if dataField.rawData is null or dataField.rawData == 'silent' %}
+				{% set translateRaw = 'field.revision_version_tag_empty'|trans({}, 'emsco-core') %}
 			{% else %}
-				{% set translateRaw = 'revision.version_tag.empty'|trans %}
+				{% set translateRaw = 'field.revision_version_tag'|trans({'version_tag': dataField.rawData}, 'emsco-core')  %}
 			{% endif %}
 			{{ diff_text(translateRaw, false, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>

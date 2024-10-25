@@ -20,6 +20,7 @@ class ContentTypeVersionOptionsType extends AbstractType
         $builder
             ->add(VersionOptions::DATES_READ_ONLY, CheckboxType::class, ['required' => false])
             ->add(VersionOptions::DATES_INTERVAL_ONE_DAY, CheckboxType::class, ['required' => false])
+            ->add(VersionOptions::NOT_BLANK_NEW_VERSION, CheckboxType::class, ['required' => false])
         ;
     }
 }

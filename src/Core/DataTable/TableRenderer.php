@@ -39,17 +39,17 @@ final class TableRenderer
     /**
      * @return array<mixed>
      */
-    public function buildAllRows(TableInterface $table): array
+    public function buildAllRows(TableInterface $table, bool $export = false): array
     {
         if ($table instanceof ElasticaTable) {
-            return $this->buildAllRowsElastica($table);
+            return $this->buildAllRowsElastica($table, $export);
         }
 
         $rows = [];
         $table->setSize(0);
 
         while ($table->next()) {
-            $rows = [...$rows, ...$this->buildRows($table)];
+            $rows = [...$rows, ...$this->buildRows($table, $export)];
         }
 
         return $rows;
@@ -58,13 +58,13 @@ final class TableRenderer
     /**
      * @return array<mixed>
      */
-    public function buildRows(TableInterface $table): array
+    public function buildRows(TableInterface $table, bool $export = false): array
     {
         $rows = [];
         $template = $this->twig->createTemplate($table->getRowTemplate());
 
         foreach ($table as $line) {
-            $rows[] = $this->lineToRow($template, $table, $line);
+            $rows[] = $this->lineToRow($template, $table, $line, $export);
         }
 
         return $rows;
@@ -73,7 +73,7 @@ final class TableRenderer
     /**
      * @return array<mixed>
      */
-    private function buildAllRowsElastica(ElasticaTable $table): array
+    private function buildAllRowsElastica(ElasticaTable $table, bool $export = false): array
     {
         $this->elasticaLogger->disable();
 
@@ -81,7 +81,7 @@ final class TableRenderer
         $template = $this->twig->createTemplate($table->getRowTemplate());
 
         foreach ($table->scroll() as $line) {
-            $rows[] = $this->lineToRow($template, $table, $line);
+            $rows[] = $this->lineToRow($template, $table, $line, $export);
         }
 
         $this->elasticaLogger->enable();
@@ -92,12 +92,12 @@ final class TableRenderer
     /**
      * @return array<mixed>
      */
-    private function lineToRow(TemplateWrapper $template, TableInterface $table, TableRowInterface $line): array
+    private function lineToRow(TemplateWrapper $template, TableInterface $table, TableRowInterface $line, bool $export = false): array
     {
         return Json::decode($template->render([
             'table' => $table,
             'line' => $line,
-            'export' => true,
+            'export' => $export,
         ]));
     }
 }

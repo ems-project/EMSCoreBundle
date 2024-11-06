@@ -732,7 +732,7 @@ class DataService
         if ($computeFields && $this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->giveContentType(), $revision->giveContentType()->getName(), $revision->getOuuid())) {
             $revision->setRawData($objectArray);
         }
-        $this->setCircles($revision);
+        $this->setMetaFields($revision);
 
         $previousObjectArray = null;
 

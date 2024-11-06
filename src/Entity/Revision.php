@@ -19,7 +19,7 @@ use Ramsey\Uuid\UuidInterface;
 /**
  * Revision.
  *
- * @ORM\Table(name="revision", uniqueConstraints={@ORM\UniqueConstraint(name="tuple_index", columns={"end_time", "ouuid"})})
+ * @ORM\Table(name="revision", uniqueConstraints={@ORM\UniqueConstraint(name="tuple_index", columns={"end_time", "ouuid"})}, indexes={@ORM\Index(name="ouuid_idx", columns={"ouuid"})})
  *
  * @ORM\Entity(repositoryClass="EMS\CoreBundle\Repository\RevisionRepository")
  *

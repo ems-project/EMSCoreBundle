@@ -731,7 +731,7 @@ class RevisionRepository extends EntityRepository
      */
     public function findAllPublishedRevision(EMSLink ...$emsIds): array
     {
-        $emsIds = \array_map(static fn (EMSLink $link) => $link->getEmsId(), $emsIds);
+        $ouuids = \array_map(static fn (EMSLink $link) => $link->getOuuid(), $emsIds);
 
         $qb = $this->createQueryBuilder('r');
         $qb
@@ -743,8 +743,8 @@ class RevisionRepository extends EntityRepository
             ->andWhere($qb->expr()->eq('c.deleted', $qb->expr()->literal(false)))
             ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
             ->andWhere($qb->expr()->isNotNull('e.id'))
-            ->andWhere('CONCAT(c.name, \':\', r.ouuid) in (:ems_ids)')
-            ->setParameter('ems_ids', $emsIds, ArrayParameterType::STRING);
+            ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
+            ->setParameter('ouuids', $ouuids, ArrayParameterType::STRING);
 
         /** @var Revision[] $revisions */
         $revisions = $qb->getQuery()->getResult();

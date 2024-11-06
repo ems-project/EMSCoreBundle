@@ -1370,12 +1370,13 @@ class DataService
         $this->updateDataStructure($revision->giveContentType()->getFieldType(), $data);
         $object = $revision->getRawData();
         $this->updateDataValue($data, $object);
-        unset($object[Mapping::CONTENT_TYPE_FIELD]);
-        unset($object[Mapping::HASH_FIELD]);
-        unset($object[Mapping::FINALIZED_BY_FIELD]);
-        unset($object[Mapping::FINALIZATION_DATETIME_FIELD]);
-        unset($object[Mapping::VERSION_TAG]);
-        unset($object[Mapping::VERSION_UUID]);
+
+        foreach (\array_keys($object) as $key) {
+            if (\is_string($key) && \str_starts_with($key, '_')) {
+                unset($object[$key]);
+            }
+        }
+
         if ($ignoreNotConsumed) {
             return;
         }

@@ -199,14 +199,14 @@ class RevisionRepository extends EntityRepository
     /**
      * @return Paginator<Revision>
      */
-    public function getRevisionsPaginatorPerEnvironmentAndContentType(Environment $env, ContentType $contentType, int $page = 0): Paginator
+    public function getRevisionsPaginatorPerEnvironmentAndContentType(Environment $env, ContentType $contentType, int $page = 0, int $size = 50): Paginator
     {
         $qb = $this->createQueryBuilder('r');
         $qb->join('r.environments', 'e')
         ->where('e.id = :eid')
         ->andWhere('r.contentType = :ct')
-        ->setMaxResults(50)
-        ->setFirstResult($page * 50)
+        ->setMaxResults($size)
+        ->setFirstResult($page * $size)
         ->orderBy('r.id', 'asc')
         ->setParameters(['eid' => $env->getId(), 'ct' => $contentType]);
 

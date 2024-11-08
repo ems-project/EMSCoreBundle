@@ -144,7 +144,7 @@ class ReindexCommand extends AbstractCommand
             $page = 0;
             $this->bulker->setSign($signData);
             $this->bulker->setSize($bulkSize);
-            $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);
+            $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page, $bulkSize);
 
             $output->writeln('');
             $output->writeln('Start reindex '.$contentType->getName());
@@ -182,7 +182,7 @@ class ReindexCommand extends AbstractCommand
                 $em->clear();
 
                 ++$page;
-                $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);
+                $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page, $bulkSize);
                 $iterator = $paginator->getIterator();
             } while ($iterator instanceof \ArrayIterator && $iterator->count());
             $this->bulker->send(true);

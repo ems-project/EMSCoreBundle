@@ -129,6 +129,8 @@ final class FormSubmissionService implements EntityServiceInterface
             $formSubmission = $this->getById($formSubmissionId);
             /** @var array<mixed> $data */
             $data = $formSubmission->getData();
+            $data = \array_filter($data, fn ($value) => !\is_array($value));
+            $data = \array_map(fn ($value) => \strval($value), $data);
             $data['id'] = $formSubmission->getId();
             $data['form'] = $formSubmission->getName();
             $data['instance'] = $formSubmission->getInstance();

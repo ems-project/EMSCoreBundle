@@ -158,7 +158,7 @@ class FileService implements EntityServiceInterface
     }
 
     /**
-     * @return \Traversable<int, string>
+     * @return \Traversable<int, string|true>
      */
     public function heads(string ...$hashes): \Traversable
     {

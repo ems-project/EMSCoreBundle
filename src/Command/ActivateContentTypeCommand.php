@@ -35,18 +35,17 @@ class ActivateContentTypeCommand extends Command
     protected function configure(): void
     {
         parent::configure();
-        $fileNames = \implode(', ', $this->contentTypeService->getAllNames());
         $this
             ->addArgument(
                 self::ARGUMENT_CONTENTTYPES,
                 InputArgument::IS_ARRAY,
-                \sprintf('Optional array of contenttypes to create. Allowed values: [%s]', $fileNames)
+                \sprintf('Optional array of contenttypes to create')
             )
             ->addOption(
                 self::OPTION_ALL,
                 null,
                 InputOption::VALUE_NONE,
-                \sprintf('Make all contenttypes: [%s]', $fileNames)
+                \sprintf('Make all contenttypes')
             )
             ->addOption(
                 self::DEACTIVATE,

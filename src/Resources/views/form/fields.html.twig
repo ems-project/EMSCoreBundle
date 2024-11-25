@@ -969,7 +969,7 @@
 	{% set prototype = (fileItem.vars.name == '__name__') %}
 	<li class="input-file-entry">
 		<div>
-			<div class="modal" tabindex="-1" role="dialog" id="asst-details-{{ form.vars.id }}-__name__">
+			<div class="modal" tabindex="-1" role="dialog" id="asst-details-{{ fileItem.vars.id }}-__name__">
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -1005,7 +1005,7 @@
 				<div class="input-group input-group-sm">
 					{{- form_widget(fileItem.filename) -}}
 					<span class="input-group-btn">
-						<button type="button" class="btn" title="{{ 'view.form.fields.asset.info-modal-button'|trans }}" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}-__name__">
+						<button type="button" class="btn" title="{{ 'view.form.fields.asset.info-modal-button'|trans }}" data-toggle="modal" data-target="#asst-details-{{ fileItem.vars.id }}-__name__">
 							<i class="fa fa-info"></i>
 							<span class="sr-only">{{ 'view.form.fields.asset.info-modal-button'|trans }}</span>
 						</button>

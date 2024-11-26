@@ -628,6 +628,13 @@
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Api\Data\PublishController">
+            <argument type="service" id="ems.service.publish" />
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.environment" />
+            <tag name="controller.service_arguments"/>
+        </service>
 
     </services>
 </container>

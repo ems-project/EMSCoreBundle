@@ -161,10 +161,6 @@ class PublishService
             throw new \LogicException('Unpublish failed: is default environment');
         }
 
-        if (1 === $this->environmentService->getPublishedForRevision($revision)->count()) {
-            throw new \LogicException('Unpublish failed: requires 1 environment');
-        }
-
         $revision->getEnvironments()->removeElement($environment);
         $this->bulker->delete($environment->getAlias(), $revision->giveOuuid());
     }

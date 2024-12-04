@@ -1255,6 +1255,8 @@ class DataService
                 $this->lockRevision($revision);
                 $revision->setDraft(true);
                 $this->auditLogger->notice('log.revision.restored', LogRevisionContext::update($revision));
+            } else {
+                $revision->enableSelfUpdate();
             }
             $this->em->persist($revision);
         }

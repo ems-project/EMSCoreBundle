@@ -109,19 +109,8 @@ class AssetExtractorService implements CacheWarmerInterface
             return new ExtractedData($cacheData->getData() ?? [], $this->tikaMaxContent);
         }
 
-        if ((null === $file) || !\file_exists($file)) {
-            $file = $this->fileService->getFile($hash);
-        }
-
-        if (!$file || !\file_exists($file)) {
-            throw new NotFoundException($hash);
-        }
-
-        $filesize = \filesize($file);
-        if (false === $filesize) {
-            throw new \RuntimeException('Not able to get asset size');
-        }
-        if (!$forced && \filesize($file) > (3 * 1024 * 1024)) {
+        $filesize = $this->fileService->getSize($hash);
+        if (!$forced && $filesize > (3 * 1024 * 1024)) {
             $this->logger->warning('log.warning.asset_extract.file_to_large', [
                 'filesize' => Converter::formatBytes($filesize),
                 'max_size' => '3 MB',
@@ -130,6 +119,12 @@ class AssetExtractorService implements CacheWarmerInterface
             return new ExtractedData([], $this->tikaMaxContent);
         }
 
+        if ((null === $file) || !\file_exists($file)) {
+            $file = $this->fileService->getFile($hash);
+        }
+        if (!$file || !\file_exists($file)) {
+            throw new NotFoundException($hash);
+        }
         $canBePersisted = true;
         if (!empty($this->tikaServer)) {
             try {

@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command;
 
 use EMS\CoreBundle\Repository\JobRepository;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Console\Output\Output;
 
 class JobOutput extends Output
 {
     private const JOB_VERBOSITY = self::VERBOSITY_NORMAL;
+    private bool $newLine = true;
 
     public function __construct(private readonly JobRepository $jobRepository, private readonly int $jobId)
     {
@@ -34,6 +36,10 @@ class JobOutput extends Output
 
     public function doWrite(string $message, bool $newline): void
     {
+        if (!$newline && !$this->newLine && Json::isJson($message)) {
+            $newline = true;
+        }
+        $this->newLine = $newline;
         $job = $this->jobRepository->findById($this->jobId);
         $job->setStatus($message);
         $job->setOutput(self::concatenateAnsiString($job->getOutput() ?? '', $this->getFormatter()->format($message) ?? '').($newline ? PHP_EOL : ''));

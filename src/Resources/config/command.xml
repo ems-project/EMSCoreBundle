@@ -256,10 +256,6 @@
             <argument type="service" id="ems_core.core_mail.mailer_service"/>
             <tag name="console.command"/>
         </service>
-        <service id="ems.submission.forward" class="EMS\CoreBundle\Command\Submission\ForwardCommand">
-            <argument type="service" id="ems.form_submission"/>
-            <tag name="console.command"/>
-        </service>
         <service id="ems.submission.export" class="EMS\CoreBundle\Command\Submission\ExportCommand">
             <argument type="service" id="ems.form_submission"/>
             <argument type="service" id="ems_common.service.expression_service"/>

@@ -42,6 +42,5 @@ final class Commands
     public const MANAGED_ALIAS_CREATE = 'ems:managed-alias:create';
     public const MANAGED_ALIAS_ADD_ENVIRONMENT = 'emsco:managed-alias:add-environment';
     public const ASSET_REFRESH_FILE_FIELD = 'emsco:asset:refresh-file-fields';
-    final public const SUBMISSION_FORWARD = 'emsco:submissions:forward';
     final public const SUBMISSION_EXPORT = 'emsco:submissions:export';
 }

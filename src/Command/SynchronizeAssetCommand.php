@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\UploadedAsset;
@@ -23,7 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     hidden: false,
     aliases: ['ems:asset:synchronize']
 )]
-class SynchronizeAssetCommand extends EmsCommand
+class SynchronizeAssetCommand extends AbstractCommand
 {
     /** @var string */
     protected $databaseName;
@@ -41,8 +42,6 @@ class SynchronizeAssetCommand extends EmsCommand
         $em = $this->doctrine->getManager();
         /** @var UploadedAssetRepository $repository */
         $repository = $em->getRepository(UploadedAsset::class);
-
-        $this->formatStyles($output);
 
         $storagesList = [];
         foreach ($this->fileService->getHealthStatuses() as $storageName => $health) {

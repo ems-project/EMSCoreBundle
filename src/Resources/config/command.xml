@@ -256,6 +256,12 @@
             <argument type="service" id="ems_core.core_mail.mailer_service"/>
             <tag name="console.command"/>
         </service>
+        <service id="ems.submission.export" class="EMS\CoreBundle\Command\Submission\ExportCommand">
+            <argument type="service" id="ems.form_submission"/>
+            <argument type="service" id="ems_common.service.expression_service"/>
+            <argument type="service" id="EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface"/>
+            <tag name="console.command"/>
+        </service>
         <service id="ems.environment.updatemetafield" class="EMS\CoreBundle\Command\UpdateMetaFieldCommand">
             <argument type="service" id="doctrine"/>
             <argument type="service" id="logger"/>

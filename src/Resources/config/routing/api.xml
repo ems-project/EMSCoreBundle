@@ -23,5 +23,7 @@
             prefix="/api/meta"/>
     <import resource="@EMSCoreBundle/Resources/config/routing/api/search.xml"
             prefix="/api/search"/>
+    <import resource="@EMSCoreBundle/Resources/config/routing/api/data.xml"
+            prefix="/api/data"/>
 
 </routes>

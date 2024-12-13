@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use EMS\CoreBundle\Core\ContentType\DataFieldFormOptions;
 use EMS\CoreBundle\Exception\DataFormatException;
 use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 use EMS\CoreBundle\Form\DataField\OuuidFieldType;
@@ -43,6 +44,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
     private array $messages = [];
 
     private bool $marked = false;
+
+    private ?DataFieldFormOptions $formOptions = null;
 
     public function setChildrenFieldType(FieldType $fieldType): void
     {
@@ -586,10 +589,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
         return $this->orderKey;
     }
 
-    /**
-     * @return DataField
-     */
-    public function setFieldType(?FieldType $fieldType = null)
+    public function setFieldType(?FieldType $fieldType = null): self
     {
         $this->fieldType = $fieldType;
 
@@ -672,10 +672,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
      * Set rawData.
      *
      * @param array<mixed>|string|int|float|bool|null $rawData
-     *
-     * @return DataField
      */
-    public function setRawData($rawData)
+    public function setRawData($rawData): self
     {
         $this->rawData = $rawData;
 
@@ -710,5 +708,15 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
     public function getInputValue()
     {
         return $this->inputValue;
+    }
+
+    public function getFormOptions(): ?DataFieldFormOptions
+    {
+        return $this->formOptions;
+    }
+
+    public function setFormOptions(?DataFieldFormOptions $formOptions): void
+    {
+        $this->formOptions = $formOptions;
     }
 }

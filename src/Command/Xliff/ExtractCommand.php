@@ -186,7 +186,7 @@ final class ExtractCommand extends AbstractCommand
             [
                 EmsFields::CONTENT_FILE_HASH_FIELD => $hash,
                 EmsFields::CONTENT_FILE_NAME_FIELD => \basename($this->xliffBasename),
-                EmsFields::CONTENT_MIME_TYPE_FIELD => MimeTypes::APPLICATION_XML->value,
+                EmsFields::CONTENT_MIME_TYPE_FIELD => $this->getMimetype(),
             ],
             [],
             'ems_asset',
@@ -232,8 +232,16 @@ final class ExtractCommand extends AbstractCommand
             'query' => $this->searchQuery,
             'fields' => $this->fields,
         ]);
-        $mailTemplate->addAttachment($tempFile->path, \basename($this->xliffBasename), MimeTypes::APPLICATION_XML->value);
+        $mailTemplate->addAttachment($tempFile->path, \basename($this->xliffBasename), $this->getMimetype());
 
         $this->mailerService->sendMailTemplate($mailTemplate);
+    }
+
+    private function getMimetype(): string
+    {
+        return match ($this->xliffVersion) {
+            Extractor::XLIFF_1_2 => MimeTypes::APPLICATION_XLIFF_LEGACY->value,
+            default => MimeTypes::APPLICATION_XLIFF->value,
+        };
     }
 }

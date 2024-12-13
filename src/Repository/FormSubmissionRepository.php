@@ -57,7 +57,7 @@ class FormSubmissionRepository extends ServiceEntityRepository
             ->andWhere($qb->expr()->isNotNull('fs.data'))
             ->orderBy('fs.created', 'desc');
 
-        return $qb->getQuery()->getArrayResult();
+        return $qb->getQuery()->execute();
     }
 
     public function countAllUnprocessed(string $searchValue): int
@@ -105,7 +105,7 @@ class FormSubmissionRepository extends ServiceEntityRepository
             ->andWhere($qb->expr()->isNotNull('fs.data'))
             ->orderBy('fs.created', 'desc');
 
-        return $qb->getQuery()->getArrayResult();
+        return $qb->getQuery()->execute();
     }
 
     public function persist(FormSubmission $formSubmission): void

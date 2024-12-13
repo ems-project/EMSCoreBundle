@@ -27,7 +27,7 @@ final class TableExporter
     private function buildSpreadsheet(TableInterface $table, string $spreadsheetWriter): Response
     {
         $headers = $this->tableRenderer->buildHeaders($table);
-        $rows = $this->tableRenderer->buildAllRows($table);
+        $rows = $this->tableRenderer->buildAllRows(table: $table, export: true);
 
         return $this->spreadsheetGenerator->generateSpreadsheet([
             SpreadsheetGeneratorServiceInterface::SHEETS => [[

@@ -15,32 +15,44 @@ use EMS\CoreBundle\Core\UI\Modal\Modal;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\Helpers\Standard\Json;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class JsonMenuNestedService
 {
+    private const SESSION_COPY_KEY = 'jmn_copy';
+
     public function __construct(
         private readonly JsonMenuNestedTemplateFactory $jsonMenuNestedTemplateFactory,
         private readonly RevisionService $revisionService,
         private readonly UserService $userService,
-        private readonly ElasticaService $elasticaService
+        private readonly ElasticaService $elasticaService,
+        private readonly RequestStack $requestStack
     ) {
     }
 
     /**
-     * @return array{ load_parent_ids: string[], tree: string }
+     * @return array{ loadParentIds: string[], tree: string, top: string, footer: string }
      */
     public function render(JsonMenuNestedConfig $config, ?string $activeItemId, ?string $loadChildrenId, string ...$loadParentIds): array
     {
         $menu = $config->jsonMenuNested;
-        $renderContext = new JsonMenuNestedRenderContext($menu, $activeItemId, $loadChildrenId, ...$loadParentIds);
+        $renderContext = new JsonMenuNestedRenderContext(
+            menu: $menu,
+            activeItemId: $activeItemId,
+            copyItem: $this->getCopiedItem(),
+            loadChildrenId: $loadChildrenId
+        );
+        $renderContext->loadParents(...$loadParentIds);
 
         $template = $this->jsonMenuNestedTemplateFactory->create($config, ['render' => $renderContext]);
 
         return [
-            'load_parent_ids' => $renderContext->getParentIds(),
+            'loadParentIds' => $renderContext->getParentIds(),
             'tree' => $template->block('jmn_render'),
+            'top' => $template->block('jmn_layout_top'),
+            'footer' => $template->block('jmn_layout_footer'),
         ];
     }
 
@@ -107,6 +119,45 @@ class JsonMenuNestedService
         $this->saveStructure($config);
     }
 
+    public function itemCopy(JsonMenuNestedConfig $config, JsonMenuNested $item): void
+    {
+        $item->changeIds();
+
+        foreach ($config->nodes->getClearPathsByType() as $type => $paths) {
+            $items = \array_filter($item->toArray(), static fn (JsonMenuNested $item) => $item->getType() === $type);
+            \array_walk($items, static fn (JsonMenuNested $item) => $item->clear($paths));
+        }
+
+        $session = $this->requestStack->getSession();
+        $session->set(self::SESSION_COPY_KEY, Json::encode($item->toArrayStructure(true)));
+    }
+
+    public function itemPaste(JsonMenuNestedConfig $config, JsonMenuNested $item): JsonMenuNested
+    {
+        if (null === $copiedItem = $this->getCopiedItem()) {
+            throw new \RuntimeException('No item copied');
+        }
+
+        if ($item->getType() === $config->nodes->root->type && $copiedItem->getType() === $item->getType()) {
+            foreach ($copiedItem->getChildren() as $copiedChild) {
+                $item->addChild($copiedChild);
+            }
+        } else {
+            $node = $config->nodes->getByType($item->getType());
+            $children = $config->nodes->getChildren($node);
+
+            if (!\array_key_exists($copiedItem->getType(), $children)) {
+                throw new \RuntimeException('Copy item not allowed');
+            }
+
+            $item->addChild($copiedItem);
+        }
+
+        $this->saveStructure($config);
+
+        return $copiedItem;
+    }
+
     /**
      * @param array<string, mixed> $context
      */
@@ -166,5 +217,13 @@ class JsonMenuNestedService
 
         $this->revisionService->updateRawData($config->revision, $rawData, $username);
         $this->elasticaService->refresh($config->revision->giveContentType()->giveEnvironment()->getAlias());
+    }
+
+    private function getCopiedItem(): ?JsonMenuNested
+    {
+        $session = $this->requestStack->getSession();
+        $copiedJson = $session->get(self::SESSION_COPY_KEY);
+
+        return $copiedJson ? new JsonMenuNested(Json::decode($copiedJson)) : null;
     }
 }

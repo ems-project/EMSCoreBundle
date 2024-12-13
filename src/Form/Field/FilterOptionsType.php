@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -34,6 +35,9 @@ class FilterOptionsType extends AbstractType
         'asciifolding' => [
             'preserve_original',
         ],
+            'synonym' => [
+                    'synonyms',
+            ],
     ];
 
     /**
@@ -50,6 +54,7 @@ class FilterOptionsType extends AbstractType
                 'Stemmer' => 'stemmer',
                 'Elision' => 'elision',
                 'ASCII Folding' => 'asciifolding',
+                    'Synonym' => 'synonym',
             ],
             'attr' => [
                 'class' => 'fields-to-display-by-input-value',
@@ -174,6 +179,21 @@ class FilterOptionsType extends AbstractType
         ])->add('articles', TextareaType::class, [
             'attr' => ['class' => 'filter_option fields-to-display-for fields-to-display-for-elision'],
             'required' => false,
+        ])->add('synonyms', CollectionType::class, [
+            'entry_type' => TextType::class,
+            'attr' => [
+                'class' => 'a2lix_lib_sf_collection filter_option fields-to-display-for fields-to-display-for-synonym',
+                'data-lang-add' => 'Add synonyms',
+                'data-entry-remove-class' => 'btn btn-danger',
+            ],
+            'entry_options' => [
+                'label' => false,
+                'row_attr' => [
+                    'class' => 'input-group filter-container',
+                ],
+            ],
+            'allow_add' => true,
+            'allow_delete' => true,
         ]);
 
         $textArea2Array = new CallbackTransformer(

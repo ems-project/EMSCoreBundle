@@ -138,6 +138,8 @@ class AssetFieldType extends DataFieldType
 
     public function generateMapping(FieldType $current): array
     {
+        $mapping = parent::generateMapping($current);
+
         return [
             $current->getName() => \array_merge([
                 'type' => 'nested',
@@ -151,7 +153,8 @@ class AssetFieldType extends DataFieldType
                     EmsFields::CONTENT_FILE_SIZE_FIELD => $this->elasticsearchService->getLongMapping(),
                     EmsFields::CONTENT_FILE_SIZE_FIELD_ => $this->elasticsearchService->getLongMapping(),
                     EmsFields::CONTENT_IMAGE_RESIZED_HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
-                ],
+                EmsFields::CONTENT_FILE_TITLE => $mapping[$current->getName()],
+                    ],
             ], \array_filter($current->getMappingOptions())),
         ];
     }

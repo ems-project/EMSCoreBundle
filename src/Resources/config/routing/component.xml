@@ -55,6 +55,18 @@
         <requirement key="hash">.*</requirement>
         <requirement key="itemId">.*</requirement>
     </route>
+    <route id="emsco.json_menu_nested.item_copy" path="/json-menu-nested/{hash}/item/{itemId}/copy"
+           controller="EMS\CoreBundle\Controller\Component\JsonMenuNestedController::itemCopy"
+           methods="POST">
+        <requirement key="hash">.*</requirement>
+        <requirement key="itemId">.*</requirement>
+    </route>
+    <route id="emsco.json_menu_nested.item_paste" path="/json-menu-nested/{hash}/item/{itemId}/paste"
+           controller="EMS\CoreBundle\Controller\Component\JsonMenuNestedController::itemPaste"
+           methods="POST">
+        <requirement key="hash">.*</requirement>
+        <requirement key="itemId">.*</requirement>
+    </route>
     <route id="emsco.json_menu_nested.item" path="/json-menu-nested/{hash}/item/{itemId}"
            controller="EMS\CoreBundle\Controller\Component\JsonMenuNestedController::item"
            methods="GET">

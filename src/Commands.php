@@ -67,4 +67,5 @@ final class Commands
     public const XLIFF_UPDATE = 'emsco:xliff:update';
 
     public const ASSET_REFRESH_FILE_FIELD = 'emsco:asset:refresh-file-fields';
+    final public const SUBMISSION_EXPORT = 'emsco:submissions:export';
 }

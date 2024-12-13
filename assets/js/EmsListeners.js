@@ -361,22 +361,24 @@ export default class EmsListeners {
             },
             onUploaded: function(assetUrl, previewUrl){
                 viewButton.attr('href', assetUrl);
-                viewButton.removeClass("disabled");
-                clearButton.removeClass("disabled");
-                previewTab.removeClass('hidden');
-                uploadTab.addClass('hidden');
-
-
                 const imageTypes = ['image/png','image/jpeg','image/webp']
                 if(imageTypes.includes(fileHandler.type)) {
                     self._resizeImage(fileHandler, container, previewUrl);
                 }
                 else if(metaFields && $(contentInput).length) {
+                    previewLink.attr('src', previewUrl)
                     self.fileDataExtrator(container);
                 }
                 else if(typeof self.onChangeCallback === "function"){
+                    previewLink.attr('src', previewUrl)
                     self.onChangeCallback();
+                } else {
+                    previewLink.attr('src', previewUrl)
                 }
+                viewButton.removeClass("disabled");
+                clearButton.removeClass("disabled");
+                previewTab.removeClass('hidden');
+                uploadTab.addClass('hidden');
             },
             onError: function(message, code){
                 $(progressBar).css('width', '0%');
@@ -756,12 +758,13 @@ export default class EmsListeners {
     addA2LixLibSfCollection()
     {
         jquery(this.target).find('.a2lix_lib_sf_collection').each(function () {
+            const langRemove = $(this).data('lang-remove')
             a2lix_lib.sfCollection.init({
                 collectionsSelector: '#' + $(this).attr('id'),
-                manageRemoveEntry: true,
+                manageRemoveEntry: undefined !== langRemove,
                 lang: {
                     add: $(this).data('lang-add'),
-                    remove: $(this).data('lang-remove'),
+                    remove: langRemove ?? '',
                 }
             });
         });

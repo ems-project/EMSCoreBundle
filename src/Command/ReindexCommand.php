@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Elasticsearch\Bulker;
@@ -30,7 +31,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     hidden: false,
     aliases: ['ems:environment:reindex']
 )]
-class ReindexCommand extends EmsCommand
+class ReindexCommand extends AbstractCommand
 {
     private int $count = 0;
     private int $deleted = 0;
@@ -83,7 +84,6 @@ class ReindexCommand extends EmsCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->formatStyles($output);
         $name = $input->getArgument('name');
         $index = $input->getArgument('index');
         $signData = true === $input->getOption('sign-data');
@@ -151,7 +151,7 @@ class ReindexCommand extends EmsCommand
             $page = 0;
             $this->bulker->setSign($signData);
             $this->bulker->setSize($bulkSize);
-            $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);
+            $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page, $bulkSize);
 
             $output->writeln('');
             $output->writeln('Start reindex '.$contentType->getName());
@@ -160,6 +160,11 @@ class ReindexCommand extends EmsCommand
             do {
                 /** @var Revision $revision */
                 foreach ($paginator as $revision) {
+                    if ($revision->isLocked()) {
+                        $progress->advance();
+                        continue;
+                    }
+
                     if ($revision->getDeleted()) {
                         ++$this->deleted;
                         $this->logger->warning('log.reindex.revision.deleted_but_referenced', [
@@ -184,7 +189,7 @@ class ReindexCommand extends EmsCommand
                 $em->clear();
 
                 ++$page;
-                $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page);
+                $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page, $bulkSize);
                 $iterator = $paginator->getIterator();
             } while ($iterator instanceof \ArrayIterator && $iterator->count());
             $this->bulker->send(true);
@@ -214,23 +219,6 @@ class ReindexCommand extends EmsCommand
             ]);
 
             $output->writeln('WARNING: Environment named '.$name.' not found');
-        }
-    }
-
-    /**
-     * @param array<mixed> $response
-     */
-    public function treatBulkResponse(array $response): void
-    {
-        foreach ($response['items'] as $item) {
-            if (isset($item['index']['error'])) {
-                ++$this->error;
-                $this->logger->warning('log.reindex.revision.error', [
-                    EmsFields::LOG_OUUID_FIELD => $item['index']['_id'],
-                ]);
-            } else {
-                ++$this->count;
-            }
         }
     }
 }

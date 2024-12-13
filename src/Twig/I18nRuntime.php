@@ -2,27 +2,26 @@
 
 namespace EMS\CoreBundle\Twig;
 
+use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Service\I18nService;
-use EMS\CoreBundle\Service\UserService;
 use EMS\Helpers\Standard\Json;
 use Twig\Extension\RuntimeExtensionInterface;
 
 class I18nRuntime implements RuntimeExtensionInterface
 {
-    public function __construct(private readonly I18nService $i18nService, private readonly UserService $userService, private readonly string $fallbackLocale)
-    {
+    public function __construct(
+        private readonly I18nService $i18nService,
+        private readonly UserManager $userManager
+    ) {
     }
 
     public function i18n(string $key, ?string $locale = null): string
     {
-        if ('' === $locale || null === $locale) {
-            $locale = $this->getLocale();
-        }
-
         $i18n = $this->i18nService->getAsList($key);
+        $locale = $locale ?? $this->userManager->getUserLanguage();
 
-        return $i18n[$locale] ?? $i18n[$this->fallbackLocale] ?? $key;
+        return $i18n[$locale] ?? $i18n[User::DEFAULT_LOCALE] ?? $key;
     }
 
     /**
@@ -45,18 +44,5 @@ class I18nRuntime implements RuntimeExtensionInterface
         }, $i18n->getContent());
 
         return $content;
-    }
-
-    private function getLocale(): string
-    {
-        try {
-            $user = $this->userService->getCurrentUser(true);
-            if ($user instanceof User) {
-                return $user->getLocalePreferred() ?? $user->getLocale();
-            }
-        } catch (\Throwable) {
-        }
-
-        return $this->fallbackLocale;
     }
 }

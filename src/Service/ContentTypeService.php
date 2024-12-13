@@ -15,11 +15,11 @@ use EMS\CoreBundle\Core\ContentType\ContentTypeUnreferenced;
 use EMS\CoreBundle\Core\ContentType\ViewDefinition;
 use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Core\UI\MenuEntry;
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Entity\View;
@@ -732,9 +732,9 @@ class ContentTypeService implements EntityServiceInterface
         $versionTags = $contentType->getVersionTags();
         $defaultVersion = \array_shift($versionTags);
         $defaultVersionLabel = $this->translator->trans(
-            'revision.version_tag',
+            'field.revision_version_tag',
             ['%version_tag%' => $defaultVersion],
-            EMSCoreBundle::TRANS_DOMAIN
+            'emsco-core'
         );
 
         return [$defaultVersionLabel => $defaultVersion];
@@ -743,22 +743,25 @@ class ContentTypeService implements EntityServiceInterface
     /**
      * @return array<string, ?string>
      */
-    public function getVersionTagsByContentType(ContentType $contentType): array
+    public function getVersionTagsByContentType(ContentType $contentType, ?bool $notBlankNewVersion = false): array
     {
         if (!$contentType->hasVersionTags()) {
             return [];
         }
 
         $versionTags = $contentType->getVersionTags();
-        $versionTagsLabels = \array_map(fn (string $versionTag) => $this->translator->trans(
-            'revision.version_tag',
-            ['%version_tag%' => $versionTag],
-            EMSCoreBundle::TRANS_DOMAIN
-        ), $versionTags);
+        $versionTagsLabels = \array_map(function (string $versionTag) {
+            return $this->translator->trans(
+                'field.revision_version_tag',
+                ['%version_tag%' => $versionTag],
+                'emsco-core'
+            );
+        }, $versionTags);
 
-        $emptyLabel = $this->translator->trans('revision.version_tag.empty', [], EMSCoreBundle::TRANS_DOMAIN);
+        $emptyLabel = $this->translator->trans('field.revision_version_tag_empty', [], 'emsco-core');
+        $emptyValue = ($notBlankNewVersion ? Revision::VERSION_BLANK : null);
 
-        return [$emptyLabel => null] + \array_combine($versionTagsLabels, $versionTags);
+        return [$emptyLabel => $emptyValue] + \array_combine($versionTagsLabels, $versionTags);
     }
 
     /**

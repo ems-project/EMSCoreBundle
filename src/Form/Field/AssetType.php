@@ -51,6 +51,9 @@ class AssetType extends AbstractType
                     'class' => 'name',
                 ],
                 'required' => $options['required'],
+            ])
+            ->add(EmsFields::CONTENT_FILE_TITLE, TextType::class, [
+                'required' => $options['required'],
             ]);
         }
     }

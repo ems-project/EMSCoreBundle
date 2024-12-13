@@ -17,18 +17,14 @@ class ObjectChoiceListItem implements \Stringable
     private ?string $color = null;
     private readonly ?string $tooltip;
 
-    public function __construct(Document $document, ?ContentType $contentType)
+    public function __construct(Document $document, ?ContentType $contentType, string $displayLabel)
     {
         $source = $document->getSource();
         $this->value = $document->getEmsId();
         $icon = 'fa fa-question';
-        $this->title = $this->value;
+        $this->title = $displayLabel;
 
         if (null !== $contentType) {
-            $labelField = $contentType->getLabelField();
-            if (null !== $labelField && isset($source[$labelField]) && null !== $source[$labelField]) {
-                $this->title = \strval($source[$labelField]);
-            }
             $categoryField = $contentType->getCategoryField();
             if (null !== $categoryField && isset($source[$categoryField]) && null !== $source[$categoryField]) {
                 $this->group = \strval($source[$categoryField]);

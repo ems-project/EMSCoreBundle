@@ -4,6 +4,12 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
+    <route id="emsco_api_file_hash_algo" path="/hash-algo"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::getHashAlgo"
+           methods="GET"/>
+    <route id="emsco_api_file_heads" path="/heads"
+           controller="EMS\CoreBundle\Controller\ContentManagement\FileController::heads"
+           methods="POST"/>
     <route id="ems.api.file.view" path="/view/{sha1}"
            controller="EMS\CoreBundle\Controller\ContentManagement\FileController::viewFile"
            methods="GET|HEAD"/>

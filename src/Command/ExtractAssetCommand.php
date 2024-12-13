@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Command;
 
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\AssetExtractorService;
@@ -20,7 +21,7 @@ use Symfony\Component\Finder\SplFileInfo;
     hidden: false,
     aliases: ['ems:asset:extract']
 )]
-class ExtractAssetCommand extends EmsCommand
+class ExtractAssetCommand extends AbstractCommand
 {
     public function __construct(protected LoggerInterface $logger, protected AssetExtractorService $extractorService, protected StorageManager $storageManager)
     {

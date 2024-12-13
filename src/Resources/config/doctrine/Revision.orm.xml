@@ -8,6 +8,10 @@
       <unique-constraint name="tuple_index" columns="end_time,ouuid"/>
     </unique-constraints>
 
+    <indexes>
+      <index name="ouuid_idx" columns="ouuid" />
+    </indexes>
+
     <id name="id" type="integer" column="id">
       <generator/>
     </id>

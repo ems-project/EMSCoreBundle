@@ -118,7 +118,7 @@ class TaskMailer
         return match (true) {
             ($sender->getUsername() === $task->getAssignee()) => 'assignee',
             ($sender->getUsername() === $task->getCreatedBy()) => 'creator',
-            $this->taskManager->isTaskManager($sender) => 'task manager',
+            $this->taskManager->isTaskManager($sender) => 'task admin',
             default => null,
         };
     }

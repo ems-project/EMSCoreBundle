@@ -78,22 +78,3 @@
         {{ 'replace by revision %date%'|trans({ '%date%' : maxrev[2]|date(date_time_format) }) }}
     {% endif %}
 {% endblock maxrevidstatus  %}
-
-{% block unpublish_source %}
-    <div style="width: 250px">
-        {{ '%date% Finalized by %user%'|trans({
-            '%date%': data.default_finalized_date|date(date_time_format),
-            '%user%': data.default_finalized_by
-        }) }}
-    </div>
-{% endblock unpublish_source %}
-
-{% block unpublish_target %}
-    <div style="width: 250px">
-        {{ '%date% Finalized by %user%'|trans({
-            '%date%': data.published_finalized_date|date(date_time_format),
-            '%user%': data.published_finalized_by
-        }) }}
-    </div>
-{% endblock unpublish_target %}
-

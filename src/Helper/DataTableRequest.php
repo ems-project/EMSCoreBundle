@@ -31,7 +31,7 @@ final class DataTableRequest
         /** @var array{name?: ?string, orderable?: string} $columnOrder */
         $columnOrder = $columns[$orderColumn] ?? null;
         $columnOrderName = $columnOrder['name'] ?? null;
-        $columnOrderOrderable = $columnOrder['orderable'] ?? null;
+        $columnOrderOrderable = 'true' === ($columnOrder['orderable'] ?? 'false');
 
         if ($columnOrderName && $columnOrderOrderable) {
             $orderField = \strval($columnOrderName);

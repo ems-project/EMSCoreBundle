@@ -34,6 +34,7 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
+use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\SortOptionService;
 use EMS\Helpers\Standard\Json;
@@ -60,6 +61,7 @@ class ElasticsearchController extends AbstractController
         private readonly AssetExtractorService $assetExtractorService,
         private readonly EnvironmentService $environmentService,
         private readonly ContentTypeService $contentTypeService,
+        private readonly RevisionService $revisionService,
         private readonly SearchService $searchService,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly JobService $jobService,
@@ -286,7 +288,7 @@ class ElasticsearchController extends AbstractController
             $document = $this->searchService->getDocument($contentType, $emsLink->getOuuid());
 
             $dataLinks->addContentTypes($contentType);
-            $dataLinks->addDocument($document);
+            $dataLinks->addDocument(document: $document, displayLabel: $this->revisionService->display($document));
 
             return;
         }
@@ -375,7 +377,11 @@ class ElasticsearchController extends AbstractController
         $commonSearch->setFrom($dataLinks->getFrom());
         $commonSearch->setSize($dataLinks->getSize());
         $response = CommonResponse::fromResultSet($this->elasticaService->search($commonSearch));
-        $dataLinks->addSearchResponse($response);
+
+        $dataLinks->setTotal($response->getTotal());
+        foreach ($response->getDocuments() as $document) {
+            $dataLinks->addDocument(document: $document, displayLabel: $this->revisionService->display($document));
+        }
     }
 
     public function export(Request $request, ContentType $contentType): Response

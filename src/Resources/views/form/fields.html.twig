@@ -969,7 +969,7 @@
 	{% set prototype = (fileItem.vars.name == '__name__') %}
 	<li class="input-file-entry">
 		<div>
-			<div class="modal" tabindex="-1" role="dialog" id="asst-details-{{ form.vars.id }}-__name__">
+			<div class="modal" tabindex="-1" role="dialog" id="asst-details-{{ fileItem.vars.id }}-__name__">
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -983,6 +983,7 @@
 								{{- form_row(fileItem.sha1) -}}
 								{{- form_row(fileItem._image_resized_hash) -}}
 								{{- form_row(fileItem.mimetype) -}}
+								{{- form_row(fileItem._title) -}}
 							</div>
 						</div>
 						<div class="modal-footer">
@@ -1004,7 +1005,7 @@
 				<div class="input-group input-group-sm">
 					{{- form_widget(fileItem.filename) -}}
 					<span class="input-group-btn">
-						<button type="button" class="btn" title="{{ 'view.form.fields.asset.info-modal-button'|trans }}" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}-__name__">
+						<button type="button" class="btn" title="{{ 'view.form.fields.asset.info-modal-button'|trans }}" data-toggle="modal" data-target="#asst-details-{{ fileItem.vars.id }}-__name__">
 							<i class="fa fa-info"></i>
 							<span class="sr-only">{{ 'view.form.fields.asset.info-modal-button'|trans }}</span>
 						</button>
@@ -1471,3 +1472,14 @@
     {{ parent() }}
     <span class="pull-right text-counter" data-counter-label="{{ 'field_type.textarea.counter'|trans|e('html_attr') }}"></span>
 {% endblock textarea_widget %}
+
+{% block collection_entry_with_grouped_remove %}
+    {{ block('form_widget') }}
+    <span class="input-group-btn">
+        <button type="button" class="btn btn-danger remove-filter">X</button>
+    </span>
+{% endblock collection_entry_with_grouped_remove %}
+
+{% block _filter_options_synonyms_entry_widget %}
+    {{ block('collection_entry_with_grouped_remove') }}
+{% endblock _filter_options_synonyms_entry_widget %}

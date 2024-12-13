@@ -174,7 +174,6 @@
             <argument type="service" id="ems_core.core_data_table.table_renderer" />
             <argument type="service" id="ems_core.core_data_table.table_exporter" />
             <argument type="service" id="security.token_storage" />
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -532,6 +531,7 @@
             <argument type="service" id="ems.service.asset_extractor" />
             <argument type="service" id="ems.service.environment" />
             <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.revision" />
             <argument type="service" id="ems.service.search" />
             <argument type="service" id="security.authorization_checker" />
             <argument type="service" id="ems.service.job" />
@@ -647,6 +647,13 @@
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="EMS\CoreBundle\Controller\Api\Data\PublishController">
+            <argument type="service" id="ems.service.publish" />
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.environment" />
             <tag name="controller.service_arguments"/>
         </service>
 

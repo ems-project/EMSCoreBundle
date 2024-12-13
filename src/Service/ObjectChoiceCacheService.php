@@ -8,8 +8,10 @@ use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
+use EMS\CoreBundle\Service\Revision\RevisionService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -24,8 +26,15 @@ class ObjectChoiceCacheService
     /** @var ObjectChoiceListItem[][] */
     private array $cachedQuerySearches = [];
 
-    public function __construct(private readonly LoggerInterface $logger, private readonly ContentTypeService $contentTypeService, protected AuthorizationCheckerInterface $authorizationChecker, protected TokenStorageInterface $tokenStorage, private readonly ElasticaService $elasticaService, private readonly QuerySearchService $querySearchName)
-    {
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly RevisionService $revisionService,
+        protected AuthorizationCheckerInterface $authorizationChecker,
+        protected TokenStorageInterface $tokenStorage,
+        private readonly ElasticaService $elasticaService,
+        private readonly QuerySearchService $querySearchName
+    ) {
     }
 
     /**
@@ -94,7 +103,7 @@ class ObjectChoiceCacheService
                         $hitDocument = Document::fromResult($result);
                         if (!isset($choices[$hitDocument->getEmsId()])) {
                             $itemContentType = $this->contentTypeService->getByName($hitDocument->getContentType());
-                            $listItem = new ObjectChoiceListItem($hitDocument, $itemContentType ?: null);
+                            $listItem = $this->createItem($hitDocument, $itemContentType ?: null);
                             $choices[$listItem->getValue()] = $listItem;
                             $this->cache[$hitDocument->getContentType()][$hitDocument->getId()] = $listItem;
                         }
@@ -198,7 +207,7 @@ class ObjectChoiceCacheService
                     if (false === $contentType) {
                         continue;
                     }
-                    $listItem = new ObjectChoiceListItem($document, $contentType);
+                    $listItem = $this->createItem($document, $contentType);
                     $this->cache[$document->getContentType()][$document->getId()] = $listItem;
                     $choices[$document->getEmsId()] = $listItem;
                 }
@@ -225,11 +234,20 @@ class ObjectChoiceCacheService
             if (false === $contentType) {
                 continue;
             }
-            $listItem = new ObjectChoiceListItem($document, $contentType);
+            $listItem = $this->createItem($document, $contentType);
             $this->cache[$document->getContentType()][$document->getId()] = $listItem;
             $this->cachedQuerySearches[$querySearchName][$document->getEmsId()] = $listItem;
             $choices[$document->getEmsId()] = $listItem;
             $this->cache[$document->getContentType()][$document->getId()] = $listItem;
         }
+    }
+
+    private function createItem(Document $document, ?ContentType $contentType): ObjectChoiceListItem
+    {
+        return new ObjectChoiceListItem(
+            document: $document,
+            contentType: $contentType,
+            displayLabel: $this->revisionService->display($document)
+        );
     }
 }

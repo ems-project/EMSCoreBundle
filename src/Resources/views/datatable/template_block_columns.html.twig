@@ -118,3 +118,30 @@
     </div>
 {% endblock i18nTranslations %}
 
+{%- block document_label -%}{{ data|emsco_display }}{%- endblock document_label -%}
+
+{%- block document_content_type -%}
+    {{- data.contentType|emsco_get_content_type.singularName|default(data.contentType) -}}
+{%- endblock document_content_type -%}
+
+{% block release_unpublish_source %}
+    {%- set info = data.getValue('info', false) -%}
+    {%- if info -%}
+        {%- set revision = info.revision(table.context.release.environmentSource.name) -%}
+        {{- '%date% Finalized by %user%'|trans({
+            '%date%': (revision.finalizedDate ? revision.finalizedDate|date(date_time_format) : ''),
+            '%user%': (revision.finalizedBy ? revision.finalizedBy|displayname : '')
+        }) -}}
+    {%- endif -%}
+{% endblock release_unpublish_source %}
+
+{% block release_unpublish_target %}
+    {%- set info = data.getValue('info', false) -%}
+    {%- if info -%}
+        {%- set revision = info.revision(table.context.release.environmentTarget.name) -%}
+        {{- '%date% Finalized by %user%'|trans({
+            '%date%': (revision.finalizedDate ? revision.finalizedDate|date(date_time_format) : ''),
+            '%user%': (revision.finalizedBy ? revision.finalizedBy|displayname : '')
+        }) -}}
+    {%- endif -%}
+{% endblock release_unpublish_target %}

@@ -98,8 +98,11 @@ class TimeFieldType extends DataFieldType
         $format = static::getFormat($fieldType->getOptions());
         \dump($format);
         $converted = !\is_array($data) ? \DateTime::createFromFormat($format, \strval($data)) : false;
+        $convertedFromStoreFormat = !\is_array($data) ? \DateTime::createFromFormat($this::STOREFORMAT, \strval($data)) : false;
         if ($converted) {
             $out = $converted->format($this::STOREFORMAT);
+        } elseif ($convertedFromStoreFormat) {
+            $out = $convertedFromStoreFormat->format($this::STOREFORMAT);
         } else {
             $out = null;
         }

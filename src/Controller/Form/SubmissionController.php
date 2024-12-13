@@ -53,7 +53,7 @@ final class SubmissionController extends AbstractController
                     case TableAbstract::DOWNLOAD_ACTION:
                         return $this->downloadMultiple($table->getSelected());
                     case TableAbstract::EXPORT_ACTION:
-                        $config = $config = $this->formSubmissionService->generateExportConfig($table->getSelected());
+                        $config = $this->formSubmissionService->generateExportConfig($table->getSelected());
 
                         return $this->spreadsheetGeneratorService->generateSpreadsheet($config);
                     default:

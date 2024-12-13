@@ -7,9 +7,11 @@ namespace EMS\CoreBundle\Form\DataField;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\Intl\Locales;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContainerFieldType extends DataFieldType
@@ -73,6 +75,7 @@ class ContainerFieldType extends DataFieldType
     {
         parent::configureOptions($resolver);
         $resolver->setDefault('icon', null);
+        $resolver->setDefault('language', null);
     }
 
     public function buildObjectArray(DataField $data, array &$out): void
@@ -92,9 +95,14 @@ class ContainerFieldType extends DataFieldType
         $optionsForm->remove('migrationOptions');
         $optionsForm->get('restrictionOptions')->remove('mandatory');
         $optionsForm->get('restrictionOptions')->remove('mandatory_if');
-        $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
+        $optionsForm->get('displayOptions')
+            ->add('icon', IconPickerType::class, ['required' => false])
+            ->add('language', ChoiceType::class, [
             'required' => false,
-        ]);
+                'choices' => \array_flip(Locales::getNames()),
+                'choice_translation_domain' => false,
+            ])
+        ;
     }
 
     public static function isVirtual(array $option = []): bool

@@ -400,7 +400,7 @@ ROLE_SUPER_AUTHOR: 'Super Author'
 ROLE_SUPER_PUBLISHER: 'Super Publisher'
 ROLE_SUPER_USER: 'Super User'
 ROLE_SUPER_WEBMASTER: 'Super Webmaster'
-ROLE_TASK_MANAGER: 'Task Manager'
+ROLE_TASK_MANAGER: 'Task admin'
 ROLE_TRADUCTOR: Traductor
 ROLE_COPYWRITER: Copywriter
 ROLE_AUDITOR: Auditor
@@ -909,8 +909,6 @@ revision:
     draft-in-progress:
         title: '%contentType% in progress'
         breadcrumb: '%contentType% in progress'
-    version_tag: 'Yes as %version_tag%'
-    version_tag.empty: 'No (Silent publish)'
 'An Error Occurred': 'An Error Occurred'
 'Oops! An Error Occurred': 'Oops! An Error Occurred'
 'The server returned a %status_code%': 'The server returned a %status_code%'

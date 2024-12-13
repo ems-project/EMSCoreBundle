@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
-use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
-use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -26,7 +25,11 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     private const VALUES_DISPLAY_OPTION = 'values';
     private const ICON_DISPLAY_OPTION = 'icon';
 
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, private readonly UserService $userService)
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        FormRegistryInterface $formRegistry,
+        ElasticsearchService $elasticsearchService,
+        private readonly UserManager $userManager)
     {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
@@ -194,21 +197,17 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
 
         $choices = \array_flip($choices);
 
-        $localePreferredFirst = $fieldType->getDisplayOption(self::LOCALE_PREFERRED_FIRST_DISPLAY_OPTION);
-        if (!\is_bool($localePreferredFirst) || !$localePreferredFirst) {
+        $localePreferredFirst = $fieldType->getDisplayBoolOption(self::LOCALE_PREFERRED_FIRST_DISPLAY_OPTION, false);
+        if (!$localePreferredFirst) {
             return $choices;
         }
 
-        $user = $this->userService->isCliSession() ? null : $this->userService->getCurrentUser(true);
-        if (!$user instanceof User || null === $localePreferred = $user->getLocalePreferred()) {
-            return $choices;
-        }
-
-        $key = \array_search($localePreferred, $choices, true);
+        $language = $this->userManager->getUserLanguage();
+        $key = \array_search($language, $choices, true);
         if (false === $key) {
             return $choices;
         }
 
-        return \array_merge([$key => $localePreferred], $choices);
+        return \array_merge([$key => $language], $choices);
     }
 }

@@ -19,7 +19,7 @@ class MediaLibraryConfig implements ConfigInterface
                             'bool' => [
                                 'minimum_should_match' => 1,
                                 'should' => [
-                                    ['query_string' => ['default_field' => 'media_file.filename', 'query' => '%query%']],
+                                    ['query_string' => ['default_field' => 'media_file.filename', 'query' => '%query_escaped%']],
                                     ['wildcard' => ['media_file.filename' => ['value' => '*%query_escaped%*']]],
                                     ['match' => ['media_file.filename' => '%query%']],
                                 ],

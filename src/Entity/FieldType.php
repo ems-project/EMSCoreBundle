@@ -599,6 +599,25 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
+     * @return string[]
+     */
+    public function getClearOnCopyPaths(): array
+    {
+        $result = [];
+
+        foreach ($this->loopChildren() as $child) {
+            $extraOptions = $child->getExtraOptions();
+            $clearOnCopy = $extraOptions['clear_on_copy'] ?? false;
+
+            if ($clearOnCopy) {
+                $result[] = $child->getPath();
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Get child by path.
      *
      * @deprecated it's not clear if its the mapping of the rawdata or of the formdata (with ou without the virtual fields) see the same function in the contenttypeservice

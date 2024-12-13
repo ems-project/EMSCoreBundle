@@ -4,6 +4,7 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ObjectManager;
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
@@ -27,7 +28,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     hidden: false,
     aliases: ['ems:environment:rebuild']
 )]
-class RebuildCommand extends EmsCommand
+class RebuildCommand extends AbstractCommand
 {
     final public const ALL = 'all';
     private bool $signData;
@@ -88,7 +89,6 @@ class RebuildCommand extends EmsCommand
         $this->aliasService->build();
         $this->yellowOk = true === $input->getOption('yellow-ok');
         $this->all = true === $input->getOption(self::ALL);
-        $this->formatStyles($output);
         $this->waitFor($this->yellowOk, $output);
 
         $this->bulkSize = \intval($input->getOption('bulk-size'));

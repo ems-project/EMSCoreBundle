@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CoreBundle\Core\ContentType\DataFieldFormOptions;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\DataField\Options\OptionsType;
@@ -25,8 +26,13 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 abstract class DataFieldType extends AbstractType
 {
-    public function __construct(protected AuthorizationCheckerInterface $authorizationChecker, protected FormRegistryInterface $formRegistry, protected ElasticsearchService $elasticsearchService)
-    {
+    private ?DataFieldFormOptions $formOptions = null;
+
+    public function __construct(
+        protected AuthorizationCheckerInterface $authorizationChecker,
+        protected FormRegistryInterface $formRegistry,
+        protected ElasticsearchService $elasticsearchService
+    ) {
     }
 
     /**
@@ -79,13 +85,15 @@ abstract class DataFieldType extends AbstractType
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $out = new DataField();
+        $out
+            ->setFieldType($fieldType)
+            ->setFormOptions($this->formOptions);
 
         if ('' === $data || (\is_array($data) && 0 === \count($data))) {
             $out->setRawData(null);
         } else {
             $out->setRawData($data);
         }
-        $out->setFieldType($fieldType);
 
         return $out;
     }
@@ -124,8 +132,10 @@ abstract class DataFieldType extends AbstractType
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         $out = new DataField();
-        $out->setRawData($data);
-        $out->setFieldType($fieldType);
+        $out
+            ->setRawData($data)
+            ->setFieldType($fieldType)
+            ->setFormOptions($this->formOptions);
 
         return $out;
     }
@@ -509,9 +519,22 @@ abstract class DataFieldType extends AbstractType
 
             $builder->add($fieldType->getName(), $fieldType->getType(), $options);
 
-            $builder->get($fieldType->getName())
+            $childField = $builder->get($fieldType->getName());
+            $childField
                 ->addViewTransformer(new DataFieldViewTransformer($fieldType, $this->formRegistry))
-                ->addModelTransformer(new DataFieldModelTransformer($fieldType, $this->formRegistry));
+                ->addModelTransformer(DataFieldModelTransformer::withFormOptions(
+                    fieldType: $fieldType,
+                    formRegistry: $this->formRegistry,
+                    viewOptions: new DataFieldFormOptions(
+                        locale: $childField->getOption('locale', $options['locale']),
+                        referredEmsId: $childField->getOption('referrer-ems-id', $options['referrer-ems-id']),
+                    )
+                ));
         }
+    }
+
+    public function setFormOptions(?DataFieldFormOptions $formOptions): void
+    {
+        $this->formOptions = $formOptions;
     }
 }

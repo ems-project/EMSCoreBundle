@@ -65,6 +65,7 @@ class AlignCommand extends AbstractEnvironmentCommand
 
         $this->initializeRevisionSearcher(self::LOCK_USER);
         $this->publicationTemplate = $this->getOptionBool(self::OPTION_PUBLICATION_TEMPLATE);
+        $this->publishService->bulkStart($this->revisionSearcher->getSize(), $this->logger);
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void
@@ -80,9 +81,7 @@ class AlignCommand extends AbstractEnvironmentCommand
         }
 
         $search = $this->revisionSearcher->create($this->source, $this->searchQuery);
-        $bulkSize = $this->revisionSearcher->getSize();
-
-        $this->io->note(\sprintf('The source environment contains %s elements, start aligning environments...', $search->getTotal()));
+        $this->io->section(\sprintf('The source environment contains %s elements, start aligning environments...', $search->getTotal()));
 
         if ($this->dryRun) {
             $this->io->success('Dry run finished');
@@ -91,14 +90,15 @@ class AlignCommand extends AbstractEnvironmentCommand
         }
 
         $targetIsPreviewEnvironment = [];
+        $ouuids = [];
 
         $this->io->progressStart($search->getTotal());
         foreach ($this->revisionSearcher->search($this->source, $search) as $revisions) {
             $this->revisionSearcher->lock($revisions, $this->lockUser);
-            $this->publishService->bulkStart($bulkSize, $this->logger);
 
             foreach ($revisions->transaction() as $revision) {
                 $contentType = $revision->giveContentType();
+                $ouuids[] = $revision->giveOuuid();
 
                 if ($revision->getDeleted()) {
                     ++$this->counters['deleted'];
@@ -115,10 +115,12 @@ class AlignCommand extends AbstractEnvironmentCommand
                 $this->io->progressAdvance();
             }
 
-            $this->publishService->bulkFinished();
             $this->revisionSearcher->unlock($revisions);
         }
+        $this->publishService->bulkFinished();
         $this->io->progressFinish();
+
+        $this->unpublishNotAligned(...$ouuids);
 
         $this->environmentService->clearCache();
 
@@ -164,5 +166,41 @@ class AlignCommand extends AbstractEnvironmentCommand
         ]));
 
         return self::EXECUTE_SUCCESS;
+    }
+
+    private function unpublishNotAligned(string ...$ouuids): void
+    {
+        $this->io->section(\sprintf('Unpublish not aligned documents from "%s"', $this->target->getName()));
+        $countUnpublished = 0;
+
+        $targetSearch = $this->revisionSearcher->create($this->target, $this->searchQuery);
+        $this->io->progressStart($targetSearch->getTotal());
+
+        foreach ($this->revisionSearcher->search($this->target, $targetSearch) as $revisions) {
+            $this->revisionSearcher->lock($revisions, $this->lockUser);
+
+            foreach ($revisions->transaction() as $revision) {
+                $this->io->progressAdvance();
+
+                if (\in_array($revision->getOuuid(), $ouuids, true)) {
+                    continue;
+                }
+
+                if ($revision->giveContentType()->giveEnvironment() === $this->target) {
+                    $this->io->warning(\sprintf('Could not unpublish the document %s, target is default environment', $revision->getEmsLink()));
+                    continue;
+                }
+
+                $this->publishService->bulkUnpublish($revision, $this->target);
+                ++$countUnpublished;
+            }
+
+            $this->revisionSearcher->unlock($revisions);
+        }
+
+        $this->publishService->bulkFinished();
+        $this->io->progressFinish();
+
+        $this->io->note(\sprintf('Unpublished %d documents from "%s"', $countUnpublished, $this->target->getName()));
     }
 }

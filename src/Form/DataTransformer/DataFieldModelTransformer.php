@@ -2,6 +2,7 @@
 
 namespace EMS\CoreBundle\Form\DataTransformer;
 
+use EMS\CoreBundle\Core\ContentType\DataFieldFormOptions;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
@@ -13,8 +14,18 @@ use Symfony\Component\Form\FormRegistryInterface;
  */
 class DataFieldModelTransformer implements DataTransformerInterface
 {
+    private ?DataFieldFormOptions $formOptions = null;
+
     public function __construct(private readonly FieldType $fieldType, private readonly FormRegistryInterface $formRegistry)
     {
+    }
+
+    public static function withFormOptions(FieldType $fieldType, FormRegistryInterface $formRegistry, DataFieldFormOptions $viewOptions): self
+    {
+        $transformer = new self($fieldType, $formRegistry);
+        $transformer->formOptions = $viewOptions;
+
+        return $transformer;
     }
 
     /**
@@ -26,6 +37,7 @@ class DataFieldModelTransformer implements DataTransformerInterface
     {
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($this->fieldType->getType())->getInnerType();
+        $dataFieldType->setFormOptions($this->formOptions);
 
         return $dataFieldType->modelTransform($data, $this->fieldType);
     }
@@ -41,6 +53,7 @@ class DataFieldModelTransformer implements DataTransformerInterface
     {
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($this->fieldType->getType())->getInnerType();
+        $dataFieldType->setFormOptions($this->formOptions);
 
         return $dataFieldType->reverseModelTransform($data);
     }

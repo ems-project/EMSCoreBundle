@@ -4,12 +4,15 @@ namespace EMS\CoreBundle\Form\Data;
 
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
+use EMS\CommonBundle\Elasticsearch\QueryStringEscaper;
 use EMS\CommonBundle\Elasticsearch\Response\Response;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\String\u;
 
 class ElasticaTable extends TableAbstract
 {
@@ -189,7 +192,7 @@ class ElasticaTable extends TableAbstract
                     'order' => $this->getOrderDirection(),
                 ],
             ]);
-        } else {
+        } elseif ($this->defaultSort) {
             $search->setSort($this->defaultSort);
         }
 
@@ -301,13 +304,10 @@ class ElasticaTable extends TableAbstract
 
     private function getQuery(string $searchValue): string
     {
-        $encoded = Json::encode($searchValue);
-        if (\strlen($encoded) < 2) {
-            throw new \RuntimeException(\sprintf('Unexpected error while JSON encoding "%s"', $searchValue));
-        }
-        $encoded = \substr($encoded, 1, \strlen($encoded) - 2);
-
-        return \str_replace('%query%', $encoded, $this->query);
+        return u($this->query)
+            ->replace('%query%', Json::escape($searchValue))
+            ->replace('%query_escaped%', Json::escape(QueryStringEscaper::escape($searchValue)))
+            ->toString();
     }
 
     public function getRowTemplate(): string

@@ -5,10 +5,10 @@
 
 <div class="json-menu-nested-component" id="{{ id }}" data-hash="{{ hash }}" {% if config.activeItemId %}data-active-item-id="{{ config.activeItemId }}"{% endif %}>
     <div class="jmn-node-loading"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
-    {{ template.block('jmn_layout_top', _context)|raw }}
+    <div class="jmn-top"></div>
     <div class="jmn-wrapper">
-        {{ template.block('_jmn_columns', _context)|raw }}
+        <div class="jmn-header">{{ template.block('jmn_columns', _context)|raw }}</div>
         <div id="{{- "tree-#{id}" -}}" class="jmn-tree jmn-node jmn-sortable" data-id="{{ config.jsonMenuNested.id }}"  data-types="{{ config.nodes.types('_root')|json_encode|e('html_attr') }}"></div>
     </div>
-    {{ template.block('jmn_layout_footer', _context)|raw }}
+    <div class="jmn-footer"></div>
 </div>

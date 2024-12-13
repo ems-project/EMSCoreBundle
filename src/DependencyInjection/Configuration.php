@@ -36,7 +36,6 @@ class Configuration implements ConfigurationInterface
     final public const SAVE_ASSETS_IN_DB = false;
     final public const DEFAULT_BULK_SIZE = 500;
     final public const CLEAN_JOBS_TIME_STRING = '-7 days';
-    final public const FALLBACK_LOCALE = 'en';
     final public const TEMPLATE_NAMESPACE = 'EMSCore';
     final public const DYNAMIC_MAPPING = 'false';
     final public const IMAGE_MAX_SIZE = 2048;
@@ -84,7 +83,6 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('default_bulk_size')->defaultValue(self::DEFAULT_BULK_SIZE)->end()
                 ->scalarNode('url_user')->defaultValue(null)->end()
                 ->scalarNode('clean_jobs_time_string')->defaultValue(self::CLEAN_JOBS_TIME_STRING)->end()
-                ->scalarNode('fallback_locale')->defaultValue(self::FALLBACK_LOCALE)->end()
                 ->scalarNode('custom_user_options_form')->defaultValue(null)->end()
                 ->scalarNode('template_namespace')->defaultValue(self::TEMPLATE_NAMESPACE)->end()
                 ->scalarNode('dynamic_mapping')->defaultValue(self::DYNAMIC_MAPPING)->end()

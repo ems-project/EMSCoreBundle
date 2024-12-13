@@ -62,6 +62,8 @@ class Revision implements EntityInterface, \Stringable
     private Collection $releases;
     private bool $selfUpdate = false;
 
+    public const VERSION_BLANK = 'silent';
+
     public function enableSelfUpdate(): void
     {
         if ($this->getDraft()) {

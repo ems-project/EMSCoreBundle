@@ -35,7 +35,7 @@ final class DataLinksFactory
 
         if ($query->has('referrerEmsId')) {
             try {
-                $referrerEmsId = EMSLink::fromText($query->get('referrerEmsId'));
+                $referrerEmsId = EMSLink::fromText(Type::string($query->get('referrerEmsId')));
                 $referrerDocument = $this->searchService->getDocumentByEmsLink($referrerEmsId);
                 $dataLinks->setReferrerDocument($referrerDocument);
             } catch (NotFoundException) {

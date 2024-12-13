@@ -14,9 +14,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-use function Symfony\Component\String\u;
-
-final class UserManager
+class UserManager
 {
     public const PASSWORD_RETRY_TTL = 7200;
     public const CONFIRMATION_TOKEN_TTL = 86400;
@@ -27,7 +25,6 @@ final class UserManager
         private readonly MailerService $mailerService,
         private readonly UserRepository $userRepository,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
-        private readonly string $fallbackLocale,
         private readonly string $templateNamespace
     ) {
     }
@@ -54,11 +51,9 @@ final class UserManager
         }
     }
 
-    public function getUserLocale(): string
+    public function getUserLanguage(): string
     {
-        $preferredLocale = $this->getUser()?->getLocalePreferred() ?? $this->fallbackLocale;
-
-        return u($preferredLocale)->slice(0, 2)->toString();
+        return $this->getUser()?->getLanguage() ?? User::DEFAULT_LOCALE;
     }
 
     /**

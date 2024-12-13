@@ -144,7 +144,7 @@
 			{% elseif dataField.rawData.files is defined and dataField.rawData.files is iterable %}
 				<ul class="nav nav-stacked">
 					{% for item in dataField.rawData.files %}
-						<li><a href="{{ ems_asset_path(item) }}" target="_blank">{{ item.filename }}</a></li>
+						<li><a href="{{ ems_asset_path(item) }}" target="_blank"{% if item._title|default %} title="{{ item._title }}"{% endif %}>{{ item.filename }}</a></li>
 					{% endfor %}
 				</ul>
 			{% endif %}
@@ -420,8 +420,8 @@
         {% set values = [locale]|merge(values|filter(v => v != locale))  %}
     {% endif %}
 
-	{% if dataField.fieldType.displayOptions.localePreferredFirst|default(false) and app.user.localePreferred|default(false) and app.user.localePreferred in values %}
-		{% set values = values|sort((a, b) => a == app.user.localePreferred ? -1 : b == app.user.localePreferred ? 1 : 0) %}
+	{% if dataField.fieldType.displayOptions.localePreferredFirst|default(false) and app.user.language in values %}
+		{% set values = values|sort((a, b) => a == app.user.language ? -1 : b == app.user.language ? 1 : 0) %}
 	{% endif %}
 
 	<div class="nav-tabs-custom">
@@ -471,7 +471,14 @@
 	<div class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
 			{% set counter = 1 %}
-            {% for child in dataField.getChildren|filter(child => not child.fieldType.deleted) %}
+
+			{% set tabs = dataField.getChildren|filter(child => not child.fieldType.deleted) %}
+			{% set tabsLocalePreferredFirst = dataField.fieldType.displayOptions.localePreferredFirst|default(false) %}
+			{% if tabsLocalePreferredFirst and app.user.language in tabs|keys %}
+				{% set tabs = tabs|sort((a, b) => a.fieldType.name == app.user.language ? -1 : b.fieldType.name == app.user.language ? 1 : 0) %}
+			{% endif %}
+
+            {% for child in tabs %}
 				{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == child.fieldType.type|default(null) %}
 					{% set labels = child.fieldType.displayOptions.labels|default('')|replace({"\r":''})|split('\n') %}
 					{% set values = child.fieldType.displayOptions.values|default('')|replace({"\r":''})|split('\n')%}
@@ -479,8 +486,8 @@
 					{% for value in values %}
 						{% set choices = choices|merge({(value): attribute(labels, loop.index0)|default(value)}) %}
 					{% endfor %}
-					{% if child.fieldType.displayOptions.localePreferredFirst|default(false) and app.user.localePreferred|default(false) and app.user.localePreferred in values %}
-						{% set values = values|sort((a, b) => a == app.user.localePreferred ? -1 : b == app.user.localePreferred ? 1 : 0) %}
+					{% if child.fieldType.displayOptions.localePreferredFirst|default(false) and app.user.language in values %}
+						{% set values = values|sort((a, b) => a == app.user.language ? -1 : b == app.user.language ? 1 : 0) %}
 					{% endif %}
 
 					{% for value in values %}
@@ -511,7 +518,7 @@
 		</ul>
 		<div class="tab-content">
 			{% set counter = 1 %}
-			{% for child in dataField.getChildren|filter(child => not child.fieldType.deleted) %}
+			{% for child in tabs %}
 				{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == child.fieldType.type|default(null) %}
 					{% for key, item in  child.getChildren %}
 						{% with {
@@ -725,7 +732,10 @@
 					{% set displayOptions = dataField.fieldType.displayOptions %}
 					{% set iframeUrl = path('emsco_wysiwyg_styleset_iframe', {
 						'name': displayOptions.styles_set|default('default'),
-						'language': displayOptions.language|default('en'),
+						'language': dataField.formOptions.locale|default('en'),
+						'emsLink': dataField.formOptions.referredEmsId|default(null),
+						'field': dataField.fieldType.name,
+						'fieldPath': dataField.fieldType.path
 					}) %}
 					<iframe src="{{ iframeUrl }}" class="styleset-preview panel-body" data-iframe-body="{{ panelBody|e('html_attr') }}"></iframe>
 				{% else %}
@@ -1333,10 +1343,10 @@
 			{% endif %}
 		</dt>
 		<dd>
-			{% if dataField.rawData %}
-				{% set translateRaw = 'revision.version_tag'|trans({'%version_tag%': dataField.rawData})  %}
+			{% if dataField.rawData is null or dataField.rawData == 'silent' %}
+				{% set translateRaw = 'field.revision_version_tag_empty'|trans({}, 'emsco-core') %}
 			{% else %}
-				{% set translateRaw = 'revision.version_tag.empty'|trans %}
+				{% set translateRaw = 'field.revision_version_tag'|trans({'version_tag': dataField.rawData}, 'emsco-core')  %}
 			{% endif %}
 			{{ emsco_diff_text(translateRaw, false, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>

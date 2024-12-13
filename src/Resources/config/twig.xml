@@ -76,8 +76,7 @@
 
         <service id="ems.twig.runtime.i18n" class="EMS\CoreBundle\Twig\I18nRuntime">
             <argument type="service" id="ems.service.i18n"/>
-            <argument type="service" id="ems.service.user"/>
-            <argument>%ems_core.fallback_locale%</argument>
+            <argument type="service" id="emsco.manager.user"/>
             <tag name="twig.runtime" />
         </service>
 

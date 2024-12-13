@@ -7,12 +7,16 @@ namespace EMS\CoreBundle\Core\Component\JsonMenuNested\Config;
 use EMS\CommonBundle\Json\JsonMenuNested;
 use EMS\CoreBundle\Entity\FieldType;
 
+use function Symfony\Component\String\u;
+
 class JsonMenuNestedNodes
 {
     public string $path;
     public JsonMenuNestedNode $root;
     /** @var array<string, JsonMenuNestedNode> */
     private array $nodes = [];
+    /** @var array<string, string[]> */
+    private array $clearPathsByType = [];
 
     public function __construct(FieldType $fieldType)
     {
@@ -27,9 +31,10 @@ class JsonMenuNestedNodes
         $children = $fieldType->getChildren()
             ->filter(fn (FieldType $child) => !$child->isDeleted() && $child->isContainer());
 
-        foreach ($children as $child) {
-            $node = JsonMenuNestedNode::fromFieldType($child);
+        foreach ($children as $childFieldType) {
+            $node = JsonMenuNestedNode::fromFieldType($childFieldType);
             $this->nodes[$node->type] = $node;
+            $this->addClearOnCopyPaths($childFieldType);
         }
     }
 
@@ -58,7 +63,7 @@ class JsonMenuNestedNodes
 
     public function getByType(string $type): JsonMenuNestedNode
     {
-        if ('_root' === $type) {
+        if ('_root' === $type || $type === $this->root->type) {
             return $this->root;
         }
 
@@ -94,5 +99,24 @@ class JsonMenuNestedNodes
             $this->nodes,
             static fn (JsonMenuNestedNode $node) => !\in_array($node->type, $parentNode->deny)
         );
+    }
+
+    /**
+     * @return array<string, string[]>
+     */
+    public function getClearPathsByType(): array
+    {
+        return $this->clearPathsByType;
+    }
+
+    private function addClearOnCopyPaths(FieldType $childFieldType): void
+    {
+        $childPath = $childFieldType->getPath();
+        $paths = $childFieldType->getClearOnCopyPaths();
+        $relativePaths = \array_map(static fn (string $path) => u($path)->after($childPath)->toString(), $paths);
+
+        if (\count($relativePaths) > 0) {
+            $this->clearPathsByType[$childFieldType->getName()] = $relativePaths;
+        }
     }
 }

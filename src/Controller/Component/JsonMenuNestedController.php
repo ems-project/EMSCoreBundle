@@ -206,6 +206,30 @@ class JsonMenuNestedController
         }
     }
 
+    public function itemCopy(JsonMenuNestedConfig $config, string $itemId): JsonResponse
+    {
+        try {
+            $copyItem = $config->jsonMenuNested->giveItemById($itemId);
+            $this->jsonMenuNestedService->itemCopy($config, $copyItem);
+
+            return $this->responseSuccess(['copyId' => $copyItem->getId()]);
+        } catch (JsonMenuNestedException $e) {
+            return $this->responseWarning($e->getMessage());
+        }
+    }
+
+    public function itemPaste(JsonMenuNestedConfig $config, string $itemId): JsonResponse
+    {
+        try {
+            $item = $config->jsonMenuNested->giveItemById($itemId);
+            $pasteItem = $this->jsonMenuNestedService->itemPaste($config, $item);
+
+            return $this->responseSuccess(['pasteId' => $pasteItem->getId()]);
+        } catch (JsonMenuNestedException $e) {
+            return $this->responseWarning($e->getMessage());
+        }
+    }
+
     private function clearFlashes(Request $request): void
     {
         /** @var Session $session */

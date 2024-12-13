@@ -847,15 +847,15 @@ class DataController extends AbstractController
                 throw new NotFoundHttpException('Impossible to find this item : '.$ouuid);
             }
 
-            if ('asset' == $category) {
+            if (\in_array($category, ['asset', 'file'])) {
                 if (empty($contentType->getAssetField()) && empty($revision->getRawData()[$contentType->getAssetField()])) {
                     throw new NotFoundHttpException('Asset field not found for '.$revision);
                 }
 
-                return $this->redirectToRoute('file.download', [
-                    'sha1' => $revision->getRawData()[$contentType->getAssetField()]['sha1'],
-                    'type' => $revision->getRawData()[$contentType->getAssetField()]['mimetype'],
-                    'name' => $revision->getRawData()[$contentType->getAssetField()]['filename'],
+                return $this->redirectToRoute('ems_file_view', [
+                    'sha1' => $revision->getRawData()[$contentType->getAssetField()][EmsFields::CONTENT_FILE_HASH_FIELD_] ?? $revision->getRawData()[$contentType->getAssetField()][EmsFields::CONTENT_FILE_HASH_FIELD],
+                    'type' => $revision->getRawData()[$contentType->getAssetField()][EmsFields::CONTENT_MIME_TYPE_FIELD_] ?? $revision->getRawData()[$contentType->getAssetField()][EmsFields::CONTENT_MIME_TYPE_FIELD],
+                    'name' => $revision->getRawData()[$contentType->getAssetField()][EmsFields::CONTENT_FILE_NAME_FIELD_] ?? $revision->getRawData()[$contentType->getAssetField()][EmsFields::CONTENT_FILE_NAME_FIELD],
                 ]);
             }
         }

@@ -122,7 +122,7 @@ ROLE_SUPER_AUTHOR: 'Super Author'
 ROLE_SUPER_PUBLISHER: 'Super Publisher'
 ROLE_SUPER_USER: 'Super User'
 ROLE_SUPER_WEBMASTER: 'Super Webmaster'
-ROLE_TASK_MANAGER: 'Task Manager'
+ROLE_TASK_MANAGER: 'Task admin'
 ROLE_COPYWRITER: Copywriter
 ROLE_TRADUCTOR: Traductor
 ROLE_USER: User

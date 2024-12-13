@@ -43,6 +43,7 @@ use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\Helpers\Standard\Color;
 use EMS\Helpers\Standard\Json;
+use EMS\Helpers\Standard\Type;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\FormError;
@@ -801,7 +802,7 @@ class AppExtension extends AbstractExtension
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $path = \substr($path, 0, \strlen($path) - 8);
 
-        return \preg_replace_callback(
+        $out = \preg_replace_callback(
             '/(ems:\/\/asset:)(?P<hash>[^\n\r"\'\?]*)(?:\?(?P<query>(?:[^\n\r"|\']*)))?/i',
             function ($matches) use ($path, $asFileName) {
                 if ($asFileName) {
@@ -829,6 +830,14 @@ class AppExtension extends AbstractExtension
             },
             $input
         );
+        $path = $this->router->generate(Routes::DATA_LINK, ['key' => '__KEY__'], UrlGeneratorInterface::ABSOLUTE_PATH);
+        $out = \preg_replace_callback(
+            '/ems:\/\/(?P<key>file:([^\n\r"\'\?]*))/i',
+            fn ($matches) => \str_replace('__KEY__', $matches['key'], $path),
+            Type::string($out)
+        );
+
+        return $out;
     }
 
     public function internalLinks(string $input, bool $asFileName = false): ?string

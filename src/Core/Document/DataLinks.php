@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Core\Document;
 
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
-use EMS\CommonBundle\Elasticsearch\Response\ResponseInterface;
 use EMS\CoreBundle\Core\ContentType\ContentTypeFields;
 use EMS\CoreBundle\Entity\ContentType;
 
@@ -44,7 +43,7 @@ final class DataLinks
         }
     }
 
-    public function addDocument(DocumentInterface $document): void
+    public function addDocument(DocumentInterface $document, string $displayLabel): void
     {
         $item = [
             'id' => $document->getEmsId(),
@@ -62,12 +61,6 @@ final class DataLinks
             $item['color'] = $source[$contentType->giveColorField()];
         }
 
-        if ($contentType && $contentType->hasLabelField() && isset($source[$contentType->giveLabelField()])) {
-            $text = $source[$contentType->giveLabelField()];
-        } else {
-            $text = $document->getId();
-        }
-
         if ($contentType && $contentType->getIcon()) {
             $icon = $contentType->getIcon();
             $tooltipField = $contentType->field(ContentTypeFields::TOOLTIP);
@@ -79,19 +72,10 @@ final class DataLinks
             $icon = ($contentType) ? 'fa fa-question' : 'fa fa-external-link-square';
         }
 
-        $item['text'] = \sprintf('<i class="%s"></i> %s', $icon, $text);
-        $item['title'] = $text;
+        $item['text'] = \sprintf('<i class="%s"></i> %s', $icon, $displayLabel);
+        $item['title'] = $displayLabel;
 
         $this->items[] = $item;
-    }
-
-    public function addSearchResponse(ResponseInterface $response): void
-    {
-        $this->total = $response->getTotal();
-
-        foreach ($response->getDocuments() as $document) {
-            $this->addDocument($document);
-        }
     }
 
     public function customViewRendered(): void
@@ -205,6 +189,11 @@ final class DataLinks
     public function setSearchId(?int $searchId): void
     {
         $this->searchId = (0 !== $searchId ? $searchId : null);
+    }
+
+    public function setTotal(int $total): void
+    {
+        $this->total = $total;
     }
 
     /**

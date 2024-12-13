@@ -1,49 +1,35 @@
 {%- use '@EMSCore/form/forms.html.twig' -%}
 {% trans_default_domain 'EMSCoreBundle' %}
 
-<table id="{{ datatable.id }}" class="table table-condensed table-striped" data-datatable="{{ datatable.frontendOptions|json_encode|e('html_attr') }}">
-    <thead>
-    <tr role="row">
-        {% if datatable.supportsTableActions %}
-            <th class="fit" data-orderable="false" data-name="_checkbox">
-                <input type="checkbox" value="" data-grouped-checkbox-target=".{{ (datatable.id ~ '-select')|e('html_attr') }}-to-select">
-            </th>
-        {% endif %}
-        {% for column in datatable.columns %}
-            <th class="nowrap" data-orderable="{{ column.orderable ? 'true' : 'false' }}" data-name="{{  column.attribute }}">
-                {% if column.iconClass %}
-                    <i class="{{ column.iconClass }}" aria-hidden="true" title="{{ column.titleKey|trans|e('html_attr') }}"></i>
-                    <span class="sr-only">{{ column.titleKey|trans }}</span>
-                {% else %}
-                    {{ column.titleKey|trans }}
-                {% endif %}
-            </th>
-        {% endfor %}
-        {% if datatable.itemActions|length > 0 %}
-            <th class="nowrap" data-orderable="false">{{ 'key.actions'|trans({}, 'emsco-core') }}</th>
-        {% endif %}
-    </tr>
-    </thead>
-    <tbody>
-    {% for line in datatable %}
-        <tr>
+<div class="table-responsive">
+    <table id="{{ datatable.id }}" class="table table-condensed table-striped" data-datatable="{{ datatable.frontendOptions|json_encode|e('html_attr') }}">
+        <thead>
+        <tr role="row">
             {% if datatable.supportsTableActions %}
-                <td class="{{ datatable.attributeName|e('html_attr') }}-to-select">
-                    {{ block('emsco_form_table_column_action_checkbox') }}
-                </td>
+                <th class="fit" data-orderable="false" data-name="_checkbox">
+                    <input type="checkbox" value="" data-grouped-checkbox-target=".{{ (datatable.id ~ '-select')|e('html_attr') }}-to-select">
+                </th>
             {% endif %}
             {% for column in datatable.columns %}
-                {{ block(column.tableDataBlock()) }}
+                <th class="nowrap" data-orderable="{{ column.orderable ? 'true' : 'false' }}" data-name="{{  column.attribute }}">
+                    {% if column.iconClass %}
+                        <i class="{{ column.iconClass }}" aria-hidden="true" title="{{ column.titleKey|trans|e('html_attr') }}"></i>
+                        <span class="sr-only">{{ column.titleKey|trans }}</span>
+                    {% else %}
+                        {{ column.titleKey|trans }}
+                    {% endif %}
+                </th>
             {% endfor %}
             {% if datatable.itemActions|length > 0 %}
-                <td data-search="">
-                    {{ block('emsco_form_table_column_row_actions') }}
-                </td>
+                <th class="nowrap" data-orderable="false">{{ 'key.actions'|trans({}, 'emsco-core') }}</th>
             {% endif %}
         </tr>
-    {%  endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {# ajax loaded always #}
+        </tbody>
+    </table>
+</div>
 
 {% if datatable.supportsTableActions and datatable.tableMassActions|length > 0%}
     <div class="btn-group">

@@ -131,7 +131,7 @@ class TasksDataTableQueryService implements QueryServiceInterface
             'status' => ['t.status', $context->filters->status],
             'assignee' => ['t.assignee', $context->filters->assignee],
             'requester' => ['t.created_by', $context->filters->requester],
-            'version_next' => ['r.version_next_tag', $context->filters->versionNextTag],
+            'version_next' => ['r.version_next_tag', $context->filters->getVersionNextTag()],
         ];
 
         foreach ($filters as $name => [$column, $values]) {

@@ -5,6 +5,7 @@ namespace EMS\CoreBundle\Command;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use EMS\CoreBundle\Commands;
+use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\NotLockedException;
@@ -24,7 +25,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     hidden: false,
     aliases: ['ems:environment:updatemetafield']
 )]
-class UpdateMetaFieldCommand extends EmsCommand
+class UpdateMetaFieldCommand extends AbstractCommand
 {
     public function __construct(protected Registry $doctrine, protected LoggerInterface $logger, protected DataService $dataService)
     {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -15,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class VersionTagFieldType extends DataFieldType
 {
@@ -73,15 +75,20 @@ class VersionTagFieldType extends DataFieldType
             $countEnvironments = $revision ? $this->environmentService->getPublishedForRevision($revision, true)->count() : 0;
         }
 
+        $notBlankNewVersion = $contentType->getVersionOptions()[VersionOptions::NOT_BLANK_NEW_VERSION];
+
         if (0 === $countEnvironments) {
             $choices = $this->contentTypeService->getVersionDefault($contentType);
+            $placeholder = false;
         } else {
-            $choices = $this->contentTypeService->getVersionTagsByContentType($contentType);
+            $choices = $this->contentTypeService->getVersionTagsByContentType($contentType, $notBlankNewVersion);
+            $placeholder = $notBlankNewVersion ? '' : false;
         }
 
         $builder->add('value', ChoiceType::class, [
+            'constraints' => $notBlankNewVersion ? [new NotBlank()] : [],
             'label' => ($options['label'] ?? $fieldType->getName()),
-            'placeholder' => false,
+            'placeholder' => $placeholder,
             'choices' => $choices,
         ]);
     }

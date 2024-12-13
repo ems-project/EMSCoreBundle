@@ -146,7 +146,9 @@
 	{% if revision.hasVersionTags %}
 		<strong><i class="fa fa-tags margin-r-5"></i> Version</strong>
 		<p class="text-muted">
-			{% if newVersionTag|default(false) %}<span class="label label-success">New version {{ newVersionTag }}</span>{% endif %}
+			{% if newVersionTag is not null and newVersionTag != 'silent' %}
+				<span class="label label-success">New version {{ newVersionTag }}</span>
+			{% endif %}
 			{{ revision.versionTag|default('') }}
 		</p>
 		<hr/>
@@ -224,7 +226,7 @@
 
 {% block revisionBody %}
 	<div class="box revision-view">
-		{% if revision.hasVersionTags and newVersionTag|default(false) %}
+		{% if revision.hasVersionTags and newVersionTag is not null and newVersionTag != 'silent' %}
 		<div class="box-header with-border bg-green color-palette">
 			<h3 class="box-title">New version <strong>{{ newVersionTag }}</strong></h3>
 		</div>

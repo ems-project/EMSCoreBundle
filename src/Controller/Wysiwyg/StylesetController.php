@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Wysiwyg;
 
+use EMS\CommonBundle\Common\EMSLink;
 use EMS\ClientHelperBundle\Helper\Asset\AssetHelperRuntime;
 use EMS\CoreBundle\Entity\WysiwygStylesSet;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
@@ -21,17 +22,20 @@ class StylesetController extends AbstractController
 {
     private ?Compiler $compiler = null;
 
-    public function __construct(private readonly WysiwygStylesSetService $wysiwygStylesSetService, private readonly AssetHelperRuntime $assetHelperRuntime, private readonly string $templateNamespace)
-    {
+    public function __construct(private readonly WysiwygStylesSetService $wysiwygStylesSetService, private readonly AssetHelperRuntime $assetHelperRuntime, private readonly string $templateNamespace
+    ) {
     }
 
-    public function iframe(string $name, string $language): Response
+    public function iframe(Request $request, string $name, string $language): Response
     {
-        $splitLanguage = \explode('_', $language);
+        $emsLink = $request->get('emsLink');
 
         return $this->render("@$this->templateNamespace/wysiwyg_styles_set/iframe.html.twig", [
             'styleSet' => $this->wysiwygStylesSetService->getByName($name),
-            'language' => \array_shift($splitLanguage),
+            'language' => $language,
+            'field' => $request->get('field'),
+            'fieldPath' => $request->get('fieldPath'),
+            'emsLink' => $emsLink ? EMSLink::fromText($emsLink) : null,
         ]);
     }
 

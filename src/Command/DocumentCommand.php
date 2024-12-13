@@ -6,10 +6,10 @@ use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\NotLockedException;
-use EMS\CoreBundle\Helper\Archive;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\DocumentService;
+use EMS\Helpers\File\TempDirectory;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -177,12 +177,10 @@ class DocumentCommand extends Command
         $finalize = !$dontFinalize;
 
         $this->io->section(\sprintf('Start importing %s from %s', $this->contentType->getPluralName(), $this->archiveFilename));
-
-        $archive = new Archive();
-        $directory = $archive->extractToDirectory($this->archiveFilename);
+        $directory = TempDirectory::createFromZipArchive($this->archiveFilename);
 
         $finder = new Finder();
-        $finder->files()->in($directory)->name('*.json');
+        $finder->files()->in($directory->path)->name('*.json');
         $progress = $this->io->createProgressBar($finder->count());
         $progress->start();
         $importerContext = $this->documentService->initDocumentImporterContext($this->contentType, 'SYSTEM_IMPORT', $rawImport, $signData, true, $bulkSize, $finalize, $force);

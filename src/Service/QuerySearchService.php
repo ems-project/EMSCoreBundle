@@ -16,13 +16,20 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Repository\QuerySearchRepository;
+use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 
 final class QuerySearchService implements EntityServiceInterface
 {
-    public function __construct(private readonly ContentTypeService $contentTypeService, private readonly ElasticaService $elasticaService, private readonly QuerySearchRepository $querySearchRepository, private readonly LoggerInterface $logger, private readonly EnvironmentService $environmentService)
-    {
+    public function __construct(
+        private readonly ContentTypeService $contentTypeService,
+        private readonly RevisionService $revisionService,
+        private readonly ElasticaService $elasticaService,
+        private readonly QuerySearchRepository $querySearchRepository,
+        private readonly LoggerInterface $logger,
+        private readonly EnvironmentService $environmentService
+    ) {
     }
 
     /**
@@ -180,7 +187,11 @@ final class QuerySearchService implements EntityServiceInterface
             $dataLinks->addContentTypes($contentType);
         }
 
-        $dataLinks->addSearchResponse(CommonResponse::fromResultSet($resultSet));
+        $response = CommonResponse::fromResultSet($resultSet);
+        $dataLinks->setTotal($response->getTotal());
+        foreach ($response->getDocuments() as $document) {
+            $dataLinks->addDocument(document: $document, displayLabel: $this->revisionService->display($document));
+        }
     }
 
     /**

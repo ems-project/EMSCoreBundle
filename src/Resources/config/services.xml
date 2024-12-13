@@ -107,6 +107,7 @@
         <service id="ems.service.query_search" alias="EMS\CoreBundle\Service\QuerySearchService"/>
         <service id="EMS\CoreBundle\Service\QuerySearchService">
             <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.revision" />
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="ems.repository.query_search"/>
             <argument type="service" id="logger"/>
@@ -211,11 +212,6 @@
             <argument>%ems_core.template_namespace%</argument>
             <tag name="twig.runtime"/>
         </service>
-        <service id="emsco.core.revision.query.published_revisions" class="EMS\CoreBundle\Core\Revision\Query\PublishedRevisionsQueryService">
-            <argument type="service" id="doctrine" />
-            <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
-            <argument type="service" id="ems.service.revision" />
-        </service>
 
         <service id="ems.log.manager" class="EMS\CoreBundle\Core\Log\LogManager">
             <argument type="service" id="ems.repository.log"/>
@@ -239,7 +235,6 @@
             <argument type="service" id="ems_core.core_mail.mailer_service" />
             <argument type="service" id="ems.repository.user" />
             <argument type="service" id="security.user_password_hasher" />
-            <argument>%ems_core.fallback_locale%</argument>
             <argument>%ems_core.template_namespace%</argument>
         </service>
 
@@ -386,6 +381,7 @@
         <service id="ems.service.objectchoicecache" class="EMS\CoreBundle\Service\ObjectChoiceCacheService">
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.contenttype"/>
+            <argument type="service" id="ems.service.revision"/>
             <argument type="service" id="security.authorization_checker"/>
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="ems_common.service.elastica"/>

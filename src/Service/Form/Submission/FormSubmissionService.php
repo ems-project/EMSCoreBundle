@@ -130,7 +130,8 @@ final class FormSubmissionService implements EntityServiceInterface
             $formSubmission = $this->getById($formSubmissionId);
             /** @var array<mixed> $data */
             $data = $formSubmission->getData();
-            $data = \array_filter($data, fn ($value) => \is_string($value));
+            $data = \array_filter($data, fn ($value) => !\is_array($value));
+            $data = \array_map(fn ($value) => \strval($value), $data);
             $data['id'] = $formSubmission->getId();
             $data['form'] = $formSubmission->getName();
             $data['instance'] = $formSubmission->getInstance();
@@ -140,13 +141,9 @@ final class FormSubmissionService implements EntityServiceInterface
             $data['deadline'] = null === $expireDate ? '' : $expireDate->format('Y-m-d');
 
             $sheetName = $formSubmission->getName();
-            if (!\key_exists($sheetName, $sheets)) {
-                $titles = [];
-                foreach ($data as $key => $value) {
-                    $titles[] = $key;
-                }
-                $sheets[$sheetName] = [$titles];
-            }
+            $titles = $sheets[$sheetName][0] ?? [];
+            $titles = \array_unique(\array_merge($titles, \array_keys($data)));
+            $sheets[$sheetName][0] = $titles;
             $sheets[$sheetName] = \array_merge($sheets[$sheetName], [$data]);
         }
 
@@ -154,7 +151,7 @@ final class FormSubmissionService implements EntityServiceInterface
         foreach ($sheets as $key => $value) {
             $config['sheets'][] = [
                 'name' => $key,
-                'rows' => $value,
+                'rows' => $this->normalizeRows($value),
             ];
         }
 
@@ -303,5 +300,22 @@ final class FormSubmissionService implements EntityServiceInterface
     public function deleteByItemName(string $name): string
     {
         throw new \RuntimeException('deleteByItemName method not yet implemented');
+    }
+
+    /**
+     * @param  mixed[][] $rows
+     * @return mixed[][]
+     */
+    private function normalizeRows(array $rows): array
+    {
+        if (\count($rows) < 2) {
+            return $rows;
+        }
+        $titles = $rows[0];
+        for ($i = 1; $i < \count($rows); ++$i) {
+            $rows[$i] = \array_map(fn (string $key) => $rows[$i][$key] ?? null, $titles);
+        }
+
+        return $rows;
     }
 }

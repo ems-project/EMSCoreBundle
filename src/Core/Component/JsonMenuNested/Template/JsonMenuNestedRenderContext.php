@@ -9,6 +9,7 @@ use EMS\CommonBundle\Json\JsonMenuNested;
 class JsonMenuNestedRenderContext
 {
     public ?JsonMenuNested $activeItem;
+
     /** @var array<string, JsonMenuNested> */
     public array $loadParents = [];
     /** @var array<string, JsonMenuNested> */
@@ -16,30 +17,43 @@ class JsonMenuNestedRenderContext
 
     public function __construct(
         private readonly JsonMenuNested $menu,
-        ?string $activeItemId,
-        ?string $loadChildrenId,
-        string ...$loadParentIds
+        ?string $activeItemId = null,
+        public ?JsonMenuNested $copyItem = null,
+        ?string $loadChildrenId = null
     ) {
         $this->addActiveItem($menu);
-        $this->activeItem = $activeItemId ? $menu->getItemById($activeItemId) : $menu;
 
+        $this->activeItem = $activeItemId ? $menu->getItemById($activeItemId) : null;
         if ($this->activeItem) {
-            foreach ($this->activeItem->getPath() as $activeParent) {
-                $this->addParent($activeParent);
-            }
+            $this->loadPath($this->activeItem);
         }
 
         $loadChildren = $loadChildrenId ? $this->menu->getItemById($loadChildrenId) : null;
         if ($loadChildren) {
-            foreach ($loadChildren as $loadChild) {
-                if ($loadChild->hasChildren()) {
-                    $this->addParent($loadChild);
-                }
+            $this->loadAllChildren($loadChildren);
+        }
+    }
+
+    public function loadPath(JsonMenuNested $item): void
+    {
+        foreach ($item->getPath() as $itemParent) {
+            $this->addParent($itemParent);
+        }
+    }
+
+    public function loadAllChildren(JsonMenuNested $item): void
+    {
+        foreach ($item as $child) {
+            if ($child->hasChildren()) {
+                $this->addParent($child);
             }
         }
+    }
 
+    public function loadParents(string ...$loadParentIds): void
+    {
         foreach ($loadParentIds as $loadParentId) {
-            $this->addParent($menu->getItemById($loadParentId));
+            $this->addParent($this->menu->getItemById($loadParentId));
         }
     }
 

@@ -157,6 +157,14 @@ class FileService implements EntityServiceInterface
         return $query->getResult();
     }
 
+    /**
+     * @return \Traversable<int, string|true>
+     */
+    public function heads(string ...$hashes): \Traversable
+    {
+        return $this->storageManager->heads(...$hashes);
+    }
+
     public function uploadFile(string $name, string $type, string $filename, string $user): UploadedAsset
     {
         $hash = $this->storageManager->computeFileHash($filename);

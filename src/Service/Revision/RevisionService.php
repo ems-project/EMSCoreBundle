@@ -237,7 +237,7 @@ class RevisionService implements RevisionServiceInterface
         return $this->get($emsLink->getOuuid(), $emsLink->getContentType(), $dateTime);
     }
 
-    private function resolveEmsLink(EMSLink $emsLink): null|Revision|DocumentInterface
+    private function resolveEmsLink(EMSLink $emsLink): Revision|DocumentInterface|null
     {
         if (!$emsLink->isValid()) {
             return null;

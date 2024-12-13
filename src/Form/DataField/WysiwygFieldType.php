@@ -128,7 +128,7 @@ class WysiwygFieldType extends DataFieldType
         $out = \preg_replace_callback(
             '/('.\preg_quote(\substr($path, 0, \strlen($path) - 7), '/').')(?P<key>[^\n\r"\'\?]*)/i',
             fn ($matches) => 'ems://'.$matches['key'],
-            $out
+            Type::string($out)
         );
 
         if ('' === $out) {

@@ -23,7 +23,7 @@ class PublishController
     ) {
     }
 
-    public function publish(string $contentTypeName, string $ouuid, string $targetEnvironmentName, Revision $revision = null): JsonResponse
+    public function publish(string $contentTypeName, string $ouuid, string $targetEnvironmentName, ?Revision $revision = null): JsonResponse
     {
         if (null === $revision) {
             $contentType = $this->contentTypeService->giveByName($contentTypeName);
@@ -44,8 +44,8 @@ class PublishController
         }
 
         return new JsonResponse([
-           'success' => true,
-           'already-published' => 0 === $publishedCounter,
+            'success' => true,
+            'already-published' => 0 === $publishedCounter,
         ]);
     }
 }

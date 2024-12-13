@@ -98,7 +98,7 @@ class ContainerFieldType extends DataFieldType
         $optionsForm->get('displayOptions')
             ->add('icon', IconPickerType::class, ['required' => false])
             ->add('language', ChoiceType::class, [
-            'required' => false,
+                'required' => false,
                 'choices' => \array_flip(Locales::getNames()),
                 'choice_translation_domain' => false,
             ])

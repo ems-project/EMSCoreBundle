@@ -24,7 +24,7 @@ class ExportCommand extends AbstractCommand
     /** @var string[] */
     private array $fields;
     private ?string $filter;
-    private ?string  $filename;
+    private ?string $filename;
 
     public function __construct(
         private readonly FormSubmissionService $formSubmissionService,

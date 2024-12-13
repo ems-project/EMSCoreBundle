@@ -113,9 +113,6 @@ class TabsFieldType extends DataFieldType
         $resolver->setDefault(self::LOCALE_PREFERRED_FIRST_DISPLAY_OPTION, false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function isVirtual(array $option = []): bool
     {
         return true;

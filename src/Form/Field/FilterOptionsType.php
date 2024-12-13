@@ -35,9 +35,9 @@ class FilterOptionsType extends AbstractType
         'asciifolding' => [
             'preserve_original',
         ],
-            'synonym' => [
-                    'synonyms',
-            ],
+        'synonym' => [
+            'synonyms',
+        ],
     ];
 
     /**
@@ -54,7 +54,7 @@ class FilterOptionsType extends AbstractType
                 'Stemmer' => 'stemmer',
                 'Elision' => 'elision',
                 'ASCII Folding' => 'asciifolding',
-                    'Synonym' => 'synonym',
+                'Synonym' => 'synonym',
             ],
             'attr' => [
                 'class' => 'fields-to-display-by-input-value',

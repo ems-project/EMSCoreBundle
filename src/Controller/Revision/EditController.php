@@ -48,7 +48,7 @@ class EditController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly DataTableFactory $dataTableFactory,
         private readonly ContentTypeService $contentTypeService,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 
@@ -264,7 +264,7 @@ class EditController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             match ($this->getClickedButtonName($form)) {
                 RevisionDraftsDataTableType::DISCARD_SELECTED_DRAFT => $this->discardRevisions($table, $contentTypeId),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentTypeId->getId()]);

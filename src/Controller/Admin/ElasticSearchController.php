@@ -49,7 +49,7 @@ class ElasticSearchController extends AbstractController
             match ($this->getClickedButtonName($form)) {
                 TableAbstract::DELETE_ACTION => $this->deleteOrphanIndexes(...$table->getSelected()),
                 EnvironmentOrphanIndexDataTableType::ACTION_DELETE_ALL => $this->deleteOrphanIndexes(),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::ADMIN_ELASTIC_ORPHAN);

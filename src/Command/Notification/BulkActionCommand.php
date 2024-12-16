@@ -38,7 +38,7 @@ final class BulkActionCommand extends Command
         private readonly EnvironmentService $environmentService,
         private readonly ContentTypeService $contentTypeService,
         private readonly ElasticaService $elasticaService,
-        private readonly RevisionService $revisionService
+        private readonly RevisionService $revisionService,
     ) {
         parent::__construct();
     }

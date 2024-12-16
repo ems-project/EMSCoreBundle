@@ -24,7 +24,7 @@ class QueryTable extends TableAbstract
         private readonly string $queryName,
         string $ajaxUrl,
         private readonly mixed $context = null,
-        int $loadAllMaxRow = 400
+        int $loadAllMaxRow = 400,
     ) {
         if ($this->count() > $loadAllMaxRow) {
             parent::__construct($ajaxUrl, 0, 0);

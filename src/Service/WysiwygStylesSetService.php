@@ -13,7 +13,7 @@ class WysiwygStylesSetService implements EntityServiceInterface
 {
     public function __construct(
         private readonly WysiwygStylesSetRepository $wysiwygStylesSetRepository,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
     ) {
     }
 

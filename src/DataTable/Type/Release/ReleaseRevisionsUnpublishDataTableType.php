@@ -37,7 +37,7 @@ class ReleaseRevisionsUnpublishDataTableType extends AbstractTableType implement
         private readonly RevisionService $revisionService,
         private readonly ElasticaService $elasticaService,
         private readonly ContentTypeService $contentTypeService,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

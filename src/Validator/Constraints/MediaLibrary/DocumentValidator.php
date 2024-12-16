@@ -30,7 +30,7 @@ class DocumentValidator extends ConstraintValidator
 
         match ($value::class) {
             MediaLibraryFile::class, MediaLibraryFolder::class => $this->existsValidation($value),
-            default => throw new UnexpectedValueException($value, MediaLibraryDocument::class)
+            default => throw new UnexpectedValueException($value, MediaLibraryDocument::class),
         };
     }
 
@@ -42,7 +42,7 @@ class DocumentValidator extends ConstraintValidator
 
         $message = match (true) {
             $value instanceof MediaLibraryFile => 'media_library.error.file_exists',
-            $value instanceof MediaLibraryFolder => 'media_library.error.folder_exists'
+            $value instanceof MediaLibraryFolder => 'media_library.error.folder_exists',
         };
 
         $this->context

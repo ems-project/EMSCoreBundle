@@ -14,7 +14,7 @@ class ObjectPickerType extends Select2Type
 {
     public function __construct(
         private readonly ObjectChoiceListFactory $choiceListFactory,
-        private readonly QuerySearchService $querySearchService
+        private readonly QuerySearchService $querySearchService,
     ) {
         parent::__construct($choiceListFactory);
     }

@@ -24,7 +24,7 @@ final class RevisionTask implements DashboardInterface
         private readonly FormFactoryInterface $formFactory,
         private readonly TaskManager $taskManager,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

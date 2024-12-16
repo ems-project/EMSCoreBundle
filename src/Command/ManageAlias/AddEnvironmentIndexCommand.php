@@ -32,7 +32,7 @@ final class AddEnvironmentIndexCommand extends AbstractCommand
     public function __construct(
         private readonly ManagedAliasManager $managedAliasManager,
         private readonly EnvironmentService $environmentService,
-        private readonly IndexService $indexService
+        private readonly IndexService $indexService,
     ) {
         parent::__construct();
     }

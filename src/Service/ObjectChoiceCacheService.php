@@ -33,7 +33,7 @@ class ObjectChoiceCacheService
         protected AuthorizationCheckerInterface $authorizationChecker,
         protected TokenStorageInterface $tokenStorage,
         private readonly ElasticaService $elasticaService,
-        private readonly QuerySearchService $querySearchName
+        private readonly QuerySearchService $querySearchName,
     ) {
     }
 

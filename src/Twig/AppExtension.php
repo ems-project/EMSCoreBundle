@@ -79,7 +79,7 @@ class AppExtension extends AbstractExtension
         private readonly ElasticaService $elasticaService,
         private readonly SearchService $searchService,
         private readonly AssetRuntime $assetRuntime,
-        protected array $assetConfig
+        protected array $assetConfig,
     ) {
     }
 
@@ -793,7 +793,7 @@ class AppExtension extends AbstractExtension
     {
         return match ($username) {
             null, '' => 'N/A',
-            default => $this->userService->searchUser($username)?->getDisplayName() ?? $username
+            default => $this->userService->searchUser($username)?->getDisplayName() ?? $username,
         };
     }
 

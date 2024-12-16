@@ -15,7 +15,7 @@ class FieldTypeService
     private ?ArrayCollection $fieldTypes = null;
 
     public function __construct(
-        private readonly FieldTypeRepository $fieldTypeRepository
+        private readonly FieldTypeRepository $fieldTypeRepository,
     ) {
     }
 

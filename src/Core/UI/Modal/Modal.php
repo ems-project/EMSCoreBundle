@@ -14,7 +14,7 @@ class Modal implements \JsonSerializable
     public function __construct(
         public ?string $title = null,
         public ?string $body = null,
-        public ?string $footer = null
+        public ?string $footer = null,
     ) {
     }
 

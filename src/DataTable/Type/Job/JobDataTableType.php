@@ -21,7 +21,7 @@ class JobDataTableType extends AbstractEntityTableType
 
     public function __construct(
         JobService $jobService,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
         parent::__construct($jobService);
     }

@@ -19,7 +19,7 @@ class RevisionAuditDataTableType extends AbstractEntityTableType
 {
     public function __construct(
         LogManager $logManager,
-        private readonly RevisionService $revisionService
+        private readonly RevisionService $revisionService,
     ) {
         parent::__construct($logManager);
     }

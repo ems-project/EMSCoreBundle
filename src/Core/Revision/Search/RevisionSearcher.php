@@ -24,7 +24,7 @@ final class RevisionSearcher
         private readonly ElasticaService $elasticaService,
         private readonly RevisionRepository $revisionRepository,
         private readonly EntityManagerInterface $entityManager,
-        string $defaultScrollSize
+        string $defaultScrollSize,
     ) {
         $this->setSize((int) $defaultScrollSize);
     }

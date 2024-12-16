@@ -40,7 +40,7 @@ class DashboardOptionsType extends AbstractType
         match ($dashboard::class) {
             Export::class => $this->buildForExport($builder) ,
             Template::class => $this->buildForTemplate($builder),
-            default => null
+            default => null,
         };
     }
 

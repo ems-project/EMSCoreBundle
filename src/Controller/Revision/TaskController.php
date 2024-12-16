@@ -31,7 +31,7 @@ final class TaskController extends AbstractController
         private readonly AjaxService $ajax,
         private readonly FormFactoryInterface $formFactory,
         private readonly string $coreDateFormat,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

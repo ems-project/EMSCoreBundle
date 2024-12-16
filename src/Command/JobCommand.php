@@ -33,7 +33,7 @@ class JobCommand extends AbstractCommand
         private readonly JobService $jobService,
         private readonly ReleaseService $releaseService,
         private readonly string $dateFormat,
-        private readonly string $cleanJobsTimeString
+        private readonly string $cleanJobsTimeString,
     ) {
         parent::__construct();
     }

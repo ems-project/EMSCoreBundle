@@ -20,7 +20,7 @@ class ViewManager implements EntityServiceInterface
 {
     public function __construct(
         private readonly ViewRepository $viewRepository,
-        private readonly LocalizedLoggerInterface $logger
+        private readonly LocalizedLoggerInterface $logger,
     ) {
     }
 

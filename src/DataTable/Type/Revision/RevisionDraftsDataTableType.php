@@ -35,7 +35,7 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
         private readonly RevisionRepository $revisionRepository,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly ContentTypeService $contentTypeService,
-        private readonly UserService $userService
+        private readonly UserService $userService,
     ) {
     }
 

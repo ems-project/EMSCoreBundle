@@ -30,7 +30,7 @@ final class ScheduleController extends AbstractController
         private readonly DataTableFactory $dataTableFactory,
         private readonly LocalizedLoggerInterface $logger,
         private readonly FlashMessageLogger $flashMessageLogger,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 
@@ -48,7 +48,7 @@ final class ScheduleController extends AbstractController
                 TableType::REORDER_ACTION => $this->scheduleManager->reorderByIds(
                     ids: TableType::getReorderedKeys($form->getName(), $request)
                 ),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::SCHEDULE_INDEX);

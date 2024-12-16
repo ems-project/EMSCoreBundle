@@ -18,7 +18,7 @@ abstract class AbstractMediaLibraryCommand extends AbstractCommand
 
     public function __construct(
         private readonly MediaLibraryConfigFactory $configFactory,
-        protected readonly MediaLibraryService $mediaLibraryService
+        protected readonly MediaLibraryService $mediaLibraryService,
     ) {
         parent::__construct();
     }

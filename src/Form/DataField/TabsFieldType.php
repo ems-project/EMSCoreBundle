@@ -71,7 +71,7 @@ class TabsFieldType extends DataFieldType
             $iterator->uasort(fn (FieldType $a, FieldType $b) => match (true) {
                 $a->getName() === $userLanguage => -1,
                 $b->getName() === $userLanguage => 1,
-                default => 0
+                default => 0,
             });
             $children = new ArrayCollection(\iterator_to_array($iterator));
         }

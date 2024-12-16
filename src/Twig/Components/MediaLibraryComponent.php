@@ -15,7 +15,7 @@ final class MediaLibraryComponent
 {
     public function __construct(
         private readonly MediaLibraryConfigFactory $mediaLibraryConfigFactory,
-        private readonly MediaLibraryTemplateFactory $templateFactory
+        private readonly MediaLibraryTemplateFactory $templateFactory,
     ) {
     }
 

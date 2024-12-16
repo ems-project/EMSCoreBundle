@@ -97,7 +97,7 @@ class DataService
         private readonly SearchService $searchService,
         private readonly IndexService $indexService,
         private readonly bool $preGeneratedOuuids,
-        private readonly PostProcessingService $postProcessingService
+        private readonly PostProcessingService $postProcessingService,
     ) {
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();

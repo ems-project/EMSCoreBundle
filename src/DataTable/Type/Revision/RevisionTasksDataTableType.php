@@ -39,7 +39,7 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
 
     public function __construct(
         TasksDataTableQueryService $queryService,
-        private readonly TaskRepository $taskRepository
+        private readonly TaskRepository $taskRepository,
     ) {
         parent::__construct($queryService);
     }
@@ -54,7 +54,7 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
 
         match ($this->format) {
             DataTableFormat::TABLE => $this->buildTable($table, $context),
-            DataTableFormat::EXCEL, DataTableFormat::CSV => $this->buildExport($table, $context)
+            DataTableFormat::EXCEL, DataTableFormat::CSV => $this->buildExport($table, $context),
         };
     }
 

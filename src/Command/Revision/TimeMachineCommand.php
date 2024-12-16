@@ -45,7 +45,7 @@ final class TimeMachineCommand extends Command
         private readonly RevisionService $revisionService,
         private readonly DataService $dataService,
         Registry $doctrine,
-        private readonly IndexService $indexService
+        private readonly IndexService $indexService,
     ) {
         parent::__construct();
         $this->em = $doctrine->getManager();

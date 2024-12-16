@@ -42,7 +42,7 @@ class EnvironmentService implements EntityServiceInterface
         private readonly LoggerInterface $logger,
         private readonly ElasticaService $elasticaService,
         private readonly AliasService $aliasService,
-        private readonly string $instanceId
+        private readonly string $instanceId,
     ) {
         $environmentRepository = $doctrine->getRepository(Environment::class);
         if (!$environmentRepository instanceof EnvironmentRepository) {

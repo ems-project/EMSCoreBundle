@@ -19,7 +19,7 @@ class UserDataTableType extends AbstractEntityTableType
 {
     public function __construct(
         UserService $entityService,
-        private readonly ?string $circleObject
+        private readonly ?string $circleObject,
     ) {
         parent::__construct($entityService);
     }

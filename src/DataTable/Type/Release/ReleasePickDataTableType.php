@@ -22,7 +22,7 @@ class ReleasePickDataTableType extends AbstractEntityTableType
     public function __construct(
         ReleaseService $releaseService,
         private readonly RevisionService $revisionService,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
         parent::__construct($releaseService);
     }

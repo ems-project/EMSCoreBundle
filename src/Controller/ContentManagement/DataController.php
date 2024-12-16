@@ -72,7 +72,7 @@ class DataController extends AbstractController
         private readonly TemplateRepository $templateRepository,
         private readonly EnvironmentRepository $environmentRepository,
         private readonly FlashMessageLogger $flashMessageLogger,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

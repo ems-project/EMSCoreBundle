@@ -17,7 +17,7 @@ class AjaxPasteController
 {
     public function __construct(
         private readonly WysiwygProfileService $wysiwygProfileService,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
     ) {
     }
 

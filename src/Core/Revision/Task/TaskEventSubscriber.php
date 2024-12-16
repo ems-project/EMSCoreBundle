@@ -10,7 +10,7 @@ final class TaskEventSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly TaskManager $taskManager,
-        private readonly TaskMailer $taskMailer
+        private readonly TaskMailer $taskMailer,
     ) {
     }
 

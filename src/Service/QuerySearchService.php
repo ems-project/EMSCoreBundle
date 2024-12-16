@@ -28,7 +28,7 @@ final class QuerySearchService implements EntityServiceInterface
         private readonly ElasticaService $elasticaService,
         private readonly QuerySearchRepository $querySearchRepository,
         private readonly LoggerInterface $logger,
-        private readonly EnvironmentService $environmentService
+        private readonly EnvironmentService $environmentService,
     ) {
     }
 

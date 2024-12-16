@@ -31,7 +31,7 @@ class ViewController extends AbstractController
         private readonly DataTableFactory $dataTableFactory,
         private readonly LocalizedLoggerInterface $logger,
         private readonly FlashMessageLogger $flashMessageLogger,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 
@@ -52,7 +52,7 @@ class ViewController extends AbstractController
                 TableType::REORDER_ACTION => $this->viewManager->reorderByIds(
                     ...TableType::getReorderedKeys($form->getName(), $request)
                 ),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_VIEW_INDEX, [

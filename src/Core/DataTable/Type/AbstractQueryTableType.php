@@ -10,7 +10,7 @@ use EMS\CoreBundle\Service\QueryServiceInterface;
 abstract class AbstractQueryTableType extends AbstractTableType
 {
     public function __construct(
-        private readonly QueryServiceInterface $queryService
+        private readonly QueryServiceInterface $queryService,
     ) {
     }
 

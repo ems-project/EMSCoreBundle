@@ -24,7 +24,7 @@ class ContentTypeActionDataTableType extends AbstractEntityTableType
 
     public function __construct(
         ActionService $entityService,
-        private readonly ContentTypeService $contentTypeService
+        private readonly ContentTypeService $contentTypeService,
     ) {
         parent::__construct($entityService);
     }

@@ -24,7 +24,7 @@ class JsonMenuNestedConfig implements ConfigInterface
         private readonly string $id,
         public readonly Revision $revision,
         public readonly JsonMenuNested $jsonMenuNested,
-        public readonly JsonMenuNestedNodes $nodes
+        public readonly JsonMenuNestedNodes $nodes,
     ) {
     }
 

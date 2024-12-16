@@ -30,7 +30,7 @@ class UserService implements EntityServiceInterface
         private readonly UserRepository $userRepository,
         private readonly SearchRepository $searchRepository,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
-        private readonly array $securityRoles
+        private readonly array $securityRoles,
     ) {
     }
 

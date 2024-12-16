@@ -17,7 +17,7 @@ class JsonMenuNestedTemplate extends AbstractComponentTemplate
         Environment $twig,
         JsonMenuNestedConfig $config,
         string $templateNamespace,
-        array $context = []
+        array $context = [],
     ) {
         parent::__construct(
             $twig,

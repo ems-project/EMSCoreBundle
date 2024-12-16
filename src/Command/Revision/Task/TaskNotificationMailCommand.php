@@ -30,7 +30,7 @@ final class TaskNotificationMailCommand extends AbstractCommand
 
     public function __construct(
         private readonly TaskManager $taskManager,
-        private readonly TaskMailer $taskMailer
+        private readonly TaskMailer $taskMailer,
     ) {
         parent::__construct();
     }

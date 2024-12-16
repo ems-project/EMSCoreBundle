@@ -26,7 +26,7 @@ class TaskMailer
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly TranslatorInterface $translator,
         private readonly ?string $urlUser,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

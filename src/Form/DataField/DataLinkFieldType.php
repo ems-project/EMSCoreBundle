@@ -32,7 +32,7 @@ class DataLinkFieldType extends DataFieldType
         AuthorizationCheckerInterface $authorizationChecker,
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
-        protected EventDispatcherInterface $dispatcher
+        protected EventDispatcherInterface $dispatcher,
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }

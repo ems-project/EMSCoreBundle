@@ -26,7 +26,7 @@ class VersionTagFieldType extends DataFieldType
         ElasticsearchService $elasticsearchService,
         private readonly RevisionService $revisionService,
         private readonly EnvironmentService $environmentService,
-        private readonly ContentTypeService $contentTypeService
+        private readonly ContentTypeService $contentTypeService,
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }

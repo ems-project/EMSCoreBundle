@@ -35,7 +35,7 @@ class ActionImportController
         private readonly RevisionService $revisionService,
         private readonly Environment $twig,
         private readonly LoggerInterface $logger,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 
@@ -91,7 +91,7 @@ class ActionImportController
 
         $importRawData = match ($config['type']) {
             'jsonMenuNested' => [$config['field'] => Json::encode($rows)],
-            default => throw new \Exception(\sprintf('Not supported import type "%s"', $config['type']))
+            default => throw new \Exception(\sprintf('Not supported import type "%s"', $config['type'])),
         };
 
         $this->revisionService->updateRawData($revision, $importRawData);

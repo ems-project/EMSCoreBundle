@@ -15,7 +15,7 @@ readonly class ConfigValueResolver implements ValueResolverInterface
      * @param ServiceLocator<ConfigFactoryInterface> $configFactories
      */
     public function __construct(
-        private ServiceLocator $configFactories
+        private ServiceLocator $configFactories,
     ) {
     }
 

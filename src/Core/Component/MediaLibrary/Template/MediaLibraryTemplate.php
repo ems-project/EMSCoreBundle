@@ -17,7 +17,7 @@ class MediaLibraryTemplate extends AbstractComponentTemplate
         Environment $twig,
         MediaLibraryConfig $config,
         string $templateNamespace,
-        array $context = []
+        array $context = [],
     ) {
         parent::__construct(
             $twig,

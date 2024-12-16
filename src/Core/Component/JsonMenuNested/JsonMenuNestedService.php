@@ -28,7 +28,7 @@ class JsonMenuNestedService
         private readonly RevisionService $revisionService,
         private readonly UserService $userService,
         private readonly ElasticaService $elasticaService,
-        private readonly RequestStack $requestStack
+        private readonly RequestStack $requestStack,
     ) {
     }
 

@@ -22,7 +22,7 @@ final class TaskDTO
     public ?int $delay = null;
 
     public function __construct(
-        private readonly string $coreDateFormat
+        private readonly string $coreDateFormat,
     ) {
     }
 

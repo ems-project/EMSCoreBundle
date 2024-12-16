@@ -23,7 +23,7 @@ class JsonClass implements \JsonSerializable
         private array $properties,
         private readonly string $class,
         private readonly array $constructorArguments = [],
-        private array $replacedFields = []
+        private array $replacedFields = [],
     ) {
         $proxyFields = ['__initializer__', '__cloner__', '__isInitialized__'];
         $this->properties = \array_filter(

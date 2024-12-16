@@ -25,7 +25,7 @@ class FormFieldType extends DataFieldType
         protected FormRegistryInterface $formRegistry,
         protected ElasticsearchService $elasticsearchService,
         protected FieldTypeType $fieldTypeType,
-        protected FormManager $formManager
+        protected FormManager $formManager,
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }

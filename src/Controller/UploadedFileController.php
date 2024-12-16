@@ -26,7 +26,7 @@ class UploadedFileController extends AbstractController
         private readonly LocalizedLoggerInterface $logger,
         private readonly FileService $fileService,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 
@@ -47,7 +47,7 @@ class UploadedFileController extends AbstractController
             match ($this->getClickedButtonName($form)) {
                 TableAbstract::DELETE_ACTION => $this->fileService->deleteByIds($fileIds),
                 UploadedAssetAdminDataTableType::TOGGLE_VISIBILITY_ACTION => $this->fileService->toggleFileEntitiesVisibility($fileIds),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::UPLOAD_ASSET_ADMIN_OVERVIEW);
@@ -97,7 +97,7 @@ class UploadedFileController extends AbstractController
 
             match ($this->getClickedButtonName($form)) {
                 UploadedAssetDataTableType::HIDE_ACTION => $this->fileService->hideByHashes($table->getSelected()),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::UPLOAD_ASSET_PUBLISHER_OVERVIEW);

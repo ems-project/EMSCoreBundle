@@ -10,7 +10,7 @@ use EMS\CoreBundle\Service\EntityServiceInterface;
 abstract class AbstractEntityTableType extends AbstractTableType
 {
     public function __construct(
-        private readonly EntityServiceInterface $entityService
+        private readonly EntityServiceInterface $entityService,
     ) {
     }
 

@@ -23,7 +23,7 @@ class ReleaseRevisionDataTableType extends AbstractEntityTableType
     public function __construct(
         ReleaseRevisionService $releaseRevisionService,
         private readonly ReleaseService $releaseService,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
         parent::__construct($releaseRevisionService);
     }

@@ -23,7 +23,7 @@ class EnvironmentManagedAliasDataTableType extends AbstractTableType implements 
 
     public function __construct(
         private readonly AliasService $aliasService,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

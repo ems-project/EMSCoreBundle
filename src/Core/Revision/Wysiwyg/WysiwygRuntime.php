@@ -18,7 +18,7 @@ final class WysiwygRuntime implements RuntimeExtensionInterface
         private readonly WysiwygStylesSetService $wysiwygStylesSetService,
         private readonly UserManager $userManager,
         private readonly UrlGeneratorInterface $urlGenerator,
-        private readonly DashboardManager $dashboardManager
+        private readonly DashboardManager $dashboardManager,
     ) {
     }
 

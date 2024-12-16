@@ -32,7 +32,7 @@ class ContentTypeSettings implements \ArrayAccess
         foreach (self::SETTINGS as $field) {
             $this->settings[$field] = match ($field) {
                 self::TASKS_TITLES => $data[$field] ?? [],
-                default => $data[$field] ?? false
+                default => $data[$field] ?? false,
             };
         }
     }

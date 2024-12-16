@@ -22,7 +22,7 @@ class ContentTypeUnreferencedDataTableType extends AbstractTableType implements 
 
     public function __construct(
         private readonly ContentTypeService $contentTypeService,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

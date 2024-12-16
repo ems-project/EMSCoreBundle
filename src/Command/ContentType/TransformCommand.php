@@ -37,7 +37,7 @@ final class TransformCommand extends AbstractCommand
     public function __construct(
         private readonly RevisionSearcher $revisionSearcher,
         private readonly ContentTypeService $contentTypeService,
-        private readonly ContentTransformer $contentTransformer
+        private readonly ContentTransformer $contentTransformer,
     ) {
         parent::__construct();
     }

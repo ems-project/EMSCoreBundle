@@ -145,12 +145,12 @@ class RevisionService implements RevisionServiceInterface
 
         $contentType = match (true) {
             ($object instanceof Revision) => $object->giveContentType(),
-            ($object instanceof DocumentInterface) => $this->contentTypeService->giveByName($object->getContentType())
+            ($object instanceof DocumentInterface) => $this->contentTypeService->giveByName($object->getContentType()),
         };
 
         $rawData = match (true) {
             ($object instanceof Revision) => $object->getRawData(),
-            ($object instanceof DocumentInterface) => $object->getSource()
+            ($object instanceof DocumentInterface) => $object->getSource(),
         };
 
         $expression ??= $contentType->getFields()[ContentTypeFields::DISPLAY];
@@ -174,7 +174,7 @@ class RevisionService implements RevisionServiceInterface
                 domain: 'emsco-core'
             )->trans($this->translator),
             ($object instanceof Revision) => $object->giveOuuid(),
-            ($object instanceof DocumentInterface) => $object->getId()
+            ($object instanceof DocumentInterface) => $object->getId(),
         };
     }
 

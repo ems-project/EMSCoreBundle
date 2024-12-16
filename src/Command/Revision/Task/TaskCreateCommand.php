@@ -55,7 +55,7 @@ final class TaskCreateCommand extends AbstractCommand
         private readonly EnvironmentService $environmentService,
         private readonly UserService $userService,
         private readonly TaskManager $taskManager,
-        private readonly string $coreDateFormat
+        private readonly string $coreDateFormat,
     ) {
         parent::__construct();
     }

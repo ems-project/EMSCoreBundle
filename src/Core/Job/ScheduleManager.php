@@ -16,7 +16,7 @@ class ScheduleManager implements EntityServiceInterface
 {
     public function __construct(
         private readonly ScheduleRepository $scheduleRepository,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
     ) {
     }
 

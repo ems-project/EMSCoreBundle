@@ -54,7 +54,7 @@ class MediaLibraryService
         private readonly MediaLibraryConfigFactory $configFactory,
         private readonly MediaLibraryTemplateFactory $templateFactory,
         private readonly MediaLibraryFileFactory $fileFactory,
-        private readonly MediaLibraryFolderFactory $folderFactory
+        private readonly MediaLibraryFolderFactory $folderFactory,
     ) {
     }
 
@@ -101,7 +101,7 @@ class MediaLibraryService
 
         match (true) {
             $document instanceof MediaLibraryFile => $query->addMust($existsFile),
-            $document instanceof MediaLibraryFolder => $query->addMustNot($existsFile)
+            $document instanceof MediaLibraryFolder => $query->addMustNot($existsFile),
         };
 
         $search = $this->buildSearch($query, false);

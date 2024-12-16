@@ -38,7 +38,7 @@ trait RevisionTaskTrait
             $this->taskCurrent?->getId() === $task->getId() => true,
             \in_array($task->getId(), $this->getTaskPlannedIds(), true) => true,
             \in_array($task->getId(), $this->getTaskApprovedIds(), true) => true,
-            default => false
+            default => false,
         };
     }
 

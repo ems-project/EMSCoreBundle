@@ -56,7 +56,7 @@ class ElasticaTable extends TableAbstract
         private readonly string $rowContext,
         private readonly array $defaultSort,
         private readonly bool $protected,
-        private readonly bool $checkable
+        private readonly bool $checkable,
     ) {
         parent::__construct($ajaxUrl, 0, 0);
         $this->setExportFileName($filename);

@@ -27,7 +27,7 @@ class I18nController extends AbstractController
         private readonly I18nService $i18nService,
         private readonly DataTableFactory $dataTableFactory,
         private readonly LocalizedLoggerInterface $logger,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 
@@ -95,7 +95,7 @@ class I18nController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             match ($this->getClickedButtonName($form)) {
                 TableAbstract::DELETE_ACTION => $this->i18nService->deleteByIds(...$table->getSelected()),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::FILTER_INDEX);

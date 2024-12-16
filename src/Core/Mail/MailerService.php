@@ -21,7 +21,7 @@ class MailerService
         private readonly MailerInterface $mailer,
         private readonly Environment $templating,
         private readonly TranslatorInterface $translator,
-        array $sender
+        array $sender,
     ) {
         $this->from = new Address($sender['address'], $sender['sender_name']);
     }

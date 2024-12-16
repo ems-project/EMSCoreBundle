@@ -17,7 +17,7 @@ final class TaskCollection implements \IteratorAggregate
      */
     public function __construct(
         private readonly Revision $revision,
-        private readonly array $tasks = []
+        private readonly array $tasks = [],
     ) {
     }
 

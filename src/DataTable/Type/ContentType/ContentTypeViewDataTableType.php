@@ -27,7 +27,7 @@ class ContentTypeViewDataTableType extends AbstractEntityTableType
     public function __construct(
         ViewManager $entityService,
         private readonly ContentTypeService $contentTypeService,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
         parent::__construct($entityService);
     }

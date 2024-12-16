@@ -18,7 +18,7 @@ final class TableRenderer
     public function __construct(
         private readonly Environment $twig,
         private readonly TranslatorInterface $translator,
-        private readonly ElasticaLogger $elasticaLogger
+        private readonly ElasticaLogger $elasticaLogger,
     ) {
     }
 

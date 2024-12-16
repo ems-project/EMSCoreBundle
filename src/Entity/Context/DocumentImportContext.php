@@ -16,7 +16,7 @@ class DocumentImportContext
         private readonly bool $shouldRawImport,
         private readonly bool $shouldIndexInDefaultEnv,
         private readonly bool $shouldFinalize,
-        private readonly bool $shouldForce
+        private readonly bool $shouldForce,
     ) {
         $this->environment = $this->contentType->giveEnvironment();
     }

@@ -28,7 +28,7 @@ class CrudController extends AbstractController
         private readonly UserService $userService,
         private readonly DataService $dataService,
         private readonly ContentTypeService $contentTypeService,
-        private readonly FlashMessageLogger $flashMessageLogger
+        private readonly FlashMessageLogger $flashMessageLogger,
     ) {
     }
 

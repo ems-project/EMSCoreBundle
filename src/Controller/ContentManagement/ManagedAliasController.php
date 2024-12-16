@@ -20,7 +20,7 @@ class ManagedAliasController extends AbstractController
         private readonly AliasService $aliasService,
         private readonly ManagedAliasRepository $managedAliasRepository,
         private readonly string $instanceId,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

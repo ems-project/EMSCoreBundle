@@ -28,7 +28,7 @@ class IndexedAssetFieldType extends DataFieldType
         AuthorizationCheckerInterface $authorizationChecker,
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
-        private readonly FileService $fileService
+        private readonly FileService $fileService,
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }

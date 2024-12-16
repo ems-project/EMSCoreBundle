@@ -33,7 +33,7 @@ class EnvironmentController extends AbstractController
         private readonly PublishService $publishService,
         private readonly RevisionRepository $revisionRepository,
         private readonly int $pagingSize,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

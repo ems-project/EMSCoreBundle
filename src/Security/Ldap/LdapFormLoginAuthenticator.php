@@ -29,7 +29,7 @@ class LdapFormLoginAuthenticator extends AbstractLoginFormAuthenticator
     public function __construct(
         private readonly LdapConfig $ldapConfig,
         private readonly LdapUserProvider $ldapUserProvider,
-        private readonly UrlGeneratorInterface $urlGenerator
+        private readonly UrlGeneratorInterface $urlGenerator,
     ) {
     }
 

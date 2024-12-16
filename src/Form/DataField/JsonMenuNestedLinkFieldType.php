@@ -35,7 +35,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         private readonly ElasticaService $elasticaService,
         private readonly EnvironmentService $environmentService,
         private readonly Environment $twig,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
@@ -237,7 +237,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         array $jmnTypes = [],
         bool $jmnUnique = false,
         array $rawData = [],
-        bool $migration = false
+        bool $migration = false,
     ): array {
         if (null === $jmnQuery || null === $jmnField) {
             return [];

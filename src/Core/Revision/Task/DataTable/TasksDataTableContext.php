@@ -14,7 +14,7 @@ class TasksDataTableContext
 
     public function __construct(
         public readonly string $tab,
-        public bool $showVersionTagColumn
+        public bool $showVersionTagColumn,
     ) {
         $this->filters = new TasksDataTableFilters();
     }

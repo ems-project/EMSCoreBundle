@@ -29,7 +29,7 @@ class ContentTypeDataTableType extends AbstractTableType implements QueryService
     public function __construct(
         private readonly ContentTypeRepository $contentTypeRepository,
         private readonly ContentTypeService $contentTypeService,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

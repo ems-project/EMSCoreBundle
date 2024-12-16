@@ -31,7 +31,7 @@ abstract class DataFieldType extends AbstractType
     public function __construct(
         protected AuthorizationCheckerInterface $authorizationChecker,
         protected FormRegistryInterface $formRegistry,
-        protected ElasticsearchService $elasticsearchService
+        protected ElasticsearchService $elasticsearchService,
     ) {
     }
 

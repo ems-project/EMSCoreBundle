@@ -193,7 +193,7 @@ class UploadedAssetRepository extends EntityRepository
     public function makeQueryBuilder(
         ?bool $hidden = null,
         ?bool $available = null,
-        string $searchValue = ''
+        string $searchValue = '',
     ): QueryBuilder {
         $qb = $this->createQueryBuilder('ua');
 

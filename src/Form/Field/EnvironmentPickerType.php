@@ -36,7 +36,7 @@ class EnvironmentPickerType extends ChoiceType
             $defaultEnvironmentIds = $this->environmentService->getDefaultEnvironmentIds();
             $filterDefaultEnvironments = \array_filter($environments, static fn (Environment $e) => match ($defaultEnvironment) {
                 true => $defaultEnvironmentIds->contains($e->getId()),
-                false => !$defaultEnvironmentIds->contains($e->getId())
+                false => !$defaultEnvironmentIds->contains($e->getId()),
             });
 
             if (\count($filterDefaultEnvironments) > 0) {

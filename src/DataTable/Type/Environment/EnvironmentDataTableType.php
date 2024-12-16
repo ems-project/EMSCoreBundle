@@ -22,7 +22,7 @@ class EnvironmentDataTableType extends AbstractEntityTableType
 
     public function __construct(
         private readonly EnvironmentService $environmentService,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
         parent::__construct($this->environmentService);
     }

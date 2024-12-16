@@ -39,7 +39,7 @@ final class JsonMenuNestedDefinition
         private readonly Environment $twig,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly UrlGeneratorInterface $urlGenerator,
-        array $options = []
+        array $options = [],
     ) {
         $this->fieldType = $options['field_type'];
 

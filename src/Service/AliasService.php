@@ -32,7 +32,7 @@ class AliasService
         private readonly Client $elasticaClient,
         private readonly EnvironmentRepository $envRepo,
         private readonly ManagedAliasRepository $managedAliasRepo,
-        private readonly ElasticaService $elasticaService
+        private readonly ElasticaService $elasticaService,
     ) {
     }
 

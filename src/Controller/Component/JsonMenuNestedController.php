@@ -33,7 +33,7 @@ class JsonMenuNestedController
         private readonly JsonMenuNestedService $jsonMenuNestedService,
         private readonly DataService $dataService,
         private readonly FormFactory $formFactory,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
     ) {
     }
 

@@ -28,7 +28,7 @@ class MenuEntry
         private readonly string $icon,
         private string $route,
         private array $routeParameters = [],
-        private readonly ?string $color = null
+        private readonly ?string $color = null,
     ) {
     }
 

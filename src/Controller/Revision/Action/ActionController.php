@@ -72,7 +72,7 @@ class ActionController
             return match ($action->getRenderOption()) {
                 RenderOptionType::PDF => $this->generatePdfResponse($action, $filename, $content),
                 RenderOptionType::EXPORT => $this->generateExportResponse($action, $filename, $content),
-                default => throw new \Exception('Render options not supported')
+                default => throw new \Exception('Render options not supported'),
             };
         }
 

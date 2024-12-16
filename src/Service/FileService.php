@@ -31,7 +31,7 @@ class FileService implements EntityServiceInterface
         private readonly Registry $doctrine,
         private readonly StorageManager $storageManager,
         private readonly Processor $processor,
-        private readonly UploadedAssetRepository $uploadedAssetRepository
+        private readonly UploadedAssetRepository $uploadedAssetRepository,
     ) {
     }
 

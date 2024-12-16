@@ -21,7 +21,7 @@ class FieldTypeTreeItem implements \IteratorAggregate, \Stringable
      */
     public function __construct(
         private readonly FieldType $fieldType,
-        ArrayCollection $fieldTypes
+        ArrayCollection $fieldTypes,
     ) {
         $this->name = $this->fieldType->getName();
         $children = [];

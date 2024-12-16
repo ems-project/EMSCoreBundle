@@ -39,7 +39,7 @@ class PublishService
         private readonly EventDispatcherInterface $dispatcher,
         private readonly LoggerInterface $logger,
         private readonly LoggerInterface $auditLogger,
-        private readonly Bulker $bulker
+        private readonly Bulker $bulker,
     ) {
         /** @var RevisionRepository $revRepository */
         $revRepository = $this->doctrine->getManager()->getRepository(Revision::class);

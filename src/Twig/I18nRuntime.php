@@ -12,7 +12,7 @@ class I18nRuntime implements RuntimeExtensionInterface
 {
     public function __construct(
         private readonly I18nService $i18nService,
-        private readonly UserManager $userManager
+        private readonly UserManager $userManager,
     ) {
     }
 

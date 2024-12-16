@@ -29,7 +29,7 @@ class MediaLibraryController
         private readonly AjaxService $ajax,
         private readonly TranslatorInterface $translator,
         private readonly FormFactory $formFactory,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

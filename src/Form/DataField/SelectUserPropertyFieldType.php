@@ -25,7 +25,7 @@ final class SelectUserPropertyFieldType extends DataFieldType
         private readonly UserService $userService,
         AuthorizationCheckerInterface $authorizationChecker,
         FormRegistryInterface $formRegistry,
-        ElasticsearchService $elasticsearchService
+        ElasticsearchService $elasticsearchService,
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }

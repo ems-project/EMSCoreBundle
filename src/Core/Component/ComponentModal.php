@@ -16,7 +16,7 @@ class ComponentModal
 
     public function __construct(
         public readonly AbstractComponentTemplate $template,
-        private readonly string $modalName
+        private readonly string $modalName,
     ) {
         $this->modal = new Modal();
         $this->blockTitle = $this->modalName.'_title';

@@ -26,7 +26,7 @@ final class TableAction
         string $name,
         string $icon,
         string|TranslatableMessage $labelKey,
-        string|TranslatableMessage|null $confirmationKey = null
+        string|TranslatableMessage|null $confirmationKey = null,
     ): self {
         if (!$labelKey instanceof TranslatableMessage) {
             $labelKey = new TranslatableMessage($labelKey, [], EMSCoreBundle::TRANS_DOMAIN);

@@ -24,7 +24,7 @@ class CalendarController extends AbstractController
         private readonly ElasticaService $elasticaService,
         private readonly DataService $dataService,
         private readonly SearchService $searchService,
-        private readonly FlashMessageLogger $flashMessageLogger
+        private readonly FlashMessageLogger $flashMessageLogger,
     ) {
     }
 

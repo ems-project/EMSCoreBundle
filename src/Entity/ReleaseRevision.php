@@ -19,7 +19,7 @@ class ReleaseRevision implements EntityInterface
     public function __construct(
         private readonly Release $release,
         private Revision $revision,
-        ReleaseRevisionType $type
+        ReleaseRevisionType $type,
     ) {
         $this->revisionOuuid = $this->revision->giveOuuid();
         $this->contentType = $this->revision->giveContentType();

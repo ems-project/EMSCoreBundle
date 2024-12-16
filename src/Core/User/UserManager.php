@@ -25,7 +25,7 @@ class UserManager
         private readonly MailerService $mailerService,
         private readonly UserRepository $userRepository,
         private readonly UserPasswordHasherInterface $userPasswordHasher,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

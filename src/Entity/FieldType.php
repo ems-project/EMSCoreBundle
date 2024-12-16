@@ -33,7 +33,6 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     protected ?array $options = [];
     /** @var int */
     protected $orderKey = 0;
-    /** @var ?FieldType */
     protected ?FieldType $parent = null;
     /** @var Collection<int, FieldType> */
     protected Collection $children;

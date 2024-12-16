@@ -28,7 +28,7 @@ class TrashController extends AbstractController
         private readonly DataService $dataService,
         private readonly DataTableFactory $dataTableFactory,
         private readonly LocalizedLoggerInterface $logger,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 
@@ -53,7 +53,7 @@ class TrashController extends AbstractController
                     $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'));
 
                     return $this->redirectToRoute(Routes::DATA_TRASH, ['contentType' => $contentType->getId()]);
-                })()
+                })(),
             };
         }
 

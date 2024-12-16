@@ -78,7 +78,7 @@ class DataTableFactory
             $type instanceof AbstractEntityTableType => $this->buildEntityTable($type, $ajaxUrl, $context),
             $type instanceof AbstractQueryTableType => $this->buildQueryTable($type, $ajaxUrl, $context),
             $type instanceof QueryServiceTypeInterface => $this->buildQueryServiceType($type, $ajaxUrl, $context),
-            default => throw new \RuntimeException('Unknown dataTableType')
+            default => throw new \RuntimeException('Unknown dataTableType'),
         };
 
         $table->setFilterForm($filterForm);

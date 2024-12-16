@@ -11,7 +11,7 @@ enum ViewDefinition: string
     public function getIcon(): string
     {
         return match ($this) {
-            self::DEFAULT_OVERVIEW => 'fa fa-list'
+            self::DEFAULT_OVERVIEW => 'fa fa-list',
         };
     }
 }

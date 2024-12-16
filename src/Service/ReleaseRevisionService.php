@@ -20,7 +20,7 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
         private readonly ReleaseRevisionRepository $releaseRevisionRepository,
         private readonly RevisionRepository $revisionRepository,
         private readonly LoggerInterface $logger,
-        private readonly ContentTypeService $contentTypeService
+        private readonly ContentTypeService $contentTypeService,
     ) {
     }
 

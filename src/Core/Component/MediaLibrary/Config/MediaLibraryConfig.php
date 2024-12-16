@@ -53,7 +53,7 @@ class MediaLibraryConfig implements ConfigInterface
         public readonly string $fieldPath,
         public readonly string $fieldFolder,
         public readonly string $fieldFile,
-        private readonly array $sort = []
+        private readonly array $sort = [],
     ) {
     }
 

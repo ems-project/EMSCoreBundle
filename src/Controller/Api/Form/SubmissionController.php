@@ -25,7 +25,7 @@ final class SubmissionController extends AbstractController
 {
     public function __construct(
         private readonly FormSubmissionService $formSubmissionService,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
     ) {
     }
 

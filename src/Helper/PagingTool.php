@@ -26,7 +26,7 @@ class PagingTool
         private readonly EntityRepository $repository,
         private readonly string $paginationPath,
         string $defaultOrderField,
-        private readonly int $pageSize
+        private readonly int $pageSize,
     ) {
         $this->lastPage = (int) \ceil(\count($repository->findAll()) / $pageSize);
         $this->page = $request->query->getInt('page', 1);

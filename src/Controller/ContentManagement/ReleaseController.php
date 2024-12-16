@@ -32,7 +32,7 @@ final class ReleaseController extends AbstractController
         private readonly LoggerInterface $logger,
         private readonly ReleaseService $releaseService,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 
@@ -98,7 +98,7 @@ final class ReleaseController extends AbstractController
 
             return match ($this->getClickedButtonName($releaseForm)) {
                 ReleaseType::BTN_SAVE_CLOSE => $this->redirectToRoute(Routes::RELEASE_INDEX, ['release' => $release->getId()]),
-                default => $this->redirectToRoute(Routes::RELEASE_EDIT, ['release' => $release->getId()])
+                default => $this->redirectToRoute(Routes::RELEASE_EDIT, ['release' => $release->getId()]),
             };
         }
 
@@ -157,7 +157,7 @@ final class ReleaseController extends AbstractController
         match ($type) {
             'publish' => $this->releaseService->addRevisionForPublish($release, $revision),
             'unpublish' => $this->releaseService->addRevisionForUnpublish($release, $revision),
-            default => throw new \RuntimeException('invalid type')
+            default => throw new \RuntimeException('invalid type'),
         };
 
         return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
@@ -181,7 +181,7 @@ final class ReleaseController extends AbstractController
 
         $tableType = match ($releaseType) {
             ReleaseRevisionType::PUBLISH => ReleaseRevisionsPublishDataTableType::class,
-            ReleaseRevisionType::UNPUBLISH => ReleaseRevisionsUnpublishDataTableType::class
+            ReleaseRevisionType::UNPUBLISH => ReleaseRevisionsUnpublishDataTableType::class,
         };
         $table = $this->dataTableFactory->create($tableType, ['release_id' => $release->getId()]);
 

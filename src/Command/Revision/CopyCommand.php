@@ -38,7 +38,7 @@ final class CopyCommand extends AbstractCommand
     public function __construct(
         private readonly RevisionSearcher $revisionSearcher,
         private readonly EnvironmentService $environmentService,
-        private readonly RevisionService $revisionService
+        private readonly RevisionService $revisionService,
     ) {
         parent::__construct();
     }

@@ -18,7 +18,7 @@ final class UploadedFileWysiwygController extends AbstractController
     public function __construct(
         private readonly AjaxService $ajax,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

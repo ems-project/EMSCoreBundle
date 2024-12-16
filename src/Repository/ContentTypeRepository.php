@@ -91,7 +91,7 @@ class ContentTypeRepository extends EntityRepository
         ?bool $isActive = null,
         ?bool $isDirty = null,
         ?bool $isDeleted = false,
-        string $searchValue = ''
+        string $searchValue = '',
     ): QueryBuilder {
         $qb = $this->createQueryBuilder('c');
         $qb->join('c.environment', 'e');

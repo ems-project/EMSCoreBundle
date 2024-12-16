@@ -1006,7 +1006,7 @@ class RevisionRepository extends EntityRepository
         ?bool $isDraft = false,
         ?bool $isAdmin = null,
         array $circles = [],
-        string $searchValue = ''
+        string $searchValue = '',
     ): QueryBuilder {
         $qb = $this->createQueryBuilder('r');
         $qb->join('r.contentType', 'c');

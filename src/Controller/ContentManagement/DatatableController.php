@@ -25,7 +25,7 @@ final class DatatableController extends AbstractController
         private readonly DataTableFactory $dataTableFactory,
         private readonly TableRenderer $tableRenderer,
         private readonly TableExporter $tableExporter,
-        private readonly TokenStorageInterface $tokenStorage
+        private readonly TokenStorageInterface $tokenStorage,
     ) {
     }
 
@@ -52,7 +52,7 @@ final class DatatableController extends AbstractController
         return match ($format) {
             'excel' => $this->tableExporter->exportExcel($table),
             'csv' => $this->tableExporter->exportCSV($table),
-            default => throw new \RuntimeException('Invalid format')
+            default => throw new \RuntimeException('Invalid format'),
         };
     }
 

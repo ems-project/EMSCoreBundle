@@ -29,7 +29,7 @@ final class FormSubmissionService implements EntityServiceInterface
         private readonly FormSubmissionFileRepository $formSubmissionFileRepository, private readonly Environment $twig,
         private readonly RequestStack $requestStack,
         private readonly TranslatorInterface $translator,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

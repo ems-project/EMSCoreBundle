@@ -15,7 +15,7 @@ class JsonMenuNestedComponent
 {
     public function __construct(
         private readonly JsonMenuNestedConfigFactory $jsonMenuNestedConfigFactory,
-        private readonly JsonMenuNestedTemplateFactory $jsonMenuNestedTemplateFactory
+        private readonly JsonMenuNestedTemplateFactory $jsonMenuNestedTemplateFactory,
     ) {
     }
 

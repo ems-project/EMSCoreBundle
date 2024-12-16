@@ -43,7 +43,7 @@ class DeleteCommand extends AbstractCommand
         private readonly RevisionService $revisionService,
         private readonly ContentTypeService $contentTypeService,
         private readonly PublishService $publishService,
-        private readonly ElasticaService $elasticaService
+        private readonly ElasticaService $elasticaService,
     ) {
         parent::__construct();
     }

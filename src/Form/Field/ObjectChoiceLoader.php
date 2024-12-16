@@ -15,7 +15,7 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
         bool $loadAll,
         bool $circleOnly,
         bool $withWarning,
-        ?string $querySearchName
+        ?string $querySearchName,
     ) {
         $this->objectChoiceList = new ObjectChoiceList($objectChoiceCacheService, $types, $loadAll, $circleOnly, $withWarning, $querySearchName);
     }

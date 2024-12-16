@@ -40,7 +40,7 @@ final class ArchiveCommand extends AbstractCommand
     public function __construct(
         private readonly RevisionSearcher $revisionSearcher,
         private readonly RevisionService $revisionService,
-        private readonly ContentTypeService $contentTypeService
+        private readonly ContentTypeService $contentTypeService,
     ) {
         parent::__construct();
     }

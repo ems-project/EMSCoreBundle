@@ -34,7 +34,7 @@ final class SubmissionController extends AbstractController
         private readonly LoggerInterface $logger,
         private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 

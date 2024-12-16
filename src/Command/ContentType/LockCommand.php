@@ -49,7 +49,7 @@ final class LockCommand extends Command
     public function __construct(
         private readonly ContentTypeRepository $contentTypeRepository,
         private readonly ElasticaService $elasticaService,
-        private readonly RevisionRepository $revisionRepository
+        private readonly RevisionRepository $revisionRepository,
     ) {
         parent::__construct();
     }

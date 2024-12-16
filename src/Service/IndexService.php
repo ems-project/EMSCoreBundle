@@ -18,7 +18,7 @@ final class IndexService
     public function __construct(
         private readonly AliasService $aliasService,
         private readonly Client $client,
-        private readonly ContentTypeService $contentTypeService
+        private readonly ContentTypeService $contentTypeService,
     ) {
     }
 
@@ -51,7 +51,7 @@ final class IndexService
         } catch (ResponseException $e) {
             match ($e->getResponse()->getStatus()) {
                 404 => throw NotFoundException::index($indexName),
-                default => throw $e
+                default => throw $e,
             };
         }
     }

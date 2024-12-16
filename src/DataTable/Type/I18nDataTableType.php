@@ -19,7 +19,7 @@ class I18nDataTableType extends AbstractEntityTableType
 
     public function __construct(
         I18nService $i18NService,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
         parent::__construct($i18NService);
     }

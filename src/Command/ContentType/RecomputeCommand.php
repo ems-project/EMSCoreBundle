@@ -73,7 +73,7 @@ final class RecomputeCommand extends AbstractCommand
         private readonly ContentTypeService $contentTypeService,
         private readonly RevisionRepository $revisionRepository,
         private readonly IndexService $indexService,
-        private readonly SearchService $searchService
+        private readonly SearchService $searchService,
     ) {
         parent::__construct();
     }

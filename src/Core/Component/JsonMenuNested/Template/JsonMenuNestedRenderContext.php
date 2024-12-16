@@ -19,7 +19,7 @@ class JsonMenuNestedRenderContext
         private readonly JsonMenuNested $menu,
         ?string $activeItemId = null,
         public ?JsonMenuNested $copyItem = null,
-        ?string $loadChildrenId = null
+        ?string $loadChildrenId = null,
     ) {
         $this->addActiveItem($menu);
 

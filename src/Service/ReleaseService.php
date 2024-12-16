@@ -110,7 +110,7 @@ final class ReleaseService implements EntityServiceInterface
 
             $environment = match ($type) {
                 ReleaseRevisionType::PUBLISH => $release->getEnvironmentSource(),
-                ReleaseRevisionType::UNPUBLISH => $release->getEnvironmentTarget()
+                ReleaseRevisionType::UNPUBLISH => $release->getEnvironmentTarget(),
             };
 
             try {
@@ -228,7 +228,7 @@ final class ReleaseService implements EntityServiceInterface
         foreach ($release->getRevisions() as $releaseRevision) {
             match ($releaseRevision->getType()) {
                 ReleaseRevisionType::PUBLISH => $this->executePublish($release, $releaseRevision),
-                ReleaseRevisionType::UNPUBLISH => $this->executeUnpublish($release, $releaseRevision, $command)
+                ReleaseRevisionType::UNPUBLISH => $this->executeUnpublish($release, $releaseRevision, $command),
             };
         }
 
@@ -272,7 +272,7 @@ final class ReleaseService implements EntityServiceInterface
         foreach ($releaseRevisions as $releaseRevision) {
             match ($releaseRevision->getType()) {
                 ReleaseRevisionType::PUBLISH => $this->rollBackPublish($rollback, $releaseRevision),
-                ReleaseRevisionType::UNPUBLISH => $this->rollBackUnpublish($rollback, $releaseRevision)
+                ReleaseRevisionType::UNPUBLISH => $this->rollBackUnpublish($rollback, $releaseRevision),
             };
         }
         $this->update($rollback);

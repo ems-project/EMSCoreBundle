@@ -22,7 +22,7 @@ class StylesetController extends AbstractController
 {
     private ?Compiler $compiler = null;
 
-    public function __construct(private readonly WysiwygStylesSetService $wysiwygStylesSetService, private readonly AssetHelperRuntime $assetHelperRuntime, private readonly string $templateNamespace
+    public function __construct(private readonly WysiwygStylesSetService $wysiwygStylesSetService, private readonly AssetHelperRuntime $assetHelperRuntime, private readonly string $templateNamespace,
     ) {
     }
 

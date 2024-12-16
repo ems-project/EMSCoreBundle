@@ -22,7 +22,7 @@ final class ChannelRegistrar
         private readonly EnvironmentHelperInterface $environmentHelper,
         private readonly LoggerInterface $logger,
         private readonly IndexService $indexService,
-        private readonly string $firewallName
+        private readonly string $firewallName,
     ) {
     }
 

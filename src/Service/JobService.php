@@ -32,7 +32,7 @@ class JobService implements EntityServiceInterface
         private readonly LoggerInterface $logger,
         private readonly JobRepository $repository,
         private readonly ScheduleManager $scheduleManager,
-        private readonly TokenStorageInterface $tokenStorage
+        private readonly TokenStorageInterface $tokenStorage,
     ) {
         $this->em = $doctrine->getManager();
     }

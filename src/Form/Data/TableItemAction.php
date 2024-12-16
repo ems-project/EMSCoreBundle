@@ -24,7 +24,7 @@ final class TableItemAction
         private readonly string $icon,
         private readonly ?TranslatableMessage $messageKey,
         private readonly array $routeParameters,
-        private bool $dynamic = false
+        private bool $dynamic = false,
     ) {
     }
 

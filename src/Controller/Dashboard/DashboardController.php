@@ -28,7 +28,7 @@ class DashboardController extends AbstractController
         private readonly LocalizedLoggerInterface $logger,
         private readonly DashboardManager $dashboardManager,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
     }
 
@@ -47,7 +47,7 @@ class DashboardController extends AbstractController
                 TableType::REORDER_ACTION => $this->dashboardManager->reorderByIds(
                     ids: TableType::getReorderedKeys($form->getName(), $request)
                 ),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'))
+                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);

@@ -36,7 +36,7 @@ class SorterViewType extends ViewType
         LoggerInterface $logger,
         protected DataService $dataService,
         protected RouterInterface $router,
-        private readonly string $templateNamespace
+        private readonly string $templateNamespace,
     ) {
         parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }

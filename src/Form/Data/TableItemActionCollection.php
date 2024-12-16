@@ -17,7 +17,7 @@ final class TableItemActionCollection implements \IteratorAggregate, \Countable
 
     public function __construct(
         public string|TranslatableMessage|null $label = null,
-        public ?string $icon = null
+        public ?string $icon = null,
     ) {
     }
 

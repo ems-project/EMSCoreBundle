@@ -40,7 +40,7 @@ class UserController extends AbstractController
         private readonly FlashMessageLogger $flashMessageLogger,
         private readonly string $templateNamespace,
         private readonly FieldTypeService $fieldTypeService,
-        private readonly string $dateTimeFormat
+        private readonly string $dateTimeFormat,
     ) {
     }
 

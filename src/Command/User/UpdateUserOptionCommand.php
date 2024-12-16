@@ -52,7 +52,7 @@ EOT
                 UserOptions::SIMPLIFIED_UI => $this->updateBool(UserOptions::SIMPLIFIED_UI),
                 UserOptions::ALLOWED_CONFIGURE_WYSIWYG => $this->updateBool(UserOptions::ALLOWED_CONFIGURE_WYSIWYG),
                 UserOptions::CUSTOM_OPTIONS => $this->updateCustomOptions(),
-                default => throw new \RuntimeException(\sprintf('Invalid option "%s" passed', $option))
+                default => throw new \RuntimeException(\sprintf('Invalid option "%s" passed', $option)),
             };
 
             return self::EXECUTE_SUCCESS;

@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Wysiwyg;
 
-use EMS\ClientHelperBundle\Helper\Asset\AssetHelperRuntime;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CoreBundle\Entity\WysiwygStylesSet;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
-use EMS\Helpers\File\File;
 use EMS\Helpers\Html\Headers;
 use EMS\Helpers\Standard\Json;
-use EMS\Helpers\Standard\Type;
 use ScssPhp\ScssPhp\Compiler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +20,7 @@ class StylesetController extends AbstractController
 {
     private ?Compiler $compiler = null;
 
-    public function __construct(private readonly WysiwygStylesSetService $wysiwygStylesSetService, private readonly AssetHelperRuntime $assetHelperRuntime, private readonly string $templateNamespace,
+    public function __construct(private readonly WysiwygStylesSetService $wysiwygStylesSetService, private readonly StorageManager $storageManager, private readonly string $templateNamespace,
     ) {
     }
 
@@ -71,10 +69,8 @@ class StylesetController extends AbstractController
             $name = $styleSet->getName();
             $css = $styleSet->giveContentCss();
             $sha1 = $styleSet->giveAssetsHash();
-            $directory = $this->assetHelperRuntime->setVersion($sha1);
-            $filename = \implode(DIRECTORY_SEPARATOR, [$directory, $css]);
-            $cssContents = File::fromFilename($filename)->getContents();
-            $source .= $this->compilePrefixedCss($name, $cssContents, Type::string($directory));
+            $cssContents = $this->storageManager->getStreamFromArchive($sha1, $css)->getStream()->getContents();
+            $source .= $this->compilePrefixedCss($name, $cssContents, "/bundles/$sha1");
         }
         $response->setContent($source);
 
@@ -93,10 +89,8 @@ class StylesetController extends AbstractController
         }
         $css = $styleSet->giveContentCss();
         $sha1 = $styleSet->giveAssetsHash();
-        $directory = $this->assetHelperRuntime->setVersion($sha1);
-        $filename = \implode(DIRECTORY_SEPARATOR, [$directory, $css]);
-        $cssContents = File::fromFilename($filename)->getContents();
-        $response->setContent($this->compilePrefixedCss($name, $cssContents, Type::string($directory)));
+        $cssContents = $this->storageManager->getStreamFromArchive($sha1, $css)->getStream()->getContents();
+        $response->setContent($this->compilePrefixedCss($name, $cssContents, "/bundles/$sha1"));
 
         return $response;
     }

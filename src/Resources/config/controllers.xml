@@ -494,7 +494,7 @@
         </service>
         <service id="EMS\CoreBundle\Controller\Wysiwyg\StylesetController" public="true">
             <argument type="service" id="ems.service.wysiwyg_styles_set" />
-            <argument type="service" id="emsch.twig.runtime.asset" />
+            <argument type="service" id="ems_common.storage.manager" />
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>

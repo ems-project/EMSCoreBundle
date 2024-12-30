@@ -1,5 +1,5 @@
 {% trans_default_domain 'EMSCoreBundle' %}
-<li id="{{ child }}" class="collapsible-container {% if contentType.name != view.contentType.name %}mjs-nestedSortable-no-nesting{%  else %}mjs-nestedSortable{% endif %}">
+<li id="{{ child }}" data-id="{{ child }}" class="collapsible-container {% if contentType.name != view.contentType.name %}mjs-nestedSortable-no-nesting{%  else %}mjs-nestedSortable{% endif %}">
 	<div class="box-header">
 		<div class="pull-right box-tools">
 			<div class="btn-group">
@@ -25,7 +25,7 @@
         </h3>
 	</div>
 	{% if contentType.name == view.contentType.name %}
-		<ol style="display:none;">
+		<ol style="display:none;" data-parent-id="{{ child }}">
             {% include "@EMSCore/view/custom/hierarchical_item.html.twig" with {
         		parent: data,
             	view: view,

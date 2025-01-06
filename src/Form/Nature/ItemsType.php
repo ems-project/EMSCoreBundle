@@ -9,6 +9,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ItemsType extends AbstractType
 {
+    public const PREFIX = 'item-';
+
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
@@ -18,7 +20,7 @@ class ItemsType extends AbstractType
         $result = $options['result'];
 
         foreach ($result['hits']['hits'] as $hit) {
-            $builder->add($hit['_id'], HiddenType::class, [
+            $builder->add(\join('', [self::PREFIX, $hit['_id']]), HiddenType::class, [
                 'attr' => [
                 ],
             ]);

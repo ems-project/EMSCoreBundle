@@ -8,6 +8,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ContentTypeFieldPickerType;
+use EMS\CoreBundle\Form\Nature\ItemsType;
 use EMS\CoreBundle\Form\Nature\ReorderType;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Mapping;
@@ -161,6 +162,10 @@ class SorterViewType extends ViewType
             $items = $reorder['items'];
 
             foreach ($items as $itemKey => $value) {
+                if (!\str_starts_with($itemKey, ItemsType::PREFIX)) {
+                    throw new \RuntimeException('Invalid item key: '.$itemKey);
+                }
+                $itemKey = \substr($itemKey, \strlen(ItemsType::PREFIX));
                 try {
                     $revision = $this->dataService->initNewDraft($view->getContentType()->getName(), $itemKey);
                     $data = $revision->getRawData();

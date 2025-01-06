@@ -17,7 +17,7 @@
 								<li class="list-group-item ui-sortable-handle">
 									<i class="glyphicon glyphicon-move"></i>
 									{{ document.emsId|data_link }}
-									{{ form_widget(attribute(form.items, document.id)) }}
+									{{ form_widget(attribute(form.items, "item-#{document.id}")) }}
 								</li>
 							{% endif %}
                         {% endfor %}
@@ -32,4 +32,4 @@
 			</div>
 		</div>
 	</div>
-{% endblock %} 
+{% endblock %}

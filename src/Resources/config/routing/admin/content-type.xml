@@ -33,7 +33,7 @@
            controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::index"
            methods="GET|POST"/>
     <route id="emsco_admin_content_type_edit_field" path="/{contentType}/field/{field}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::editFieldAction"
+           controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::editField"
            methods="GET|POST"/>
     <route id="emsco_admin_content_type_reorder" path="/reorder/{contentType}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ContentTypeController::reorder"

@@ -91,7 +91,7 @@ final class PostProcessingService
 
                 if (\strlen($out) > 0) {
                     try {
-                        $json = Json::decode($out);
+                        $json = Json::mixedDecode($out);
                         if (null === $fieldType->getParent()) {
                             $objectArray = $json;
                         } else {

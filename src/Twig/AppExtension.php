@@ -50,6 +50,7 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\DeprecatedCallableInfo;
 use Twig\Environment as TwigEnvironment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -106,7 +107,6 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_generate_email', $this->generateEmailMessage(...)),
             new TwigFunction('emsco_send_email', $this->sendEmail(...)),
             new TwigFunction('emsco_users_enabled', [UserRuntime::class, 'getUsersEnabled']),
-            new TwigFunction('emsco_uuid', [Uuid::class, 'uuid4'], ['deprecated' => true]),
             new TwigFunction('emsco_datatable', [DatatableRuntime::class, 'generateDatatable'], ['is_safe' => ['html']]),
             new TwigFunction('emsco_datatable_excel_path', [DatatableRuntime::class, 'getExcelPath'], ['is_safe' => ['html']]),
             new TwigFunction('emsco_datatable_csv_path', [DatatableRuntime::class, 'getCsvPath'], ['is_safe' => ['html']]),
@@ -129,10 +129,18 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_save_contents', $this->saveContents(...)),
             new TwigFunction('emsco_notice', $this->notice(...)),
             new TwigFunction('emsco_warning', $this->warning(...)),
-            // deprecated
-            new TwigFunction('cant_be_finalized', $this->cantBeFinalized(...), ['deprecated' => true, 'alternative' => 'emsco_cant_be_finalized']),
-            new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames'], ['deprecated' => true, 'alternative' => 'emsco_get_default_environment_names']),
-            new TwigFunction('get_content_types', [ContentTypeRuntime::class, 'getContentTypes'], ['deprecated' => true, 'alternative' => 'emsco_get_content_types']),
+            new TwigFunction('emsco_uuid', [Uuid::class, 'uuid4'], [
+                'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '5.4.1', 'ems_uuid', 'elasticms/common-bundle', '5.4.1'),
+            ]),
+            new TwigFunction('cant_be_finalized', $this->cantBeFinalized(...), [
+                'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '5.7.0', 'emsco_cant_be_finalized'),
+            ]),
+            new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames'], [
+                'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '5.0.0', 'emsco_get_default_environment_names'),
+            ]),
+            new TwigFunction('get_content_types', [ContentTypeRuntime::class, 'getContentTypes'], [
+                'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '5.19.0', 'emsco_get_content_types'),
+            ]),
         ];
     }
 
@@ -169,7 +177,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('displayname', $this->displayName(...)),
             new TwigFilter('date_difference', $this->dateDifference(...)),
             new TwigFilter('debug', $this->debug(...)),
-            new TwigFilter('search', $this->deprecatedSearch(...), ['deprecated' => true, 'alternative' => 'emsco_search']),
+            new TwigFilter('search', $this->deprecatedSearch(...)),
             new TwigFilter('emsco_search', $this->search(...)),
             new TwigFilter('call_user_func', $this->callUserFunc(...)),
             new TwigFilter('merge_recursive', $this->arrayMergeRecursive(...)),
@@ -190,12 +198,25 @@ class AppExtension extends AbstractExtension
             new TwigFilter('emsco_get', $this->get(...)),
             new TwigFilter('emsco_get_content_type', [ContentTypeRuntime::class, 'getContentType']),
             // deprecated
-            new TwigFilter('data', $this->data(...), ['deprecated' => true, 'alternative' => 'emsco_get']),
-            new TwigFilter('url_generator', Encoder::webalize(...), ['deprecated' => true, 'alternative' => 'ems_webalize']),
-            new TwigFilter('emsco_webalize', Encoder::webalize(...), ['deprecated' => true, 'alternative' => 'ems_webalize']),
-            new TwigFilter('get_environment', [EnvironmentRuntime::class, 'getEnvironment'], ['deprecated' => true, 'alternative' => 'emsco_get_environment']),
-            new TwigFilter('get_content_type', [ContentTypeRuntime::class, 'getContentType'], ['deprecated' => true, 'alternative' => 'emsco_get_contentType']),
-            new TwigFilter('data_label', $this->dataLabel(...), ['is_safe' => ['html'], 'deprecated' => true, 'alternative' => 'emsco_display']),
+            new TwigFilter('data', $this->data(...), [
+                'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '5.8.0', 'emsco_get'),
+            ]),
+            new TwigFilter('url_generator', Encoder::webalize(...), [
+                'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '5.0.0', 'ems_slug', 'elasticms/common-bundle', '5.17.1'),
+            ]),
+            new TwigFilter('emsco_webalize', Encoder::webalize(...), [
+                'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '5.0.0', 'ems_slug', 'elasticms/common-bundle', '5.17.1'),
+            ]),
+            new TwigFilter('get_environment', [EnvironmentRuntime::class, 'getEnvironment'], [
+                'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '5.0.0', 'emsco_get_environment'),
+            ]),
+            new TwigFilter('get_content_type', [ContentTypeRuntime::class, 'getContentType'], [
+                'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '5.0.0', 'emsco_get_contentType'),
+            ]),
+            new TwigFilter('data_label', $this->dataLabel(...), [
+                'is_safe' => ['html'],
+                'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '5.4.0', 'emsco_display'),
+            ]),
         ];
     }
 
@@ -702,8 +723,6 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @deprecated
-     *
      * @param array<mixed> $params
      *
      * @return array<mixed>

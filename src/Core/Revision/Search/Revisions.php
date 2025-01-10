@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Revision\Search;
 
 use Doctrine\ORM\QueryBuilder;
-use DoctrineBatchUtils\BatchProcessing\SimpleBatchIteratorAggregate;
 use Elastica\Document;
 use Elastica\ResultSet;
+use EMS\CoreBundle\Core\Doctrine\SimpleBatchIteratorAggregate;
 use EMS\CoreBundle\Entity\Revision;
 
 /**
@@ -62,10 +62,13 @@ final class Revisions implements \IteratorAggregate
         /** @var Revision[] $results */
         $results = $this->qb->getQuery()->getResult();
 
-        return SimpleBatchIteratorAggregate::fromArrayResult(
+        /** @var \Traversable<string|int, Revision> $iterator */
+        $iterator = SimpleBatchIteratorAggregate::fromArrayResult(
             $results,
             $this->qb->getEntityManager(),
             $this->batchSize
         );
+
+        return $iterator;
     }
 }

@@ -14,7 +14,7 @@
     ],
     "minimum-stability": "RC",
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "ext-libxml": "*",
         "ext-openssl": "*",
         "ext-simplexml": "*",
@@ -27,7 +27,6 @@
         "elasticms/xliff": "6.0.*",
         "guzzlehttp/guzzle": "^7.8",
         "maennchen/zipstream-php": "^3.0",
-        "ocramius/doctrine-batch-utils": "^2.5",
         "ramsey/uuid-doctrine": "^1.8",
         "scssphp/scssphp": "^1.12",
         "sensiolabs/ansi-to-html": "^1.2",

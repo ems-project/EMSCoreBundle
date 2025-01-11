@@ -13,6 +13,7 @@ class I18nContentType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('locale', TextType::class, [
@@ -26,6 +27,7 @@ class I18nContentType extends AbstractType
         ]);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'i18n_content';

@@ -21,7 +21,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class JsonMenuNestedService
 {
-    private const SESSION_COPY_KEY = 'jmn_copy';
+    private const string SESSION_COPY_KEY = 'jmn_copy';
 
     public function __construct(
         private readonly JsonMenuNestedTemplateFactory $jsonMenuNestedTemplateFactory,

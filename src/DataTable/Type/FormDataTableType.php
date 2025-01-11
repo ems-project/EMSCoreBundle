@@ -21,6 +21,7 @@ class FormDataTableType extends AbstractEntityTableType
         parent::__construct($entityService);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $this
@@ -40,6 +41,7 @@ class FormDataTableType extends AbstractEntityTableType
             ->addTableActionDelete($table, 'form');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];

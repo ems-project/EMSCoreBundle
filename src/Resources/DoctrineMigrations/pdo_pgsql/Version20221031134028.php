@@ -13,6 +13,7 @@ final class Version20221031134028 extends AbstractMigration
 {
     use ScriptContentTypeVersionFields;
 
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -25,6 +26,7 @@ final class Version20221031134028 extends AbstractMigration
         $this->scriptEncodeVersionFields($this);
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

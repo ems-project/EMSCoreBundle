@@ -52,11 +52,13 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
         $this->orderKey = 0;
     }
 
+    #[\Override]
     public function getId(): string
     {
         return $this->id->toString();
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;
@@ -126,6 +128,7 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
         $this->orderKey = $orderKey;
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), self::class);

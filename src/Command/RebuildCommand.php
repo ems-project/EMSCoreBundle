@@ -30,7 +30,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class RebuildCommand extends AbstractCommand
 {
-    final public const ALL = 'all';
+    final public const string ALL = 'all';
     private bool $signData;
     private int $bulkSize;
     private ObjectManager $em;
@@ -42,6 +42,7 @@ class RebuildCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -84,6 +85,7 @@ class RebuildCommand extends AbstractCommand
         ;
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->aliasService->build();

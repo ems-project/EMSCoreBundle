@@ -13,6 +13,7 @@ final class Version20221020125332 extends AbstractMigration
 {
     use ScriptContentTypeRoles;
 
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -25,6 +26,7 @@ final class Version20221020125332 extends AbstractMigration
         $this->scriptEncodeRoles($this);
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

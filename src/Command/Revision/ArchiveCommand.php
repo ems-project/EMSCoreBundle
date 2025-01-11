@@ -27,15 +27,15 @@ final class ArchiveCommand extends AbstractCommand
     private ContentType $contentType;
     private string $searchQuery;
     private ?\DateTimeInterface $modifiedBefore = null;
-    private const USER = 'SYSTEM_ARCHIVE';
+    private const string USER = 'SYSTEM_ARCHIVE';
 
-    public const ARGUMENT_CONTENT_TYPE = 'content-type';
-    public const OPTION_FORCE = 'force';
-    public const OPTION_MODIFIED_BEFORE = 'modified-before';
-    public const OPTION_BATCH_SIZE = 'batch-size';
-    public const OPTION_SCROLL_SIZE = 'scroll-size';
-    public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
-    public const OPTION_SEARCH_QUERY = 'search-query';
+    public const string ARGUMENT_CONTENT_TYPE = 'content-type';
+    public const string OPTION_FORCE = 'force';
+    public const string OPTION_MODIFIED_BEFORE = 'modified-before';
+    public const string OPTION_BATCH_SIZE = 'batch-size';
+    public const string OPTION_SCROLL_SIZE = 'scroll-size';
+    public const string OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
+    public const string OPTION_SEARCH_QUERY = 'search-query';
 
     public function __construct(
         private readonly RevisionSearcher $revisionSearcher,
@@ -45,6 +45,7 @@ final class ArchiveCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -56,6 +57,7 @@ final class ArchiveCommand extends AbstractCommand
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -78,6 +80,7 @@ final class ArchiveCommand extends AbstractCommand
         }
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $environment = $this->contentType->giveEnvironment();

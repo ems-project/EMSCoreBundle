@@ -22,6 +22,7 @@ class DeleteOrphanIndexesCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {

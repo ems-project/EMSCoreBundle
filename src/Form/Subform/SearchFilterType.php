@@ -19,6 +19,7 @@ class SearchFilterType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if ($options['is_super'] || empty($options['searchFields'])) {
@@ -76,6 +77,7 @@ class SearchFilterType extends AbstractType
         ]);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -86,6 +88,7 @@ class SearchFilterType extends AbstractType
         ]);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'search_filter';

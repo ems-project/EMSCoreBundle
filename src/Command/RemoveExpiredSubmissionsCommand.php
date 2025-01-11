@@ -24,6 +24,7 @@ class RemoveExpiredSubmissionsCommand extends Command implements CommandInterfac
         parent::__construct();
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $removedCount = $this->formSubmissionService->removeExpiredSubmissions();

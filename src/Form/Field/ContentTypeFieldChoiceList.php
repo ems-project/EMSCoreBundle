@@ -20,6 +20,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     /**
      * @return array<mixed>
      */
+    #[\Override]
     public function getChoices(): array
     {
         $this->loadAll();
@@ -30,6 +31,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     /**
      * @return array<mixed>
      */
+    #[\Override]
     public function getValues(): array
     {
         return \array_keys($this->choices);
@@ -38,6 +40,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     /**
      * @return array<mixed>
      */
+    #[\Override]
     public function getStructuredValues(): array
     {
         $values = [];
@@ -51,6 +54,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
     /**
      * @return array<mixed>
      */
+    #[\Override]
     public function getOriginalKeys(): array
     {
         $values = [];
@@ -66,6 +70,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
      *
      * @return array<mixed>
      */
+    #[\Override]
     public function getChoicesForValues(array $choices): array
     {
         return \array_values($choices);
@@ -76,6 +81,7 @@ class ContentTypeFieldChoiceList implements ChoiceListInterface
      *
      * @return array<mixed>
      */
+    #[\Override]
     public function getValuesForChoices(array $choices): array
     {
         return \array_values($choices);

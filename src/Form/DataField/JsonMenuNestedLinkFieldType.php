@@ -40,16 +40,19 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'JSON menu nested link field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-link';
     }
 
+    #[\Override]
     public function buildObjectArray(DataField $data, array &$out): void
     {
         $fieldType = $data->getFieldType();
@@ -67,6 +70,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -98,6 +102,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
      * @param FormInterface<FormInterface> $form
      * @param array<mixed>                 $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
@@ -108,6 +113,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         ];
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
@@ -128,6 +134,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         ;
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -158,6 +165,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -166,6 +174,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'ems_choice';
@@ -174,6 +183,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $value = null;
@@ -184,6 +194,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         return parent::reverseViewTransform($value, $fieldType);
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $temp = parent::viewTransform($dataField);

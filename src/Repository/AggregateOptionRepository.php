@@ -15,6 +15,7 @@ class AggregateOptionRepository extends EntityRepository
     /**
      * @return AggregateOption[]
      */
+    #[\Override]
     public function findAll(): array
     {
         return parent::findBy([], ['orderKey' => 'asc']);

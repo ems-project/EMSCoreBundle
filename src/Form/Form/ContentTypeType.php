@@ -22,6 +22,7 @@ class ContentTypeType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var ContentType $contentType */
@@ -180,6 +181,7 @@ class ContentTypeType extends AbstractType
         }
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefault('twigWithWysiwyg', true);

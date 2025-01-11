@@ -9,6 +9,7 @@ use EMS\CoreBundle\Core\ContentType\Transformer\HtmlRemoveNodeTransformer;
 
 final class HtmlRemoveNodeTransformerTest extends AbstractTransformerTest
 {
+    #[\Override]
     protected function getTransformer(): ContentTransformerInterface
     {
         return new HtmlRemoveNodeTransformer();

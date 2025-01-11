@@ -20,6 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class UpdateUserOptionCommand extends AbstractUserCommand
 {
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -42,6 +43,7 @@ EOT
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io->title('EMSCO - User - Update option');

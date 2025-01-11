@@ -13,9 +13,9 @@ use EMS\CoreBundle\Service\SearchService;
 use EMS\Helpers\Standard\Type;
 use Symfony\Component\HttpFoundation\Request;
 
-final class DataLinksFactory
+final readonly class DataLinksFactory
 {
-    public function __construct(private readonly SearchService $searchService, private readonly ContentTypeService $contentTypeService, private readonly ViewTypes $viewTypes)
+    public function __construct(private SearchService $searchService, private ContentTypeService $contentTypeService, private ViewTypes $viewTypes)
     {
     }
 

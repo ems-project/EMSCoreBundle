@@ -30,12 +30,12 @@ final class TimeMachineCommand extends Command
     private SymfonyStyle $style;
     private readonly ObjectManager $em;
 
-    private const SYSTEM_TIME_MACHINE = 'SYSTEM_TIME_MACHINE';
-    public const RESULT_NOT_FOUND = 1;
-    public const RESULT_EQUALS_IN_TIME = 2;
-    public const RESULT_SUCCESS = 3;
+    private const string SYSTEM_TIME_MACHINE = 'SYSTEM_TIME_MACHINE';
+    public const int RESULT_NOT_FOUND = 1;
+    public const int RESULT_EQUALS_IN_TIME = 2;
+    public const int RESULT_SUCCESS = 3;
 
-    public const RESULTS = [
+    public const array RESULTS = [
         self::RESULT_NOT_FOUND => 'Not found in time revision',
         self::RESULT_EQUALS_IN_TIME => 'Revision in time property equals current revision property',
         self::RESULT_SUCCESS => 'New revision with in time revision property data',
@@ -51,6 +51,7 @@ final class TimeMachineCommand extends Command
         $this->em = $doctrine->getManager();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -60,12 +61,14 @@ final class TimeMachineCommand extends Command
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->style = new SymfonyStyle($input, $output);
         $this->style->title('EMS - Revision - TimeMachine');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $propertyPath = \strval($input->getArgument('propertyPath'));

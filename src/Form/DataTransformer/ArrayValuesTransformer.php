@@ -16,6 +16,7 @@ class ArrayValuesTransformer implements DataTransformerInterface
      *
      * @return mixed[]|null
      */
+    #[\Override]
     public function transform($value)
     {
         if (null === $value) {
@@ -33,6 +34,7 @@ class ArrayValuesTransformer implements DataTransformerInterface
      *
      * @return mixed[]|null
      */
+    #[\Override]
     public function reverseTransform($value)
     {
         return $this->transform($value);

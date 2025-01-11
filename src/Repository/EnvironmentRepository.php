@@ -20,6 +20,7 @@ class EnvironmentRepository extends EntityRepository
     /**
      * @return Environment[]
      */
+    #[\Override]
     public function findAll(): array
     {
         return $this->findBy([]);
@@ -31,6 +32,7 @@ class EnvironmentRepository extends EntityRepository
      *
      * @return Environment[]
      */
+    #[\Override]
     public function findBy(array $criteria, ?array $orderBy = null, $limit = null, $offset = null): array
     {
         if (empty($orderBy)) {

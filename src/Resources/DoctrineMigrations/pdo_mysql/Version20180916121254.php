@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20180916121254 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20180916121254 extends AbstractMigration
         $this->addSql('ALTER TABLE template ADD allow_origin VARCHAR(255) DEFAULT NULL, ADD disposition VARCHAR(20) DEFAULT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

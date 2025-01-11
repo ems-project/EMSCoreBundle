@@ -21,6 +21,7 @@ class CantBeFinalizedException extends ElasticmsException implements \Stringable
         parent::__construct($message, $code, $previous);
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return parent::getMessage();

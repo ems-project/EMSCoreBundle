@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20200224130954 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20200224130954 extends AbstractMigration
         $this->addSql('ALTER TABLE content_type ADD translationField VARCHAR(100) DEFAULT NULL, ADD localeField VARCHAR(100) DEFAULT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class StorageServiceCompilerPass implements CompilerPassInterface
 {
+    #[\Override]
     public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('ems.service.file')) {

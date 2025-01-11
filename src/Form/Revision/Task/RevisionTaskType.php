@@ -30,6 +30,7 @@ final class RevisionTaskType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface>                                     $builder
      * @param array{'data': TaskDTO, 'task_status': TaskStatus, 'content_type': ContentType} $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $taskDto = $options['data'];
@@ -69,6 +70,7 @@ final class RevisionTaskType extends AbstractType
         }
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver

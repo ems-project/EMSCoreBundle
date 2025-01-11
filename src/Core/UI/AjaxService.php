@@ -7,9 +7,9 @@ namespace EMS\CoreBundle\Core\UI;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
-final class AjaxService
+final readonly class AjaxService
 {
-    public function __construct(private readonly Environment $templating, private readonly TranslatorInterface $translator)
+    public function __construct(private Environment $templating, private TranslatorInterface $translator)
     {
     }
 

@@ -9,12 +9,12 @@ use Symfony\Component\Translation\TranslatableMessage;
 
 class TemplateTableColumn extends TableColumn
 {
-    private const LABEL = 'label';
-    private const TEMPLATE = 'template';
-    private const ORDER_FIELD = 'orderField';
-    private const CELL_TYPE = 'cellType';
-    private const CELL_CLASS = 'cellClass';
-    private const CELL_RENDER = 'cellRender';
+    private const string LABEL = 'label';
+    private const string TEMPLATE = 'template';
+    private const string ORDER_FIELD = 'orderField';
+    private const string CELL_TYPE = 'cellType';
+    private const string CELL_CLASS = 'cellClass';
+    private const string CELL_RENDER = 'cellRender';
     private readonly bool $orderable;
     private readonly string $template;
 
@@ -32,11 +32,13 @@ class TemplateTableColumn extends TableColumn
         $this->setCellRender($options[self::CELL_RENDER]);
     }
 
+    #[\Override]
     public function getOrderable(): bool
     {
         return $this->orderable;
     }
 
+    #[\Override]
     public function tableDataValueBlock(): string
     {
         return 'emsco_form_table_column_data_value_template';

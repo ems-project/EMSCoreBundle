@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20221020105730 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -23,6 +24,7 @@ final class Version20221020105730 extends AbstractMigration
         $this->addSql('ALTER TABLE user ADD user_options LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json)\'');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

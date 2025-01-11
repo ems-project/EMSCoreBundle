@@ -70,6 +70,7 @@ class Task implements EntityInterface
         }
     }
 
+    #[\Override]
     public function getId(): string
     {
         return $this->id->toString();
@@ -223,6 +224,7 @@ class Task implements EntityInterface
         return $latestStatusLog instanceof TaskLog ? $latestStatusLog : null;
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->getId();

@@ -72,12 +72,14 @@ class ScheduleManager implements EntityServiceInterface
         }
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return true;
     }
 
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected context');
@@ -86,6 +88,7 @@ class ScheduleManager implements EntityServiceInterface
         return $this->scheduleRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'schedule';
@@ -94,6 +97,7 @@ class ScheduleManager implements EntityServiceInterface
     /**
      * @return string[]
      */
+    #[\Override]
     public function getAliasesName(): array
     {
         return [
@@ -103,7 +107,8 @@ class ScheduleManager implements EntityServiceInterface
         ];
     }
 
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected non-null object');
@@ -132,11 +137,13 @@ class ScheduleManager implements EntityServiceInterface
         return $schedule;
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?EntityInterface
     {
         return $this->scheduleRepository->getByName($name);
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         $schedule = Schedule::fromJson($json, $entity);
@@ -145,6 +152,7 @@ class ScheduleManager implements EntityServiceInterface
         return $schedule;
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $schedule = Schedule::fromJson($json);
@@ -156,6 +164,7 @@ class ScheduleManager implements EntityServiceInterface
         return $schedule;
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         $schedule = $this->scheduleRepository->getByName($name);

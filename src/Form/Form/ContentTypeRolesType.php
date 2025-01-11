@@ -16,6 +16,7 @@ class ContentTypeRolesType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add(ContentTypeRoles::VIEW, RolePickerType::class);
@@ -35,6 +36,7 @@ class ContentTypeRolesType extends AbstractType
         $builder->add(ContentTypeRoles::SHOW_LINK_SEARCH, RolePickerType::class);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired(['managed']);

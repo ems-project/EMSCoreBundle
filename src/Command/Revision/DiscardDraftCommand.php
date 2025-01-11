@@ -22,10 +22,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class DiscardDraftCommand extends AbstractCommand
 {
-    private const ARGUMENT_CONTENT_TYPES = 'content-types';
-    private const OPTION_FORCE = 'force';
-    private const OPTION_OLDER = 'older';
-    private const DISCARD_DRAFT_COMMAND_USER = 'DISCARD_DRAFT_COMMAND_USER';
+    private const string ARGUMENT_CONTENT_TYPES = 'content-types';
+    private const string OPTION_FORCE = 'force';
+    private const string OPTION_OLDER = 'older';
+    private const string DISCARD_DRAFT_COMMAND_USER = 'DISCARD_DRAFT_COMMAND_USER';
     /**
      * @var string[]
      */
@@ -38,6 +38,7 @@ class DiscardDraftCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -46,6 +47,7 @@ class DiscardDraftCommand extends AbstractCommand
             ->addOption(self::OPTION_OLDER, null, InputOption::VALUE_REQUIRED, 'Discard revision that are older than this  (time format)', '-5minutes');
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -55,6 +57,7 @@ class DiscardDraftCommand extends AbstractCommand
         $this->olderThan = DateTime::create($olderDateFormat);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io->title('EMSCO - Revision - Discard drafts');

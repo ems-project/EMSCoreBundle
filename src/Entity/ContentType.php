@@ -101,6 +101,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->modified = DateTime::create('now');
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return $this->name;
@@ -120,6 +121,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this;
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;
@@ -880,6 +882,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         }
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $this->getFieldType()->removeCircularReference();
@@ -899,6 +902,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     /**
      * @param mixed $value
      */
+    #[\Override]
     protected function deserializeProperty(string $name, $value): void
     {
         switch ($name) {

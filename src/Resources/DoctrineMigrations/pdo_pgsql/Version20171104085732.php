@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20171104085732 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -22,6 +23,7 @@ final class Version20171104085732 extends AbstractMigration
         $this->addSql('ALTER TABLE filter ADD order_key INT DEFAULT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

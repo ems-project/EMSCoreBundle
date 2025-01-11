@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20211109190804 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -21,6 +22,7 @@ final class Version20211109190804 extends AbstractMigration
         $this->addSql('ALTER TABLE view RENAME COLUMN orderkey TO order_key');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

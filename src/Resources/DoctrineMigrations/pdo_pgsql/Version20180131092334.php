@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20180131092334 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -23,6 +24,7 @@ final class Version20180131092334 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX UNIQ_CCBD025AE16C6B94 ON managed_alias (alias)');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

@@ -13,12 +13,12 @@ use EMS\CoreBundle\Entity\Revision;
 /**
  * @implements \IteratorAggregate<int, Revision>
  */
-final class Revisions implements \IteratorAggregate
+final readonly class Revisions implements \IteratorAggregate
 {
     /**
      * @param int<1, max> $batchSize
      */
-    public function __construct(private readonly QueryBuilder $qb, private readonly ResultSet $resultSet, private readonly int $batchSize = 50)
+    public function __construct(private QueryBuilder $qb, private ResultSet $resultSet, private int $batchSize = 50)
     {
     }
 
@@ -49,6 +49,7 @@ final class Revisions implements \IteratorAggregate
     /**
      * @return \ArrayIterator<int, Revision>|Revision[]
      */
+    #[\Override]
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->qb->getQuery()->getResult());

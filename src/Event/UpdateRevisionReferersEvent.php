@@ -11,7 +11,7 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class UpdateRevisionReferersEvent extends Event
 {
-    final public const NAME = 'ems_core.revision.update_referers';
+    final public const string NAME = 'ems_core.revision.update_referers';
 
     /**
      * @param array<mixed> $toClean

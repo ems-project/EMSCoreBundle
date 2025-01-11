@@ -21,8 +21,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 final class CreateCommand extends AbstractCommand
 {
-    public const ARGUMENT_NAME = 'name';
-    public const ARGUMENT_LABEL = 'label';
+    public const string ARGUMENT_NAME = 'name';
+    public const string ARGUMENT_LABEL = 'label';
     private string $name;
     private string $label;
 
@@ -31,6 +31,7 @@ final class CreateCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -38,6 +39,7 @@ final class CreateCommand extends AbstractCommand
             ->addArgument(self::ARGUMENT_LABEL, InputArgument::OPTIONAL, 'Alias label');
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -52,6 +54,7 @@ final class CreateCommand extends AbstractCommand
         $this->label = $label;
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $managedAlias = $this->managedAliasManager->getByItemName($this->name);

@@ -50,11 +50,13 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
         return $channel;
     }
 
+    #[\Override]
     public function getId(): string
     {
         return $this->id->toString();
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;
@@ -138,6 +140,7 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
         return \sprintf('/channel/%s%s', $this->getName(), $entryPath);
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), self::class);

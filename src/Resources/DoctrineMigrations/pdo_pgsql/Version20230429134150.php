@@ -10,11 +10,13 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20230429134150 extends AbstractMigration
 {
+    #[\Override]
     public function getDescription(): string
     {
         return 'Add a table in order to persist data (Store Data)';
     }
 
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -27,6 +29,7 @@ final class Version20230429134150 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN store_data.id IS \'(DC2Type:uuid)\'');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

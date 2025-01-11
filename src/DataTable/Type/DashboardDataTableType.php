@@ -24,6 +24,7 @@ class DashboardDataTableType extends AbstractEntityTableType
         parent::__construct($entityService);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $this->addColumnsOrderLabelName($table);
@@ -64,6 +65,7 @@ class DashboardDataTableType extends AbstractEntityTableType
             ->addTableActionDelete($table, 'dashboard');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];

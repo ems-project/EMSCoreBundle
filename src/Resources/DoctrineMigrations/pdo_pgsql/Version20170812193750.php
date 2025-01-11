@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20170812193750 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -23,6 +24,7 @@ final class Version20170812193750 extends AbstractMigration
         $this->addSql('ALTER TABLE "user" ALTER email_notification DROP DEFAULT');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

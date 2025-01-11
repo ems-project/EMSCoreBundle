@@ -18,6 +18,7 @@ class FileType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('sha1', HiddenType::class, [
@@ -80,6 +81,7 @@ class FileType extends AbstractType
         }
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -91,12 +93,14 @@ class FileType extends AbstractType
      * @param FormInterface<FormInterface> $form
      * @param array<string, mixed>         $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
         $view->vars['meta_fields'] = $options['meta_fields'];
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'filetype';

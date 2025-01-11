@@ -23,12 +23,12 @@ class AlignCommand extends AbstractEnvironmentCommand
     private Environment $target;
     private bool $publicationTemplate = false;
 
-    final public const ARGUMENT_SOURCE = 'source';
-    final public const ARGUMENT_TARGET = 'target';
-    final public const OPTION_SNAPSHOT = 'snapshot';
-    final public const OPTION_PUBLICATION_TEMPLATE = 'publication-template';
+    final public const string ARGUMENT_SOURCE = 'source';
+    final public const string ARGUMENT_TARGET = 'target';
+    final public const string OPTION_SNAPSHOT = 'snapshot';
+    final public const string OPTION_PUBLICATION_TEMPLATE = 'publication-template';
 
-    private const LOCK_USER = 'SYSTEM_ALIGN';
+    private const string LOCK_USER = 'SYSTEM_ALIGN';
 
     /** @var array<string, int> */
     private array $counters = [
@@ -45,6 +45,7 @@ class AlignCommand extends AbstractEnvironmentCommand
         -1 => 'publication_template',
     ];
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -58,6 +59,7 @@ class AlignCommand extends AbstractEnvironmentCommand
         $this->configureRevisionSearcher();
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -68,12 +70,14 @@ class AlignCommand extends AbstractEnvironmentCommand
         $this->publishService->bulkStart($this->revisionSearcher->getSize(), $this->logger);
     }
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $this->source = $this->choiceEnvironment(self::ARGUMENT_SOURCE, 'Select an existing environment as source');
         $this->target = $this->choiceEnvironment(self::ARGUMENT_TARGET, 'Select an existing environment as target');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->forceProtection($input)) {

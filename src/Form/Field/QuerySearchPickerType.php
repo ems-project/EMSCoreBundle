@@ -22,6 +22,7 @@ class QuerySearchPickerType extends ChoiceType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $options['choices'] = $this->querySearchService->getAll();
@@ -29,6 +30,7 @@ class QuerySearchPickerType extends ChoiceType
         parent::buildForm($builder, $options);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);

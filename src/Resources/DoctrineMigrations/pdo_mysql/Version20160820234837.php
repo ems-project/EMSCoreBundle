@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20160820234837 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20160820234837 extends AbstractMigration
         $this->addSql('ALTER TABLE template ADD email_content_type VARCHAR(255) DEFAULT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

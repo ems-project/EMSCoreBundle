@@ -10,9 +10,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class OrientationType extends ChoiceType
 {
-    final public const PORTRAIT = 'portrait';
-    final public const LANDSCAPE = 'landscape';
+    final public const string PORTRAIT = 'portrait';
+    final public const string LANDSCAPE = 'landscape';
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $choices = [

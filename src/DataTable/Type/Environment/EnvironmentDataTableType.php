@@ -27,6 +27,7 @@ class EnvironmentDataTableType extends AbstractEntityTableType
         parent::__construct($this->environmentService);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $managed = (bool) $table->getContext()['managed'];
@@ -96,16 +97,19 @@ class EnvironmentDataTableType extends AbstractEntityTableType
      *
      * @return array{'managed': bool}
      */
+    #[\Override]
     public function getContext(array $options): array
     {
         return $options;
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver

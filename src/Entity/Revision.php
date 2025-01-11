@@ -155,6 +155,7 @@ class Revision implements EntityInterface, \Stringable
         // TODO: Refactoring: Dependency injection of the first Datafield in the Revision.
     }
 
+    #[\Override]
     public function __toString(): string
     {
         $out = 'New instance';
@@ -872,6 +873,7 @@ class Revision implements EntityInterface, \Stringable
         return $this->releases->toArray();
     }
 
+    #[\Override]
     public function getName(): string
     {
         return \strval($this->id ?? '');

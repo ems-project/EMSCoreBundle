@@ -30,6 +30,7 @@ class Modal implements \JsonSerializable
     /**
      * @return array{modalTitle?: string, modalBody?: string, modalFooter?: string}
      */
+    #[\Override]
     public function jsonSerialize(): array
     {
         return \array_filter([

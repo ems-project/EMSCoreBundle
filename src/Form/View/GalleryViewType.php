@@ -22,11 +22,13 @@ class GalleryViewType extends ViewType
         parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Gallery: a view where you can browse images';
     }
 
+    #[\Override]
     public function getName(): string
     {
         return 'Gallery';
@@ -36,6 +38,7 @@ class GalleryViewType extends ViewType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -53,11 +56,13 @@ class GalleryViewType extends ViewType
         ]);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'gallery_view';
     }
 
+    #[\Override]
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         $search = new Search();

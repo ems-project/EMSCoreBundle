@@ -20,6 +20,7 @@ class RestrictionOptionsType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -34,6 +35,7 @@ class RestrictionOptionsType extends AbstractType
         $this->addJsonMenuNestedRestrictionFields($builder, $fieldType);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver

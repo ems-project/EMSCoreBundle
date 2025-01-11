@@ -10,16 +10,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class HtmlAttributeTransformer extends BaseHtmlTransformer
 {
+    #[\Override]
     public function getName(): string
     {
         return 'HTML Attribute';
     }
 
+    #[\Override]
     public function supports(string $class): bool
     {
         return WysiwygFieldType::class === $class;
     }
 
+    #[\Override]
     public function transform(TransformContext $context): void
     {
         if (null == $data = $context->getData()) {
@@ -43,6 +46,7 @@ final class HtmlAttributeTransformer extends BaseHtmlTransformer
         }
     }
 
+    #[\Override]
     protected function configureOptions(OptionsResolver $resolver): void
     {
         $resolver

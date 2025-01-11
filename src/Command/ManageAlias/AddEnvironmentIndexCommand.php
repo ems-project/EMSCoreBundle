@@ -22,9 +22,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 final class AddEnvironmentIndexCommand extends AbstractCommand
 {
-    public const ARGUMENT_MANAGED_ALIAS_NAME = 'managed-alias-name';
-    public const ARGUMENT_ENVIRONMENT_NAME = 'environment-name';
-    public const OPTION_CLEAR_ALIAS = 'clear-alias';
+    public const string ARGUMENT_MANAGED_ALIAS_NAME = 'managed-alias-name';
+    public const string ARGUMENT_ENVIRONMENT_NAME = 'environment-name';
+    public const string OPTION_CLEAR_ALIAS = 'clear-alias';
     private string $managedAliasName;
     private string $environmentName;
     private bool $clearAlias;
@@ -37,6 +37,7 @@ final class AddEnvironmentIndexCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -45,6 +46,7 @@ final class AddEnvironmentIndexCommand extends AbstractCommand
             ->addOption(self::OPTION_CLEAR_ALIAS, null, InputOption::VALUE_NONE, 'All existing indexes in the alias will be removed');
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -56,6 +58,7 @@ final class AddEnvironmentIndexCommand extends AbstractCommand
         $this->clearAlias = $this->getOptionBool(self::OPTION_CLEAR_ALIAS);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $environment = $this->environmentService->getByName($this->environmentName);

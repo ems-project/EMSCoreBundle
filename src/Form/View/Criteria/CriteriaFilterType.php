@@ -24,6 +24,7 @@ class CriteriaFilterType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -172,6 +173,7 @@ class CriteriaFilterType extends AbstractType
         }
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */

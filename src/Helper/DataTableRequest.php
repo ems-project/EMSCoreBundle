@@ -6,9 +6,9 @@ namespace EMS\CoreBundle\Helper;
 
 use Symfony\Component\HttpFoundation\Request;
 
-final class DataTableRequest
+final readonly class DataTableRequest
 {
-    private function __construct(private readonly int $draw, private readonly int $from, private readonly int $size, private readonly ?string $orderField, private readonly string $orderDirection, private readonly string $searchValue)
+    private function __construct(private int $draw, private int $from, private int $size, private ?string $orderField, private string $orderDirection, private string $searchValue)
     {
     }
 

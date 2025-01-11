@@ -34,15 +34,15 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 )]
 final class UpdateCommand extends AbstractCommand
 {
-    private const XLIFF_UPLOAD_COMMAND = 'XLIFF_UPLOAD_COMMAND';
-    public const ARGUMENT_XLIFF_FILE = 'xliff-file';
-    public const OPTION_PUBLISH_TO = 'publish-to';
-    public const OPTION_ARCHIVE = 'archive';
-    public const OPTION_TRANSLATION_FIELD = 'translation-field';
-    public const OPTION_LOCALE_FIELD = 'locale-field';
-    public const OPTION_DRY_RUN = 'dry-run';
-    public const OPTION_CURRENT_REVISION_ONLY = 'current-revision-only';
-    public const OPTION_BASE_URL = 'base-url';
+    private const string XLIFF_UPLOAD_COMMAND = 'XLIFF_UPLOAD_COMMAND';
+    public const string ARGUMENT_XLIFF_FILE = 'xliff-file';
+    public const string OPTION_PUBLISH_TO = 'publish-to';
+    public const string OPTION_ARCHIVE = 'archive';
+    public const string OPTION_TRANSLATION_FIELD = 'translation-field';
+    public const string OPTION_LOCALE_FIELD = 'locale-field';
+    public const string OPTION_DRY_RUN = 'dry-run';
+    public const string OPTION_CURRENT_REVISION_ONLY = 'current-revision-only';
+    public const string OPTION_BASE_URL = 'base-url';
 
     private string $xliffFilename;
     private ?Environment $publishTo = null;
@@ -64,6 +64,7 @@ final class UpdateCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -77,6 +78,7 @@ final class UpdateCommand extends AbstractCommand
             ->addOption(self::OPTION_BASE_URL, null, InputOption::VALUE_OPTIONAL, 'Base url, in order to generate a download link to the error report');
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -101,6 +103,7 @@ final class UpdateCommand extends AbstractCommand
         }
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io->text([

@@ -33,16 +33,19 @@ class LdapFormLoginAuthenticator extends AbstractLoginFormAuthenticator
     ) {
     }
 
+    #[\Override]
     public function supports(Request $request): bool
     {
         return Routes::USER_LOGIN === $request->attributes->get('_route') && $request->isMethod('POST');
     }
 
+    #[\Override]
     protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate(Routes::USER_LOGIN);
     }
 
+    #[\Override]
     public function authenticate(Request $request): Passport
     {
         $username = Type::string($request->request->get('_username', ''));
@@ -67,6 +70,7 @@ class LdapFormLoginAuthenticator extends AbstractLoginFormAuthenticator
         );
     }
 
+    #[\Override]
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {

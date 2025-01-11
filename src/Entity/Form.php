@@ -29,11 +29,13 @@ class Form extends JsonDeserializer implements \JsonSerializable, EntityInterfac
         $this->modified = DateTime::create('now');
     }
 
+    #[\Override]
     public function getId(): string
     {
         return $this->id->toString();
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;
@@ -80,6 +82,7 @@ class Form extends JsonDeserializer implements \JsonSerializable, EntityInterfac
         $this->fieldType = $fieldType;
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), self::class);

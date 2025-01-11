@@ -12,6 +12,7 @@ class ViewTypePickerType extends Select2Type
         parent::__construct();
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

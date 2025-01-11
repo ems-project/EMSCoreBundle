@@ -14,6 +14,7 @@ class QueryRow implements TableRowInterface
     /**
      * @return mixed[]
      */
+    #[\Override]
     public function getData(): array
     {
         return $this->data;

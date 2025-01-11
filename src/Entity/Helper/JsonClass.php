@@ -8,10 +8,10 @@ use EMS\Helpers\Standard\Json;
 
 class JsonClass implements \JsonSerializable
 {
-    final public const CLASS_INDEX = 'class';
-    final public const CONSTRUCTOR_ARGUMENTS_INDEX = 'arguments';
-    final public const PROPERTIES_INDEX = 'properties';
-    final public const REPLACED_FIELDS = 'replaced';
+    final public const string CLASS_INDEX = 'class';
+    final public const string CONSTRUCTOR_ARGUMENTS_INDEX = 'arguments';
+    final public const string PROPERTIES_INDEX = 'properties';
+    final public const string REPLACED_FIELDS = 'replaced';
 
     /**
      * @param array<string, mixed> $properties
@@ -97,6 +97,7 @@ class JsonClass implements \JsonSerializable
     /**
      * @return array<string, mixed>
      */
+    #[\Override]
     public function jsonSerialize(): array
     {
         return [

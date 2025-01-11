@@ -20,6 +20,7 @@ class FormModelTransformer implements DataTransformerInterface
         $this->nestedTransformer = new DataFieldModelTransformer($fieldType, $formRegistry);
     }
 
+    #[\Override]
     public function transform($data): DataField
     {
         $data = RawDataTransformer::transform($this->fieldType, $data ?? []);
@@ -27,6 +28,7 @@ class FormModelTransformer implements DataTransformerInterface
         return $this->nestedTransformer->transform($data);
     }
 
+    #[\Override]
     public function reverseTransform($data)
     {
         $data = $this->nestedTransformer->reverseTransform($data);

@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20211231111156 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -24,6 +25,7 @@ final class Version20211231111156 extends AbstractMigration
         $this->addSql('INSERT INTO schedule (id, created, modified, name, cron, command, next_run, order_key) VALUES (\'e0e77d35-f8b5-4bbe-a804-e513c404ab5a\', \'2022-01-01 12:24:57\', \'2022-01-01 12:24:57\', \'Clear logs\', \'0 2 * * 0\', \'ems:logs:clear\', \'2022-01-01 12:24:57\', 100)');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20180303140457 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -21,6 +22,7 @@ final class Version20180303140457 extends AbstractMigration
         $this->addSql('CREATE TABLE wysiwyg_styles_set (id INT NOT NULL, created TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, modified TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, name VARCHAR(255) NOT NULL, config TEXT DEFAULT NULL, orderKey INT NOT NULL, PRIMARY KEY(id))');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

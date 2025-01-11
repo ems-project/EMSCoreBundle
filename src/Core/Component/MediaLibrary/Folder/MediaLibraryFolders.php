@@ -15,7 +15,7 @@ class MediaLibraryFolders
     /** @var array<MediaLibraryFolder> */
     public array $folders = [];
 
-    private PropertyAccessor $propertyAccessor;
+    private readonly PropertyAccessor $propertyAccessor;
 
     public function __construct(private readonly MediaLibraryConfig $config)
     {

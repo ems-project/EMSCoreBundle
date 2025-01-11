@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20180318084359 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20180318084359 extends AbstractMigration
         $this->addSql('ALTER TABLE sort_option ADD inverted BOOLEAN NOT NULL DEFAULT false');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

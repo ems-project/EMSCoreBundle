@@ -16,7 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class AnalyzerOptionsType extends AbstractType
 {
-    final public const FIELDS_BY_TYPE = [
+    final public const array FIELDS_BY_TYPE = [
         'standard' => [
             'stopwords',
             'max_token_length',
@@ -53,6 +53,7 @@ class AnalyzerOptionsType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('type', ChoiceType::class, [

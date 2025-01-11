@@ -14,6 +14,7 @@ class Template implements DashboardInterface
     {
     }
 
+    #[\Override]
     public function getResponse(Dashboard $dashboard): Response
     {
         $response = new Response();

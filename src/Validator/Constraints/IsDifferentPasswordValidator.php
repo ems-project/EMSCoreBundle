@@ -13,6 +13,7 @@ class IsDifferentPasswordValidator extends ConstraintValidator
      * @param mixed                          $value
      * @param Constraint|IsDifferentPassword $constraint
      */
+    #[\Override]
     public function validate($value, $constraint): bool
     {
         if (!$constraint instanceof IsDifferentPassword) {

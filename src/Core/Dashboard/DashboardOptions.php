@@ -12,15 +12,15 @@ class DashboardOptions implements \ArrayAccess
     /** @var array<string, string> */
     private array $options = [];
 
-    final public const BODY = 'body';
-    final public const HEADER = 'header';
-    final public const FOOTER = 'footer';
+    final public const string BODY = 'body';
+    final public const string HEADER = 'header';
+    final public const string FOOTER = 'footer';
 
-    final public const FILENAME = 'filename';
-    final public const MIMETYPE = 'mimetype';
-    final public const FILE_DISPOSITION = 'fileDisposition';
+    final public const string FILENAME = 'filename';
+    final public const string MIMETYPE = 'mimetype';
+    final public const string FILE_DISPOSITION = 'fileDisposition';
 
-    private const OPTIONS = [
+    private const array OPTIONS = [
         self::BODY,
         self::HEADER,
         self::FOOTER,
@@ -49,21 +49,25 @@ class DashboardOptions implements \ArrayAccess
         return \array_filter($this->options);
     }
 
+    #[\Override]
     public function offsetExists($offset): bool
     {
         return isset($this->options[$offset]);
     }
 
+    #[\Override]
     public function offsetGet($offset): ?string
     {
         return $this->options[$offset] ?? null;
     }
 
+    #[\Override]
     public function offsetSet($offset, $value): void
     {
         $this->options[$offset] = $value;
     }
 
+    #[\Override]
     public function offsetUnset($offset): void
     {
         unset($this->options[$offset]);

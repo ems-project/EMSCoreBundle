@@ -89,7 +89,8 @@ class JobService implements EntityServiceInterface
         return $doneJobs;
     }
 
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected context');
@@ -235,6 +236,7 @@ class JobService implements EntityServiceInterface
         return $jobsCleaned;
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return false;
@@ -243,11 +245,13 @@ class JobService implements EntityServiceInterface
     /**
      * @return Job[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         return $this->repository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'job';
@@ -256,6 +260,7 @@ class JobService implements EntityServiceInterface
     /**
      * @return string[]
      */
+    #[\Override]
     public function getAliasesName(): array
     {
         return [
@@ -265,6 +270,7 @@ class JobService implements EntityServiceInterface
         ];
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?EntityInterface
     {
         try {
@@ -274,11 +280,13 @@ class JobService implements EntityServiceInterface
         }
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         throw new \RuntimeException('Job entities doesn\'t support JSON update');
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         if (null !== $name) {
@@ -299,6 +307,7 @@ class JobService implements EntityServiceInterface
         return $job;
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         $job = $this->repository->findById(\intval($name));

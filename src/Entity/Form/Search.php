@@ -35,6 +35,7 @@ class Search implements \JsonSerializable
     /**
      * @return array<mixed>
      */
+    #[\Override]
     public function jsonSerialize(): array
     {
         $out = [

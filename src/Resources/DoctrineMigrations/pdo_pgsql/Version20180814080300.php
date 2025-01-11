@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20180814080300 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -22,6 +23,7 @@ final class Version20180814080300 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX asset_key_index ON asset_storage (hash, context)');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

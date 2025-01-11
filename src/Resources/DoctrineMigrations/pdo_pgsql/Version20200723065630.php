@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20200723065630 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -22,6 +23,7 @@ final class Version20200723065630 extends AbstractMigration
         $this->addSql('ALTER TABLE form_submission ALTER process_try_counter SET NOT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

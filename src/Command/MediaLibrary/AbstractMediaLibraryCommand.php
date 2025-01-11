@@ -23,12 +23,14 @@ abstract class AbstractMediaLibraryCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
             ->addOption(self::OPTION_HASH, null, InputOption::VALUE_REQUIRED, 'media config hash');
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);

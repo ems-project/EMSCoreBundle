@@ -33,6 +33,7 @@ class ContentTypeDataTableType extends AbstractTableType implements QueryService
     ) {
     }
 
+    #[\Override]
     public function build(QueryTable $table): void
     {
         $table->setExtraFrontendOption(['pageLength' => 25]);
@@ -159,21 +160,25 @@ class ContentTypeDataTableType extends AbstractTableType implements QueryService
         $this->addTableActionDelete($table, 'content_type');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];
     }
 
+    #[\Override]
     public function getQueryName(): string
     {
         return 'contentType';
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return true;
     }
 
+    #[\Override]
     public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         $qb = $this->contentTypeRepository->makeQueryBuilder(searchValue: $searchValue);
@@ -199,6 +204,7 @@ class ContentTypeDataTableType extends AbstractTableType implements QueryService
         return $qb->getQuery()->getArrayResult();
     }
 
+    #[\Override]
     public function countQuery(string $searchValue = '', mixed $context = null): int
     {
         return (int) $this->contentTypeRepository

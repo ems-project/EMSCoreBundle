@@ -10,15 +10,15 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class TaskEvent extends Event
 {
-    final public const PLANNED = 'ems_core.event.task.planned';
-    final public const PROGRESS = 'ems_core.event.task.progress';
-    final public const COMPLETED = 'ems_core.event.task.completed';
-    final public const APPROVED = 'ems_core.event.task.approved';
-    final public const REJECTED = 'ems_core.event.task.rejected';
+    final public const string PLANNED = 'ems_core.event.task.planned';
+    final public const string PROGRESS = 'ems_core.event.task.progress';
+    final public const string COMPLETED = 'ems_core.event.task.completed';
+    final public const string APPROVED = 'ems_core.event.task.approved';
+    final public const string REJECTED = 'ems_core.event.task.rejected';
 
-    final public const CREATE = 'ems_core.event.task.create';
-    final public const UPDATE = 'ems_core.event.task.update';
-    final public const DELETE = 'ems_core.event.task.delete';
+    final public const string CREATE = 'ems_core.event.task.create';
+    final public const string UPDATE = 'ems_core.event.task.update';
+    final public const string DELETE = 'ems_core.event.task.delete';
     public ?string $comment = null;
     /** @var array<mixed> */
     public array $changeSet = [];

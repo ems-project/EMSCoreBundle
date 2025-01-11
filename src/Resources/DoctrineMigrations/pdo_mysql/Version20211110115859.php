@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20211110115859 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20211110115859 extends AbstractMigration
         $this->addSql('ALTER TABLE view ADD role VARCHAR(100) DEFAULT NULL, CHANGE orderkey order_key INT NOT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

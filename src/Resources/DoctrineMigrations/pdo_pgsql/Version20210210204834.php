@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20210210204834 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -24,6 +25,7 @@ final class Version20210210204834 extends AbstractMigration
         $this->addSql('ALTER TABLE wysiwyg_styles_set ADD save_dir VARCHAR(2048) DEFAULT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

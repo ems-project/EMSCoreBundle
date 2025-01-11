@@ -11,11 +11,13 @@ use EMS\Helpers\Standard\Json;
 
 final class Version20231210103056 extends AbstractMigration
 {
+    #[\Override]
     public function getDescription(): string
     {
         return 'convert deprecated array type to json type';
     }
 
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -45,6 +47,7 @@ final class Version20231210103056 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN "user".roles IS NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

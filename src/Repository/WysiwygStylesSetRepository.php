@@ -31,6 +31,7 @@ class WysiwygStylesSetRepository extends ServiceEntityRepository
     /**
      * @return WysiwygStylesSet[]
      */
+    #[\Override]
     public function findAll(): array
     {
         return parent::findBy([], ['orderKey' => 'asc']);

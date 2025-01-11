@@ -27,6 +27,7 @@ final class QuerySearchType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -71,6 +72,7 @@ final class QuerySearchType extends AbstractType
         $builder->get('options')->addModelTransformer(new QuerySearchOptionsTransformer());
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

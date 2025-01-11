@@ -10,9 +10,9 @@ use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use Psr\Log\LoggerInterface;
 
-final class ActionService implements EntityServiceInterface
+final readonly class ActionService implements EntityServiceInterface
 {
-    public function __construct(private readonly TemplateRepository $templateRepository, private readonly LoggerInterface $logger)
+    public function __construct(private TemplateRepository $templateRepository, private LoggerInterface $logger)
     {
     }
 
@@ -59,17 +59,17 @@ final class ActionService implements EntityServiceInterface
         }
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return true;
     }
 
     /**
-     * @param mixed $context
-     *
      * @return Template[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         if (!$context instanceof ContentType) {
             throw new \RuntimeException('Unexpected non-ContentType object');
@@ -78,6 +78,7 @@ final class ActionService implements EntityServiceInterface
         return $this->templateRepository->get($from, $size, $orderField, $orderDirection, $searchValue, $context);
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'action';
@@ -86,15 +87,14 @@ final class ActionService implements EntityServiceInterface
     /**
      * @return string[]
      */
+    #[\Override]
     public function getAliasesName(): array
     {
         return [];
     }
 
-    /**
-     * @param mixed $context
-     */
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         if (!$context instanceof ContentType) {
             throw new \RuntimeException('Unexpected non-ContentType object');
@@ -103,21 +103,25 @@ final class ActionService implements EntityServiceInterface
         return $this->templateRepository->counter($searchValue, $context);
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?EntityInterface
     {
         return $this->templateRepository->getById((int) $name);
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         throw new \RuntimeException('createEntityFromJson method not yet implemented');
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         throw new \RuntimeException('deleteByItemName method not yet implemented');

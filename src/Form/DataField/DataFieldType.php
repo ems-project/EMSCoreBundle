@@ -53,6 +53,7 @@ abstract class DataFieldType extends AbstractType
         return true;
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'data_field_type';
@@ -62,6 +63,7 @@ abstract class DataFieldType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->setDisabled($this->isDisabled($options));
@@ -254,6 +256,7 @@ abstract class DataFieldType extends AbstractType
         return 'fa fa-square';
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -305,6 +308,7 @@ abstract class DataFieldType extends AbstractType
      * @param FormInterface<FormInterface> $form
      * @param array<string, mixed>         $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['class'] = $options['class'];

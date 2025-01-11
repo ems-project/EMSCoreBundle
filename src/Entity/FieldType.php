@@ -18,7 +18,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     use CreatedModifiedTrait;
     use IdentifierIntegerTrait;
 
-    final public const DISPLAY_OPTIONS = 'displayOptions';
+    final public const string DISPLAY_OPTIONS = 'displayOptions';
 
     /** @var class-string<DataFieldType> */
     protected string $type;
@@ -657,6 +657,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         return $this->options ?? [];
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), self::class);
@@ -672,6 +673,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     /**
      * @param mixed $value
      */
+    #[\Override]
     protected function deserializeProperty(string $name, $value): void
     {
         switch ($name) {

@@ -16,11 +16,11 @@ class Release implements EntityInterface
 {
     use IdentifierIntegerTrait;
 
-    final public const WIP_STATUS = 'wip';
-    final public const READY_STATUS = 'ready';
-    final public const APPLIED_STATUS = 'applied';
-    final public const CANCELED_STATUS = 'canceled';
-    final public const SCHEDULED_STATUS = 'scheduled';
+    final public const string WIP_STATUS = 'wip';
+    final public const string READY_STATUS = 'ready';
+    final public const string APPLIED_STATUS = 'applied';
+    final public const string CANCELED_STATUS = 'canceled';
+    final public const string SCHEDULED_STATUS = 'scheduled';
 
     private ?\DateTime $executionDate = null;
     private string $status = Release::WIP_STATUS;
@@ -35,6 +35,7 @@ class Release implements EntityInterface
         $this->revisions = new ArrayCollection();
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;

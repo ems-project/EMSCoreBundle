@@ -21,7 +21,7 @@ use function Symfony\Component\Translation\t;
 
 final class TableType extends AbstractType
 {
-    public const REORDER_ACTION = 'reorderAction';
+    public const string REORDER_ACTION = 'reorderAction';
 
     /**
      * @return string[]
@@ -43,6 +43,7 @@ final class TableType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $data = $options['data'] ?? null;
@@ -92,6 +93,7 @@ final class TableType extends AbstractType
         }
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -106,6 +108,7 @@ final class TableType extends AbstractType
      * @param FormInterface<AbstractType> $form
      * @param array<string, mixed>        $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
@@ -114,6 +117,7 @@ final class TableType extends AbstractType
         $view->vars['title_label'] = $options['title_label'];
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'emsco_form_table_type';

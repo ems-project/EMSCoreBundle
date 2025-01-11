@@ -18,7 +18,7 @@ class UserService implements EntityServiceInterface
 {
     private ?UserInterface $currentUser = null;
 
-    final public const DONT_DETACH = false;
+    final public const bool DONT_DETACH = false;
 
     /**
      * @param array<mixed> $securityRoles
@@ -233,16 +233,19 @@ class UserService implements EntityServiceInterface
         });
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return false;
     }
 
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         return $this->userRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'user';
@@ -251,12 +254,14 @@ class UserService implements EntityServiceInterface
     /**
      * @return string[]
      */
+    #[\Override]
     public function getAliasesName(): array
     {
         return [];
     }
 
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         return $this->userRepository->countUsers($searchValue);
     }
@@ -283,6 +288,7 @@ class UserService implements EntityServiceInterface
         return $menu;
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?EntityInterface
     {
         $user = $this->getUser($name);
@@ -293,16 +299,19 @@ class UserService implements EntityServiceInterface
         return $user;
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         throw new \RuntimeException('createEntityFromJson method not yet implemented');
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         throw new \RuntimeException('deleteByItemName method not yet implemented');

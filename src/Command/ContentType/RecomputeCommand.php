@@ -51,18 +51,18 @@ final class RecomputeCommand extends AbstractCommand
     private ?string $ouuid = null;
     private string $query;
 
-    private const ARGUMENT_CONTENT_TYPE = 'contentType';
-    private const OPTION_CHANGED = 'changed';
-    private const OPTION_FORCE = 'force';
-    private const OPTION_MISSING = 'missing';
-    private const OPTION_CONTINUE = 'continue';
-    private const OPTION_NO_ALIGN = 'no-align';
-    private const OPTION_CRON = 'cron';
-    private const OPTION_OUUID = 'ouuid';
-    private const OPTION_DEEP = 'deep';
-    private const OPTION_QUERY = 'query';
+    private const string ARGUMENT_CONTENT_TYPE = 'contentType';
+    private const string OPTION_CHANGED = 'changed';
+    private const string OPTION_FORCE = 'force';
+    private const string OPTION_MISSING = 'missing';
+    private const string OPTION_CONTINUE = 'continue';
+    private const string OPTION_NO_ALIGN = 'no-align';
+    private const string OPTION_CRON = 'cron';
+    private const string OPTION_OUUID = 'ouuid';
+    private const string OPTION_DEEP = 'deep';
+    private const string OPTION_QUERY = 'query';
 
-    private const LOCK_BY = 'SYSTEM_RECOMPUTE';
+    private const string LOCK_BY = 'SYSTEM_RECOMPUTE';
 
     public function __construct(
         private readonly DataService $dataService,
@@ -78,6 +78,7 @@ final class RecomputeCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -95,6 +96,7 @@ final class RecomputeCommand extends AbstractCommand
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -124,6 +126,7 @@ final class RecomputeCommand extends AbstractCommand
         }
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->conn->setAutoCommit(false);

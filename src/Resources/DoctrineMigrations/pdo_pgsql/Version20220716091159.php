@@ -11,6 +11,7 @@ use EMS\CommonBundle\Helper\Text\Encoder;
 
 final class Version20220716091159 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -29,6 +30,7 @@ final class Version20220716091159 extends AbstractMigration
         $this->webalizeName('template');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

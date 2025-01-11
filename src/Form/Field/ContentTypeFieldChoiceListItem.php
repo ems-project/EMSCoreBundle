@@ -20,6 +20,7 @@ class ContentTypeFieldChoiceListItem implements \Stringable
         return $this->label;
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return $this->getValue() ?? $this->getLabel();

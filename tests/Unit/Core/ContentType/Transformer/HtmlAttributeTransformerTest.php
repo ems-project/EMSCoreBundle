@@ -9,6 +9,7 @@ use EMS\CoreBundle\Core\ContentType\Transformer\HtmlAttributeTransformer;
 
 class HtmlAttributeTransformerTest extends AbstractTransformerTest
 {
+    #[\Override]
     protected function getTransformer(): ContentTransformerInterface
     {
         return new HtmlAttributeTransformer();

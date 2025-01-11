@@ -15,11 +15,13 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class IconFieldType extends DataFieldType
 {
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-flag';
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Icon field';
@@ -29,6 +31,7 @@ class IconFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -40,6 +43,7 @@ class IconFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -49,11 +53,13 @@ class IconFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -64,6 +70,7 @@ class IconFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $value = $data['value'];

@@ -19,16 +19,19 @@ class ChoiceFieldType extends DataFieldType
 {
     private ?int $fakeIndex = null;
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Choice field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'glyphicon glyphicon-check';
     }
 
+    #[\Override]
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -57,6 +60,7 @@ class ChoiceFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -80,6 +84,7 @@ class ChoiceFieldType extends DataFieldType
      * @param FormInterface<FormInterface> $form
      * @param array<string, mixed>         $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
@@ -93,6 +98,7 @@ class ChoiceFieldType extends DataFieldType
         ];
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
@@ -107,6 +113,7 @@ class ChoiceFieldType extends DataFieldType
         $resolver->setDefault('placeholder', null);
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -140,6 +147,7 @@ class ChoiceFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -149,6 +157,7 @@ class ChoiceFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'ems_choice';
@@ -157,6 +166,7 @@ class ChoiceFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $value = $data['value'] ?? null;
@@ -168,6 +178,7 @@ class ChoiceFieldType extends DataFieldType
         return parent::reverseViewTransform($value, $fieldType);
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $temp = parent::viewTransform($dataField);

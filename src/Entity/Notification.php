@@ -11,8 +11,8 @@ class Notification implements \Stringable
     use CreatedModifiedTrait;
     use IdentifierIntegerTrait;
 
-    final public const PENDING = 'pending';
-    final public const IN_TRANSIT = 'in-transit';
+    final public const string PENDING = 'pending';
+    final public const string IN_TRANSIT = 'in-transit';
 
     private ?Template $template = null;
     private string $username;
@@ -34,6 +34,7 @@ class Notification implements \Stringable
         $this->modified = DateTime::create('now');
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return $this->getTemplate()->getName().'#'.$this->id;

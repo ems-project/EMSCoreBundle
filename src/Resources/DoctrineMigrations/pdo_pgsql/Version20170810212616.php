@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20170810212616 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20170810212616 extends AbstractMigration
         $this->addSql('ALTER TABLE "user" ADD email_notification BOOLEAN NOT NULL DEFAULT FALSE');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

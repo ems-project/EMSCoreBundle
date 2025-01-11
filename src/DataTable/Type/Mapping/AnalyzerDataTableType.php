@@ -22,6 +22,7 @@ class AnalyzerDataTableType extends AbstractEntityTableType
         parent::__construct($analyzerManager);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $this
@@ -41,6 +42,7 @@ class AnalyzerDataTableType extends AbstractEntityTableType
             ->addTableActionDelete($table, 'analyzer');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];

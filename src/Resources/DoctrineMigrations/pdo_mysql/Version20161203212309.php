@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20161203212309 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20161203212309 extends AbstractMigration
         $this->addSql('ALTER TABLE user ADD layout_boxed TINYINT(1) NOT NULL, ADD sidebar_mini TINYINT(1) NOT NULL, ADD sidebar_collapse TINYINT(1) NOT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

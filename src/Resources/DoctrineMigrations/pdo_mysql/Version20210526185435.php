@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20210526185435 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20210526185435 extends AbstractMigration
         $this->addSql('ALTER TABLE revision ADD archived TINYINT(1) DEFAULT \'0\' NOT NULL, ADD archived_by VARCHAR(255) DEFAULT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

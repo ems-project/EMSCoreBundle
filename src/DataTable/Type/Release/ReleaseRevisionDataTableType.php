@@ -28,6 +28,7 @@ class ReleaseRevisionDataTableType extends AbstractEntityTableType
         parent::__construct($releaseRevisionService);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         /** @var Release $release */
@@ -52,16 +53,19 @@ class ReleaseRevisionDataTableType extends AbstractEntityTableType
         }
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_PUBLISHER];
     }
 
+    #[\Override]
     public function getContext(array $options): Release
     {
         return $this->releaseService->getById($options['release_id']);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver->setRequired(['release_id']);

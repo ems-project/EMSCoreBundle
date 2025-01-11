@@ -8,16 +8,19 @@ use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
 
 final class HtmlEmptyTransformer extends AbstractTransformer
 {
+    #[\Override]
     public function getName(): string
     {
         return 'HTML Empty';
     }
 
+    #[\Override]
     public function supports(string $class): bool
     {
         return WysiwygFieldType::class === $class;
     }
 
+    #[\Override]
     public function transform(TransformContext $context): void
     {
         if (null == $data = $context->getData()) {

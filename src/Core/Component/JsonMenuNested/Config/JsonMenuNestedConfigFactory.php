@@ -32,6 +32,7 @@ class JsonMenuNestedConfigFactory extends AbstractConfigFactory
      *     columns: JsonMenuNestedColumn[]
      * } $options
      */
+    #[\Override]
     protected function create(string $hash, array $options): JsonMenuNestedConfig
     {
         if (null === $revision = $this->revisionService->getByEmsLink($options['ems_link'])) {
@@ -65,6 +66,7 @@ class JsonMenuNestedConfigFactory extends AbstractConfigFactory
         return $config;
     }
 
+    #[\Override]
     protected function resolveOptions(array $options): array
     {
         $resolver = new OptionsResolver();

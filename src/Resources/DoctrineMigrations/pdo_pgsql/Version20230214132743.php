@@ -11,6 +11,7 @@ use EMS\CoreBundle\Entity\Dashboard;
 
 final class Version20230214132743 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -31,6 +32,7 @@ final class Version20230214132743 extends AbstractMigration
         $this->addSql('ALTER TABLE "user" DROP wysiwyg_options');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

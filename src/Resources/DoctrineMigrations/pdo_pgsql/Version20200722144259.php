@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20200722144259 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -23,6 +24,7 @@ final class Version20200722144259 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN form_verification.expiration_date IS \'(DC2Type:datetime_immutable)\'');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

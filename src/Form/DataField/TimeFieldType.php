@@ -20,19 +20,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TimeFieldType extends DataFieldType
 {
-    final public const STOREFORMAT = 'H:i:s';
-    final public const INDEXFORMAT = 'HH:mm:ss';
+    final public const string STOREFORMAT = 'H:i:s';
+    final public const string INDEXFORMAT = 'HH:mm:ss';
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Time field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-clock';
     }
 
+    #[\Override]
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
@@ -75,6 +78,7 @@ class TimeFieldType extends DataFieldType
         return $format;
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -93,6 +97,7 @@ class TimeFieldType extends DataFieldType
         return '';
     }
 
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $format = static::getFormat($fieldType->getOptions());
@@ -110,6 +115,7 @@ class TimeFieldType extends DataFieldType
         return parent::reverseViewTransform($out, $fieldType);
     }
 
+    #[\Override]
     public function generateMapping(FieldType $current): array
     {
         return [
@@ -120,6 +126,7 @@ class TimeFieldType extends DataFieldType
         ];
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
@@ -136,6 +143,7 @@ class TimeFieldType extends DataFieldType
      * @param FormInterface<FormInterface> $form
      * @param array<string, mixed>         $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /* get options for twig context */
@@ -159,11 +167,13 @@ class TimeFieldType extends DataFieldType
         $view->vars['attr'] = $attr;
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return IconTextType::class;
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

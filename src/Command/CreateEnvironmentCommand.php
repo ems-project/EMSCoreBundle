@@ -24,15 +24,16 @@ class CreateEnvironmentCommand extends Command
 {
     private ?SymfonyStyle $io = null;
 
-    final public const ARGUMENT_ENV_NAME = 'name';
-    final public const OPTION_STRICT = 'strict';
-    final public const OPTION_UPDATE_REFERRERS = 'update-referrers';
+    final public const string ARGUMENT_ENV_NAME = 'name';
+    final public const string OPTION_STRICT = 'strict';
+    final public const string OPTION_UPDATE_REFERRERS = 'update-referrers';
 
     public function __construct(private readonly LoggerInterface $logger, protected EnvironmentService $environmentService, protected DataService $dataService)
     {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -56,12 +57,14 @@ class CreateEnvironmentCommand extends Command
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title('Create a environment');
     }
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         if (null === $this->io) {
@@ -73,6 +76,7 @@ class CreateEnvironmentCommand extends Command
         $this->checkEnvironmentNameArgument($input);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (null === $this->io) {

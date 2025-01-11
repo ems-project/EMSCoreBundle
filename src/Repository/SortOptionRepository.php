@@ -17,6 +17,7 @@ class SortOptionRepository extends EntityRepository
     /**
      * @return SortOption[]
      */
+    #[\Override]
     public function findAll(): array
     {
         return parent::findBy([], ['orderKey' => 'asc']);

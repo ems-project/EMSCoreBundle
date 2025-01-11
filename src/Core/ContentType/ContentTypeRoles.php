@@ -14,17 +14,17 @@ class ContentTypeRoles implements \ArrayAccess
     /** @var array<string, string> */
     private array $roles = [];
 
-    final public const VIEW = 'view';
-    final public const CREATE = 'create';
-    final public const EDIT = 'edit';
-    final public const PUBLISH = 'publish';
-    final public const DELETE = 'delete';
-    final public const TRASH = 'trash';
-    final public const ARCHIVE = 'archive';
-    final public const SHOW_LINK_CREATE = 'show_link_create';
-    final public const SHOW_LINK_SEARCH = 'show_link_search';
+    final public const string VIEW = 'view';
+    final public const string CREATE = 'create';
+    final public const string EDIT = 'edit';
+    final public const string PUBLISH = 'publish';
+    final public const string DELETE = 'delete';
+    final public const string TRASH = 'trash';
+    final public const string ARCHIVE = 'archive';
+    final public const string SHOW_LINK_CREATE = 'show_link_create';
+    final public const string SHOW_LINK_SEARCH = 'show_link_search';
 
-    private const TYPES = [
+    private const array TYPES = [
         self::VIEW,
         self::CREATE,
         self::EDIT,
@@ -64,21 +64,25 @@ class ContentTypeRoles implements \ArrayAccess
         return $this->roles;
     }
 
+    #[\Override]
     public function offsetExists($offset): bool
     {
         return isset($this->roles[$offset]);
     }
 
+    #[\Override]
     public function offsetGet($offset): ?string
     {
         return $this->roles[$offset] ?? null;
     }
 
+    #[\Override]
     public function offsetSet($offset, $value): void
     {
         $this->roles[$offset] = $value;
     }
 
+    #[\Override]
     public function offsetUnset($offset): void
     {
         unset($this->roles[$offset]);

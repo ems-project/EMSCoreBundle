@@ -24,11 +24,13 @@ class LogDataTableType extends AbstractEntityTableType
         parent::__construct($logManager);
     }
 
+    #[\Override]
     public function getContext(array $options): LogEntityTableContext
     {
         return new LogEntityTableContext();
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $table->setDefaultOrder('created', 'desc')->setLabelAttribute('id');
@@ -69,6 +71,7 @@ class LogDataTableType extends AbstractEntityTableType
             ->addTableActionDelete($table, 'log');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];

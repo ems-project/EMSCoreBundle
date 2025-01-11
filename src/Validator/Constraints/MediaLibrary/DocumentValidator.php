@@ -22,6 +22,7 @@ class DocumentValidator extends ConstraintValidator
     /**
      * @param MediaLibraryDocument $value
      */
+    #[\Override]
     public function validate($value, Constraint $constraint): void
     {
         if (!$constraint instanceof Document) {

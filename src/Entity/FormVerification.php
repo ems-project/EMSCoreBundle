@@ -9,13 +9,13 @@ use Ramsey\Uuid\UuidInterface;
 
 class FormVerification
 {
-    private UuidInterface $id;
+    private readonly UuidInterface $id;
 
     private readonly string $code;
     private readonly \DateTimeImmutable $created;
     private \DateTimeImmutable $expirationDate;
 
-    private const EXPIRATION_TIME = '+3 hours';
+    private const string EXPIRATION_TIME = '+3 hours';
 
     public function __construct(private readonly string $value)
     {

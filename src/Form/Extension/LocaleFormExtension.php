@@ -14,6 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LocaleFormExtension extends AbstractTypeExtension
 {
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
@@ -29,11 +30,13 @@ class LocaleFormExtension extends AbstractTypeExtension
             });
     }
 
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['locale'] = $options['locale'];
     }
 
+    #[\Override]
     public static function getExtendedTypes(): iterable
     {
         return [FormType::class];

@@ -16,6 +16,7 @@ class ContentTypeFieldPickerType extends Select2Type
         $this->choiceListFactory = $factory;
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);

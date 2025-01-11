@@ -53,6 +53,7 @@ class LoadLinkModalType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $this->anchorLoader = new AnchorChoiceLoader($options[self::ANCHOR_TARGETS]);
@@ -198,6 +199,7 @@ class LoadLinkModalType extends AbstractType
         ]);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
@@ -213,6 +215,7 @@ class LoadLinkModalType extends AbstractType
         parent::configureOptions($resolver);
     }
 
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $data = $options['data'] ?? null;

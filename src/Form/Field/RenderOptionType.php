@@ -9,14 +9,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RenderOptionType extends ChoiceType
 {
-    final public const EMBED = 'embed';
-    final public const EXPORT = 'export';
-    final public const IMPORT = 'import';
-    final public const EXTERNALLINK = 'externalLink';
-    final public const RAW_HTML = 'rawHTML';
-    final public const NOTIFICATION = 'notification';
-    final public const JOB = 'job';
-    final public const PDF = 'pdf';
+    final public const string EMBED = 'embed';
+    final public const string EXPORT = 'export';
+    final public const string IMPORT = 'import';
+    final public const string EXTERNALLINK = 'externalLink';
+    final public const string RAW_HTML = 'rawHTML';
+    final public const string NOTIFICATION = 'notification';
+    final public const string JOB = 'job';
+    final public const string PDF = 'pdf';
 
     /** @var array<string, string> */
     private array $choices = [
@@ -30,6 +30,7 @@ class RenderOptionType extends ChoiceType
         'PDF' => self::PDF,
     ];
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);

@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20220217153831 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20220217153831 extends AbstractMigration
         $this->addSql('ALTER TABLE user ADD locale VARCHAR(255) DEFAULT \'en\' NOT NULL, ADD locale_preferred VARCHAR(255) DEFAULT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20160831100926 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -24,6 +25,7 @@ final class Version20160831100926 extends AbstractMigration
         $this->addSql('ALTER TABLE content_type CHANGE other extra LONGTEXT DEFAULT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

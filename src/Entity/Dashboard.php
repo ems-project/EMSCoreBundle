@@ -30,13 +30,13 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
     protected array $options = [];
     protected int $orderKey;
 
-    final public const DEFINITION_LANDING_PAGE = 'landing_page';
-    final public const DEFINITION_QUICK_SEARCH = 'quick_search';
-    final public const DEFINITION_BROWSER_IMAGE = 'browser_image';
-    final public const DEFINITION_BROWSER_OBJECT = 'browser_object';
-    final public const DEFINITION_BROWSER_FILE = 'browser_file';
+    final public const string DEFINITION_LANDING_PAGE = 'landing_page';
+    final public const string DEFINITION_QUICK_SEARCH = 'quick_search';
+    final public const string DEFINITION_BROWSER_IMAGE = 'browser_image';
+    final public const string DEFINITION_BROWSER_OBJECT = 'browser_object';
+    final public const string DEFINITION_BROWSER_FILE = 'browser_file';
 
-    final public const DEFINITIONS = [
+    final public const array DEFINITIONS = [
         self::DEFINITION_QUICK_SEARCH,
         self::DEFINITION_LANDING_PAGE,
         self::DEFINITION_BROWSER_IMAGE,
@@ -44,7 +44,7 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
         self::DEFINITION_BROWSER_FILE,
     ];
 
-    final public const DASHBOARD_BROWSERS = [
+    final public const array DASHBOARD_BROWSERS = [
         self::DEFINITION_BROWSER_IMAGE,
         self::DEFINITION_BROWSER_OBJECT,
         self::DEFINITION_BROWSER_FILE,
@@ -57,11 +57,13 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
         $this->modified = DateTime::create('now');
     }
 
+    #[\Override]
     public function getId(): string
     {
         return $this->id->toString();
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;
@@ -177,6 +179,7 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
         $this->color = $color;
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), self::class);

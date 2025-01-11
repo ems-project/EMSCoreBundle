@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class FilterOptionsType extends AbstractType
 {
-    final public const FIELDS_BY_TYPE = [
+    final public const array FIELDS_BY_TYPE = [
         'standard' => [],
         'stop' => [
             'stopwords',
@@ -44,6 +44,7 @@ class FilterOptionsType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('type', ChoiceType::class, [

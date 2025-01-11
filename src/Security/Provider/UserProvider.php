@@ -21,6 +21,7 @@ class UserProvider implements UserProviderInterface
     {
     }
 
+    #[\Override]
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
         return $this->findUser($identifier);
@@ -31,6 +32,7 @@ class UserProvider implements UserProviderInterface
         return $this->loadUserByIdentifier($username);
     }
 
+    #[\Override]
     public function refreshUser(UserInterface $user): UserInterface
     {
         if (!$user instanceof User) {
@@ -40,6 +42,7 @@ class UserProvider implements UserProviderInterface
         return $this->findUser($user->getUsername());
     }
 
+    #[\Override]
     public function supportsClass(string $class): bool
     {
         return User::class === $class;

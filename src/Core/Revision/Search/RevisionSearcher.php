@@ -18,7 +18,7 @@ final class RevisionSearcher
     private int $size;
     private string $timeout = self::DEFAULT_TIME_OUT;
 
-    public const DEFAULT_TIME_OUT = '1m';
+    public const string DEFAULT_TIME_OUT = '1m';
 
     public function __construct(
         private readonly ElasticaService $elasticaService,

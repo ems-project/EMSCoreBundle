@@ -17,15 +17,15 @@ use Psr\Log\LoggerInterface;
 
 class Mapping
 {
-    final public const FINALIZATION_DATETIME_FIELD = '_finalization_datetime';
-    final public const FINALIZED_BY_FIELD = '_finalized_by';
-    final public const HASH_FIELD = '_sha1';
-    final public const SIGNATURE_FIELD = '_signature';
-    final public const CONTENT_TYPE_FIELD = '_contenttype';
-    final public const VERSION_UUID = '_version_uuid';
-    final public const VERSION_TAG = '_version_tag';
+    final public const string FINALIZATION_DATETIME_FIELD = '_finalization_datetime';
+    final public const string FINALIZED_BY_FIELD = '_finalized_by';
+    final public const string HASH_FIELD = '_sha1';
+    final public const string SIGNATURE_FIELD = '_signature';
+    final public const string CONTENT_TYPE_FIELD = '_contenttype';
+    final public const string VERSION_UUID = '_version_uuid';
+    final public const string VERSION_TAG = '_version_tag';
 
-    final public const MAPPING_INTERNAL_FIELDS = [
+    final public const array MAPPING_INTERNAL_FIELDS = [
         Mapping::PUBLISHED_DATETIME_FIELD => Mapping::PUBLISHED_DATETIME_FIELD,
         Mapping::FINALIZATION_DATETIME_FIELD => Mapping::FINALIZATION_DATETIME_FIELD,
         Mapping::FINALIZED_BY_FIELD => Mapping::FINALIZED_BY_FIELD,
@@ -36,12 +36,12 @@ class Mapping
         Mapping::VERSION_TAG => Mapping::VERSION_TAG,
     ];
 
-    final public const CONTENT_TYPE_META_FIELD = 'content_type';
-    final public const GENERATOR_META_FIELD = 'generator';
-    final public const GENERATOR_META_FIELD_VALUE = 'elasticms';
-    final public const CORE_VERSION_META_FIELD = 'core_version';
-    final public const INSTANCE_ID_META_FIELD = 'instance_id';
-    final public const PUBLISHED_DATETIME_FIELD = '_published_datetime';
+    final public const string CONTENT_TYPE_META_FIELD = 'content_type';
+    final public const string GENERATOR_META_FIELD = 'generator';
+    final public const string GENERATOR_META_FIELD_VALUE = 'elasticms';
+    final public const string CORE_VERSION_META_FIELD = 'core_version';
+    final public const string INSTANCE_ID_META_FIELD = 'instance_id';
+    final public const string PUBLISHED_DATETIME_FIELD = '_published_datetime';
 
     public function __construct(
         private readonly LoggerInterface $logger,

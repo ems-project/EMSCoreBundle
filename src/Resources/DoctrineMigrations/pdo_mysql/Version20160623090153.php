@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20160623090153 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20160623090153 extends AbstractMigration
         $this->addSql('ALTER TABLE audit ADD raw_data VARCHAR(255) DEFAULT NULL, DROP row_data');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

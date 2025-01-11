@@ -14,6 +14,7 @@ class RolePickerType extends Select2Type
         parent::__construct();
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $choices = [...['role.not-defined' => Roles::NOT_DEFINED], ...$this->userService->listUserRoles()];

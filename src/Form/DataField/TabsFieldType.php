@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class TabsFieldType extends DataFieldType
 {
-    private const LOCALE_PREFERRED_FIRST_DISPLAY_OPTION = 'localePreferredFirst';
+    private const string LOCALE_PREFERRED_FIRST_DISPLAY_OPTION = 'localePreferredFirst';
 
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
@@ -32,21 +32,25 @@ class TabsFieldType extends DataFieldType
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Visual tab container (invisible in Elasticsearch)';
     }
 
+    #[\Override]
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         throw new \Exception('This method should never be called');
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'tabsfieldtype';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-object-group';
@@ -56,6 +60,7 @@ class TabsFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -81,16 +86,19 @@ class TabsFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function buildObjectArray(DataField $data, array &$out): void
     {
     }
 
+    #[\Override]
     public static function isContainer(): bool
     {
         /* this kind of compound field may contain children */
         return true;
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -107,22 +115,26 @@ class TabsFieldType extends DataFieldType
         $optionsForm->get('restrictionOptions')->remove('mandatory_if');
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
         $resolver->setDefault(self::LOCALE_PREFERRED_FIRST_DISPLAY_OPTION, false);
     }
 
+    #[\Override]
     public static function isVirtual(array $option = []): bool
     {
         return true;
     }
 
+    #[\Override]
     public static function getJsonNames(FieldType $current): array
     {
         return [];
     }
 
+    #[\Override]
     public function generateMapping(FieldType $current): array
     {
         return [];

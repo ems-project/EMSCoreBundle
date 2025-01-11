@@ -17,6 +17,7 @@ class SearchFieldOptionRepository extends EntityRepository
     /**
      * @return SearchFieldOption[]
      */
+    #[\Override]
     public function findAll(): array
     {
         return parent::findBy([], ['orderKey' => 'asc']);

@@ -44,6 +44,7 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
         parent::__construct($queryService);
     }
 
+    #[\Override]
     public function build(QueryTable $table): void
     {
         /** @var TasksDataTableContext $context */
@@ -58,6 +59,7 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
         };
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver
@@ -69,6 +71,7 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
             ]);
     }
 
+    #[\Override]
     public function getExportFormats(): array
     {
         return [DataTableFormat::CSV, DataTableFormat::EXCEL];
@@ -77,6 +80,7 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
     /**
      * @param TasksDataTableContext $context
      */
+    #[\Override]
     public function filterFormAddToContext(FormInterface $filterForm, mixed $context): mixed
     {
         if ($filterForm->isSubmitted()) {
@@ -89,6 +93,7 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
     /**
      * @param TasksDataTableContext $context
      */
+    #[\Override]
     public function filterFormBuild(FormFactoryInterface $formFactory, mixed $context): FormInterface
     {
         return $formFactory->create(
@@ -98,6 +103,7 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
         );
     }
 
+    #[\Override]
     public function getContext(array $options): TasksDataTableContext
     {
         return new TasksDataTableContext(
@@ -106,11 +112,13 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
         );
     }
 
+    #[\Override]
     public function getLoadMaxRows(): int
     {
         return self::LOAD_MAX_ROWS;
     }
 
+    #[\Override]
     public function getQueryName(): string
     {
         return 'revision_tasks';

@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20191218230711 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20191218230711 extends AbstractMigration
         $this->addSql('ALTER TABLE job ALTER command TYPE VARCHAR(2000)');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

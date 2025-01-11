@@ -12,11 +12,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RadioFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Radio field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-dot-circle-o';
@@ -26,6 +28,7 @@ class RadioFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -54,6 +57,7 @@ class RadioFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
@@ -62,6 +66,7 @@ class RadioFieldType extends DataFieldType
         $resolver->setDefault('labels', []);
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -79,6 +84,7 @@ class RadioFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -88,11 +94,13 @@ class RadioFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -103,6 +111,7 @@ class RadioFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $value = $data['value'];

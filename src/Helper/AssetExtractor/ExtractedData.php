@@ -7,7 +7,7 @@ use EMS\Helpers\Standard\Text;
 
 class ExtractedData
 {
-    private bool $empty;
+    private readonly bool $empty;
 
     /**
      * @param array<string, mixed> $source

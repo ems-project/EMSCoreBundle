@@ -18,9 +18,9 @@ use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 class AssetExtractorService implements CacheWarmerInterface
 {
-    private const CONTENT_EP = '/tika';
-    private const HELLO_EP = '/tika';
-    private const META_EP = '/meta';
+    private const string CONTENT_EP = '/tika';
+    private const string HELLO_EP = '/tika';
+    private const string META_EP = '/meta';
     private ?TikaWrapper $wrapper = null;
 
     public function __construct(
@@ -213,11 +213,13 @@ class AssetExtractorService implements CacheWarmerInterface
         return \preg_replace('/\n|\r/', '', $string) ?? '';
     }
 
+    #[\Override]
     public function isOptional(): bool
     {
         return false;
     }
 
+    #[\Override]
     public function warmUp(string $cacheDir): array
     {
         if (empty($this->tikaServer)) {

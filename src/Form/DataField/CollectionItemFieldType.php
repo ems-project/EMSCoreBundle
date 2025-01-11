@@ -17,16 +17,19 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class CollectionItemFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Collection item object (this message should neve seen anywhere)';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-question';
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'collectionitemtype';
@@ -36,6 +39,7 @@ class CollectionItemFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /* get the metadata associate */
@@ -78,6 +82,7 @@ class CollectionItemFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (null == $data->getFieldType()) {
@@ -97,17 +102,20 @@ class CollectionItemFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public static function isNested(): bool
     {
         return true;
     }
 
+    #[\Override]
     public static function isContainer(): bool
     {
         /* this kind of compound field may contain children */
         return true;
     }
 
+    #[\Override]
     public function generateMapping(FieldType $current): array
     {
         return [
@@ -120,6 +128,7 @@ class CollectionItemFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         // Just an info to say to the parent collection that this rec has been updated by the submit

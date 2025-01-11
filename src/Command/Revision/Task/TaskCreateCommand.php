@@ -38,17 +38,17 @@ final class TaskCreateCommand extends AbstractCommand
     private ?string $fieldDeadline = null;
     private ?string $notPublished = null;
 
-    private const DEFAULT_REQUESTER = 'SYSTEM_TASK_MANAGER';
+    private const string DEFAULT_REQUESTER = 'SYSTEM_TASK_MANAGER';
 
-    public const ARGUMENT_ENVIRONMENT = 'environment';
-    public const OPTION_TASK = 'task';
-    public const OPTION_REQUESTER = 'requester';
-    public const OPTION_FIELD_ASSIGNEE = 'field-assignee';
-    public const OPTION_FIELD_DEADLINE = 'field-deadline';
-    public const OPTION_NOT_PUBLISHED = 'not-published';
-    public const OPTION_SCROLL_SIZE = 'scroll-size';
-    public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
-    public const OPTION_SEARCH_QUERY = 'search-query';
+    public const string ARGUMENT_ENVIRONMENT = 'environment';
+    public const string OPTION_TASK = 'task';
+    public const string OPTION_REQUESTER = 'requester';
+    public const string OPTION_FIELD_ASSIGNEE = 'field-assignee';
+    public const string OPTION_FIELD_DEADLINE = 'field-deadline';
+    public const string OPTION_NOT_PUBLISHED = 'not-published';
+    public const string OPTION_SCROLL_SIZE = 'scroll-size';
+    public const string OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
+    public const string OPTION_SEARCH_QUERY = 'search-query';
 
     public function __construct(
         private readonly RevisionSearcher $revisionSearcher,
@@ -60,6 +60,7 @@ final class TaskCreateCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -75,6 +76,7 @@ final class TaskCreateCommand extends AbstractCommand
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -100,6 +102,7 @@ final class TaskCreateCommand extends AbstractCommand
         $this->searchQuery = $this->getOptionString(self::OPTION_SEARCH_QUERY);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $search = $this->revisionSearcher->create($this->environment, $this->searchQuery, [], true);

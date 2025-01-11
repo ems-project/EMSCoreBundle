@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20171022063229 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -21,6 +22,7 @@ final class Version20171022063229 extends AbstractMigration
         $this->addSql('ALTER TABLE content_type ADD web_content BOOLEAN DEFAULT \'true\' NOT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

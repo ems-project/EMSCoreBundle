@@ -18,7 +18,7 @@ use function Symfony\Component\Translation\t;
 
 class TwigElementsController extends AbstractController
 {
-    final public const ASSET_EXTRACTOR_STATUS_CACHE_ID = 'status.asset_extractor.result';
+    final public const string ASSET_EXTRACTOR_STATUS_CACHE_ID = 'status.asset_extractor.result';
 
     public function __construct(
         private readonly AssetExtractorService $assetExtractorService,

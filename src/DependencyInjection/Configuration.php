@@ -10,36 +10,37 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    final public const PAGING_SIZE = 20;
-    final public const SHORTNAME = 'e<b>ms</b>';
-    final public const NAME = 'elastic<b>ms</b>';
-    final public const THEME_COLOR = 'blue';
-    final public const DATE_TIME_FORMAT = 'j/m/Y \a\t G:i';
-    final public const DATE_FORMAT = 'j/m/Y';
-    final public const TIME_FORMAT = 'G:i:s';
-    final public const FROM_EMAIL_ADDRESS = 'noreply@example.com';
-    final public const FROM_EMAIL_NAME = 'elasticms';
-    final public const INSTANCE_ID = 'ems_';
-    final public const CIRCLES_OBJECT = null;
-    final public const ELASTICSEARCH_DEFAULT_CLUSTER = ['http://localhost:9200'];
-    final public const DATEPICKER_FORMAT = 'dd/mm/yyyy';
-    final public const DATEPICKER_WEEKSTART = 1;
-    final public const DATEPICKER_DAYSOFWEEK_HIGHLIGHTED = [0, 6];
-    final public const NOTIFICATION_PENDING_TIMEOUT = 'P0Y0M15DT0H0M0S';
-    final public const TRIGGER_JOB_FROM_WEB = true;
-    final public const LOCK_TIME = '+1 minutes';
-    final public const PRIVATE_KEY = null;
-    final public const PUBLIC_KEY = null;
-    final public const ASSET_CONFIG = [];
-    final public const TIKA_SERVER = null;
-    final public const TIKA_MAX_CONTENT = 5120;
-    final public const SAVE_ASSETS_IN_DB = false;
-    final public const DEFAULT_BULK_SIZE = 500;
-    final public const CLEAN_JOBS_TIME_STRING = '-7 days';
-    final public const TEMPLATE_NAMESPACE = 'EMSCore';
-    final public const DYNAMIC_MAPPING = 'false';
-    final public const IMAGE_MAX_SIZE = 2048;
+    final public const int PAGING_SIZE = 20;
+    final public const string SHORTNAME = 'e<b>ms</b>';
+    final public const string NAME = 'elastic<b>ms</b>';
+    final public const string THEME_COLOR = 'blue';
+    final public const string DATE_TIME_FORMAT = 'j/m/Y \a\t G:i';
+    final public const string DATE_FORMAT = 'j/m/Y';
+    final public const string TIME_FORMAT = 'G:i:s';
+    final public const string FROM_EMAIL_ADDRESS = 'noreply@example.com';
+    final public const string FROM_EMAIL_NAME = 'elasticms';
+    final public const string INSTANCE_ID = 'ems_';
+    final public const null CIRCLES_OBJECT = null;
+    final public const array ELASTICSEARCH_DEFAULT_CLUSTER = ['http://localhost:9200'];
+    final public const string DATEPICKER_FORMAT = 'dd/mm/yyyy';
+    final public const int DATEPICKER_WEEKSTART = 1;
+    final public const array DATEPICKER_DAYSOFWEEK_HIGHLIGHTED = [0, 6];
+    final public const string NOTIFICATION_PENDING_TIMEOUT = 'P0Y0M15DT0H0M0S';
+    final public const bool TRIGGER_JOB_FROM_WEB = true;
+    final public const string LOCK_TIME = '+1 minutes';
+    final public const null PRIVATE_KEY = null;
+    final public const null PUBLIC_KEY = null;
+    final public const array ASSET_CONFIG = [];
+    final public const null TIKA_SERVER = null;
+    final public const int TIKA_MAX_CONTENT = 5120;
+    final public const bool SAVE_ASSETS_IN_DB = false;
+    final public const int DEFAULT_BULK_SIZE = 500;
+    final public const string CLEAN_JOBS_TIME_STRING = '-7 days';
+    final public const string TEMPLATE_NAMESPACE = 'EMSCore';
+    final public const string DYNAMIC_MAPPING = 'false';
+    final public const int IMAGE_MAX_SIZE = 2048;
 
+    #[\Override]
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('ems_core');

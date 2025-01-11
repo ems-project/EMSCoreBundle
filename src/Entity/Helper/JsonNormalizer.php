@@ -54,6 +54,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
      *
      * @return array<mixed>
      */
+    #[\Override]
     public function normalize($object, $format = null, array $context = []): array
     {
         $data = [];
@@ -139,6 +140,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
      *
      * @return array<mixed>|object
      */
+    #[\Override]
     public function denormalize($data, $class, $format = null, array $context = []): array|object
     {
         $class = $data['__jsonclass__'][0];
@@ -186,11 +188,13 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
         return $object;
     }
 
+    #[\Override]
     public function supportsNormalization($data, $format = null): bool
     {
         return \is_object($data) && 'json' === $format;
     }
 
+    #[\Override]
     public function supportsDenormalization($data, $type, $format = null): bool
     {
         return isset($data['__jsonclass__']) && 'json' === $format;

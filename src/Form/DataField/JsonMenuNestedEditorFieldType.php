@@ -16,31 +16,37 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class JsonMenuNestedEditorFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'JSON menu nested editor field';
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return HiddenType::class;
     }
 
+    #[\Override]
     public static function isContainer(): bool
     {
         return true;
     }
 
+    #[\Override]
     public static function hasMappedChildren(): bool
     {
         return false;
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'json_menu_nested_editor_fieldtype';
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
@@ -52,11 +58,13 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
             ]);
     }
 
+    #[\Override]
     public function generateMapping(FieldType $current): array
     {
         return [$current->getName() => ['type' => 'text']];
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -76,6 +84,7 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
      * @param FormInterface<FormInterface> $form
      * @param array<string, mixed>         $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);

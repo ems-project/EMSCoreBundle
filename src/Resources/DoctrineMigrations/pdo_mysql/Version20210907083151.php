@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20210907083151 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -23,6 +24,7 @@ final class Version20210907083151 extends AbstractMigration
         $this->addSql('ALTER TABLE task CHANGE logs logs LONGTEXT NOT NULL COMMENT \'(DC2Type:json)\'');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

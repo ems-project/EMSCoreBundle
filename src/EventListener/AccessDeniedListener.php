@@ -16,16 +16,17 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-final class AccessDeniedListener implements EventSubscriberInterface
+final readonly class AccessDeniedListener implements EventSubscriberInterface
 {
     use TargetPathTrait;
 
     public function __construct(
-        private readonly UrlGeneratorInterface $urlGenerator,
-        private readonly string $coreFirewallName,
+        private UrlGeneratorInterface $urlGenerator,
+        private string $coreFirewallName,
     ) {
     }
 
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

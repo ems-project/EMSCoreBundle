@@ -17,21 +17,25 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class EmailFieldType extends DataFieldType
 {
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-envelope';
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Email field';
     }
 
+    #[\Override]
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -41,6 +45,7 @@ class EmailFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function isValid(DataField &$dataField, ?DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
@@ -58,6 +63,7 @@ class EmailFieldType extends DataFieldType
         return $isValid;
     }
 
+    #[\Override]
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         if (empty($data)) {
@@ -72,6 +78,7 @@ class EmailFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         return ['value' => parent::viewTransform($dataField)];
@@ -80,6 +87,7 @@ class EmailFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         return parent::reverseViewTransform($data['value'], $fieldType);
@@ -89,6 +97,7 @@ class EmailFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -100,6 +109,7 @@ class EmailFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

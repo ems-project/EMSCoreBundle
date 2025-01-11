@@ -38,6 +38,7 @@ class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, En
         return $this;
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;
@@ -155,6 +156,7 @@ class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, En
         $this->contentJs = $contentJs;
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), self::class);

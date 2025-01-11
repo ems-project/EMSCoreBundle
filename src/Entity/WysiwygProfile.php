@@ -30,6 +30,7 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
         return $this;
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;
@@ -69,6 +70,7 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
         return $this->orderKey;
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), self::class);
@@ -90,6 +92,7 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
         return $profile;
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return $this->getName();

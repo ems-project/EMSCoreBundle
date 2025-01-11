@@ -24,6 +24,7 @@ class UserDataTableType extends AbstractEntityTableType
         parent::__construct($entityService);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $table->addColumn('user.index.column.username', 'username');
@@ -49,6 +50,7 @@ class UserDataTableType extends AbstractEntityTableType
         $table->addDynamicItemPostAction(Routes::USER_DELETE, 'user.action.delete', 'trash', 'user.action.delete_confirm', ['user' => 'id']);
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_USER_MANAGEMENT];

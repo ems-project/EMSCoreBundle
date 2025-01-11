@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20170514085008 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -91,6 +92,7 @@ final class Version20170514085008 extends AbstractMigration
         $this->addSql('ALTER TABLE view ADD CONSTRAINT FK_FEFDAB8E1A445520 FOREIGN KEY (content_type_id) REFERENCES content_type (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

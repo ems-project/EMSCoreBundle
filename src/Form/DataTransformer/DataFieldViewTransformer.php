@@ -24,6 +24,7 @@ class DataFieldViewTransformer implements DataTransformerInterface
      *
      * @return array<mixed>|string|int|float|bool|null
      */
+    #[\Override]
     public function transform($data)
     {
         /** @var DataFieldType $dataFieldType */
@@ -37,6 +38,7 @@ class DataFieldViewTransformer implements DataTransformerInterface
      *
      * @param array<mixed>|string|int|float|bool|null $data from the Form
      */
+    #[\Override]
     public function reverseTransform($data): DataField
     {
         /** @var DataFieldType $dataFieldType */

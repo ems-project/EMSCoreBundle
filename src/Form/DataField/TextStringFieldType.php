@@ -19,6 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TextStringFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Text field';
@@ -28,6 +29,7 @@ class TextStringFieldType extends DataFieldType
      * @param FormInterface<FormInterface> $form
      * @param array<string, mixed>         $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
@@ -48,16 +50,19 @@ class TextStringFieldType extends DataFieldType
     //         return $out;
     //     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-pencil-square-o';
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return IconTextType::class;
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
@@ -71,6 +76,7 @@ class TextStringFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

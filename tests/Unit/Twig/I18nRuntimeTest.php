@@ -13,6 +13,7 @@ class I18nRuntimeTest extends TestCase
     private readonly UserManager $service;
     private I18nRuntime $i18nRuntime;
 
+    #[\Override]
     public function setUp(): void
     {
         $this->i18nService = $this->createMock(I18nService::class);

@@ -6,10 +6,10 @@ namespace EMS\CoreBundle\Core\ContentType;
 
 use EMS\CoreBundle\Form\View\ViewType;
 
-final class ViewTypes
+final readonly class ViewTypes
 {
     /** @var array<string, ViewType> */
-    private readonly array $viewTypes;
+    private array $viewTypes;
 
     /**
      * @param \Traversable<ViewType> $viewTypes

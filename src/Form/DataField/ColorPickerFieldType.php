@@ -15,16 +15,19 @@ use EMS\Helpers\Standard\Json;
  */
 class ColorPickerFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Color picker field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-paint-brush';
     }
 
+    #[\Override]
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -34,11 +37,13 @@ class ColorPickerFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return ColorPickerFullType::class;
     }
 
+    #[\Override]
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         $dataField = parent::modelTransform($data, $fieldType);

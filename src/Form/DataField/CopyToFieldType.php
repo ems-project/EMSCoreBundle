@@ -15,16 +15,19 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class CopyToFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Elasticsearch copy_to field';
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'empty';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-copy';
@@ -34,11 +37,13 @@ class CopyToFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // no inputs as it's just an indexing field
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -56,6 +61,7 @@ class CopyToFieldType extends DataFieldType
         $optionsForm->remove('displayOptions');
     }
 
+    #[\Override]
     public function buildObjectArray(DataField $data, array &$out): void
     {
         // do nothing more than a mapping

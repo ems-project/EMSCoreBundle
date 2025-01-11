@@ -13,6 +13,7 @@ class AliasNameValidator extends ConstraintValidator
      * @param string    $value
      * @param AliasName $constraint
      */
+    #[\Override]
     public function validate($value, Constraint $constraint): void
     {
         $regex = '/^[a-z][a-z0-9\-_]*$/';

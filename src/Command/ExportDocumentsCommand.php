@@ -34,27 +34,27 @@ use Twig\Error\Error;
 )]
 class ExportDocumentsCommand extends AbstractCommand
 {
-    private const ARGUMENT_QUERY = 'query';
-    private const OPTION_ENVIRONMENT = 'environment';
-    private const OPTION_WITH_BUSINESS_ID = 'withBusinessId';
-    private const OPTION_SCROLL_SIZE = 'scrollSize';
-    private const OPTION_SCROLL_TIMEOUT = 'scrollTimeout';
-    private const OPTION_BASE_URL = 'baseUrl';
+    private const string ARGUMENT_QUERY = 'query';
+    private const string OPTION_ENVIRONMENT = 'environment';
+    private const string OPTION_WITH_BUSINESS_ID = 'withBusinessId';
+    private const string OPTION_SCROLL_SIZE = 'scrollSize';
+    private const string OPTION_SCROLL_TIMEOUT = 'scrollTimeout';
+    private const string OPTION_BASE_URL = 'baseUrl';
     public const ARGUMENT_CONTENT_TYPE_NAME = 'contentTypeName';
-    private const ARGUMENT_FORMAT = 'format';
-    final public const ARGUMENT_OUTPUT_FILE = 'outputFile';
+    private const string ARGUMENT_FORMAT = 'format';
+    final public const string ARGUMENT_OUTPUT_FILE = 'outputFile';
     private string $contentTypeName;
     private string $format;
     private int $scrollSize;
     private string $scrollTimeout;
     private bool $withBusinessId;
-    private ?string $baseUrl;
-    private ?string $environmentName;
+    private ?string $baseUrl = null;
+    private ?string $environmentName = null;
     /**
      * @var mixed[]
      */
     private array $query;
-    private ?string $zipFilename;
+    private ?string $zipFilename = null;
 
     public function __construct(
         protected readonly LoggerInterface $logger,
@@ -70,6 +70,7 @@ class ExportDocumentsCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -84,6 +85,7 @@ class ExportDocumentsCommand extends AbstractCommand
             ->addOption(self::OPTION_BASE_URL, null, InputArgument::OPTIONAL, 'Base url of the application (in order to generate a link)', null);
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -98,6 +100,7 @@ class ExportDocumentsCommand extends AbstractCommand
         $this->baseUrl = $this->getOptionStringNull(self::OPTION_BASE_URL);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $contentType = $this->contentTypeService->giveByName($this->contentTypeName);

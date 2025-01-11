@@ -23,8 +23,8 @@ class ExportCommand extends AbstractCommand
 
     /** @var string[] */
     private array $fields;
-    private ?string $filter;
-    private ?string $filename;
+    private ?string $filter = null;
+    private ?string $filename = null;
 
     public function __construct(
         private readonly FormSubmissionService $formSubmissionService,
@@ -34,6 +34,7 @@ class ExportCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -55,6 +56,7 @@ class ExportCommand extends AbstractCommand
             );
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -63,6 +65,7 @@ class ExportCommand extends AbstractCommand
         $this->filename = $this->getOptionStringNull(self::OPTION_FILENAME);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io->section('Export the form submissions');

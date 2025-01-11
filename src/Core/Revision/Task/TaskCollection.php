@@ -10,20 +10,21 @@ use EMS\CoreBundle\Entity\Task;
 /**
  * @implements \IteratorAggregate<int, Task>
  */
-final class TaskCollection implements \IteratorAggregate
+final readonly class TaskCollection implements \IteratorAggregate
 {
     /**
      * @param Task[] $tasks
      */
     public function __construct(
-        private readonly Revision $revision,
-        private readonly array $tasks = [],
+        private Revision $revision,
+        private array $tasks = [],
     ) {
     }
 
     /**
      * @return \ArrayIterator<int, Task>
      */
+    #[\Override]
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->tasks);

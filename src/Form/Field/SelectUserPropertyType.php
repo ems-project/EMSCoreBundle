@@ -22,11 +22,13 @@ final class SelectUserPropertyType extends AbstractType
     {
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return ChoiceType::class;
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'select2';
@@ -36,6 +38,7 @@ final class SelectUserPropertyType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -47,6 +50,7 @@ final class SelectUserPropertyType extends AbstractType
         }
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);

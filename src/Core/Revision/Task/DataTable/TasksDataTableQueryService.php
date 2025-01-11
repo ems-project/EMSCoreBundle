@@ -17,8 +17,8 @@ use EMS\Helpers\Standard\Json;
 
 class TasksDataTableQueryService implements QueryServiceInterface
 {
-    private const SEARCH_COLUMNS = ['t.title', 't.description'];
-    private const ORDER_COLUMNS = [
+    private const array SEARCH_COLUMNS = ['t.title', 't.description'];
+    private const array ORDER_COLUMNS = [
         'task_title' => ['t.title'],
         'task_modified' => ['t.modified'],
         'task_status' => ['t.status'],
@@ -35,6 +35,7 @@ class TasksDataTableQueryService implements QueryServiceInterface
     ) {
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return false;
@@ -43,6 +44,7 @@ class TasksDataTableQueryService implements QueryServiceInterface
     /**
      * @param ?TasksDataTableContext $context
      */
+    #[\Override]
     public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         $qb = $this->createQueryBuilder($context, $searchValue)
@@ -85,6 +87,7 @@ class TasksDataTableQueryService implements QueryServiceInterface
     /**
      * @param ?TasksDataTableContext $context
      */
+    #[\Override]
     public function countQuery(string $searchValue = '', mixed $context = null): int
     {
         return (int) $this->createQueryBuilder($context, $searchValue)->select('count(t.id)')->fetchOne();

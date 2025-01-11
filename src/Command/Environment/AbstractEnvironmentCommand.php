@@ -54,6 +54,7 @@ abstract class AbstractEnvironmentCommand extends AbstractCommand
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);

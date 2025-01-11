@@ -24,11 +24,13 @@ class CriteriaViewType extends ViewType
         parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Criteria: a view where we can massively edit content types having criteria';
     }
 
+    #[\Override]
     public function getName(): string
     {
         return 'Criteria';
@@ -38,6 +40,7 @@ class CriteriaViewType extends ViewType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -65,11 +68,13 @@ class CriteriaViewType extends ViewType
             ]);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'criteria_view';
     }
 
+    #[\Override]
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->logger);

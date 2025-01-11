@@ -65,11 +65,13 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
         }
     }
 
+    #[\Override]
     public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->children->offsetSet($offset, $value);
     }
 
+    #[\Override]
     public function offsetExists(mixed $offset): bool
     {
         if (\is_int($offset) && !$this->children->offsetExists($offset) && null !== $this->fieldType && $this->fieldType->getChildren()->count() > 0) {
@@ -82,16 +84,19 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
         return $this->children->offsetExists($offset);
     }
 
+    #[\Override]
     public function offsetUnset(mixed $offset): void
     {
         $this->children->offsetUnset($offset);
     }
 
+    #[\Override]
     public function offsetGet(mixed $offset): mixed
     {
         return (0 === $offset) ? $this->children : $this->children->offsetGet($offset);
     }
 
+    #[\Override]
     public function getIterator(): \Traversable
     {
         return $this->children->getIterator();
@@ -120,6 +125,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
         }
     }
 
+    #[\Override]
     public function __toString(): string
     {
         if (null !== $this->rawData && \is_string($this->rawData)) {

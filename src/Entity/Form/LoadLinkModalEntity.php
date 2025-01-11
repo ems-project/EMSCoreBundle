@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 final class LoadLinkModalEntity
 {
-    public const TARGET_BLANK = '_blank';
+    public const string TARGET_BLANK = '_blank';
     private ?string $target;
     private ?string $dataLink = null;
     private ?string $href = null;

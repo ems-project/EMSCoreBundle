@@ -13,12 +13,12 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\NotFoundException;
 
-final class IndexService
+final readonly class IndexService
 {
     public function __construct(
-        private readonly AliasService $aliasService,
-        private readonly Client $client,
-        private readonly ContentTypeService $contentTypeService,
+        private AliasService $aliasService,
+        private Client $client,
+        private ContentTypeService $contentTypeService,
     ) {
     }
 

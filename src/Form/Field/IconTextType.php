@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IconTextType extends TextType
 {
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -27,6 +28,7 @@ class IconTextType extends TextType
      * @param FormInterface<FormInterface> $form
      * @param array<string, mixed>         $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['icon'] = $options['icon'];
@@ -37,11 +39,13 @@ class IconTextType extends TextType
         $view->vars['suffixText'] = $options['suffixText'];
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return TextType::class;
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'icontext';

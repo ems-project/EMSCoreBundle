@@ -16,6 +16,7 @@ class InMyCircles implements ConditionInterface
     /**
      * @param object|array<mixed> $objectOrArray
      */
+    #[\Override]
     public function valid($objectOrArray): bool
     {
         if (!$objectOrArray instanceof Revision) {

@@ -9,14 +9,16 @@ use EMS\CoreBundle\Entity\AggregateOption;
 
 class AggregateOptionService extends EntityService
 {
-    final public const CONTENT_TYPES_AGGREGATION = 'types';
-    final public const INDEXES_AGGREGATION = 'indexes';
+    final public const string CONTENT_TYPES_AGGREGATION = 'types';
+    final public const string INDEXES_AGGREGATION = 'indexes';
 
+    #[\Override]
     protected function getRepositoryIdentifier(): string
     {
         return AggregateOption::class;
     }
 
+    #[\Override]
     protected function getEntityName(): string
     {
         return 'Aggregate Option';

@@ -24,6 +24,7 @@ class RevisionAuditDataTableType extends AbstractEntityTableType
         parent::__construct($logManager);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $table
@@ -40,6 +41,7 @@ class RevisionAuditDataTableType extends AbstractEntityTableType
         $table->setDefaultOrder('created', 'desc');
     }
 
+    #[\Override]
     public function getContext(array $options): LogEntityTableContext
     {
         $revision = $this->revisionService->getByRevisionId($options['revision_id']);
@@ -51,11 +53,13 @@ class RevisionAuditDataTableType extends AbstractEntityTableType
         return $context;
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN, Roles::ROLE_AUDITOR];
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver->setRequired(['revision_id']);

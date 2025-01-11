@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20190204202528 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -21,6 +22,7 @@ final class Version20190204202528 extends AbstractMigration
         $this->addSql('UPDATE asset_storage SET confirmed = \'true\'');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

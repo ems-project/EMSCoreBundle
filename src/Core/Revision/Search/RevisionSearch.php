@@ -6,9 +6,9 @@ namespace EMS\CoreBundle\Core\Revision\Search;
 
 use Elastica\Scroll;
 
-final class RevisionSearch
+final readonly class RevisionSearch
 {
-    public function __construct(private readonly Scroll $scroll, private readonly int $total)
+    public function __construct(private Scroll $scroll, private int $total)
     {
     }
 

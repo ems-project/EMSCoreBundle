@@ -19,6 +19,7 @@ use Symfony\Component\Console\Question\Question;
 )]
 class ActivateUserCommand extends AbstractUserCommand
 {
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -33,6 +34,7 @@ EOT
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
@@ -49,6 +51,7 @@ EOT
         }
     }
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): ?string
     {
         if (!$input->getArgument('username')) {

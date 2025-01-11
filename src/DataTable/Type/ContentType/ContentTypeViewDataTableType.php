@@ -32,6 +32,7 @@ class ContentTypeViewDataTableType extends AbstractEntityTableType
         parent::__construct($entityService);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         /** @var ContentType $contentType */
@@ -81,16 +82,19 @@ class ContentTypeViewDataTableType extends AbstractEntityTableType
             ->addTableActionDelete($table, 'content_type_view');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];
     }
 
+    #[\Override]
     public function getContext(array $options): ContentType
     {
         return $this->contentTypeService->giveByName($options['content_type_name']);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver->setRequired(['content_type_name']);

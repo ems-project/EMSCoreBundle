@@ -16,18 +16,18 @@ use function Symfony\Component\String\u;
 
 class ElasticaTable extends TableAbstract
 {
-    private const COLUMNS = 'columns';
-    private const QUERY = 'query';
-    private const EMPTY_QUERY = 'empty_query';
-    private const FRONTEND_OPTIONS = 'frontendOptions';
-    private const ASC_MISSING_VALUES_POSITION = 'asc_missing_values_position';
-    private const DESC_MISSING_VALUES_POSITION = 'desc_missing_values_position';
-    private const DEFAULT_SORT = 'default_sort';
-    final public const FILENAME = 'filename';
-    final public const DISPOSITION = 'disposition';
-    final public const SHEET_NAME = 'sheet_name';
-    private const ROW_CONTEXT = 'row_context';
-    final public const PROTECTED = 'protected';
+    private const string COLUMNS = 'columns';
+    private const string QUERY = 'query';
+    private const string EMPTY_QUERY = 'empty_query';
+    private const string FRONTEND_OPTIONS = 'frontendOptions';
+    private const string ASC_MISSING_VALUES_POSITION = 'asc_missing_values_position';
+    private const string DESC_MISSING_VALUES_POSITION = 'desc_missing_values_position';
+    private const string DEFAULT_SORT = 'default_sort';
+    final public const string FILENAME = 'filename';
+    final public const string DISPOSITION = 'disposition';
+    final public const string SHEET_NAME = 'sheet_name';
+    private const string ROW_CONTEXT = 'row_context';
+    final public const string PROTECTED = 'protected';
     public const CHECKABLE = 'checkable';
     public const ACTIONS = 'actions';
     public const ID = 'id';
@@ -124,6 +124,7 @@ class ElasticaTable extends TableAbstract
         }
     }
 
+    #[\Override]
     public function getIterator(): \Traversable
     {
         $search = $this->getSearch($this->getSearchValue());
@@ -136,6 +137,7 @@ class ElasticaTable extends TableAbstract
         }
     }
 
+    #[\Override]
     public function count(): int
     {
         if (null === $this->count) {
@@ -148,11 +150,13 @@ class ElasticaTable extends TableAbstract
         return $this->count;
     }
 
+    #[\Override]
     public function supportsTableActions(): bool
     {
         return $this->checkable;
     }
 
+    #[\Override]
     public function totalCount(): int
     {
         if (null === $this->totalCount) {
@@ -165,6 +169,7 @@ class ElasticaTable extends TableAbstract
         return $this->totalCount;
     }
 
+    #[\Override]
     public function getAttributeName(): string
     {
         return 'dataLink';
@@ -310,6 +315,7 @@ class ElasticaTable extends TableAbstract
             ->toString();
     }
 
+    #[\Override]
     public function getRowTemplate(): string
     {
         return \sprintf("{%%- use '@$this->templateNamespace/datatable/row.json.twig' -%%}%s{{ block('emsco_datatable_row') }}", $this->getRowContext());

@@ -41,6 +41,7 @@ class ReleaseRevisionsUnpublishDataTableType extends AbstractTableType implement
     ) {
     }
 
+    #[\Override]
     public function build(QueryTable $table): void
     {
         /** @var array{'release': Release, 'environment': Environment} $context */
@@ -92,6 +93,7 @@ class ReleaseRevisionsUnpublishDataTableType extends AbstractTableType implement
             ]);
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_PUBLISHER];
@@ -102,6 +104,7 @@ class ReleaseRevisionsUnpublishDataTableType extends AbstractTableType implement
      *
      * @return array{'release': Release, 'environment': Environment}
      */
+    #[\Override]
     public function getContext(array $options): array
     {
         $release = $this->releaseService->getById($options['release_id']);
@@ -113,16 +116,19 @@ class ReleaseRevisionsUnpublishDataTableType extends AbstractTableType implement
         ];
     }
 
+    #[\Override]
     public function getQueryName(): string
     {
         return 'release_revisions_unpublish';
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return false;
     }
 
+    #[\Override]
     public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         $search = $this->search($context, $searchValue);
@@ -145,6 +151,7 @@ class ReleaseRevisionsUnpublishDataTableType extends AbstractTableType implement
         return $documents;
     }
 
+    #[\Override]
     public function countQuery(string $searchValue = '', mixed $context = null): int
     {
         $search = $this->search($context, $searchValue);
@@ -152,6 +159,7 @@ class ReleaseRevisionsUnpublishDataTableType extends AbstractTableType implement
         return $this->elasticaService->count($search);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver->setRequired(['release_id']);

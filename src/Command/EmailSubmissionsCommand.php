@@ -22,13 +22,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class EmailSubmissionsCommand extends Command implements CommandInterface
 {
-    private const TITLE = 'Form submissions';
+    private const string TITLE = 'Form submissions';
 
     public function __construct(protected FormSubmissionService $formSubmissionService, protected LoggerInterface $logger, protected MailerService $mailerService)
     {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -45,6 +46,7 @@ class EmailSubmissionsCommand extends Command implements CommandInterface
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $emails = (array) $input->getArgument('emails');

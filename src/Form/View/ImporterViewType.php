@@ -38,11 +38,13 @@ class ImporterViewType extends ViewType
         parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Importer: form to import a zip file containing JSON files';
     }
 
+    #[\Override]
     public function getName(): string
     {
         return 'Importer';
@@ -52,6 +54,7 @@ class ImporterViewType extends ViewType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -78,11 +81,13 @@ class ImporterViewType extends ViewType
             ]);
     }
 
+    #[\Override]
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         return [];
     }
 
+    #[\Override]
     public function generateResponse(View $view, Request $request): Response
     {
         $form = $this->formFactory->create(ImporterType::class, [

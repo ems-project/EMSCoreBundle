@@ -14,7 +14,8 @@ class I18nService implements EntityServiceInterface
     {
     }
 
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         return (int) $this->repository->makeQueryBuilder(searchValue: $searchValue)
             ->select('count(i.id)')
@@ -22,6 +23,7 @@ class I18nService implements EntityServiceInterface
             ->getSingleScalarResult();
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $i18n = I18n::fromJson($json);
@@ -46,6 +48,7 @@ class I18nService implements EntityServiceInterface
         }
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         $i18n = $this->repository->findByIdentifier($name);
@@ -58,7 +61,8 @@ class I18nService implements EntityServiceInterface
         return \strval($id);
     }
 
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         $qb = $this->repository->makeQueryBuilder(searchValue: $searchValue);
         $qb->setFirstResult($from)->setMaxResults($size);
@@ -70,6 +74,7 @@ class I18nService implements EntityServiceInterface
         return $qb->getQuery()->execute();
     }
 
+    #[\Override]
     public function getAliasesName(): array
     {
         return [
@@ -97,16 +102,19 @@ class I18nService implements EntityServiceInterface
         return $choice;
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?I18n
     {
         return $this->repository->findByIdentifier($name);
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'i18n';
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return false;
@@ -117,6 +125,7 @@ class I18nService implements EntityServiceInterface
         $this->repository->update($i18n);
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         if (!$entity instanceof I18n) {

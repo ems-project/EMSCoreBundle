@@ -25,6 +25,7 @@ class ReleaseRevisionsPublishDataTableType extends AbstractQueryTableType
         parent::__construct($releaseRevisionService);
     }
 
+    #[\Override]
     public function build(QueryTable $table): void
     {
         /** @var Release $release */
@@ -54,21 +55,25 @@ class ReleaseRevisionsPublishDataTableType extends AbstractQueryTableType
             ]);
     }
 
+    #[\Override]
     public function getQueryName(): string
     {
         return 'revisions-to-publish';
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_PUBLISHER];
     }
 
+    #[\Override]
     public function getContext(array $options): Release
     {
         return $this->releaseService->getById($options['release_id']);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver->setRequired(['release_id']);

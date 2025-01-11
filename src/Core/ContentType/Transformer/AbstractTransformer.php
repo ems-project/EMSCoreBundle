@@ -13,6 +13,7 @@ abstract class AbstractTransformer implements ContentTransformerInterface
     {
     }
 
+    #[\Override]
     public function validateConfig(string $config): ?string
     {
         try {

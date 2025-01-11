@@ -14,11 +14,11 @@ class VersionFields implements \ArrayAccess
     /** @var array<string, ?string> */
     private array $fields = [];
 
-    final public const DATE_FROM = 'date_from';
-    final public const DATE_TO = 'date_to';
-    final public const VERSION_TAG = 'version_tag';
+    final public const string DATE_FROM = 'date_from';
+    final public const string DATE_TO = 'date_to';
+    final public const string VERSION_TAG = 'version_tag';
 
-    private const FIELDS = [
+    private const array FIELDS = [
         self::DATE_FROM,
         self::DATE_TO,
         self::VERSION_TAG,
@@ -45,21 +45,25 @@ class VersionFields implements \ArrayAccess
         return $cleaned;
     }
 
+    #[\Override]
     public function offsetExists($offset): bool
     {
         return isset($this->fields[$offset]);
     }
 
+    #[\Override]
     public function offsetGet($offset): ?string
     {
         return $this->fields[$offset] ?? null;
     }
 
+    #[\Override]
     public function offsetSet($offset, $value): void
     {
         $this->fields[$offset] = $value;
     }
 
+    #[\Override]
     public function offsetUnset($offset): void
     {
         unset($this->fields[$offset]);

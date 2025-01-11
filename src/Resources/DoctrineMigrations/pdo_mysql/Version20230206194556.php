@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20230206194556 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -21,6 +22,7 @@ final class Version20230206194556 extends AbstractMigration
         $this->addSql('ALTER TABLE form ADD CONSTRAINT FK_5288FD4F588AB49A FOREIGN KEY (field_types_id) REFERENCES field_type (id)');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

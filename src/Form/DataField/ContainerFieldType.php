@@ -16,16 +16,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContainerFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Visual container (invisible in Elasticsearch)';
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'container_field_type';
     }
 
+    #[\Override]
     public function postFinalizeTreatment(string $type, string $id, DataField $dataField, mixed $previousData): mixed
     {
         if (!empty($previousData[$dataField->giveFieldType()->getName()])) {
@@ -35,11 +38,13 @@ class ContainerFieldType extends DataFieldType
         return null;
     }
 
+    #[\Override]
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         throw new \Exception('This method should never be called');
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'glyphicon glyphicon-modal-window';
@@ -49,6 +54,7 @@ class ContainerFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $fieldType = $builder->getOptions()['metadata'];
@@ -65,12 +71,14 @@ class ContainerFieldType extends DataFieldType
      * @param FormInterface<FormInterface> $form
      * @param array<string, mixed>         $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
         $view->vars['icon'] = $options['icon'];
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
@@ -78,15 +86,18 @@ class ContainerFieldType extends DataFieldType
         $resolver->setDefault('language', null);
     }
 
+    #[\Override]
     public function buildObjectArray(DataField $data, array &$out): void
     {
     }
 
+    #[\Override]
     public static function isContainer(): bool
     {
         return true;
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -105,16 +116,19 @@ class ContainerFieldType extends DataFieldType
         ;
     }
 
+    #[\Override]
     public static function isVirtual(array $option = []): bool
     {
         return true;
     }
 
+    #[\Override]
     public static function getJsonNames(FieldType $current): array
     {
         return [];
     }
 
+    #[\Override]
     public function generateMapping(FieldType $current): array
     {
         return [];

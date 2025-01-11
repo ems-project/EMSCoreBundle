@@ -11,19 +11,20 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class EMSCoreBundle extends Bundle
 {
-    final public const TRANS_DOMAIN = 'EMSCoreBundle';
-    final public const TRANS_COMPONENT = 'emsco-component';
-    final public const TRANS_CONTENTTYPE = 'emsco-contenttype';
-    final public const TRANS_CORE = 'emsco-core';
-    final public const TRANS_FORM_DOMAIN = 'emsco-forms';
-    final public const TRANS_TWIG_DOMAIN = 'emsco-twigs';
-    final public const TRANS_DOMAIN_VALIDATORS = 'emsco_validators';
-    final public const TRANS_USER_DOMAIN = 'emsco-user';
-    final public const TRANS_ENVIRONMENT_DOMAIN = 'emsco-environment';
-    final public const TRANS_MIMETYPES = 'emsco-mimetypes';
+    final public const string TRANS_DOMAIN = 'EMSCoreBundle';
+    final public const string TRANS_COMPONENT = 'emsco-component';
+    final public const string TRANS_CONTENTTYPE = 'emsco-contenttype';
+    final public const string TRANS_CORE = 'emsco-core';
+    final public const string TRANS_FORM_DOMAIN = 'emsco-forms';
+    final public const string TRANS_TWIG_DOMAIN = 'emsco-twigs';
+    final public const string TRANS_DOMAIN_VALIDATORS = 'emsco_validators';
+    final public const string TRANS_USER_DOMAIN = 'emsco-user';
+    final public const string TRANS_ENVIRONMENT_DOMAIN = 'emsco-environment';
+    final public const string TRANS_MIMETYPES = 'emsco-mimetypes';
 
-    final public const FONTAWESOME_VERSION = '4';
+    final public const string FONTAWESOME_VERSION = '4';
 
+    #[\Override]
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);

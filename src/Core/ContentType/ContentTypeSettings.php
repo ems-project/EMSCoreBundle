@@ -14,11 +14,11 @@ class ContentTypeSettings implements \ArrayAccess
     /** @var array<string, bool|string[]> */
     private array $settings = [];
 
-    final public const TASKS_ENABLED = 'tasks_enabled';
-    final public const TASKS_TITLES = 'tasks_titles';
-    final public const HIDE_REVISION_SIDEBAR = 'hide_revision_sidebar';
+    final public const string TASKS_ENABLED = 'tasks_enabled';
+    final public const string TASKS_TITLES = 'tasks_titles';
+    final public const string HIDE_REVISION_SIDEBAR = 'hide_revision_sidebar';
 
-    private const SETTINGS = [
+    private const array SETTINGS = [
         self::TASKS_ENABLED,
         self::TASKS_TITLES,
         self::HIDE_REVISION_SIDEBAR,
@@ -58,6 +58,7 @@ class ContentTypeSettings implements \ArrayAccess
         return isset($this->settings[$settingName]) ? Type::array($this->settings[$settingName]) : [];
     }
 
+    #[\Override]
     public function offsetExists($offset): bool
     {
         return isset($this->settings[$offset]);
@@ -66,16 +67,19 @@ class ContentTypeSettings implements \ArrayAccess
     /**
      * @return bool|string[]
      */
+    #[\Override]
     public function offsetGet($offset): bool|array
     {
         return $this->settings[$offset];
     }
 
+    #[\Override]
     public function offsetSet($offset, $value): void
     {
         $this->settings[$offset] = $value;
     }
 
+    #[\Override]
     public function offsetUnset($offset): void
     {
         unset($this->settings[$offset]);

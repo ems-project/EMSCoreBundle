@@ -24,11 +24,13 @@ final class AuthTokenLoginAuthenticator extends AbstractAuthenticator
     {
     }
 
+    #[\Override]
     public function supports(Request $request): bool
     {
         return Routes::AUTH_TOKEN_LOGIN === $request->attributes->get('_route') && $request->isMethod('POST');
     }
 
+    #[\Override]
     public function authenticate(Request $request): Passport
     {
         $content = $request->getContent();
@@ -44,6 +46,7 @@ final class AuthTokenLoginAuthenticator extends AbstractAuthenticator
         return new Passport(new UserBadge($username), new PasswordCredentials($password));
     }
 
+    #[\Override]
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         $user = $token->getUser();
@@ -58,6 +61,7 @@ final class AuthTokenLoginAuthenticator extends AbstractAuthenticator
         ]);
     }
 
+    #[\Override]
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         if ($this->ldapEnabled) {

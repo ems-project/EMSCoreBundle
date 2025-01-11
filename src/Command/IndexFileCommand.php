@@ -33,7 +33,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 class IndexFileCommand extends AbstractCommand
 {
     /** @var string */
-    private const SYSTEM_USERNAME = 'SYSTEM_FILE_INDEXER';
+    private const string SYSTEM_USERNAME = 'SYSTEM_FILE_INDEXER';
     /** @var string */
     protected $databaseName;
     /** @var string */
@@ -44,6 +44,7 @@ class IndexFileCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -71,6 +72,7 @@ class IndexFileCommand extends AbstractCommand
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Please do a backup of your DB first!');

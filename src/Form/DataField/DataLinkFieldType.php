@@ -37,6 +37,7 @@ class DataLinkFieldType extends DataFieldType
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
 
+    #[\Override]
     public function postFinalizeTreatment(string $type, string $id, DataField $dataField, mixed $previousData): mixed
     {
         $name = $dataField->giveFieldType()->getName();
@@ -57,11 +58,13 @@ class DataLinkFieldType extends DataFieldType
         return parent::postFinalizeTreatment($type, $id, $dataField, $previousData);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Link to data object(s)';
     }
 
+    #[\Override]
     public function getElasticsearchQuery(DataField $dataField, array $options = []): array
     {
         $opt = [...[
@@ -90,11 +93,13 @@ class DataLinkFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-sitemap';
     }
 
+    #[\Override]
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -111,6 +116,7 @@ class DataLinkFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -160,6 +166,7 @@ class DataLinkFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
@@ -175,6 +182,7 @@ class DataLinkFieldType extends DataFieldType
         $resolver->setDefault('querySearch', null);
     }
 
+    #[\Override]
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -186,11 +194,13 @@ class DataLinkFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
     }
 
+    #[\Override]
     public function getChoiceList(FieldType $fieldType, array $choices): array
     {
         /** @var ObjectPickerType $objectPickerType */
@@ -210,6 +220,7 @@ class DataLinkFieldType extends DataFieldType
         return $all;
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -243,6 +254,7 @@ class DataLinkFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         $out = parent::modelTransform($data, $fieldType);
@@ -291,6 +303,7 @@ class DataLinkFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -301,6 +314,7 @@ class DataLinkFieldType extends DataFieldType
     /**
      * @param ?array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $data = (null !== $data && isset($data['value'])) ? $data['value'] : null;

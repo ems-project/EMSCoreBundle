@@ -20,6 +20,7 @@ class ContentTypeFieldChoiceListFactory extends DefaultChoiceListFactory
         return new ContentTypeFieldChoiceLoader($mapping, $types, $firstLevelOnly);
     }
 
+    #[\Override]
     public function createListFromLoader(ChoiceLoaderInterface $loader, ?callable $value = null, ?callable $filter = null): ChoiceListInterface
     {
         return $loader->loadChoiceList($value);
@@ -28,6 +29,7 @@ class ContentTypeFieldChoiceListFactory extends DefaultChoiceListFactory
     /**
      * @param iterable<mixed> $choices
      */
+    #[\Override]
     public function createListFromChoices(iterable $choices, ?callable $value = null, ?callable $filter = null): ChoiceListInterface
     {
         return parent::createListFromChoices($choices, $value, $filter);

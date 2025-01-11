@@ -20,11 +20,13 @@ class KeywordsViewType extends ViewType
         parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Keywords: a view where all properties of kind (such as keyword) are listed on a single page';
     }
 
+    #[\Override]
     public function getName(): string
     {
         return 'Keywords';
@@ -34,6 +36,7 @@ class KeywordsViewType extends ViewType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -49,11 +52,13 @@ class KeywordsViewType extends ViewType
         ]);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'keywords_view';
     }
 
+    #[\Override]
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         $searchQuery = [

@@ -6,17 +6,18 @@ namespace EMS\CoreBundle\Core\Revision\Task;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final class TaskEventSubscriber implements EventSubscriberInterface
+final readonly class TaskEventSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly TaskManager $taskManager,
-        private readonly TaskMailer $taskMailer,
+        private TaskManager $taskManager,
+        private TaskMailer $taskMailer,
     ) {
     }
 
     /**
      * @return array<mixed>
      */
+    #[\Override]
     public static function getSubscribedEvents(): array
     {
         return [

@@ -25,12 +25,14 @@ class ManagedAliases extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->setDescription('')
             ->addOption('detailed', null, InputOption::VALUE_NONE, 'List all indexes in each managed alias');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->aliasService->build();

@@ -26,9 +26,9 @@ use Symfony\Component\Form\FormInterface;
 use Twig\Environment;
 use Twig\Error\SyntaxError;
 
-final class PostProcessingService
+final readonly class PostProcessingService
 {
-    public function __construct(private readonly Environment $twig, private readonly FormFactoryInterface $formFactory, private readonly LoggerInterface $logger)
+    public function __construct(private Environment $twig, private FormFactoryInterface $formFactory, private LoggerInterface $logger)
     {
     }
 

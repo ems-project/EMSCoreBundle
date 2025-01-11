@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20200224155002 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -21,6 +22,7 @@ final class Version20200224155002 extends AbstractMigration
         $this->addSql('ALTER TABLE content_type ADD createLinkDisplayRole VARCHAR(255) DEFAULT \'ROLE_USER\' NOT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

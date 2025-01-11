@@ -16,15 +16,15 @@ use EMS\CoreBundle\Service\UserService;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-final class TaskManager
+final readonly class TaskManager
 {
     public function __construct(
-        private readonly TaskRepository $taskRepository,
-        private readonly RevisionRepository $revisionRepository,
-        private readonly DataService $dataService,
-        private readonly UserService $userService,
-        private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly LoggerInterface $logger,
+        private TaskRepository $taskRepository,
+        private RevisionRepository $revisionRepository,
+        private DataService $dataService,
+        private UserService $userService,
+        private EventDispatcherInterface $eventDispatcher,
+        private LoggerInterface $logger,
     ) {
     }
 
@@ -89,9 +89,7 @@ final class TaskManager
 
         $taskCollection = new TaskCollection(revision: $revision, tasks: $tasksApproved ?? []);
 
-        return $taskCollection->sort(function (Task $a, Task $b) {
-            return $b->getModified() <=> $a->getModified();
-        });
+        return $taskCollection->sort(fn (Task $a, Task $b) => $b->getModified() <=> $a->getModified());
     }
 
     public function getTaskCurrent(Revision $revision): ?Task

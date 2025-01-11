@@ -20,6 +20,7 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
         $this->objectChoiceList = new ObjectChoiceList($objectChoiceCacheService, $types, $loadAll, $circleOnly, $withWarning, $querySearchName);
     }
 
+    #[\Override]
     public function loadChoiceList($value = null): ObjectChoiceList
     {
         return $this->objectChoiceList;
@@ -38,6 +39,7 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
      *
      * @return array<mixed>
      */
+    #[\Override]
     public function loadChoicesForValues(array $values, $value = null): array
     {
         $this->objectChoiceList->loadChoices($values);
@@ -50,6 +52,7 @@ class ObjectChoiceLoader implements ChoiceLoaderInterface
      *
      * @return array<mixed>
      */
+    #[\Override]
     public function loadValuesForChoices(array $choices, $value = null): array
     {
         $this->objectChoiceList->loadChoices($choices);

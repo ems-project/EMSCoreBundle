@@ -20,15 +20,15 @@ use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 
-final class QuerySearchService implements EntityServiceInterface
+final readonly class QuerySearchService implements EntityServiceInterface
 {
     public function __construct(
-        private readonly ContentTypeService $contentTypeService,
-        private readonly RevisionService $revisionService,
-        private readonly ElasticaService $elasticaService,
-        private readonly QuerySearchRepository $querySearchRepository,
-        private readonly LoggerInterface $logger,
-        private readonly EnvironmentService $environmentService,
+        private ContentTypeService $contentTypeService,
+        private RevisionService $revisionService,
+        private ElasticaService $elasticaService,
+        private QuerySearchRepository $querySearchRepository,
+        private LoggerInterface $logger,
+        private EnvironmentService $environmentService,
     ) {
     }
 
@@ -80,6 +80,7 @@ final class QuerySearchService implements EntityServiceInterface
         }
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return true;
@@ -94,11 +95,10 @@ final class QuerySearchService implements EntityServiceInterface
     }
 
     /**
-     * @param mixed $context
-     *
      * @return QuerySearch[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected context');
@@ -107,6 +107,7 @@ final class QuerySearchService implements EntityServiceInterface
         return $this->querySearchRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'query-search';
@@ -115,6 +116,7 @@ final class QuerySearchService implements EntityServiceInterface
     /**
      * @return string[]
      */
+    #[\Override]
     public function getAliasesName(): array
     {
         return [
@@ -127,10 +129,8 @@ final class QuerySearchService implements EntityServiceInterface
         ];
     }
 
-    /**
-     * @param mixed $context
-     */
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected non-null object');
@@ -209,11 +209,13 @@ final class QuerySearchService implements EntityServiceInterface
         return $aliases;
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?EntityInterface
     {
         return $this->getOneByName($name);
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         $querySearch = $this->buildQuerySearch($json, $entity);
@@ -222,6 +224,7 @@ final class QuerySearchService implements EntityServiceInterface
         return $querySearch;
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $querySearch = $this->buildQuerySearch($json);
@@ -233,6 +236,7 @@ final class QuerySearchService implements EntityServiceInterface
         return $querySearch;
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         $querySearch = $this->getOneByName($name);

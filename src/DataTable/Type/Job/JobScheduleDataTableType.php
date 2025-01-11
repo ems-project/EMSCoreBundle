@@ -23,6 +23,7 @@ class JobScheduleDataTableType extends AbstractEntityTableType
         parent::__construct($scheduleManager);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $table->setDefaultOrder('orderKey');
@@ -56,6 +57,7 @@ class JobScheduleDataTableType extends AbstractEntityTableType
             ->addTableActionDelete($table, 'job_schedule');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];

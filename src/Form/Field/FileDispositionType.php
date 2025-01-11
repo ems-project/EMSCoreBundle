@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FileDispositionType extends ChoiceType
 {
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);

@@ -11,6 +11,7 @@ use EMS\Helpers\Standard\Json;
 
 final class Version20221222130227 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -33,6 +34,7 @@ QUERY;
         }
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
     }

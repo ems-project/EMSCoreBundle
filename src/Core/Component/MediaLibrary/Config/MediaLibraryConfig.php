@@ -57,11 +57,13 @@ class MediaLibraryConfig implements ConfigInterface
     ) {
     }
 
+    #[\Override]
     public function getHash(): string
     {
         return $this->hash;
     }
 
+    #[\Override]
     public function getId(): string
     {
         return $this->id;

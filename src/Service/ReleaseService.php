@@ -14,9 +14,9 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\ReleaseRepository;
 use Psr\Log\LoggerInterface;
 
-final class ReleaseService implements EntityServiceInterface
+final readonly class ReleaseService implements EntityServiceInterface
 {
-    public function __construct(private readonly ReleaseRepository $releaseRepository, private readonly ContentTypeService $contentTypeService, private readonly DataService $dataService, private readonly ReleaseRevisionService $releaseRevisionService, private readonly PublishService $publishService, private readonly LoggerInterface $logger)
+    public function __construct(private ReleaseRepository $releaseRepository, private ContentTypeService $contentTypeService, private DataService $dataService, private ReleaseRevisionService $releaseRevisionService, private PublishService $publishService, private LoggerInterface $logger)
     {
     }
 
@@ -157,17 +157,17 @@ final class ReleaseService implements EntityServiceInterface
         }
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return false;
     }
 
     /**
-     * @param mixed $context
-     *
      * @return Release[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         if ($context instanceof Revision) {
             return $this->releaseRepository->getInWip($from, $size, $orderField, $orderDirection, $searchValue);
@@ -179,6 +179,7 @@ final class ReleaseService implements EntityServiceInterface
         return $this->releaseRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'release';
@@ -187,15 +188,14 @@ final class ReleaseService implements EntityServiceInterface
     /**
      * @return string[]
      */
+    #[\Override]
     public function getAliasesName(): array
     {
         return [];
     }
 
-    /**
-     * @param mixed $context
-     */
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         if ($context instanceof Revision) {
             return $this->releaseRepository->countWipReleases();
@@ -301,21 +301,25 @@ final class ReleaseService implements EntityServiceInterface
         return $this->releaseRepository->getById($id);
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?EntityInterface
     {
         return $this->releaseRepository->getById($name);
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         throw new \RuntimeException('updateEntityFromJson method not supported for releases');
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         throw new \RuntimeException('createEntityFromJson method not supported for releases');
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         throw new \RuntimeException('deleteByItemName method not supported for releases');

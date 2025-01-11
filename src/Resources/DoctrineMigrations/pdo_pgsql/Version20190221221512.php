@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20190221221512 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -22,6 +23,7 @@ final class Version20190221221512 extends AbstractMigration
         $this->addSql('ALTER TABLE session RENAME COLUMN sess_lifetime TO lifetime');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

@@ -18,6 +18,7 @@ class Terms implements ConditionInterface
     /**
      * @param object|array<mixed> $objectOrArray
      */
+    #[\Override]
     public function valid($objectOrArray): bool
     {
         $accessor = new PropertyAccessor();

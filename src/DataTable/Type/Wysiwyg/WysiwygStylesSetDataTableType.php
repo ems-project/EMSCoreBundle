@@ -22,6 +22,7 @@ class WysiwygStylesSetDataTableType extends AbstractEntityTableType
         parent::__construct($entityService);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $table->setDefaultOrder('orderKey')->setLabelAttribute('name');
@@ -36,6 +37,7 @@ class WysiwygStylesSetDataTableType extends AbstractEntityTableType
             ->addTableActionDelete($table, 'wysiwyg_style_set');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];

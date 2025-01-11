@@ -11,16 +11,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CheckboxFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Checkbox field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'glyphicon glyphicon-check';
     }
 
+    #[\Override]
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
@@ -35,6 +38,7 @@ class CheckboxFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -47,6 +51,7 @@ class CheckboxFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         $dataField = new DataField();
@@ -56,6 +61,7 @@ class CheckboxFieldType extends DataFieldType
         return $dataField;
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -63,6 +69,7 @@ class CheckboxFieldType extends DataFieldType
         return ['value' => ((null !== $out && !empty($out)) ? true : false)];
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
@@ -74,6 +81,7 @@ class CheckboxFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $out = parent::reverseViewTransform($data, $fieldType);
@@ -86,6 +94,7 @@ class CheckboxFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -97,6 +106,7 @@ class CheckboxFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function generateMapping(FieldType $current): array
     {
         return [
@@ -104,6 +114,7 @@ class CheckboxFieldType extends DataFieldType
         ];
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

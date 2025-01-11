@@ -15,6 +15,7 @@ class CronValidator extends ConstraintValidator
      * @param string $value
      * @param Cron   $constraint
      */
+    #[\Override]
     public function validate($value, Constraint $constraint): void
     {
         if (!CronExpression::isValidExpression($value)) {

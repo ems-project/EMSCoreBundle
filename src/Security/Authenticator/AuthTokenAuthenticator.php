@@ -17,11 +17,13 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 
 final class AuthTokenAuthenticator extends AbstractAuthenticator
 {
+    #[\Override]
     public function supports(Request $request): bool
     {
         return $request->headers->has('X-Auth-Token');
     }
 
+    #[\Override]
     public function authenticate(Request $request): Passport
     {
         $apiToken = $request->headers->get('X-Auth-Token');
@@ -32,11 +34,13 @@ final class AuthTokenAuthenticator extends AbstractAuthenticator
         return new SelfValidatingPassport(new UserBadge($apiToken));
     }
 
+    #[\Override]
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         return null;
     }
 
+    #[\Override]
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         return new JsonResponse([

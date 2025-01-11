@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20161031074022 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -21,6 +22,7 @@ final class Version20161031074022 extends AbstractMigration
         $this->addSql('UPDATE content_type set singularName = name');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

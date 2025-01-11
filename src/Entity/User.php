@@ -60,6 +60,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         $this->authTokens = new ArrayCollection();
     }
 
+    #[\Override]
     public function toArray(): array
     {
         return [
@@ -78,6 +79,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         ];
     }
 
+    #[\Override]
     public function isExpired(): bool
     {
         if (null === $this->expirationDate) {
@@ -118,11 +120,13 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         $this->localePreferred = $localePreferred;
     }
 
+    #[\Override]
     public function getCircles(): array
     {
         return $this->circles ?? [];
     }
 
+    #[\Override]
     public function getExpirationDate(): ?\DateTime
     {
         return $this->expirationDate;
@@ -133,6 +137,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         $this->expirationDate = $time;
     }
 
+    #[\Override]
     public function setCircles(array $circles): self
     {
         $this->circles = $circles;
@@ -140,6 +145,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return $this;
     }
 
+    #[\Override]
     public function setDisplayName(string $displayName): self
     {
         $this->displayName = $displayName;
@@ -147,6 +153,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return $this;
     }
 
+    #[\Override]
     public function getDisplayName(): string
     {
         if (empty($this->displayName)) {
@@ -156,6 +163,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return $this->displayName;
     }
 
+    #[\Override]
     public function setWysiwygProfile(?WysiwygProfile $wysiwygProfile): self
     {
         $this->wysiwygProfile = $wysiwygProfile;
@@ -163,11 +171,13 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return $this;
     }
 
+    #[\Override]
     public function getWysiwygProfile(): ?WysiwygProfile
     {
         return $this->wysiwygProfile;
     }
 
+    #[\Override]
     public function setLayoutBoxed(bool $layoutBoxed): self
     {
         $this->layoutBoxed = $layoutBoxed;
@@ -175,11 +185,13 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return $this;
     }
 
+    #[\Override]
     public function getLayoutBoxed(): bool
     {
         return $this->layoutBoxed;
     }
 
+    #[\Override]
     public function setSidebarMini(bool $sidebarMini): self
     {
         $this->sidebarMini = $sidebarMini;
@@ -187,11 +199,13 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return $this;
     }
 
+    #[\Override]
     public function getSidebarMini(): bool
     {
         return $this->sidebarMini;
     }
 
+    #[\Override]
     public function setSidebarCollapse(bool $sidebarCollapse): self
     {
         $this->sidebarCollapse = $sidebarCollapse;
@@ -199,11 +213,13 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return $this;
     }
 
+    #[\Override]
     public function getSidebarCollapse(): bool
     {
         return $this->sidebarCollapse;
     }
 
+    #[\Override]
     public function addAuthToken(AuthToken $authToken): self
     {
         $this->authTokens[] = $authToken;
@@ -211,16 +227,19 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return $this;
     }
 
+    #[\Override]
     public function removeAuthToken(AuthToken $authToken): void
     {
         $this->authTokens->removeElement($authToken);
     }
 
+    #[\Override]
     public function getAuthTokens(): Collection
     {
         return $this->authTokens;
     }
 
+    #[\Override]
     public function setEmailNotification(bool $emailNotification): self
     {
         $this->emailNotification = $emailNotification;
@@ -228,16 +247,19 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return $this;
     }
 
+    #[\Override]
     public function getEmailNotification(): bool
     {
         return $this->emailNotification;
     }
 
+    #[\Override]
     public function isEnabled(): bool
     {
         return $this->enabled;
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->getDisplayName();
@@ -252,6 +274,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return ($this->passwordRequestedAt->getTimestamp() + $ttl) > \time();
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return $this->getUsername();
@@ -301,16 +324,19 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         [$this->password, $this->salt, $this->usernameCanonical, $this->username, $this->enabled, $this->id, $this->email, $this->emailCanonical] = $data;
     }
 
+    #[\Override]
     public function eraseCredentials(): void
     {
         $this->plainPassword = null;
     }
 
+    #[\Override]
     public function getUserIdentifier(): string
     {
         return $this->username ?? '';
     }
 
+    #[\Override]
     public function getUsername(): string
     {
         return $this->username ?? '';
@@ -326,6 +352,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return $this->salt;
     }
 
+    #[\Override]
     public function getEmail(): string
     {
         return $this->email ?? '';
@@ -336,6 +363,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return $this->emailCanonical;
     }
 
+    #[\Override]
     public function getPassword(): ?string
     {
         return $this->password;
@@ -346,6 +374,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return $this->plainPassword;
     }
 
+    #[\Override]
     public function getLastLogin(): ?\DateTime
     {
         return $this->lastLogin;
@@ -359,6 +388,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     /**
      * @return string[]
      */
+    #[\Override]
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -369,6 +399,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return \array_unique($roles);
     }
 
+    #[\Override]
     public function hasRole(string $role): bool
     {
         return \in_array(\strtoupper($role), $this->getRoles(), true);

@@ -10,11 +10,13 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20240409120638 extends AbstractMigration
 {
+    #[\Override]
     public function getDescription(): string
     {
         return 'Form submission change expire_date from date to datetime';
     }
 
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -25,6 +27,7 @@ final class Version20240409120638 extends AbstractMigration
         $this->addSql('ALTER TABLE form_submission CHANGE expire_date expire_date DATETIME DEFAULT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

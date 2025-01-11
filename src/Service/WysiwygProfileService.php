@@ -17,7 +17,8 @@ class WysiwygProfileService implements EntityServiceInterface
     {
     }
 
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         return (int) $this->wysiwygProfileRepository->makeQueryBuilder(searchValue: $searchValue)
             ->select('count(p.id)')
@@ -25,6 +26,7 @@ class WysiwygProfileService implements EntityServiceInterface
             ->getSingleScalarResult();
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $profile = WysiwygProfile::fromJson($json);
@@ -52,6 +54,7 @@ class WysiwygProfileService implements EntityServiceInterface
         }
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         $profile = $this->wysiwygProfileRepository->getByName($name);
@@ -64,7 +67,8 @@ class WysiwygProfileService implements EntityServiceInterface
         return \strval($id);
     }
 
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         $qb = $this->wysiwygProfileRepository->makeQueryBuilder(searchValue: $searchValue);
         $qb->setFirstResult($from)->setMaxResults($size);
@@ -79,6 +83,7 @@ class WysiwygProfileService implements EntityServiceInterface
     /**
      * @return string[]
      */
+    #[\Override]
     public function getAliasesName(): array
     {
         return [
@@ -93,16 +98,19 @@ class WysiwygProfileService implements EntityServiceInterface
         return $this->wysiwygProfileRepository->findById($id);
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?EntityInterface
     {
         return $this->wysiwygProfileRepository->getByName($name);
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'wysiwyg-profile';
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return true;
@@ -126,6 +134,7 @@ class WysiwygProfileService implements EntityServiceInterface
         ]);
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         if (!$entity instanceof WysiwygProfile) {

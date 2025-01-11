@@ -16,16 +16,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DateRangeFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Date range field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-calendar-o';
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $options = $dataField->giveFieldType()->getOptions();
@@ -45,6 +48,7 @@ class DateRangeFieldType extends DataFieldType
         return ['value' => ''];
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
@@ -53,6 +57,7 @@ class DateRangeFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
@@ -90,6 +95,7 @@ class DateRangeFieldType extends DataFieldType
         return $dataField;
     }
 
+    #[\Override]
     public static function filterSubField(array $data, array $option): array
     {
         if (!$option['mappingOptions']['nested']) {
@@ -109,6 +115,7 @@ class DateRangeFieldType extends DataFieldType
         return parent::filterSubField($data, $option);
     }
 
+    #[\Override]
     public static function isVirtual(array $option = []): bool
     {
         if (!isset($option['mappingOptions'])) {
@@ -120,6 +127,7 @@ class DateRangeFieldType extends DataFieldType
         return !$nested;
     }
 
+    #[\Override]
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
@@ -154,6 +162,7 @@ class DateRangeFieldType extends DataFieldType
         return [$dataField->giveFieldType()->getName()];
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
@@ -170,6 +179,7 @@ class DateRangeFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -187,6 +197,7 @@ class DateRangeFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -221,6 +232,7 @@ class DateRangeFieldType extends DataFieldType
         return $dateFormat;
     }
 
+    #[\Override]
     public function generateMapping(FieldType $current): array
     {
         $out = [
@@ -251,6 +263,7 @@ class DateRangeFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -267,6 +280,7 @@ class DateRangeFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

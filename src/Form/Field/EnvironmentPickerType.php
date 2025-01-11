@@ -22,6 +22,7 @@ class EnvironmentPickerType extends ChoiceType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $choices = [];
@@ -54,6 +55,7 @@ class EnvironmentPickerType extends ChoiceType
         parent::buildForm($builder, $options);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $this->environments = [];

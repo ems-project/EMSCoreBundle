@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20210320212242 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20210320212242 extends AbstractMigration
         $this->addSql('UPDATE job SET done = TRUE WHERE done IS FALSE AND started is TRUE');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
     }

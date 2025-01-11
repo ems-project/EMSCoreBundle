@@ -32,11 +32,13 @@ class ManagedAlias extends JsonDeserializer implements \JsonSerializable, \Strin
         $this->modified = DateTime::create('now');
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return $this->name;
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;
@@ -141,6 +143,7 @@ class ManagedAlias extends JsonDeserializer implements \JsonSerializable, \Strin
         $this->label = $label;
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), self::class);

@@ -164,7 +164,7 @@ class RevisionService implements RevisionServiceInterface
         }
 
         if ($contentType->hasLabelField() && isset($rawData[$contentType->giveLabelField()])) {
-            return \htmlspecialchars($rawData[$contentType->giveLabelField()]);
+            return \htmlspecialchars((string) $rawData[$contentType->giveLabelField()]);
         }
 
         return match (true) {
@@ -290,6 +290,7 @@ class RevisionService implements RevisionServiceInterface
     /**
      * @param array<mixed> $search
      */
+    #[\Override]
     public function search(array $search): Revisions
     {
         return new Revisions($this->revisionRepository->search($search));
@@ -366,6 +367,7 @@ class RevisionService implements RevisionServiceInterface
     /**
      * @param array<mixed> $rawData
      */
+    #[\Override]
     public function updateRawData(Revision $revision, array $rawData, ?string $username = null, bool $merge = true): Revision
     {
         $contentTypeName = $revision->giveContentType()->getName();

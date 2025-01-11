@@ -16,6 +16,7 @@ final class MigrationOptionsTransformerType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('class', ChoiceType::class, [
@@ -24,11 +25,13 @@ final class MigrationOptionsTransformerType extends AbstractType
         $builder->add('config', TextType::class, ['required' => false]);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'data_field_migration_transformer';
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setRequired(['transformers']);

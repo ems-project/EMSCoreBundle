@@ -17,6 +17,7 @@ class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
         $this->contentTypeFieldChoiceList = new ContentTypeFieldChoiceList($mapping, $types, $firstLevelOnly);
     }
 
+    #[\Override]
     public function loadChoiceList($value = null): ContentTypeFieldChoiceList
     {
         return $this->contentTypeFieldChoiceList;
@@ -35,6 +36,7 @@ class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
      *
      * @return array<mixed>
      */
+    #[\Override]
     public function loadChoicesForValues(array $values, $value = null): array
     {
         $this->contentTypeFieldChoiceList->loadChoices($values);
@@ -47,6 +49,7 @@ class ContentTypeFieldChoiceLoader implements ChoiceLoaderInterface
      *
      * @return array<mixed>
      */
+    #[\Override]
     public function loadValuesForChoices(array $choices, $value = null): array
     {
         $this->contentTypeFieldChoiceList->loadChoices($choices);

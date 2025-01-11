@@ -16,11 +16,12 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class EMSCoreExtension extends Extension implements PrependExtensionInterface
 {
-    final public const TRANS_DOMAIN = 'EMSCoreBundle';
+    final public const string TRANS_DOMAIN = 'EMSCoreBundle';
 
     /**
      * @param array<mixed> $configs
      */
+    #[\Override]
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
@@ -84,6 +85,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.security.ldap.config', $config['ldap']);
     }
 
+    #[\Override]
     public function prepend(ContainerBuilder $container): void
     {
         $bundles = $container->getParameter('kernel.bundles');

@@ -61,7 +61,7 @@ use Twig\Error\Error;
  */
 class DataService
 {
-    final public const ALGO = OPENSSL_ALGO_SHA1;
+    final public const int ALGO = OPENSSL_ALGO_SHA1;
     protected const SCROLL_TIMEOUT = '1m';
 
     private false|\OpenSSLAsymmetricKey|null $private_key = null;
@@ -793,7 +793,6 @@ class DataService
     private function logFormErrors(FormInterface $form): void
     {
         $formErrors = $form->getErrors(true);
-        /** @var FormError $formError */
         foreach ($formErrors as $formError) {
             $fieldForm = $formError->getOrigin();
             $dataField = null;

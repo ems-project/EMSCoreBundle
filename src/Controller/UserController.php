@@ -113,7 +113,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    public function contentTypeFieldsPermissions(ContentType $contentType, Request $request): Response
+    public function contentTypeFieldsPermissions(ContentType $contentType): Response
     {
         $tree = $this->fieldTypeService->getTree($contentType);
 

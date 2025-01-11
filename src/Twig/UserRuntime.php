@@ -8,9 +8,9 @@ use EMS\CoreBundle\Core\User\UserList;
 use EMS\CoreBundle\Repository\UserRepository;
 use Twig\Extension\RuntimeExtensionInterface;
 
-final class UserRuntime implements RuntimeExtensionInterface
+final readonly class UserRuntime implements RuntimeExtensionInterface
 {
-    public function __construct(private readonly UserRepository $userRepository)
+    public function __construct(private UserRepository $userRepository)
     {
     }
 

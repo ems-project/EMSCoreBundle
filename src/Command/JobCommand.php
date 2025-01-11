@@ -22,9 +22,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class JobCommand extends AbstractCommand
 {
-    private const OPTION_DUMP = 'dump';
-    private const OPTION_TAG = 'tag';
-    private const USER_JOB_COMMAND = 'User-Job-Command';
+    private const string OPTION_DUMP = 'dump';
+    private const string OPTION_TAG = 'tag';
+    private const string USER_JOB_COMMAND = 'User-Job-Command';
 
     private bool $dump = false;
     private ?string $tag = null;
@@ -38,6 +38,7 @@ class JobCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -47,6 +48,7 @@ class JobCommand extends AbstractCommand
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -54,6 +56,7 @@ class JobCommand extends AbstractCommand
         $this->tag = $this->getOptionStringNull(self::OPTION_TAG);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io->title('EMSCO - Job - Run');

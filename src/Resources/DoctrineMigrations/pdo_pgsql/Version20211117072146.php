@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20211117072146 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20211117072146 extends AbstractMigration
         $this->addSql('UPDATE revision SET draft_save_date = created WHERE draft = TRUE');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

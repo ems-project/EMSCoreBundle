@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20160623150156 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -23,6 +24,7 @@ final class Version20160623150156 extends AbstractMigration
         $this->addSql('ALTER TABLE notification ADD CONSTRAINT FK_BF5476CA903E3A94 FOREIGN KEY (environment_id) REFERENCES environment (id)');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

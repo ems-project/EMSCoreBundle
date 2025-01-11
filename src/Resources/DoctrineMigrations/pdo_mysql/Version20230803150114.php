@@ -10,11 +10,13 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20230803150114 extends AbstractMigration
 {
+    #[\Override]
     public function getDescription(): string
     {
         return 'Task improvements';
     }
 
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -25,6 +27,7 @@ final class Version20230803150114 extends AbstractMigration
         $this->addSql('ALTER TABLE task ADD delay INT NOT NULL DEFAULT 2');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

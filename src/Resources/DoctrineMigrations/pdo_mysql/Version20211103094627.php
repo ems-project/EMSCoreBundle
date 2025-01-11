@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20211103094627 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -27,6 +28,7 @@ final class Version20211103094627 extends AbstractMigration
         $this->addSql('ALTER TABLE release_revision ADD CONSTRAINT FK_3663CEAD1A445520 FOREIGN KEY (content_type_id) REFERENCES content_type (id)');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

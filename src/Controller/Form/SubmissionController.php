@@ -27,7 +27,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 final class SubmissionController extends AbstractController
 {
-    final public const BUFFER_SIZE = 8192;
+    final public const int BUFFER_SIZE = 8192;
 
     public function __construct(
         private readonly FormSubmissionService $formSubmissionService,

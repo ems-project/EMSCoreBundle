@@ -14,16 +14,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DateFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Date field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-calendar';
     }
 
+    #[\Override]
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         if (empty($data)) {
@@ -57,6 +60,7 @@ class DateFieldType extends DataFieldType
     /**
      * @return string[]|string|null
      */
+    #[\Override]
     public function reverseModelTransform(DataField $dataField)
     {
         $data = parent::reverseModelTransform($dataField);
@@ -85,6 +89,7 @@ class DateFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $data = parent::viewTransform($dataField);
@@ -105,6 +110,7 @@ class DateFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $dates = [];
@@ -119,11 +125,13 @@ class DateFieldType extends DataFieldType
         return $dataField;
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'datefieldtype';
     }
 
+    #[\Override]
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
@@ -155,6 +163,7 @@ class DateFieldType extends DataFieldType
         return [$dataField->giveFieldType()->getName()];
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
@@ -171,6 +180,7 @@ class DateFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -192,6 +202,7 @@ class DateFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function generateMapping(FieldType $current): array
     {
         return [
@@ -202,6 +213,7 @@ class DateFieldType extends DataFieldType
         ];
     }
 
+    #[\Override]
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -270,6 +282,7 @@ class DateFieldType extends DataFieldType
         return $dateFormat;
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

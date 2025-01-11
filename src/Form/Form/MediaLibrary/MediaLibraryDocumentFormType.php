@@ -19,6 +19,7 @@ class MediaLibraryDocumentFormType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array{'data': MediaLibraryDocument}        $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $data = $builder->getData();
@@ -48,6 +49,7 @@ class MediaLibraryDocumentFormType extends AbstractType
         }
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

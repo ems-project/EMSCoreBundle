@@ -33,21 +33,25 @@ class IndexedAssetFieldType extends DataFieldType
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-file-text-o';
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Indexed file field';
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return FileType::class;
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -70,6 +74,7 @@ class IndexedAssetFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
@@ -78,6 +83,7 @@ class IndexedAssetFieldType extends DataFieldType
         $resolver->setDefault('imageAssetConfigIdentifier', null);
     }
 
+    #[\Override]
     public function generateMapping(FieldType $current): array
     {
         $mapping = parent::generateMapping($current);
@@ -103,6 +109,7 @@ class IndexedAssetFieldType extends DataFieldType
         ];
     }
 
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         if (\is_array($data)) {
@@ -147,6 +154,7 @@ class IndexedAssetFieldType extends DataFieldType
         $dataField->setRawData($raw);
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -158,6 +166,7 @@ class IndexedAssetFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         if (!\is_array($data)) {

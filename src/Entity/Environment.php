@@ -57,6 +57,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->modified = DateTime::create('now');
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return $this->name;
@@ -76,6 +77,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
         return $this;
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;
@@ -385,6 +387,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->updateReferrers = $updateReferrers;
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), self::class);

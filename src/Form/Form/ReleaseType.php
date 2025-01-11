@@ -18,13 +18,14 @@ use function Symfony\Component\Translation\t;
 
 final class ReleaseType extends AbstractType
 {
-    public const BTN_SAVE = 'save';
-    public const BTN_SAVE_CLOSE = 'saveAndClose';
+    public const string BTN_SAVE = 'save';
+    public const string BTN_SAVE_CLOSE = 'saveAndClose';
 
     /**
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -83,6 +84,7 @@ final class ReleaseType extends AbstractType
         }
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

@@ -27,12 +27,12 @@ final class TransformCommand extends AbstractCommand
     private string $searchQuery;
     private string $user = 'SYSTEM_CONTENT_TRANSFORM';
 
-    public const ARGUMENT_CONTENT_TYPE = 'content-type';
-    public const OPTION_SCROLL_SIZE = 'scroll-size';
-    public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
-    public const OPTION_SEARCH_QUERY = 'search-query';
-    public const OPTION_DRY_RUN = 'dry-run';
-    public const OPTION_USER = 'user';
+    public const string ARGUMENT_CONTENT_TYPE = 'content-type';
+    public const string OPTION_SCROLL_SIZE = 'scroll-size';
+    public const string OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
+    public const string OPTION_SEARCH_QUERY = 'search-query';
+    public const string OPTION_DRY_RUN = 'dry-run';
+    public const string OPTION_USER = 'user';
 
     public function __construct(
         private readonly RevisionSearcher $revisionSearcher,
@@ -42,6 +42,7 @@ final class TransformCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -54,6 +55,7 @@ final class TransformCommand extends AbstractCommand
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -72,6 +74,7 @@ final class TransformCommand extends AbstractCommand
         $this->contentType = $this->contentTypeService->giveByName($this->getArgumentString(self::ARGUMENT_CONTENT_TYPE));
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $transformerDefinitions = $this->contentTransformer->getTransformerDefinitions($this->contentType);

@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20180711204857 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -25,6 +26,7 @@ final class Version20180711204857 extends AbstractMigration
         $this->addSql('ALTER TABLE job ALTER status TYPE TEXT');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

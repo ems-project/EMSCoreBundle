@@ -31,11 +31,13 @@ class FormLoginAuthenticator extends AbstractAuthenticator implements Authentica
     {
     }
 
+    #[\Override]
     public function supports(Request $request): bool
     {
         return Routes::USER_LOGIN === $request->attributes->get('_route') && $request->isMethod('POST');
     }
 
+    #[\Override]
     public function authenticate(Request $request): Passport
     {
         $username = Type::string($request->request->get('_username', ''));
@@ -54,6 +56,7 @@ class FormLoginAuthenticator extends AbstractAuthenticator implements Authentica
         );
     }
 
+    #[\Override]
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
@@ -63,6 +66,7 @@ class FormLoginAuthenticator extends AbstractAuthenticator implements Authentica
         return new RedirectResponse($this->urlGenerator->generate(Routes::DASHBOARD_HOME));
     }
 
+    #[\Override]
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         if ($request->hasSession()) {
@@ -76,11 +80,13 @@ class FormLoginAuthenticator extends AbstractAuthenticator implements Authentica
         return new RedirectResponse($this->urlGenerator->generate(Routes::USER_LOGIN));
     }
 
+    #[\Override]
     public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
         return new RedirectResponse($this->urlGenerator->generate(Routes::USER_LOGIN));
     }
 
+    #[\Override]
     public function isInteractive(): bool
     {
         return true;

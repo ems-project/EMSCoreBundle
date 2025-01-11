@@ -12,6 +12,7 @@ use Symfony\Component\Form\DataTransformerInterface;
  */
 final class ChannelOptionsTransformer implements DataTransformerInterface
 {
+    #[\Override]
     public function transform($value)
     {
         $searchConfig = $this->jsonFormat($value, 'searchConfig');
@@ -24,6 +25,7 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
         ];
     }
 
+    #[\Override]
     public function reverseTransform($value)
     {
         return [

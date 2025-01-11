@@ -21,11 +21,13 @@ final class TableItemActionCollection implements \IteratorAggregate, \Countable
     ) {
     }
 
+    #[\Override]
     public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->itemActions);
     }
 
+    #[\Override]
     public function count(): int
     {
         return \count($this->itemActions);

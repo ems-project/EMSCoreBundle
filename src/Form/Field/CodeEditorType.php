@@ -10,11 +10,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CodeEditorType extends AbstractType
 {
+    #[\Override]
     public function getParent(): string
     {
         return HiddenType::class;
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -29,6 +31,7 @@ class CodeEditorType extends AbstractType
      * @param FormInterface<FormInterface> $form
      * @param array<string, mixed>         $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['min_lines'] = $options['min-lines'];

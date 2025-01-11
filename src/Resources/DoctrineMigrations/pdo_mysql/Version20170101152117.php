@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20170101152117 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -49,6 +50,7 @@ final class Version20170101152117 extends AbstractMigration
         $this->addSql('update field_type ft set ft.type = \'EMS\\\\CoreBundle\\\\Form\\\\DataField\\\\CollectionFieldType\' where  ft.type = \'AppBundle\\\\Form\\\\DataField\\\\CollectionFieldType\'');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

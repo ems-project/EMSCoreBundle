@@ -70,6 +70,7 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         return $this;
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;
@@ -294,6 +295,7 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         return $this->contentType;
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return $this->name;
@@ -414,6 +416,7 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         return $this;
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), self::class);
@@ -429,6 +432,7 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     /**
      * @param mixed $value
      */
+    #[\Override]
     protected function deserializeProperty(string $name, $value): void
     {
         switch ($name) {

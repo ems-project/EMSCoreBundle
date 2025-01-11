@@ -21,6 +21,7 @@ readonly class AssetTransformer implements DataTransformerInterface
     ) {
     }
 
+    #[\Override]
     public function transform(mixed $value): AssetEntity
     {
         if (!\is_string($value)) {
@@ -47,6 +48,7 @@ readonly class AssetTransformer implements DataTransformerInterface
         return $asset;
     }
 
+    #[\Override]
     public function reverseTransform(mixed $value): string
     {
         if (!$value instanceof AssetEntity) {

@@ -30,6 +30,7 @@ class FieldTypeType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<mixed>                               $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -131,6 +132,7 @@ class FieldTypeType extends AbstractType
         }
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -147,6 +149,7 @@ class FieldTypeType extends AbstractType
      * @param FormInterface<FormInterface> $form
      * @param array<mixed>                 $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /* get options for twig context */
@@ -254,6 +257,7 @@ class FieldTypeType extends AbstractType
         return $mapping;
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'fieldTypeType';

@@ -247,7 +247,7 @@ class ObjectChoiceCacheService
         return new ObjectChoiceListItem(
             document: $document,
             contentType: $contentType,
-            displayLabel: $this->revisionService->display($document)
+            title: $this->revisionService->display($document)
         );
     }
 }

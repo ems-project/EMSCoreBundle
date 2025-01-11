@@ -28,6 +28,7 @@ class ExtractAssetCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->addArgument(
@@ -43,6 +44,7 @@ class ExtractAssetCommand extends AbstractCommand
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $name = $input->getArgument('name');

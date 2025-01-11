@@ -20,11 +20,13 @@ class ReportViewType extends ViewType
         parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Report: perform an elasticsearch query and generate a report with a twig template';
     }
 
+    #[\Override]
     public function getName(): string
     {
         return 'Report';
@@ -34,6 +36,7 @@ class ReportViewType extends ViewType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -65,11 +68,13 @@ class ReportViewType extends ViewType
         ]);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'report_view';
     }
 
+    #[\Override]
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         try {

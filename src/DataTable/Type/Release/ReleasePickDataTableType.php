@@ -27,6 +27,7 @@ class ReleasePickDataTableType extends AbstractEntityTableType
         parent::__construct($releaseService);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         /** @var Revision $revision */
@@ -52,16 +53,19 @@ class ReleasePickDataTableType extends AbstractEntityTableType
         $table->addItemPostAction(Routes::DATA_ADD_REVISION_TO_RELEASE, 'data.actions.add_to_release_unpublish', 'minus', 'data.actions.add_to_release_confirm', ['revision' => $revision->getId(), 'type' => 'unpublish'])->setButtonType('default');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_PUBLISHER];
     }
 
+    #[\Override]
     public function getContext(array $options): Revision
     {
         return $this->revisionService->getByRevisionId($options['revision_id']);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver->setRequired(['revision_id']);

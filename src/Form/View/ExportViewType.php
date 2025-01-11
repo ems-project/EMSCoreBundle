@@ -30,11 +30,13 @@ class ExportViewType extends ViewType
         parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Export: perform an elasticsearch query and generate a export with a twig template';
     }
 
+    #[\Override]
     public function getName(): string
     {
         return 'Export';
@@ -44,6 +46,7 @@ class ExportViewType extends ViewType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -101,11 +104,13 @@ class ExportViewType extends ViewType
         ]);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'export_view';
     }
 
+    #[\Override]
     public function generateResponse(View $view, Request $request): Response
     {
         $parameters = $this->getParameters($view, $this->formFactory, $request);
@@ -145,6 +150,7 @@ class ExportViewType extends ViewType
         return $response;
     }
 
+    #[\Override]
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         try {

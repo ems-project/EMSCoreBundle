@@ -23,10 +23,11 @@ final class UnpublishCommand extends AbstractEnvironmentCommand
     /** @var array<string, int> */
     private array $warnings = [];
 
-    public const ARGUMENT_ENVIRONMENT = 'environment';
+    public const string ARGUMENT_ENVIRONMENT = 'environment';
 
-    private const LOCK_USER = 'SYSTEM_UNPUBLISH';
+    private const string LOCK_USER = 'SYSTEM_UNPUBLISH';
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -37,6 +38,7 @@ final class UnpublishCommand extends AbstractEnvironmentCommand
         $this->configureRevisionSearcher();
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -45,11 +47,13 @@ final class UnpublishCommand extends AbstractEnvironmentCommand
         $this->initializeRevisionSearcher(self::LOCK_USER);
     }
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $this->environment = $this->choiceEnvironment(self::ARGUMENT_ENVIRONMENT, 'Select an existing environment');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->forceProtection($input)) {

@@ -32,14 +32,13 @@ class UploadedAssetAdminDataTableType extends AbstractEntityTableType
         parent::__construct($entityService);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $table->setDefaultOrder('created', 'desc');
 
         $columnName = $table->addColumn(t('field.name', [], 'emsco-core'), 'name');
-        $columnName->setItemIconCallback(function (UploadedAsset $data) {
-            return Encoder::getFontAwesomeFromMimeType($data->getType(), EMSCoreBundle::FONTAWESOME_VERSION);
-        });
+        $columnName->setItemIconCallback(fn (UploadedAsset $data) => Encoder::getFontAwesomeFromMimeType($data->getType(), EMSCoreBundle::FONTAWESOME_VERSION));
         $columnName->setRoute('ems_file_download', function (UploadedAsset $data) {
             if (!$data->getAvailable()) {
                 return null;
@@ -109,6 +108,7 @@ class UploadedAssetAdminDataTableType extends AbstractEntityTableType
         $this->addTableActionDelete($table, 'uploaded_file');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];

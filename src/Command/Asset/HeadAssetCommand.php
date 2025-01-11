@@ -29,11 +29,13 @@ final class HeadAssetCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io->title('Update asset\'s seen information');

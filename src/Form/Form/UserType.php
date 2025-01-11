@@ -25,8 +25,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class UserType extends AbstractType
 {
-    public const MODE_CREATE = 'create';
-    public const MODE_UPDATE = 'update';
+    public const string MODE_CREATE = 'create';
+    public const string MODE_UPDATE = 'update';
 
     public function __construct(private readonly UserService $userService, private readonly ?string $circleObject)
     {
@@ -36,6 +36,7 @@ final class UserType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $mode = $options['mode'];
@@ -149,6 +150,7 @@ final class UserType extends AbstractType
         }
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver

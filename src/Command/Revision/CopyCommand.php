@@ -29,11 +29,11 @@ final class CopyCommand extends AbstractCommand
     /** @var ?array<mixed> */
     private ?array $mergeRawData = null;
 
-    private const ARGUMENT_ENVIRONMENT = 'environment';
-    private const ARGUMENT_SEARCH_QUERY = 'search-query';
-    private const ARGUMENT_MERGE_RAW_DATA = 'merge-raw-data';
-    public const OPTION_SCROLL_SIZE = 'scroll-size';
-    public const OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
+    private const string ARGUMENT_ENVIRONMENT = 'environment';
+    private const string ARGUMENT_SEARCH_QUERY = 'search-query';
+    private const string ARGUMENT_MERGE_RAW_DATA = 'merge-raw-data';
+    public const string OPTION_SCROLL_SIZE = 'scroll-size';
+    public const string OPTION_SCROLL_TIMEOUT = 'scroll-timeout';
 
     public function __construct(
         private readonly RevisionSearcher $revisionSearcher,
@@ -43,6 +43,7 @@ final class CopyCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -54,6 +55,7 @@ final class CopyCommand extends AbstractCommand
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -68,6 +70,7 @@ final class CopyCommand extends AbstractCommand
         $this->mergeRawData = $mergeString ? Json::decode($mergeString) : null;
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $search = $this->revisionSearcher->create($this->environment, $this->searchQuery, [], true);

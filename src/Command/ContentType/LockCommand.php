@@ -36,15 +36,15 @@ final class LockCommand extends Command
     private string $query;
     private \DateTime $until;
 
-    public const ARGUMENT_CONTENT_TYPE = 'contentType';
-    public const ARGUMENT_TIME = 'time';
-    public const OPTION_QUERY = 'query';
-    public const OPTION_USER = 'user';
-    public const OPTION_FORCE = 'force';
-    public const OPTION_IF_EMPTY = 'if-empty';
-    public const OPTION_OUUID = 'ouuid';
+    public const string ARGUMENT_CONTENT_TYPE = 'contentType';
+    public const string ARGUMENT_TIME = 'time';
+    public const string OPTION_QUERY = 'query';
+    public const string OPTION_USER = 'user';
+    public const string OPTION_FORCE = 'force';
+    public const string OPTION_IF_EMPTY = 'if-empty';
+    public const string OPTION_OUUID = 'ouuid';
 
-    public const RESULT_SUCCESS = 0;
+    public const int RESULT_SUCCESS = 0;
 
     public function __construct(
         private readonly ContentTypeRepository $contentTypeRepository,
@@ -54,6 +54,7 @@ final class LockCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -67,6 +68,7 @@ final class LockCommand extends Command
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
@@ -107,6 +109,7 @@ final class LockCommand extends Command
         $this->force = true === $input->getOption(self::OPTION_FORCE);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption(self::OPTION_IF_EMPTY)

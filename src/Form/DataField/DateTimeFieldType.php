@@ -12,21 +12,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DateTimeFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Date Time Field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-calendar';
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'date_time_field_type';
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
@@ -43,6 +47,7 @@ class DateTimeFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -61,6 +66,7 @@ class DateTimeFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function generateMapping(FieldType $current): array
     {
         return [
@@ -71,6 +77,7 @@ class DateTimeFieldType extends DataFieldType
         ];
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -96,6 +103,7 @@ class DateTimeFieldType extends DataFieldType
         ;
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $data = parent::viewTransform($dataField);
@@ -119,6 +127,7 @@ class DateTimeFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $value = $data['value'];

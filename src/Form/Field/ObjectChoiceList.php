@@ -22,6 +22,7 @@ class ObjectChoiceList implements ChoiceListInterface
     /**
      * @return array<mixed>
      */
+    #[\Override]
     public function getChoices(): array
     {
         $this->loadAll();
@@ -32,6 +33,7 @@ class ObjectChoiceList implements ChoiceListInterface
     /**
      * @return array<mixed>
      */
+    #[\Override]
     public function getValues(): array
     {
         return \array_keys($this->choices);
@@ -40,6 +42,7 @@ class ObjectChoiceList implements ChoiceListInterface
     /**
      * @return array<mixed>
      */
+    #[\Override]
     public function getStructuredValues(): array
     {
         $values = [];
@@ -53,6 +56,7 @@ class ObjectChoiceList implements ChoiceListInterface
     /**
      * @return array<mixed>
      */
+    #[\Override]
     public function getOriginalKeys(): array
     {
         $values = [];
@@ -68,6 +72,7 @@ class ObjectChoiceList implements ChoiceListInterface
      *
      * @return array<mixed>
      */
+    #[\Override]
     public function getChoicesForValues(array $choices): array
     {
         $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly, $this->withWarning);
@@ -80,6 +85,7 @@ class ObjectChoiceList implements ChoiceListInterface
      *
      * @return array<mixed>
      */
+    #[\Override]
     public function getValuesForChoices(array $choices): array
     {
         $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly, $this->withWarning);

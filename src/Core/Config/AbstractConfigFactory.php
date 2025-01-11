@@ -32,6 +32,7 @@ abstract class AbstractConfigFactory implements ConfigFactoryInterface
      */
     abstract protected function resolveOptions(array $options): array;
 
+    #[\Override]
     public function createFromHash(string $hash): ConfigInterface
     {
         $options = $this->getOptions($hash);
@@ -39,6 +40,7 @@ abstract class AbstractConfigFactory implements ConfigFactoryInterface
         return $this->createFromOptions($options);
     }
 
+    #[\Override]
     public function createFromOptions(array $options): ConfigInterface
     {
         $resolvedOptions = $this->resolveOptions($options);
@@ -47,6 +49,7 @@ abstract class AbstractConfigFactory implements ConfigFactoryInterface
         return $this->create($hash, $resolvedOptions);
     }
 
+    #[\Override]
     public function createFromRequest(): ConfigInterface
     {
         if (null === $this->requestStack) {

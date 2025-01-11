@@ -14,11 +14,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ComputedFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Computed from the raw-data';
     }
 
+    #[\Override]
     public function generateMapping(FieldType $current): array
     {
         if (!empty($current->getMappingOptions()) && !empty($current->getMappingOptions()['mappingOptions'])) {
@@ -34,11 +36,13 @@ class ComputedFieldType extends DataFieldType
         return [];
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-gears';
     }
 
+    #[\Override]
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -50,6 +54,7 @@ class ComputedFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -85,6 +90,7 @@ class ComputedFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('value', HiddenType::class, [
@@ -92,6 +98,7 @@ class ComputedFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -102,6 +109,7 @@ class ComputedFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);
@@ -116,6 +124,7 @@ class ComputedFieldType extends DataFieldType
         return $dataField;
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */

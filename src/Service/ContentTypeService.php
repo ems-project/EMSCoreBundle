@@ -42,7 +42,7 @@ use function Symfony\Component\Translation\t;
 
 class ContentTypeService implements EntityServiceInterface
 {
-    private const CONTENT_TYPE_AGGREGATION_NAME = 'content-types';
+    private const string CONTENT_TYPE_AGGREGATION_NAME = 'content-types';
     /** @var ContentType[] */
     protected array $orderedContentTypes = [];
     /** @var ContentType[] */
@@ -634,26 +634,26 @@ class ContentTypeService implements EntityServiceInterface
         $draftInProgress->setBadge($menuEntry->getBadge(), $contentType->getColor());
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return true;
     }
 
     /**
-     * @param mixed|null $context
-     *
      * @return ContentType[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected non-null object');
         }
-        $contentTypeRepository = $this->getContentTypeRepository();
 
-        return $contentTypeRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
+        return $this->getContentTypeRepository()->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'content-type';
@@ -662,6 +662,7 @@ class ContentTypeService implements EntityServiceInterface
     /**
      * @return string[]
      */
+    #[\Override]
     public function getAliasesName(): array
     {
         return [
@@ -673,7 +674,8 @@ class ContentTypeService implements EntityServiceInterface
         ];
     }
 
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected non-null object');
@@ -683,6 +685,7 @@ class ContentTypeService implements EntityServiceInterface
         return $contentTypeRepository->counter($searchValue);
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?EntityInterface
     {
         $contentTypeRepository = $this->getContentTypeRepository();
@@ -690,6 +693,7 @@ class ContentTypeService implements EntityServiceInterface
         return $contentTypeRepository->findByName($name);
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         if (!$entity instanceof ContentType) {
@@ -699,6 +703,7 @@ class ContentTypeService implements EntityServiceInterface
         return $this->updateFromJson($entity, $json, false, false);
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $contentType = $this->contentTypeFromJson($json);
@@ -750,13 +755,11 @@ class ContentTypeService implements EntityServiceInterface
         }
 
         $versionTags = $contentType->getVersionTags();
-        $versionTagsLabels = \array_map(function (string $versionTag) {
-            return $this->translator->trans(
-                'field.revision_version_tag',
-                ['%version_tag%' => $versionTag],
-                'emsco-core'
-            );
-        }, $versionTags);
+        $versionTagsLabels = \array_map(fn (string $versionTag) => $this->translator->trans(
+            'field.revision_version_tag',
+            ['%version_tag%' => $versionTag],
+            'emsco-core'
+        ), $versionTags);
 
         $emptyLabel = $this->translator->trans('field.revision_version_tag_empty', [], 'emsco-core');
         $emptyValue = ($notBlankNewVersion ? Revision::VERSION_BLANK : null);
@@ -819,6 +822,7 @@ class ContentTypeService implements EntityServiceInterface
         }
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         $contentTypeRepository = $this->getContentTypeRepository();

@@ -15,7 +15,8 @@ class FilterManager implements EntityServiceInterface
     {
     }
 
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         return (int) $this->filterRepository->makeQueryBuilder(searchValue: $searchValue)
             ->select('count(f.id)')
@@ -23,6 +24,7 @@ class FilterManager implements EntityServiceInterface
             ->getSingleScalarResult();
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $filter = Filter::fromJson($json);
@@ -47,6 +49,7 @@ class FilterManager implements EntityServiceInterface
         }
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         $filter = $this->filterRepository->findByName($name);
@@ -59,7 +62,8 @@ class FilterManager implements EntityServiceInterface
         return \strval($id);
     }
 
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         $qb = $this->filterRepository->makeQueryBuilder(searchValue: $searchValue);
         $qb->setFirstResult($from)->setMaxResults($size);
@@ -71,6 +75,7 @@ class FilterManager implements EntityServiceInterface
         return $qb->getQuery()->execute();
     }
 
+    #[\Override]
     public function getAliasesName(): array
     {
         return [
@@ -80,16 +85,19 @@ class FilterManager implements EntityServiceInterface
         ];
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?EntityInterface
     {
         return $this->filterRepository->findByName($name);
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'filter';
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return true;
@@ -115,6 +123,7 @@ class FilterManager implements EntityServiceInterface
         $this->filterRepository->update($filter);
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         $filter = Filter::fromJson($json, $entity);

@@ -29,16 +29,17 @@ class ActivateContentTypeCommand extends Command
     private ?SymfonyStyle $io = null;
     private ?bool $deactivate = null;
 
-    final public const ARGUMENT_CONTENTTYPES = 'contenttypes';
-    final public const OPTION_ALL = 'all';
-    final public const DEACTIVATE = 'deactivate';
-    final public const FORCE = 'force';
+    final public const string ARGUMENT_CONTENTTYPES = 'contenttypes';
+    final public const string OPTION_ALL = 'all';
+    final public const string DEACTIVATE = 'deactivate';
+    final public const string FORCE = 'force';
 
     public function __construct(private readonly LoggerInterface $logger, protected ContentTypeService $contentTypeService)
     {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         parent::configure();
@@ -68,6 +69,7 @@ class ActivateContentTypeCommand extends Command
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (null === $this->io) {
@@ -101,11 +103,13 @@ class ActivateContentTypeCommand extends Command
         return 0;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         if (null === $this->io) {

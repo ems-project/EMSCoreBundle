@@ -21,11 +21,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TextareaFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Textarea field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-edit';
@@ -35,6 +37,7 @@ class TextareaFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -54,6 +57,7 @@ class TextareaFieldType extends DataFieldType
      * @param FormInterface<FormInterface> $form
      * @param array<string, mixed>         $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /* get options for twig context */
@@ -61,6 +65,7 @@ class TextareaFieldType extends DataFieldType
         $view->vars['icon'] = $options['icon'];
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
@@ -70,6 +75,7 @@ class TextareaFieldType extends DataFieldType
         $resolver->setDefault('placeholder', null);
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -87,11 +93,13 @@ class TextareaFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -102,6 +110,7 @@ class TextareaFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $value = $data['value'];

@@ -24,6 +24,7 @@ class AlignManagedAliases extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -39,6 +40,7 @@ class AlignManagedAliases extends Command
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $sourceName = $input->getArgument('source');

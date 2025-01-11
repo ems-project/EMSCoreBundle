@@ -19,6 +19,7 @@ class TreatNotificationsType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -45,6 +46,7 @@ class TreatNotificationsType extends AbstractType
             ]);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['notifications' => []]);

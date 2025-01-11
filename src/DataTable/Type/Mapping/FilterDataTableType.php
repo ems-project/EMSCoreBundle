@@ -22,6 +22,7 @@ class FilterDataTableType extends AbstractEntityTableType
         parent::__construct($filterManager);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $this
@@ -41,6 +42,7 @@ class FilterDataTableType extends AbstractEntityTableType
             ->addTableActionDelete($table, 'filter');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];

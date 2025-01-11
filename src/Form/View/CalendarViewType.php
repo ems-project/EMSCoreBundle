@@ -22,11 +22,13 @@ class CalendarViewType extends ViewType
         parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Calendar: a view where you can schedule your object';
     }
 
+    #[\Override]
     public function getName(): string
     {
         return 'Calendar';
@@ -36,6 +38,7 @@ class CalendarViewType extends ViewType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -60,11 +63,13 @@ class CalendarViewType extends ViewType
         ]);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'calendar_view';
     }
 
+    #[\Override]
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         $search = new Search();

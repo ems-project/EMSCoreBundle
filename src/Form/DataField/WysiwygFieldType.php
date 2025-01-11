@@ -35,16 +35,19 @@ class WysiwygFieldType extends DataFieldType
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'WYSIWYG field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-newspaper-o';
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return TextareaSymfonyType::class;
@@ -54,6 +57,7 @@ class WysiwygFieldType extends DataFieldType
      * @param FormInterface<FormInterface> $form
      * @param array<string, mixed>         $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         /* get options for twig context */
@@ -99,6 +103,7 @@ class WysiwygFieldType extends DataFieldType
         $view->vars['attr'] = $attr;
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
@@ -115,6 +120,7 @@ class WysiwygFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
@@ -138,6 +144,7 @@ class WysiwygFieldType extends DataFieldType
         return parent::reverseViewTransform($out, $fieldType);
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -163,6 +170,7 @@ class WysiwygFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -175,6 +183,7 @@ class WysiwygFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

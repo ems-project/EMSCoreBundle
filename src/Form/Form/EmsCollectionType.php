@@ -19,6 +19,7 @@ class EmsCollectionType extends CollectionType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -52,6 +53,7 @@ class EmsCollectionType extends CollectionType
         parent::buildForm($builder, $options);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);

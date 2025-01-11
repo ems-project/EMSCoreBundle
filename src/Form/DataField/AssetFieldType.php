@@ -32,6 +32,7 @@ class AssetFieldType extends DataFieldType
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-file-o';
@@ -73,7 +74,7 @@ class AssetFieldType extends DataFieldType
      */
     public static function loadFromForm(array &$data, string $algo): void
     {
-        $data[EmsFields::CONTENT_FILE_ALGO_FIELD_] = $data[EmsFields::CONTENT_FILE_ALGO_FIELD_] ?? $algo;
+        $data[EmsFields::CONTENT_FILE_ALGO_FIELD_] ??= $algo;
         foreach ([
             EmsFields::CONTENT_FILE_HASH_FIELD_ => EmsFields::CONTENT_FILE_HASH_FIELD,
             EmsFields::CONTENT_FILE_NAME_FIELD_ => EmsFields::CONTENT_FILE_NAME_FIELD,
@@ -88,16 +89,19 @@ class AssetFieldType extends DataFieldType
         $data = \array_filter($data, fn ($value) => null !== $value);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'File field';
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return AssetType::class;
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -117,6 +121,7 @@ class AssetFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
@@ -130,12 +135,14 @@ class AssetFieldType extends DataFieldType
      * @param FormInterface<FormInterface> $form
      * @param array<string, mixed>         $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
         $view->vars['multiple'] = $options['multiple'];
     }
 
+    #[\Override]
     public function generateMapping(FieldType $current): array
     {
         $mapping = parent::generateMapping($current);
@@ -159,6 +166,7 @@ class AssetFieldType extends DataFieldType
         ];
     }
 
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $multiple = true === $fieldType->getDisplayOption('multiple', false);
@@ -231,6 +239,7 @@ class AssetFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $fieldType = $dataField->getFieldType();
@@ -246,6 +255,7 @@ class AssetFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         $out = parent::reverseViewTransform($data, $fieldType);

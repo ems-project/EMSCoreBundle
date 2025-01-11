@@ -60,6 +60,7 @@ class QueryTable extends TableAbstract
         return $this->idField;
     }
 
+    #[\Override]
     public function resetIterator(DataTableRequest $dataTableRequest): void
     {
         parent::resetIterator($dataTableRequest);
@@ -70,6 +71,7 @@ class QueryTable extends TableAbstract
     /**
      * @return \Traversable<string, QueryRow|EntityRow|ElasticaRow>
      */
+    #[\Override]
     public function getIterator(): \Traversable
     {
         $idPropertyAccessor = new PropertyAccessor();
@@ -94,6 +96,7 @@ class QueryTable extends TableAbstract
         }
     }
 
+    #[\Override]
     public function count(): int
     {
         if (null === $this->count) {
@@ -103,6 +106,7 @@ class QueryTable extends TableAbstract
         return $this->count;
     }
 
+    #[\Override]
     public function totalCount(): int
     {
         if (null === $this->totalCount) {
@@ -112,6 +116,7 @@ class QueryTable extends TableAbstract
         return $this->totalCount;
     }
 
+    #[\Override]
     public function supportsTableActions(): bool
     {
         if (!$this->loadAll) {
@@ -128,16 +133,19 @@ class QueryTable extends TableAbstract
         return false;
     }
 
+    #[\Override]
     public function getRowTemplate(): string
     {
         return \sprintf("{%%- use '@$this->templateNamespace/datatable/row.json.twig' -%%}{{ block('emsco_datatable_row') }}");
     }
 
+    #[\Override]
     public function getAttributeName(): string
     {
         return $this->queryName;
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return $this->service->isSortable();

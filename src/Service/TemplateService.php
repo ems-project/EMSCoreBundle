@@ -11,12 +11,12 @@ use Twig\TemplateWrapper;
 
 class TemplateService
 {
-    final public const EMS_INDEX_PREFIX = '_ems_index_';
-    final public const JSON_FORMAT = 'json';
-    final public const XML_FORMAT = 'xml';
-    final public const MERGED_JSON_FORMAT = 'merged-json';
-    final public const MERGED_XML_FORMAT = 'merged-xml';
-    final public const EXPORT_FORMATS = [self::JSON_FORMAT, self::XML_FORMAT, self::MERGED_JSON_FORMAT, self::MERGED_XML_FORMAT];
+    final public const string EMS_INDEX_PREFIX = '_ems_index_';
+    final public const string JSON_FORMAT = 'json';
+    final public const string XML_FORMAT = 'xml';
+    final public const string MERGED_JSON_FORMAT = 'merged-json';
+    final public const string MERGED_XML_FORMAT = 'merged-xml';
+    final public const array EXPORT_FORMATS = [self::JSON_FORMAT, self::XML_FORMAT, self::MERGED_JSON_FORMAT, self::MERGED_XML_FORMAT];
     private Template $template;
 
     private ?TemplateWrapper $twigTemplate = null;

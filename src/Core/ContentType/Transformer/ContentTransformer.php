@@ -10,9 +10,9 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\Helpers\ArrayHelper\ArrayHelper;
 use EMS\Helpers\Standard\Json;
 
-final class ContentTransformer
+final readonly class ContentTransformer
 {
-    public function __construct(private readonly ContentTransformers $transformers, private readonly DataService $dataService)
+    public function __construct(private ContentTransformers $transformers, private DataService $dataService)
     {
     }
 

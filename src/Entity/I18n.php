@@ -86,6 +86,7 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
         return $this->identifier;
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), self::class);
@@ -107,6 +108,7 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
         return $dashboard;
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->identifier;

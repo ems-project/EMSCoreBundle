@@ -6,12 +6,13 @@ namespace EMS\CoreBundle\Form\Data;
 
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 
-final class ElasticaRow implements TableRowInterface
+final readonly class ElasticaRow implements TableRowInterface
 {
-    public function __construct(private readonly DocumentInterface $document)
+    public function __construct(private DocumentInterface $document)
     {
     }
 
+    #[\Override]
     public function getData(): DocumentInterface
     {
         return $this->document;

@@ -30,6 +30,7 @@ class AnalyzerRepository extends ServiceEntityRepository
     /**
      * @return Analyzer[]
      */
+    #[\Override]
     public function findAll(): array
     {
         return $this->findBy([], ['orderKey' => 'asc']);

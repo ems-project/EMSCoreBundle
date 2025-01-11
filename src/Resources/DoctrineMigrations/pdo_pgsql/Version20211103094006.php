@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20211103094006 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -36,6 +37,7 @@ final class Version20211103094006 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN wysiwyg_styles_set.assets IS NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

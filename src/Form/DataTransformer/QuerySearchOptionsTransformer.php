@@ -13,6 +13,7 @@ use Symfony\Component\Form\DataTransformerInterface;
 final class QuerySearchOptionsTransformer implements DataTransformerInterface
 {
     /** @return array<string, mixed> */
+    #[\Override]
     public function transform($value): array
     {
         $query = $this->jsonFormat($value['query']);
@@ -23,6 +24,7 @@ final class QuerySearchOptionsTransformer implements DataTransformerInterface
     }
 
     /** @return array<string, mixed> */
+    #[\Override]
     public function reverseTransform($value): array
     {
         return [

@@ -14,17 +14,17 @@ class ContentTypeFields implements \ArrayAccess
     /** @var array<string, ?string> */
     private array $fields = [];
 
-    final public const DISPLAY = 'display';
-    final public const LABEL = 'label';
-    final public const COLOR = 'color';
-    final public const SORT = 'sort';
-    final public const TOOLTIP = 'tooltip';
-    final public const CIRCLES = 'circles';
-    final public const BUSINESS_ID = 'business_id';
-    final public const CATEGORY = 'category';
-    final public const ASSET = 'asset';
+    final public const string DISPLAY = 'display';
+    final public const string LABEL = 'label';
+    final public const string COLOR = 'color';
+    final public const string SORT = 'sort';
+    final public const string TOOLTIP = 'tooltip';
+    final public const string CIRCLES = 'circles';
+    final public const string BUSINESS_ID = 'business_id';
+    final public const string CATEGORY = 'category';
+    final public const string ASSET = 'asset';
 
-    private const FIELDS = [
+    private const array FIELDS = [
         self::DISPLAY,
         self::LABEL,
         self::COLOR,
@@ -57,21 +57,25 @@ class ContentTypeFields implements \ArrayAccess
         return $cleaned;
     }
 
+    #[\Override]
     public function offsetExists($offset): bool
     {
         return isset($this->fields[$offset]);
     }
 
+    #[\Override]
     public function offsetGet($offset): ?string
     {
         return $this->fields[$offset] ?? null;
     }
 
+    #[\Override]
     public function offsetSet($offset, $value): void
     {
         $this->fields[$offset] = $value;
     }
 
+    #[\Override]
     public function offsetUnset($offset): void
     {
         unset($this->fields[$offset]);

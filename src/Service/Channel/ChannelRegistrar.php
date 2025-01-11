@@ -13,16 +13,16 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-final class ChannelRegistrar
+final readonly class ChannelRegistrar
 {
-    public const EMSCO_CHANNEL_PATH_REGEX = '/^(\\/index\\.php)?\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
+    public const string EMSCO_CHANNEL_PATH_REGEX = '/^(\\/index\\.php)?\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
 
     public function __construct(
-        private readonly ChannelRepository $channelRepository,
-        private readonly EnvironmentHelperInterface $environmentHelper,
-        private readonly LoggerInterface $logger,
-        private readonly IndexService $indexService,
-        private readonly string $firewallName,
+        private ChannelRepository $channelRepository,
+        private EnvironmentHelperInterface $environmentHelper,
+        private LoggerInterface $logger,
+        private IndexService $indexService,
+        private string $firewallName,
     ) {
     }
 

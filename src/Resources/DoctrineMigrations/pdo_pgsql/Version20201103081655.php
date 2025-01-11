@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20201103081655 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -28,6 +29,7 @@ final class Version20201103081655 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN revision.version_uuid IS \'(DC2Type:uuid)\'');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

@@ -30,16 +30,19 @@ final class SelectUserPropertyFieldType extends DataFieldType
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Select User property field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-users';
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
@@ -49,6 +52,7 @@ final class SelectUserPropertyFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -71,6 +75,7 @@ final class SelectUserPropertyFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
@@ -84,6 +89,7 @@ final class SelectUserPropertyFieldType extends DataFieldType
         ;
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -115,6 +121,7 @@ final class SelectUserPropertyFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $test = parent::viewTransform($dataField);
@@ -125,6 +132,7 @@ final class SelectUserPropertyFieldType extends DataFieldType
     /**
      * @param ?array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $data = (null !== $data && isset($data['value'])) ? $data['value'] : null;

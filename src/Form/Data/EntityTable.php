@@ -48,6 +48,7 @@ final class EntityTable extends TableAbstract
         $this->massAction = $massAction;
     }
 
+    #[\Override]
     public function resetIterator(DataTableRequest $dataTableRequest): void
     {
         parent::resetIterator($dataTableRequest);
@@ -55,6 +56,7 @@ final class EntityTable extends TableAbstract
         $this->count = null;
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return $this->entityService->isSortable();
@@ -63,6 +65,7 @@ final class EntityTable extends TableAbstract
     /**
      * @return \Traversable<string, EntityRow>
      */
+    #[\Override]
     public function getIterator(): \Traversable
     {
         foreach ($this->entityService->get($this->getFrom(), $this->getSize(), $this->getOrderField(), $this->getOrderDirection(), $this->getSearchValue(), $this->context) as $entity) {
@@ -70,11 +73,13 @@ final class EntityTable extends TableAbstract
         }
     }
 
+    #[\Override]
     public function getAttributeName(): string
     {
         return u($this->entityService->getEntityName())->camel()->toString();
     }
 
+    #[\Override]
     public function totalCount(): int
     {
         if (null === $this->totalCount) {
@@ -84,6 +89,7 @@ final class EntityTable extends TableAbstract
         return $this->totalCount;
     }
 
+    #[\Override]
     public function count(): int
     {
         if (null === $this->count) {
@@ -93,6 +99,7 @@ final class EntityTable extends TableAbstract
         return $this->count;
     }
 
+    #[\Override]
     public function supportsTableActions(): bool
     {
         if (!$this->loadAll) {
@@ -110,6 +117,7 @@ final class EntityTable extends TableAbstract
         return false;
     }
 
+    #[\Override]
     public function getRowTemplate(): string
     {
         return \sprintf("{%%- use '@$this->templateNamespace/datatable/row.json.twig' -%%}{{ block('emsco_datatable_row') }}");

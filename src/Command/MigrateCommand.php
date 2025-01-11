@@ -47,20 +47,20 @@ class MigrateCommand extends AbstractCommand
     private bool $dontFinalize;
     private readonly ContentTypeRepository $contentTypeRepository;
 
-    private const ARGUMENT_CONTENTTYPE_NAME_FROM = 'contentTypeNameFrom';
-    private const ARGUMENT_CONTENTTYPE_NAME_TO = 'contentTypeNameTo';
-    private const ARGUMENT_SCROLL_SIZE = 'scrollSize';
-    private const ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
-    private const ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
+    private const string ARGUMENT_CONTENTTYPE_NAME_FROM = 'contentTypeNameFrom';
+    private const string ARGUMENT_CONTENTTYPE_NAME_TO = 'contentTypeNameTo';
+    private const string ARGUMENT_SCROLL_SIZE = 'scrollSize';
+    private const string ARGUMENT_SCROLL_TIMEOUT = 'scrollTimeout';
+    private const string ARGUMENT_ELASTICSEARCH_INDEX = 'elasticsearchIndex';
 
-    private const OPTION_ARCHIVE = 'archive';
-    private const OPTION_CHANGED = 'changed';
-    private const OPTION_DONT_FINALIZE = 'dont-finalize';
-    private const OPTION_FORCE = 'force';
-    private const OPTION_BULK_SIZE = 'bulkSize';
-    private const OPTION_RAW = 'raw';
-    private const OPTION_SIGN_DATA = 'sign-data';
-    private const OPTION_SEARCH_QUERY = 'searchQuery';
+    private const string OPTION_ARCHIVE = 'archive';
+    private const string OPTION_CHANGED = 'changed';
+    private const string OPTION_DONT_FINALIZE = 'dont-finalize';
+    private const string OPTION_FORCE = 'force';
+    private const string OPTION_BULK_SIZE = 'bulkSize';
+    private const string OPTION_RAW = 'raw';
+    private const string OPTION_SIGN_DATA = 'sign-data';
+    private const string OPTION_SEARCH_QUERY = 'searchQuery';
 
     public function __construct(
         protected Registry $doctrine,
@@ -77,6 +77,7 @@ class MigrateCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -160,6 +161,7 @@ class MigrateCommand extends AbstractCommand
         ;
     }
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): int
     {
         $this->io->title('Start migration');
@@ -239,6 +241,7 @@ class MigrateCommand extends AbstractCommand
         return 0;
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io->section(\sprintf('Start migration of %s', $this->contentTypeTo->getPluralName()));

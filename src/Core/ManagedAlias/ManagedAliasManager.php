@@ -19,12 +19,14 @@ class ManagedAliasManager implements EntityServiceInterface
         $this->repository->delete($entity);
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return false;
     }
 
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected not null context');
@@ -33,11 +35,13 @@ class ManagedAliasManager implements EntityServiceInterface
         return $this->repository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'managed-alias';
     }
 
+    #[\Override]
     public function getAliasesName(): array
     {
         return [
@@ -49,7 +53,8 @@ class ManagedAliasManager implements EntityServiceInterface
         ];
     }
 
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected not null context');
@@ -58,11 +63,13 @@ class ManagedAliasManager implements EntityServiceInterface
         return $this->repository->counter($searchValue);
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?ManagedAlias
     {
         return $this->repository->findByName($name);
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         if (!$entity instanceof ManagedAlias) {
@@ -74,6 +81,7 @@ class ManagedAliasManager implements EntityServiceInterface
         return $i18n;
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $managedAlias = ManagedAlias::fromJson($json);
@@ -85,6 +93,7 @@ class ManagedAliasManager implements EntityServiceInterface
         return $managedAlias;
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         $managedAlias = $this->repository->findByName($name);

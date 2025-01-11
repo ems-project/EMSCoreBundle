@@ -23,7 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RefreshFileFieldCommand extends AbstractCommand
 {
-    private const USER = 'SYSTEM_REFRESH_FILE_FIELDS';
+    private const string USER = 'SYSTEM_REFRESH_FILE_FIELDS';
     protected static $defaultName = Commands::ASSET_REFRESH_FILE_FIELD;
     private User $fakeUser;
 
@@ -32,11 +32,13 @@ class RefreshFileFieldCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->setDescription('Refresh file field and regenerate resized images base on the EMSCO_IMAGE_MAX_SIZE environment variable.');
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -44,6 +46,7 @@ class RefreshFileFieldCommand extends AbstractCommand
         $this->fakeUser->setUsername(self::USER);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $revisions = $this->revisionService->search([]);

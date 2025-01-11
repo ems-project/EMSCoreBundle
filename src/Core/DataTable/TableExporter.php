@@ -8,9 +8,9 @@ use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
 use EMS\CoreBundle\Form\Data\TableInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-final class TableExporter
+final readonly class TableExporter
 {
-    public function __construct(private readonly TableRenderer $tableRenderer, private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGenerator)
+    public function __construct(private TableRenderer $tableRenderer, private SpreadsheetGeneratorServiceInterface $spreadsheetGenerator)
     {
     }
 

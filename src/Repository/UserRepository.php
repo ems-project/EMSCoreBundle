@@ -89,6 +89,7 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
         return isset($result[0]) && $result[0] instanceof User ? $result[0] : null;
     }
 
+    #[\Override]
     public function findForRoleAndCircles(string $role, array $circles): array
     {
         $qb = $this->createQueryBuilder('u');
@@ -111,6 +112,7 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
         return $resultSet;
     }
 
+    #[\Override]
     public function getUsersEnabled(): UserList
     {
         $resultSet = $this->findBy([

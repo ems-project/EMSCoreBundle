@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20210107173336 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -22,6 +23,7 @@ final class Version20210107173336 extends AbstractMigration
         $this->addSql('DROP TABLE single_type_index');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

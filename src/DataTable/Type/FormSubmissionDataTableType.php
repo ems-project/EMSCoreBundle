@@ -18,6 +18,7 @@ class FormSubmissionDataTableType extends AbstractEntityTableType
         parent::__construct($entityService);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $table->addColumn('form-submission.index.column.id', 'id');
@@ -37,6 +38,7 @@ class FormSubmissionDataTableType extends AbstractEntityTableType
         $table->setDefaultOrder('created', 'desc');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_FORM_CRM];

@@ -11,9 +11,9 @@ use EMS\CoreBundle\Repository\ChannelRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
 use Psr\Log\LoggerInterface;
 
-final class ChannelService implements EntityServiceInterface
+final readonly class ChannelService implements EntityServiceInterface
 {
-    public function __construct(private readonly ChannelRepository $channelRepository, private readonly LoggerInterface $logger)
+    public function __construct(private ChannelRepository $channelRepository, private LoggerInterface $logger)
     {
     }
 
@@ -68,17 +68,17 @@ final class ChannelService implements EntityServiceInterface
         }
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return true;
     }
 
     /**
-     * @param mixed $context
-     *
      * @return Channel[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected context');
@@ -87,6 +87,7 @@ final class ChannelService implements EntityServiceInterface
         return $this->channelRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'channel';
@@ -95,6 +96,7 @@ final class ChannelService implements EntityServiceInterface
     /**
      * @return string[]
      */
+    #[\Override]
     public function getAliasesName(): array
     {
         return [
@@ -104,10 +106,8 @@ final class ChannelService implements EntityServiceInterface
         ];
     }
 
-    /**
-     * @param mixed $context
-     */
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         if (null !== $context) {
             throw new \RuntimeException('Unexpected non-null object');
@@ -116,11 +116,13 @@ final class ChannelService implements EntityServiceInterface
         return $this->channelRepository->counter($searchValue);
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?EntityInterface
     {
         return $this->channelRepository->getByName($name);
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         $schedule = Channel::fromJson($json, $entity);
@@ -129,6 +131,7 @@ final class ChannelService implements EntityServiceInterface
         return $schedule;
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         $channel = Channel::fromJson($json);
@@ -140,6 +143,7 @@ final class ChannelService implements EntityServiceInterface
         return $channel;
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         $channel = $this->channelRepository->getByName($name);

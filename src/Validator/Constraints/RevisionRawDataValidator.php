@@ -16,6 +16,7 @@ class RevisionRawDataValidator extends ConstraintValidator
      * @param array<string, mixed> $value
      * @param RevisionRawData      $constraint
      */
+    #[\Override]
     public function validate($value, Constraint $constraint): void
     {
         if ($constraint->contentType->hasVersionTags()) {

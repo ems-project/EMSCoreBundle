@@ -32,6 +32,7 @@ class UpdateMetaFieldCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -42,6 +43,7 @@ class UpdateMetaFieldCommand extends AbstractCommand
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $name = $input->getArgument('name');

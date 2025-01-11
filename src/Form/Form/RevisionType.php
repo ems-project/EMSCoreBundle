@@ -28,6 +28,7 @@ class RevisionType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var Revision|null $revision */
@@ -130,6 +131,7 @@ class RevisionType extends AbstractType
         ]);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -146,6 +148,7 @@ class RevisionType extends AbstractType
         ]);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'revision';

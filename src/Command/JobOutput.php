@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\Output;
 
 class JobOutput extends Output
 {
-    private const JOB_VERBOSITY = self::VERBOSITY_NORMAL;
+    private const int JOB_VERBOSITY = self::VERBOSITY_NORMAL;
     private bool $newLine = true;
 
     public function __construct(private readonly JobRepository $jobRepository, private readonly int $jobId)
@@ -21,6 +21,7 @@ class JobOutput extends Output
     /**
      * Do not allow symfony to overwrite the verbosity level.
      */
+    #[\Override]
     public function setVerbosity(int $level): void
     {
         parent::setVerbosity(self::JOB_VERBOSITY);
@@ -34,6 +35,7 @@ class JobOutput extends Output
         $this->jobRepository->save($job);
     }
 
+    #[\Override]
     public function doWrite(string $message, bool $newline): void
     {
         if (!$newline && !$this->newLine && Json::isJson($message)) {

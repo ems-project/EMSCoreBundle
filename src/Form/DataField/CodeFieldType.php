@@ -14,16 +14,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CodeFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Code editor field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-code';
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return HiddenType::class;
@@ -33,6 +36,7 @@ class CodeFieldType extends DataFieldType
      * @param FormInterface<FormInterface> $form
      * @param array<string, mixed>         $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $fieldType = $options['metadata'];
@@ -56,11 +60,13 @@ class CodeFieldType extends DataFieldType
         $view->vars['attr'] = $attr;
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'codefieldtype';
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
@@ -73,6 +79,7 @@ class CodeFieldType extends DataFieldType
         $resolver->setDefault('required', false);
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

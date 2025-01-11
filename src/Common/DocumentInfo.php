@@ -8,12 +8,12 @@ use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 
-final class DocumentInfo
+final readonly class DocumentInfo
 {
     /**
      * @param Revision[] $revisions
      */
-    public function __construct(private readonly EMSLink $id, private readonly array $revisions)
+    public function __construct(private EMSLink $id, private array $revisions)
     {
     }
 

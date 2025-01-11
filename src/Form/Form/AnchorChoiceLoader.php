@@ -28,6 +28,7 @@ class AnchorChoiceLoader extends AbstractChoiceLoader
     /**
      * @return array<string, string>
      */
+    #[\Override]
     protected function loadChoices(): iterable
     {
         return $this->choices;

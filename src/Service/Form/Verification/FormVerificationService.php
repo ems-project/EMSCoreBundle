@@ -8,9 +8,9 @@ use EMS\CoreBundle\Entity\FormVerification;
 use EMS\CoreBundle\Repository\FormVerificationRepository;
 use Symfony\Component\HttpFoundation\Response;
 
-final class FormVerificationService
+final readonly class FormVerificationService
 {
-    public function __construct(private readonly FormVerificationRepository $repository)
+    public function __construct(private FormVerificationRepository $repository)
     {
     }
 

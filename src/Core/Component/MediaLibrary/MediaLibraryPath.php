@@ -20,6 +20,7 @@ class MediaLibraryPath implements \Countable
         return new self(\array_filter(\explode('/', $path)));
     }
 
+    #[\Override]
     public function count(): int
     {
         return \count($this->value);

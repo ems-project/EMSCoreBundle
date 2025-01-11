@@ -15,11 +15,13 @@ final class TranslationTableColumn extends TableColumn
         parent::__construct($titleKey, $attribute);
     }
 
+    #[\Override]
     public function tableDataBlock(): string
     {
         return 'emsco_form_table_column_data_translation';
     }
 
+    #[\Override]
     public function tableDataValueBlock(): string
     {
         return 'emsco_form_table_column_data_value_translation';

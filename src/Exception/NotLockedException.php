@@ -17,6 +17,7 @@ class NotLockedException extends \Exception implements \Stringable
         return $this->revision;
     }
 
+    #[\Override]
     public function __toString(): string
     {
         return parent::getMessage();

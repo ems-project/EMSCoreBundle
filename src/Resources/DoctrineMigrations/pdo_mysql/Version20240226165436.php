@@ -10,11 +10,13 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20240226165436 extends AbstractMigration
 {
+    #[\Override]
     public function getDescription(): string
     {
         return 'Add an expires_at field to StoreData entity';
     }
 
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -25,6 +27,7 @@ final class Version20240226165436 extends AbstractMigration
         $this->addSql('ALTER TABLE store_data ADD expires_at DATETIME DEFAULT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

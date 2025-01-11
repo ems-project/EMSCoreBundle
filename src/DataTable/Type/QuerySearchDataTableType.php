@@ -20,6 +20,7 @@ class QuerySearchDataTableType extends AbstractEntityTableType
         parent::__construct($entityService);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $table->setDefaultOrder('label')->setLabelAttribute('label');
@@ -35,6 +36,7 @@ class QuerySearchDataTableType extends AbstractEntityTableType
             ->addTableActionDelete($table, 'query_search');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];

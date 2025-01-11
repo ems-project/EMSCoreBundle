@@ -31,6 +31,7 @@ abstract class ViewType extends AbstractType
      */
     abstract public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array;
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

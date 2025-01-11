@@ -14,16 +14,17 @@ use EMS\CoreBundle\Repository\ReleaseRevisionRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use Psr\Log\LoggerInterface;
 
-final class ReleaseRevisionService implements QueryServiceInterface, EntityServiceInterface
+final readonly class ReleaseRevisionService implements QueryServiceInterface, EntityServiceInterface
 {
     public function __construct(
-        private readonly ReleaseRevisionRepository $releaseRevisionRepository,
-        private readonly RevisionRepository $revisionRepository,
-        private readonly LoggerInterface $logger,
-        private readonly ContentTypeService $contentTypeService,
+        private ReleaseRevisionRepository $releaseRevisionRepository,
+        private RevisionRepository $revisionRepository,
+        private LoggerInterface $logger,
+        private ContentTypeService $contentTypeService,
     ) {
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return false;
@@ -39,6 +40,7 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
      *
      * @return Revision[]
      */
+    #[\Override]
     public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
     {
         if (!$context instanceof Release) {
@@ -50,6 +52,7 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
         return $this->revisionRepository->getAvailableRevisionsForRelease($from, $size, $context, $contentTypeNames, $orderField, $orderDirection, $searchValue);
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'release_revision';
@@ -58,6 +61,7 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
     /**
      * @return string[]
      */
+    #[\Override]
     public function getAliasesName(): array
     {
         return [];
@@ -66,6 +70,7 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
     /**
      * @param mixed $context
      */
+    #[\Override]
     public function countQuery(string $searchValue = '', $context = null): int
     {
         if (!$context instanceof Release) {
@@ -93,7 +98,8 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
         }
     }
 
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         if (!$context instanceof Release) {
             throw new \RuntimeException('Unexpected non Release context');
@@ -102,7 +108,8 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
         return $this->releaseRevisionRepository->findByRelease($context, $from, $size, $orderField, $orderDirection, $searchValue);
     }
 
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         if (!$context instanceof Release) {
             throw new \RuntimeException('Unexpected non Release context');
@@ -121,21 +128,25 @@ final class ReleaseRevisionService implements QueryServiceInterface, EntityServi
         return $this->releaseRevisionRepository->getByIds($ids);
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?EntityInterface
     {
         return $this->releaseRevisionRepository->getById($name);
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         throw new \RuntimeException('createEntityFromJson method not yet implemented');
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         throw new \RuntimeException('deleteByItemName method not yet implemented');

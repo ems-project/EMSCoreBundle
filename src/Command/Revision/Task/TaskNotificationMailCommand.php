@@ -22,11 +22,11 @@ final class TaskNotificationMailCommand extends AbstractCommand
     private ?\DateTimeImmutable $deadlineEnd = null;
 
     protected static $defaultName = Commands::REVISION_TASK_NOTIFICATION_MAIL;
-    private const OPTION_SUBJECT = 'subject';
-    private const OPTION_INCLUDE_TASK_MANAGERS = 'include-task-managers';
-    private const OPTION_DEADLINE_START = 'deadline-start';
-    private const OPTION_DEADLINE_END = 'deadline-end';
-    private const OPTION_LIMIT = 'limit';
+    private const string OPTION_SUBJECT = 'subject';
+    private const string OPTION_INCLUDE_TASK_MANAGERS = 'include-task-managers';
+    private const string OPTION_DEADLINE_START = 'deadline-start';
+    private const string OPTION_DEADLINE_END = 'deadline-end';
+    private const string OPTION_LIMIT = 'limit';
 
     public function __construct(
         private readonly TaskManager $taskManager,
@@ -35,6 +35,7 @@ final class TaskNotificationMailCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -47,6 +48,7 @@ final class TaskNotificationMailCommand extends AbstractCommand
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -65,6 +67,7 @@ final class TaskNotificationMailCommand extends AbstractCommand
         }
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $revisionsByReceiver = [];

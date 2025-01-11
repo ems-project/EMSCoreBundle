@@ -38,15 +38,16 @@ class CreateReleaseCommand extends AbstractCommand
     /** @var array<mixed> */
     private array $query;
 
-    private const ARGUMENT_CONTENT_TYPE = 'contentType';
-    private const ARGUMENT_TARGET = 'target';
-    private const OPTION_QUERY = 'query';
+    private const string ARGUMENT_CONTENT_TYPE = 'contentType';
+    private const string ARGUMENT_TARGET = 'target';
+    private const string OPTION_QUERY = 'query';
 
     public function __construct(private readonly ReleaseService $releaseService, private readonly EnvironmentService $environmentService, private readonly ContentTypeService $contentTypeService, private readonly RevisionService $revisionService, private readonly ElasticaService $elasticaService)
     {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -55,6 +56,7 @@ class CreateReleaseCommand extends AbstractCommand
             ->addOption(self::OPTION_QUERY, null, InputOption::VALUE_OPTIONAL, 'ES query', '{}');
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -63,6 +65,7 @@ class CreateReleaseCommand extends AbstractCommand
         $this->query = Json::decode($this->getOptionString(self::OPTION_QUERY));
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (null === $this->contentType->getEnvironment()) {

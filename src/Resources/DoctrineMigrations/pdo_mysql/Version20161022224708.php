@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20161022224708 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20161022224708 extends AbstractMigration
         $this->addSql('ALTER TABLE search CHANGE sort_by sort_by VARCHAR(100) DEFAULT NULL, CHANGE sort_order sort_order VARCHAR(100) DEFAULT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

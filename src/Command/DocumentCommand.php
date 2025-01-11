@@ -28,16 +28,16 @@ use Symfony\Component\Finder\Finder;
 )]
 class DocumentCommand extends Command
 {
-    final public const COMMAND = 'ems:contenttype:import';
+    final public const string COMMAND = 'ems:contenttype:import';
 
-    private const ARGUMENT_CONTENT_TYPE = 'content-type-name';
-    private const ARGUMENT_ARCHIVE = 'archive';
-    private const OPTION_BULK_SIZE = 'bulk-size';
-    private const OPTION_RAW = 'raw';
-    private const OPTION_DONT_SIGN_DATA = 'dont-sign-data';
-    private const OPTION_FORCE = 'force';
-    private const OPTION_DONT_FINALIZE = 'dont-finalize';
-    private const OPTION_BUSINESS_KEY = 'business-key';
+    private const string ARGUMENT_CONTENT_TYPE = 'content-type-name';
+    private const string ARGUMENT_ARCHIVE = 'archive';
+    private const string OPTION_BULK_SIZE = 'bulk-size';
+    private const string OPTION_RAW = 'raw';
+    private const string OPTION_DONT_SIGN_DATA = 'dont-sign-data';
+    private const string OPTION_FORCE = 'force';
+    private const string OPTION_DONT_FINALIZE = 'dont-finalize';
+    private const string OPTION_BUSINESS_KEY = 'business-key';
     private ?SymfonyStyle $io = null;
     private ?ContentType $contentType = null;
     private ?string $archiveFilename = null;
@@ -47,6 +47,7 @@ class DocumentCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -99,11 +100,13 @@ class DocumentCommand extends Command
             );
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         if (null === $this->io) {
@@ -137,6 +140,7 @@ class DocumentCommand extends Command
         $this->archiveFilename = $archiveFilename;
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (null === $this->io) {

@@ -25,6 +25,7 @@ class ReleaseOverviewDataTableType extends AbstractEntityTableType
         parent::__construct($releaseService);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $table->setDefaultOrder('executionDate', 'desc');
@@ -75,6 +76,7 @@ class ReleaseOverviewDataTableType extends AbstractEntityTableType
         $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'release.actions.delete_selected', 'release.actions.delete_selected_confirm')->setCssClass('btn btn-outline-danger');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_PUBLISHER];

@@ -23,6 +23,7 @@ class DashboardOptionsType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $dashboard = $options['dashboard'];
@@ -89,6 +90,7 @@ class DashboardOptionsType extends AbstractType
             ]);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver

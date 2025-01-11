@@ -30,16 +30,17 @@ final class UnlockRevisionsCommand extends Command
     private ?ContentType $contentType = null;
     private ?bool $all = null;
 
-    private const ARGUMENT_USER = 'user';
-    private const ARGUMENT_CONTENT_TYPE = 'contentType';
-    private const OPTION_ALL = 'all';
-    private const OPTION_STRICT = 'strict';
+    private const string ARGUMENT_USER = 'user';
+    private const string ARGUMENT_CONTENT_TYPE = 'contentType';
+    private const string OPTION_ALL = 'all';
+    private const string OPTION_STRICT = 'strict';
 
     public function __construct(private readonly LoggerInterface $logger, private readonly DataService $dataService, private readonly ContentTypeService $contentTypeService)
     {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -68,6 +69,7 @@ final class UnlockRevisionsCommand extends Command
         ;
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
@@ -75,6 +77,7 @@ final class UnlockRevisionsCommand extends Command
         $this->all = (true === $input->getOption(self::OPTION_ALL));
     }
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         if (null === $this->io) {
@@ -103,6 +106,7 @@ final class UnlockRevisionsCommand extends Command
         }
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (null === $this->io) {

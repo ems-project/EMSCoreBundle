@@ -13,12 +13,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\TemplateWrapper;
 
-final class TableRenderer
+final readonly class TableRenderer
 {
     public function __construct(
-        private readonly Environment $twig,
-        private readonly TranslatorInterface $translator,
-        private readonly ElasticaLogger $elasticaLogger,
+        private Environment $twig,
+        private TranslatorInterface $translator,
+        private ElasticaLogger $elasticaLogger,
     ) {
     }
 

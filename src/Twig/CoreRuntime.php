@@ -7,9 +7,9 @@ namespace EMS\CoreBundle\Twig;
 use Psr\Log\LoggerInterface;
 use Twig\Extension\RuntimeExtensionInterface;
 
-final class CoreRuntime implements RuntimeExtensionInterface
+final readonly class CoreRuntime implements RuntimeExtensionInterface
 {
-    public function __construct(private readonly LoggerInterface $logger)
+    public function __construct(private LoggerInterface $logger)
     {
     }
 

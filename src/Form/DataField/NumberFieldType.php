@@ -9,11 +9,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class NumberFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Number field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'glyphicon glyphicon-sort-by-order';
@@ -23,6 +25,7 @@ class NumberFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -35,6 +38,7 @@ class NumberFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function isValid(DataField &$dataField, ?DataField $parent = null, mixed &$masterRawData = null): bool
     {
         if ($this->hasDeletedParent($parent)) {
@@ -52,6 +56,7 @@ class NumberFieldType extends DataFieldType
         return $isValid;
     }
 
+    #[\Override]
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -63,6 +68,7 @@ class NumberFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function generateMapping(FieldType $current): array
     {
         return [
@@ -70,6 +76,7 @@ class NumberFieldType extends DataFieldType
         ];
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -86,11 +93,13 @@ class NumberFieldType extends DataFieldType
         //         $optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -101,6 +110,7 @@ class NumberFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $temp = $data['value'];

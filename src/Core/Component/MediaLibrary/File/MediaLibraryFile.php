@@ -98,6 +98,7 @@ class MediaLibraryFile extends MediaLibraryDocument
         $this->setFileProperty(EmsFields::CONTENT_MIME_TYPE_FIELD, $mimetype);
     }
 
+    #[\Override]
     public function setName(?string $name): void
     {
         parent::setName($name);

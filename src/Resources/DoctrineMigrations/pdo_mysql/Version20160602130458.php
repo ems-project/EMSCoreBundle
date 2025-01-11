@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20160602130458 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20160602130458 extends AbstractMigration
         $this->addSql('ALTER TABLE content_type CHANGE circles circles_field LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:simple_array)\'');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

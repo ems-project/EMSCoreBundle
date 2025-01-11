@@ -15,16 +15,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class JsonMenuEditorFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'JSON menu editor field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-sitemap';
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return HiddenType::class;
@@ -34,6 +37,7 @@ class JsonMenuEditorFieldType extends DataFieldType
      * @param FormInterface<FormInterface> $form
      * @param array<string, mixed>         $options
      */
+    #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         parent::buildView($view, $form, $options);
@@ -62,11 +66,13 @@ class JsonMenuEditorFieldType extends DataFieldType
         $view->vars['node_types'] = $options['nodeTypes'];
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'json_menu_editor_fieldtype';
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
@@ -77,6 +83,7 @@ class JsonMenuEditorFieldType extends DataFieldType
         $resolver->setDefault('nodeTypes', 'node');
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);

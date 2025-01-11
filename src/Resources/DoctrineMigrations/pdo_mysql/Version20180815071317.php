@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20180815071317 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20180815071317 extends AbstractMigration
         $this->addSql('CREATE TABLE asset_storage (id INT AUTO_INCREMENT NOT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, hash VARCHAR(128) NOT NULL, context VARCHAR(128) DEFAULT NULL, contents LONGBLOB NOT NULL, last_update_date INT NOT NULL, size BIGINT NOT NULL, UNIQUE INDEX asset_key_index (hash, context), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

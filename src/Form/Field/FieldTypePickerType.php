@@ -25,6 +25,7 @@ class FieldTypePickerType extends Select2Type
         return $this->dataFieldTypes[$dataFieldTypeId];
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

@@ -24,7 +24,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 final class AliasesCheckCommand extends Command
 {
-    private const OPTION_REPAIR = 'repair';
+    private const string OPTION_REPAIR = 'repair';
     private SymfonyStyle $io;
     private bool $repair = false;
 
@@ -33,18 +33,21 @@ final class AliasesCheckCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
             ->addOption(self::OPTION_REPAIR, null, InputOption::VALUE_NONE, 'If an environment does not have its alias present and if they are no pending job a rebuild job is queued.');
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->repair = true === $input->getOption(self::OPTION_REPAIR);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io->section('Start checking environment\'s aliase');

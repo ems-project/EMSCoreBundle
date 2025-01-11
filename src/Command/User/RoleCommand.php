@@ -13,6 +13,7 @@ use Symfony\Component\Console\Question\Question;
 
 abstract class RoleCommand extends AbstractUserCommand
 {
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -23,6 +24,7 @@ abstract class RoleCommand extends AbstractUserCommand
             ]);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
@@ -50,6 +52,7 @@ abstract class RoleCommand extends AbstractUserCommand
 
     abstract protected function executeRoleCommand(string $username, bool $super, string $role): void;
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $questions = [];

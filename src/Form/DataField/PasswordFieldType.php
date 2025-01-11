@@ -18,16 +18,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class PasswordFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Password field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'glyphicon glyphicon-asterisk';
     }
 
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -48,6 +51,7 @@ class PasswordFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
@@ -55,6 +59,7 @@ class PasswordFieldType extends DataFieldType
         $resolver->setDefault('encryption', null);
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -80,6 +85,7 @@ class PasswordFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -94,6 +100,7 @@ class PasswordFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $out = $data['password_backup'];
@@ -110,6 +117,7 @@ class PasswordFieldType extends DataFieldType
         return parent::reverseViewTransform($out, $fieldType);
     }
 
+    #[\Override]
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -120,6 +128,7 @@ class PasswordFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);

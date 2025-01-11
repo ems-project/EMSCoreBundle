@@ -27,6 +27,7 @@ class RevisionTaskFiltersType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('status', ChoiceType::class, [
@@ -78,11 +79,13 @@ class RevisionTaskFiltersType extends AbstractType
         ]);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'filters';
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver

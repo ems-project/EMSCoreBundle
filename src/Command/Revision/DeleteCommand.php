@@ -24,16 +24,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class DeleteCommand extends AbstractCommand
 {
-    private const ARGUMENT_CONTENT_TYPES = 'content-types';
-    private const OPTION_MODE = 'mode';
-    private const OPTION_QUERY = 'query';
-    private const OPTION_OUUID = 'ouuid';
+    private const string ARGUMENT_CONTENT_TYPES = 'content-types';
+    private const string OPTION_MODE = 'mode';
+    private const string OPTION_QUERY = 'query';
+    private const string OPTION_OUUID = 'ouuid';
 
-    private const MODE_ALL = 'all';
-    private const MODE_BY_QUERY = 'by-query';
-    private const MODE_OLDEST = 'oldest';
+    private const string MODE_ALL = 'all';
+    private const string MODE_BY_QUERY = 'by-query';
+    private const string MODE_OLDEST = 'oldest';
 
-    private const MODES = [self::MODE_ALL, self::MODE_OLDEST, self::MODE_BY_QUERY];
+    private const array MODES = [self::MODE_ALL, self::MODE_OLDEST, self::MODE_BY_QUERY];
 
     /** @var string[] */
     private array $contentTypeNames = [];
@@ -48,6 +48,7 @@ class DeleteCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -58,6 +59,7 @@ class DeleteCommand extends AbstractCommand
         ;
     }
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $this->mode = $this->getOptionString(self::OPTION_MODE);
@@ -76,6 +78,7 @@ class DeleteCommand extends AbstractCommand
         }
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io->title('EMSCO - Revision - Delete');

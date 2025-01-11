@@ -32,6 +32,7 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
      *   searchFileQuery: array<mixed>,
      * } $options
      */
+    #[\Override]
     public function create(string $hash, array $options): MediaLibraryConfig
     {
         $contentType = $this->contentTypeService->giveByName($options['contentTypeName']);
@@ -56,6 +57,7 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
         return $config;
     }
 
+    #[\Override]
     protected function resolveOptions(array $options): array
     {
         $resolver = new OptionsResolver();

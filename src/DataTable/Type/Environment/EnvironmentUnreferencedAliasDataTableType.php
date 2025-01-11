@@ -23,6 +23,7 @@ class EnvironmentUnreferencedAliasDataTableType extends AbstractTableType implem
     ) {
     }
 
+    #[\Override]
     public function build(QueryTable $table): void
     {
         $table->setIdField('name');
@@ -54,21 +55,25 @@ class EnvironmentUnreferencedAliasDataTableType extends AbstractTableType implem
         )->setButtonType('outline-danger');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];
     }
 
+    #[\Override]
     public function getQueryName(): string
     {
         return 'EnvironmentUnreferencedAlias';
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return false;
     }
 
+    #[\Override]
     public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         $dataSource = $this->getDataSource($searchValue);
@@ -80,6 +85,7 @@ class EnvironmentUnreferencedAliasDataTableType extends AbstractTableType implem
         return $dataSource->getData($from, $size);
     }
 
+    #[\Override]
     public function countQuery(string $searchValue = '', mixed $context = null): int
     {
         return $this->getDataSource($searchValue)->count();

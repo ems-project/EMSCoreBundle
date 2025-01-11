@@ -75,6 +75,7 @@ class UploadedAsset implements EntityInterface
         return $this;
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;

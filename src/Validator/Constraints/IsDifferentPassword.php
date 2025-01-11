@@ -13,6 +13,7 @@ class IsDifferentPassword extends Constraint
 {
     public string $message = 'Password has to be different from the previous one.';
 
+    #[\Override]
     public function getTargets(): string
     {
         return Constraint::CLASS_CONSTRAINT;

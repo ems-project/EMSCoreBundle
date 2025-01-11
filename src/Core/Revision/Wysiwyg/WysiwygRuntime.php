@@ -12,13 +12,13 @@ use EMS\Helpers\Standard\Json;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\RuntimeExtensionInterface;
 
-final class WysiwygRuntime implements RuntimeExtensionInterface
+final readonly class WysiwygRuntime implements RuntimeExtensionInterface
 {
     public function __construct(
-        private readonly WysiwygStylesSetService $wysiwygStylesSetService,
-        private readonly UserManager $userManager,
-        private readonly UrlGeneratorInterface $urlGenerator,
-        private readonly DashboardManager $dashboardManager,
+        private WysiwygStylesSetService $wysiwygStylesSetService,
+        private UserManager $userManager,
+        private UrlGeneratorInterface $urlGenerator,
+        private DashboardManager $dashboardManager,
     ) {
     }
 

@@ -19,6 +19,7 @@ class OptionsType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -35,6 +36,7 @@ class OptionsType extends AbstractType
         $builder->add('extraOptions', ExtraOptionsType::class);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
@@ -43,6 +45,7 @@ class OptionsType extends AbstractType
         ;
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'data_field_options';

@@ -22,6 +22,7 @@ class ChannelDataTableType extends AbstractEntityTableType
         parent::__construct($entityService);
     }
 
+    #[\Override]
     public function build(EntityTable $table): void
     {
         $this->addColumnsOrderLabelName($table);
@@ -41,6 +42,7 @@ class ChannelDataTableType extends AbstractEntityTableType
             ->addTableActionDelete($table, 'channel');
     }
 
+    #[\Override]
     public function getRoles(): array
     {
         return [Roles::ROLE_ADMIN];

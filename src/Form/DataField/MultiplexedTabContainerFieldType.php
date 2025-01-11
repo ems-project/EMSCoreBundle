@@ -20,10 +20,10 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class MultiplexedTabContainerFieldType extends DataFieldType
 {
-    private const LOCALE_PREFERRED_FIRST_DISPLAY_OPTION = 'localePreferredFirst';
-    private const LABELS_DISPLAY_OPTION = 'labels';
-    private const VALUES_DISPLAY_OPTION = 'values';
-    private const ICON_DISPLAY_OPTION = 'icon';
+    private const string LOCALE_PREFERRED_FIRST_DISPLAY_OPTION = 'localePreferredFirst';
+    private const string LABELS_DISPLAY_OPTION = 'labels';
+    private const string VALUES_DISPLAY_OPTION = 'values';
+    private const string ICON_DISPLAY_OPTION = 'icon';
 
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
@@ -34,21 +34,25 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Multiplexed Tab Container';
     }
 
+    #[\Override]
     public static function isContainer(): bool
     {
         return true;
     }
 
+    #[\Override]
     public static function isNested(): bool
     {
         return true;
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -79,6 +83,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
@@ -88,6 +93,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         $resolver->setDefault(self::ICON_DISPLAY_OPTION, null);
     }
 
+    #[\Override]
     public function generateMapping(FieldType $current): array
     {
         $values = $current->getDisplayOption(self::VALUES_DISPLAY_OPTION);
@@ -104,6 +110,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         return $mapping;
     }
 
+    #[\Override]
     public static function getJsonNames(FieldType $current): array
     {
         $values = $current->getDisplayOption(self::VALUES_DISPLAY_OPTION);
@@ -114,6 +121,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         return self::textAreaToArray($values);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'tabsfieldtype';
@@ -123,6 +131,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $fieldType = $builder->getOptions()['metadata'];
@@ -149,6 +158,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function importData(DataField $dataField, float|int|bool|array|string|null $sourceArray, bool $isMigration): array
     {
         parent::importData($dataField, $sourceArray, $isMigration);
@@ -156,11 +166,13 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         return self::getJsonNames($dataField->giveFieldType());
     }
 
+    #[\Override]
     public static function isVirtual(array $option = []): bool
     {
         return true;
     }
 
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         if (\is_array($data)) {

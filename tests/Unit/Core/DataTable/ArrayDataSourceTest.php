@@ -12,6 +12,7 @@ class ArrayDataSourceTest extends TestCase
     private readonly ArrayDataSource $sourceArrays;
     private readonly ArrayDataSource $sourceObjects;
 
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();

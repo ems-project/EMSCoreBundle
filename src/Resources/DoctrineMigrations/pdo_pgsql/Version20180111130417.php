@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20180111130417 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -21,6 +22,7 @@ final class Version20180111130417 extends AbstractMigration
         $this->addSql('ALTER TABLE uploaded_asset ALTER size DROP DEFAULT');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

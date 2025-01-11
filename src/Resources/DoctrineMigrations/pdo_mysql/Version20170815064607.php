@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20170815064607 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -21,6 +22,7 @@ final class Version20170815064607 extends AbstractMigration
         $this->addSql('ALTER TABLE filter ADD dirty TINYINT(1) NOT NULL, ADD `label` VARCHAR(255) NOT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

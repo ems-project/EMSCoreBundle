@@ -17,7 +17,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TaskMailer
 {
-    private const MAIL_TEMPLATE = '/revision/task/mail.twig';
+    private const string MAIL_TEMPLATE = '/revision/task/mail.twig';
 
     public function __construct(
         private readonly MailerService $mailerService,

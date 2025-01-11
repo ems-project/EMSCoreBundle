@@ -29,7 +29,7 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
 {
     use DataTableTypeTrait;
 
-    final public const DISCARD_SELECTED_DRAFT = 'DISCARD_SELECTED_DRAFT';
+    final public const string DISCARD_SELECTED_DRAFT = 'DISCARD_SELECTED_DRAFT';
 
     public function __construct(
         private readonly RevisionRepository $revisionRepository,
@@ -39,6 +39,7 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
     ) {
     }
 
+    #[\Override]
     public function build(QueryTable $table): void
     {
         /** @var ContentType $contentType */
@@ -90,26 +91,31 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
         }
     }
 
+    #[\Override]
     public function getContext(array $options): ContentType
     {
         return $this->contentTypeService->giveByName($options['content_type_name']);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver->setRequired(['content_type_name']);
     }
 
+    #[\Override]
     public function getQueryName(): string
     {
         return 'draft_in_progress';
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return false;
     }
 
+    #[\Override]
     public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         if (!$context instanceof ContentType) {
@@ -126,6 +132,7 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
         return $qb->getQuery()->execute();
     }
 
+    #[\Override]
     public function countQuery(string $searchValue = '', mixed $context = null): int
     {
         if (!$context instanceof ContentType) {

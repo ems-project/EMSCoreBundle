@@ -23,6 +23,7 @@ final class FlashMessageLogger extends AbstractProcessingHandler
         parent::__construct(Logger::NOTICE);
     }
 
+    #[\Override]
     protected function write(LogRecord $record): void
     {
         if (null === $currentRequest = $this->requestStack->getCurrentRequest()) {

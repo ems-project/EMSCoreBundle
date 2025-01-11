@@ -22,6 +22,7 @@ readonly class ConfigValueResolver implements ValueResolverInterface
     /**
      * @return iterable<ConfigInterface>
      */
+    #[\Override]
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
         $argumentType = $argument->getType();

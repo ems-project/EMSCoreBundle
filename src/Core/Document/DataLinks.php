@@ -11,7 +11,7 @@ use EMS\CoreBundle\Entity\ContentType;
 
 final class DataLinks
 {
-    private const SIZE = 30;
+    private const int SIZE = 30;
 
     /** @var ContentType[] */
     private array $contentTypes = [];

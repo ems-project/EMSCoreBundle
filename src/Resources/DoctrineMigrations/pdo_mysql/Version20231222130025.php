@@ -10,11 +10,13 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20231222130025 extends AbstractMigration
 {
+    #[\Override]
     public function getDescription(): string
     {
         return 'upgrade mysql use json types';
     }
 
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -45,6 +47,7 @@ final class Version20231222130025 extends AbstractMigration
         $this->addSql('ALTER TABLE wysiwyg_styles_set CHANGE assets assets JSON DEFAULT NULL COMMENT \'(DC2Type:json)\'');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

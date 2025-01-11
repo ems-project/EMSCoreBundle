@@ -10,6 +10,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class RegisterCompilerPass implements CompilerPassInterface
 {
+    #[\Override]
     public function process(ContainerBuilder $container): void
     {
         $this->registerContentTransformers($container);

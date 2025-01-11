@@ -42,6 +42,7 @@ class UploadedAssetDataTableType extends AbstractTableType implements QueryServi
     ) {
     }
 
+    #[\Override]
     public function build(QueryTable $table): void
     {
         /** @var array{'location': string} $context */
@@ -59,48 +60,40 @@ class UploadedAssetDataTableType extends AbstractTableType implements QueryServi
         ]);
 
         if (self::LOCATION_WYSIWYG_BROWSER === $location || self::LOCATION_FILE_MODAL === $location) {
-            $columnName->addHtmlAttribute('data-url', function (array $data) {
-                return \vsprintf('%s%s?name=%s&type=%s', [
-                    EMSLink::EMSLINK_ASSET_PREFIX,
-                    $data['id'],
-                    $data['name'],
-                    $data['type'],
-                ]);
-            });
-            $columnName->addHtmlAttribute('data-json', function (array $data) use ($router) {
-                return Json::encode([
-                    EmsFields::CONTENT_FILE_NAME_FIELD => $data['name'],
-                    EmsFields::CONTENT_FILE_SIZE_FIELD => $data['size'] ?? 0,
-                    EmsFields::CONTENT_MIME_TYPE_FIELD => $data['type'],
-                    EmsFields::CONTENT_FILE_HASH_FIELD => $data['id'],
-                    EmsFields::CONTENT_HASH_ALGO_FIELD => $data['hash_algo'] ?? EmsFields::CONTENT_FILE_HASH_FIELD,
-                    'preview_url' => $router->generate('ems_asset_processor', [
-                        'hash' => $data['id'],
-                        'processor' => 'preview',
-                        'type' => $data['type'],
-                        'name' => $data['name'],
-                    ]),
-                    'view_url' => $router->generate('ems.file.view', [
-                        'sha1' => $data['id'],
-                        'type' => $data['type'],
-                        'name' => $data['name'],
-                    ]),
-                ]);
-            });
+            $columnName->addHtmlAttribute('data-url', fn (array $data) => \vsprintf('%s%s?name=%s&type=%s', [
+                EMSLink::EMSLINK_ASSET_PREFIX,
+                $data['id'],
+                $data['name'],
+                $data['type'],
+            ]));
+            $columnName->addHtmlAttribute('data-json', fn (array $data) => Json::encode([
+                EmsFields::CONTENT_FILE_NAME_FIELD => $data['name'],
+                EmsFields::CONTENT_FILE_SIZE_FIELD => $data['size'] ?? 0,
+                EmsFields::CONTENT_MIME_TYPE_FIELD => $data['type'],
+                EmsFields::CONTENT_FILE_HASH_FIELD => $data['id'],
+                EmsFields::CONTENT_HASH_ALGO_FIELD => $data['hash_algo'] ?? EmsFields::CONTENT_FILE_HASH_FIELD,
+                'preview_url' => $router->generate('ems_asset_processor', [
+                    'hash' => $data['id'],
+                    'processor' => 'preview',
+                    'type' => $data['type'],
+                    'name' => $data['name'],
+                ]),
+                'view_url' => $router->generate('ems.file.view', [
+                    'sha1' => $data['id'],
+                    'type' => $data['type'],
+                    'name' => $data['name'],
+                ]),
+            ]));
         }
 
         if (self::LOCATION_FILE_MODAL === $location) {
-            $columnName->setItemIconCallback(function (array $data) {
-                return Encoder::getFontAwesomeFromMimeType($data['type'], EMSCoreBundle::FONTAWESOME_VERSION);
-            });
+            $columnName->setItemIconCallback(fn (array $data) => Encoder::getFontAwesomeFromMimeType($data['type'], EMSCoreBundle::FONTAWESOME_VERSION));
         } else {
             $table->addColumnDefinition(new TranslationTableColumn(
                 titleKey: t('field.file.type', [], 'emsco-core'),
                 attribute: 'type',
                 domain: 'emsco-mimetypes'
-            ))->setItemIconCallback(function (array $data) {
-                return Encoder::getFontAwesomeFromMimeType($data['type'], EMSCoreBundle::FONTAWESOME_VERSION);
-            });
+            ))->setItemIconCallback(fn (array $data) => Encoder::getFontAwesomeFromMimeType($data['type'], EMSCoreBundle::FONTAWESOME_VERSION));
         }
 
         $table->addColumnDefinition(new UserTableColumn(
@@ -149,11 +142,13 @@ class UploadedAssetDataTableType extends AbstractTableType implements QueryServi
      *
      * @return array{ 'location': string }
      */
+    #[\Override]
     public function getContext(array $options): mixed
     {
         return ['location' => $options['location']];
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver
@@ -165,16 +160,19 @@ class UploadedAssetDataTableType extends AbstractTableType implements QueryServi
             ]);
     }
 
+    #[\Override]
     public function getQueryName(): string
     {
         return 'uploaded_asset';
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return false;
     }
 
+    #[\Override]
     public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         $qb = $this->createQueryBuilder($searchValue);
@@ -198,6 +196,7 @@ class UploadedAssetDataTableType extends AbstractTableType implements QueryServi
         return $qb->getQuery()->getArrayResult();
     }
 
+    #[\Override]
     public function countQuery(string $searchValue = '', mixed $context = null): int
     {
         return (int) $this->createQueryBuilder($searchValue)

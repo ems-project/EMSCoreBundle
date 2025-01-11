@@ -11,11 +11,13 @@ use EMS\Helpers\Standard\Json;
 
 final class Version20231210131505 extends AbstractMigration
 {
+    #[\Override]
     public function getDescription(): string
     {
         return 'convert deprecated array type to json type';
     }
 
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -43,6 +45,7 @@ final class Version20231210131505 extends AbstractMigration
         $this->addSql('ALTER TABLE user CHANGE roles roles JSON NOT NULL COMMENT \'(DC2Type:json)\'');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

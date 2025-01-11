@@ -37,6 +37,7 @@ class MediaLibraryFolderRenameCommand extends AbstractMediaLibraryCommand
         $this->mediaLibraryService->updateDocument($document, $this->username);
     }
 
+    #[\Override]
     protected function configure(): void
     {
         parent::configure();
@@ -46,6 +47,7 @@ class MediaLibraryFolderRenameCommand extends AbstractMediaLibraryCommand
             ->addOption(self::OPTION_USERNAME, null, InputOption::VALUE_REQUIRED, 'media config hash');
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -58,6 +60,7 @@ class MediaLibraryFolderRenameCommand extends AbstractMediaLibraryCommand
         $this->folderName = $this->getArgumentString(self::ARGUMENT_FOLDER_NAME);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $jobOutput = $output instanceof JobOutput ? $output : null;

@@ -37,6 +37,7 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
         return $this;
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;
@@ -140,6 +141,7 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
         return $this->orderKey;
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), self::class);

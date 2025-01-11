@@ -14,16 +14,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SelectFieldType extends DataFieldType
 {
+    #[\Override]
     public function getLabel(): string
     {
         return 'Select field';
     }
 
+    #[\Override]
     public static function getIcon(): string
     {
         return 'fa fa-caret-square-o-down';
     }
 
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var FieldType $fieldType */
@@ -51,6 +54,7 @@ class SelectFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         /* set the default option value for this kind of compound field */
@@ -60,6 +64,7 @@ class SelectFieldType extends DataFieldType
         $resolver->setDefault('multiple', false);
     }
 
+    #[\Override]
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
@@ -71,6 +76,7 @@ class SelectFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildOptionsForm($builder, $options);
@@ -91,6 +97,7 @@ class SelectFieldType extends DataFieldType
         }
     }
 
+    #[\Override]
     public function getDefaultOptions(string $name): array
     {
         $out = parent::getDefaultOptions($name);
@@ -100,6 +107,7 @@ class SelectFieldType extends DataFieldType
         return $out;
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'bypassdatafield';
@@ -108,6 +116,7 @@ class SelectFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $value = null;
@@ -118,6 +127,7 @@ class SelectFieldType extends DataFieldType
         return parent::reverseViewTransform($value, $fieldType);
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $temp = parent::viewTransform($dataField);

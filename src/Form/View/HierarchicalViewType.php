@@ -44,11 +44,13 @@ class HierarchicalViewType extends ViewType
         parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
+    #[\Override]
     public function getLabel(): string
     {
         return 'Hierarchical: manage a menu structure (based on a ES query)';
     }
 
+    #[\Override]
     public function getName(): string
     {
         return 'Hierarchical';
@@ -58,6 +60,7 @@ class HierarchicalViewType extends ViewType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         parent::buildForm($builder, $options);
@@ -122,16 +125,19 @@ $dataField->getRawData()
         ));
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'hierarchical_view';
     }
 
+    #[\Override]
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
         return [];
     }
 
+    #[\Override]
     public function generateResponse(View $view, Request $request): Response
     {
         if (empty($view->getOptions()['parent'])) {

@@ -22,8 +22,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class UserOptionsType extends AbstractType
 {
-    final public const CONTEXT_PROFILE = 'user_profile';
-    final public const CONTEXT_USER_MANAGEMENT = 'user_management';
+    final public const string CONTEXT_PROFILE = 'user_profile';
+    final public const string CONTEXT_USER_MANAGEMENT = 'user_management';
 
     public function __construct(
         private readonly FormManager $formManager,
@@ -38,6 +38,7 @@ class UserOptionsType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $context = $options['context'];
@@ -76,6 +77,7 @@ class UserOptionsType extends AbstractType
         }
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver

@@ -29,6 +29,7 @@ class LdapUserProvider extends SymfonyLdapUserProvider
         );
     }
 
+    #[\Override]
     protected function loadUser(string $identifier, Entry $entry): User
     {
         try {
@@ -43,6 +44,7 @@ class LdapUserProvider extends SymfonyLdapUserProvider
         return $user ?: LdapCoreUserFactory::create($ldapUser, $this->ldapConfig);
     }
 
+    #[\Override]
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
         if ('' === $this->ldapConfig->baseDn) {

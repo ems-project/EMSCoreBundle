@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20170604004043 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -154,6 +155,7 @@ final class Version20170604004043 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_8D93D649A282F7EA ON user (wysiwyg_profile_id)');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

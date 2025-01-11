@@ -10,6 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20190221215130 extends AbstractMigration
 {
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -20,6 +21,7 @@ final class Version20190221215130 extends AbstractMigration
         $this->addSql('CREATE TABLE session (id VARCHAR(128) NOT NULL, created TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, modified TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, data BYTEA NOT NULL, time INT NOT NULL, sess_lifetime INT NOT NULL, PRIMARY KEY(id))');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

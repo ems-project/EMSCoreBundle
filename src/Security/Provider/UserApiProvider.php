@@ -20,6 +20,7 @@ class UserApiProvider implements UserProviderInterface
     {
     }
 
+    #[\Override]
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
         $authToken = $this->authTokenRepository->findOneBy(['value' => $identifier]);
@@ -41,11 +42,13 @@ class UserApiProvider implements UserProviderInterface
         return $this->loadUserByIdentifier($username);
     }
 
+    #[\Override]
     public function refreshUser(UserInterface $user): UserInterface
     {
         throw new UnsupportedUserException();
     }
 
+    #[\Override]
     public function supportsClass(string $class): bool
     {
         return UserInterface::class === $class;

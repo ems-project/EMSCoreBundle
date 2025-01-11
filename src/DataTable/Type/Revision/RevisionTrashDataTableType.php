@@ -37,6 +37,7 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
     ) {
     }
 
+    #[\Override]
     public function build(QueryTable $table): void
     {
         /** @var ContentType $contentType */
@@ -86,6 +87,7 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
         $this->addTableActionDelete($table, 'trash', self::ACTION_EMPTY_TRASH);
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver->setRequired(['content_type_name']);
@@ -94,21 +96,25 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
     /**
      * @param array{'content_type_name': string} $options
      */
+    #[\Override]
     public function getContext(array $options): ContentType
     {
         return $this->contentTypeService->giveByName($options['content_type_name']);
     }
 
+    #[\Override]
     public function getQueryName(): string
     {
         return 'revision_trash';
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return false;
     }
 
+    #[\Override]
     public function query(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         if (!$context instanceof ContentType) {
@@ -125,6 +131,7 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
         return $qb->getQuery()->execute();
     }
 
+    #[\Override]
     public function countQuery(string $searchValue = '', mixed $context = null): int
     {
         if (!$context instanceof ContentType) {

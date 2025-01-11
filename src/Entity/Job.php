@@ -118,6 +118,7 @@ class Job extends JsonDeserializer implements \JsonSerializable, EntityInterface
         return $this->command;
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), self::class);

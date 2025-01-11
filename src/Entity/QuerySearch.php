@@ -46,6 +46,7 @@ class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityI
         return $querySearch;
     }
 
+    #[\Override]
     public function getId(): string
     {
         return $this->id->toString();
@@ -61,6 +62,7 @@ class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->label = $label;
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;
@@ -140,6 +142,7 @@ class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->orderKey = $orderKey;
     }
 
+    #[\Override]
     public function jsonSerialize(): JsonClass
     {
         $json = new JsonClass(\get_object_vars($this), self::class);

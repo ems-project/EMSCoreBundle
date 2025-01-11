@@ -12,6 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PdfSizeType extends ChoiceType
 {
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $choices = [];

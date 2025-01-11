@@ -26,6 +26,7 @@ class MediaLibraryFolderDeleteCommand extends AbstractMediaLibraryCommand
     public const ARGUMENT_FOLDER_ID = 'folder-id';
     public const OPTION_USERNAME = 'username';
 
+    #[\Override]
     protected function configure(): void
     {
         parent::configure();
@@ -34,6 +35,7 @@ class MediaLibraryFolderDeleteCommand extends AbstractMediaLibraryCommand
             ->addOption(self::OPTION_USERNAME, null, InputOption::VALUE_REQUIRED, 'media config hash');
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
@@ -44,6 +46,7 @@ class MediaLibraryFolderDeleteCommand extends AbstractMediaLibraryCommand
         $this->username = $this->getOptionString(self::OPTION_USERNAME);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $jobOutput = $output instanceof JobOutput ? $output : null;

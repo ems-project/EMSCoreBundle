@@ -18,6 +18,7 @@ class HiddenFieldType extends DataFieldType
 {
     // TODO: deorecated class?
 
+    #[\Override]
     public function getLabel(): string
     {
         throw new \Exception('This Field Type should not be used as field (as service)');
@@ -27,6 +28,7 @@ class HiddenFieldType extends DataFieldType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('value', HiddenType::class, [
@@ -34,11 +36,13 @@ class HiddenFieldType extends DataFieldType
         ]);
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'empty';
     }
 
+    #[\Override]
     public function viewTransform(DataField $dataField)
     {
         $out = parent::viewTransform($dataField);
@@ -49,6 +53,7 @@ class HiddenFieldType extends DataFieldType
     /**
      * @param array<mixed> $data
      */
+    #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $dataField = parent::reverseViewTransform($data, $fieldType);

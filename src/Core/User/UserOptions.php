@@ -12,10 +12,10 @@ class UserOptions implements \ArrayAccess
     /** @var array{simplified_ui?: bool, allowed_configure_wysiwyg?: bool, custom_options?: mixed} */
     private array $options = [];
 
-    final public const SIMPLIFIED_UI = 'simplified_ui';
-    final public const ALLOWED_CONFIGURE_WYSIWYG = 'allowed_configure_wysiwyg';
-    final public const CUSTOM_OPTIONS = 'custom_options';
-    final public const ALL_MEMBERS = [self::SIMPLIFIED_UI, self::ALLOWED_CONFIGURE_WYSIWYG, self::CUSTOM_OPTIONS];
+    final public const string SIMPLIFIED_UI = 'simplified_ui';
+    final public const string ALLOWED_CONFIGURE_WYSIWYG = 'allowed_configure_wysiwyg';
+    final public const string CUSTOM_OPTIONS = 'custom_options';
+    final public const array ALL_MEMBERS = [self::SIMPLIFIED_UI, self::ALLOWED_CONFIGURE_WYSIWYG, self::CUSTOM_OPTIONS];
 
     /**
      * @param array{simplified_ui?: bool, allowed_configure_wysiwyg?: bool, custom_options?: mixed} $data
@@ -44,6 +44,7 @@ class UserOptions implements \ArrayAccess
         return $this->options;
     }
 
+    #[\Override]
     public function offsetExists($offset): bool
     {
         if (!\in_array($offset, self::ALL_MEMBERS)) {
@@ -53,16 +54,19 @@ class UserOptions implements \ArrayAccess
         return isset($this->options[$offset]);
     }
 
+    #[\Override]
     public function offsetGet($offset): mixed
     {
         return $this->options[$offset] ?? null;
     }
 
+    #[\Override]
     public function offsetSet($offset, $value): void
     {
         $this->options[$offset] = $value;
     }
 
+    #[\Override]
     public function offsetUnset($offset): void
     {
         unset($this->options[$offset]);

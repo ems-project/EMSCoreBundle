@@ -19,6 +19,7 @@ use Symfony\Component\Console\Question\Question;
 )]
 class ChangePasswordCommand extends AbstractUserCommand
 {
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -41,6 +42,7 @@ EOT
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
@@ -58,6 +60,7 @@ EOT
         }
     }
 
+    #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $questions = [];

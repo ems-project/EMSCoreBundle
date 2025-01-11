@@ -8,9 +8,9 @@ use EMS\CoreBundle\Service\DatatableService;
 use Twig\Environment;
 use Twig\Extension\RuntimeExtensionInterface;
 
-final class DatatableRuntime implements RuntimeExtensionInterface
+final readonly class DatatableRuntime implements RuntimeExtensionInterface
 {
-    public function __construct(private readonly DatatableService $datatableService, private readonly Environment $twig, private readonly string $templateNamespace)
+    public function __construct(private DatatableService $datatableService, private Environment $twig, private string $templateNamespace)
     {
     }
 

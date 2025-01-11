@@ -29,6 +29,7 @@ class FieldHolderType extends AbstractType
      * @param FormBuilderInterface<FormBuilderInterface> $builder
      * @param array<string, mixed>                       $options
      */
+    #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if (!\is_string($options['form_name'])) {
@@ -48,6 +49,7 @@ class FieldHolderType extends AbstractType
             ->addModelTransformer(new FormModelTransformer($form->getFieldType(), $this->formRegistry));
     }
 
+    #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['form_name' => null]);

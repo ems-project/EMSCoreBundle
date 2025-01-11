@@ -45,6 +45,7 @@ final class Revisions implements \IteratorAggregate
     /**
      * @return \Traversable<int, Revision>
      */
+    #[\Override]
     public function getIterator(): \Traversable
     {
         /** @var \Traversable<int, Revision> $iterator */

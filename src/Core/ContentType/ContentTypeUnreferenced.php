@@ -24,11 +24,13 @@ class ContentTypeUnreferenced implements EntityInterface
         $this->environmentLabel = $this->environment->getLabel();
     }
 
+    #[\Override]
     public function getId(): string
     {
         return Hash::string($this->environment->getName().$this->name);
     }
 
+    #[\Override]
     public function getName(): string
     {
         return $this->name;

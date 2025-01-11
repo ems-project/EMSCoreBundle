@@ -22,23 +22,22 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use ZipStream\ZipStream;
 
-final class FormSubmissionService implements EntityServiceInterface
+final readonly class FormSubmissionService implements EntityServiceInterface
 {
     public function __construct(
-        private readonly FormSubmissionRepository $formSubmissionRepository,
-        private readonly FormSubmissionFileRepository $formSubmissionFileRepository, private readonly Environment $twig,
-        private readonly RequestStack $requestStack,
-        private readonly TranslatorInterface $translator,
-        private readonly string $templateNamespace,
+        private FormSubmissionRepository $formSubmissionRepository,
+        private FormSubmissionFileRepository $formSubmissionFileRepository, private Environment $twig,
+        private RequestStack $requestStack,
+        private TranslatorInterface $translator,
+        private string $templateNamespace,
     ) {
     }
 
     /**
-     * @param mixed $context
-     *
      * @return FormSubmission[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         return $this->formSubmissionRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
     }
@@ -259,11 +258,13 @@ final class FormSubmissionService implements EntityServiceInterface
         }
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return false;
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'formSubmission';
@@ -272,31 +273,37 @@ final class FormSubmissionService implements EntityServiceInterface
     /**
      * @return string[]
      */
+    #[\Override]
     public function getAliasesName(): array
     {
         return [];
     }
 
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         return $this->formSubmissionRepository->countAllUnprocessed($searchValue);
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?EntityInterface
     {
         throw new \RuntimeException('getByItemName method not yet implemented');
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         throw new \RuntimeException('createEntityFromJson method not yet implemented');
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         throw new \RuntimeException('deleteByItemName method not yet implemented');

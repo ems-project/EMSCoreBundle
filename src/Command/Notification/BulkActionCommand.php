@@ -30,7 +30,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 final class BulkActionCommand extends Command
 {
-    private const CONTENT_TYPE_NAME = 'contentTypeName';
+    private const string CONTENT_TYPE_NAME = 'contentTypeName';
     private SymfonyStyle $io;
 
     public function __construct(
@@ -43,6 +43,7 @@ final class BulkActionCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -54,12 +55,14 @@ final class BulkActionCommand extends Command
             ->addOption('force', null, InputOption::VALUE_NONE, 'Do the bulk');
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title('Bulk action notifications');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $contentTypeName = \strval($input->getArgument(self::CONTENT_TYPE_NAME));

@@ -29,6 +29,7 @@ final class SendAllCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -67,6 +68,7 @@ final class SendAllCommand extends Command
         }
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Sending pending notification and response emails to enabled users');

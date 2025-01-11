@@ -10,11 +10,13 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20230719073401 extends AbstractMigration
 {
+    #[\Override]
     public function getDescription(): string
     {
         return 'Add a nullable tag field to the job entity';
     }
 
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -26,6 +28,7 @@ final class Version20230719073401 extends AbstractMigration
         $this->addSql('ALTER TABLE template ADD tag VARCHAR(255) DEFAULT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

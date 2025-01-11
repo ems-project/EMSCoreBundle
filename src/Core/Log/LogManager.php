@@ -40,12 +40,14 @@ class LogManager implements EntityServiceInterface
         ]);
     }
 
+    #[\Override]
     public function isSortable(): bool
     {
         return false;
     }
 
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, $context = null): array
+    #[\Override]
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
         if (!$context instanceof LogEntityTableContext) {
             throw new \RuntimeException('Unexpected context');
@@ -60,6 +62,7 @@ class LogManager implements EntityServiceInterface
         return $this->logRepository->get($context);
     }
 
+    #[\Override]
     public function getEntityName(): string
     {
         return 'log';
@@ -68,12 +71,14 @@ class LogManager implements EntityServiceInterface
     /**
      * @return string[]
      */
+    #[\Override]
     public function getAliasesName(): array
     {
         return [];
     }
 
-    public function count(string $searchValue = '', $context = null): int
+    #[\Override]
+    public function count(string $searchValue = '', mixed $context = null): int
     {
         if (!$context instanceof LogEntityTableContext) {
             throw new \RuntimeException('Unexpected context');
@@ -84,21 +89,25 @@ class LogManager implements EntityServiceInterface
         return $this->logRepository->counter($context);
     }
 
+    #[\Override]
     public function getByItemName(string $name): ?EntityInterface
     {
         throw new \RuntimeException('getByItemName method not yet implemented');
     }
 
+    #[\Override]
     public function updateEntityFromJson(EntityInterface $entity, string $json): EntityInterface
     {
         throw new \RuntimeException('updateEntityFromJson method not yet implemented');
     }
 
+    #[\Override]
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
         throw new \RuntimeException('createEntityFromJson method not yet implemented');
     }
 
+    #[\Override]
     public function deleteByItemName(string $name): string
     {
         throw new \RuntimeException('deleteByItemName method not yet implemented');

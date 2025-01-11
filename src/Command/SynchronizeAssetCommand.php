@@ -36,6 +36,7 @@ class SynchronizeAssetCommand extends AbstractCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var EntityManager $em */

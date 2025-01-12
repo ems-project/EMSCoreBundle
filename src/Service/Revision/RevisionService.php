@@ -160,11 +160,11 @@ class RevisionService implements RevisionServiceInterface
         ]) : null;
 
         if ($evaluateDisplay) {
-            return \htmlspecialchars($evaluateDisplay);
+            return $evaluateDisplay;
         }
 
         if ($contentType->hasLabelField() && isset($rawData[$contentType->giveLabelField()])) {
-            return \htmlspecialchars((string) $rawData[$contentType->giveLabelField()]);
+            return (string) $rawData[$contentType->giveLabelField()];
         }
 
         return match (true) {

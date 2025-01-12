@@ -582,25 +582,6 @@
 	{{ _self.messages(dataField) }}
 {% endblock %}
 
-{% block EMS_CoreBundle_Form_DataField_SelectFieldType %}
-	<dl>
-		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
-		{% else %}
-			<dt>{{ dataField.fieldType.name }}</dt>
-		{% endif %}
-		<dd>
-            {% set labels = dataField.fieldType.displayOptions.labels|replace({"\r":''})|split('\n') %}
-            {% set choices = dataField.fieldType.displayOptions.choices|replace({"\r":''})|split('\n') %}
-			<ul>
-            	{{ emsco_diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
-			</ul>
-
-		</dd>
-	</dl>
-	{{ _self.messages(dataField) }}
-{% endblock %}
-
 {% block EMS_CoreBundle_Form_DataField_OuuidFieldType %}
 	<dl>
 		{% if dataField.fieldType.displayOptions.label is defined %}
@@ -951,28 +932,6 @@
 		</dt>
 		<dd>
             {{ emsco_diff_color(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
-		</dd>
-	</dl>
-	{{ _self.messages(dataField) }}
-{% endblock %}
-
-
-
-
-{% block EMS_CoreBundle_Form_DataField_RadioFieldType %}
-	<dl>
-		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name }}
-			{% endif %}
-		</dt>
-		<dd>
-            {% set labels = dataField.fieldType.displayOptions.labels|replace({"\r":''})|split('\n') %}
-            {% set choices = dataField.fieldType.displayOptions.choices|replace({"\r":''})|split('\n') %}
-
-            {{ emsco_diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
 		</dd>
 	</dl>
 	{{ _self.messages(dataField) }}

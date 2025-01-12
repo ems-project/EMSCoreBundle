@@ -129,13 +129,6 @@
             <tag name="ems.form.datafieldtype" alias="textarea" />
             <tag name="form.type"/>
         </service>
-        <service id="ems.fieldtype.select" class="EMS\CoreBundle\Form\DataField\SelectFieldType">
-            <argument type="service" id="security.authorization_checker" />
-            <argument type="service" id="form.registry" />
-            <argument type="service" id="ems.service.elasticsearch" />
-            <tag name="ems.form.datafieldtype" alias="select" />
-            <tag name="form.type"/>
-        </service>
         <service id="ems.fieldtype.password" class="EMS\CoreBundle\Form\DataField\PasswordFieldType">
             <argument type="service" id="security.authorization_checker" />
             <argument type="service" id="form.registry" />
@@ -171,13 +164,6 @@
             <argument type="service" id="ems.service.elasticsearch" />
             <argument type="service" id="ems.service.file" />
             <tag name="ems.form.datafieldtype" alias="file_attachment" />
-            <tag name="form.type"/>
-        </service>
-        <service id="ems.fieldtype.radio" class="EMS\CoreBundle\Form\DataField\RadioFieldType">
-            <argument type="service" id="security.authorization_checker" />
-            <argument type="service" id="form.registry" />
-            <argument type="service" id="ems.service.elasticsearch" />
-            <tag name="ems.form.datafieldtype" alias="radio" />
             <tag name="form.type"/>
         </service>
         <service id="ems.fieldtype.choice" class="EMS\CoreBundle\Form\DataField\ChoiceFieldType">

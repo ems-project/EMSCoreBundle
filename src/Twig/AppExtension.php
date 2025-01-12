@@ -935,7 +935,7 @@ class AppExtension extends AbstractExtension
             $document = $this->searchService->getDocument($contentType, $emsLink->getOuuid());
             $emsLink = $document->getEmsLink(); // versioned documents
             $emsSource = $document->getEMSSource();
-            $label .= \sprintf('<span>%s</span>', $this->revisionService->display($document));
+            $label .= \sprintf('<span>%s</span>', \htmlentities($this->revisionService->display($document)));
         } catch (NotFoundException) {
             $label .= \sprintf('<span>%s</span>', $emsLink->getEmsId());
         }

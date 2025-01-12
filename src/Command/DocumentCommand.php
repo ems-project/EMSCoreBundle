@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use EMS\CoreBundle\Commands;
@@ -191,11 +193,7 @@ class DocumentCommand extends Command
 
         $loopIndex = 0;
         foreach ($finder as $file) {
-            $content = \file_get_contents($file);
-            if (false === $content) {
-                $progress->advance();
-                continue;
-            }
+            $content = $file->getContents();
             $rawData = Json::decode($content);
             $ouuid = \basename($file->getFilename(), '.json');
             if ($replaceBusinessKey) {
@@ -216,7 +214,7 @@ class DocumentCommand extends Command
             try {
                 $this->documentService->importDocument($importerContext, $document->getOuuid(), $document->getSource());
             } catch (NotLockedException|CantBeFinalizedException $e) {
-                $this->io->error($e);
+                $this->io->error($e->getMessage());
             }
 
             ++$loopIndex;

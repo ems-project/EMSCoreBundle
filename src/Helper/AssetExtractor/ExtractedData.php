@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Helper\AssetExtractor;
 
 use EMS\Helpers\Standard\Json;

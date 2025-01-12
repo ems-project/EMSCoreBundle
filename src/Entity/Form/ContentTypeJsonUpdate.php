@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity\Form;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;

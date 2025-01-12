@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Core\ManagedAlias;
 
 use EMS\CommonBundle\Entity\EntityInterface;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Core\User;
 
 use EMS\CoreBundle\Entity\User;

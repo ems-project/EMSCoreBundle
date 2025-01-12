@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\DataField\Options;
 
 use EMS\CoreBundle\Form\Field\IconTextType;

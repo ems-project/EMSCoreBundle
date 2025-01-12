@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Entity\Helper;
 
 use EMS\CoreBundle\Entity\ContentType;

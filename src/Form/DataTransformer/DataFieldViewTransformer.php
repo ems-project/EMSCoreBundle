@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\DataTransformer;
 
 use EMS\CoreBundle\Entity\DataField;

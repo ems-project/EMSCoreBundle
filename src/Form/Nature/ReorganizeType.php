@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Form\Nature;
 
 use EMS\CoreBundle\EMSCoreBundle;

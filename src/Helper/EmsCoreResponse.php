@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Helper;
 
 use Symfony\Component\HttpFoundation\JsonResponse;

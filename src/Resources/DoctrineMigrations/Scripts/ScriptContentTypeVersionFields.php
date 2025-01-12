@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Resources\DoctrineMigrations\Scripts;
 
 use Doctrine\Migrations\AbstractMigration;

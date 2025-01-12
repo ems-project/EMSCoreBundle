@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Elasticsearch\Index;
 
 use EMS\CoreBundle\Service\Mapping as EMS;

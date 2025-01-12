@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -265,7 +267,7 @@ class MigrateCommand extends AbstractCommand
                 try {
                     $this->documentService->importDocument($importerContext, $result->getId(), $result->getSource());
                 } catch (NotLockedException|CantBeFinalizedException $e) {
-                    $this->io->error($e);
+                    $this->io->error($e->getMessage());
                 }
                 $progress->advance();
             }

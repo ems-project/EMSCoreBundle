@@ -205,7 +205,6 @@ class DateRangeFieldType extends DataFieldType
         $out['mappingOptions']['toDateMachineName'] = $name.'_to_date';
         $out['mappingOptions']['fromDateMachineName'] = $name.'_from_date';
         $out['mappingOptions']['nested'] = true;
-        $out['mappingOptions']['index'] = null;
         $out['displayOptions']['timePickerIncrement'] = 5;
         $out['displayOptions']['locale'] = [
             'format' => 'DD/MM/YYYY HH:mm',
@@ -245,11 +244,6 @@ class DateRangeFieldType extends DataFieldType
                 'format' => 'date_time_no_millis',
             ],
         ];
-
-        if (!empty($current->getMappingOptions()['index'])) {
-            $out[$current->getMappingOptions()['fromDateMachineName']]['index'] = $current->getMappingOptions()['index'];
-            $out[$current->getMappingOptions()['toDateMachineName']]['index'] = $current->getMappingOptions()['index'];
-        }
 
         if ($current->getMappingOptions()['nested']) {
             $out = [

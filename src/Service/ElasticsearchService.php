@@ -39,7 +39,7 @@ class ElasticsearchService
         }
 
         if ('string' === $mapping['type']) {
-            if ('keyword' === ($mapping['analyzer'] ?? null) || (empty($mapping['analyzer']) && 'not_analyzed' === ($mapping['index'] ?? null))) {
+            if ('keyword' === ($mapping['analyzer'] ?? null) || (empty($mapping['analyzer']))) {
                 $mapping['type'] = 'keyword';
                 unset($mapping['analyzer']);
             } elseif ('version' === ($mapping['analyzer'] ?? null)) {
@@ -48,13 +48,6 @@ class ElasticsearchService
             } else {
                 $mapping['type'] = 'text';
             }
-        }
-
-        if (isset($mapping['index']) && 'No' === $mapping['index']) {
-            $mapping['index'] = false;
-        }
-        if (isset($mapping['index']) && false !== $mapping['index']) {
-            $mapping['index'] = true;
         }
 
         return $mapping;

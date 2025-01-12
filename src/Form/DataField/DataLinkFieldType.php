@@ -188,7 +188,7 @@ class DataLinkFieldType extends DataFieldType
         $out = parent::getDefaultOptions($name);
 
         $out['displayOptions']['dynamicLoading'] = true;
-        $out['mappingOptions']['index'] = 'not_analyzed';
+        $out['mappingOptions']['analyzer'] = 'keyword';
         $out['displayOptions']['querySearch'] = null;
 
         return $out;

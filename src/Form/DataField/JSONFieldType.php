@@ -142,7 +142,6 @@ class JSONFieldType extends DataFieldType
 
         if ($optionsForm->has('mappingOptions')) {
             $optionsForm->get('mappingOptions')
-                ->remove('index')
                 ->remove('analyzer')
                 ->add('mappingOptions', TextareaType::class, [
                     'required' => false,

@@ -19,6 +19,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     use IdentifierIntegerTrait;
 
     final public const string DISPLAY_OPTIONS = 'displayOptions';
+    final public const string MAPPING_OPTIONS = 'mappingOptions';
 
     /** @var class-string<DataFieldType> */
     protected string $type;

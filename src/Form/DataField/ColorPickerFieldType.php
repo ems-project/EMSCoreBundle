@@ -32,7 +32,7 @@ class ColorPickerFieldType extends DataFieldType
     {
         $out = parent::getDefaultOptions($name);
 
-        $out['mappingOptions']['index'] = 'not_analyzed';
+        $out['mappingOptions']['analyzer'] = 'keyword';
 
         return $out;
     }

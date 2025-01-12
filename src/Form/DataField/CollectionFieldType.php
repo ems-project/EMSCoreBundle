@@ -186,8 +186,7 @@ class CollectionFieldType extends DataFieldType
                 ->add('renumbering', CheckboxType::class, [
                     'required' => false,
                     'label' => 'Items will be renumbered',
-                ])
-                ->remove('index');
+                ]);
         }
 
         // an optional icon can't be specified ritgh to the container label

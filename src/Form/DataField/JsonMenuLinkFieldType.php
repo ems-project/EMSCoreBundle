@@ -165,15 +165,6 @@ class JsonMenuLinkFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getDefaultOptions(string $name): array
-    {
-        $out = parent::getDefaultOptions($name);
-        $out['mappingOptions']['index'] = 'not_analyzed';
-
-        return $out;
-    }
-
-    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'ems_choice';

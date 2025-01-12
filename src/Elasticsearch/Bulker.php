@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Elasticsearch;
 
 use Elastica\Bulk;
 use Elastica\Bulk\Action;
-use Elastica\Bulk\Response;
 use Elastica\Bulk\ResponseSet;
 use Elastica\Exception\Bulk\ResponseException;
 use Elastica\JSON;
@@ -186,9 +185,6 @@ class Bulker
     private function logResponse(ResponseSet $response): void
     {
         foreach ($response as $item) {
-            if (!$item instanceof Response) {
-                continue;
-            }
             if (!$item->hasError()) {
                 continue; // no error
             }

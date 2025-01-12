@@ -237,6 +237,9 @@ class JsonMenuNestedController
         $session->getFlashBag()->clear();
     }
 
+    /**
+     * @return FormInterface<mixed>
+     */
     private function createFormItem(JsonMenuNestedConfig $config, JsonMenuNestedNode $node, ?JsonMenuNested $item = null): FormInterface
     {
         $object = $item ? $item->getObject() : [];
@@ -251,7 +254,9 @@ class JsonMenuNestedController
     }
 
     /**
-     * @return array<string, mixed>
+     * @param FormInterface<mixed> $form
+     *
+     * @return ?array<string, mixed>
      */
     private function handleFormItem(FormInterface $form, JsonMenuNestedConfig $config, JsonMenuNestedNode $node): ?array
     {

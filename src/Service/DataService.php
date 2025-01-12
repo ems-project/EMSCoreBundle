@@ -136,13 +136,13 @@ class DataService
      */
     public function lockRevision(Revision $revision, ?Environment $publishEnv = null, bool $super = false, ?string $username = null, ?\DateTime $lockTime = null): string
     {
-        if (!empty($publishEnv) && !$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
+        if (null !== $publishEnv && !$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
             throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
         }
-        if (!empty($publishEnv) && \is_object($publishEnv) && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !$this->userService->inMyCircles($publishEnv->getCircles())) {
+        if (null !== $publishEnv && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !$this->userService->inMyCircles($publishEnv->getCircles())) {
             throw new PrivilegeException($revision, 'You don\'t share any circle with this content');
         }
-        if (null === $username && empty($publishEnv) && !empty($revision->giveContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->giveContentType()->getCirclesField()])) {
+        if (null === $username && null === $publishEnv && !empty($revision->giveContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->giveContentType()->getCirclesField()])) {
             if (!$this->userService->inMyCircles($revision->getRawData()[$revision->giveContentType()->getCirclesField()] ?? [])) {
                 throw new PrivilegeException($revision);
             }
@@ -230,8 +230,8 @@ class DataService
     }
 
     /**
-     * @param FormInterface<FormInterface> $form
-     * @param array<mixed>                 $objectArray
+     * @param FormInterface<mixed> $form
+     * @param array<mixed>         $objectArray
      *
      * @throws \Throwable
      */
@@ -350,7 +350,7 @@ class DataService
     }
 
     /**
-     * @param FormInterface<FormInterface> $form
+     * @param FormInterface<mixed> $form
      */
     private function walkRecursive(FormInterface $form, mixed $rawData, callable $callback): mixed
     {
@@ -660,7 +660,7 @@ class DataService
     }
 
     /**
-     * @return FormInterface<FormInterface>
+     * @return FormInterface<mixed>
      *
      * @throws \Exception
      */
@@ -683,11 +683,13 @@ class DataService
     }
 
     /**
+     * @param ?FormInterface<mixed> $form
+     *
      * @throws DataStateException
      * @throws \Exception
      * @throws \Throwable
      */
-    public function finalizeDraft(Revision $revision, ?FormInterface &$form = null, ?string $username = null, bool $computeFields = true): Revision
+    public function finalizeDraft(Revision $revision, ?FormInterface $form = null, ?string $username = null, bool $computeFields = true): Revision
     {
         if ($revision->getDeleted()) {
             throw new \Exception('Can not finalized a deleted revision');
@@ -788,12 +790,16 @@ class DataService
     }
 
     /**
-     * @param FormInterface<FormInterface> $form
+     * @param FormInterface<mixed> $form
      */
     private function logFormErrors(FormInterface $form): void
     {
         $formErrors = $form->getErrors(true);
         foreach ($formErrors as $formError) {
+            if (!$formError instanceof FormError) {
+                continue;
+            }
+
             $fieldForm = $formError->getOrigin();
             $dataField = null;
             while (null !== $fieldForm && !$fieldForm->getNormData() instanceof DataField) {
@@ -838,7 +844,7 @@ class DataService
     /**
      * Parcours all fields and call DataFieldsType postFinalizeTreament function.
      *
-     * @param FormInterface<FormInterface> $form
+     * @param FormInterface<mixed> $form
      */
     public function postFinalizeTreatment(string $type, string $id, FormInterface $form, mixed $previousObjectArray = null): void
     {
@@ -972,10 +978,7 @@ class DataService
                     $revision->setCircles([$revision->getRawData()[$contentType->getCirclesField()]]);
                 }
             } else {
-                $fieldType = null;
-                if (null !== $contentTypeCircleField = $contentType->getCirclesField()) {
-                    $fieldType = $contentType->getFieldType()->getChildByPath($contentTypeCircleField);
-                }
+                $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
 
                 if ($fieldType) {
                     $options = $fieldType->getDisplayOptions();
@@ -1383,15 +1386,15 @@ class DataService
             return;
         }
 
-        if ((\is_countable($object) ? \count($object) : 0) > 0) {
-            $html = DataService::arrayToHtml($object);
+        if (\count($object) > 0) {
+            $html = self::arrayToHtml($object);
 
             $this->logger->warning('service.data.data_not_consumed', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
-                'count' => \is_countable($object) ? \count($object) : 0,
+                'count' => \count($object),
                 'data' => $html,
             ]);
         }
@@ -1454,7 +1457,7 @@ class DataService
     }
 
     /**
-     * @param FormInterface<FormInterface> $form
+     * @param FormInterface<mixed> $form
      *
      * @return mixed
      */
@@ -1517,8 +1520,8 @@ class DataService
     }
 
     /**
-     * @param FormInterface<FormInterface> $form
-     * @param ?array<mixed>                $masterRawData
+     * @param FormInterface<mixed> $form
+     * @param ?array<mixed>        $masterRawData
      *
      * @throws \Exception
      */
@@ -1545,7 +1548,7 @@ class DataService
         $dataField = $viewData;
 
         $dataFieldType = null;
-        if (null !== $dataField->getFieldType() && null !== $dataField->getFieldType()->getType()) {
+        if (null !== $dataField->getFieldType()?->getType()) {
             /** @var DataFieldType $dataFieldType */
             $dataFieldType = $this->formRegistry->getType($dataField->getFieldType()->getType())->getInnerType();
             $dataFieldType->isValid($dataField, $parent, $masterRawData);
@@ -1685,7 +1688,7 @@ class DataService
     }
 
     /**
-     * @param FormInterface<FormInterface> $form
+     * @param FormInterface<mixed> $form
      */
     public function getDataFieldsStructure(FormInterface $form): DataField
     {

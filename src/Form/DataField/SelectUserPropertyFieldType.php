@@ -49,8 +49,8 @@ final class SelectUserPropertyFieldType extends DataFieldType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<string, mixed>                       $options
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed>        $options
      */
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -121,12 +121,13 @@ final class SelectUserPropertyFieldType extends DataFieldType
         }
     }
 
+    /**
+     * @return array{'value': array<mixed>|string|int|float|bool|null}
+     */
     #[\Override]
-    public function viewTransform(DataField $dataField)
+    public function viewTransform(DataField $dataField): array
     {
-        $test = parent::viewTransform($dataField);
-
-        return ['value' => $test];
+        return ['value' => parent::viewTransform($dataField)];
     }
 
     /**

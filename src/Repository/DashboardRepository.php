@@ -15,8 +15,8 @@ use EMS\CoreBundle\Entity\Dashboard;
  * @extends ServiceEntityRepository<Dashboard>
  *
  * @method Dashboard|null find($id, $lockMode = null, $lockVersion = null)
- * @method Dashboard|null findOneBy(array $criteria, array $orderBy = null)
- * @method Dashboard[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Dashboard|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
+ * @method Dashboard[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
 final class DashboardRepository extends ServiceEntityRepository
 {

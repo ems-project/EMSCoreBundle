@@ -13,8 +13,8 @@ use EMS\CoreBundle\Entity\Form;
  * @extends ServiceEntityRepository<Form>
  *
  * @method Form|null find($id, $lockMode = null, $lockVersion = null)
- * @method Form|null findOneBy(array $criteria, array $orderBy = null)
- * @method Form[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Form|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
+ * @method Form[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
 final class FormRepository extends ServiceEntityRepository
 {

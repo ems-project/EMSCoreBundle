@@ -47,7 +47,7 @@ final class AuthTokenLoginAuthenticator extends AbstractAuthenticator
     }
 
     #[\Override]
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): Response
     {
         $user = $token->getUser();
         if (!$user instanceof CoreUserInterface) {

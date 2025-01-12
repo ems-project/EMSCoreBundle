@@ -138,9 +138,6 @@ class CreateEnvironmentCommand extends Command
         }
 
         $environment = $this->environmentService->getAliasByName($environmentName);
-        if (!\is_string($environmentName)) {
-            throw new \RuntimeException('Environment name as to be a string');
-        }
         if ($environment) {
             $message = \sprintf('The environment "%s" already exist', $environmentName);
             $this->setEnvironmentNameArgument($input, $message);

@@ -21,8 +21,8 @@ use Ramsey\Uuid\UuidInterface;
 /**
  * @extends EntityRepository<Revision>
  *
- * @method Revision|null findOneBy(array $criteria, array $orderBy = null)
- * @method Revision[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Revision|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
+ * @method Revision[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
 class RevisionRepository extends EntityRepository
 {

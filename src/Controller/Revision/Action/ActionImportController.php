@@ -99,6 +99,9 @@ class ActionImportController
         return true;
     }
 
+    /**
+     * @return FormInterface<mixed>
+     */
     private function getForm(): FormInterface
     {
         return $this->formFactory->createBuilder(FormType::class, [])

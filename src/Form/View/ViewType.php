@@ -12,6 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Twig\Environment;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 abstract class ViewType extends AbstractType
 {
     public function __construct(

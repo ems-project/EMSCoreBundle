@@ -16,7 +16,7 @@ final readonly class DatatableRuntime implements RuntimeExtensionInterface
 
     /**
      * @param string[]             $environmentNames
-     * @param string[]             $contentTypeNames
+     * @param list<string>         $contentTypeNames
      * @param array<string, mixed> $options
      */
     public function generateDatatable(array $environmentNames, array $contentTypeNames, array $options): string

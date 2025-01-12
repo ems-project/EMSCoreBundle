@@ -13,7 +13,7 @@ use EMS\CoreBundle\Entity\WysiwygStylesSet;
  * @extends ServiceEntityRepository<WysiwygStylesSet>
  *
  * @method WysiwygStylesSet|null find($id)
- * @method WysiwygStylesSet|null findOneBy(array $criteria, array $orderBy = null)
+ * @method WysiwygStylesSet|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
  */
 class WysiwygStylesSetRepository extends ServiceEntityRepository
 {

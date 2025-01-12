@@ -13,7 +13,7 @@ use EMS\CoreBundle\Entity\ReleaseRevision;
 /**
  * @extends ServiceEntityRepository<ReleaseRevision>
  *
- * @method ReleaseRevision[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ReleaseRevision[] findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
 final class ReleaseRevisionRepository extends ServiceEntityRepository
 {

@@ -36,7 +36,9 @@ class NestedFieldType extends DataFieldType
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
             foreach ($dataField->getChildren() as $child) {
-                $child->updateDataValue($sourceArray);
+                if (\is_array($sourceArray)) {
+                    $child->updateDataValue($sourceArray);
+                }
             }
         }
 
@@ -44,8 +46,8 @@ class NestedFieldType extends DataFieldType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<string, mixed>                       $options
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed>        $options
      */
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -67,8 +69,8 @@ class NestedFieldType extends DataFieldType
     }
 
     /**
-     * @param FormInterface<FormInterface> $form
-     * @param array<string, mixed>         $options
+     * @param FormInterface<mixed> $form
+     * @param array<string, mixed> $options
      */
     #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void

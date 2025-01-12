@@ -24,6 +24,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Validator\Constraints\Email;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 class LoadLinkModalType extends AbstractType
 {
     public const LINK_TYPE_URL = 'url';
@@ -50,8 +53,8 @@ class LoadLinkModalType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<string, mixed>                       $options
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed>        $options
      */
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void

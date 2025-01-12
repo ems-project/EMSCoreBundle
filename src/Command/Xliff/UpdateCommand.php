@@ -93,6 +93,7 @@ final class UpdateCommand extends AbstractCommand
         $this->localeField = $this->getOptionStringNull(self::OPTION_LOCALE_FIELD);
         $this->dryRun = $this->getOptionBool(self::OPTION_DRY_RUN);
         $this->currentRevisionOnly = $this->getOptionBool(self::OPTION_CURRENT_REVISION_ONLY);
+        $this->baseUrl = $this->getOptionStringNull(self::OPTION_BASE_URL);
 
         if ($this->archive && null === $this->publishTo) {
             throw new \RuntimeException(\sprintf('The %s option can be activate only if the %s option is DEFINED', self::OPTION_ARCHIVE, self::OPTION_PUBLISH_TO));

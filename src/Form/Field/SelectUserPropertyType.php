@@ -16,6 +16,9 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 final class SelectUserPropertyType extends AbstractType
 {
     public function __construct(private readonly UserService $userService)
@@ -35,8 +38,8 @@ final class SelectUserPropertyType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<string, mixed>                       $options
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed>        $options
      */
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -122,7 +125,7 @@ final class SelectUserPropertyType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
+     * @param FormBuilderInterface<mixed> $builder
      */
     private function allowDynamicChoices(FormBuilderInterface $builder, EventDispatcher $eventDispatcher): void
     {

@@ -371,7 +371,7 @@ class CrudController extends AbstractController
             $revision = $this->dataService->replaceData($revision, $rawData, $replaceOrMerge);
         }
 
-        $this->dataService->finalizeDraft($revision, $form);
+        $this->dataService->finalizeDraft($revision);
 
         if ($request->query->getBoolean('refresh')) {
             $this->dataService->refresh($revision->giveContentType()->giveEnvironment());

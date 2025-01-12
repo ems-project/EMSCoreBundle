@@ -92,7 +92,7 @@ class ManagedAliasController extends AbstractController
     }
 
     /**
-     * @param FormInterface<FormInterface> $form
+     * @param FormInterface<mixed> $form
      *
      * @return array<mixed>
      */

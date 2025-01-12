@@ -12,7 +12,7 @@ use EMS\CoreBundle\Entity\I18n;
 /**
  * @extends ServiceEntityRepository<I18n>
  *
- * @method I18n|null findOneBy(array $criteria, array $orderBy = null)
+ * @method I18n|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
  */
 class I18nRepository extends ServiceEntityRepository
 {

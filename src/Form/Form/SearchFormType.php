@@ -23,6 +23,9 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 class SearchFormType extends AbstractType
 {
     public function __construct(private readonly AuthorizationCheckerInterface $authorizationChecker, private readonly SortOptionService $sortOptionService, private readonly SearchFieldOptionService $searchFieldOptionService)
@@ -30,8 +33,8 @@ class SearchFormType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<string, mixed>                       $options
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed>        $options
      */
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -152,9 +155,9 @@ class SearchFormType extends AbstractType
     }
 
     /**
-     * @param FormView<FormView>           $view
-     * @param FormInterface<FormInterface> $form
-     * @param array<mixed>                 $options
+     * @param FormView<FormView>   $view
+     * @param FormInterface<mixed> $form
+     * @param array<mixed>         $options
      */
     #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void

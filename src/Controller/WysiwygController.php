@@ -201,6 +201,9 @@ class WysiwygController extends AbstractController
         ]);
     }
 
+    /**
+     * @return RedirectResponse|FormInterface<mixed>
+     */
     private function datatableProfiles(Request $request): RedirectResponse|FormInterface
     {
         $table = $this->dataTableFactory->create(WysiwygProfileDataTableType::class);
@@ -224,6 +227,9 @@ class WysiwygController extends AbstractController
         return $form;
     }
 
+    /**
+     * @return RedirectResponse|FormInterface<mixed>
+     */
     private function datatableStyleSets(Request $request): RedirectResponse|FormInterface
     {
         $table = $this->dataTableFactory->create(WysiwygStylesSetDataTableType::class);

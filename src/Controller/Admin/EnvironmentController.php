@@ -248,6 +248,9 @@ class EnvironmentController extends AbstractController
         };
     }
 
+    /**
+     * @return RedirectResponse|FormInterface<mixed>
+     */
     private function dataTableEnvironment(Request $request): RedirectResponse|FormInterface
     {
         $table = $this->dataTableFactory->create(EnvironmentDataTableType::class, ['managed' => true]);
@@ -271,6 +274,9 @@ class EnvironmentController extends AbstractController
         return $form;
     }
 
+    /**
+     * @return FormInterface<mixed>
+     */
     private function dataTableExternalEnvironment(): FormInterface
     {
         $table = $this->dataTableFactory->create(EnvironmentDataTableType::class, ['managed' => false]);
@@ -280,6 +286,9 @@ class EnvironmentController extends AbstractController
         ]);
     }
 
+    /**
+     * @return FormInterface<mixed>
+     */
     private function dataTableManagedAlias(): FormInterface
     {
         $table = $this->dataTableFactory->create(EnvironmentManagedAliasDataTableType::class);

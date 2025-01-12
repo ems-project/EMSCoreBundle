@@ -104,6 +104,9 @@ class RevisionService implements RevisionServiceInterface
         return $compareRevision->getRawData();
     }
 
+    /**
+     * @return FormInterface<mixed>
+     */
     public function createRevisionForm(Revision $revision, bool $ignoreNotConsumed = false): FormInterface
     {
         if (null == $revision->getDatafield()) {

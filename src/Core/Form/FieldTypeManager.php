@@ -62,9 +62,6 @@ class FieldTypeManager
                     $fieldTypeNameOrServiceName = $formArray['ems:internal:add:field:class'];
                     $fieldName = $formArray['ems:internal:add:field:name'];
                     $dataFieldType = $this->getDataFieldType($fieldTypeNameOrServiceName);
-                    if (!$dataFieldType instanceof DataFieldType) {
-                        throw new \RuntimeException('Unexpected DataFieldType object');
-                    }
                     $child = new FieldType();
                     $child->setName($fieldName);
                     $child->setType($fieldTypeNameOrServiceName);

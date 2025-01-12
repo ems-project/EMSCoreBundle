@@ -13,7 +13,7 @@ use EMS\CoreBundle\Entity\UserInterface;
 /**
  * @extends ServiceEntityRepository<AuthToken>
  *
- * @method AuthToken|null findOneBy(array $criteria, array $orderBy = null)
+ * @method AuthToken|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
  */
 class AuthTokenRepository extends ServiceEntityRepository
 {

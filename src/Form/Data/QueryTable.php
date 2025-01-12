@@ -103,7 +103,7 @@ class QueryTable extends TableAbstract
             $this->count = $this->service->countQuery($this->getSearchValue(), $this->context);
         }
 
-        return $this->count;
+        return $this->count > 0 ? $this->count : 0;
     }
 
     #[\Override]

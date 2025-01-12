@@ -47,7 +47,7 @@ final readonly class Revisions implements \IteratorAggregate
     }
 
     /**
-     * @return \ArrayIterator<int, Revision>|Revision[]
+     * @return \ArrayIterator<int, Revision>
      */
     #[\Override]
     public function getIterator(): \ArrayIterator

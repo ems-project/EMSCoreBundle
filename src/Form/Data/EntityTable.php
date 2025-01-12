@@ -96,7 +96,7 @@ final class EntityTable extends TableAbstract
             $this->count = $this->entityService->count($this->getSearchValue(), $this->context);
         }
 
-        return $this->count;
+        return $this->count > 0 ? $this->count : 0;
     }
 
     #[\Override]

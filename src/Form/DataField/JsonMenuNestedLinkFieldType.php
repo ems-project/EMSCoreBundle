@@ -67,8 +67,8 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<string, mixed>                       $options
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed>        $options
      */
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -99,8 +99,8 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     }
 
     /**
-     * @param FormInterface<FormInterface> $form
-     * @param array<mixed>                 $options
+     * @param FormInterface<mixed> $form
+     * @param array<mixed>         $options
      */
     #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void

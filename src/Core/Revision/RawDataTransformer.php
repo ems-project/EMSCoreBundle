@@ -60,7 +60,7 @@ final class RawDataTransformer
                         }
                     }
                 } else {
-                    if (isset($data[$child->getName()]) && null !== $data[$child->getName()]) {
+                    if (isset($data[$child->getName()])) {
                         $out[$child->getName()] = $data[$child->getName()];
                     }
                 }
@@ -123,7 +123,7 @@ final class RawDataTransformer
                         }
                     }
                 } else {
-                    if (isset($data[$child->getName()]) && null !== $data[$child->getName()]) {
+                    if (isset($data[$child->getName()])) {
                         $out[$child->getName()] = $data[$child->getName()];
                     }
                 }

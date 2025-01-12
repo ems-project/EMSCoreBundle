@@ -33,8 +33,8 @@ final readonly class PostProcessingService
     }
 
     /**
-     * @param FormInterface<FormInterface> $form
-     * @param array<mixed>                 $object
+     * @param FormInterface<mixed> $form
+     * @param array<mixed>         $object
      */
     public function jsonMenuNested(FormInterface $form, ContentType $contentType, array &$object): bool
     {
@@ -42,10 +42,10 @@ final readonly class PostProcessingService
     }
 
     /**
-     * @param FormInterface<FormInterface> $form
-     * @param array<mixed>                 $objectArray
-     * @param array<mixed>                 $context
-     * @param array<mixed>                 $parent
+     * @param FormInterface<mixed> $form
+     * @param array<mixed>         $objectArray
+     * @param array<mixed>         $context
+     * @param array<mixed>         $parent
      */
     public function postProcessing(FormInterface $form, ContentType $contentType, array &$objectArray, array $context = [], ?array &$parent = [], string $path = ''): bool
     {

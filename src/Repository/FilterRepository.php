@@ -12,7 +12,7 @@ use EMS\CoreBundle\Entity\Filter;
 /**
  * @extends ServiceEntityRepository<Filter>
  *
- * @method Filter|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Filter|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
  */
 class FilterRepository extends ServiceEntityRepository
 {

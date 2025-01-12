@@ -14,8 +14,8 @@ use EMS\CoreBundle\Entity\Schedule;
  * @extends ServiceEntityRepository<Schedule>
  *
  * @method Schedule|null find($id, $lockMode = null, $lockVersion = null)
- * @method Schedule|null findOneBy(array $criteria, array $orderBy = null)
- * @method Schedule[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Schedule|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
+ * @method Schedule[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
 class ScheduleRepository extends ServiceEntityRepository
 {

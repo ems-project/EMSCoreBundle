@@ -11,7 +11,7 @@ use EMS\CoreBundle\Entity\Job;
 /**
  * @extends EntityRepository<Job>
  *
- * @method Job|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Job|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
  */
 class JobRepository extends EntityRepository
 {

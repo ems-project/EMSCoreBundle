@@ -20,6 +20,9 @@ use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 class FieldTypeType extends AbstractType
 {
     public function __construct(private readonly FieldTypePickerType $fieldTypePickerType, private readonly FormRegistryInterface $formRegistry, private readonly LoggerInterface $logger)
@@ -27,8 +30,8 @@ class FieldTypeType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<mixed>                               $options
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<mixed>                $options
      */
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -145,9 +148,9 @@ class FieldTypeType extends AbstractType
     }
 
     /**
-     * @param FormView<FormView>           $view
-     * @param FormInterface<FormInterface> $form
-     * @param array<mixed>                 $options
+     * @param FormView<FormView>   $view
+     * @param FormInterface<mixed> $form
+     * @param array<mixed>         $options
      */
     #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void

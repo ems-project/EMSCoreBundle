@@ -19,6 +19,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function Symfony\Component\Translation\t;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 final class TableType extends AbstractType
 {
     public const string REORDER_ACTION = 'reorderAction';
@@ -40,8 +43,8 @@ final class TableType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<string, mixed>                       $options
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed>        $options
      */
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -105,8 +108,8 @@ final class TableType extends AbstractType
     }
 
     /**
-     * @param FormInterface<AbstractType> $form
-     * @param array<string, mixed>        $options
+     * @param FormInterface<mixed> $form
+     * @param array<string, mixed> $options
      */
     #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
@@ -123,6 +126,9 @@ final class TableType extends AbstractType
         return 'emsco_form_table_type';
     }
 
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     */
     private function addAction(FormBuilderInterface $builder, TableAction $action): void
     {
         $submitOptions = ['icon' => $action->getIcon(), 'label' => $action->getLabelKey()];

@@ -11,9 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * It's a coumpound field for field specific migration option.
- *
- * @author Mathieu De Keyzer <ems@theus.be>
+ * @extends AbstractType<mixed>
  */
 class MigrationOptionsType extends AbstractType
 {
@@ -22,8 +20,8 @@ class MigrationOptionsType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<string, mixed>                       $options
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed>        $options
      */
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void

@@ -138,6 +138,9 @@ class DataTableFactory
         return $table;
     }
 
+    /**
+     * @return ?FormInterface<mixed>
+     */
     private function buildFilterForm(DataTableTypeInterface $type, mixed $context): ?FormInterface
     {
         if (!$type instanceof DataTableFilterFormInterface) {
@@ -151,6 +154,9 @@ class DataTableFactory
         return $filterForm;
     }
 
+    /**
+     * @param ?FormInterface<mixed> $filterForm
+     */
     private function addFilterFormToContext(DataTableTypeInterface $type, mixed $context, ?FormInterface $filterForm = null): mixed
     {
         if (!$type instanceof DataTableFilterFormInterface || null === $filterForm) {
@@ -187,6 +193,8 @@ class DataTableFactory
     }
 
     /**
+     * @param ?FormInterface<mixed> $filterForm
+     *
      * @return array<string, mixed>
      */
     private function generateUrlParams(DataTableTypeInterface $type, ?string $optionsCacheKey, ?FormInterface $filterForm): array

@@ -104,7 +104,7 @@ final readonly class ActionService implements EntityServiceInterface
     }
 
     #[\Override]
-    public function getByItemName(string $name): ?EntityInterface
+    public function getByItemName(string $name): EntityInterface
     {
         return $this->templateRepository->getById((int) $name);
     }

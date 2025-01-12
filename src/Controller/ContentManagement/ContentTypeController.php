@@ -309,9 +309,7 @@ class ContentTypeController extends AbstractController
     {
         $editFieldType = new EditFieldType($field);
 
-        /** @var Form $form */
         $form = $this->createForm(EditFieldTypeType::class, $editFieldType);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -320,10 +318,10 @@ class ContentTypeController extends AbstractController
                 $subFieldName = $form->get('fieldType')->get('ems:internal:add:subfield:name')->getData();
             }
 
-            /** @var Button $clickable */
-            $clickable = $form->getClickedButton();
+            $clickedButton = $form instanceof Form ? $form->getClickedButton() : null;
+            $action = $clickedButton instanceof Button ? $clickedButton->getName() : 'unknown';
 
-            return $this->treatFieldSubmit($contentType, $field, $clickable->getName(), $subFieldName);
+            return $this->treatFieldSubmit($contentType, $field, $action, $subFieldName);
         }
 
         return $this->render("@$this->templateNamespace/contenttype/field.html.twig", [

@@ -86,6 +86,6 @@ class ArrayDataSource implements \Countable
             return 'desc' === $orderDirection ? $result * -1 : $result;
         });
 
-        return new self(data: \array_values($data));
+        return new self(data: $data);
     }
 }

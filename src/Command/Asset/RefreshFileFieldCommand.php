@@ -91,7 +91,6 @@ class RefreshFileFieldCommand extends AbstractCommand
             } else {
                 $fileField[EmsFields::CONTENT_IMAGE_RESIZED_HASH_FIELD] = $resizedHash;
             }
-            $fileField = \array_filter($fileField, fn ($value) => null !== $value);
             $propertyAccessor->setValue($rawData, $propertyPath, $fileField);
         }
         if (!$fieldsFound) {

@@ -138,7 +138,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     }
 
     #[\Override]
-    public function setCircles(array $circles): self
+    public function setCircles(?array $circles): self
     {
         $this->circles = $circles;
 

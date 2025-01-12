@@ -129,7 +129,7 @@ final readonly class ReleaseRevisionService implements QueryServiceInterface, En
     }
 
     #[\Override]
-    public function getByItemName(string $name): ?EntityInterface
+    public function getByItemName(string $name): EntityInterface
     {
         return $this->releaseRevisionRepository->getById($name);
     }

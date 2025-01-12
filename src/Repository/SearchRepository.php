@@ -11,7 +11,7 @@ use EMS\CoreBundle\Entity\Form\Search;
 /**
  * @extends ServiceEntityRepository<Search>
  *
- * @method Search[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Search[] findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
 class SearchRepository extends ServiceEntityRepository
 {

@@ -12,7 +12,7 @@ use EMS\CoreBundle\Entity\Analyzer;
 /**
  * @extends ServiceEntityRepository<Analyzer>
  *
- * @method Analyzer|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Analyzer|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
  */
 class AnalyzerRepository extends ServiceEntityRepository
 {

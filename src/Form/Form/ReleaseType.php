@@ -16,14 +16,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function Symfony\Component\Translation\t;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 final class ReleaseType extends AbstractType
 {
     public const string BTN_SAVE = 'save';
     public const string BTN_SAVE_CLOSE = 'saveAndClose';
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<string, mixed>                       $options
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed>        $options
      */
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void

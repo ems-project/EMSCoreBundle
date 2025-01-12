@@ -13,7 +13,7 @@ use EMS\CoreBundle\Entity\QuerySearch;
  * @extends ServiceEntityRepository<QuerySearch>
  *
  * @method QuerySearch|null find($id, $lockMode = null, $lockVersion = null)
- * @method QuerySearch[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method QuerySearch[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
 final class QuerySearchRepository extends ServiceEntityRepository
 {

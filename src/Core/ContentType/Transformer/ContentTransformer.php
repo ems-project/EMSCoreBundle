@@ -66,7 +66,7 @@ final readonly class ContentTransformer
         if (!$dryRun) {
             $revision = $this->dataService->initNewDraft($revision->getContentTypeName(), $revision->giveOuuid(), null, $user);
             $revision->setRawData($rawData);
-            $this->dataService->finalizeDraft($revision, $revisionType, $user, false);
+            $this->dataService->finalizeDraft($revision, null, $user, false);
         }
 
         return true;

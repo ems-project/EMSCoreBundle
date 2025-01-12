@@ -204,7 +204,7 @@ class MigrateCommand extends AbstractCommand
         $this->onlyChanged = (bool) $input->getOption(self::OPTION_CHANGED);
 
         $contentTypeTo = $this->contentTypeRepository->findByName($this->contentTypeNameTo);
-        if (null === $contentTypeTo || !$contentTypeTo instanceof ContentType) {
+        if (null === $contentTypeTo) {
             $this->io->error(\sprintf('Content type "%s" not found', $this->contentTypeNameTo));
 
             return -1;

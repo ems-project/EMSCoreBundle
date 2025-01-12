@@ -13,7 +13,7 @@ use EMS\CoreBundle\Entity\WysiwygProfile;
  * @extends ServiceEntityRepository<WysiwygProfile>
  *
  * @method WysiwygProfile|null find($id)
- * @method WysiwygProfile|null findOneBy(array $criteria, array $orderBy = null)
+ * @method WysiwygProfile|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
  */
 class WysiwygProfileRepository extends ServiceEntityRepository
 {

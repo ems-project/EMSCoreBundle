@@ -78,6 +78,7 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
     }
 
     /**
+     * @param FormInterface<mixed>  $filterForm
      * @param TasksDataTableContext $context
      */
     #[\Override]
@@ -92,6 +93,8 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
 
     /**
      * @param TasksDataTableContext $context
+     *
+     * @return FormInterface<mixed>
      */
     #[\Override]
     public function filterFormBuild(FormFactoryInterface $formFactory, mixed $context): FormInterface

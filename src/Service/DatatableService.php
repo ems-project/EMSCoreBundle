@@ -30,7 +30,7 @@ final readonly class DatatableService
 
     /**
      * @param string[]             $environmentNames
-     * @param string[]             $contentTypeNames
+     * @param list<string>         $contentTypeNames
      * @param array<string, mixed> $options
      */
     public function generateDatatable(array $environmentNames, array $contentTypeNames, array $options): ElasticaTable
@@ -99,7 +99,7 @@ final readonly class DatatableService
     }
 
     /**
-     * @return array{contentTypes: string[], aliases: string[], config: array<mixed>}
+     * @return array{contentTypes: list<string>, aliases: string[], config: array<mixed>}
      */
     private function parsePersistedConfig(string $jsonConfig): array
     {
@@ -120,7 +120,7 @@ final readonly class DatatableService
             ->setAllowedTypes(self::ALIASES, ['array'])
             ->setAllowedTypes(self::CONFIG, ['array'])
         ;
-        /** @var array{contentTypes: string[], aliases: string[], config: array<mixed>} $resolvedParameter */
+        /** @var array{contentTypes: list<string>, aliases: string[], config: array<mixed>} $resolvedParameter */
         $resolvedParameter = $resolver->resolve($parameters);
 
         return $resolvedParameter;

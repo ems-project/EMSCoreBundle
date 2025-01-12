@@ -14,6 +14,9 @@ use IteratorAggregate;
  */
 final readonly class SimpleBatchIteratorAggregate implements \IteratorAggregate
 {
+    /**
+     * @param AbstractQuery<mixed> $query
+     */
     public static function fromQuery(AbstractQuery $query, int $batchSize): self
     {
         return new self($query->toIterable(), $query->getEntityManager(), $batchSize);

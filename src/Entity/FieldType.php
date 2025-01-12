@@ -341,10 +341,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
 
     public function isContainer(): bool
     {
-        /** @var DataFieldType $type */
-        $type = $this->getType();
-
-        return $type::isContainer();
+        return $this->getType()::isContainer();
     }
 
     public function isJsonMenuNestedEditor(): bool

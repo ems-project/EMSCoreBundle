@@ -12,7 +12,7 @@ use EMS\CoreBundle\Entity\Release;
 /**
  * @extends ServiceEntityRepository<Release>
  *
- * @method Release[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Release[] findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
 final class ReleaseRepository extends ServiceEntityRepository
 {

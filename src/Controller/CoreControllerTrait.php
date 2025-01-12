@@ -9,6 +9,9 @@ use Symfony\Component\Form\FormInterface;
 
 trait CoreControllerTrait
 {
+    /**
+     * @param FormInterface<mixed> $form
+     */
     protected function getClickedButtonName(FormInterface $form): ?string
     {
         if (!$form instanceof Form) {

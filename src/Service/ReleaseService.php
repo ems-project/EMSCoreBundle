@@ -302,7 +302,7 @@ final readonly class ReleaseService implements EntityServiceInterface
     }
 
     #[\Override]
-    public function getByItemName(string $name): ?EntityInterface
+    public function getByItemName(string $name): EntityInterface
     {
         return $this->releaseRepository->getById($name);
     }

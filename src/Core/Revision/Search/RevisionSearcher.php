@@ -45,7 +45,7 @@ final class RevisionSearcher
     }
 
     /**
-     * @param string[] $contentTypes
+     * @param list<string> $contentTypes
      */
     public function create(Environment $environment, string $query, array $contentTypes = [], bool $docs = false): RevisionSearch
     {

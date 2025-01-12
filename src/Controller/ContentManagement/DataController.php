@@ -608,7 +608,9 @@ class DataController extends AbstractController
             $this->revisionRepository->save($revision);
 
             $this->dataService->isValid($form, null, $objectArray);
-            $this->dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->giveContentType(), $revision->giveContentType()->getName(), $revision->getOuuid(), false, false);
+            if (\is_array($objectArray)) {
+                $this->dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->giveContentType(), $revision->giveContentType()->getName(), $revision->getOuuid(), false, false);
+            }
 
             $session = $request->getSession();
             if ($session instanceof Session) {
@@ -623,8 +625,11 @@ class DataController extends AbstractController
         }
 
         $serialisedFormErrors = [];
-        /** @var FormError $error */
         foreach ($formErrors as $error) {
+            if (!$error instanceof FormError) {
+                continue;
+            }
+
             $serialisedFormErrors[] = [
                 'propertyPath' => AppExtension::propertyPath($error),
                 'message' => $error->getMessage(),
@@ -659,7 +664,7 @@ class DataController extends AbstractController
             }
 
             $revision = $this->dataService->finalizeDraft($revision, $form);
-            if (0 !== (\is_countable($form->getErrors()) ? \count($form->getErrors()) : 0)) {
+            if (0 !== $form->getErrors()->count()) {
                 $this->logger->error('log.data.revision.can_finalized_as_invalid', [
                     EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                     EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),

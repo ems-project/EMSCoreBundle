@@ -41,7 +41,7 @@ final class AuthTokenAuthenticator extends AbstractAuthenticator
     }
 
     #[\Override]
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
         return new JsonResponse([
             'success' => false,

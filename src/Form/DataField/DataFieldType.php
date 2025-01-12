@@ -20,9 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * It's the mother class of all specific DataField used in eMS.
- *
- * @author Mathieu De Keyzer <ems@theus.be>
+ * @extends AbstractType<mixed>
  */
 abstract class DataFieldType extends AbstractType
 {
@@ -60,8 +58,8 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<string, mixed>                       $options
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed>        $options
      */
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -305,8 +303,8 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * @param FormInterface<FormInterface> $form
-     * @param array<string, mixed>         $options
+     * @param FormInterface<mixed> $form
+     * @param array<string, mixed> $options
      */
     #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void
@@ -334,7 +332,7 @@ abstract class DataFieldType extends AbstractType
      * Build an array representing the object, this array is ready to be serialized in json
      * and push in elasticsearch.
      *
-     * @param array<string, mixed> $out
+     * @param array<int|string, mixed> $out
      */
     public function buildObjectArray(DataField $data, array &$out): void
     {
@@ -455,8 +453,8 @@ abstract class DataFieldType extends AbstractType
     /**
      * Build a Field specific options sub-form (or compount field) (used in edit content type).
      *
-     * @param FormBuilderInterface<FormBuilderInterface> $builder
-     * @param array<string, mixed>                       $options
+     * @param FormBuilderInterface<mixed> $builder
+     * @param array<string, mixed>        $options
      */
     public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
     {
@@ -506,6 +504,9 @@ abstract class DataFieldType extends AbstractType
         return [$current->getName() => $options];
     }
 
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     */
     protected function buildChildForm(FieldType $fieldType, mixed $options, FormBuilderInterface $builder): void
     {
         if (!$fieldType->getDeleted()) {

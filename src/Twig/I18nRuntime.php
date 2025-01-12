@@ -37,7 +37,7 @@ class I18nRuntime implements RuntimeExtensionInterface
 
         $content = [];
         \array_map(function ($element) use ($jsonDecode, &$content) {
-            if (!\is_string($element['locale'])) {
+            if ('' === $element['locale']) {
                 throw new \RuntimeException('Unexpected non string locale');
             }
             $content[$element['locale']] = $jsonDecode ? Json::decode($element['text']) : $element['text'];

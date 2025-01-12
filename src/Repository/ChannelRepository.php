@@ -15,8 +15,8 @@ use EMS\CoreBundle\Exception\NotFoundException;
  * @extends ServiceEntityRepository<Channel>
  *
  * @method Channel|null find($id, $lockMode = null, $lockVersion = null)
- * @method Channel|null findOneBy(array $criteria, array $orderBy = null)
- * @method Channel[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Channel|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
+ * @method Channel[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
 final class ChannelRepository extends ServiceEntityRepository
 {

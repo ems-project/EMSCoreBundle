@@ -10,7 +10,7 @@ use EMS\CoreBundle\Entity\SearchFieldOption;
 /**
  * @extends EntityRepository<SearchFieldOption>
  *
- * @method SearchFieldOption[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method SearchFieldOption[] findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
 class SearchFieldOptionRepository extends EntityRepository
 {

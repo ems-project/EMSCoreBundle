@@ -24,7 +24,7 @@ abstract class EntityService
     abstract protected function getEntityName(): string;
 
     /**
-     * @param FormInterface<FormInterface> $reorderForm
+     * @param FormInterface<mixed> $reorderForm
      */
     public function reorder(FormInterface $reorderForm): void
     {

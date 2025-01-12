@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Revision\Search;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Elastica\Document;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\Environment;
@@ -23,7 +22,6 @@ final class RevisionSearcher
     public function __construct(
         private readonly ElasticaService $elasticaService,
         private readonly RevisionRepository $revisionRepository,
-        private readonly EntityManagerInterface $entityManager,
         string $defaultScrollSize,
     ) {
         $this->setSize((int) $defaultScrollSize);
@@ -70,10 +68,6 @@ final class RevisionSearcher
      */
     public function search(Environment $environment, RevisionSearch $search): iterable
     {
-        $config = $this->entityManager->getConnection()->getConfiguration();
-        $logger = $config->getSQLLogger();
-        $config->setSQLLogger(null);
-
         foreach ($search->getScroll() as $resultSet) {
             $documents = $resultSet->getDocuments();
             /** @var string[] $ouuids */
@@ -82,8 +76,6 @@ final class RevisionSearcher
 
             yield new Revisions($qb, $resultSet, $this->size);
         }
-
-        $config->setSQLLogger($logger);
     }
 
     public function lock(Revisions $revisions, string $lockBy, string $until = '+5 minutes'): void

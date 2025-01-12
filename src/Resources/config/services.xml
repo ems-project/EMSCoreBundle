@@ -130,7 +130,6 @@
         <service id="ems_core.core_revision_search.revision_searcher" class="EMS\CoreBundle\Core\Revision\Search\RevisionSearcher">
             <argument type="service" id="ems_common.service.elastica"/>
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
-            <argument type="service" id="Doctrine\ORM\EntityManagerInterface"/>
             <argument>%ems_core.default_bulk_size%</argument>
         </service>
 

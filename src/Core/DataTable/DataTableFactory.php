@@ -16,13 +16,13 @@ use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Routes;
 use EMS\Helpers\Standard\Hash;
 use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Core\Security;
 
 class DataTableFactory
 {

@@ -6,6 +6,8 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -279,9 +281,11 @@ class IndexFileCommand extends AbstractCommand
         }
         $dbName = $connection->getDatabase();
 
-        if (\in_array($connection->getDriver()->getDatabasePlatform()->getName(), ['postgresql'])) {
+        $platform = $connection->getDatabasePlatform();
+
+        if ($platform instanceof PostgreSQLPlatform) {
             $query = "SELECT pg_size_pretty(pg_database_size('$dbName')) AS size";
-        } elseif (\in_array($connection->getDriver()->getDatabasePlatform()->getName(), ['mysql'])) {
+        } elseif ($platform instanceof MySQLPlatform) {
             $query = "SELECT SUM(data_length + index_length)/1024/1024 AS size FROM information_schema.TABLES WHERE table_schema='$dbName' GROUP BY table_schema";
         } else {
             throw new \RuntimeException('Not supported driver');

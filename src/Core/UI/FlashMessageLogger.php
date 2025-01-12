@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Core\UI;
 
 use EMS\CoreBundle\EMSCoreBundle;
 use Monolog\Handler\AbstractProcessingHandler;
+use Monolog\Level;
 use Monolog\Logger;
 use Monolog\LogRecord;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,7 +21,7 @@ final class FlashMessageLogger extends AbstractProcessingHandler
 
     public function __construct(private readonly RequestStack $requestStack, private readonly TranslatorInterface $translator)
     {
-        parent::__construct(Logger::NOTICE);
+        parent::__construct(Level::Notice);
     }
 
     #[\Override]
@@ -31,7 +32,7 @@ final class FlashMessageLogger extends AbstractProcessingHandler
         }
 
         $headers = $currentRequest->headers;
-        $logLevel = $headers->has('x-log-level') ? (int) $headers->get('x-log-level') : Logger::NOTICE;
+        $logLevel = $headers->has('x-log-level') ? (int) $headers->get('x-log-level') : Level::Notice->value;
 
         if ($record->level->value < $logLevel) {
             return;

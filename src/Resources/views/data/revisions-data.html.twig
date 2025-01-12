@@ -309,7 +309,7 @@
 			{% else %}
 				<div class="btn-group">
 					{% for obj in referrerResponse.getDocuments %}
-						{{ obj.emsId|data_link|raw }}
+						{{ obj.emsId|data_link }}
 					{% endfor %}
 				</div>
 			{% endif %}

@@ -62,8 +62,8 @@ class ContentTypeService implements EntityServiceInterface
         private readonly TokenStorageInterface $tokenStorage,
         private readonly TranslatorInterface $translator,
         private readonly RouterInterface $router,
-        private readonly ?string $circleContentTypeName)
-    {
+        private readonly ?string $circleContentTypeName
+    ) {
     }
 
     public function getChildByPath(FieldType $fieldType, string $path, bool $skipVirtualFields = false): FieldType|false

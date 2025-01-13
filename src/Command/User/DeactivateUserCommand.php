@@ -26,11 +26,12 @@ class DeactivateUserCommand extends AbstractUserCommand
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
             ])
-            ->setHelp(<<<'EOT'
-The <info>emsco:user:deactivate</info> command deactivates a user (will not be able to log in)
+            ->setHelp(
+                <<<'EOT'
+                    The <info>emsco:user:deactivate</info> command deactivates a user (will not be able to log in)
 
-  <info>php %command.full_name% matthieu</info>
-EOT
+                      <info>php %command.full_name% matthieu</info>
+                    EOT
             );
     }
 

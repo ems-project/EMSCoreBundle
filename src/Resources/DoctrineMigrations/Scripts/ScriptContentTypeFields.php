@@ -51,16 +51,16 @@ trait ScriptContentTypeFields
         $migration->addSql('ALTER TABLE content_type ADD order_field VARCHAR(255) DEFAULT NULL');
 
         $updateQuery = <<<QUERY
-            UPDATE content_type SET
-                labelField = :labelField,
-                circles_field = :circles_field,
-                color_field = :color_field,
-                business_id_field = :business_id_field,
-                category_field = :category_field,
-                asset_field = :asset_field,
-                sort_by = :sort_by
-            WHERE id = :id
-QUERY;
+                        UPDATE content_type SET
+                            labelField = :labelField,
+                            circles_field = :circles_field,
+                            color_field = :color_field,
+                            business_id_field = :business_id_field,
+                            category_field = :category_field,
+                            asset_field = :asset_field,
+                            sort_by = :sort_by
+                        WHERE id = :id
+            QUERY;
 
         $result = $migration->connection->executeQuery('select * from content_type');
         while ($row = $result->fetchAssociative()) {

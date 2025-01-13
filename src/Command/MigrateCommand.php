@@ -67,8 +67,8 @@ class MigrateCommand extends AbstractCommand
     public function __construct(
         protected Registry $doctrine,
         private readonly ElasticaService $elasticaService,
-        private readonly DocumentService $documentService)
-    {
+        private readonly DocumentService $documentService
+    ) {
         $em = $this->doctrine->getManager();
         $contentTypeRepository = $em->getRepository(ContentType::class);
         if (!$contentTypeRepository instanceof ContentTypeRepository) {

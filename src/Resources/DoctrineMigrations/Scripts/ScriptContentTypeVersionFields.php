@@ -32,11 +32,11 @@ trait ScriptContentTypeVersionFields
         $migration->addSql('ALTER TABLE content_type ADD version_date_to_field VARCHAR(100) DEFAULT NULL');
 
         $updateQuery = <<<QUERY
-            UPDATE content_type SET 
-                version_date_from_field = :version_date_from_field,
-                version_date_to_field = :version_date_to_field
-            WHERE id = :id
-QUERY;
+                        UPDATE content_type SET 
+                            version_date_from_field = :version_date_from_field,
+                            version_date_to_field = :version_date_to_field
+                        WHERE id = :id
+            QUERY;
 
         $result = $migration->connection->executeQuery('select * from content_type');
         while ($row = $result->fetchAssociative()) {

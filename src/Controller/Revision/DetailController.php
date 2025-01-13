@@ -37,8 +37,8 @@ class DetailController extends AbstractController
         private readonly SearchService $searchService,
         private readonly DataTableFactory $dataTableFactory,
         private readonly LoggerInterface $logger,
-        private readonly string $templateNamespace)
-    {
+        private readonly string $templateNamespace
+    ) {
     }
 
     public function detailRevision(Request $request, string $type, string $ouuid, int $revisionId, int $compareId): Response

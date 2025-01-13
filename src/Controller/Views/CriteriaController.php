@@ -54,8 +54,8 @@ class CriteriaController extends AbstractController
         private readonly FieldTypeRepository $fieldTypeRepository,
         private readonly RevisionRepository $revisionRepository,
         private readonly FlashMessageLogger $flashMessageLogger,
-        private readonly string $templateNamespace)
-    {
+        private readonly string $templateNamespace
+    ) {
     }
 
     public function align(View $view, Request $request): Response

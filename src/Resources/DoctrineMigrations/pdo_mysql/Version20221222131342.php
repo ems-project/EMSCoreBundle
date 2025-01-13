@@ -20,9 +20,9 @@ final class Version20221222131342 extends AbstractMigration
         );
 
         $query = <<<QUERY
-            select id, task_planned_ids from revision
-            where task_planned_ids is not null and task_planned_ids != '[]'
-QUERY;
+                        select id, task_planned_ids from revision
+                        where task_planned_ids is not null and task_planned_ids != '[]'
+            QUERY;
 
         $rows = $this->connection->executeQuery($query)->iterateAssociative();
 

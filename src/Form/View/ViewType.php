@@ -23,8 +23,8 @@ abstract class ViewType extends AbstractType
         protected FormFactory $formFactory,
         protected Environment $twig,
         protected LoggerInterface $logger,
-        private readonly string $templateNamespace)
-    {
+        private readonly string $templateNamespace
+    ) {
     }
 
     abstract public function getLabel(): string;

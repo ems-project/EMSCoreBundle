@@ -18,8 +18,8 @@ final class TableAction
         private readonly string $name,
         private readonly string $icon,
         private readonly TranslatableMessage $labelKey,
-        private readonly ?TranslatableMessage $confirmationKey = null)
-    {
+        private readonly ?TranslatableMessage $confirmationKey = null
+    ) {
     }
 
     public static function create(

@@ -156,7 +156,9 @@ class AlignCommand extends AbstractEnvironmentCommand
         foreach ($targetIsPreviewEnvironment as $ctName => $counter) {
             $this->io->caution(\sprintf(
                 '%d %s revisions were not aligned as %s is the default environment',
-                $counter, $ctName, $this->target->getName()
+                $counter,
+                $ctName,
+                $this->target->getName()
             ));
         }
 

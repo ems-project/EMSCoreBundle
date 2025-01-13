@@ -32,7 +32,8 @@ class JobRepository extends EntityRepository
         return \intval(
             $qb->select('COUNT(job)')
             ->getQuery()
-            ->getSingleScalarResult());
+            ->getSingleScalarResult()
+        );
     }
 
     public function countPendingJobs(): int

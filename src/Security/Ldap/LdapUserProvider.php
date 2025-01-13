@@ -17,7 +17,8 @@ class LdapUserProvider extends SymfonyLdapUserProvider
 {
     public function __construct(LdapInterface $ldap, private readonly LdapConfig $ldapConfig, private readonly UserRepository $userRepository)
     {
-        parent::__construct($ldap,
+        parent::__construct(
+            $ldap,
             $ldapConfig->baseDn,
             $ldapConfig->searchDn,
             $ldapConfig->searchPassword,

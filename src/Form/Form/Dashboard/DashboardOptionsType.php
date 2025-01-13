@@ -101,7 +101,9 @@ class DashboardOptionsType extends AbstractType
                 'label' => false,
                 'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
             ])
-            ->setNormalizer('label_format', fn (Options $options) => 'dashboard.'.\strtolower((new \ReflectionClass($options['dashboard']))->getShortName()).'.%name%'
+            ->setNormalizer(
+                'label_format',
+                fn (Options $options) => 'dashboard.'.\strtolower((new \ReflectionClass($options['dashboard']))->getShortName()).'.%name%'
             )
             ->setRequired(['dashboard'])
             ->setAllowedTypes('dashboard', DashboardInterface::class)

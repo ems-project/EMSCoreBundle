@@ -66,8 +66,8 @@ class ContentTypeController extends AbstractController
         private readonly ContentTypeRepository $contentTypeRepository,
         private readonly EnvironmentRepository $environmentRepository,
         private readonly FieldTypeRepository $fieldTypeRepository,
-        private readonly string $templateNamespace)
-    {
+        private readonly string $templateNamespace
+    ) {
     }
 
     /**

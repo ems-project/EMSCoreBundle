@@ -37,22 +37,28 @@ class ReleaseOverviewDataTableType extends AbstractEntityTableType
             titleKey: t('field.date_execution', [], 'emsco-core'),
             attribute: 'executionDate'
         ));
-        $table->addColumnDefinition(new TemplateBlockTableColumn(
-            label: t('field.status', [], 'emsco-core'),
-            blockName: 'status',
-            template: "@$this->templateNamespace/release/columns/revisions.html.twig")
+        $table->addColumnDefinition(
+            new TemplateBlockTableColumn(
+                label: t('field.status', [], 'emsco-core'),
+                blockName: 'status',
+                template: "@$this->templateNamespace/release/columns/revisions.html.twig"
+            )
         );
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', "@$this->templateNamespace/release/columns/revisions.html.twig"))->setCellClass('text-right');
 
-        $table->addColumnDefinition(new TemplateBlockTableColumn(
-            label: t('field.release_environment_source', [], 'emsco-core'),
-            blockName: 'environmentSource',
-            template: "@$this->templateNamespace/release/columns/revisions.html.twig")
+        $table->addColumnDefinition(
+            new TemplateBlockTableColumn(
+                label: t('field.release_environment_source', [], 'emsco-core'),
+                blockName: 'environmentSource',
+                template: "@$this->templateNamespace/release/columns/revisions.html.twig"
+            )
         );
-        $table->addColumnDefinition(new TemplateBlockTableColumn(
-            label: t('field.release_environment_target', [], 'emsco-core'),
-            blockName: 'environmentTarget',
-            template: "@$this->templateNamespace/release/columns/revisions.html.twig")
+        $table->addColumnDefinition(
+            new TemplateBlockTableColumn(
+                label: t('field.release_environment_target', [], 'emsco-core'),
+                blockName: 'environmentTarget',
+                template: "@$this->templateNamespace/release/columns/revisions.html.twig"
+            )
         );
         $table->addItemGetAction(Routes::RELEASE_VIEW, 'release.actions.show', 'eye')
             ->addCondition(new Terms('status', [Release::APPLIED_STATUS, Release::SCHEDULED_STATUS, Release::READY_STATUS]));

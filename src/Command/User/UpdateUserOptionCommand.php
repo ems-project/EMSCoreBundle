@@ -27,19 +27,20 @@ class UpdateUserOptionCommand extends AbstractUserCommand
             ->addArgument('option', InputArgument::REQUIRED, \implode('|', UserOptions::ALL_MEMBERS))
             ->addArgument('value', InputArgument::REQUIRED, 'value for updating')
             ->addOption('email', null, InputOption::VALUE_OPTIONAL, 'use wildcard % (%@example.dev)')
-            ->setHelp(<<<'EOT'
-The <info>emsco:user:update-option</info> command changes an option of a user(s):
+            ->setHelp(
+                <<<'EOT'
+                    The <info>emsco:user:update-option</info> command changes an option of a user(s):
 
-  Enable "simplified_ui" for all users
-  <info>php %command.full_name% simplified_ui true</info>
+                      Enable "simplified_ui" for all users
+                      <info>php %command.full_name% simplified_ui true</info>
 
-  Enable "allowed_configure_wysiwyg" for all users
-  <info>php %command.full_name% allowed_configure_wysiwyg true</info>
+                      Enable "allowed_configure_wysiwyg" for all users
+                      <info>php %command.full_name% allowed_configure_wysiwyg true</info>
 
-  Set country "Belgium" for all users with a .be email address
-  <info>php %command.full_name% custom_options '{"country":"Belgium"}' --email='%.be'</info>
+                      Set country "Belgium" for all users with a .be email address
+                      <info>php %command.full_name% custom_options '{"country":"Belgium"}' --email='%.be'</info>
 
-EOT
+                    EOT
             );
     }
 

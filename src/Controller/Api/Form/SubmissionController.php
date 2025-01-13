@@ -54,7 +54,8 @@ final class SubmissionController extends AbstractController
         $fileUrl = $request->query->get('fileUrl');
 
         if ($fileUrl && $submission->getFiles()->count() > 0) {
-            $data['file_urls'] = $submission->getFiles()->map(fn (FormSubmissionFile $f) => u($fileUrl)
+            $data['file_urls'] = $submission->getFiles()->map(
+                fn (FormSubmissionFile $f) => u($fileUrl)
                 ->replace('{SUBMISSION_ID}', $submission->getId())
                 ->replace('{FILE_ID}', $f->getId())
                 ->toString()

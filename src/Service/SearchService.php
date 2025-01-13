@@ -26,8 +26,8 @@ class SearchService
         private readonly ElasticaService $elasticaService,
         private readonly EnvironmentService $environmentService,
         private readonly ContentTypeService $contentTypeService,
-        private readonly SearchRepository $searchRepository)
-    {
+        private readonly SearchRepository $searchRepository
+    ) {
     }
 
     /**

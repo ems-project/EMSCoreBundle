@@ -20,12 +20,13 @@ class PromoteUserCommand extends RoleCommand
         parent::configure();
 
         $this
-            ->setHelp(<<<'EOT'
-The <info>emsco:user:promote</info> command promotes a user by adding a role
+            ->setHelp(
+                <<<'EOT'
+                    The <info>emsco:user:promote</info> command promotes a user by adding a role
 
-  <info>php %command.full_name% matthieu ROLE_CUSTOM</info>
-  <info>php %command.full_name% --super matthieu</info>
-EOT
+                      <info>php %command.full_name% matthieu ROLE_CUSTOM</info>
+                      <info>php %command.full_name% --super matthieu</info>
+                    EOT
             );
     }
 

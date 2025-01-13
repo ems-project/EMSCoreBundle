@@ -13,8 +13,8 @@ class WysiwygProfileService implements EntityServiceInterface
 {
     public function __construct(
         private readonly WysiwygProfileRepository $wysiwygProfileRepository,
-        private readonly LoggerInterface $logger)
-    {
+        private readonly LoggerInterface $logger
+    ) {
     }
 
     #[\Override]

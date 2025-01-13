@@ -29,8 +29,8 @@ class TabsFieldType extends DataFieldType
         AuthorizationCheckerInterface $authorizationChecker,
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
-        private readonly UserManager $userManager)
-    {
+        private readonly UserManager $userManager
+    ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
 

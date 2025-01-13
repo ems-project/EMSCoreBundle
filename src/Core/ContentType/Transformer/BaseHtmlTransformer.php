@@ -22,9 +22,9 @@ abstract class BaseHtmlTransformer extends AbstractTransformer
 
         if (\str_starts_with((string) $data, '<!DOCTYPE')) {
             $transformed = <<<transformed
-<!DOCTYPE html>
-$transformed
-transformed;
+                <!DOCTYPE html>
+                $transformed
+                transformed;
         }
 
         $context->setTransformed($transformed);

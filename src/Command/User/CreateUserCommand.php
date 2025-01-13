@@ -31,26 +31,27 @@ class CreateUserCommand extends AbstractUserCommand
                 new InputOption('super-admin', null, InputOption::VALUE_NONE, 'Set the user as super admin'),
                 new InputOption('inactive', null, InputOption::VALUE_NONE, 'Set the user as inactive'),
             ])
-            ->setHelp(<<<'EOT'
-The <info>emsco:user:create</info> command creates a user:
+            ->setHelp(
+                <<<'EOT'
+                    The <info>emsco:user:create</info> command creates a user:
 
-  <info>php %command.full_name% matthieu</info>
+                      <info>php %command.full_name% matthieu</info>
 
-This interactive shell will ask you for an email and then a password.
+                    This interactive shell will ask you for an email and then a password.
 
-You can alternatively specify the email and password as the second and third arguments:
+                    You can alternatively specify the email and password as the second and third arguments:
 
-  <info>php %command.full_name% matthieu matthieu@example.com mypassword</info>
+                      <info>php %command.full_name% matthieu matthieu@example.com mypassword</info>
 
-You can create a super admin via the super-admin flag:
+                    You can create a super admin via the super-admin flag:
 
-  <info>php %command.full_name% admin --super-admin</info>
+                      <info>php %command.full_name% admin --super-admin</info>
 
-You can create an inactive user (will not be able to log in):
+                    You can create an inactive user (will not be able to log in):
 
-  <info>php %command.full_name% thibault --inactive</info>
+                      <info>php %command.full_name% thibault --inactive</info>
 
-EOT
+                    EOT
             );
     }
 

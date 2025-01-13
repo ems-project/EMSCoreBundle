@@ -76,7 +76,8 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
             labelKey: t('revision.draft.view', [], 'emsco-core'),
             icon: '',
             routeParameters: ['type' => 'contentType.name', 'ouuid' => 'ouuid',
-            ])->addCondition(new NotEmpty('ouuid'));
+            ]
+        )->addCondition(new NotEmpty('ouuid'));
 
         $table->addDynamicItemPostAction(
             route: Routes::DISCARD_DRAFT,

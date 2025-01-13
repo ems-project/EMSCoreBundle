@@ -919,17 +919,20 @@ class AppExtension extends AbstractExtension
                 $query = \html_entity_decode($matches['query'] ?? '');
                 \parse_str($query, $parameters);
                 if (\is_string($parameters['name'] ?? null) && \is_string($parameters['type'] ?? null)) {
-                    return $this->assetRuntime->assetPath([
-                        EmsFields::CONTENT_FILE_HASH_FIELD => $matches['hash'],
-                        EmsFields::CONTENT_FILE_NAME_FIELD => $parameters['name'],
-                        EmsFields::CONTENT_MIME_TYPE_FIELD => $parameters['type'],
-                    ], [
-                    ],
+                    return $this->assetRuntime->assetPath(
+                        [
+                            EmsFields::CONTENT_FILE_HASH_FIELD => $matches['hash'],
+                            EmsFields::CONTENT_FILE_NAME_FIELD => $parameters['name'],
+                            EmsFields::CONTENT_MIME_TYPE_FIELD => $parameters['type'],
+                        ],
+                        [
+                        ],
                         'ems_asset',
                         EmsFields::CONTENT_FILE_HASH_FIELD,
                         EmsFields::CONTENT_FILE_NAME_FIELD,
                         EmsFields::CONTENT_MIME_TYPE_FIELD,
-                        UrlGeneratorInterface::ABSOLUTE_PATH);
+                        UrlGeneratorInterface::ABSOLUTE_PATH
+                    );
                 }
 
                 return $path.$matches['hash'];

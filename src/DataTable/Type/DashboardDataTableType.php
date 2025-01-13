@@ -30,15 +30,19 @@ class DashboardDataTableType extends AbstractEntityTableType
         $this->addColumnsOrderLabelName($table);
         $table->getColumnByName('label')?->setItemIconCallback(fn (Dashboard $dashboard) => $dashboard->getIcon());
 
-        $table->addColumnDefinition(new TemplateBlockTableColumn(
-            label: t('field.type', [], 'emsco-core'),
-            blockName: 'dashboardType',
-            template: "@$this->templateNamespace/datatable/template_block_columns.html.twig")
+        $table->addColumnDefinition(
+            new TemplateBlockTableColumn(
+                label: t('field.type', [], 'emsco-core'),
+                blockName: 'dashboardType',
+                template: "@$this->templateNamespace/datatable/template_block_columns.html.twig"
+            )
         );
-        $table->addColumnDefinition(new TemplateBlockTableColumn(
-            label: t('field.definition', [], 'emsco-core'),
-            blockName: 'dashboardDefinition',
-            template: "@$this->templateNamespace/datatable/template_block_columns.html.twig")
+        $table->addColumnDefinition(
+            new TemplateBlockTableColumn(
+                label: t('field.definition', [], 'emsco-core'),
+                blockName: 'dashboardDefinition',
+                template: "@$this->templateNamespace/datatable/template_block_columns.html.twig"
+            )
         );
 
         $this->addItemEdit($table, Routes::DASHBOARD_ADMIN_EDIT);

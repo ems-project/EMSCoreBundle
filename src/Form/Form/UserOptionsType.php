@@ -33,8 +33,8 @@ class UserOptionsType extends AbstractType
         protected FormRegistryInterface $formRegistry,
         protected DataService $dataService,
         protected LoggerInterface $logger,
-        private readonly ?string $customUserOptionsForm)
-    {
+        private readonly ?string $customUserOptionsForm
+    ) {
     }
 
     /**

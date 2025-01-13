@@ -29,8 +29,8 @@ class TwigElementsController extends AbstractController
         private readonly JobService $jobService,
         private readonly DashboardManager $dashboardManager,
         private readonly ContentTypeService $contentTypeService,
-        private readonly string $templateNamespace)
-    {
+        private readonly string $templateNamespace
+    ) {
     }
 
     public function sideMenu(): Response

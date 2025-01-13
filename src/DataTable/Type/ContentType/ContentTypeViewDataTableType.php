@@ -41,15 +41,19 @@ class ContentTypeViewDataTableType extends AbstractEntityTableType
         $this->addColumnsOrderLabelName($table);
         $table->getColumnByName('label')?->setItemIconCallback(fn (View $view) => $view->getIcon());
 
-        $table->addColumnDefinition(new TemplateBlockTableColumn(
-            label: t('field.type', [], 'emsco-core'),
-            blockName: 'contentTypeViewType',
-            template: "@$this->templateNamespace/datatable/template_block_columns.html.twig")
+        $table->addColumnDefinition(
+            new TemplateBlockTableColumn(
+                label: t('field.type', [], 'emsco-core'),
+                blockName: 'contentTypeViewType',
+                template: "@$this->templateNamespace/datatable/template_block_columns.html.twig"
+            )
         );
-        $table->addColumnDefinition(new TemplateBlockTableColumn(
-            label: t('field.definition', [], 'emsco-core'),
-            blockName: 'contentTypeViewDefinition',
-            template: "@$this->templateNamespace/datatable/template_block_columns.html.twig")
+        $table->addColumnDefinition(
+            new TemplateBlockTableColumn(
+                label: t('field.definition', [], 'emsco-core'),
+                blockName: 'contentTypeViewDefinition',
+                template: "@$this->templateNamespace/datatable/template_block_columns.html.twig"
+            )
         );
 
         $table->addColumnDefinition(new BoolTableColumn(t('field.public_access', [], 'emsco-core'), 'public'));

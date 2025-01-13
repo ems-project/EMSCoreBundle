@@ -41,8 +41,8 @@ class HierarchicalViewType extends ViewType
         protected DataService $dataService,
         protected RouterInterface $router,
         protected ContentTypeService $contentTypeService,
-        private readonly string $templateNamespace)
-    {
+        private readonly string $templateNamespace
+    ) {
         parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 

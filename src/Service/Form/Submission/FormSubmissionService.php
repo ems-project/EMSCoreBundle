@@ -26,7 +26,8 @@ final readonly class FormSubmissionService implements EntityServiceInterface
 {
     public function __construct(
         private FormSubmissionRepository $formSubmissionRepository,
-        private FormSubmissionFileRepository $formSubmissionFileRepository, private Environment $twig,
+        private FormSubmissionFileRepository $formSubmissionFileRepository,
+        private Environment $twig,
         private RequestStack $requestStack,
         private TranslatorInterface $translator,
         private string $templateNamespace,

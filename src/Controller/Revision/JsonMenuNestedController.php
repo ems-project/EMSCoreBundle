@@ -33,8 +33,8 @@ final class JsonMenuNestedController extends AbstractController
         private readonly RevisionService $revisionService,
         private readonly DataService $dataService,
         private readonly UserService $userService,
-        private readonly string $templateNamespace)
-    {
+        private readonly string $templateNamespace
+    ) {
     }
 
     public function modal(Request $request, Revision $revision, FieldType $fieldType): JsonResponse

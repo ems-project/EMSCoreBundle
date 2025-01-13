@@ -29,8 +29,8 @@ class ActionType extends AbstractType
 {
     public function __construct(
         private readonly string $circleType,
-        private readonly EnvironmentService $service)
-    {
+        private readonly EnvironmentService $service
+    ) {
     }
 
     #[\Override]

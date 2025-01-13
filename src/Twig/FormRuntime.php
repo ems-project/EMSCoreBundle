@@ -23,8 +23,8 @@ class FormRuntime
         protected DataService $dataService,
         protected RevisionService $revisionService,
         protected FormFactoryInterface $formFactory,
-        private readonly RequestStack $requestStack)
-    {
+        private readonly RequestStack $requestStack
+    ) {
     }
 
     /**

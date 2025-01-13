@@ -109,7 +109,8 @@ final class HtmlAttributeTransformer extends BaseHtmlTransformer
             $attributeValue = $element->getAttribute('class');
 
             $exploded = \explode(' ', $attributeValue);
-            $filter = \array_filter($exploded,
+            $filter = \array_filter(
+                $exploded,
                 fn (string $class) => !\str_starts_with(\trim($class), $removeValuePrefix)
             );
 
@@ -140,8 +141,11 @@ final class HtmlAttributeTransformer extends BaseHtmlTransformer
             $styleValue = $element->getAttribute('style');
 
             $exploded = \explode(';', $styleValue);
-            $filter = \array_filter(\array_filter($exploded,
-                fn (string $style) => !\str_starts_with(\trim($style), $removeValuePrefix))
+            $filter = \array_filter(
+                \array_filter(
+                    $exploded,
+                    fn (string $style) => !\str_starts_with(\trim($style), $removeValuePrefix)
+                )
             );
 
             if ($filter !== $exploded) {

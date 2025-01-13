@@ -33,7 +33,7 @@ final class Version20250112174825 extends AbstractMigration
                 $options[FieldType::DISPLAY_OPTIONS]['multiple'] = false;
             } elseif ('EMS\CoreBundle\Form\DataField\SelectFieldType' === $fieldType['type']) {
                 $options[FieldType::DISPLAY_OPTIONS]['expanded'] = false;
-                $options[FieldType::DISPLAY_OPTIONS]['multiple'] = $options[FieldType::DISPLAY_OPTIONS]['multiple'] ?? false;
+                $options[FieldType::DISPLAY_OPTIONS]['multiple'] ??= false;
             } else {
                 continue;
             }

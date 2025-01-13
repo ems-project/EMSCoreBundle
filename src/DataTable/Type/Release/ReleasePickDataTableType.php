@@ -38,14 +38,18 @@ class ReleasePickDataTableType extends AbstractEntityTableType
             titleKey: t('field.name', [], 'emsco-core'),
             attribute: 'name'
         );
-        $table->addColumnDefinition(new DatetimeTableColumn(
-            titleKey: t('field.date_execution', [], 'emsco-core'),
-            attribute: 'executionDate')
+        $table->addColumnDefinition(
+            new DatetimeTableColumn(
+                titleKey: t('field.date_execution', [], 'emsco-core'),
+                attribute: 'executionDate'
+            )
         );
-        $table->addColumnDefinition(new TemplateBlockTableColumn(
-            label: t('field.status', [], 'emsco-core'),
-            blockName: 'status',
-            template: "@$this->templateNamespace/release/columns/revisions.html.twig")
+        $table->addColumnDefinition(
+            new TemplateBlockTableColumn(
+                label: t('field.status', [], 'emsco-core'),
+                blockName: 'status',
+                template: "@$this->templateNamespace/release/columns/revisions.html.twig"
+            )
         );
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', "@$this->templateNamespace/release/columns/revisions.html.twig"))->setCellClass('text-right');
 

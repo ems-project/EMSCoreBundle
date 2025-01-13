@@ -36,8 +36,8 @@ final readonly class JsonMenuRenderer implements RuntimeExtensionInterface
         private UrlGeneratorInterface $urlGenerator,
         private ContentTypeRepository $contentTypeRepository,
         private RevisionService $revisionService,
-        private string $templateNamespace)
-    {
+        private string $templateNamespace
+    ) {
     }
 
     /**

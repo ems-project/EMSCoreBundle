@@ -20,12 +20,13 @@ class DemoteUserCommand extends RoleCommand
         parent::configure();
 
         $this
-            ->setHelp(<<<'EOT'
-The <info>emsco:user:demote</info> command demotes a user by removing a role
+            ->setHelp(
+                <<<'EOT'
+                    The <info>emsco:user:demote</info> command demotes a user by removing a role
 
-  <info>php %command.full_name% matthieu ROLE_CUSTOM</info>
-  <info>php %command.full_name% --super matthieu</info>
-EOT
+                      <info>php %command.full_name% matthieu ROLE_CUSTOM</info>
+                      <info>php %command.full_name% --super matthieu</info>
+                    EOT
             );
     }
 

@@ -24,8 +24,8 @@ class FieldHolderType extends AbstractType
     public function __construct(
         private readonly FormManager $formManager,
         protected FormRegistryInterface $formRegistry,
-        protected DataService $dataService)
-    {
+        protected DataService $dataService
+    ) {
     }
 
     /**

@@ -41,8 +41,8 @@ class ActionController
         int $templateId,
         string $ouuid,
         bool $_download,
-        bool $public): Response
-    {
+        bool $public
+    ): Response {
         $action = $this->templateRepository->getById($templateId);
         if ($public && !$action->isPublic()) {
             throw new NotFoundHttpException('Template type not found');

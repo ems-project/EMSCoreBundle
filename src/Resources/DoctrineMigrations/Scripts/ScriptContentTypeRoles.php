@@ -56,19 +56,19 @@ trait ScriptContentTypeRoles
         $migration->addSql('ALTER TABLE content_type ADD searchLinkDisplayRole VARCHAR(100) DEFAULT NULL');
 
         $updateQuery = <<<QUERY
-            UPDATE content_type SET 
-                view_role = :view_role,
-                create_role = :create_role,
-                edit_role = :edit_role,
-                publish_role = :publish_role,
-                delete_role = :delete_role,
-                trash_role = :trash_role,
-                archive_role = :archive_role,
-                owner_role = :owner_role,
-                createLinkDisplayRole = :show_link_create,
-                searchLinkDisplayRole = :show_link_search
-            WHERE id = :id
-QUERY;
+                        UPDATE content_type SET 
+                            view_role = :view_role,
+                            create_role = :create_role,
+                            edit_role = :edit_role,
+                            publish_role = :publish_role,
+                            delete_role = :delete_role,
+                            trash_role = :trash_role,
+                            archive_role = :archive_role,
+                            owner_role = :owner_role,
+                            createLinkDisplayRole = :show_link_create,
+                            searchLinkDisplayRole = :show_link_search
+                        WHERE id = :id
+            QUERY;
 
         $result = $migration->connection->executeQuery('select * from content_type');
         while ($row = $result->fetchAssociative()) {

@@ -40,8 +40,8 @@ class PublishController extends AbstractController
         private readonly ContentTypeService $contentTypeService,
         private readonly SearchService $searchService,
         private readonly ElasticaService $elasticaService,
-        private readonly string $templateNamespace)
-    {
+        private readonly string $templateNamespace
+    ) {
     }
 
     public function publishTo(Revision $revisionId, Environment $envId): Response

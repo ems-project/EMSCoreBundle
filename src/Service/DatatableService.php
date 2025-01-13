@@ -24,8 +24,8 @@ final readonly class DatatableService
         private ElasticaService $elasticaService,
         private StorageManager $storageManager,
         private EnvironmentService $environmentService,
-        private string $templateNamespace)
-    {
+        private string $templateNamespace
+    ) {
     }
 
     /**

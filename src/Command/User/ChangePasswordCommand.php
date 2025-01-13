@@ -27,18 +27,19 @@ class ChangePasswordCommand extends AbstractUserCommand
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
             ])
-            ->setHelp(<<<'EOT'
-The <info>emsco:user:change-password</info> command changes the password of a user:
+            ->setHelp(
+                <<<'EOT'
+                    The <info>emsco:user:change-password</info> command changes the password of a user:
 
-  <info>php %command.full_name% matthieu</info>
+                      <info>php %command.full_name% matthieu</info>
 
-This interactive shell will first ask you for a password.
+                    This interactive shell will first ask you for a password.
 
-You can alternatively specify the password as a second argument:
+                    You can alternatively specify the password as a second argument:
 
-  <info>php %command.full_name% matthieu mypassword</info>
+                      <info>php %command.full_name% matthieu mypassword</info>
 
-EOT
+                    EOT
             );
     }
 

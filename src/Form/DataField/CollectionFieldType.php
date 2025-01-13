@@ -34,8 +34,8 @@ class CollectionFieldType extends DataFieldType
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
         private readonly DataService $dataService,
-        private readonly LoggerInterface $logger)
-    {
+        private readonly LoggerInterface $logger
+    ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
 

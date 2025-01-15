@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Submission;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CommonBundle\Common\PropertyAccess\PropertyAccessor;
 use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Service\ExpressionService;
 use EMS\CoreBundle\Commands;
@@ -42,7 +43,7 @@ class ExportCommand extends AbstractCommand
             ->addArgument(
                 self::ARG_FIELDS,
                 InputArgument::IS_ARRAY,
-                'Fields to export'
+                'Fields to export in a property accessor format [instance] [name] [locale] [submission_date] [data][email] [data][multi-choice][level_0] [data][multi-choice][level_1]'
             )->addOption(
                 self::OPTION_FILTER,
                 null,
@@ -72,6 +73,7 @@ class ExportCommand extends AbstractCommand
         $sheet = [];
 
         $this->io->progressStart($this->formSubmissionService->count());
+        $propertyAccessor = PropertyAccessor::createPropertyAccessor();
         foreach ($this->formSubmissionService->getUnprocessed() as $submission) {
             $data = [
                 'instance' => $submission->getInstance(),
@@ -86,7 +88,7 @@ class ExportCommand extends AbstractCommand
             }
             $line = [];
             foreach ($this->fields as $field) {
-                $line[] = $data['data'][$field] ?? $data[$field] ?? '';
+                $line[] = $propertyAccessor->getValue($data, $field) ?? '';
             }
             $sheet[] = $line;
             $this->io->progressAdvance();

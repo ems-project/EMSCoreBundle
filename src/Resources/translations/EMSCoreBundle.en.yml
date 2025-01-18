@@ -8,6 +8,14 @@ __views:
     elements:
         revision-toolbar-html:
             add-to-release: Add to release
+email:
+    command:
+        submissions:
+            export:
+                body:
+                    hello: 'Hello,'
+                    text: 'Please find attached the export of requested CRM submissions.'
+                    greeting: 'Regards.'
 log:
     service:
         form:

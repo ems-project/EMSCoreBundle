@@ -9,7 +9,10 @@ use EMS\CommonBundle\Common\PropertyAccess\PropertyAccessor;
 use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Service\ExpressionService;
 use EMS\CoreBundle\Commands;
+use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
+use EMS\Helpers\File\File;
+use EMS\Helpers\File\TempFile;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,20 +20,31 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ExportCommand extends AbstractCommand
 {
+    public const MAIL_TEMPLATE = '@EMSCore/email/submissions-export.html.twig';
     protected static $defaultName = Commands::SUBMISSION_EXPORT;
     public const ARG_FIELDS = 'fields';
     public const OPTION_FILTER = 'filter';
     public const OPTION_FILENAME = 'filename';
+    public const OPTION_EMAIL_TO = 'email-to';
+    public const OPTION_EMAIL_SUBJECT = 'email-subject';
+    public const OPTION_EXPORT_FORMAT = 'format';
 
     /** @var string[] */
     private array $fields;
     private ?string $filter;
     private ?string  $filename;
+    /**
+     * @var string[]
+     */
+    private array $emailsTo;
+    private string $subject;
+    private ?string $format;
 
     public function __construct(
         private readonly FormSubmissionService $formSubmissionService,
         private readonly ExpressionService $expressionService,
         private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService,
+        private readonly MailerService $mailerService,
     ) {
         parent::__construct();
     }
@@ -53,6 +67,22 @@ class ExportCommand extends AbstractCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Export filename, xlsx or csv formats are supported',
+            )->addOption(
+                self::OPTION_EMAIL_TO,
+                null,
+                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                'Email addresses where the export will be sent',
+            )->addOption(
+                self::OPTION_EMAIL_SUBJECT,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Email\'s subject',
+                'Submissions export'
+            )->addOption(
+                self::OPTION_EXPORT_FORMAT,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                \sprintf('Format of the export. Supported formats: %s', \join(', ', SpreadsheetGeneratorServiceInterface::FORMAT_WRITERS)),
             );
     }
 
@@ -62,6 +92,9 @@ class ExportCommand extends AbstractCommand
         $this->fields = $this->getArgumentStringArray(self::ARG_FIELDS);
         $this->filter = $this->getOptionStringNull(self::OPTION_FILTER);
         $this->filename = $this->getOptionStringNull(self::OPTION_FILENAME);
+        $this->emailsTo = $this->getOptionStringArray(self::OPTION_EMAIL_TO, false);
+        $this->subject = $this->getOptionString(self::OPTION_EMAIL_SUBJECT);
+        $this->format = $this->getOptionStringNull(self::OPTION_EXPORT_FORMAT);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -92,16 +125,12 @@ class ExportCommand extends AbstractCommand
         }
         $this->io->progressFinish();
 
-        if (null === $this->filename) {
+        if (null === $this->filename && empty($this->emailsTo)) {
             $this->io->table([...$this->fields], $sheet);
 
             return self::EXECUTE_SUCCESS;
         }
-
-        $extension = \pathinfo($this->filename)['extension'] ?? '';
-        if (!\in_array($extension, SpreadsheetGeneratorServiceInterface::FORMAT_WRITERS)) {
-            $this->io->error(\sprintf('File format %s is not supported', $extension));
-        }
+        $extension = $this->getFormat();
 
         $config = [
             SpreadsheetGeneratorServiceInterface::SHEETS => [[
@@ -111,9 +140,54 @@ class ExportCommand extends AbstractCommand
             SpreadsheetGeneratorServiceInterface::CONTENT_FILENAME => 'submissions',
             SpreadsheetGeneratorServiceInterface::WRITER => $extension,
         ];
-        $this->spreadsheetGeneratorService->generateSpreadsheetFile($config, $this->filename);
-        $this->io->success(\sprintf('The file %s has been successfully generated', $this->filename));
+        $tempFile = TempFile::create();
+        $this->spreadsheetGeneratorService->generateSpreadsheetFile($config, $tempFile->path);
+
+        $this->generateFile($tempFile);
+        $this->sendEmail($tempFile);
 
         return self::EXECUTE_SUCCESS;
+    }
+
+    private function generateFile(TempFile $tempFile): void
+    {
+        if (null == $this->filename) {
+            return;
+        }
+        File::putContents($this->filename, $tempFile->getContents());
+        $this->io->success(\sprintf('The file %s has been successfully generated', $this->filename));
+    }
+
+    private function sendEmail(TempFile $tempFile): void
+    {
+        if (empty($this->emailsTo)) {
+            return;
+        }
+        $mailTemplate = $this->mailerService->makeMailTemplate(self::MAIL_TEMPLATE);
+        foreach ($this->emailsTo as $email) {
+            $mailTemplate->addTo($email);
+        }
+        $mailTemplate->setSubject($this->subject);
+        $mailTemplate->setBodyBlock('body');
+        $mailTemplate->addAttachment($tempFile->path, \sprintf('crm-export.%s', $this->format));
+        $this->mailerService->sendMailTemplate($mailTemplate);
+    }
+
+    private function getFormat(): string
+    {
+        $fileExtension = null;
+        if (null !== $this->filename) {
+            $fileExtension = \pathinfo($this->filename)['extension'] ?? null;
+            if (!\in_array($fileExtension, SpreadsheetGeneratorServiceInterface::FORMAT_WRITERS)) {
+                $this->io->error(\sprintf('File extension %s is not supported', $fileExtension));
+            }
+        }
+        $this->format ??= $fileExtension ?? SpreadsheetGeneratorServiceInterface::XLSX_WRITER;
+
+        if (null !== $fileExtension && $fileExtension !== $this->format) {
+            $this->io->error(\sprintf('Export format %s mismatched with the file extension %s', $this->format, $this->filename));
+        }
+
+        return $this->format;
     }
 }

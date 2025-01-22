@@ -203,7 +203,7 @@ class Revision implements EntityInterface, \Stringable
         $draft->setStartTime($now);
         $draft->setCreated($now);
         $draft->setEndTime(null);
-        $draft->setAutoSave(null);
+        $draft->autoSaveClear();
         $draft->setDraft(true);
 
         return $draft;
@@ -237,7 +237,7 @@ class Revision implements EntityInterface, \Stringable
             $this->setEndTime($endTime);
         }
         $this->setDraft(false);
-        $this->setAutoSave(null);
+        $this->autoSaveClear();
         $this->removeEnvironment($this->giveContentType()->giveEnvironment());
     }
 
@@ -627,7 +627,7 @@ class Revision implements EntityInterface, \Stringable
     }
 
     /**
-     * @param array<mixed> $autoSave
+     * @param array<string, mixed> $autoSave
      */
     public function setAutoSave(?array $autoSave): self
     {
@@ -642,6 +642,37 @@ class Revision implements EntityInterface, \Stringable
     public function getAutoSave(): ?array
     {
         return $this->autoSave;
+    }
+
+    public function autoSaveClear(): self
+    {
+        $this->autoSaveAt = null;
+        $this->autoSaveBy = null;
+        $this->autoSave = null;
+
+        return $this;
+    }
+
+    public function autoSaveToRawData(): self
+    {
+        if (null !== $this->autoSave) {
+            $this->rawData = $this->autoSave;
+            $this->autoSaveClear();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getDraftData(): array
+    {
+        if (!$this->isDraft()) {
+            return [];
+        }
+
+        return $this->getAutoSave() ?? $this->getRawData();
     }
 
     public function getLabel(): string
@@ -862,9 +893,11 @@ class Revision implements EntityInterface, \Stringable
         return $this->draftSaveDate;
     }
 
-    public function setDraftSaveDate(?\DateTime $draftSaveDate): void
+    public function setDraftSaveDate(?\DateTime $draftSaveDate): self
     {
         $this->draftSaveDate = $draftSaveDate;
+
+        return $this;
     }
 
     /**

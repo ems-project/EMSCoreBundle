@@ -5,6 +5,13 @@
         http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
 
+        <service id="emsco.core_bridge.service" class="EMS\CoreBundle\Core\Bridge\Core\CoreServiceBridge">
+            <argument type="service" id="EMS\CoreBundle\Service\DataService" />
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="ems_common.composer.info" />
+            <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
+        </service>
+
         <!-- Config -->
         <service id="emsco.config.abstract_config_factory" class="EMS\CoreBundle\Core\Config\AbstractConfigFactory" abstract="true">
             <call method="setStorageManager">

@@ -20,6 +20,13 @@
         <default key="interface">api</default>
         <requirement key="interface">api|json</requirement>
     </route>
+    <route id="emsco_interface_document_auto_save" path="/{interface}/data/{name}/auto-save/{revisionId}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::autoSave"
+           methods="POST"
+           format="json">
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
     <route id="emsco_interface_document_get_short" path="/{interface}/data/{name}/{ouuid}"
            controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::get"
            methods="GET"
@@ -33,6 +40,13 @@
            methods="GET"
            format="json">
         <default key="ouuid" xsi:nil="true"/>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_interface_document_get_draft" path="/{interface}/data/{name}/draft/{revisionId}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::getDraft"
+           methods="GET"
+           format="json">
         <default key="interface">api</default>
         <requirement key="interface">api|json</requirement>
     </route>

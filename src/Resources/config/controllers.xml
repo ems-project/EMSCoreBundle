@@ -143,6 +143,7 @@
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems_core.core_ui.flash_message_logger" />
+            <argument type="service" id="ems.service.revision" />
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
         </service>

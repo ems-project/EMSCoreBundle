@@ -11,6 +11,7 @@ use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Exception\DataStateException;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
@@ -31,6 +32,7 @@ class CrudController extends AbstractController
         private readonly DataService $dataService,
         private readonly ContentTypeService $contentTypeService,
         private readonly FlashMessageLogger $flashMessageLogger,
+        private readonly RevisionService $revisionService,
     ) {
     }
 
@@ -77,6 +79,16 @@ class CrudController extends AbstractController
         ]);
     }
 
+    public function autoSave(Request $request, int $revisionId): JsonResponse
+    {
+        $this->revisionService->autoSave(
+            revision: $this->revisionService->getByRevisionId($revisionId),
+            autoSave: Json::decode(Type::string($request->getContent()))
+        );
+
+        return $this->flashMessageLogger->buildJsonResponse(['success' => true]);
+    }
+
     public function get(string $ouuid, string $name): Response
     {
         $contentType = $this->giveContentType($name);
@@ -108,44 +120,49 @@ class CrudController extends AbstractController
         ]);
     }
 
-    /**
-     * @param int $id
-     */
-    public function finalize($id, string $name): Response
+    public function getDraft(int $revisionId): JsonResponse
     {
-        $contentType = $this->giveContentType($name);
-        if (!$contentType->giveEnvironment()->getManaged()) {
-            throw new BadRequestHttpException('You can not finalize content for a managed content type');
-        }
+        $revision = $this->revisionService->getByRevisionId($revisionId);
 
-        $out = [
-            'success' => 'false',
-        ];
-        try {
-            $revision = $this->dataService->getRevisionById($id, $contentType);
-            $newRevision = $this->dataService->finalizeDraft($revision);
-            $out['success'] = !$newRevision->getDraft();
-            $out['ouuid'] = $newRevision->getOuuid();
-        } catch (\Exception $e) {
-            if (($e instanceof NotFoundHttpException) or ($e instanceof DataStateException)) {
-                throw $e;
-            } else {
-                $this->logger->error('log.crud.finalize_error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                    EmsFields::LOG_EXCEPTION_FIELD => $e,
-                ]);
-            }
-            $out['success'] = false;
-        }
-
-        return $this->flashMessageLogger->buildJsonResponse($out);
+        return $this->flashMessageLogger->buildJsonResponse([
+            'success' => true,
+            'id' => $revision->getId(),
+            'data' => $revision->getDraftData(),
+        ]);
     }
 
-    /**
-     * @param int $id
-     */
-    public function discard($id, string $name): Response
+    public function finalize(int $id, string $name): Response
+    {
+        try {
+            $contentType = $this->giveContentType($name)->validate();
+
+            $revision = $this->dataService->getRevisionById($id, $contentType);
+            $revision->autoSaveToRawData();
+
+            $newRevision = $this->dataService->finalizeDraft($revision);
+
+            $this->dataService->refresh($contentType->giveEnvironment());
+
+            return $this->flashMessageLogger->buildJsonResponse([
+                'success' => !$newRevision->getDraft(),
+                'ouuid' => $newRevision->getOuuid(),
+            ]);
+        } catch (\Exception $e) {
+            if ($e instanceof NotFoundHttpException || $e instanceof DataStateException) {
+                throw $e;
+            }
+
+            $this->logger->error('log.crud.finalize_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
+
+            return $this->flashMessageLogger->buildJsonResponse(['success' => false]);
+        }
+    }
+
+    public function discard(int $id, string $name): Response
     {
         $contentType = $this->giveContentType($name);
         if (!$contentType->giveEnvironment()->getManaged()) {

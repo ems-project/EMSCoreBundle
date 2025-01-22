@@ -405,7 +405,7 @@ class DataController extends AbstractController
         $ouuid = $revision->getOuuid();
 
         $this->dataService->lockRevision($revision);
-        $revision->setAutoSave(null);
+        $revision->autoSaveClear();
         $this->revisionRepository->save($revision);
 
         if (null != $ouuid) {

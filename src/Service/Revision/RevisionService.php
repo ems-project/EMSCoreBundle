@@ -14,6 +14,7 @@ use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Contracts\Revision\RevisionServiceInterface;
 use EMS\CoreBundle\Core\ContentType\ContentTypeFields;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
+use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Core\Revision\Revisions;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\ContentType;
@@ -320,6 +321,32 @@ class RevisionService implements RevisionServiceInterface
         $this->logger->debug('Revision after persist flush');
     }
 
+    /** @param array<string, mixed> $autoSave */
+    public function autoSave(Revision $revision, array $autoSave): void
+    {
+        if (!$revision->isDraft()) {
+            throw new \RuntimeException('Revision is not draft');
+        }
+
+        $user = $this->userManager->getAuthenticatedUser();
+        $this->lock($revision, $user);
+
+        $rootFieldType = $revision->giveContentType()->getFieldType();
+        $data = [...$revision->getRawData(), ...$autoSave];
+
+        $form = $this->createRevisionForm($revision);
+        $form->submit(['data' => RawDataTransformer::transform($rootFieldType, $data)]);
+
+        $now = new \DateTime();
+        $revision
+            ->setDraftSaveDate($now)
+            ->setAutoSaveAt($now)
+            ->setAutoSaveBy($user->getUsername())
+            ->setAutoSave(RawDataTransformer::reverseTransform($rootFieldType, $form->get('data')->getData()));
+
+        $this->revisionRepository->save($revision);
+    }
+
     public function getDocumentInfo(EMSLink $documentLink): DocumentInfo
     {
         $publishedRevisions = $this->revisionRepository->findAllPublishedRevision($documentLink);
@@ -348,7 +375,7 @@ class RevisionService implements RevisionServiceInterface
      */
     public function create(ContentType $contentType, ?UuidInterface $uuid = null, array $rawData = [], ?string $username = null): Revision
     {
-        return $this->dataService->newDocument($contentType, null === $uuid ? null : $uuid->toString(), $rawData, $username);
+        return $this->dataService->newDocument($contentType->validate(), $uuid?->toString(), $rawData, $username);
     }
 
     /**

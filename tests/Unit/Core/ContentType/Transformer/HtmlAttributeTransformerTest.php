@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Tests\Unit\Core\ContentType\Transformer;
 use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformerInterface;
 use EMS\CoreBundle\Core\ContentType\Transformer\HtmlAttributeTransformer;
 
-class HtmlAttributeTransformerTest extends AbstractTransformerTest
+class HtmlAttributeTransformerTest extends AbstractTransformerTestCase
 {
     #[\Override]
     protected function getTransformer(): ContentTransformerInterface

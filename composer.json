@@ -9,7 +9,7 @@
     "authors": [
         {
             "name": "EMS Community",
-            "homepage": "https://github.com/ems-project/EMSFormBundle/contributors"
+            "homepage": "https://github.com/ems-project/elasticms/contributors"
         }
     ],
     "minimum-stability": "RC",
@@ -41,25 +41,13 @@
         "symfony/validator": "6.4.*",
         "symfony/web-link": "6.4.*"
     },
-    "require-dev": {
-        "symfony/test-pack": "^1.0",
-        "symfony/yaml": "6.4.*"
-    },
     "autoload": {
         "psr-4": {
             "EMS\\CoreBundle\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "EMS\\CoreBundle\\Tests\\": "tests/"
-        }
-    },
     "config": {
         "lock": false,
         "sort-packages": true
-    },
-    "scripts": {
-        "phpunit": "phpunit"
     }
 }

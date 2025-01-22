@@ -8,7 +8,7 @@ use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformerInterface;
 use EMS\CoreBundle\Core\ContentType\Transformer\TransformContext;
 use PHPUnit\Framework\TestCase;
 
-abstract class AbstractTransformerTest extends TestCase
+abstract class AbstractTransformerTestCase extends TestCase
 {
     abstract protected function getTransformer(): ContentTransformerInterface;
 

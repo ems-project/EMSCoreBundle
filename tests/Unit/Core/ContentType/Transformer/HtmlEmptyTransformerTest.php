@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Tests\Unit\Core\ContentType\Transformer;
 use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformerInterface;
 use EMS\CoreBundle\Core\ContentType\Transformer\HtmlEmptyTransformer;
 
-final class HtmlEmptyTransformerTest extends AbstractTransformerTest
+final class HtmlEmptyTransformerTest extends AbstractTransformerTestCase
 {
     #[\Override]
     protected function getTransformer(): ContentTransformerInterface
@@ -41,7 +41,7 @@ final class HtmlEmptyTransformerTest extends AbstractTransformerTest
         $input = <<<HTML
                    &nbsp;
                        &nbsp;
-                       
+
                            &nbsp;
             HTML;
 
@@ -55,7 +55,7 @@ final class HtmlEmptyTransformerTest extends AbstractTransformerTest
                 <body>
                         <h1>            </h1>
                         <p>&nbsp;       </p>
-                </body>        
+                </body>
             </html>
             HTML;
 
@@ -65,8 +65,8 @@ final class HtmlEmptyTransformerTest extends AbstractTransformerTest
     public function testKeepNotEmpty(): void
     {
         $input = <<<HTML
-            <p style="text-align: justify;"> </p> 
-            <div class="readMoreContent" style="text-align: justify;"> TEST TEST </div> 
+            <p style="text-align: justify;"> </p>
+            <div class="readMoreContent" style="text-align: justify;"> TEST TEST </div>
             <p> </p>
             HTML;
         $this->assertEqualsInputOutPut($input, $input);
@@ -79,7 +79,7 @@ final class HtmlEmptyTransformerTest extends AbstractTransformerTest
                 <body>
                         <h1>Test content</h1>
                         <p>&nbsp;       </p>
-                </body>        
+                </body>
             </html>
             HTML;
 

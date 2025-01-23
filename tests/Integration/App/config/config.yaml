@@ -4,16 +4,24 @@ parameters:
   env(EMSCH_ENVS): '{"preview":{"regex":"/.*/","alias":"test_preview","backend":"https://localhost"}}'
 
 framework:
+  http_method_override: false
+  handle_all_throwables: true
   test: true
   secret: 1621180219f163d89dc399e88cfc1807ab6448cf
   csrf_protection: ~
   session:
+    cookie_samesite: strict
+    cookie_secure: auto
     handler_id: ~
     storage_factory_id: session.storage.factory.native
   router:
     resource: '%kernel.project_dir%/config/routes.yaml'
     utf8: true
     strict_requirements: ~
+  php_errors:
+    log: true
+  validation:
+    email_validation_mode: html5
 
 doctrine:
   dbal:
@@ -22,6 +30,7 @@ doctrine:
     auto_generate_proxy_classes: '%kernel.debug%'
     naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
     auto_mapping: true
+    enable_lazy_ghost_objects: true
 
 twig:
   debug: true

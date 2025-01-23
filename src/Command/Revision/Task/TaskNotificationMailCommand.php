@@ -9,10 +9,16 @@ use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Revision\Task\TaskMailer;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
 use EMS\CoreBundle\Core\Revision\Task\TaskStatus;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::REVISION_TASK_NOTIFICATION_MAIL,
+    description: 'Send notification mail for tasks',
+    hidden: false
+)]
 final class TaskNotificationMailCommand extends AbstractCommand
 {
     private string $subject;
@@ -21,7 +27,6 @@ final class TaskNotificationMailCommand extends AbstractCommand
     private ?\DateTimeImmutable $deadlineStart = null;
     private ?\DateTimeImmutable $deadlineEnd = null;
 
-    protected static $defaultName = Commands::REVISION_TASK_NOTIFICATION_MAIL;
     private const string OPTION_SUBJECT = 'subject';
     private const string OPTION_INCLUDE_TASK_MANAGERS = 'include-task-managers';
     private const string OPTION_DEADLINE_START = 'deadline-start';
@@ -39,7 +44,6 @@ final class TaskNotificationMailCommand extends AbstractCommand
     protected function configure(): void
     {
         $this
-            ->setDescription('Send notification mail for tasks')
             ->addOption(self::OPTION_SUBJECT, null, InputOption::VALUE_REQUIRED, 'Set mail subject', 'notification tasks')
             ->addOption(self::OPTION_DEADLINE_START, null, InputOption::VALUE_REQUIRED, 'Start deadline from now "-1 days"')
             ->addOption(self::OPTION_DEADLINE_END, null, InputOption::VALUE_REQUIRED, 'End deadline from now "+1 days"')

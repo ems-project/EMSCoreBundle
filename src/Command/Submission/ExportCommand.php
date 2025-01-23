@@ -13,15 +13,20 @@ use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 use EMS\Helpers\File\File;
 use EMS\Helpers\File\TempFile;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::SUBMISSION_EXPORT,
+    description: 'Extract form submissions',
+    hidden: false
+)]
 class ExportCommand extends AbstractCommand
 {
     public const MAIL_TEMPLATE = '@EMSCore/email/submissions-export.html.twig';
-    protected static $defaultName = Commands::SUBMISSION_EXPORT;
     public const ARG_FIELDS = 'fields';
     public const OPTION_FILTER = 'filter';
     public const OPTION_FILENAME = 'filename';
@@ -53,7 +58,6 @@ class ExportCommand extends AbstractCommand
     protected function configure(): void
     {
         $this
-            ->setDescription('Extract form submissions')
             ->addArgument(
                 self::ARG_FIELDS,
                 InputArgument::IS_ARRAY,

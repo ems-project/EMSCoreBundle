@@ -12,15 +12,15 @@ use PHPUnit\Framework\TestCase;
 
 class I18nRuntimeTest extends TestCase
 {
-    private readonly UserManager $service;
+    private readonly I18nService $i18nService;
     private I18nRuntime $i18nRuntime;
 
     #[\Override]
     public function setUp(): void
     {
         $this->i18nService = $this->createMock(I18nService::class);
-        $this->userManager = $this->createMock(UserManager::class);
-        $this->i18nRuntime = new I18nRuntime($this->i18nService, $this->userManager);
+        $userManager = $this->createMock(UserManager::class);
+        $this->i18nRuntime = new I18nRuntime($this->i18nService, $userManager);
     }
 
     public function testFindAllI18nIsNull()

@@ -18,24 +18,23 @@ use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Html\MimeTypes;
 use EMS\Helpers\Standard\Json;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: Commands::ASSET_REFRESH_FILE_FIELD,
+    description: 'Refresh file field and regenerate resized images base on the EMSCO_IMAGE_MAX_SIZE environment variable.',
+    hidden: false
+)]
 class RefreshFileFieldCommand extends AbstractCommand
 {
     private const string USER = 'SYSTEM_REFRESH_FILE_FIELDS';
-    protected static $defaultName = Commands::ASSET_REFRESH_FILE_FIELD;
     private User $fakeUser;
 
     public function __construct(private readonly RevisionService $revisionService, private readonly StorageManager $storageManager, private readonly FileService $fileService, private readonly int $imageMaxSize)
     {
         parent::__construct();
-    }
-
-    #[\Override]
-    protected function configure(): void
-    {
-        $this->setDescription('Refresh file field and regenerate resized images base on the EMSCO_IMAGE_MAX_SIZE environment variable.');
     }
 
     #[\Override]

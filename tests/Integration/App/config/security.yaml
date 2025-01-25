@@ -1,79 +1,86 @@
 security:
-  enable_authenticator_manager: true
+    password_hashers:
+        EMS\CoreBundle\Entity\UserInterface: bcrypt
 
-  password_hashers:
-    EMS\CoreBundle\Entity\UserInterface: bcrypt
+    role_hierarchy:
+        ROLE_AUTHOR: ROLE_USER
+        ROLE_FORM_CRM: ROLE_USER
+        ROLE_TASK_MANAGER: ROLE_USER
+        ROLE_REVIEWER: ROLE_AUTHOR
+        ROLE_TRADUCTOR: ROLE_REVIEWER
+        ROLE_AUDITOR: ROLE_REVIEWER
+        ROLE_COPYWRITER: ROLE_TRADUCTOR
+        ROLE_PUBLISHER: ROLE_COPYWRITER
+        ROLE_WEBMASTER: ROLE_PUBLISHER
+        ROLE_ADMIN: [ ROLE_WEBMASTER, ROLE_USER_MANAGEMENT ]
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
 
-  role_hierarchy:
-    ROLE_AUTHOR:          ROLE_USER
-    ROLE_FORM_CRM:        ROLE_USER
-    ROLE_TASK_MANAGER:    ROLE_USER
-    ROLE_REVIEWER:        ROLE_AUTHOR
-    ROLE_TRADUCTOR:       ROLE_REVIEWER
-    ROLE_AUDITOR:         ROLE_REVIEWER
-    ROLE_COPYWRITER:      ROLE_TRADUCTOR
-    ROLE_PUBLISHER:       ROLE_COPYWRITER
-    ROLE_WEBMASTER:       ROLE_PUBLISHER
-    ROLE_ADMIN:           [ROLE_WEBMASTER, ROLE_USER_MANAGEMENT]
-    ROLE_SUPER_ADMIN:     ROLE_ADMIN
+    providers:
+        emsco_user:
+            id: emsco.security.provider.user
+        emsco_user_api:
+            id: emsco.security.provider.user_api
+        emsco_user_ldap:
+            id: emsco.security.provider.user_ldap
+        chain_providers:
+            chain:
+                providers: [ 'emsco_user', 'emsco_user_ldap' ]
 
-  providers:
-    emsco_user:
-      id: emsco.security.provider.user
-    emsco_user_api:
-      id: emsco.security.provider.user_api
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        ems_core_api:
+            pattern: ^/api
+            stateless: true
+            provider: emsco_user_api
+            custom_authenticators:
+                - emsco.security.authenticator.auth_token
+        ems_core:
+            lazy: true
+            provider: chain_providers
+            entry_point: emsco.security.authenticator.form_login
+            custom_authenticators:
+                - emsco.security.authenticator.auth_token_login
+                - emsco.security.authenticator.auth_token_ldap
+                - emsco.security.authenticator.form_login
+                - emsco.security.authenticator.form_login_ldap
+            form_login_ldap: ~
+            logout:
+                path: emsco_user_logout
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
+            switch_user: { role: ROLE_ADMIN, provider: emsco_user }
 
-  firewalls:
-    dev:
-      pattern: ^/(_(profiler|wdt)|css|images|js)/
-      security: false
-    ems_core_api:
-      pattern: ^/api
-      stateless: true
-      provider: emsco_user_api
-      custom_authenticators:
-        - emsco.security.authenticator.auth_token
-    ems_core:
-      lazy: true
-      provider: emsco_user
-      custom_authenticators:
-        - emsco.security.authenticator.form_login
-        - emsco.security.authenticator.auth_token_login
-      logout:
-        path: emsco_user_logout
-      remember_me:
-        secret:   '%kernel.secret%'
-        lifetime: 604800 # 1 week in seconds
-      switch_user: { role: ROLE_ADMIN, provider: emsco_user }
-
-  access_control:
-    - { path: ^/$, role: PUBLIC_ACCESS }
-    - { path: ^/metrics$, role: PUBLIC_ACCESS }
-    - { path: ^/public/, role: PUBLIC_ACCESS }
-    - { path: ^/health_check(\.json)?$, role: PUBLIC_ACCESS }
-    - { path: ^/login$, role: PUBLIC_ACCESS }
-    - { path: ^/auth-token$, role: PUBLIC_ACCESS }
-    - { path: ^/public-key$, role: PUBLIC_ACCESS }
-    - { path: ^/go-to-login$, role: PUBLIC_ACCESS }
-    - { path: ^/status.json$, role: PUBLIC_ACCESS }
-    - { path: ^/status$, role: PUBLIC_ACCESS }
-    - { path: ^/documentation$, role: PUBLIC_ACCESS }
-    - { path: ^/resetting, role: PUBLIC_ACCESS }
-    - { path: ^/data/file, role: PUBLIC_ACCESS }
-    - { path: ^/data/asset, role: PUBLIC_ACCESS }
-    - { path: ^/channel/, role: PUBLIC_ACCESS }
-    - { path: ^/bundles, role: PUBLIC_ACCESS }
-    - { path: ^/api, roles: ROLE_API }
-    - { path: ^/api/admin, roles: ROLE_ADMIN }
-    - { path: ^/i18n-type, roles: ROLE_ADMIN }
-    - { path: ^/action, roles: ROLE_ADMIN }
-    - { path: ^/wysiwyg-profile, roles: ROLE_ADMIN }
-    - { path: ^/content-type, roles: ROLE_ADMIN }
-    - { path: ^/environment, roles: ROLE_ADMIN }
-    - { path: ^/channel-admin, roles: ROLE_ADMIN }
-    - { path: ^/user, roles: ROLE_USER_MANAGEMENT }
-    - { path: ^/elasticsearch/delete-search, roles: ROLE_USER }
-    - { path: ^/elasticsearch, roles: ROLE_ADMIN }
-    - { path: ^/publisher/align, roles: ROLE_PUBLISHER }
-    - { path: ^/form/submissions, roles: ROLE_FORM_CRM }
-    - { path: ^/, roles: ROLE_USER }
+    access_control:
+        - { path: ^/$, role: PUBLIC_ACCESS }
+        - { path: ^/metrics$, role: PUBLIC_ACCESS }
+        - { path: ^/public/, role: PUBLIC_ACCESS }
+        - { path: ^/health_check(\.json)?$, role: PUBLIC_ACCESS }
+        - { path: ^/login$, role: PUBLIC_ACCESS }
+        - { path: ^/auth-token$, role: PUBLIC_ACCESS }
+        - { path: ^/public-key$, role: PUBLIC_ACCESS }
+        - { path: ^/go-to-login$, role: PUBLIC_ACCESS }
+        - { path: ^/status.json$, role: PUBLIC_ACCESS }
+        - { path: ^/status$, role: PUBLIC_ACCESS }
+        - { path: ^/documentation$, role: PUBLIC_ACCESS }
+        - { path: ^/resetting, role: PUBLIC_ACCESS }
+        - { path: ^/data/file, role: PUBLIC_ACCESS }
+        - { path: ^/data/asset, role: PUBLIC_ACCESS }
+        - { path: ^/channel/, role: PUBLIC_ACCESS }
+        - { path: ^/bundles, role: PUBLIC_ACCESS }
+        - { path: ^/api, roles: ROLE_API }
+        - { path: ^/api/admin, roles: ROLE_ADMIN }
+        - { path: ^/i18n-type, roles: ROLE_ADMIN }
+        - { path: ^/action, roles: ROLE_ADMIN }
+        - { path: ^/wysiwyg-profile, roles: ROLE_ADMIN }
+        - { path: ^/content-type, roles: ROLE_ADMIN }
+        - { path: ^/environment, roles: ROLE_ADMIN }
+        - { path: ^/channel-admin, roles: ROLE_ADMIN }
+        - { path: ^/user, roles: ROLE_USER_MANAGEMENT }
+        - { path: ^/elasticsearch/delete-search, roles: ROLE_USER }
+        - { path: ^/elasticsearch, roles: ROLE_ADMIN }
+        - { path: ^/publisher/align, roles: ROLE_PUBLISHER }
+        - { path: ^/form/submissions, roles: ROLE_FORM_CRM }
+        - { path: ^/, roles: ROLE_USER }

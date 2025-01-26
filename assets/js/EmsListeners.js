@@ -707,11 +707,25 @@ export default class EmsListeners {
     }
 
     addSelect2Listeners() {
-        //Initialize Select2 Elements
+        const formatFn = function(state) {
+            const text = state.text
+            const element = state.element
+            const dataset = element ? element.dataset : false
+
+            if (dataset && Object.hasOwn(dataset, 'icon')) {
+                return `<i class="${dataset.icon}"></i> ${text}`
+            }
+
+            return text
+        }
+
         jquery(this.target).find(".select2").select2({
             allowClear: true,
             placeholder: "",
-            escapeMarkup: function (markup) { return markup; }
+            width: '100%',
+            escapeMarkup: function (markup) { return markup; },
+            templateSelection: formatFn,
+            templateResult: formatFn,
         });
     }
 

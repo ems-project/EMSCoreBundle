@@ -480,18 +480,18 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param mixed|null $rawData
-     * @param mixed|null $compareRawData
+     * @param mixed[]|null $compareRawData
      */
-    public function diffIcon($rawData, bool $compare, string $fieldName, $compareRawData): string
+    public function diffIcon(?string $rawData, bool $compare, string $fieldName, ?array $compareRawData): string
     {
         $b = $a = null;
-        if ($rawData) {
-            $a = '<i class="'.$rawData.'"></i> '.$rawData;
+        if (null !== $rawData) {
+            $a = \sprintf('<i class="%s"></i> %s', $rawData, $rawData);
         }
 
-        if (isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
-            $b = '<i class="'.$compareRawData[$fieldName].'"></i> '.$compareRawData[$fieldName];
+        $compareData = Type::getAsNullableString($compareRawData[$fieldName] ?? null);
+        if (null !== $compareData) {
+            $b = \sprintf('<i class="%s"></i> %s', $compareData, $compareData);
         }
 
         return $this->diff($a, $b, $compare);
@@ -734,20 +734,20 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param mixed|null $rawData
-     * @param mixed|null $compareRawData
+     * @param mixed[]|null $compareRawData
      */
-    public function diffColor($rawData, bool $compare, string $fieldName, $compareRawData): string
+    public function diffColor(?string $rawData, bool $compare, string $fieldName, ?array $compareRawData): string
     {
         $b = $a = null;
-        if ($rawData) {
-            $color = $rawData;
-            $a = '<span style="background-color: '.$color.'; color: '.($this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff').';">'.$color.'</span> ';
+        if (null !== $rawData) {
+            $color = new Color($rawData);
+            $a = \sprintf('<span style="background-color: %s; color: %s;">%s</span> ', $rawData, $color->bestContrast(...Color::EMS_COLORS)->getRGB(), $rawData);
         }
 
-        if (isset($compareRawData[$fieldName]) && $compareRawData[$fieldName]) {
-            $color = $compareRawData[$fieldName];
-            $b = '<span style="background-color: '.$color.'; color: '.($this->contrastRatio($color, '#000000') > $this->contrastRatio($color, '#ffffff') ? '#000000' : '#ffffff').';">'.$color.'</span> ';
+        $compareData = Type::getAsNullableString($compareRawData[$fieldName] ?? null);
+        if (null !== $compareData) {
+            $color = new Color($compareData);
+            $b = \sprintf('<span style="background-color: %s; color: %s;">%s</span> ', $compareData, $color->bestContrast(...Color::EMS_COLORS)->getRGB(), $compareData);
         }
 
         return $this->diff($a, $b, $compare, false, false, true);
@@ -759,31 +759,41 @@ class AppExtension extends AbstractExtension
      */
     public function diffRaw($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
+        if (\is_array($rawData)) {
+            $a = Json::encode($rawData);
+        } else {
+            $a = Type::getAsNullableString($rawData);
+        }
         $b = $compareRawData[$fieldName] ?? null;
+        if (\is_array($b)) {
+            $b = Json::encode($b);
+        } else {
+            $b = Type::getAsNullableString($b);
+        }
 
-        return $this->diff($rawData, $b, $compare);
+        return $this->diff($a, $b, $compare);
     }
 
     /**
-     * @param mixed|null $rawData
-     * @param mixed|null $compareRawData
+     * @param mixed|null   $rawData
+     * @param mixed[]|null $compareRawData
      */
-    public function diffText($rawData, bool $compare, string $fieldName, $compareRawData): string
+    public function diffText($rawData, bool $compare, string $fieldName, ?array $compareRawData): string
     {
-        $b = $compareRawData[$fieldName] ?? null;
+        $b = Type::getAsNullableString($compareRawData[$fieldName] ?? null);
 
-        return $this->diff($rawData, $b, $compare, true, true);
+        return $this->diff(Type::getAsNullableString($rawData), $b, $compare, true, true);
     }
 
     /**
-     * @param mixed|null $rawData
-     * @param mixed|null $compareRawData
+     * @param mixed|null   $rawData
+     * @param mixed[]|null $compareRawData
      */
-    public function diffHtml($rawData, bool $compare, string $fieldName, $compareRawData): string
+    public function diffHtml($rawData, bool $compare, string $fieldName, ?array $compareRawData): string
     {
-        $b = $compareRawData[$fieldName] ?? null;
+        $b = Type::getAsNullableString($compareRawData[$fieldName] ?? null);
 
-        return $this->diff($rawData, $b, $compare, false, true, true);
+        return $this->diff(Type::getAsNullableString($rawData), $b, $compare, false, true, true);
     }
 
     public function getSequenceNextValue(string $name): int

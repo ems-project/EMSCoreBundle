@@ -6,6 +6,8 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 use EMS\SubmissionBundle\Entity\FormSubmissionFile;
 
 /**
@@ -28,10 +30,10 @@ class FormSubmissionFileRepository extends ServiceEntityRepository
             ->join('f.formSubmission', 's')
             ->andWhere($qb->expr()->eq('f.id', ':submission_file_id'))
             ->andWhere($qb->expr()->eq('s.id', ':submission_id'))
-            ->setParameters([
-                'submission_file_id' => $submissionFileId,
-                'submission_id' => $submissionId,
-            ]);
+            ->setParameters(new ArrayCollection([
+                new Parameter('submission_file_id', $submissionFileId),
+                new Parameter('submission_id', $submissionId),
+            ]));
 
         return $qb->getQuery()->getOneOrNullResult();
     }

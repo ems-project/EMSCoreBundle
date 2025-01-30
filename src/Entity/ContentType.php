@@ -18,7 +18,6 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\ContainerFieldType;
 use EMS\CoreBundle\Roles;
-use EMS\Helpers\Standard\DateTime;
 use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
 
@@ -99,8 +98,8 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->setFieldType($fieldType);
         $this->setAskForOuuid(true);
 
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
     }
 
     #[\Override]

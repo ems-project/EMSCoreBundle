@@ -7,7 +7,6 @@ namespace EMS\CoreBundle\Entity;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CommonBundle\Helper\EmsFields;
-use EMS\Helpers\Standard\DateTime;
 
 class UploadedAsset implements EntityInterface
 {
@@ -30,8 +29,8 @@ class UploadedAsset implements EntityInterface
 
     public function __construct()
     {
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
     }
 
     /**

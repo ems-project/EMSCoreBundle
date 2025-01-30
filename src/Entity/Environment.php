@@ -11,7 +11,6 @@ use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Core\Environment\Index;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
-use EMS\Helpers\Standard\DateTime;
 
 class Environment extends JsonDeserializer implements \JsonSerializable, EntityInterface, \Stringable
 {
@@ -55,8 +54,8 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->revisions = new ArrayCollection();
         $this->contentTypesHavingThisAsDefault = new ArrayCollection();
 
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
     }
 
     #[\Override]
@@ -264,7 +263,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
 
     public function getNewIndexName(): string
     {
-        return \sprintf('%s_%s', $this->getAlias(), (new \DateTimeImmutable())->format('Ymd_His'));
+        return \sprintf('%s_%s', $this->getAlias(), new \DateTime()->format('Ymd_His'));
     }
 
     public function getBuildDate(): ?\DateTimeInterface

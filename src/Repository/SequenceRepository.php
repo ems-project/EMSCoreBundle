@@ -30,14 +30,14 @@ class SequenceRepository extends EntityRepository
 
         $result = $q->execute();
 
-        $this->_em->beginTransaction();
+        $this->getEntityManager()->beginTransaction();
 
         $out = 0;
         if (empty($result)) {
             $sequence = new Sequence($name);
             $out = $sequence->getValue();
-            $this->_em->persist($sequence);
-            $this->_em->flush();
+            $this->getEntityManager()->persist($sequence);
+            $this->getEntityManager()->flush();
         } else {
             $item = $result[0];
             $q = $qb->update()
@@ -55,7 +55,7 @@ class SequenceRepository extends EntityRepository
                 throw new SequenceException('An error has been detected with the sequence '.$name);
             }
         }
-        $this->_em->commit();
+        $this->getEntityManager()->commit();
 
         return $out;
     }

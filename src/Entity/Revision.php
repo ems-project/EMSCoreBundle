@@ -125,8 +125,8 @@ class Revision implements EntityInterface, \Stringable
         $this->environments = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->releases = new ArrayCollection();
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
         $this->startTime = new \DateTime('now');
 
         $a = \func_get_args();
@@ -838,7 +838,7 @@ class Revision implements EntityInterface, \Stringable
             if ($this->hasOuuid()) {
                 $this->setVersionDate('from', $this->created); // migration existing docs
             } else {
-                $this->setVersionDate('from', new \DateTimeImmutable('now'));
+                $this->setVersionDate('from', new \DateTime());
             }
         }
     }

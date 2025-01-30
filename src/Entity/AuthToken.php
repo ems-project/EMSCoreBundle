@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Entity;
 
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
-use EMS\Helpers\Standard\DateTime;
 
 class AuthToken
 {
@@ -19,8 +18,8 @@ class AuthToken
     {
         $this->value = \base64_encode(\random_bytes(50));
 
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
     }
 
     public function setValue(string $value): self

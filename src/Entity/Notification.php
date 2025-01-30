@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Entity;
 
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
-use EMS\Helpers\Standard\DateTime;
 
 class Notification implements \Stringable
 {
@@ -32,8 +31,8 @@ class Notification implements \Stringable
 
     public function __construct()
     {
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
     }
 
     #[\Override]

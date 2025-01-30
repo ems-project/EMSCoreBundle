@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Analyzer;
 
@@ -58,7 +59,7 @@ class AnalyzerRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('a');
         $qb
             ->andWhere($qb->expr()->in('a.id', ':ids'))
-            ->setParameter('ids', $ids);
+            ->setParameter('ids', $ids, ArrayParameterType::INTEGER);
 
         return $qb->getQuery()->getResult();
     }

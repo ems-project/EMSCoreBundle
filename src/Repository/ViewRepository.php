@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\View;
@@ -64,7 +65,7 @@ class ViewRepository extends ServiceEntityRepository
     public function getByIds(string ...$ids): array
     {
         $qb = $this->createQueryBuilder('v');
-        $qb->andWhere('v.id IN (:ids)')->setParameter('ids', $ids);
+        $qb->andWhere('v.id IN (:ids)')->setParameter('ids', $ids, ArrayParameterType::INTEGER);
 
         return $qb->getQuery()->getResult();
     }

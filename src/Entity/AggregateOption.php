@@ -7,7 +7,6 @@ namespace EMS\CoreBundle\Entity;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Service\Mapping;
-use EMS\Helpers\Standard\DateTime;
 use EMS\Helpers\Standard\Json;
 
 class AggregateOption
@@ -23,8 +22,8 @@ class AggregateOption
 
     public function __construct()
     {
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
 
         $this->config = '{
     "terms" : { "field" : "'.Mapping::FINALIZED_BY_FIELD.'" }

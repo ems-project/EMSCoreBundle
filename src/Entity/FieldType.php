@@ -12,7 +12,6 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType;
-use EMS\Helpers\Standard\DateTime;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FieldType extends JsonDeserializer implements \JsonSerializable
@@ -44,8 +43,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     {
         $this->children = new ArrayCollection();
 
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
     }
 
     /**

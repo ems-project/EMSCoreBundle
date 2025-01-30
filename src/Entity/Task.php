@@ -33,8 +33,8 @@ class Task implements EntityInterface
     {
         $this->id = Uuid::uuid4();
         $this->revisionOuuid = $revision->giveOuuid();
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
         $this->status = TaskStatus::PLANNED->value;
     }
 

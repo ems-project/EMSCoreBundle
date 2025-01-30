@@ -9,7 +9,6 @@ use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Validator\Constraints as EMSAssert;
-use EMS\Helpers\Standard\DateTime;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[UniqueEntity(fields: ['name'], message: 'Name already exists!')]
@@ -30,8 +29,8 @@ class ManagedAlias extends JsonDeserializer implements \JsonSerializable, \Strin
 
     public function __construct()
     {
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
     }
 
     #[\Override]

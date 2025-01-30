@@ -146,7 +146,7 @@ class IndexFileCommand extends AbstractCommand
                     $date->modify('+5 minutes');
                     $revision->setLockUntil($date);
                     $em->persist($revision);
-                    $em->flush($revision);
+                    $em->flush();
                 }
                 unset($revision);
 

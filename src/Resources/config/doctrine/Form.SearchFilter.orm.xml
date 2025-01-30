@@ -12,7 +12,7 @@
     <field name="field" length="100" nullable="true"/>
     <field name="booleanClause" column="boolean_clause" length="20" nullable="true"/>
     <field name="operator" length="50"/>
-    <field name="boost" type="decimal" scale="2" nullable="true"/>
+    <field name="boost" type="decimal" precision="10" scale="2" nullable="true"/>
 
     <many-to-one field="search" target-entity="EMS\CoreBundle\Entity\Form\Search" inversed-by="filters">
       <join-column name="search_id"/>

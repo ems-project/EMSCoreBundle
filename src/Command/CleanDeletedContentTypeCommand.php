@@ -70,7 +70,7 @@ class CleanDeletedContentTypeCommand extends Command
             if ($contentType->hasFieldType()) {
                 $contentType->unsetFieldType();
                 $em->persist($contentType);
-                $em->flush($contentType);
+                $em->flush();
             }
             $fields = $fieldRepo->findBy([
                 'contentType' => $contentType,
@@ -79,14 +79,14 @@ class CleanDeletedContentTypeCommand extends Command
             $output->writeln('Remove '.\count($fields).' assosiated fields');
             foreach ($fields as $field) {
                 $em->remove($field);
-                $em->flush($field);
+                $em->flush();
             }
 
             $revisions = $revisionRepo->findBy(['contentType' => $contentType]);
             $output->writeln('Remove '.\count($revisions).' assosiated revisions');
             foreach ($revisions as $revision) {
                 $em->remove($revision);
-                $em->flush($revision);
+                $em->flush();
             }
 
             $templates = $templateRepo->findBy(['contentType' => $contentType]);
@@ -94,18 +94,18 @@ class CleanDeletedContentTypeCommand extends Command
             /** @var Template $template */
             foreach ($templates as $template) {
                 $em->remove($template);
-                $em->flush($template);
+                $em->flush();
             }
 
             $views = $viewRepo->findBy(['contentType' => $contentType]);
             $output->writeln('Remove '.\count($views).' assosiated views');
             foreach ($views as $view) {
                 $em->remove($view);
-                $em->flush($view);
+                $em->flush();
             }
 
             $em->remove($contentType);
-            $em->flush($contentType);
+            $em->flush();
         }
 
         $output->writeln('Remove deleted revisions');

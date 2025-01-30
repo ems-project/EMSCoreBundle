@@ -6,6 +6,9 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -38,17 +41,17 @@ class NotificationRepository extends ServiceEntityRepository
             ->join('n.revision', 'r', 'WITH', 'n.revision = r.id')
             ->where('r.ouuid = :ouuid')
             ->andWhere('r.contentType = :contentType')
-            ->andwhere('r.deleted = :false')
-            ->andwhere('n.status = :status')
-            ->andwhere('n.environment = :environment');
+            ->andWhere('r.deleted = :false')
+            ->andWhere('n.status = :status')
+            ->andWhere('n.environment = :environment');
 
-        $qb->setParameters([
-            'status' => 'pending',
-            'contentType' => $revision->getContentType(),
-            'ouuid' => $revision->getOuuid(),
-            'environment' => $environment,
-            'false' => false,
-        ]);
+        $qb->setParameters(new ArrayCollection([
+            new Parameter('status', 'pending'),
+            new Parameter('contentType', $revision->getContentType()),
+            new Parameter('ouuid', $revision->getOuuid()),
+            new Parameter('environment', $environment),
+            new Parameter('false', false),
+        ]));
 
         $query = $qb->getQuery();
 
@@ -58,12 +61,13 @@ class NotificationRepository extends ServiceEntityRepository
     public function countRejectedForUser(UserInterface $user): int
     {
         $query = $this->createQueryBuilder('n')
-        ->select('COUNT(n)')
-        ->where('n.status = :status')
-        ->andwhere('n.username =  :username');
-        $params = ['status' => 'rejected', 'username' => $user->getUsername()];
-
-        $query->setParameters($params);
+            ->select('COUNT(n)')
+            ->where('n.status = :status')
+            ->andWhere('n.username =  :username')
+            ->setParameters(new ArrayCollection([
+                new Parameter('status', 'rejected'),
+                new Parameter('username', $user->getUsername()),
+            ]));
 
         return (int) $query->getQuery()->getSingleScalarResult();
     }
@@ -80,16 +84,19 @@ class NotificationRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('n')
         ->select('COUNT(n)')
         ->where('n.status = :status')
-        ->andwhere('n.template IN (:ids)');
-        $params = ['status' => 'pending', 'ids' => $templateIds];
+        ->andWhere('n.template IN (:ids)');
+        $params = new ArrayCollection([
+            new Parameter('status', 'pending'),
+            new Parameter('ids', $templateIds, ArrayParameterType::INTEGER),
+        ]);
 
         if (null != $environments) {
             $query->andWhere('n.environment IN (:envs)');
-            $params['envs'] = $environments;
+            $params->add(new Parameter('envs', $environments));
         }
         if (null != $templates) {
             $query->andWhere('n.template IN (:templates)');
-            $params['templates'] = $templates;
+            $params->add(new Parameter('templates', $templates));
         }
 
         $query->setParameters($params);
@@ -104,13 +111,13 @@ class NotificationRepository extends ServiceEntityRepository
         ->join('n.revision', 'r', 'WITH', 'n.revision = r.id')
         ->where('n.status = :status')
         ->andWhere('r.contentType = :contentType')
-        ->andwhere('r.ouuid = :ouuid');
+        ->andWhere('r.ouuid = :ouuid');
 
-        $qb->setParameters([
-            'status' => 'pending',
-            'contentType' => $contentType,
-            'ouuid' => $ouuid,
-        ]);
+        $qb->setParameters(new ArrayCollection([
+            new Parameter('status', 'pending'),
+            new Parameter('contentType', $contentType),
+            new Parameter('ouuid', $ouuid),
+        ]));
 
         $query = $qb->getQuery();
 
@@ -155,14 +162,14 @@ class NotificationRepository extends ServiceEntityRepository
             ->join('n.revision', 'r', 'WITH', 'n.revision = r.id')
             ->join('n.environment', 'e', 'WITH', 'n.environment = e.id')
             ->andWhere('n.status = :status')
-            ->andwhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
-            ->andwhere('r.id = n.revision')
+            ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
+            ->andWhere('r.id = n.revision')
             ->setParameter('status', 'pending');
 
         $templateIds = $this->getTemplatesIdsForUserFrom($user, $contentTypes);
 
         if (\count($templateIds) > 0) {
-            $qb->andwhere('n.template IN (:ids)')->setParameter('ids', $templateIds);
+            $qb->andWhere('n.template IN (:ids)')->setParameter('ids', $templateIds);
         }
 
         $orCircles = $qb->expr()->orX();
@@ -192,16 +199,19 @@ class NotificationRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('n')
         ->select('n')
         ->where('n.status = :status')
-        ->andwhere('n.username = :username');
-        $params = ['status' => 'rejected', 'username' => $user->getUsername()];
+        ->andWhere('n.username = :username');
+        $params = new ArrayCollection([
+            new Parameter('status', 'rejected'),
+            new Parameter('username', $user->getUsername()),
+        ]);
 
         if (null != $environments) {
             $qb->andWhere('n.environment IN (:envs)');
-            $params['envs'] = $environments;
+            $params->add(new Parameter('envs', $environments));
         }
         if (null != $templates) {
             $qb->andWhere('n.template IN (:templates)');
-            $params['templates'] = $templates;
+            $params->add(new Parameter('templates', $templates));
         }
 
         $qb->setParameters($params)
@@ -225,16 +235,19 @@ class NotificationRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('n')
         ->select('n')
         ->where('n.status = :status')
-        ->andwhere('n.template IN (:ids)');
-        $params = ['status' => 'pending', 'ids' => $templateIds];
+        ->andWhere('n.template IN (:ids)');
+        $params = new ArrayCollection([
+            new Parameter('status', 'pending'),
+            new Parameter('ids', $templateIds),
+        ]);
 
         if (null != $environments) {
             $qb->andWhere('n.environment IN (:envs)');
-            $params['envs'] = $environments;
+            $params->add(new Parameter('envs', $environments));
         }
         if (null != $templates) {
             $qb->andWhere('n.template IN (:templates)');
-            $params['templates'] = $templates;
+            $params->add(new Parameter('templates', $templates));
         }
 
         $qb->setParameters($params)
@@ -317,7 +330,7 @@ class NotificationRepository extends ServiceEntityRepository
 
         $query->select('n')
            ->where('n.status = :status')
-           ->andwhere($query->expr()->lte('n.emailed', ':datePivot'))
+           ->andWhere($query->expr()->lte('n.emailed', ':datePivot'))
             ->setParameter('status', 'pending')
             ->setParameter('datePivot', $date);
 
@@ -330,12 +343,12 @@ class NotificationRepository extends ServiceEntityRepository
     public function findResponses(): array
     {
         $query = $this->createQueryBuilder('n')
-           ->select('n')
-           ->where('n.status <> :status')
-           ->andwhere('n.responseEmailed is NULL')
-            ->setParameters([
-                'status' => 'pending',
-            ]);
+            ->select('n')
+            ->where('n.status <> :status')
+            ->andWhere('n.responseEmailed is NULL')
+            ->setParameters(new ArrayCollection([
+                new Parameter('status', 'pending'),
+            ]));
 
         return $query->getQuery()->getResult();
     }

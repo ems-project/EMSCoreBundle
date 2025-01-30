@@ -9,7 +9,6 @@ use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\Field\FilterOptionsType;
-use EMS\Helpers\Standard\DateTime;
 
 class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
@@ -28,8 +27,8 @@ class Filter extends JsonDeserializer implements \JsonSerializable, EntityInterf
 
     public function __construct()
     {
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
     }
 
     public function setName(string $name): Filter

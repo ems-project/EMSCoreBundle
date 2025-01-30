@@ -185,7 +185,7 @@ class FileService implements EntityServiceInterface
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         $em->persist($uploadedAsset);
-        $em->flush($uploadedAsset);
+        $em->flush();
 
         return $uploadedAsset;
     }
@@ -241,7 +241,7 @@ class FileService implements EntityServiceInterface
         }
 
         $em->persist($uploadedAsset);
-        $em->flush($uploadedAsset);
+        $em->flush();
 
         return $uploadedAsset;
     }
@@ -295,7 +295,7 @@ class FileService implements EntityServiceInterface
         $uploadedAsset->setUploaded($uploadedAsset->getUploaded() + \strlen($chunk));
 
         $em->persist($uploadedAsset);
-        $em->flush($uploadedAsset);
+        $em->flush();
 
         if ($uploadedAsset->getUploaded() === $uploadedAsset->getSize()) {
             try {
@@ -303,13 +303,13 @@ class FileService implements EntityServiceInterface
                 $uploadedAsset->setAvailable(true);
             } catch (\Throwable) {
                 $em->remove($uploadedAsset);
-                $em->flush($uploadedAsset);
+                $em->flush();
                 throw new \Exception('Was not able to finalize or confirmed the upload in at least one storage service');
             }
         }
 
         $em->persist($uploadedAsset);
-        $em->flush($uploadedAsset);
+        $em->flush();
 
         return $uploadedAsset;
     }

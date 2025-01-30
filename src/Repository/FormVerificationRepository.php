@@ -6,6 +6,8 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 use EMS\CoreBundle\Entity\FormVerification;
 
 /**
@@ -26,8 +28,8 @@ class FormVerificationRepository extends ServiceEntityRepository
             return $exists;
         }
 
-        $this->_em->persist($verification);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($verification);
+        $this->getEntityManager()->flush();
 
         return $verification;
     }
@@ -41,10 +43,10 @@ class FormVerificationRepository extends ServiceEntityRepository
         $qb
             ->andWhere($qb->expr()->eq('fv.value', ':value'))
             ->andWhere($qb->expr()->gte('fv.expirationDate', ':now'))
-            ->setParameters([
-                'value' => $value,
-                'now' => new \DateTimeImmutable(),
-            ]);
+            ->setParameters(new ArrayCollection([
+                new Parameter('value', $value),
+                new Parameter('now', new \DateTimeImmutable()),
+            ]));
 
         $formVerification = $qb->getQuery()->getOneOrNullResult();
 
@@ -58,7 +60,7 @@ class FormVerificationRepository extends ServiceEntityRepository
     private function updateExpirationDate(FormVerification $formVerification): void
     {
         $formVerification->updateExpirationDate();
-        $this->_em->persist($formVerification);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($formVerification);
+        $this->getEntityManager()->flush();
     }
 }

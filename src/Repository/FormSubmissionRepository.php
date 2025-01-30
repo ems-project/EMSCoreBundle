@@ -110,23 +110,23 @@ class FormSubmissionRepository extends ServiceEntityRepository
 
     public function persist(FormSubmission $formSubmission): void
     {
-        $this->_em->persist($formSubmission);
+        $this->getEntityManager()->persist($formSubmission);
     }
 
     public function save(FormSubmission $formSubmission): void
     {
-        $this->_em->persist($formSubmission);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($formSubmission);
+        $this->getEntityManager()->flush();
     }
 
     public function remove(FormSubmission $formSubmission): void
     {
-        $this->_em->remove($formSubmission);
+        $this->getEntityManager()->remove($formSubmission);
     }
 
     public function flush(): void
     {
-        $this->_em->flush();
+        $this->getEntityManager()->flush();
     }
 
     private function addSearchFilters(QueryBuilder $qb, string $searchValue): void

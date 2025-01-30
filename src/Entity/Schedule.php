@@ -8,7 +8,6 @@ use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Validator\Constraints as EMSAssert;
-use EMS\Helpers\Standard\DateTime;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -21,16 +20,16 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
     /** @EMSAssert\Cron() */
     protected string $cron = '';
     protected ?string $command = null;
-    private ?\Datetime $previousRun = null;
-    private \Datetime $nextRun;
+    private ?\DateTime $previousRun = null;
+    private \DateTime $nextRun;
     protected int $orderKey = 0;
     protected ?string $tag = null;
 
     public function __construct()
     {
         $this->id = Uuid::uuid4();
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
     }
 
     public static function fromJson(string $json, ?\EMS\CommonBundle\Entity\EntityInterface $schedule = null): Schedule
@@ -47,8 +46,8 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
     public function __clone()
     {
         $this->id = Uuid::uuid4();
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
         $this->orderKey = 0;
     }
 
@@ -98,22 +97,22 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
         return $this->previousRun;
     }
 
-    public function getPreviousRun(): ?\Datetime
+    public function getPreviousRun(): ?\DateTime
     {
         return $this->previousRun;
     }
 
-    public function setPreviousRun(?\Datetime $previousRun): void
+    public function setPreviousRun(?\DateTime $previousRun): void
     {
         $this->previousRun = $previousRun;
     }
 
-    public function getNextRun(): \Datetime
+    public function getNextRun(): \DateTime
     {
         return $this->nextRun;
     }
 
-    public function setNextRun(\Datetime $nextRun): void
+    public function setNextRun(\DateTime $nextRun): void
     {
         $this->nextRun = $nextRun;
     }

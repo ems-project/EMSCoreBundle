@@ -9,7 +9,6 @@ use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
-use EMS\Helpers\Standard\DateTime;
 
 class Job extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
@@ -28,8 +27,8 @@ class Job extends JsonDeserializer implements \JsonSerializable, EntityInterface
 
     public function __construct()
     {
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
     }
 
     public function getStarted(): bool

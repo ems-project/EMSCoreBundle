@@ -217,7 +217,7 @@ final class RecomputeCommand extends AbstractCommand
                     $notification->setStatus(Notification::PENDING);
                     $notification->setRevision($newRevision);
                     $this->em->persist($notification);
-                    $this->em->flush($notification);
+                    $this->em->flush();
                 }
 
                 if (!$this->isAlign) {

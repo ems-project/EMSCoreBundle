@@ -8,7 +8,6 @@ use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
-use EMS\Helpers\Standard\DateTime;
 
 class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, EntityInterface, \Stringable
 {
@@ -21,8 +20,8 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
 
     public function __construct()
     {
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
     }
 
     public function setName(string $name): WysiwygProfile

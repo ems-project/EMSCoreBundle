@@ -9,7 +9,6 @@ use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Core\ContentType\ViewDefinition;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
-use EMS\Helpers\Standard\DateTime;
 
 class View extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
@@ -30,15 +29,15 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
 
     public function __construct()
     {
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
     }
 
     public function __clone()
     {
         if ($this->id) {
-            $this->created = DateTime::create('now');
-            $this->modified = DateTime::create('now');
+            $this->created = new \DateTime();
+            $this->modified = new \DateTime();
             $this->orderKey = 0;
         }
     }

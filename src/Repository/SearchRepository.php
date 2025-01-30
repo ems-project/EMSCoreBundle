@@ -38,13 +38,13 @@ class SearchRepository extends ServiceEntityRepository
 
     public function remove(Search $search): void
     {
-        $this->_em->remove($search);
-        $this->_em->flush();
+        $this->getEntityManager()->remove($search);
+        $this->getEntityManager()->flush();
     }
 
     public function save(Search $search): void
     {
-        $this->_em->persist($search);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($search);
+        $this->getEntityManager()->flush();
     }
 }

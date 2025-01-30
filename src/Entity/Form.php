@@ -8,7 +8,6 @@ use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\HolderFieldType;
-use EMS\Helpers\Standard\DateTime;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -25,8 +24,8 @@ class Form extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     public function __construct()
     {
         $this->id = Uuid::uuid4();
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
     }
 
     #[\Override]

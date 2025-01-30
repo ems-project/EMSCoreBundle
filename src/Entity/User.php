@@ -10,7 +10,6 @@ use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Core\User\UserOptions;
 use EMS\CoreBundle\Roles;
-use EMS\Helpers\Standard\DateTime;
 use EMS\Helpers\Standard\Locale;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -53,8 +52,8 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     {
         $this->authTokens = new ArrayCollection();
 
-        $this->created = DateTime::create('now');
-        $this->modified = DateTime::create('now');
+        $this->created = new \DateTime();
+        $this->modified = new \DateTime();
     }
 
     public function __clone()

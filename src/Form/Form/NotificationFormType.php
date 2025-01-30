@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Parameter;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
@@ -66,7 +68,7 @@ class NotificationFormType extends AbstractType
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('ct')
             ->where('ct.deleted = :false')
-            ->setParameters(['false' => false])
+            ->setParameters(new ArrayCollection([new Parameter('false', false)]))
             ->orderBy('ct.orderKey'),
             'choice_label' => fn ($value, $key, $index) => '<i class="'.$value->getIcon().' text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getSingularName(),
             'multiple' => true,

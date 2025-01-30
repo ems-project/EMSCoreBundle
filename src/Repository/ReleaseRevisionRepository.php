@@ -6,6 +6,9 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\ORM\Query\Parameter;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
@@ -53,11 +56,11 @@ final class ReleaseRevisionRepository extends ServiceEntityRepository
         $qb->where($qb->expr()->eq('r.release', ':releaseId'))
         ->andWhere($qb->expr()->eq('r.revisionOuuid', ':ouuid'))
         ->andWhere($qb->expr()->eq('r.contentType', ':contentTypeId'))
-        ->setParameters([
-            'releaseId' => $release->getId(),
-            'ouuid' => $ouuid,
-            'contentTypeId' => $contentType->getId(),
-        ]);
+        ->setParameters(new ArrayCollection([
+            new Parameter('releaseId', $release->getId()),
+            new Parameter('ouuid', $ouuid),
+            new Parameter('contentTypeId', $contentType->getId()),
+        ]));
 
         return $qb->getQuery()->getSingleResult();
     }
@@ -72,11 +75,11 @@ final class ReleaseRevisionRepository extends ServiceEntityRepository
         ->where($qb->expr()->eq('r.revisionOuuid', ':ouuid'))
         ->andWhere($qb->expr()->eq('r.contentType', ':contentType'))
         ->andWhere('rel.status in (:status)')
-        ->setParameters([
-            'ouuid' => $ouuid,
-            'contentType' => $contentType,
-            'status' => [Release::WIP_STATUS, Release::READY_STATUS],
-        ]);
+        ->setParameters(new ArrayCollection([
+            new Parameter('ouuid', $ouuid),
+            new Parameter('contentType', $contentType),
+            new Parameter('status', [Release::WIP_STATUS, Release::READY_STATUS], ArrayParameterType::STRING),
+        ]));
 
         return $qb->getQuery()->execute();
     }
@@ -94,7 +97,9 @@ final class ReleaseRevisionRepository extends ServiceEntityRepository
             ->orderBy(\sprintf('rr.%s', $orderField ?? 'id'), $orderDirection)
             ->setFirstResult($from)
             ->setMaxResults($size)
-            ->setParameters(['release' => $release]);
+            ->setParameters(new ArrayCollection([
+                new Parameter('release', $release),
+            ]));
 
         return $qb->getQuery()->execute();
     }
@@ -107,7 +112,9 @@ final class ReleaseRevisionRepository extends ServiceEntityRepository
             ->join('rr.revision', 'r')
             ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
             ->andWhere($qb->expr()->eq('rr.release', ':release'))
-            ->setParameters(['release' => $release]);
+            ->setParameters(new ArrayCollection([
+                new Parameter('release', $release),
+            ]));
 
         return \intval($qb->getQuery()->getSingleScalarResult());
     }
@@ -121,7 +128,7 @@ final class ReleaseRevisionRepository extends ServiceEntityRepository
     {
         $queryBuilder = $this->createQueryBuilder('rr');
         $queryBuilder->where('rr.id IN (:ids)')
-            ->setParameter('ids', $ids);
+            ->setParameter('ids', $ids, ArrayParameterType::INTEGER);
 
         return $queryBuilder->getQuery()->getResult();
     }

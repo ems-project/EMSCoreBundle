@@ -20,7 +20,7 @@ class FieldTypeRepository extends ServiceEntityRepository
 
     public function save(FieldType $field): void
     {
-        $this->_em->persist($field);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($field);
+        $this->getEntityManager()->flush();
     }
 }

@@ -34,9 +34,7 @@ class ScheduleManager implements EntityServiceInterface
         if (0 === $schedule->getOrderKey()) {
             $schedule->setOrderKey($this->scheduleRepository->counter() + 1);
         }
-        $encoder = new Encoder();
-        $webalized = $encoder->webalize($schedule->getName());
-        $schedule->setName($webalized);
+        $schedule->setName(new Encoder()->slug($schedule->getName())->toString());
         $this->scheduleRepository->create($schedule);
     }
 

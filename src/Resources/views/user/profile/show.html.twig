@@ -37,9 +37,9 @@
                         <li class="list-group-item">
                             <b>{{ 'view.profile.show.locale_preferred'|trans }}</b> <i class="pull-right">{{ user.localePreferred|locale_name }}</i>
                         </li>
-                        {% if circles_object and circles_object|get_content_type %}
+                        {% if circles_object and circles_object|emsco_get_content_type %}
                             <li class="list-group-item">
-                                <b>{{ circles_object|get_content_type.pluralName }} : </b>
+                                <b>{{ circles_object|emsco_get_content_type.pluralName }} : </b>
                                 <i class="">
                                     {% for circle in user.circles  -%}
                                         <span class="badge text-nowrap">{{- circle|emsco_display|raw -}}</span>&nbsp;

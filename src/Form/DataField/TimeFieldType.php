@@ -103,7 +103,7 @@ class TimeFieldType extends DataFieldType
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $format = static::getFormat($fieldType->getOptions());
-        \dump($format);
+
         $converted = !\is_array($data) ? \DateTime::createFromFormat($format, \strval($data)) : false;
         $convertedFromStoreFormat = !\is_array($data) ? \DateTime::createFromFormat($this::STOREFORMAT, \strval($data)) : false;
         if ($converted) {

@@ -3,13 +3,10 @@
     * fieldType (EMSCoreBundle:FieldType) : associative array that contains the current route-arguments
     * revision (EMSCoreBundle:Revision) : represents the total number of existing pages
 #}
-{% apply spaceless %}
 <div class="form-group">
 	<label>{{ fieldType.label }}</label>
 	<input type="text" class="form-control">
 	{% if fieldType.description  %}
 		<div class="help-block">{{ fieldType.description }}</div>
 	{% endif %}
-
 </div>
-{% endapply %}

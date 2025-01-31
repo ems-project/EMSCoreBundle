@@ -3,10 +3,8 @@
     * fieldType (EMSCoreBundle:FieldType) : associative array that contains the current route-arguments
     * revision (EMSCoreBundle:Revision) : represents the total number of existing pages
 #}
-{% apply spaceless %}
 <div class="form-group">
 	<label>{{ fieldType.label }}</label>
 	<input type="text" class="form-control" disabled="" value="{% if revision.ouuid  %}{{ revision.ouuid }}{% else %}The object unique identifier will be generated{% endif %}">
 	<div class="help-block">{% if fieldType.description %}{{ fieldType.description }}{% else %}This field contains a copy of the object unique identifier.{% endif %}</div>
 </div>
-{% endapply %}

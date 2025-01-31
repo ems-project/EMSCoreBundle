@@ -53,8 +53,8 @@ class ActionController
 
         $body = $this->twig->createTemplate($action->getBody());
 
-        if ($_download || !$action->getPreview()
-            && \in_array($action->getRenderOption(), [RenderOptionType::PDF, RenderOptionType::EXPORT])) {
+        if ($_download || (!$action->getPreview()
+                && \in_array($action->getRenderOption(), [RenderOptionType::PDF, RenderOptionType::EXPORT], true))) {
             try {
                 $content = $body->render([
                     'environment' => $environment,

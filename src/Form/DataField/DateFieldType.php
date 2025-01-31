@@ -39,7 +39,7 @@ class DateFieldType extends DataFieldType
         if (false !== $format) {
             $format = static::convertJavaDateFormat($format);
         } else {
-            $format = \DateTimeInterface::ISO8601;
+            $format = \DateTimeInterface::ATOM;
         }
         if (\is_string($data)) {
             $dates[] = \DateTime::createFromFormat($format, $data);
@@ -70,7 +70,7 @@ class DateFieldType extends DataFieldType
         if (false !== $format) {
             $format = static::convertJavaDateFormat($format);
         } else {
-            $format = \DateTime::ISO8601;
+            $format = \DateTimeInterface::ATOM;
         }
         $out = [];
         if (\is_iterable($data) && !empty($data)) {
@@ -154,7 +154,7 @@ class DateFieldType extends DataFieldType
             foreach ($sourceArray as $idx => $child) {
                 $dateObject = \DateTime::createFromFormat($format, $child);
                 if ($dateObject) {
-                    $data[] = $dateObject->format(\DateTime::ISO8601);
+                    $data[] = $dateObject->format(\DateTimeInterface::ATOM);
                 } else {
                     $dataField->addMessage('Bad date format:'.$child);
                 }
@@ -229,14 +229,14 @@ class DateFieldType extends DataFieldType
                 $dates = [];
                 if (\is_array($dataRawData)) {
                     foreach ($dataRawData as $dataValue) {
-                        $dateTime = DateTime::createFromFormat($dataValue, \DateTimeInterface::ISO8601);
+                        $dateTime = DateTime::createFromFormat($dataValue);
                         $dates[] = $dateTime->format($format);
                     }
                 }
             } else {
                 $dates = null;
                 if (\is_array($dataRawData) && (\count($dataRawData) >= 1)) {
-                    $dateTime = \DateTime::createFromFormat(\DateTimeInterface::ISO8601, $dataRawData[0]);
+                    $dateTime = \DateTime::createFromFormat(\DateTimeInterface::ATOM, $dataRawData[0]);
                     if ($dateTime) {
                         $dates = $dateTime->format($format);
                     } else {

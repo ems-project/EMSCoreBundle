@@ -15,6 +15,7 @@ final class BootTest extends KernelTestCase
         $this->assertTrue(self::$booted);
     }
 
+    #[\Override]
     protected static function getKernelClass(): string
     {
         return Kernel::class;

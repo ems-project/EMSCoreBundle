@@ -8,14 +8,14 @@
 {% endblock task_event_mail_subject %}
 
 {% block task_event_mail_body %}
-    <p>From « {{ senderUsername|displayname }} » ,</p>
+    <p>From « {{ senderUsername|emsco_display_name }} » ,</p>
     <p>Greetings {{ receiver.displayname }},</p>
     <p>This task has been: {{ action }} {{ senderRole ? "by #{senderRole}" }}</p>
     <p>
         {% if task.hasDeadline %}<strong>deadline:</strong>{{ task.deadline.format(date_format) }}<br/>{% endif %}
         <strong>title:</strong> {{ task.title }}<br/>
-        <strong>assignee:&nbsp;</strong>{{ task.assignee|displayname }}<br/>
-        <strong>creator:&nbsp;</strong>{{ task.createdBy|displayname }}<br/>
+        <strong>assignee:&nbsp;</strong>{{ task.assignee|emsco_display_name }}<br/>
+        <strong>creator:&nbsp;</strong>{{ task.createdBy|emsco_display_name }}<br/>
         {% if task.hasDescription %}<strong>description:</strong><br/>{{ task.description|nl2br }}{% endif %}
     </p>
     {% if comment %}<p><strong>comment:</strong><br/>{{ comment|nl2br }}</p>{% endif %}

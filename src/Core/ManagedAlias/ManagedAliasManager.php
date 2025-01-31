@@ -113,10 +113,7 @@ class ManagedAliasManager implements EntityServiceInterface
         if (!$managedAlias->hasAlias()) {
             $managedAlias->setAlias($this->instanceId);
         }
-        $encoder = new Encoder();
-        $name = $managedAlias->getName();
-        $webalized = $encoder->webalize($name);
-        $managedAlias->setName($webalized);
+        $managedAlias->setName(new Encoder()->slug($managedAlias->getName())->toString());
         $this->repository->update($managedAlias);
     }
 }

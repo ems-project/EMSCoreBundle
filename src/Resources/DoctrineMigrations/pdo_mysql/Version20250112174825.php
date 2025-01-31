@@ -14,6 +14,7 @@ use EMS\Helpers\Standard\Json;
 
 final class Version20250112174825 extends AbstractMigration
 {
+    #[\Override]
     public function getDescription(): string
     {
         return 'Replace RadioFieldType and SelectFieldType by ChoiceFieldType';

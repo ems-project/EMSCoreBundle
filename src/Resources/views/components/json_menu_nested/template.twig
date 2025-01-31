@@ -45,18 +45,16 @@
 {% endblock jmn_items %}
 
 {%- block jmn_item -%}
-    {%- apply spaceless -%}
-        <div class="{{ html_classes('jmn-node', { 'jmn-collapsible': item.hasChildren, 'jmn-node-active': item == render.activeItem }) }}" data-id="{{ item.id }}" data-type="{{ item.type }}">
-            {{ template.block('jmn_item_row', _context)|raw }}
-            {%- if node.leaf == false -%}
-                <div id="{{ "children-#{item.id}" }}" class="jmn-children jmn-sortable" data-types="{{ config.nodes.types(item.type)|json_encode|e('html_attr') }}">
-                    {% if item in render.loadParents %}
-                        {% with { 'menu': item } %}{{ template.block('jmn_items', _context)|raw }}{% endwith %}
-                    {% endif %}
-                </div>
-            {%- endif -%}
-        </div>
-    {%- endapply -%}
+    <div class="{{ html_classes('jmn-node', { 'jmn-collapsible': item.hasChildren, 'jmn-node-active': item == render.activeItem }) }}" data-id="{{ item.id }}" data-type="{{ item.type }}">
+        {{ template.block('jmn_item_row', _context)|raw }}
+        {%- if node.leaf == false -%}
+            <div id="{{ "children-#{item.id}" }}" class="jmn-children jmn-sortable" data-types="{{ config.nodes.types(item.type)|json_encode|e('html_attr') }}">
+                {% if item in render.loadParents %}
+                    {% with { 'menu': item } %}{{ template.block('jmn_items', _context)|raw }}{% endwith %}
+                {% endif %}
+            </div>
+        {%- endif -%}
+    </div>
 {%- endblock jmn_item -%}
 
 {%- block jmn_item_row -%}

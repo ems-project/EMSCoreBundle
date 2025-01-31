@@ -215,6 +215,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('emsco_date_difference', $this->dateDifference(...)),
             new TwigFilter('emsco_debug', $this->debug(...)),
             new TwigFilter('emsco_search', $this->search(...)),
+            new TwigFilter('emsco_search_query', $this->searchQuery(...)),
             new TwigFilter('emsco_call_user_func', $this->callUserFunc(...)),
             new TwigFilter('emsco_get_string', $this->getString(...)),
             new TwigFilter('emsco_get_field_by_path', $this->getFieldByPath(...)),
@@ -250,8 +251,8 @@ class AppExtension extends AbstractExtension
             new TwigFilter('json_decode', [TextRuntime::class, 'jsonDecode'], [
                 'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '6.0.0', 'ems_json_decode'),
             ]),
-            new TwigFilter('search', $this->deprecatedSearch(...), [
-                'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '6.0.0', 'emsco_search'),
+            new TwigFilter('search', $this->searchQuery(...), [
+                'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '6.0.0', 'emsco_search_query'),
             ]),
             new TwigFilter('convertJavaDateFormat', $this->convertJavaDateFormat(...), [
                 'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '6.0.0', 'emsco_convert_java_date_format'),
@@ -825,7 +826,7 @@ class AppExtension extends AbstractExtension
      *
      * @return array<mixed>
      */
-    public function deprecatedSearch(array $params): array
+    public function searchQuery(array $params): array
     {
         $search = $this->elasticaService->convertElasticsearchSearch($params);
 

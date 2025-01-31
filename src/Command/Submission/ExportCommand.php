@@ -43,7 +43,7 @@ class ExportCommand extends AbstractCommand
      */
     private array $emailsTo;
     private string $subject;
-    private ?string $format;
+    private ?string $format = null;
 
     public function __construct(
         private readonly FormSubmissionService $formSubmissionService,

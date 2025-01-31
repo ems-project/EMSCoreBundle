@@ -1,6 +1,6 @@
 {% trans_default_domain 'EMSCoreBundle' %}
 {% if app.user %}
-	<img src="{{ asset('images/anonymous.gif', 'emscore') }}" data-original="https://www.gravatar.com/avatar/{{ app.user.email|lower|md5 }}?d={{ "https://www.gravatar.com/avatar"|url_encode }}" class="{{ class }} lazy" alt="{{ app.user.displayName }}">
+	<img src="{{ asset('images/anonymous.gif', 'emscore') }}" data-original="https://www.gravatar.com/avatar/{{ app.user.email|lower|ems_md5 }}?d={{ "https://www.gravatar.com/avatar"|url_encode }}" class="{{ class }} lazy" alt="{{ app.user.displayName }}">
 {% else %}
 	<img src="{{ asset('images/anonymous.gif', 'emscore') }}" class="{{ class }}" alt="Anonymous">
 {% endif %}

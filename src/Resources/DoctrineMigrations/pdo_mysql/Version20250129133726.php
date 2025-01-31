@@ -11,6 +11,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20250129133726 extends AbstractMigration
 {
+    #[\Override]
     public function getDescription(): string
     {
         return 'Upgrade schema doctrine orm 3.3';

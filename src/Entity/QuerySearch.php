@@ -69,8 +69,7 @@ class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityI
 
     public function setName(string $name): void
     {
-        $webalizedName = Encoder::webalize($name);
-        $this->name = $webalizedName;
+        $this->name = new Encoder()->slug($name)->toString();
     }
 
     public function addEnvironment(Environment $environment): QuerySearch

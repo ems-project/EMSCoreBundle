@@ -523,7 +523,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
                 throw new DataFormatException('Array expected: '.\print_r($this->rawData, true));
             }
             foreach ($this->rawData as $item) {
-                $out[] = \DateTime::createFromFormat(\DateTime::ISO8601, $item);
+                $out[] = \DateTime::createFromFormat(\DateTimeInterface::ATOM, $item);
             }
         }
 

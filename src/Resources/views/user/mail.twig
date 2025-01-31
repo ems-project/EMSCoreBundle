@@ -2,7 +2,7 @@
 {%- trans_default_domain 'emsco-user' -%}
 {%- set confirmationUrl = path('emsco_user_resetting_reset', {'token': user.confirmationToken}) -%}
 {% autoescape false %}
-{{ 'user.resetting.email.message'|i18n(user.localePreferred|default('en'))|trans({
+{{ 'user.resetting.email.message'|emsco_i18n(user.localePreferred|default('en'))|trans({
     '%username%': user.username,
     '%token%': user.confirmationToken,
     '%confirmationUrl%': absolute_url(confirmationUrl)

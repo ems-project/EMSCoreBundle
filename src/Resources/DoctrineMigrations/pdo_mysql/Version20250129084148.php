@@ -11,6 +11,7 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20250129084148 extends AbstractMigration
 {
+    #[\Override]
     public function getDescription(): string
     {
         return 'Fix add missing migration for release_revision';
@@ -27,6 +28,7 @@ final class Version20250129084148 extends AbstractMigration
         $this->addSql('ALTER TABLE release_revision CHANGE type type VARCHAR(255) NOT NULL');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

@@ -97,9 +97,9 @@
     <div class="media-lib-container">
         {% if mediaInfo is defined %}
             {% if mediaInfo.searchTotal is defined and mediaInfo.searchSize is defined %}
-                {% set info = "Search result #{mediaInfo.loaded} of #{mediaInfo.searchTotal} (#{mediaInfo.searchSize|format_bytes})" %}
+                {% set info = "Search result #{mediaInfo.loaded} of #{mediaInfo.searchTotal} (#{mediaInfo.searchSize|ems_format_bytes})" %}
             {% else %}
-                {% set info = "Files #{mediaInfo.loaded} of #{mediaInfo.folderTotal} (#{mediaInfo.folderSize|format_bytes})" %}
+                {% set info = "Files #{mediaInfo.loaded} of #{mediaInfo.folderTotal} (#{mediaInfo.folderSize|ems_format_bytes})" %}
             {% endif %}
             {% if selectionFiles > 1 %}
                 {% set info = info ~ " | #{selectionFiles} files selected" %}
@@ -249,7 +249,7 @@
 
 {% block media_lib_modal_preview_info %}
     <ul class="list-group list-group-flush">
-        <li class="list-group-item">Size: {{ mediaFile.filesize|format_bytes }}</li>
+        <li class="list-group-item">Size: {{ mediaFile.filesize|ems_format_bytes }}</li>
         <li class="list-group-item">Type: {{ mediaFile.fileMimetype|trans({}, 'emsco-mimetypes') }}</li>
     </ul>
 {% endblock media_lib_modal_preview_info %}

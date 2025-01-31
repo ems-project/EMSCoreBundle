@@ -32,7 +32,7 @@
         {% set revisionTarget = info.getRevision(data.release.environmentTarget.name) %}
         {% if revisionTarget %}
             <a href="{{ path('emsco_view_revisions', {ouuid: data.revisionOuuid, type: data.contentType.name, revisionId: revisionTarget.id}) }}">
-                {{ 'release.release-revisison.revision'|trans({ '%date%' : revisionTarget.created|date(date_time_format) ,'%user%' : revisionTarget.finalizedBy|default('')|displayname }) }}
+                {{ 'release.release-revisison.revision'|trans({ '%date%' : revisionTarget.created|date(date_time_format) ,'%user%' : revisionTarget.finalizedBy|default('')|emsco_display_name }) }}
             </a>
         {% else %}
             {{ 'release.release-revisison.revision-not-applicable'|trans }}

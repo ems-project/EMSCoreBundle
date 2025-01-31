@@ -768,7 +768,7 @@
 						<button href="#" type="button" title="{{ 'field_type.json_menu_editor.collapse_button'|trans }}" aria-expanded="{{  defaultClose ? 'true' : 'false' }}" class="btn btn-default button-collapse"></button>
 						&nbsp;
 					{% endif %}
-					{% if item.contentType is defined %}<i class="{{ item.contentType|get_content_type.icon|default('') }}"></i>{% endif %}
+					{% if item.contentType is defined %}<i class="{{ item.contentType|emsco_get_content_type.icon|default('') }}"></i>{% endif %}
 					{% if nestedIcons is defined and attribute(nestedIcons, item.type) is defined %}
 						<i class="{{ attribute(nestedIcons, item.type) }}"></i>
 					{% endif %}
@@ -838,7 +838,7 @@
 			<div class="panel panel-default">
 				<div class="panel-body {{ color }}">
 					{% if doCompare  %}
-						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|get_string(dataField.fieldType.name)|default('null')|ems_json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ compareRawData|emsco_get_string(dataField.fieldType.name)|default('null')|ems_json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
 						<pre class="ems-code-editor col-md-6" data-language="ace/mode/json" data-them="ace/theme/chrome">{{ dataField.rawData|default('null')|ems_json_decode|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
 					{% else %}
 						{{ emsco_json_menu_nested({
@@ -985,15 +985,16 @@
 		</dt>
 		<dd>
 			<ul>
-				{%  set contentType = dataField.fieldType.displayOptions.json_menu_content_type|default('')|get_content_type %}
+				{%  set contentType = dataField.fieldType.displayOptions.json_menu_content_type|default('')|emsco_get_content_type %}
 				{% set choices = {} %}
 				{% set labels = {} %}
 				{% if contentType %}
-					{%  set hits = {
-						index: contentType.environment.alias,
-						type: contentType.name,
-						body: dataField.fieldType.displayOptions.query|default('{}')
-					}|search.hits.hits %}
+					{% set hits = emsco_search(
+						contentType.environment.alias,
+						dataField.fieldType.displayOptions.query|default('{}'),
+						contentType.name,
+						20,
+					).response.data.hits.hits %}
 					{%  for hit in hits %}
 						{% set label = attribute(hit._source, contentType.labelField|default(false))|default(hit._id) ~ ' /'  %}
 						{% set choices = choices|merge([hit._id]) %}
@@ -1026,7 +1027,15 @@
         {% else %}
             {% set index = dataField.fieldType.contentType.environment.alias %}
         {% endif %}
-		{%- set hits = { index: index, body: jmnQuery}|search.hits.hits -%}
+		{%-  set hits = emsco_search(
+			index,
+			jmnQuery.query|default({}),
+			[],
+			20,
+			jmnQuery.from|default(0),
+			jmnQuery.sort|default(null),
+			jmnQuery._source|default(null)
+		).response.data.hits.hits -%}
 		{%- set structures = [] -%}
 		{%- for h in hits -%}
 			{% set structures = structures|merge([{
@@ -1224,13 +1233,13 @@
                 {% if dateFrom %}
 					<li>
 						<b>From </b>
-                        {{ emsco_diff_date(dateFrom, compare, dataField.fieldType.mappingOptions.fromDateMachineName, child, dataField.fieldType.displayOptions.locale.format|emsco_convert_javascript_date_range_format, false, constant('\\DateTime::ISO8601')) }}
+                        {{ emsco_diff_date(dateFrom, compare, dataField.fieldType.mappingOptions.fromDateMachineName, child, dataField.fieldType.displayOptions.locale.format|emsco_convert_javascript_date_range_format, false, constant('DateTimeInterface::ATOM')) }}
 					</li>
 				{% endif %}
 				{% if dateTo %}
 					<li>
 						<b>To </b>
-                        {{ emsco_diff_date(dateTo, compare, dataField.fieldType.mappingOptions.toDateMachineName, child, dataField.fieldType.displayOptions.locale.format|emsco_convert_javascript_date_range_format, false, constant('\\DateTime::ISO8601')) }}
+                        {{ emsco_diff_date(dateTo, compare, dataField.fieldType.mappingOptions.toDateMachineName, child, dataField.fieldType.displayOptions.locale.format|emsco_convert_javascript_date_range_format, false, constant('DateTimeInterface::ATOM')) }}
 					</li>
 				{% endif %}
 				{% if dateFrom and dateTo %}
@@ -1238,7 +1247,7 @@
 						<b>Duration </b>
 						{% if compare %}
 							{% if attribute(child, dataField.fieldType.mappingOptions.fromDateMachineName) is defined and attribute(child, dataField.fieldType.mappingOptions.toDateMachineName) is defined %}
-                                {{ emsco_diff(dateFrom|emsco_date_difference(dateTo, dataField.fieldType.displayOptions.timePicker), attribute(child, dataField.fieldType.mappingOptions.fromDateMachineName)|date_difference(attribute(child, dataField.fieldType.mappingOptions.toDateMachineName), dataField.fieldType.displayOptions.timePicker), compare, true) }}
+                                {{ emsco_diff(dateFrom|emsco_date_difference(dateTo, dataField.fieldType.displayOptions.timePicker), attribute(child, dataField.fieldType.mappingOptions.fromDateMachineName)|emsco_date_difference(attribute(child, dataField.fieldType.mappingOptions.toDateMachineName), dataField.fieldType.displayOptions.timePicker), compare, true) }}
 							{% else %}
 								<span class="text-green"><ins class="diffmod">{{ dateFrom|emsco_date_difference(dateTo, dataField.fieldType.displayOptions.timePicker) }}</ins></span>
 							{% endif %}

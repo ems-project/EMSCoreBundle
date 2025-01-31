@@ -801,7 +801,7 @@
 
 {% block json_menu_editor_fieldtype_node %}
 	{% for item in children %}
-		{% set contentType = item.contentType|default('')|get_content_type %}
+		{% set contentType = item.contentType|default('')|emsco_get_content_type %}
 		{% if contentType %}
 			{% set item = item|merge({
 				icon: contentType.icon,
@@ -860,7 +860,7 @@
         </button>
         <ul class="dropdown-menu">
             {% for type in itemTypes %}
-                {% set contentType = type|get_content_type %}
+                {% set contentType = type|emsco_get_content_type %}
                 {% if contentType %}
                     {% set contentTypeIcon = contentType.icon|default('fa fa-file')  %}
                     <li>
@@ -872,7 +872,7 @@
                 {% endif %}
             {% endfor %}
             {% for type in nodeTypes %}
-                {% set contentType = type|get_content_type %}
+                {% set contentType = type|emsco_get_content_type %}
                 {% if contentType %}
                     {% set contentTypeIcon = contentType.icon|default('fa fa-folder')  %}
                     <li>

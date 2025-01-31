@@ -4,7 +4,7 @@
     	{% set data = child|emsco_get %}
     	{% if data %}
     		{% set key = child|split(':') %}
-    	    {% set contentType = key[0]|get_content_type %}
+    	    {% set contentType = key[0]|emsco_get_content_type %}
 
             {% include "@EMSCore/view/custom/hierarchical_add_item.html.twig" with {
         		parent: data.source,

@@ -4,14 +4,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <style>body {overflow: hidden;}</style>
-    {% apply spaceless %}
-        {% if styleSet.assets.sha1|default %}
-            {% do emsch_assets_version(styleSet.assets.sha1, styleSet.saveDir) %}
-        {% endif %}
-        {% if null != styleSet.contentCss %}
-            <link rel="stylesheet" href="{{ asset(styleSet.contentCss, styleSet.saveDir == null ? 'emsch' : null) }}">
-        {% endif %}
-    {% endapply %}
+    {% if styleSet.assets.sha1|default %}
+        {% do emsch_assets_version(styleSet.assets.sha1, styleSet.saveDir) %}
+    {% endif %}
+    {% if null != styleSet.contentCss %}
+        <link rel="stylesheet" href="{{ asset(styleSet.contentCss, styleSet.saveDir == null ? 'emsch' : null) }}">
+    {% endif %}
 </head>
 <body class="wysiwyg-preview"
       data-field="{{ field }}"

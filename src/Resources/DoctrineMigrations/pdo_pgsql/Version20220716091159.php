@@ -51,7 +51,7 @@ final class Version20220716091159 extends AbstractMigration
             }
             $this->addSql("UPDATE $table SET name = :name WHERE id = :id", [
                 'id' => $view['id'],
-                'name' => Encoder::webalize($view['name']),
+                'name' => new Encoder()->slug($view['name'])->toString(),
             ]);
         }
     }

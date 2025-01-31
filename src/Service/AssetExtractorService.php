@@ -222,7 +222,7 @@ class AssetExtractorService implements CacheWarmerInterface
     }
 
     #[\Override]
-    public function warmUp(string $cacheDir): array
+    public function warmUp($cacheDir, ?string $buildDir = null): array
     {
         if (empty($this->tikaServer)) {
             $this->getTikaWrapper();

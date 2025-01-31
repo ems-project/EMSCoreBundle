@@ -17,7 +17,7 @@ class PdfSizeType extends ChoiceType
     {
         $choices = [];
         foreach (CPDF::$PAPER_SIZES as $id => $size) {
-            $choices[\sprintf('pdf_size.%s', Encoder::webalize($id))] = $id;
+            $choices[\sprintf('pdf_size.%s', new Encoder()->slug($id)->toString())] = $id;
         }
 
         parent::configureOptions($resolver);

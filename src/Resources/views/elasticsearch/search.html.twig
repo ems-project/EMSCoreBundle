@@ -240,14 +240,14 @@
 			</div>
 		</div>
 	</div>
-		{% if body is defined and form.environments.vars.value|length == 1  and form.contentTypes.vars.value|length == 1  and is_granted(form.contentTypes.vars.value.0|get_content_type.roles.publish) and form.environments.vars.value|first|emsco_get_environment.managed and response.total > 1 %}
+		{% if body is defined and form.environments.vars.value|length == 1  and form.contentTypes.vars.value|length == 1  and is_granted(form.contentTypes.vars.value.0|emsco_get_content_type.roles.publish) and form.environments.vars.value|first|emsco_get_environment.managed and response.total > 1 %}
 			<div class="col-md-12">
 				<div class="box">
 					<div class="box-footer with-border">
 						<div class="btn-group">
                             {% include '@EMSCore/elements/get-button.html.twig' with {
 								'url':  path('search.publish', app.request.query.all ),
-								'label': 'Publish '~response.formattedTotal|default('not-applicable'|trans)~' '~form.contentTypes.vars.value.0|get_content_type.pluralName,
+								'label': 'Publish '~response.formattedTotal|default('not-applicable'|trans)~' '~form.contentTypes.vars.value.0|emsco_get_content_type.pluralName,
 								'icon': 'glyphicon glyphicon-open'
 							}%}
 						</div>

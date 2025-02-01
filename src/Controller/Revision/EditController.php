@@ -143,6 +143,7 @@ class EditController extends AbstractController
                 ]);
             }
 
+            $revision->autoSaveClear();
             if (!isset($requestRevision['discard'])) {// Save, Copy, Paste or Finalize
                 // Save anyway
                 /** @var Revision $revision */

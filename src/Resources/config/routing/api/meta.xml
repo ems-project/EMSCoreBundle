@@ -4,6 +4,11 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
+    <route id="emsco_api_meta_info_documents" path="/info/documents"
+           controller="EMS\CoreBundle\Controller\Api\Admin\MetaController::infoDocuments"
+           methods="POST"
+           format="json"/>
+
     <route id="emsco_api_meta_content_type" path="/content-type/{contentTypeName}"
            controller="EMS\CoreBundle\Controller\Api\Admin\MetaController::contentType"
            methods="GET"

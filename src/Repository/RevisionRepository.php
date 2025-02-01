@@ -811,6 +811,20 @@ class RevisionRepository extends EntityRepository
     /**
      * @return Revision[]
      */
+    public function findAllByContentTypeAndUuids(ContentType $contentType, string ...$uuids): array
+    {
+        $qb = $this->makeQueryBuilder(contentTypeName: $contentType->getName(), isDraft: null);
+
+        return $qb
+            ->andWhere($qb->expr()->in('r.ouuid', ':uuids'))
+            ->setParameter('uuids', $uuids, ArrayParameterType::STRING)
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @return Revision[]
+     */
     public function findTrashRevisions(ContentType $contentType, string ...$ouuids): array
     {
         $qb = $this->makeQueryBuilder(

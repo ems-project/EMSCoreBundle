@@ -286,6 +286,7 @@
             <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository" />
             <argument type="service" id="ems.service.publish" />
             <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService"/>
+            <argument type="service" id="EMS\CoreBundle\Service\EnvironmentService"/>
             <argument type="service" id="emsco.manager.user"/>
             <argument type="service" id="EMS\CommonBundle\Contracts\ExpressionServiceInterface"/>
             <argument type="service" id="ems_common.service.elastica" />

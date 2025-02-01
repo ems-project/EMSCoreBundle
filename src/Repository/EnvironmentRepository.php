@@ -217,4 +217,25 @@ class EnvironmentRepository extends EntityRepository
 
         return $qb;
     }
+
+    /**
+     * @param string[] $ouuids
+     *
+     * @return array<int|string, mixed>
+     */
+    public function findAllRevisionIdsByEnvironmentAndOuuids(Environment $environment, array $ouuids): array
+    {
+        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
+        $qb
+            ->select('r.ouuid, r.id')
+            ->from('environment_revision', 'er')
+            ->join('er', 'revision', 'r', 'er.revision_id = r.id')
+            ->join('er', 'environment', 'e', 'er.environment_id = e.id')
+            ->andWhere($qb->expr()->eq('e.id', ':environment_id'))
+            ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
+            ->setParameter('environment_id', $environment->getId())
+            ->setParameter('ouuids', $ouuids, ArrayParameterType::STRING);
+
+        return $qb->executeQuery()->fetchAllKeyValue();
+    }
 }

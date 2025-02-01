@@ -39,6 +39,7 @@
         </service>
         <service id="EMS\CoreBundle\Controller\Api\Admin\MetaController">
             <argument type="service" id="ems.service.contenttype" />
+            <argument type="service" id="ems.service.revision" />
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Api\Admin\InfoController">

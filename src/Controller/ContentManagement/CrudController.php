@@ -131,12 +131,17 @@ class CrudController extends AbstractController
         ]);
     }
 
-    public function finalize(int $id, string $name): Response
+    public function finalize(Request $request, int $id, string $name): Response
     {
         try {
             $contentType = $this->giveContentType($name)->validate();
-
             $revision = $this->dataService->getRevisionById($id, $contentType);
+
+            $rawData = Json::decode(Type::string($request->getContent()));
+            if (\count($rawData) > 0) {
+                $this->revisionService->autoSave($revision, $rawData);
+            }
+
             $revision->autoSaveToRawData();
 
             $newRevision = $this->dataService->finalizeDraft($revision);
@@ -201,36 +206,32 @@ class CrudController extends AbstractController
 
     public function delete(string $ouuid, string $name): Response
     {
-        $contentType = $this->giveContentType($name);
         $isDeleted = false;
-        if (!$contentType->giveEnvironment()->getManaged()) {
-            throw new BadRequestHttpException('You can not delete content for a managed content type');
-        }
 
         try {
-            $this->dataService->delete($contentType->getName(), $ouuid);
+            $this->dataService->delete($name, $ouuid);
             $this->logger->notice('log.crud.deleted', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_CONTENTTYPE_FIELD => $name,
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
             ]);
             $isDeleted = true;
         } catch (\Exception $e) {
-            if (($e instanceof NotFoundHttpException) || ($e instanceof BadRequestHttpException)) {
+            if ($e instanceof NotFoundHttpException || $e instanceof BadRequestHttpException) {
                 throw $e;
-            } else {
-                $this->logger->error('log.crud.delete_error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $ouuid,
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                    EmsFields::LOG_EXCEPTION_FIELD => $e,
-                ]);
             }
+
+            $this->logger->error('log.crud.delete_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $name,
+                EmsFields::LOG_OUUID_FIELD => $ouuid,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
         }
 
         return $this->flashMessageLogger->buildJsonResponse([
             'success' => $isDeleted,
             'ouuid' => $ouuid,
-            'type' => $contentType->getName(),
+            'type' => $name,
         ]);
     }
 

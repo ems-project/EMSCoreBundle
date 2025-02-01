@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service\Revision;
 
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Common\EMSLinkCollection;
 use EMS\CommonBundle\Contracts\ExpressionServiceInterface;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException as CommonNotFoundException;
@@ -25,6 +26,7 @@ use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidInterface;
@@ -45,6 +47,7 @@ class RevisionService implements RevisionServiceInterface
         private readonly RevisionRepository $revisionRepository,
         private readonly PublishService $publishService,
         private readonly ContentTypeService $contentTypeService,
+        private readonly EnvironmentService $environmentService,
         private readonly UserManager $userManager,
         private readonly ExpressionServiceInterface $expressionService,
         private readonly ElasticaService $elasticaService,
@@ -368,6 +371,69 @@ class RevisionService implements RevisionServiceInterface
         }
 
         return $documentsInfo;
+    }
+
+    /**
+     * @param list<string> $environmentNames
+     *
+     * @return array<string, array{
+     *     'id': int,
+     *     'draft': bool,
+     *     'revisions': array<string, ?int>,
+     *     'status': array<string, 'not_published'|'outdated'|'published'>
+     * }>
+     */
+    public function getInfos(array $environmentNames, EMSLinkCollection $emsLinks): array
+    {
+        $environments = $this->environmentService->getByNames(...$environmentNames);
+        $contentTypes = $this->contentTypeService->getByNames(...$emsLinks->getContentTypes());
+
+        $infos = [];
+
+        foreach ($contentTypes as $contentType) {
+            $ouuids = $emsLinks->getOuuids($contentType->getName());
+            $revisions = $this->revisionRepository->findAllByContentTypeAndUuids($contentType, ...$ouuids);
+            $defaultEnv = $contentType->giveEnvironment();
+
+            $allRevisionIds = [];
+            $infoEnvironments = \array_unique([$defaultEnv, ...$environments]);
+            foreach ($infoEnvironments as $env) {
+                $envRevisionIds = $this->environmentService->getAllRevisionIdsByEnvironmentAndOuuids($env, ...$ouuids);
+                $allRevisionIds[$env->getName()] = $envRevisionIds;
+            }
+
+            foreach ($revisions as $revision) {
+                $ouuid = $revision->giveOuuid();
+                $defaultRevisionId = $revision->getId();
+                if ($revision->isDraft()) {
+                    $defaultRevisionId = $allRevisionIds[$defaultEnv->getName()][$ouuid] ?? null;
+                }
+
+                $infos[$ouuid] = [
+                    'id' => $revision->getId(),
+                    'draft' => $revision->isDraft(),
+                    'revisions' => [$defaultEnv->getName() => $defaultRevisionId],
+                ];
+
+                foreach ($infoEnvironments as $env) {
+                    /** @var ?int $envRevisionId */
+                    $envRevisionId = $allRevisionIds[$env->getName()][$ouuid] ?? null;
+
+                    if ($envRevisionId) {
+                        $infos[$ouuid]['revisions'][$env->getName()] = $envRevisionId;
+                    }
+
+                    $infos[$ouuid]['status'][$env->getName()] = match (true) {
+                        null === $envRevisionId => 'not_published',
+                        $envRevisionId === $defaultRevisionId => 'published',
+                        $envRevisionId !== $defaultRevisionId => 'outdated',
+                        default => throw new \RuntimeException('invalid status')
+                    };
+                }
+            }
+        }
+
+        return $infos;
     }
 
     /**

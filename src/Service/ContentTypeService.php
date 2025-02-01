@@ -243,6 +243,12 @@ class ContentTypeService implements EntityServiceInterface
         return $this->contentTypeArrayByName[$name] ?? false;
     }
 
+    /** @return ContentType[] */
+    public function getByNames(string ...$names): array
+    {
+        return $this->contentTypeRepository->findBy(['name' => $names]);
+    }
+
     /**
      * @return array<mixed>
      */

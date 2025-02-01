@@ -54,6 +54,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\Error;
@@ -1185,9 +1186,14 @@ class DataService
         return $hasPreviousRevision;
     }
 
-    public function delete(string $type, string $ouuid, ?string $username = null): void
+    public function delete(ContentType|string $contentType, string $ouuid, ?string $username = null): void
     {
-        $contentType = $this->contentTypeService->giveByName($type);
+        $contentType = (\is_string($contentType)) ? $this->contentTypeService->giveByName($contentType) : $contentType;
+        $contentType->validate();
+
+        if (!$this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::DELETE))) {
+            throw new AccessDeniedException('Delete role not granted!');
+        }
 
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();

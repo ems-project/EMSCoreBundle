@@ -19,10 +19,10 @@ readonly class CoreDataServiceBridge implements CoreDataBridgeInterface
     }
 
     #[\Override]
-    public function autoSave(int $revisionId, array $data): bool
+    public function autoSave(int $revisionId, array $rawData): bool
     {
         $revision = $this->revisionService->getByRevisionId($revisionId);
-        $this->revisionService->autoSave($revision, $data);
+        $this->revisionService->autoSave($revision, $rawData);
 
         return true;
     }
@@ -31,6 +31,14 @@ readonly class CoreDataServiceBridge implements CoreDataBridgeInterface
     public function create(array $rawData = []): int
     {
         return $this->revisionService->create(contentType: $this->contentType, rawData: $rawData)->getId();
+    }
+
+    #[\Override]
+    public function delete(string $uuid): bool
+    {
+        $this->dataService->delete($this->contentType, $uuid);
+
+        return true;
     }
 
     #[\Override]
@@ -43,6 +51,23 @@ readonly class CoreDataServiceBridge implements CoreDataBridgeInterface
     }
 
     #[\Override]
+    public function finalize(int $revisionId, array $rawData = []): string
+    {
+        $revision = $this->dataService->getRevisionById($revisionId, $this->contentType);
+
+        if (\count($rawData) > 0) {
+            $this->revisionService->autoSave($revision, $rawData);
+        }
+
+        $revision->autoSaveToRawData();
+        $newRevision = $this->dataService->finalizeDraft($revision);
+
+        $this->dataService->refresh($this->contentType->giveEnvironment());
+
+        return $newRevision->giveOuuid();
+    }
+
+    #[\Override]
     public function getDraft(int $revisionId): array
     {
         $revision = $this->revisionService->getByRevisionId($revisionId);
@@ -51,17 +76,5 @@ readonly class CoreDataServiceBridge implements CoreDataBridgeInterface
             'id' => $revision->getId(),
             'data' => $revision->getDraftData(),
         ];
-    }
-
-    #[\Override]
-    public function finalize(int $revisionId): string
-    {
-        $revision = $this->dataService->getRevisionById($revisionId, $this->contentType);
-        $revision->autoSaveToRawData();
-        $newRevision = $this->dataService->finalizeDraft($revision);
-
-        $this->dataService->refresh($this->contentType->giveEnvironment());
-
-        return $newRevision->giveOuuid();
     }
 }

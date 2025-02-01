@@ -68,7 +68,7 @@ class FormManager implements EntityServiceInterface
         if (0 === $form->getOrderKey()) {
             $form->setOrderKey($this->formRepository->counter() + 1);
         }
-        $form->setName(new Encoder()->slug($form->getName())->toString());
+        $form->setName(new Encoder()->slug(text: $form->getName(), separator: '_')->toString());
         $this->formRepository->create($form);
     }
 

@@ -90,7 +90,7 @@ final class ActionController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $action->setOrderKey($this->actionService->count('', $contentType) + 1);
-            $action->setName(new Encoder()->slug($action->getName())->toString());
+            $action->setName(new Encoder()->slug(text: $action->getName(), separator: '_')->toString());
             $this->templateRepository->save($action);
             $this->logger->notice('log.action.added', [
                 'action_name' => $action->getName(),

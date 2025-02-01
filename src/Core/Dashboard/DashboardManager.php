@@ -75,7 +75,7 @@ class DashboardManager implements EntityServiceInterface
         if (0 === $dashboard->getOrderKey()) {
             $dashboard->setOrderKey($this->dashboardRepository->counter() + 1);
         }
-        $dashboard->setName(new Encoder()->slug($dashboard->getName())->toString());
+        $dashboard->setName(new Encoder()->slug(text: $dashboard->getName(), separator: '_')->toString());
         $this->dashboardRepository->create($dashboard);
     }
 

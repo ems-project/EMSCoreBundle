@@ -30,7 +30,7 @@ final readonly class ChannelService implements EntityServiceInterface
         if (0 === $channel->getOrderKey()) {
             $channel->setOrderKey($this->channelRepository->counter() + 1);
         }
-        $channel->setName(new Encoder()->slug($channel->getName())->toString());
+        $channel->setName(new Encoder()->slug(text: $channel->getName(), separator: '_')->toString());
         $this->channelRepository->create($channel);
     }
 

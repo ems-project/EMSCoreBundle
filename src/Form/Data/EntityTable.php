@@ -69,7 +69,7 @@ final class EntityTable extends TableAbstract
     public function getIterator(): \Traversable
     {
         foreach ($this->entityService->get($this->getFrom(), $this->getSize(), $this->getOrderField(), $this->getOrderDirection(), $this->getSearchValue(), $this->context) as $entity) {
-            yield \strval($entity->getId()) => new EntityRow($entity);
+            yield (string) $entity->getId() => new EntityRow($entity);
         }
     }
 

@@ -32,7 +32,7 @@ final class SubmissionController extends AbstractController
     public function submit(Request $request): JsonResponse
     {
         try {
-            $json = Json::decode(\strval($request->getContent()));
+            $json = Json::decode((string) $request->getContent());
 
             return new JsonResponse($this->formSubmissionService->submit(new DatabaseRequest($json)));
         } catch (FormSubmissionException $e) {

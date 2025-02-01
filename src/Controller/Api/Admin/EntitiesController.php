@@ -31,7 +31,7 @@ class EntitiesController
                 if ($entity instanceof EntityInterface) {
                     $names[] = $entity->getName();
                 } else {
-                    $names[] = \strval($entity->getId());
+                    $names[] = (string) $entity->getId();
                 }
             }
         }
@@ -81,7 +81,7 @@ class EntitiesController
         }
 
         return new JsonResponse([
-            'id' => \strval($entityObject->getId()),
+            'id' => (string) $entityObject->getId(),
         ]);
     }
 
@@ -114,14 +114,14 @@ class EntitiesController
         ]);
 
         return new JsonResponse([
-            'id' => \strval($entityObject->getId()),
+            'id' => (string) $entityObject->getId(),
         ]);
     }
 
     public function jobStatus(Job $job): Response
     {
         return new JsonResponse([
-            'id' => \strval($job->getId()),
+            'id' => (string) $job->getId(),
             'created' => $job->getCreated()->format('c'),
             'modified' => $job->getModified()->format('c'),
             'command' => $job->getCommand(),

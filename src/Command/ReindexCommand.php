@@ -113,7 +113,7 @@ class ReindexCommand extends AbstractCommand
             $contentTypes = $ctRepo->findBy(['deleted' => false]);
         }
 
-        $bulkSize = \intval($input->getOption('bulk-size'));
+        $bulkSize = (int) $input->getOption('bulk-size');
         if (0 === $bulkSize) {
             throw new \RuntimeException('Unexpected bulk size argument');
         }

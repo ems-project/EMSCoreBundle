@@ -470,8 +470,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
 
         if (null === $this->rawData || \is_int($this->rawData)) {
             return $this->rawData;
-        } elseif (\intval($this->rawData) || '0' === $this->rawData) {
-            return \intval($this->rawData);
+        } elseif ((int) $this->rawData || '0' === $this->rawData) {
+            return (int) $this->rawData;
             //             return $this->rawData;
             //             throw new DataFormatException('Integer expected: '.print_r($this->rawData, true));
         }
@@ -489,8 +489,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
     {
         if (null === $rawData || \is_int($rawData)) {
             $this->rawData = $rawData;
-        } elseif (\intval($rawData) || '0' === $rawData) {
-            $this->rawData = \intval($rawData);
+        } elseif ((int) $rawData || '0' === $rawData) {
+            $this->rawData = (int) $rawData;
         } else {
             $this->addMessage('Integer expected: '.\print_r($rawData, true));
             $this->rawData = $rawData;

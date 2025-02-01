@@ -75,13 +75,13 @@ class RefreshFileFieldCommand extends AbstractCommand
             }
             $fileField[EmsFields::CONTENT_FILE_HASH_FIELD_] = $hash;
             $fileField[EmsFields::CONTENT_FILE_NAME_FIELD_] = $filename;
-            $type = \strval($fileField[EmsFields::CONTENT_MIME_TYPE_FIELD] ?? $fileField[EmsFields::CONTENT_MIME_TYPE_FIELD_] ?? MimeTypes::APPLICATION_OCTET_STREAM->value);
+            $type = (string) ($fileField[EmsFields::CONTENT_MIME_TYPE_FIELD] ?? $fileField[EmsFields::CONTENT_MIME_TYPE_FIELD_] ?? MimeTypes::APPLICATION_OCTET_STREAM->value);
             $fileField[EmsFields::CONTENT_MIME_TYPE_FIELD_] = $type;
             $size = $fileField[EmsFields::CONTENT_FILE_SIZE_FIELD] ?? $fileField[EmsFields::CONTENT_FILE_SIZE_FIELD_] ?? null;
             if (null === $size) {
                 unset($fileField[EmsFields::CONTENT_FILE_SIZE_FIELD_]);
             } else {
-                $fileField[EmsFields::CONTENT_FILE_SIZE_FIELD_] = \intval($size);
+                $fileField[EmsFields::CONTENT_FILE_SIZE_FIELD_] = (int) $size;
             }
             $fileField[EmsFields::CONTENT_FILE_ALGO_FIELD_] ??= 'sha1';
             $resizedHash = $this->refreshImageField($hash, $filename, $type);

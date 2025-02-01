@@ -911,6 +911,6 @@ class Revision implements EntityInterface, \Stringable
     #[\Override]
     public function getName(): string
     {
-        return \strval($this->id ?? '');
+        return (string) ($this->id ?? '');
     }
 }

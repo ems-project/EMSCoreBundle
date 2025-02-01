@@ -34,7 +34,7 @@ class UploadedAssetRepository extends EntityRepository
         ]));
 
         try {
-            return \intval($qb->getQuery()->getSingleScalarResult());
+            return (int) $qb->getQuery()->getSingleScalarResult();
         } catch (NonUniqueResultException) {
             return 0;
         }
@@ -169,7 +169,7 @@ class UploadedAssetRepository extends EntityRepository
                 new Parameter('true', true),
             ]));
 
-        return \intval($qb->getQuery()->execute());
+        return (int) $qb->getQuery()->execute();
     }
 
     /**
@@ -192,7 +192,7 @@ class UploadedAssetRepository extends EntityRepository
 
         $qb->groupBy('ua.sha1');
 
-        return \array_map(fn ($value): string => \strval($value['id'] ?? null), $qb->getQuery()->getScalarResult());
+        return \array_map(fn ($value): string => (string) ($value['id'] ?? null), $qb->getQuery()->getScalarResult());
     }
 
     public function makeQueryBuilder(

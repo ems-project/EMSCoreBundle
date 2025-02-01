@@ -154,7 +154,7 @@ class DocumentCommand extends Command
         if (null === $this->archiveFilename) {
             throw new \RuntimeException('Unexpected null archiveFilename');
         }
-        $bulkSize = \intval($input->getOption(self::OPTION_BULK_SIZE));
+        $bulkSize = (int) $input->getOption(self::OPTION_BULK_SIZE);
         if ($bulkSize <= 0) {
             throw new \RuntimeException('Invalid bulk size');
         }

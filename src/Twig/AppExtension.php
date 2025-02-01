@@ -898,7 +898,7 @@ class AppExtension extends AbstractExtension
             return $interval->format('%R%a days %h hours %i minutes');
         }
 
-        return (\intval($interval->format('%R%a')) + 1).' days';
+        return ((int) $interval->format('%R%a') + 1).' days';
     }
 
     public function getUser(string $username): ?UserInterface

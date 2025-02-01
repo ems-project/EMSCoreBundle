@@ -59,7 +59,7 @@ class FilterManager implements EntityServiceInterface
         $id = $filter->getId();
         $this->filterRepository->delete($filter);
 
-        return \strval($id);
+        return (string) $id;
     }
 
     #[\Override]

@@ -115,7 +115,7 @@ class IntegerFieldType extends DataFieldType
         $message = false;
         if (null !== $temp) {
             if (\is_numeric($temp)) {
-                $temp = \intval($temp);
+                $temp = (int) $temp;
             } else {
                 $message = 'It is not a integer value';
             }

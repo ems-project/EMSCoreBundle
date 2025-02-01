@@ -64,7 +64,7 @@ class WysiwygProfileService implements EntityServiceInterface
         $id = $profile->getId();
         $this->wysiwygProfileRepository->delete($profile);
 
-        return \strval($id);
+        return (string) $id;
     }
 
     #[\Override]

@@ -80,7 +80,7 @@ class QueryTable extends TableAbstract
             if ($data instanceof EntityInterface) {
                 $id = $idPropertyAccessor->getValue($data, $this->idField);
 
-                yield \strval($id) => new EntityRow($data);
+                yield (string) $id => new EntityRow($data);
                 continue;
             }
             if ($data instanceof DocumentInterface) {
@@ -92,7 +92,7 @@ class QueryTable extends TableAbstract
             if (null === $id) {
                 continue;
             }
-            yield \strval($id) => new QueryRow($data);
+            yield (string) $id => new QueryRow($data);
         }
     }
 

@@ -71,10 +71,10 @@ final class TimeMachineCommand extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $propertyPath = \strval($input->getArgument('propertyPath'));
+        $propertyPath = (string) $input->getArgument('propertyPath');
         $path = \explode('.', $propertyPath);
-        $emsLink = EMSLink::fromText(\strval($input->getArgument('emsLink')));
-        $dateTime = DateTime::create(\strval($input->getArgument('datetime')));
+        $emsLink = EMSLink::fromText((string) $input->getArgument('emsLink'));
+        $dateTime = DateTime::create((string) $input->getArgument('datetime'));
 
         $this->style->note(\sprintf('Searching for history revision on %s', $dateTime->format('d/m/Y H:i:s')));
 

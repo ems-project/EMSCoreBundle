@@ -14,8 +14,8 @@ final readonly class DataTableRequest
 
     public static function fromRequest(Request $request): self
     {
-        $from = \intval($request->get('start', 0));
-        $size = \intval($request->get('length', 10));
+        $from = (int) $request->get('start', 0);
+        $size = (int) $request->get('length', 10);
         $order = $request->get('order', []);
         if (!\is_array($order)) {
             throw new \RuntimeException('Unexpected non array request parameter');
@@ -24,8 +24,8 @@ final readonly class DataTableRequest
         if (!\is_array($columns)) {
             throw new \RuntimeException('Unexpected non array request parameter');
         }
-        $orderDirection = \strval($order[0]['dir'] ?? 'asc');
-        $orderColumn = \intval($order[0]['column'] ?? 0);
+        $orderDirection = (string) ($order[0]['dir'] ?? 'asc');
+        $orderColumn = (int) ($order[0]['column'] ?? 0);
         $orderField = null;
 
         /** @var array{name?: ?string, orderable?: string} $columnOrder */
@@ -34,16 +34,16 @@ final readonly class DataTableRequest
         $columnOrderOrderable = 'true' === ($columnOrder['orderable'] ?? 'false');
 
         if ($columnOrderName && $columnOrderOrderable) {
-            $orderField = \strval($columnOrderName);
+            $orderField = (string) $columnOrderName;
         }
 
         $search = $request->get('search', []);
         if (!\is_array($search)) {
             throw new \RuntimeException('Unexpected non array request parameter');
         }
-        $searchValue = \strval($search['value'] ?? '');
+        $searchValue = (string) ($search['value'] ?? '');
 
-        $draw = \intval($request->get('draw', 0));
+        $draw = (int) $request->get('draw', 0);
 
         return new DataTableRequest($draw, $from, $size, $orderField, $orderDirection, $searchValue);
     }

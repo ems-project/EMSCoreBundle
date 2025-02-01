@@ -32,7 +32,7 @@ class LogRepository extends ServiceEntityRepository
         $this->addSearchFilters($qb, $context);
 
         try {
-            return \intval($qb->getQuery()->getSingleScalarResult());
+            return (int) $qb->getQuery()->getSingleScalarResult();
         } catch (NonUniqueResultException) {
             return 0;
         }

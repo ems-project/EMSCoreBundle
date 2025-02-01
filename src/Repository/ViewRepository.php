@@ -44,7 +44,7 @@ class ViewRepository extends ServiceEntityRepository
             ->setParameter('contentType', $contentType);
         $this->addSearchFilters($qb, $searchValue);
 
-        return \intval($qb->getQuery()->getSingleScalarResult());
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     public function create(View $view): void

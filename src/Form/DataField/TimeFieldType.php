@@ -45,7 +45,7 @@ class TimeFieldType extends DataFieldType
             $format = $dataField->giveFieldType()->getMappingOptions()['format'];
             $format = DateFieldType::convertJavaDateFormat($format);
 
-            $timeObject = !\is_array($sourceArray) ? \DateTime::createFromFormat($format, \strval($sourceArray)) : false;
+            $timeObject = !\is_array($sourceArray) ? \DateTime::createFromFormat($format, (string) $sourceArray) : false;
             if ($timeObject) {
                 $dataField->setRawData($timeObject->format(\DateTimeInterface::ATOM));
             } else {
@@ -91,7 +91,7 @@ class TimeFieldType extends DataFieldType
 
         $format = static::getFormat($dataField->giveFieldType()->getOptions());
 
-        $dateTime = \DateTime::createFromFormat(TimeFieldType::STOREFORMAT, \strval($out));
+        $dateTime = \DateTime::createFromFormat(TimeFieldType::STOREFORMAT, (string) $out);
         if ($dateTime) {
             return $dateTime->format($format);
         }
@@ -104,8 +104,8 @@ class TimeFieldType extends DataFieldType
     {
         $format = static::getFormat($fieldType->getOptions());
 
-        $converted = !\is_array($data) ? \DateTime::createFromFormat($format, \strval($data)) : false;
-        $convertedFromStoreFormat = !\is_array($data) ? \DateTime::createFromFormat($this::STOREFORMAT, \strval($data)) : false;
+        $converted = !\is_array($data) ? \DateTime::createFromFormat($format, (string) $data) : false;
+        $convertedFromStoreFormat = !\is_array($data) ? \DateTime::createFromFormat($this::STOREFORMAT, (string) $data) : false;
         if ($converted) {
             $out = $converted->format($this::STOREFORMAT);
         } elseif ($convertedFromStoreFormat) {

@@ -649,7 +649,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         if (\is_numeric($actionName)) {
             \trigger_error('Using template ID is deprecated, use the action name instead', E_USER_DEPRECATED);
 
-            return $this->getActionById(\intval($actionName));
+            return $this->getActionById((int) $actionName);
         }
 
         return null;

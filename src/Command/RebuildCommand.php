@@ -95,7 +95,7 @@ class RebuildCommand extends AbstractCommand
         $this->all = true === $input->getOption(self::ALL);
         $this->waitFor($this->yellowOk, $output);
 
-        $this->bulkSize = \intval($input->getOption('bulk-size'));
+        $this->bulkSize = (int) $input->getOption('bulk-size');
         if ($this->bulkSize <= 0) {
             throw new \RuntimeException('Unexpected bulk size option');
         }

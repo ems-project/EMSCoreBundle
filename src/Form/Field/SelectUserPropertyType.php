@@ -48,7 +48,7 @@ final class SelectUserPropertyType extends AbstractType
 
         $eventDispatcher = $options['event_dispatcher'];
 
-        if ($eventDispatcher instanceof EventDispatcher || false !== \boolval($options['allow_add'])) {
+        if ($eventDispatcher instanceof EventDispatcher || false !== (bool) $options['allow_add']) {
             $this->allowDynamicChoices($builder, $eventDispatcher);
         }
     }
@@ -84,7 +84,7 @@ final class SelectUserPropertyType extends AbstractType
                 );
             })
             ->setNormalizer('attr', function (Options $options, $value) {
-                $allowAdd = \boolval($options['allow_add']) ? true : false;
+                $allowAdd = (bool) ($options['allow_add']) ? true : false;
 
                 if ($allowAdd) {
                     $value['data-tags'] = true; // select2 allow add tags

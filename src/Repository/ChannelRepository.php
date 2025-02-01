@@ -56,7 +56,7 @@ final class ChannelRepository extends ServiceEntityRepository
         $this->addSearchFilters($qb, $searchValue);
 
         try {
-            return \intval($qb->getQuery()->getSingleScalarResult());
+            return (int) $qb->getQuery()->getSingleScalarResult();
         } catch (NonUniqueResultException) {
             return 0;
         }

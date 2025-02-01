@@ -64,7 +64,7 @@ class WysiwygStylesSetService implements EntityServiceInterface
         $id = $styleSet->getId();
         $this->wysiwygStylesSetRepository->delete($styleSet);
 
-        return \strval($id);
+        return (string) $id;
     }
 
     #[\Override]

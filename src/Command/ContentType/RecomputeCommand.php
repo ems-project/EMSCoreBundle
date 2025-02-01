@@ -121,7 +121,7 @@ final class RecomputeCommand extends AbstractCommand
         $this->ouuid = $this->getOptionStringNull(self::OPTION_OUUID);
 
         if (null !== $input->getOption(self::OPTION_QUERY)) {
-            $this->query = \strval($input->getOption('query'));
+            $this->query = (string) $input->getOption('query');
             Json::decode($this->query, 'Invalid json query');
         }
     }

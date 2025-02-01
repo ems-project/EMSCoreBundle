@@ -97,7 +97,7 @@ final readonly class IndexService
         $result = $this->client->requestEndpoint($endpoint)->getData();
 
         $ouuid = null;
-        if (\is_array($result) && \intval($result['_shards']['successful'] ?? 0) > 0) {
+        if (\is_array($result) && (int) ($result['_shards']['successful'] ?? 0) > 0) {
             $ouuid = $result['_id'];
         }
 

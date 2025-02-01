@@ -134,12 +134,12 @@ class UserService implements EntityServiceInterface
 
         foreach ($roleHierarchy as $parent => $children) {
             foreach ($children as $child) {
-                if (empty($out[\strval($child)])) {
-                    $out[\strval($child)] = \strval($child);
+                if (empty($out[(string) $child])) {
+                    $out[(string) $child] = (string) $child;
                 }
             }
-            if (empty($out[\strval($parent)])) {
-                $out[\strval($parent)] = \strval($parent);
+            if (empty($out[(string) $parent])) {
+                $out[(string) $parent] = (string) $parent;
             }
         }
 

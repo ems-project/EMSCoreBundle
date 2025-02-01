@@ -58,7 +58,7 @@ class I18nService implements EntityServiceInterface
         $id = $i18n->getId();
         $this->repository->delete($i18n);
 
-        return \strval($id);
+        return (string) $id;
     }
 
     #[\Override]

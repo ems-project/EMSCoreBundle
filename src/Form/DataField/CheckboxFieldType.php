@@ -57,7 +57,7 @@ class CheckboxFieldType extends DataFieldType
     public function modelTransform($data, FieldType $fieldType): DataField
     {
         $dataField = new DataField();
-        $dataField->setRawData(\boolval($data));
+        $dataField->setRawData((bool) $data);
         $dataField->setFieldType($fieldType);
 
         return $dataField;

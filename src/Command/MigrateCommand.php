@@ -187,7 +187,7 @@ class MigrateCommand extends AbstractCommand
             throw new \RuntimeException('Unexpected Content type To name');
         }
         $this->contentTypeNameTo = $contentTypeNameTo;
-        $this->scrollSize = \intval($input->getArgument(self::ARGUMENT_SCROLL_SIZE));
+        $this->scrollSize = (int) $input->getArgument(self::ARGUMENT_SCROLL_SIZE);
         if (0 === $this->scrollSize) {
             throw new \RuntimeException('Unexpected scroll size argument');
         }
@@ -234,7 +234,7 @@ class MigrateCommand extends AbstractCommand
             $this->indexInDefaultEnv = false;
         }
 
-        $archive = \boolval($input->getOption(self::OPTION_ARCHIVE));
+        $archive = (bool) $input->getOption(self::OPTION_ARCHIVE);
         if ($archive) {
             $this->archiveModifiedBefore = DateTime::create('now');
             $this->io->note(\sprintf('Will archive not updated revisions before %s', $this->archiveModifiedBefore->format(\DateTimeInterface::ATOM)));

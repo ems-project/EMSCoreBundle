@@ -40,7 +40,7 @@ final class JsonMenuNestedController extends AbstractController
     public function modal(Request $request, Revision $revision, FieldType $fieldType): JsonResponse
     {
         $requestData = $this->getRequestData($request);
-        $level = \intval($requestData['level']);
+        $level = (int) $requestData['level'];
 
         $newLevel = $level + 1;
         $maxDepth = $fieldType->getRestrictionOption('json_nested_max_depth', 0);

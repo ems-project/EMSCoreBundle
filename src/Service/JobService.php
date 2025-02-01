@@ -274,7 +274,7 @@ class JobService implements EntityServiceInterface
     public function getByItemName(string $name): ?EntityInterface
     {
         try {
-            return $this->repository->findById(\intval($name));
+            return $this->repository->findById((int) $name);
         } catch (\Throwable) {
             return null;
         }
@@ -310,11 +310,11 @@ class JobService implements EntityServiceInterface
     #[\Override]
     public function deleteByItemName(string $name): string
     {
-        $job = $this->repository->findById(\intval($name));
+        $job = $this->repository->findById((int) $name);
         $id = $job->getId();
         $this->repository->delete($job);
 
-        return \strval($id);
+        return (string) $id;
     }
 
     public function write(int $jobId, string $message, bool $newLine): void

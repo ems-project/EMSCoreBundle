@@ -65,15 +65,15 @@ final class BulkActionCommand extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $contentTypeName = \strval($input->getArgument(self::CONTENT_TYPE_NAME));
+        $contentTypeName = (string) $input->getArgument(self::CONTENT_TYPE_NAME);
         $contentType = $this->contentTypeService->giveByName($contentTypeName);
-        $actionName = \strval($input->getArgument('actionName'));
+        $actionName = (string) $input->getArgument('actionName');
         $action = $contentType->getActionByName($actionName);
         if (null === $action) {
             throw new \Exception(\sprintf('No notification action found with name %d', $actionName));
         }
 
-        $rawQuery = \strval($input->getArgument('query'));
+        $rawQuery = (string) $input->getArgument('query');
         try {
             $query = Json::decode($rawQuery);
         } catch (\Throwable) {
@@ -81,7 +81,7 @@ final class BulkActionCommand extends Command
         }
 
         $inputEnvironment = $input->getOption('environment');
-        $environmentName = $inputEnvironment ? \strval($inputEnvironment) : null;
+        $environmentName = $inputEnvironment ? (string) $inputEnvironment : null;
         if (null !== $environmentName) {
             $environment = $this->environmentService->giveByName($environmentName);
         } else {
@@ -108,7 +108,7 @@ final class BulkActionCommand extends Command
             return 0;
         }
 
-        $username = \strval($input->getOption('username'));
+        $username = (string) $input->getOption('username');
         $countSend = 0;
         $progress = $this->io->createProgressBar($countDocuments);
         $progress->start();

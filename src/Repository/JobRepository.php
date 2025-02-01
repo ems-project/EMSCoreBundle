@@ -32,11 +32,11 @@ class JobRepository extends EntityRepository
         $qb = $this->createQueryBuilder('job');
         $this->addSearchFilters($qb, $searchValue);
 
-        return \intval(
+        return (int)
             $qb->select('COUNT(job)')
             ->getQuery()
             ->getSingleScalarResult()
-        );
+        ;
     }
 
     public function countPendingJobs(): int
@@ -45,7 +45,7 @@ class JobRepository extends EntityRepository
         $qb->where($qb->expr()->eq('job.done', ':false'));
         $qb->setParameters(new ArrayCollection([new Parameter('false', false)]));
 
-        return \intval($qb->getQuery()->getSingleScalarResult());
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
@@ -85,7 +85,7 @@ class JobRepository extends EntityRepository
             new Parameter('username', $username),
         ]));
 
-        return \intval($qb->getQuery()->execute());
+        return (int) $qb->getQuery()->execute();
     }
 
     /**

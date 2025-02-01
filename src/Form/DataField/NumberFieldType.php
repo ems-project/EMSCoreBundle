@@ -120,7 +120,7 @@ class NumberFieldType extends DataFieldType
         $message = false;
         if (null !== $temp) {
             if (\is_numeric($temp)) {
-                $temp = \doubleval($temp);
+                $temp = (float) $temp;
             } else {
                 $message = 'It is not a float value:'.$temp;
             }

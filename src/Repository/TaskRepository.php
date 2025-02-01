@@ -29,7 +29,7 @@ final class TaskRepository extends ServiceEntityRepository
             ->andWhere($qb->expr()->in('t.id', ':approved_ids'))
             ->setParameter('approved_ids', $revision->getTaskApprovedIds(), ArrayParameterType::STRING);
 
-        return \intval($qb->getQuery()->getSingleScalarResult());
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     public function hasVersionedContentType(): bool

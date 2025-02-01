@@ -235,7 +235,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
 
     public function getDisplayBoolOption(string $key, bool $default): bool
     {
-        return \boolval($this->options[self::DISPLAY_OPTIONS][$key] ?? $default);
+        return (bool) ($this->options[self::DISPLAY_OPTIONS][$key] ?? $default);
     }
 
     /**

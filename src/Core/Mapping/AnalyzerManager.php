@@ -59,7 +59,7 @@ class AnalyzerManager implements EntityServiceInterface
         $id = $analyzer->getId();
         $this->analyzerRepository->delete($analyzer);
 
-        return \strval($id);
+        return (string) $id;
     }
 
     #[\Override]

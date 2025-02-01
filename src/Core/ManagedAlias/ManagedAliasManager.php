@@ -105,7 +105,7 @@ class ManagedAliasManager implements EntityServiceInterface
         $id = $managedAlias->getId();
         $this->repository->delete($managedAlias);
 
-        return \strval($id);
+        return (string) $id;
     }
 
     public function update(ManagedAlias $managedAlias): void

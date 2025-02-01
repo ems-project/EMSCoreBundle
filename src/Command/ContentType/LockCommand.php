@@ -102,7 +102,7 @@ final class LockCommand extends Command
         $this->by = $by;
 
         if (null !== $input->getOption(self::OPTION_QUERY)) {
-            $this->query = \strval($input->getOption('query'));
+            $this->query = (string) $input->getOption('query');
             Json::decode($this->query, 'Invalid json query');
         }
 
@@ -138,7 +138,7 @@ final class LockCommand extends Command
                 $revisionCount += $this->revisionRepository->lockRevisions($this->contentType, $this->until, $this->by, $this->force, $document->getId());
             }
         } else {
-            $ouuid = $input->getOption(self::OPTION_OUUID) ? \strval($input->getOption(self::OPTION_OUUID)) : null;
+            $ouuid = $input->getOption(self::OPTION_OUUID) ? (string) ($input->getOption(self::OPTION_OUUID)) : null;
             $revisionCount = $this->revisionRepository->lockRevisions($this->contentType, $this->until, $this->by, $this->force, $ouuid);
         }
 

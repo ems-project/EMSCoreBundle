@@ -38,7 +38,7 @@ final class FormRepository extends ServiceEntityRepository
         $qb->select('count(c.id)');
         $this->addSearchFilters($qb, $searchValue);
 
-        return \intval($qb->getQuery()->getSingleScalarResult());
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     public function create(Form $form): void

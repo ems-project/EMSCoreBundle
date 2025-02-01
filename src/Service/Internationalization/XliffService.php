@@ -64,7 +64,7 @@ class XliffService
             $baselineTranslationData = (null === $localeField && $withBaseline ? $sourceData : []);
         }
 
-        $xliffDoc = $extractor->addDocument($contentType->getName(), $source->getId(), \strval($sourceRevision->getId()));
+        $xliffDoc = $extractor->addDocument($contentType->getName(), $source->getId(), (string) $sourceRevision->getId());
         foreach ($fields as $fieldPath) {
             $propertyPath = Document::fieldPathToPropertyPath($fieldPath);
             foreach ($propertyAccessor->iterator($propertyPath, $sourceData, [InsertionRevision::LOCALE_PLACE_HOLDER => $extractor->getSourceLocale()]) as $path => $value) {

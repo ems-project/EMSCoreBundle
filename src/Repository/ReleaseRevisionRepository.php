@@ -116,7 +116,7 @@ final class ReleaseRevisionRepository extends ServiceEntityRepository
                 new Parameter('release', $release),
             ]));
 
-        return \intval($qb->getQuery()->getSingleScalarResult());
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**

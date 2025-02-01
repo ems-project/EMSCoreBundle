@@ -25,11 +25,11 @@ class ObjectChoiceListItem implements \Stringable
         if (null !== $contentType) {
             $categoryField = $contentType->getCategoryField();
             if (null !== $categoryField && isset($source[$categoryField])) {
-                $this->group = \strval($source[$categoryField]);
+                $this->group = (string) $source[$categoryField];
             }
             $colorField = $contentType->getColorField();
             if (null !== $colorField && isset($source[$colorField])) {
-                $this->color = \strval($source[$colorField]);
+                $this->color = (string) $source[$colorField];
             }
             $contentTypeIcon = $contentType->getIcon();
             if (null !== $contentTypeIcon) {

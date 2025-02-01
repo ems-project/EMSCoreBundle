@@ -514,7 +514,7 @@ class EnvironmentService implements EntityServiceInterface
         $id = $environment->getId();
         $this->environmentRepository->delete($environment);
 
-        return \strval($id);
+        return (string) $id;
     }
 
     private function applyStats(Environment ...$environments): void

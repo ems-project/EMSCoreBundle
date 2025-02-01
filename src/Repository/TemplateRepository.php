@@ -65,7 +65,7 @@ class TemplateRepository extends ServiceEntityRepository
         $this->addSearchFilters($qb, $contentType, $searchValue);
 
         try {
-            return \intval($qb->getQuery()->getSingleScalarResult());
+            return (int) $qb->getQuery()->getSingleScalarResult();
         } catch (NonUniqueResultException) {
             return 0;
         }

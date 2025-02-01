@@ -163,7 +163,7 @@ class JobController extends AbstractController
 
         return EmsCoreResponse::createJsonResponse($request, true, [
             'message' => \sprintf('job %d flagged has started', $job->getId()),
-            'job_id' => \strval($job->getId()),
+            'job_id' => (string) $job->getId(),
             'command' => $job->getCommand(),
             'output' => $job->getOutput(),
         ]);
@@ -195,8 +195,8 @@ class JobController extends AbstractController
             throw new \RuntimeException('Unexpected non string content');
         }
         $data = Json::decode($content);
-        $message = \strval($data['message'] ?? '');
-        $newLine = \boolval($data['new-line'] ?? false);
+        $message = (string) ($data['message'] ?? '');
+        $newLine = (bool) ($data['new-line'] ?? false);
         $this->jobService->write($job, $message, $newLine);
 
         return EmsCoreResponse::createJsonResponse($request, true);

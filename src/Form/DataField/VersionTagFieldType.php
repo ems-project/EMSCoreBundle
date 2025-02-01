@@ -96,6 +96,8 @@ class VersionTagFieldType extends DataFieldType
             'label' => ($options['label'] ?? $fieldType->getName()),
             'placeholder' => $placeholder,
             'choices' => $choices,
+            'help_html' => true,
+            'help' => $options['helptext'],
         ]);
     }
 

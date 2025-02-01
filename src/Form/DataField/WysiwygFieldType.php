@@ -154,12 +154,17 @@ class WysiwygFieldType extends DataFieldType
         if (!\is_string($out)) {
             return '';
         }
-
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $path = \substr($path, 0, \strlen($path) - 8);
+        $collectedAssets = [];
         $out = \preg_replace_callback(
-            '/(ems:\/\/asset:)([^\n\r"\'\?]*)/i',
-            fn ($matches) => $path.$matches[2],
+            '/(ems:\/\/asset:)([^\n\r"\'\?]*)(\?[^\n\r"\']*)?/i',
+            function ($matches) use ($path, &$collectedAssets) {
+                \parse_str(\substr($matches[3] ?? '', 1), $result);
+                $collectedAssets[$matches[2]] = Type::string($result['name'] ?? $matches[2]);
+
+                return $path.$matches[2].($matches[3] ?? '');
+            },
             $out
         );
         $path = $this->router->generate(Routes::DATA_LINK, ['key' => '__KEY__'], UrlGeneratorInterface::ABSOLUTE_PATH);
@@ -168,6 +173,13 @@ class WysiwygFieldType extends DataFieldType
             fn ($matches) => \str_replace('__KEY__', $matches['key'], $path),
             Type::string($out)
         );
+
+        foreach ($this->assetRuntime->heads(...\array_keys($collectedAssets)) as $hash) {
+            if (true === $hash) {
+                continue;
+            }
+            $dataField->addMessage(\sprintf('File "%s" missing, please try to upload it again.', $collectedAssets[$hash]));
+        }
 
         return $out;
     }

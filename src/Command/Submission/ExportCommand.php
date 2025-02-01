@@ -87,7 +87,7 @@ class ExportCommand extends AbstractCommand
                 self::OPTION_EXPORT_FORMAT,
                 null,
                 InputOption::VALUE_OPTIONAL,
-                \sprintf('Format of the export. Supported formats: %s', \join(', ', SpreadsheetGeneratorServiceInterface::FORMAT_WRITERS)),
+                \sprintf('Format of the export. Supported formats: %s', \implode(', ', SpreadsheetGeneratorServiceInterface::FORMAT_WRITERS)),
             );
     }
 

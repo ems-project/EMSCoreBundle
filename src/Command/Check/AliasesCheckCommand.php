@@ -72,7 +72,7 @@ final class AliasesCheckCommand extends Command
 
             $fakeUser = new User();
             $fakeUser->setUsername(Commands::MANAGED_ALIAS_CHECK);
-            $command = \join(' ', [
+            $command = \implode(' ', [
                 Commands::ENVIRONMENT_REBUILD,
                 $environment->getName(),
             ]);

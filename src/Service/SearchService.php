@@ -206,7 +206,7 @@ class SearchService
         $searchRepository = $this->doctrine->getRepository(Search::class);
 
         $search = null;
-        if (1 === \sizeof($contentTypes)) {
+        if (1 === \count($contentTypes)) {
             $contentTypeName = \array_values($contentTypes)[0];
             $contentType = $this->contentTypeService->giveByName($contentTypeName);
             $search = $searchRepository->findOneBy(['contentType' => $contentType]);

@@ -817,7 +817,7 @@ class DataService
             if (empty($dataField->getMessages())) {
                 continue;
             }
-            if (1 === \sizeof($dataField->getMessages())) {
+            if (1 === \count($dataField->getMessages())) {
                 $errorMessage = $dataField->getMessages()[0];
             } else {
                 $errorMessage = \sprintf('["%s"]', \implode('","', $dataField->getMessages()));
@@ -1819,7 +1819,7 @@ class DataService
                 $search = $this->elasticaService->convertElasticsearchSearch([
                     'index' => $contentType->giveEnvironment()->getAlias(),
                     'body' => [
-                        'size' => \sizeof($ouuids),
+                        'size' => \count($ouuids),
                         '_source' => $contentType->getBusinessIdField(),
                         'query' => [
                             'bool' => [

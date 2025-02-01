@@ -241,7 +241,7 @@ class ExportDocumentsCommand extends AbstractCommand
             $zip->addFromString('emsExport'.$extension, $accumulatedContent);
         }
 
-        if (\sizeof($errorList) > 0) {
+        if (\count($errorList) > 0) {
             $zip->addFromString('All-Errors.txt', \implode("\n", $errorList));
         }
 

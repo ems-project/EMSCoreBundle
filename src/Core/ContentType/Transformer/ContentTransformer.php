@@ -52,7 +52,7 @@ final readonly class ContentTransformer
     public function transform(Revision $revision, array $transformerDefinitions, string $user, bool $dryRun): bool
     {
         $rawData = ArrayHelper::map($revision->getRawData(), function ($value, $property) use ($transformerDefinitions) {
-            if (\key_exists($property, $transformerDefinitions)) {
+            if (\array_key_exists($property, $transformerDefinitions)) {
                 return $this->transformValue($value, $transformerDefinitions[$property]);
             }
 

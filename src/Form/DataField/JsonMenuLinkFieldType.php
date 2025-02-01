@@ -199,7 +199,7 @@ class JsonMenuLinkFieldType extends DataFieldType
         } elseif (\is_array($temp)) {
             $out = [];
             foreach ($temp as $item) {
-                if (\is_string($item) || \is_integer($item)) {
+                if (\is_string($item) || \is_int($item)) {
                     $out[] = $item;
                 } else {
                     $dataField->addMessage('Was not able to import the data : '.Json::encode($item));

@@ -4,7 +4,7 @@
 {% block unpublish_label %}{{ data.label }}{% endblock %}
 
 {% block minrevid %}
-    {% set release = app.request.get('release') %}
+    {% set release = table.context %}
     {% set minrev = data.minrevid|split('/') %}
     {% set maxrev = data.maxrevid|split('/') %}
 
@@ -34,7 +34,7 @@
 {% endblock docs_count %}
 
 {% block maxrevid %}
-    {% set release = app.request.get('release') %}
+    {% set release = table.context %}
     {% set minrev = data.minrevid|split('/') %}
     {% set maxrev = data.maxrevid|split('/') %}
     {% if maxrev[0] == release.environmentTarget.id %}
@@ -47,7 +47,7 @@
 {% endblock maxrevid %}
 
 {% block minrevidstatus %}
-    {% set release = app.request.get('release') %}
+    {% set release = table.context %}
     {% set minrev = data.minrevid|split('/') %}
     {% set maxrev = data.maxrevid|split('/') %}
 
@@ -61,7 +61,7 @@
 {% endblock minrevidstatus %}
 
 {% block maxrevidstatus  %}
-    {% set release = app.request.get('release') %}
+    {% set release = table.context %}
     {% set maxrev = data.maxrevid|split('/') %}
     {% set minrev = data.minrevid|split('/') %}
 

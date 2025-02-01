@@ -76,6 +76,7 @@ class EnvironmentPickerType extends ChoiceType
                         'data-content' => '<span class="text-'.$dataFieldType->getColor().'"><i class="fa fa-square"></i>&nbsp;&nbsp;'.$dataFieldType->getLabel().'</span>',
                     ];
                 },
+                'choice_value' => fn ($value) => $value,
                 'multiple' => false,
                 'managedOnly' => true,
                 'userPublishEnvironments' => true,

@@ -223,7 +223,7 @@ class FileController extends AbstractController
                 EmsFields::ASSET_CONFIG_COLOR => "ems-$this->themeColor",
             ];
         }
-        $image = $this->fileService->generateImage('@EMSCommonBundle/Resources/public/images/ems-logo.png', $config);
+        $image = $this->fileService->generateImage('@EMSCommonBundle/public/images/ems-logo.png', $config);
 
         $response = new StreamedResponse(function () use ($image) {
             if ($image->isSeekable() && $image->tell() > 0) {
@@ -235,7 +235,7 @@ class FileController extends AbstractController
             }
             $image->close();
         });
-        $configObject = $this->fileService->localFileConfig('@EMSCommonBundle/Resources/public/images/ems-logo.png', $config);
+        $configObject = $this->fileService->localFileConfig('@EMSCommonBundle/public/images/ems-logo.png', $config);
         $response->headers->add([
             Headers::CONTENT_DISPOSITION => $configObject->getDisposition().'; '.HeaderUtils::toString(['filename' => 'ems-logo.png'], ';'),
             Headers::CONTENT_TYPE => $configObject->getMimeType(),

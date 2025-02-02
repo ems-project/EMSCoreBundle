@@ -27,7 +27,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $xmlLoader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $xmlLoader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
         $xmlLoader->load('command.xml');
         $xmlLoader->load('contracts.xml');
         $xmlLoader->load('controllers.xml');

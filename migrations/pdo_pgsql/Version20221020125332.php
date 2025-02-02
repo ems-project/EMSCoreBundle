@@ -7,7 +7,7 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
-use EMS\CoreBundle\Resources\DoctrineMigrations\Scripts\ScriptContentTypeRoles;
+use Application\Migrations\Scripts\ScriptContentTypeRoles;
 
 final class Version20221020125332 extends AbstractMigration
 {

@@ -8,11 +8,11 @@ use Doctrine\DBAL\Platforms\MariaDBPlatform;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
-use EMS\CoreBundle\Resources\DoctrineMigrations\Scripts\ScriptContentTypeVersionFields;
+use Application\Migrations\Scripts\ScriptContentTypeRoles;
 
-final class Version20221031134732 extends AbstractMigration
+final class Version20221020135425 extends AbstractMigration
 {
-    use ScriptContentTypeVersionFields;
+    use ScriptContentTypeRoles;
 
     #[\Override]
     public function up(Schema $schema): void
@@ -23,9 +23,9 @@ final class Version20221031134732 extends AbstractMigration
             "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
         );
 
-        $this->addSql('ALTER TABLE content_type ADD version_fields LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json)\'');
+        $this->addSql('ALTER TABLE content_type ADD roles LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json)\'');
 
-        $this->scriptEncodeVersionFields($this);
+        $this->scriptEncodeRoles($this);
     }
 
     #[\Override]
@@ -37,6 +37,6 @@ final class Version20221031134732 extends AbstractMigration
             "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
         );
 
-        $this->scriptDecodeVersionFields($this);
+        $this->scriptDecodeRoles($this);
     }
 }

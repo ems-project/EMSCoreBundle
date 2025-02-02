@@ -9,21 +9,21 @@
            methods="POST"
            format="json"/>
 
-    <import resource="@EMSCoreBundle/Resources/config/routing/api/admin.xml"
+    <import resource="@EMSCoreBundle/config/routing/api/admin.xml"
             prefix="/api/admin"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/api/extract-data.xml"
+    <import resource="@EMSCoreBundle/config/routing/api/extract-data.xml"
             prefix="/api/extract-data"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/api/file.xml"
+    <import resource="@EMSCoreBundle/config/routing/api/file.xml"
             prefix="/api/file"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/api/forms.xml"
+    <import resource="@EMSCoreBundle/config/routing/api/forms.xml"
             prefix="/api/forms"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/api/images.xml"
+    <import resource="@EMSCoreBundle/config/routing/api/images.xml"
             prefix="/api/images"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/api/meta.xml"
+    <import resource="@EMSCoreBundle/config/routing/api/meta.xml"
             prefix="/api/meta"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/api/search.xml"
+    <import resource="@EMSCoreBundle/config/routing/api/search.xml"
             prefix="/api/search"/>
-    <import resource="@EMSCoreBundle/Resources/config/routing/api/data.xml"
+    <import resource="@EMSCoreBundle/config/routing/api/data.xml"
             prefix="/api/data"/>
 
 </routes>

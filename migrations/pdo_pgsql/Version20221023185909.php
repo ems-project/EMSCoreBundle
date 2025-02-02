@@ -7,7 +7,7 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
-use EMS\CoreBundle\Resources\DoctrineMigrations\Scripts\ScriptContentTypeFields;
+use Application\Migrations\Scripts\ScriptContentTypeFields;
 
 class Version20221023185909 extends AbstractMigration
 {

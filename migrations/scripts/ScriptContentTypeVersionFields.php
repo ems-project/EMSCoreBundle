@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Resources\DoctrineMigrations\Scripts;
+namespace Application\Migrations\Scripts;
 
 use Doctrine\Migrations\AbstractMigration;
 use EMS\Helpers\Standard\Json;

@@ -44,11 +44,7 @@
     "autoload": {
         "psr-4": {
             "EMS\\CoreBundle\\": "src/",
-            "Application\\Migrations\\Scripts\\": "migrations/scripts",
-            "Application\\Migrations\\": [
-                "migrations/pdo_mysql",
-                "migrations/pdo_pgsql"
-            ]
+            "Application\\Migrations\\Scripts\\": "migrations/scripts"
         }
     },
     "config": {

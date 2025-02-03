@@ -14,7 +14,10 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
     use CreatedModifiedTrait;
     use IdentifierIntegerTrait;
 
+    public const string CKEDITOR4 = 'ckeditor4';
+    public const string CKEDITOR5 = 'ckeditor5';
     protected string $name = '';
+    protected string $editor = self::CKEDITOR4;
     protected ?string $config = null;
     protected int $orderKey = 0;
 
@@ -97,5 +100,15 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
     public function __toString(): string
     {
         return $this->getName();
+    }
+
+    public function getEditor(): string
+    {
+        return $this->editor;
+    }
+
+    public function setEditor(string $editor): void
+    {
+        $this->editor = $editor;
     }
 }

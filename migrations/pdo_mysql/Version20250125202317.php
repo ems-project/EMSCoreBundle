@@ -8,13 +8,14 @@ use Doctrine\DBAL\Platforms\MariaDBPlatform;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
+use EMS\CoreBundle\Entity\WysiwygProfile;
 
-final class Version20250129084148 extends AbstractMigration
+final class Version20250125202317 extends AbstractMigration
 {
     #[\Override]
     public function getDescription(): string
     {
-        return 'Fix add missing migration for release_revision';
+        return 'Add an editor field to the WYSIWYG profile entity';
     }
 
     #[\Override]
@@ -25,8 +26,7 @@ final class Version20250129084148 extends AbstractMigration
             && !$this->connection->getDatabasePlatform() instanceof MariaDBPlatform,
             "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
         );
-
-        $this->addSql('ALTER TABLE release_revision CHANGE type type VARCHAR(255) NOT NULL');
+        $this->addSql(\sprintf('ALTER TABLE wysiwyg_profile ADD editor VARCHAR(255) NOT NULL DEFAULT \'%s\'', WysiwygProfile::CKEDITOR4));
     }
 
     #[\Override]
@@ -37,7 +37,6 @@ final class Version20250129084148 extends AbstractMigration
             && !$this->connection->getDatabasePlatform() instanceof MariaDBPlatform,
             "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
         );
-
-        $this->addSql('ALTER TABLE release_revision CHANGE type type LONGTEXT NOT NULL');
+        $this->addSql('ALTER TABLE wysiwyg_profile DROP editor');
     }
 }

@@ -3500,3 +3500,16 @@ user:
     sidebar_collapse: 'Sidebar collapse'
     wysiwyg_profile: 'WYSIWYG profile'
     wysiwyg_options: 'WYSIWYG Options'
+wysiwyg_profile:
+    editor:
+        ckeditor4: 'CK Editor 4'
+        ckeditor5: 'CK Editor 5'
+        label: 'Editor'
+    name:
+        label: 'Profile''s name'
+    save:
+        label: 'Save'
+    remove:
+        label: 'Remove'
+    update:
+        label: 'Update'

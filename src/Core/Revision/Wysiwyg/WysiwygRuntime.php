@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Core\Revision\Wysiwyg;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\Dashboard;
+use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -27,6 +28,7 @@ final readonly class WysiwygRuntime implements RuntimeExtensionInterface
         return Json::encode([
             'config' => \array_merge_recursive($this->getDefaultConfig(), $this->getConfig()),
             'styles' => $this->getStyles(),
+            'editor' => $this->getEditor(),
         ]);
     }
 
@@ -50,6 +52,16 @@ final readonly class WysiwygRuntime implements RuntimeExtensionInterface
         }
 
         return $config;
+    }
+
+    private function getEditor(): string
+    {
+        $profile = $this->userManager->getUser()?->getWysiwygProfile();
+        if (null === $profile) {
+            return WysiwygProfile::CKEDITOR4;
+        }
+
+        return $profile->getEditor();
     }
 
     /**

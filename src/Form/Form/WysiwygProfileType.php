@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -27,7 +29,17 @@ class WysiwygProfileType extends AbstractType
         $builder
             ->add('name', IconTextType::class, [
                 'icon' => 'fa fa-tag',
-                'label' => 'Profile\'s name',
+                'label' => 'wysiwyg_profile.name.label',
+                'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+            ])
+            ->add('editor', ChoiceType::class, [
+                'required' => true,
+                'choices' => [
+                    'wysiwyg_profile.editor.ckeditor4' => WysiwygProfile::CKEDITOR4,
+                    'wysiwyg_profile.editor.ckeditor5' => WysiwygProfile::CKEDITOR5,
+                ],
+                'label' => 'wysiwyg_profile.editor.label',
+                'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
             ])
             ->add('config', CodeEditorType::class, [
                 'language' => 'ace/mode/json',
@@ -37,6 +49,8 @@ class WysiwygProfileType extends AbstractType
                     'class' => 'btn btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-save',
+                'label' => 'wysiwyg_profile.save.label',
+                'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
             ]);
 
         if (!$options['createform']) {
@@ -45,6 +59,8 @@ class WysiwygProfileType extends AbstractType
                     'class' => 'btn btn-primary btn-sm ',
                 ],
                 'icon' => 'fa fa-trash',
+                'label' => 'wysiwyg_profile.remove.label',
+                'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
             ]);
         }
     }

@@ -9,6 +9,7 @@
     </id>
 
     <field name="name" length="255"/>
+    <field name="editor" length="255"/>
     <field name="config" type="text" nullable="true"/>
     <field name="orderKey" column="orderKey" type="integer"/>
 

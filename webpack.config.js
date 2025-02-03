@@ -62,6 +62,7 @@ module.exports = (env, argv) => {
             'yellow': './assets/skins/yellow.js',
             'yellow-light': './assets/skins/yellow-light.js',
             'app': './assets/app.js',
+            'ckeditor4': './assets/ckeditor4.js',
             'edit-revision': './assets/edit-revision.js',
             'managed-alias': './assets/managed-alias.js',
             'user-profile': './assets/user-profile.js',

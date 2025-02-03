@@ -9,6 +9,9 @@
 	CKEDITOR.dialog.add( 'link', function( editor ) {
 		var plugin = CKEDITOR.plugins.link;
 		let emsConfig = editor.config.hasOwnProperty('ems') ? editor.config.ems : {};
+        if (undefined === emsConfig) {
+            emsConfig = {}
+        }
 
 		// Handles the event when the "Target" selection box is changed.
 		var targetChanged = function() {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\DataTable;
 
-use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
+use EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface;
 use EMS\CoreBundle\Form\Data\TableInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,6 +33,7 @@ final readonly class TableExporter
             SpreadsheetGeneratorServiceInterface::SHEETS => [[
                 'name' => $table->getExportSheetName(),
                 'rows' => [$headers, ...$rows],
+                'validations' => $table->getColumnsValidations(),
             ]],
             SpreadsheetGeneratorServiceInterface::CONTENT_FILENAME => $table->getExportFileName(),
             SpreadsheetGeneratorServiceInterface::CONTENT_DISPOSITION => $table->getExportDisposition(),

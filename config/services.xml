@@ -184,7 +184,7 @@
         </service>
         <service id="ems_core.core_data_table.table_exporter" class="EMS\CoreBundle\Core\DataTable\TableExporter">
             <argument type="service" id="ems_core.core_data_table.table_renderer"/>
-            <argument type="service" id="EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface"/>
+            <argument type="service" id="EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface"/>
         </service>
         <service id="ems_core.service.uploaded-file" alias="EMS\CoreBundle\Service\DatatableService"/>
 

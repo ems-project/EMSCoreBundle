@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
+use EMS\CommonBundle\Common\Spreadsheet\SpreadsheetValidation;
+
 /**
  * @extends \IteratorAggregate<string, TableRowInterface>
  */
@@ -19,6 +21,11 @@ interface TableInterface extends \Countable, \IteratorAggregate
      * @return iterable<TableColumn>
      */
     public function getColumns(): iterable;
+
+    /**
+     * @return SpreadsheetValidation[]
+     */
+    public function getColumnsValidations(): array;
 
     public function getItemActions(): TableItemActionCollection;
 

@@ -6,7 +6,7 @@ namespace EMS\CoreBundle\Command\Submission;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Common\PropertyAccess\PropertyAccessor;
-use EMS\CommonBundle\Contracts\SpreadsheetGeneratorServiceInterface;
+use EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Service\ExpressionService;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Mail\MailerService;

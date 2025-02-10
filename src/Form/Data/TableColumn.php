@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
+use EMS\CommonBundle\Common\Spreadsheet\SpreadsheetValidation;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Form\Data\Condition\ConditionInterface;
 use Symfony\Component\Translation\TranslatableMessage;
@@ -29,6 +30,7 @@ class TableColumn
     private string $orderField;
     /** @var array<string, mixed> */
     private array $transLabelOptions = [];
+    private ?SpreadsheetValidation $validation = null;
 
     public function __construct(private readonly string|TranslatableMessage $titleKey, string $attribute)
     {
@@ -276,5 +278,15 @@ class TableColumn
     public function getTransLabelOptions(): array
     {
         return $this->transLabelOptions;
+    }
+
+    public function getValidation(): ?SpreadsheetValidation
+    {
+        return $this->validation;
+    }
+
+    public function setValidation(?SpreadsheetValidation $validation): void
+    {
+        $this->validation = $validation;
     }
 }

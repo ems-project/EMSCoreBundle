@@ -97,7 +97,7 @@ class Revision implements EntityInterface, \Stringable
     }
 
     /**
-     * Remove virtual fields ans save the raw data.
+     * Remove virtual fields and save the raw data.
      *
      * @param array<mixed> $data
      */

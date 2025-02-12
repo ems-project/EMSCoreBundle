@@ -1703,8 +1703,11 @@ class DataService
         /** @var DataField $out */
         $out = $form->getNormData();
         foreach ($form as $key => $item) {
-            if ($item->getNormData() instanceof DataField) {
+            $data = $item->getNormData();
+            if ($data instanceof DataField) {
                 $out->addChild($item->getNormData(), $key);
+                $options = $item->getConfig()->getOptions();
+                $data->setFormLabel(isset($options['label']) && \is_string($options['label']) ? $options['label'] : $key);
                 $this->getDataFieldsStructure($item);
             }
         }

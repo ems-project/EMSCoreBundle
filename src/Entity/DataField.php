@@ -48,6 +48,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
     private bool $marked = false;
 
     private ?DataFieldFormOptions $formOptions = null;
+    private ?string $formLabel = null;
 
     public function setChildrenFieldType(FieldType $fieldType): void
     {
@@ -726,5 +727,15 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
     public function setFormOptions(?DataFieldFormOptions $formOptions): void
     {
         $this->formOptions = $formOptions;
+    }
+
+    public function setFormLabel(string $label): void
+    {
+        $this->formLabel = $label;
+    }
+
+    public function getFormLabel(): ?string
+    {
+        return $this->formLabel;
     }
 }

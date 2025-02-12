@@ -32,13 +32,13 @@ final class RawDataTransformer
                     if (0 === \count($jsonNames)) {
                         $out[$child->getName()] = self::transform($child, $data);
                     } else {
-                        $colectedData = [];
+                        $collectedData = [];
                         foreach ($jsonNames as $name) {
                             if (isset($data[$name])) {
-                                $colectedData[$name] = self::transform($child, $data[$name]);
+                                $collectedData[$name] = self::transform($child, $data[$name]);
                             }
                         }
-                        $out[$child->getName()] = $colectedData;
+                        $out[$child->getName()] = $collectedData;
                     }
                 } else {
                     $out[$child->getName()] = $type::filterSubField($data, $child->getOptions());

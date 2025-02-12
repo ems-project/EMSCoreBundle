@@ -409,41 +409,26 @@
 {% endblock %}
 
 {% block EMS_CoreBundle_Form_DataField_MultiplexedTabContainerFieldType %}
-	{% set labels = dataField.fieldType.displayOptions.labels|default('')|replace({"\r":''})|split('\n') %}
-	{% set values = dataField.fieldType.displayOptions.values|default('')|replace({"\r":''})|split('\n') %}
-	{% set choices = [] %}
-	{% for value in values %}
-		{% set choices = choices|merge({(value): attribute(labels, loop.index0)|default(value)}) %}
-	{% endfor %}
-
-    {% if locale != null and locale in values %}
-        {% set values = [locale]|merge(values|filter(v => v != locale))  %}
-    {% endif %}
-
-	{% if dataField.fieldType.displayOptions.localePreferredFirst|default(false) and app.user.language in values %}
-		{% set values = values|sort((a, b) => a == app.user.language ? -1 : b == app.user.language ? 1 : 0) %}
-	{% endif %}
-
 	<div class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
-			{% for value in values|default([]) %}
-				<li class="{% if loop.index == 1%}active{% endif %}">
-					<a href="#item_{{ path|join('_')~'_'~loop.index0 }}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{% else %}false{% endif %}">
-						{{ attribute(choices, value) }}
-					</a>
-				</li>
-			{% endfor %}
+            {% for key, item in  dataField.getChildren %}
+                <li class="{% if loop.index == 1%}active{% endif %}">
+                    <a href="#item_{{ path|join('_')~'_'~loop.index0 }}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{% else %}false{% endif %}">
+                        {{ item.formLabel ?? key }}
+                    </a>
+                </li>
+            {% endfor %}
 		</ul>
 		<div class="tab-content">
-			{% for value in values|default([]) %}
-				<div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~loop.index0 }}__tab">
-					{% set childData = source[value]|default([]) %}
-					{% set childCompareData = compareRawData[value]|default([]) %}
-					<div class="row">
-						{% for grandchild in dataField.getChildren.get(value).getChildren|default([]) %}
+            {% for key, item in  dataField.getChildren %}
+                <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~loop.index0 }}__tab">
+                    {% set childData = source[key]|default([]) %}
+                    {% set childCompareData = compareRawData[key]|default([]) %}
+                    <div class="row">
+                        {% for grandchild in item.getChildren|default([]) %}
 							<div class="{% if grandchild.fieldType.displayOptions.class is defined and grandchild.fieldType.displayOptions.class  %}{{ grandchild.fieldType.displayOptions.class }}{%else%}col-md-12{% endif %}">
-								{{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData, '', path|merge([loop.index0]), locale) }}
-							</div>
+                                {{ _self.renderDataFieldBlock(grandchild, childData, compare, childCompareData, '', path|merge([loop.index0]), locale) }}
+                            </div>
 							{% if grandchild.fieldType.displayOptions.lastOfRow is defined and grandchild.fieldType.displayOptions.lastOfRow %}
 								<div class="clearfix"></div>
 							{% endif %}
@@ -480,21 +465,11 @@
 
             {% for child in tabs %}
 				{% if 'EMS\\CoreBundle\\Form\\DataField\\MultiplexedTabContainerFieldType' == child.fieldType.type|default(null) %}
-					{% set labels = child.fieldType.displayOptions.labels|default('')|replace({"\r":''})|split('\n') %}
-					{% set values = child.fieldType.displayOptions.values|default('')|replace({"\r":''})|split('\n')%}
-					{% set choices = [] %}
-					{% for value in values %}
-						{% set choices = choices|merge({(value): attribute(labels, loop.index0)|default(value)}) %}
-					{% endfor %}
-					{% if child.fieldType.displayOptions.localePreferredFirst|default(false) and app.user.language in values %}
-						{% set values = values|sort((a, b) => a == app.user.language ? -1 : b == app.user.language ? 1 : 0) %}
-					{% endif %}
-
-					{% for value in values %}
+                    {% for key, item in  child.getChildren %}
 						{% with {
-							'child': child.getChildren[value],
+							'child': item,
 							'counter': counter,
-							'label': attribute(choices, value),
+							'label': item.formLabel ?? key,
 							'path': path|merge([counter]),
 							}
 						%}

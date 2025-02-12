@@ -222,6 +222,14 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
+     * @param array<mixed> $displayOptions
+     */
+    public function setDisplayOptions(array $displayOptions): void
+    {
+        $this->options[self::DISPLAY_OPTIONS] = $displayOptions;
+    }
+
+    /**
      * @param ?mixed $default
      *
      * @return mixed

@@ -15,21 +15,27 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\Intl\Locales;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class MultiplexedTabContainerFieldType extends DataFieldType
 {
     private const string LOCALE_PREFERRED_FIRST_DISPLAY_OPTION = 'localePreferredFirst';
+    private const string WITH_LOCALES_VARIABLE_DISPLAY_OPTION = 'withLocalesVariable';
     private const string LABELS_DISPLAY_OPTION = 'labels';
     private const string VALUES_DISPLAY_OPTION = 'values';
     private const string ICON_DISPLAY_OPTION = 'icon';
 
+    /**
+     * @param string[] $locales
+     */
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
-        private readonly UserManager $userManager
+        private readonly UserManager $userManager,
+        private readonly array $locales
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
@@ -66,6 +72,9 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         ->add(self::LOCALE_PREFERRED_FIRST_DISPLAY_OPTION, CheckboxType::class, [
             'required' => false,
         ])
+        ->add(self::WITH_LOCALES_VARIABLE_DISPLAY_OPTION, CheckboxType::class, [
+            'required' => false,
+        ])
         ->add(self::ICON_DISPLAY_OPTION, IconPickerType::class, [
             'required' => false,
         ]);
@@ -90,6 +99,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         $resolver->setDefault(self::VALUES_DISPLAY_OPTION, '');
         $resolver->setDefault(self::LABELS_DISPLAY_OPTION, '');
         $resolver->setDefault(self::LOCALE_PREFERRED_FIRST_DISPLAY_OPTION, false);
+        $resolver->setDefault(self::WITH_LOCALES_VARIABLE_DISPLAY_OPTION, false);
         $resolver->setDefault(self::ICON_DISPLAY_OPTION, null);
     }
 
@@ -138,8 +148,8 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
         if (!$fieldType instanceof FieldType) {
             throw new \RuntimeException('Unexpected FieldType type');
         }
-
-        foreach ($this->getChoices($fieldType, $options['locale']) as $label => $value) {
+        $choices = $this->getChoices($fieldType, $options['locale']);
+        foreach ($choices as $label => $value) {
             $builder->add($value, ContainerFieldType::class, [
                 'metadata' => $fieldType,
                 'label' => $label,
@@ -192,24 +202,38 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
     private function getChoices(FieldType $fieldType, ?string $locale = null): array
     {
         $choices = [];
-        $labels = $fieldType->getDisplayOption(self::LABELS_DISPLAY_OPTION) ?? '';
+
+        $withLocalesVariable = true === $fieldType->getDisplayOption(self::WITH_LOCALES_VARIABLE_DISPLAY_OPTION, false);
+        if ($withLocalesVariable) {
+            foreach ($this->locales as $locale) {
+                $choices[$locale] = Locales::getName($locale);
+            }
+        }
+
         $values = $fieldType->getDisplayOption(self::VALUES_DISPLAY_OPTION);
         if (null !== $values) {
             $values = self::textAreaToArray($values);
-            $labels = self::textAreaToArray($labels);
+            $labels = self::textAreaToArray($fieldType->getDisplayOption(self::LABELS_DISPLAY_OPTION));
             $counter = 0;
             foreach ($values as $value) {
                 $choices[$value] = $labels[$counter++] ?? $value;
             }
         }
 
-        if ($locale && isset($choices[$locale])) {
+        $localePreferredFirst = $fieldType->getDisplayBoolOption(self::LOCALE_PREFERRED_FIRST_DISPLAY_OPTION, false);
+        if (!$localePreferredFirst && $locale && isset($choices[$locale])) {
             $choices = [...[$locale => $choices[$locale]], ...\array_filter($choices, static fn ($l) => $l !== $locale)];
         }
 
         $choices = \array_flip($choices);
 
-        $localePreferredFirst = $fieldType->getDisplayBoolOption(self::LOCALE_PREFERRED_FIRST_DISPLAY_OPTION, false);
+        if ($withLocalesVariable) {
+            $options = $fieldType->getDisplayOptions();
+            $options[self::LABELS_DISPLAY_OPTION] = \implode(PHP_EOL, \array_keys($choices));
+            $options[self::VALUES_DISPLAY_OPTION] = \implode(PHP_EOL, $choices);
+            $fieldType->setDisplayOptions($options);
+        }
+
         if (!$localePreferredFirst) {
             return $choices;
         }

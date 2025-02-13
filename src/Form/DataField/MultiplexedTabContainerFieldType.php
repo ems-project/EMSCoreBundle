@@ -231,7 +231,7 @@ final class MultiplexedTabContainerFieldType extends DataFieldType
             $options = $fieldType->getDisplayOptions();
             $options[self::LABELS_DISPLAY_OPTION] = \implode(PHP_EOL, \array_keys($choices));
             $options[self::VALUES_DISPLAY_OPTION] = \implode(PHP_EOL, $choices);
-            $fieldType->setDisplayOptions($options);
+            $fieldType->setDisplayExtraOptions($options);
         }
 
         if (!$localePreferredFirst) {

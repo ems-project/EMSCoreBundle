@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Bridge\Core;
 
+use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Contracts\Bridge\Core\CoreDataBridgeInterface;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\DataService;
@@ -76,5 +77,15 @@ readonly class CoreDataServiceBridge implements CoreDataBridgeInterface
             'id' => $revision->getId(),
             'data' => $revision->getDraftData(),
         ];
+    }
+
+    #[\Override]
+    public function publish(EMSLink $emsLink, string $environment): bool
+    {
+        try {
+            return $this->revisionService->publish($emsLink, $environment);
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 }

@@ -516,4 +516,19 @@ class RevisionService implements RevisionServiceInterface
 
         return $revision;
     }
+
+    public function publish(EMSLink $emsLink, string $environmentName): bool
+    {
+        $environment = $this->environmentService->giveByName($environmentName);
+        $revision = $this->getCurrentRevisionByOuuidAndContentType(
+            ouuid: $emsLink->getOuuid(),
+            contentType: $emsLink->getContentType()
+        );
+
+        if (null === $revision) {
+            throw NotFoundException::revisionForOuuid($emsLink->getOuuid());
+        }
+
+        return 1 === $this->publishService->publish($revision, $environment);
+    }
 }

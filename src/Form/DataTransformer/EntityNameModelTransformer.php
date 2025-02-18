@@ -32,6 +32,10 @@ readonly class EntityNameModelTransformer implements DataTransformerInterface
     #[\Override]
     public function reverseTransform(mixed $value)
     {
+        if (null === $value) {
+            return null;
+        }
+
         return $this->multiple ? $this->reverseTransformMultiple($value) : $this->reverseTransformSingle($value);
     }
 

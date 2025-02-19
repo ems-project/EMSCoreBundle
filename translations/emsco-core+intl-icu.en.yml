@@ -29,22 +29,22 @@ action:
     update_mapping: 'Update mapping'
     view: View
 color:
-    red: Red
-    maroon: Maroon
-    fuchsia: Fuchsia
-    orange: Orange
-    yellow: Yellow
-    olive: Olive
-    green: Green
-    lime: Lime
-    teal: Teal
     aqua: Aqua
-    light-blue: 'Light blue'
-    blue: Blue
-    purple: Purple
-    navy: Navy
     black: Black
+    blue: Blue
+    fuchsia: Fuchsia
     gray: Gray
+    green: Green
+    light-blue: 'Light blue'
+    lime: Lime
+    maroon: Maroon
+    navy: Navy
+    olive: Olive
+    orange: Orange
+    purple: Purple
+    red: Red
+    teal: Teal
+    yellow: Yellow
 core:
     content_type:
         view_define: |-

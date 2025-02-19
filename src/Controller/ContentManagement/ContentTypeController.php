@@ -297,9 +297,9 @@ class ContentTypeController extends AbstractController
         $this->contentTypeService->update($contentType);
 
         $this->logger->messageNotice(t(
-            message: 'log.notice.content_type_referenced',
-            parameters: ['contentType' => $contentType->getSingularName(), 'environment' => $environment->getLabel()],
-            domain: 'emsco-core'
+            'log.notice.content_type_referenced',
+            ['contentType' => $contentType->getSingularName(), 'environment' => $environment->getLabel()],
+            'emsco-core'
         ));
 
         return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_EDIT, [

@@ -107,7 +107,11 @@ class JobController extends AbstractController
             return $this->redirectToRoute('job.status', ['job' => $job->getId()]);
         }
 
-        return $this->render("@$this->templateNamespace/job/add.html.twig", ['form' => $form->createView()]);
+        return $this->render("@$this->templateNamespace/job/add.html.twig", [
+            'form' => $form->createView(),
+            'title' => t('type.title_create', ['type' => 'job'], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'job'], 'emsco-core'),
+        ]);
     }
 
     public function delete(Job $job): RedirectResponse

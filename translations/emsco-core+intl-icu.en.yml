@@ -308,6 +308,11 @@ type:
             content_type_deactivate {Deactivate selected}
             other                   {action selection}
         }
+    title_create: |-
+        {type, select,
+            job           {Launch new job}
+            other         {Ceeate}
+        }
     title_overview: |-
         {type, select,
             analyzer            {List of analyzers}

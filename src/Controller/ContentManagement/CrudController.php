@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\User;
@@ -22,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CrudController extends AbstractController
@@ -122,7 +124,15 @@ class CrudController extends AbstractController
 
     public function getDraft(int $revisionId): JsonResponse
     {
-        $revision = $this->revisionService->getByRevisionId($revisionId);
+        try {
+            $revision = $this->revisionService->getByRevisionId($revisionId);
+        } catch (\Throwable) {
+            throw $this->createNotFoundException('Revision not found');
+        }
+
+        if (!$revision->isDraft()) {
+            throw new HttpException(Response::HTTP_NOT_ACCEPTABLE, 'not in draft');
+        }
 
         return $this->flashMessageLogger->buildJsonResponse([
             'success' => true,
@@ -403,6 +413,36 @@ class CrudController extends AbstractController
             'type' => $revision->giveContentType()->getName(),
             'revision_id' => $revision->getId(),
         ]);
+    }
+
+    public function initDraft(string $uuid, string $name): JsonResponse
+    {
+        try {
+            $contentType = $this->giveContentType($name)->validate();
+            if (!$this->isGranted($contentType->role(ContentTypeRoles::EDIT))) {
+                throw $this->createAccessDeniedException('Edit role not granted!');
+            }
+
+            $draftRevision = $this->dataService->initNewDraft($contentType, $uuid);
+
+            return $this->flashMessageLogger->buildJsonResponse([
+                'success' => true,
+                'revision_id' => $draftRevision->getId(),
+                'ouuid' => $draftRevision->getOuuid(),
+            ]);
+        } catch (\Throwable $e) {
+            $this->logger->error('log.crud.create_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $name,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
+
+            return $this->flashMessageLogger->buildJsonResponse([
+                'success' => false,
+                'ouuid' => $uuid,
+                'type' => $name,
+            ]);
+        }
     }
 
     private function giveContentType(string $contentTypeName): ContentType

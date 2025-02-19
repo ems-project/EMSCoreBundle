@@ -865,22 +865,14 @@ class DataService
      * @throws \Exception
      * @throws NotFoundHttpException
      */
-    public function getNewestRevision(string $type, string $ouuid): Revision
+    public function getNewestRevision(ContentType|string $contentType, string $ouuid): Revision
     {
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
 
-        /** @var ContentTypeRepository $contentTypeRepo */
-        $contentTypeRepo = $em->getRepository(ContentType::class);
-        $contentTypes = $contentTypeRepo->findBy([
-            'name' => $type,
-            'deleted' => false,
-        ]);
-
-        if (1 != \count($contentTypes)) {
-            throw new NotFoundHttpException('Unknown content type');
+        if (\is_string($contentType)) {
+            $contentType = $this->contentTypeService->giveByName($contentType);
         }
-        $contentType = $contentTypes[0];
 
         /** @var RevisionRepository $repository */
         $repository = $em->getRepository(Revision::class);
@@ -898,12 +890,12 @@ class DataService
             if (null === $endTime) {
                 return $revisions[0];
             } else {
-                throw new NotFoundHttpException('Revision for ouuid '.$ouuid.' and contenttype '.$type.' with end time '.$endTime->format(\DateTimeInterface::ATOM));
+                throw new NotFoundHttpException('Revision for ouuid '.$ouuid.' and contenttype '.$contentType->getName().' with end time '.$endTime->format(\DateTimeInterface::ATOM));
             }
         } elseif (0 == \count($revisions)) {
-            throw new NotFoundHttpException('Revision not found for ouuid '.$ouuid.' and contenttype '.$type);
+            throw new NotFoundHttpException('Revision not found for ouuid '.$ouuid.' and contenttype '.$contentType->getName());
         } else {
-            throw new \Exception('Too much newest revisions available for ouuid '.$ouuid.' and contenttype '.$type);
+            throw new \Exception('Too much newest revisions available for ouuid '.$ouuid.' and contenttype '.$contentType->getName());
         }
     }
 
@@ -1069,24 +1061,16 @@ class DataService
      * @throws OptimisticLockException
      * @throws \Exception
      */
-    public function initNewDraft(string $type, string $ouuid, ?Revision $fromRev = null, ?string $username = null): Revision
+    public function initNewDraft(ContentType|string $contentType, string $ouuid, ?Revision $fromRev = null, ?string $username = null): Revision
     {
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
 
-        /** @var ContentTypeRepository $contentTypeRepo */
-        $contentTypeRepo = $em->getRepository(ContentType::class);
-        /** @var ContentType|null $contentType */
-        $contentType = $contentTypeRepo->findOneBy([
-            'name' => $type,
-            'deleted' => false,
-        ]);
-
-        if (null === $contentType) {
-            throw new NotFoundHttpException('ContentType '.$type.' Not found');
+        if (\is_string($contentType)) {
+            $contentType = $this->contentTypeService->giveByName($contentType);
         }
 
-        $revision = $this->getNewestRevision($type, $ouuid);
+        $revision = $this->getNewestRevision($contentType, $ouuid);
         $revision->setDeleted(false);
         if (null !== $revision->getDataField()) {
             $revision->getDataField()->propagateOuuid($revision->giveOuuid());

@@ -656,7 +656,7 @@ class Revision implements EntityInterface, \Stringable
     public function autoSaveToRawData(): self
     {
         if (null !== $this->autoSave) {
-            $this->rawData = $this->autoSave;
+            $this->rawData = [...$this->getRawData(), ...$this->autoSave];
             $this->autoSaveClear();
         }
 

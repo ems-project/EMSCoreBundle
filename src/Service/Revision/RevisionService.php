@@ -332,16 +332,18 @@ class RevisionService implements RevisionServiceInterface
         }
 
         $user = $this->userManager->getAuthenticatedUser();
+        $originalRawData = $revision->getRawData();
         $this->lock($revision, $user);
 
         $rootFieldType = $revision->giveContentType()->getFieldType();
         $data = [...$revision->getRawData(), ...$autoSave];
 
-        $form = $this->createRevisionForm($revision);
+        $form = $this->createRevisionForm($revision, true);
         $form->submit(['data' => RawDataTransformer::transform($rootFieldType, $data)]);
 
         $now = new \DateTime();
         $revision
+            ->setRawData($originalRawData)
             ->setDraftSaveDate($now)
             ->setAutoSaveAt($now)
             ->setAutoSaveBy($user->getUsername())
@@ -485,7 +487,7 @@ class RevisionService implements RevisionServiceInterface
     public function updateRawDataByEmsLink(EMSLink $emsLink, array $rawData, bool $merge = true, ?string $username = null): Revision
     {
         $draft = $this->dataService->initNewDraft(
-            type: $emsLink->getContentType(),
+            contentType: $emsLink->getContentType(),
             ouuid: $emsLink->getOuuid(),
             username: $username
         );

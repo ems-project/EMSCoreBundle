@@ -12,6 +12,14 @@
         <default key="interface">api</default>
         <requirement key="interface">api|json</requirement>
     </route>
+    <route id="emsco_interface_document_init_draft" path="/{interface}/data/{name}/init-draft/{uuid}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::initDraft"
+           methods="POST"
+           format="json">
+        <default key="ouuid" xsi:nil="true"/>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
     <route id="emsco_interface_document_draft" path="/{interface}/data/{name}/draft/{ouuid}"
            controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::create"
            methods="POST"

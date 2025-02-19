@@ -7,27 +7,35 @@ namespace EMS\CoreBundle\Form\Field;
 use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 class ColorPickerType extends Select2Type
 {
     /** @var array<string, ?string> */
-    private array $choices = [
-        'color.red' => 'red',
-        'color.maroon' => 'maroon',
-        'color.fuchsia' => 'fuchsia',
-        'color.orange' => 'orange',
-        'color.yellow' => 'yellow',
-        'color.olive' => 'olive',
-        'color.green' => 'green',
-        'color.lime' => 'lime',
-        'color.teal' => 'teal',
-        'color.aqua' => 'aqua',
-        'color.light-blue' => 'light-blue',
-        'color.blue' => 'blue',
-        'color.purple' => 'purple',
-        'color.navy' => 'navy',
-        'color.black' => 'black',
-        'color.gray' => 'gray',
-    ];
+    private array $choices;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->choices = [
+            t('color.red', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'red',
+            t('color.maroon', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'maroon',
+            t('color.fuchsia', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'fuchsia',
+            t('color.orange', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'orange',
+            t('color.yellow', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'yellow',
+            t('color.olive', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'olive',
+            t('color.green', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'green',
+            t('color.lime', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'lime',
+            t('color.teal', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'teal',
+            t('color.aqua', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'aqua',
+            t('color.light-blue', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'light-blue',
+            t('color.blue', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'blue',
+            t('color.purple', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'purple',
+            t('color.navy', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'navy',
+            t('color.black', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'black',
+            t('color.gray', [], EMSCoreBundle::TRANS_CORE)->getMessage() => 'gray',
+        ];
+    }
 
     #[\Override]
     public function configureOptions(OptionsResolver $resolver): void

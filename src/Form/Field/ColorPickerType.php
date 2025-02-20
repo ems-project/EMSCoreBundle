@@ -12,7 +12,7 @@ use function Symfony\Component\Translation\t;
 class ColorPickerType extends Select2Type
 {
     /** @var array<string, ?string> */
-    private array $choices;
+    private readonly array $choices;
 
     public function __construct()
     {

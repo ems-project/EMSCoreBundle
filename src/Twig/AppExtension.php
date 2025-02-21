@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Twig;
 
 use Caxy\HtmlDiff\HtmlDiff;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elastica\ResultSet;
 use EMS\CommonBundle\Common\EMSLink;
@@ -32,7 +31,6 @@ use EMS\CoreBundle\Entity\Sequence;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\SkipNotificationException;
-use EMS\CoreBundle\Form\DataField\DateFieldType;
 use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
 use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
@@ -44,6 +42,7 @@ use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\Helpers\Standard\Color;
+use EMS\Helpers\Standard\DateTime;
 use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
 use Psr\Log\LoggerInterface;
@@ -194,8 +193,8 @@ class AppExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('emsco_convert_java_date_format', $this->convertJavaDateFormat(...)),
-            new TwigFilter('emsco_convert_javascript_date_format', $this->convertJavascriptDateFormat(...)),
+            new TwigFilter('emsco_convert_java_date_format', fn (string $format) => DateTime::convertFormat('java', $format)),
+            new TwigFilter('emsco_convert_javascript_date_format', fn (string $format) => DateTime::convertFormat('js', $format)),
             new TwigFilter('emsco_convert_javascript_date_range_format', $this->convertJavascriptDateRangeFormat(...)),
             new TwigFilter('emsco_time_field_time_format', $this->getTimeFieldTimeFormat(...)),
             new TwigFilter('emsco_soap_request', $this->soapRequest(...)),
@@ -254,10 +253,10 @@ class AppExtension extends AbstractExtension
             new TwigFilter('search', $this->searchQuery(...), [
                 'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '6.0.0', 'emsco_search_query'),
             ]),
-            new TwigFilter('convertJavaDateFormat', $this->convertJavaDateFormat(...), [
+            new TwigFilter('convertJavaDateFormat', fn (string $format) => DateTime::convertFormat('java', $format), [
                 'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '6.0.0', 'emsco_convert_java_date_format'),
             ]),
-            new TwigFilter('convertJavascriptDateFormat', $this->convertJavascriptDateFormat(...), [
+            new TwigFilter('convertJavascriptDateFormat', fn (string $format) => DateTime::convertFormat('js', $format), [
                 'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '6.0.0', 'emsco_convert_javascript_date_format'),
             ]),
             new TwigFilter('convertJavascriptDateRangeFormat', $this->convertJavascriptDateRangeFormat(...), [
@@ -1180,16 +1179,6 @@ class AppExtension extends AbstractExtension
         $color2 = new Color($c2);
 
         return $color1->contrastRatio($color2);
-    }
-
-    public function convertJavaDateFormat(string $format): string
-    {
-        return DateFieldType::convertJavaDateFormat($format);
-    }
-
-    public function convertJavascriptDateFormat(string $format): string
-    {
-        return DateFieldType::convertJavascriptDateFormat($format);
     }
 
     public function convertJavascriptDateRangeFormat(string $format): string

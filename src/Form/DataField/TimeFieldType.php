@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Form\DataField;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\IconTextType;
+use EMS\Helpers\Standard\DateTime;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -42,8 +43,7 @@ class TimeFieldType extends DataFieldType
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
-            $format = $dataField->giveFieldType()->getMappingOptions()['format'];
-            $format = DateFieldType::convertJavaDateFormat($format);
+            $format = DateTime::convertFormat('java', $dataField->giveFieldType()->getMappingOption('format'));
 
             $timeObject = !\is_array($sourceArray) ? \DateTime::createFromFormat($format, (string) $sourceArray) : false;
             if ($timeObject) {

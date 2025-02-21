@@ -37,7 +37,7 @@ class DateFieldType extends DataFieldType
         $dates = [];
         $format = $fieldType->getMappingOption('format', false);
         if (false !== $format) {
-            $format = static::convertJavaDateFormat($format);
+            $format = DateTime::convertFormat('java', $format);
         } else {
             $format = \DateTimeInterface::ATOM;
         }
@@ -68,7 +68,7 @@ class DateFieldType extends DataFieldType
         $data = parent::reverseModelTransform($dataField);
         $format = $dataField->giveFieldType()->getMappingOption('format', false);
         if (false !== $format) {
-            $format = static::convertJavaDateFormat($format);
+            $format = DateTime::convertFormat('java', $format);
         } else {
             $format = \DateTimeInterface::ATOM;
         }
@@ -96,7 +96,7 @@ class DateFieldType extends DataFieldType
     {
         $data = parent::viewTransform($dataField);
         $out = [];
-        $format = DateFieldType::convertJavascriptDateFormat($dataField->giveFieldType()->getDisplayOption('displayFormat', 'dd/mm/yyyy'));
+        $format = DateTime::convertFormat('js', $dataField->giveFieldType()->getDisplayOption('displayFormat', 'dd/mm/yyyy'));
         if (\is_iterable($data) && !empty($data)) {
             foreach ($data as $date) {
                 if ($date) {
@@ -116,7 +116,7 @@ class DateFieldType extends DataFieldType
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
         $dates = [];
-        $format = DateFieldType::convertJavascriptDateFormat($fieldType->getDisplayOption('displayFormat', 'dd/mm/yyyy'));
+        $format = DateTime::convertFormat('js', $fieldType->getDisplayOption('displayFormat', 'dd/mm/yyyy'));
         foreach (\explode(',', (string) $data['value']) as $date) {
             if (!empty($date)) {
                 $dates[] = \DateTime::createFromFormat($format, $date);
@@ -138,8 +138,7 @@ class DateFieldType extends DataFieldType
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
-            $format = $dataField->giveFieldType()->getMappingOptions()['format'];
-            $format = DateFieldType::convertJavaDateFormat($format);
+            $format = DateTime::convertFormat('java', $dataField->giveFieldType()->getMappingOption('format'));
 
             if (null == $sourceArray) {
                 $sourceArray = [];
@@ -219,10 +218,9 @@ class DateFieldType extends DataFieldType
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
-            $format = $data->giveFieldType()->getMappingOptions()['format'];
+            $format = DateTime::convertFormat('java', $data->giveFieldType()->getMappingOption('format'));
             $multidate = $data->giveFieldType()->getDisplayOptions()['multidate'];
 
-            $format = DateFieldType::convertJavaDateFormat($format);
             $dataRawData = $data->getRawData();
 
             if ($multidate) {
@@ -248,40 +246,6 @@ class DateFieldType extends DataFieldType
 
             $out[$data->giveFieldType()->getName()] = $dates;
         }
-    }
-
-    public static function convertJavaDateFormat(string $format): string
-    {
-        $dateFormat = $format;
-        // TODO: naive approch....find a way to comvert java date format into php
-        $dateFormat = \str_replace('dd', 'd', $dateFormat);
-        $dateFormat = \str_replace('MM', 'm', $dateFormat);
-        $dateFormat = \str_replace('yyyy', 'Y', $dateFormat);
-        $dateFormat = \str_replace('hh', 'g', $dateFormat);
-        $dateFormat = \str_replace('HH', 'G', $dateFormat);
-        $dateFormat = \str_replace('mm', 'i', $dateFormat);
-        $dateFormat = \str_replace('ss', 's', $dateFormat);
-        $dateFormat = \str_replace('aa', 'A', $dateFormat);
-
-        return $dateFormat;
-    }
-
-    public static function convertJavascriptDateFormat(string $format): string
-    {
-        $dateFormat = $format;
-        // see https://bootstrap-datepicker.readthedocs.io/en/latest/options.html#format
-        $dateFormat = \str_replace('yyyy', 'Y', $dateFormat);
-        $dateFormat = \str_replace('yy', 'y', $dateFormat);
-        $dateFormat = \str_replace('DD', 'l', $dateFormat);
-        $dateFormat = \str_replace('D', 'D', $dateFormat);
-        $dateFormat = \str_replace('dd', 'd', $dateFormat);
-        //         $dateFormat = str_replace('d', 't', $dateFormat);
-        $dateFormat = \str_replace('mm', 'm', $dateFormat);
-        //         $dateFormat = str_replace('m', 'n', $dateFormat);
-        $dateFormat = \str_replace('MM', 'F', $dateFormat);
-        $dateFormat = \str_replace('M', 'M', $dateFormat);
-
-        return $dateFormat;
     }
 
     #[\Override]

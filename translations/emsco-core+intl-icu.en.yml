@@ -79,7 +79,7 @@ core:
                 browser_image   {As image browser}
                 browser_object  {As object browser}
                 browser_file    {As file browser}
-                other           {Undefine}
+                other           {Undefined}
             }
         definition: |-
             {value, select,
@@ -154,6 +154,9 @@ field:
     user_impersonator: Impersonator
     user_modified: 'Modified by'
     user_uploaded: 'Uploaded by'
+form:
+    reorder:
+        title: 'Reorder fields of form: {label}'
 key:
     actions: Actions
     admin: Admin
@@ -310,8 +313,16 @@ type:
         }
     title_create: |-
         {type, select,
+            action        {Create action}
+            form          {Create form}
             job           {Launch new job}
-            other         {Ceeate}
+            other         {Create}
+        }
+    title_edit: |-
+        {type, select,
+            action        {Edit action: {label}}
+            form          {Edit form: {label}}
+            other         {Edit}
         }
     title_overview: |-
         {type, select,

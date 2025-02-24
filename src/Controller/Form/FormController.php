@@ -9,6 +9,7 @@ use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Form\FieldTypeManager;
 use EMS\CoreBundle\Core\Form\FormManager;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\DataTable\Type\FormDataTableType;
 use EMS\CoreBundle\Entity\Form;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -63,10 +64,7 @@ class FormController extends AbstractController
             'icon' => 'fa fa-keyboard-o',
             'title' => t('type.title_overview', ['type' => 'form'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'form'], 'emsco-core'),
-            'breadcrumb' => [
-                'admin' => t('key.admin', [], 'emsco-core'),
-                'page' => t('key.forms', [], 'emsco-core'),
-            ],
+            'breadcrumb' => $this->breadcrumb(),
         ]);
     }
 
@@ -110,9 +108,26 @@ class FormController extends AbstractController
             ]));
         }
 
-        return $this->render($create ? "@$this->templateNamespace/admin-form/add.html.twig" : "@$this->templateNamespace/admin-form/edit.html.twig", [
+        if ($create) {
+            return $this->render("@$this->templateNamespace/admin-form/add.html.twig", [
+                'form' => $formType->createView(),
+                'entity' => $form,
+                'title' => t('type.title_create', ['type' => 'form'], 'emsco-core'),
+                'subTitle' => t('type.title_sub', ['type' => 'form'], 'emsco-core'),
+                'breadcrumb' => $this->breadcrumb()->add(
+                    t('type.title_create', ['type' => 'form'], 'emsco-core')
+                ),
+            ]);
+        }
+
+        return $this->render("@$this->templateNamespace/admin-form/edit.html.twig", [
             'form' => $formType->createView(),
             'entity' => $form,
+            'title' => t('type.title_edit', ['type' => 'form', 'label' => $form->getLabel()], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'form'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_edit', ['type' => 'form', 'label' => $form->getLabel()], 'emsco-core')
+            ),
         ]);
     }
 
@@ -132,6 +147,11 @@ class FormController extends AbstractController
         return $this->render("@$this->templateNamespace/admin-form/reorder.html.twig", [
             'form' => $formType->createView(),
             'entity' => $form,
+            'title' => t('form.reorder.title', ['label' => $form->getLabel()], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'form'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('form.reorder.title', ['label' => $form->getLabel()], 'emsco-core')
+            ),
         ]);
     }
 
@@ -140,5 +160,14 @@ class FormController extends AbstractController
         $this->formManager->delete($form);
 
         return $this->redirectToRoute(Routes::FORM_ADMIN_INDEX);
+    }
+
+    private function breadcrumb(): Navigation
+    {
+        return Navigation::admin()->add(
+            label: t('key.forms', [], 'emsco-core'),
+            icon: 'fa fa-keyboard-o',
+            route: 'emsco_form_admin_index',
+        );
     }
 }

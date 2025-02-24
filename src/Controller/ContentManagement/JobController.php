@@ -8,6 +8,7 @@ use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\DataTable\Type\Job\JobDataTableType;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -62,11 +63,7 @@ class JobController extends AbstractController
             'icon' => 'fa fa-file-text-o',
             'title' => t('type.title_overview', ['type' => 'job'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'job'], 'emsco-core'),
-            'breadcrumb' => [
-                'admin' => t('key.admin', [], 'emsco-core'),
-                'jobs' => t('key.jobs', [], 'emsco-core'),
-                'page' => t('key.job_logs', [], 'emsco-core'),
-            ],
+            'breadcrumb' => $this->breadcrumb(),
         ]);
     }
 
@@ -88,10 +85,15 @@ class JobController extends AbstractController
         }
 
         return $this->render("@$this->templateNamespace/job/status.html.twig", [
+            'title' => t('type.title_status', ['type' => 'job', 'job_id' => $job->getId()], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'job'], 'emsco-core'),
             'job' => $job,
             'status' => $encoder->encodeUrl($job->getStatus()),
             'output' => $encoder->encodeUrl($converter->convert($job->getOutput())),
             'launchJob' => true === $this->triggerJobFromWeb && false === $job->getStarted() && !$job->hasTag(),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_status', ['type' => 'job', 'job_id' => $job->getId()], 'emsco-core'),
+            ),
         ]);
     }
 
@@ -111,6 +113,9 @@ class JobController extends AbstractController
             'form' => $form->createView(),
             'title' => t('type.title_create', ['type' => 'job'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'job'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_create', ['type' => 'job'], 'emsco-core'),
+            ),
         ]);
     }
 
@@ -204,5 +209,14 @@ class JobController extends AbstractController
         $this->jobService->write($job, $message, $newLine);
 
         return EmsCoreResponse::createJsonResponse($request, true);
+    }
+
+    private function breadcrumb(): Navigation
+    {
+        return Navigation::admin()->add(
+            label: t('key.jobs', [], 'emsco-core'),
+            icon: 'fa fa-terminal',
+            route: 'emsco_job_index',
+        );
     }
 }

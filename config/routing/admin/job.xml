@@ -12,7 +12,7 @@
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::create"
            methods="GET|POST"
            format="html"/>
-    <route id="job.emsco_job_delete" path="/delete/{job}"
+    <route id="emsco_job_delete" path="/delete/{job}"
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::delete"
            methods="POST"
            format="html"/>

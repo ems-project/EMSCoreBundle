@@ -334,6 +334,11 @@ type:
             wysiwyg_style_set   {WYSIWYG style sets}
             other               {Overview}
         }
+    title_status: |-
+        {type, select,
+            job           {Status of job #{job_id}}
+            other         {Status}
+        }
     title_sub: |-
         {type, select,
             analyzer      {Expert mode}

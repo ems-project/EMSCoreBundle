@@ -5,7 +5,7 @@
 {% block subtitle %}{% if subTitle is defined %}<small>{{ subTitle|trans }}</small>{% endif %}{% endblock %}
 
 {% block breadcrumb %}
-	{# @var item \EMS\CoreBundle\Core\UI\Page\BreadcrumbItem #}
+	{# @var item \EMS\CoreBundle\Core\UI\Page\NavigationItem #}
 	<ol class="breadcrumb">
 		{% if breadcrumb is iterable %}
 			{% for name, item in breadcrumb %}

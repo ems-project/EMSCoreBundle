@@ -81,7 +81,7 @@ class VersionTagFieldType extends DataFieldType
             $countEnvironments = $revision ? $this->environmentService->getPublishedForRevision($revision, true)->count() : 0;
         }
 
-        $notBlankNewVersion = $contentType->getVersionOptions()[VersionOptions::NOT_BLANK_NEW_VERSION];
+        $notBlankNewVersion = $contentType->getVersioning()->option(VersionOptions::NOT_BLANK_NEW_VERSION);
 
         if (0 === $countEnvironments) {
             $choices = $this->contentTypeService->getVersionDefault($contentType);

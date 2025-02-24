@@ -37,7 +37,7 @@ class VersionFields implements \ArrayAccess
     /**
      * @return array<string, ?string>
      */
-    public function getFields(): array
+    public function getData(): array
     {
         /** @var array<string, ?string> $cleaned */
         $cleaned = ArrayHelper::map($this->fields, fn (?string $v) => (null !== $v && \strlen($v) > 0 ? $v : null));

@@ -15,6 +15,7 @@ use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CoreBundle\Core\ContentType\Version\VersionFields;
 use EMS\CoreBundle\Core\Revision\Task\TaskStatus;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -843,8 +844,6 @@ class RevisionRepository extends EntityRepository
 
     public function findLatestVersion(ContentType $contentType, string $versionOuuid, ?Environment $environment = null): ?Revision
     {
-        $toField = $contentType->getVersionDateToField();
-
         $qb = $this->createQueryBuilder('r');
         $qb
             ->andWhere($qb->expr()->eq('r.versionUuid', ':version_ouuid'))
@@ -861,6 +860,9 @@ class RevisionRepository extends EntityRepository
 
         /** @var Revision[] $revisions */
         $revisions = $qb->getQuery()->getResult();
+        if (null === $toField = $contentType->getVersioning()->field(VersionFields::DATE_TO)) {
+            return null;
+        }
 
         foreach ($revisions as $revision) {
             $toFieldValue = $revision->getRawData()[$toField] ?? 'latest';

@@ -10,6 +10,7 @@ use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\ContentType\Version\VersionFields;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
@@ -181,7 +182,8 @@ class ObjectChoiceCacheService
                     continue;
                 }
 
-                if ($contentType->hasVersionTags() && null !== $dateToField = $contentType->getVersionDateToField()) {
+                $versioning = $contentType->getVersioning();
+                if ($versioning->enabled() && null !== $dateToField = $versioning->field(VersionFields::DATE_TO)) {
                     $contentTypeQuery = new BoolQuery();
                     $contentTypeQuery->addMust($this->elasticaService->getTermsQuery(Mapping::VERSION_UUID, $ouuids));
                     $contentTypeQuery->addMustNot(new Exists($dateToField));

@@ -29,7 +29,7 @@ class VersionOptions implements \ArrayAccess
     /**
      * @return array<string, bool>
      */
-    public function getOptions(): array
+    public function getData(): array
     {
         return $this->options;
     }

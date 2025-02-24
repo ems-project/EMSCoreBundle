@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Validator\Constraints;
 
+use EMS\CoreBundle\Core\ContentType\Version\VersionFields;
 use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\Helpers\ArrayHelper\ArrayHelper;
@@ -19,7 +20,7 @@ class RevisionRawDataValidator extends ConstraintValidator
     #[\Override]
     public function validate($value, Constraint $constraint): void
     {
-        if ($constraint->contentType->hasVersionTags()) {
+        if ($constraint->contentType->getVersioning()->enabled()) {
             $this->validateVersionDates($constraint, $value);
         }
     }
@@ -31,20 +32,25 @@ class RevisionRawDataValidator extends ConstraintValidator
     private function validateVersionDates(Constraint $constraint, array $rawData): void
     {
         $contentType = $constraint->contentType;
+        $versioning = $contentType->getVersioning();
 
-        if (null === $fromField = $contentType->getVersionDateFromField()) {
-            return;
+        if (null === $fromField = $versioning->field(VersionFields::DATE_FROM)) {
+            throw new \RuntimeException('Version from field is required.');
+        }
+        if (null === $toField = $versioning->field(VersionFields::DATE_TO)) {
+            throw new \RuntimeException('Version to field is required.');
         }
 
-        if (null === $versionFromDate = ArrayHelper::findDateTime($fromField, $rawData)) {
+        $format = $versioning->dateFormat();
+        $versionFromDate = ArrayHelper::findDateTime($fromField, $rawData, $format);
+        $versionToDate = ArrayHelper::findDateTime($toField, $rawData, $format);
+
+        if (null === $versionFromDate) {
             $this->addViolation($contentType, $constraint->versionFromRequired, $fromField);
 
             return;
         }
-
-        $toField = $constraint->contentType->getVersionDateToField();
-
-        if (null === $toField || null === $versionToDate = ArrayHelper::findDateTime($toField, $rawData)) {
+        if (null === $versionToDate) {
             return;
         }
 
@@ -57,7 +63,7 @@ class RevisionRawDataValidator extends ConstraintValidator
             ]);
         }
 
-        $intervalOneDay = $constraint->contentType->getVersionOptions()[VersionOptions::DATES_INTERVAL_ONE_DAY];
+        $intervalOneDay = $constraint->contentType->getVersioning()->option(VersionOptions::DATES_INTERVAL_ONE_DAY);
         $diffDays = $versionFromDate->diff($versionToDate)->days;
 
         if ($versionToDate > $versionFromDate && $intervalOneDay && 0 === $diffDays) {

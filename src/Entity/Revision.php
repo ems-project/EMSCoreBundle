@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
+use EMS\CoreBundle\Core\ContentType\Version\VersionFields;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\NotLockedException;
@@ -770,11 +771,6 @@ class Revision implements EntityInterface, \Stringable
         return $this;
     }
 
-    public function hasVersionTags(): bool
-    {
-        return $this->contentType && $this->contentType->hasVersionTags();
-    }
-
     public function getVersionUuid(): ?UuidInterface
     {
         return $this->versionUuid;
@@ -782,29 +778,24 @@ class Revision implements EntityInterface, \Stringable
 
     public function getVersionTagField(): ?string
     {
-        $contentType = $this->giveContentType();
+        $tagField = $this->giveContentType()->getVersioning()->field(VersionFields::VERSION_TAG);
 
-        return $contentType->hasVersionTagField() ? ($this->rawData[$contentType->getVersionTagField()] ?? null) : null;
+        return $tagField ? ($this->rawData[$tagField] ?? null) : null;
     }
 
     public function getVersionDate(string $field): ?\DateTimeInterface
     {
-        $contentType = $this->giveContentType();
+        $versioning = $this->giveContentType()->getVersioning();
 
-        $dateString = null;
-        if ('from' === $field && null !== $dateFromField = $contentType->getVersionDateFromField()) {
-            $dateString = $this->rawData[$dateFromField] ?? null;
-        }
-        if ('to' === $field && null !== $dateToField = $contentType->getVersionDateToField()) {
-            $dateString = $this->rawData[$dateToField] ?? null;
-        }
+        $fieldName = match ($field) {
+            'from' => $versioning->field(VersionFields::DATE_FROM),
+            'to' => $versioning->field(VersionFields::DATE_TO),
+            default => null,
+        };
 
-        return $dateString ? DateTime::createFromFormat($dateString) : null;
-    }
+        $versionDate = $fieldName ? ($this->rawData[$fieldName] ?? null) : null;
 
-    public function hasVersionTag(): bool
-    {
-        return null !== $this->versionTag;
+        return $versionDate ? DateTime::createFromFormat($versionDate, $versioning->dateFormat()) : null;
     }
 
     public function getVersionTag(): ?string
@@ -822,7 +813,9 @@ class Revision implements EntityInterface, \Stringable
      */
     public function setVersionMetaFields(): void
     {
-        if (!$this->hasVersionTags()) {
+        $versioning = $this->giveContentType()->getVersioning();
+
+        if (!$versioning->enabled()) {
             return;
         }
 
@@ -831,8 +824,10 @@ class Revision implements EntityInterface, \Stringable
             $this->setVersionId($versionId);
         }
 
-        $this->setVersionTag($this->rawData[Mapping::VERSION_TAG] ?? $this->getVersionTagDefault());
-        $this->updateVersionNextTag();
+        if (\count($versioning->getTags()) > 0) {
+            $this->setVersionTag($this->rawData[Mapping::VERSION_TAG] ?? $this->getVersionTagDefault());
+            $this->updateVersionNextTag();
+        }
 
         if (null === $this->getVersionDate('from') && null === $this->getVersionDate('to')) {
             if ($this->hasOuuid()) {
@@ -850,10 +845,10 @@ class Revision implements EntityInterface, \Stringable
 
     private function getVersionTagDefault(): string
     {
-        $versionTags = $this->contentType ? $this->contentType->getVersionTags() : [];
+        $versionTags = $this->contentType ? $this->contentType->getVersioning()->getTags() : [];
 
         if (!isset($versionTags[0])) {
-            throw new \RuntimeException(\sprintf('No version tags found for contentType %s (use hasVersionTags)', $this->getContentTypeName()));
+            throw new \RuntimeException(\sprintf('No version tags found for contentType %s', $this->getContentTypeName()));
         }
 
         return Type::string($versionTags[0]);
@@ -861,7 +856,7 @@ class Revision implements EntityInterface, \Stringable
 
     public function setVersionTag(string $versionTag): void
     {
-        $versionTags = $this->contentType ? $this->contentType->getVersionTags() : [];
+        $versionTags = $this->contentType ? $this->contentType->getVersioning()->getTags() : [];
 
         if (\in_array($versionTag, $versionTags, true)) {
             $this->versionTag = $versionTag;
@@ -875,17 +870,19 @@ class Revision implements EntityInterface, \Stringable
 
     public function setVersionDate(string $field, \DateTimeInterface $date): void
     {
-        if (null === $contentType = $this->contentType) {
-            throw new \RuntimeException(\sprintf('ContentType not found for revision %d', $this->getId()));
+        $versioning = $this->giveContentType()->getVersioning();
+
+        $fieldName = match ($field) {
+            'from' => $versioning->field(VersionFields::DATE_FROM),
+            'to' => $versioning->field(VersionFields::DATE_TO),
+            default => null,
+        };
+
+        if (null === $fieldName) {
+            throw new \RuntimeException('setVersionDate failed');
         }
 
-        if ('from' === $field && null !== $dateFromField = $contentType->getVersionDateFromField()) {
-            $this->rawData[$dateFromField] = $date->format(\DateTimeInterface::ATOM);
-        }
-
-        if ('to' === $field && null !== $dateToField = $contentType->getVersionDateToField()) {
-            $this->rawData[$dateToField] = $date->format(\DateTimeInterface::ATOM);
-        }
+        $this->rawData[$fieldName] = $date->format($versioning->dateFormat());
     }
 
     public function getDraftSaveDate(): ?\DateTime

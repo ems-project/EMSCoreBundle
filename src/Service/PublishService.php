@@ -10,6 +10,7 @@ use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\NonUniqueResultException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
+use EMS\CoreBundle\Core\ContentType\Version\VersionFields;
 use EMS\CoreBundle\Core\Environment\EnvironmentPublisher;
 use EMS\CoreBundle\Core\Environment\EnvironmentPublisherFactory;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
@@ -378,7 +379,10 @@ class PublishService
 
     private function publishVersion(Revision $revision, Environment $environment, ?string $commandUser = null): void
     {
-        if (!$revision->hasVersionTags()) {
+        $contentType = $revision->giveContentType();
+        $versioning = $contentType->getVersioning();
+
+        if (!$versioning->enabled()) {
             return;
         }
 
@@ -386,11 +390,11 @@ class PublishService
             throw new \RuntimeException('Revision missing version uuid!');
         }
 
-        $contentType = $revision->giveContentType();
         $selectedVersionTag = $revision->getVersionNextTag();
+        $tagField = $versioning->field(VersionFields::VERSION_TAG);
 
-        if (\in_array($selectedVersionTag, [null, Revision::VERSION_BLANK], true)) {
-            $revision->removeFromRawData($contentType->getVersionTagField());
+        if ($tagField && \in_array($selectedVersionTag, [null, Revision::VERSION_BLANK], true)) {
+            $revision->removeFromRawData($tagField);
 
             return;
         }
@@ -411,8 +415,12 @@ class PublishService
             $revision->setVersionDate('from', $now);
         }
 
-        $revision->setVersionTag($selectedVersionTag);
-        $revision->removeFromRawData($contentType->getVersionTagField());
+        if ($selectedVersionTag) {
+            $revision->setVersionTag($selectedVersionTag);
+        }
+        if ($tagField) {
+            $revision->removeFromRawData($tagField);
+        }
 
         $this->dataService->finalizeDraft($revision, $form, $commandUser);
     }

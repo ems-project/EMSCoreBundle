@@ -737,11 +737,11 @@ class ContentTypeService implements EntityServiceInterface
      */
     public function getVersionDefault(ContentType $contentType): array
     {
-        if (!$contentType->hasVersionTags()) {
+        $versionTags = $contentType->getVersioning()->getTags();
+        if (0 === \count($versionTags)) {
             return [];
         }
 
-        $versionTags = $contentType->getVersionTags();
         $defaultVersion = \array_shift($versionTags);
         $defaultVersionLabel = $this->translator->trans(
             'field.revision_version_tag',
@@ -757,11 +757,11 @@ class ContentTypeService implements EntityServiceInterface
      */
     public function getVersionTagsByContentType(ContentType $contentType, ?bool $notBlankNewVersion = false): array
     {
-        if (!$contentType->hasVersionTags()) {
+        $versionTags = $contentType->getVersioning()->getTags();
+        if (0 === \count($versionTags)) {
             return [];
         }
 
-        $versionTags = $contentType->getVersionTags();
         $versionTagsLabels = \array_map(fn (string $versionTag) => $this->translator->trans(
             'field.revision_version_tag',
             ['%version_tag%' => $versionTag],

@@ -500,8 +500,13 @@ class DataService
         }
 
         $objectArray[Mapping::CONTENT_TYPE_FIELD] = $revision->giveContentType()->getName();
-        if ($revision->hasVersionTags()) {
+
+        $versioning = $revision->giveContentType()->getVersioning();
+
+        if ($versioning->enabled()) {
             $objectArray[Mapping::VERSION_UUID] = $revision->getVersionUuid();
+        }
+        if ($versioning->enabled() && \count($versioning->getTags()) > 0) {
             $objectArray[Mapping::VERSION_TAG] = $revision->getVersionTag();
             $revision->updateVersionNextTag();
         }

@@ -9,6 +9,7 @@ use EMS\CoreBundle\Core\DataTable\Type\AbstractQueryTableType;
 use EMS\CoreBundle\Core\DataTable\Type\DataTableFilterFormInterface;
 use EMS\CoreBundle\Core\Revision\Task\DataTable\TasksDataTableContext;
 use EMS\CoreBundle\Core\Revision\Task\DataTable\TasksDataTableQueryService;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Form\Data\DateTableColumn;
 use EMS\CoreBundle\Form\Data\QueryTable;
 use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
@@ -109,9 +110,14 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
     #[\Override]
     public function getContext(array $options): TasksDataTableContext
     {
+        $taskContentTypes = $this->taskRepository->findTaskContentTypes();
+        $countVersionTags = $taskContentTypes
+            ->filter(fn (ContentType $c) => \count($c->getVersioning()->getTags()) > 0)
+            ->count();
+
         return new TasksDataTableContext(
             tab: $options['tab'],
-            showVersionTagColumn: $this->taskRepository->hasVersionedContentType()
+            showVersionTagColumn: $countVersionTags > 0
         );
     }
 

@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\ArrayParameterType;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
@@ -30,19 +31,6 @@ final class TaskRepository extends ServiceEntityRepository
             ->setParameter('approved_ids', $revision->getTaskApprovedIds(), ArrayParameterType::STRING);
 
         return (int) $qb->getQuery()->getSingleScalarResult();
-    }
-
-    public function hasVersionedContentType(): bool
-    {
-        $contentTypes = $this->findTaskContentTypes();
-
-        foreach ($contentTypes as $contentType) {
-            if ($contentType->hasVersionTags()) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -96,9 +84,9 @@ final class TaskRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return ContentType[]
+     * @return ArrayCollection<int, ContentType>
      */
-    private function findTaskContentTypes(): array
+    public function findTaskContentTypes(): ArrayCollection
     {
         $subQuery = $this->getEntityManager()->createQueryBuilder();
         $subQuery
@@ -114,6 +102,6 @@ final class TaskRepository extends ServiceEntityRepository
             ->andWhere($qb->expr()->in('c.id', $subQuery->getDQL()));
         $qb->setParameter(':false', false);
 
-        return $qb->getQuery()->getResult();
+        return new ArrayCollection($qb->getQuery()->getResult());
     }
 }

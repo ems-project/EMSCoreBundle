@@ -314,6 +314,7 @@ type:
     title_create: |-
         {type, select,
             action        {Create action}
+            channel       {Create channel}
             form          {Create form}
             job           {Launch new job}
             other         {Create}
@@ -321,6 +322,7 @@ type:
     title_edit: |-
         {type, select,
             action        {Edit action: {label}}
+            channel       {Edit channel: {label}}
             form          {Edit form: {label}}
             other         {Edit}
         }
@@ -353,6 +355,7 @@ type:
     title_sub: |-
         {type, select,
             analyzer      {Expert mode}
+            channel       {Ready for the world wide web?}
             dashboard     {Customize the lobby}
             filter        {Expert mode}
             form          {Reusable components}

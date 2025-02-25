@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller;
 
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\DataTable\Type\ChannelDataTableType;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -55,25 +56,14 @@ final class ChannelController extends AbstractController
             'form' => $form->createView(),
             'icon' => 'fa fa-eye',
             'title' => t('type.title_overview', ['type' => 'channel'], 'emsco-core'),
-            'breadcrumb' => [
-                'admin' => t('key.admin', [], 'emsco-core'),
-                'page' => t('key.channels', [], 'emsco-core'),
-            ],
+            'subTitle' => t('type.title_sub', ['type' => 'channel'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb(),
         ]);
     }
 
     public function add(Request $request): Response
     {
         $channel = new Channel();
-
-        return $this->edit($request, $channel, "@$this->templateNamespace/channel/add.html.twig");
-    }
-
-    public function edit(Request $request, Channel $channel, ?string $view = null): Response
-    {
-        if (null === $view) {
-            $view = "@$this->templateNamespace/channel/edit.html.twig";
-        }
         $form = $this->createForm(ChannelType::class, $channel);
         $form->handleRequest($request);
 
@@ -83,8 +73,34 @@ final class ChannelController extends AbstractController
             return $this->redirectToRoute('ems_core_channel_index');
         }
 
-        return $this->render($view, [
+        return $this->render("@$this->templateNamespace/channel/add.html.twig", [
             'form' => $form->createView(),
+            'title' => t('type.title_create', ['type' => 'channel'], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'channel'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_create', ['type' => 'channel'], 'emsco-core')
+            ),
+        ]);
+    }
+
+    public function edit(Request $request, Channel $channel): Response
+    {
+        $form = $this->createForm(ChannelType::class, $channel);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->channelService->update($channel);
+
+            return $this->redirectToRoute('ems_core_channel_index');
+        }
+
+        return $this->render("@$this->templateNamespace/channel/edit.html.twig", [
+            'form' => $form->createView(),
+            'title' => t('type.title_edit', ['type' => 'channel', 'label' => $channel->getLabel()], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'channel'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_edit', ['type' => 'channel', 'label' => $channel->getLabel()], 'emsco-core')
+            ),
         ]);
     }
 
@@ -100,5 +116,14 @@ final class ChannelController extends AbstractController
         return $this->render("@$this->templateNamespace/channel/menu.html.twig", [
             'channels' => $this->channelService->getAll(),
         ]);
+    }
+
+    private function breadcrumb(): Navigation
+    {
+        return Navigation::admin()->add(
+            label: t('key.channels', [], 'emsco-core'),
+            icon: 'fa fa-eye',
+            route: 'ems_core_channel_index',
+        );
     }
 }

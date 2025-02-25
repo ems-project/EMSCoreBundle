@@ -314,6 +314,7 @@ type:
     title_create: |-
         {type, select,
             action        {Create action}
+            analyzer      {Create analyzer}
             channel       {Create channel}
             form          {Create form}
             job           {Launch new job}
@@ -322,6 +323,7 @@ type:
     title_edit: |-
         {type, select,
             action        {Edit action: {label}}
+            analyzer      {Edit analyzer: {label}}
             channel       {Edit channel: {label}}
             form          {Edit form: {label}}
             other         {Edit}
@@ -362,5 +364,10 @@ type:
             job           {Running process}
             job_schedule  {When you are not at work}
             log           {Who did what}
+            other         {}
+        }
+    notice_message: |-
+        {type, select,
+            analyzer      {All environments have to be rebuild each times that an analyzer configuration is created or updated.}
             other         {}
         }

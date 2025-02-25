@@ -9,6 +9,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Mapping\AnalyzerManager;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\DataTable\Type\Mapping\AnalyzerDataTableType;
 use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -57,6 +58,12 @@ class AnalyzerController extends AbstractController
 
         return $this->render("@$this->templateNamespace/analyzer/add.html.twig", [
             'form' => $form->createView(),
+            'title' => t('type.title_create', ['type' => 'analyzer'], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'analyzer'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_create', ['type' => 'analyzer'], 'emsco-core')
+            ),
+            'notice' => t('type.notice_message', ['type' => 'analyzer'], 'emsco-core'),
         ]);
     }
 
@@ -92,6 +99,12 @@ class AnalyzerController extends AbstractController
 
         return $this->render("@$this->templateNamespace/analyzer/edit.html.twig", [
             'form' => $form->createView(),
+            'title' => t('type.title_edit', ['type' => 'analyzer', 'label' => $analyzer->getLabel()], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'analyzer'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_edit', ['type' => 'analyzer', 'label' => $analyzer->getLabel()], 'emsco-core')
+            ),
+            'notice' => t('type.notice_message', ['type' => 'analyzer'], 'emsco-core'),
         ]);
     }
 
@@ -133,10 +146,17 @@ class AnalyzerController extends AbstractController
             'form' => $form->createView(),
             'icon' => 'fa fa-signal',
             'title' => t('type.title_overview', ['type' => 'analyzer'], 'emsco-core'),
-            'breadcrumb' => [
-                'admin' => t('key.admin', [], 'emsco-core'),
-                'page' => t('key.analyzers', [], 'emsco-core'),
-            ],
+            'subTitle' => t('type.title_sub', ['type' => 'analyzer'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb(),
         ]);
+    }
+
+    private function breadcrumb(): Navigation
+    {
+        return Navigation::admin()->add(
+            label: t('key.analyzers', [], 'emsco-core'),
+            icon: 'fa fa-signal',
+            route: 'emsco_analyzer_index',
+        );
     }
 }

@@ -26,6 +26,7 @@ action:
     status: Status
     toggle_visibility: 'Toggle visibility'
     toggle_visibility_selected: 'Toggle visibility selected'
+    update_content_type_from_json: 'Update {name} from a JSON file'
     update_mapping: 'Update mapping'
     view: View
 color:
@@ -287,6 +288,12 @@ type:
             wysiwyg_style_set   {Delete all selected WYSIWYG style sets?}
             other               {Delete all selected?}
         }
+    notice_message: |-
+        {type, select,
+            analyzer      {All environments have to be rebuild each times that an analyzer configuration is created or updated.}
+            content_type  {The content type won’t be directly available to the authors. You’ll need to activate it later, once the mappings have been updated. Take your time to review the content type.}
+            other         {}
+        }
     reorder: |-
         {type, select,
             analyzer            {Reorder analyzers}
@@ -316,6 +323,7 @@ type:
             action        {Create action}
             analyzer      {Create analyzer}
             channel       {Create channel}
+            content_type  {Create content type}
             form          {Create form}
             job           {Launch new job}
             other         {Create}
@@ -325,6 +333,7 @@ type:
             action        {Edit action: {label}}
             analyzer      {Edit analyzer: {label}}
             channel       {Edit channel: {label}}
+            content_type  {Edit content type: {label}}
             form          {Edit form: {label}}
             other         {Edit}
         }
@@ -358,16 +367,12 @@ type:
         {type, select,
             analyzer      {Expert mode}
             channel       {Ready for the world wide web?}
+            content_type  {Define the encoding forms}
             dashboard     {Customize the lobby}
             filter        {Expert mode}
             form          {Reusable components}
             job           {Running process}
             job_schedule  {When you are not at work}
             log           {Who did what}
-            other         {}
-        }
-    notice_message: |-
-        {type, select,
-            analyzer      {All environments have to be rebuild each times that an analyzer configuration is created or updated.}
             other         {}
         }

@@ -29,7 +29,7 @@ class DisplayOptionsType extends AbstractType
         $builder->add('class', IconTextType::class, [
             'required' => false,
             'label' => 'Bootstrap class',
-            'icon' => 'fa fa-css3',
+            'icon' => 'fa fa-brands fa-css3',
         ]);
         $builder->add('lastOfRow', CheckboxType::class, [
             'required' => false,

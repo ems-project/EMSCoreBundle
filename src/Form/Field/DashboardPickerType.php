@@ -24,15 +24,11 @@ class DashboardPickerType extends Select2Type
             'attr' => [
                 'data-live-search' => true,
             ],
-            'choice_attr' => function ($category, $key, $id) {
-                $icon = $this->translator->trans(\implode('.', [$id, 'icon']), [], EMSCoreBundle::TRANS_TWIG_DOMAIN);
-                $label = $this->translator->trans(\implode('.', [$id, 'label']), [], EMSCoreBundle::TRANS_TWIG_DOMAIN);
-
-                return [
-                    'data-content' => \sprintf('<div class="text"><i class="%s"></i>&nbsp;&nbsp;%s</div>', $icon, \htmlentities($label)),
-                ];
-            },
+            'choice_attr' => fn ($value) => [
+                'data-icon' => $this->translator->trans(\implode('.', [$value, 'icon']), [], EMSCoreBundle::TRANS_TWIG_DOMAIN),
+            ],
             'choice_value' => fn ($value) => $value,
+            'choice_label' => fn ($value) => $this->translator->trans(\implode('.', [$value, 'label']), [], EMSCoreBundle::TRANS_TWIG_DOMAIN),
         ]);
     }
 }

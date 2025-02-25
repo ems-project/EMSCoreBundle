@@ -15,7 +15,6 @@ use EMS\CoreBundle\Common\DocumentInfo;
 use EMS\CoreBundle\Contracts\Revision\RevisionServiceInterface;
 use EMS\CoreBundle\Core\ContentType\ContentTypeFields;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
-use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Core\Revision\Revisions;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\ContentType;
@@ -338,8 +337,11 @@ class RevisionService implements RevisionServiceInterface
         $rootFieldType = $revision->giveContentType()->getFieldType();
         $data = [...$revision->getRawData(), ...$autoSave];
 
-        $form = $this->createRevisionForm($revision, true);
-        $form->submit(['data' => RawDataTransformer::transform($rootFieldType, $data)]);
+        $revision->setRawData($data);
+        $form = $this->createRevisionForm($revision);
+        $form->submit(['data' => $this->dataService->getSubmitData($form->get('data'))]);
+
+        $validatedAutoSaveData = $revision->setData($form->get('data')->getData())->getRawData();
 
         $now = new \DateTime();
         $revision
@@ -347,7 +349,7 @@ class RevisionService implements RevisionServiceInterface
             ->setDraftSaveDate($now)
             ->setAutoSaveAt($now)
             ->setAutoSaveBy($user->getUsername())
-            ->setAutoSave(RawDataTransformer::reverseTransform($rootFieldType, $form->get('data')->getData()));
+            ->setAutoSave($validatedAutoSaveData);
 
         $this->revisionRepository->save($revision);
     }

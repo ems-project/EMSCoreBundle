@@ -20,6 +20,11 @@ class Navigation
         return (new self())->add(label: t('key.admin', [], 'emsco-core'));
     }
 
+    public static function dashboards(): self
+    {
+        return (new self())->add(label: t('key.dashboards', [], 'emsco-core'));
+    }
+
     public function contentType(ContentType $contentType): self
     {
         $this->contentTypes();

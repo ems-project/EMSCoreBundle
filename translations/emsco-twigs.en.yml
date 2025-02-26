@@ -190,10 +190,10 @@ table:
 ems_core:
     dashboard:
         template:
-            icon: 'fa fa-html5'
+            icon: 'fa fa-brands fa-html5'
             label: Template
         export:
-            icon: 'glyphicon glyphicon-export'
+            icon: 'glyphicon glyphicon-export fa-solid fa-file-export'
             label: Export
         revision_task:
             icon: 'fa fa-sticky-note'

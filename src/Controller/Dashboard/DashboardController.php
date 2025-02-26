@@ -8,6 +8,7 @@ use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\DataTable\Type\DashboardDataTableType;
 use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -58,40 +59,52 @@ class DashboardController extends AbstractController
             'icon' => 'fa fa-dashboard',
             'title' => t('type.title_overview', ['type' => 'dashboard'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'dashboard'], 'emsco-core'),
-            'breadcrumb' => [
-                'admin' => t('key.admin', [], 'emsco-core'),
-                'page' => t('key.dashboards', [], 'emsco-core'),
-            ],
+            'breadcrumb' => $this->breadcrumb(),
         ]);
     }
 
     public function add(Request $request): Response
     {
         $dashboard = new Dashboard();
-
-        return $this->edit($request, $dashboard, true);
-    }
-
-    public function edit(Request $request, Dashboard $dashboard, bool $create = false): Response
-    {
         $form = $this->createForm(DashboardType::class, $dashboard, [
-            'create' => $create,
+            'create' => true,
         ]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->dashboardManager->update($dashboard);
 
-            if ($create) {
-                return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_EDIT, ['dashboard' => $dashboard->getId()]);
-            }
+            return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_EDIT, ['dashboard' => $dashboard->getId()]);
+        }
+
+        return $this->render("@$this->templateNamespace/dashboard/add.html.twig", [
+            'form' => $form->createView(),
+            'dashboard' => $dashboard,
+            'title' => t('type.title_create', ['type' => 'dashboard'], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'dashboard'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_create', ['type' => 'dashboard'], 'emsco-core')
+            ),
+        ]);
+    }
+
+    public function edit(Request $request, Dashboard $dashboard): Response
+    {
+        $form = $this->createForm(DashboardType::class, $dashboard);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->dashboardManager->update($dashboard);
 
             return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
         }
 
-        return $this->render($create ? "@$this->templateNamespace/dashboard/add.html.twig" : "@$this->templateNamespace/dashboard/edit.html.twig", [
+        return $this->render("@$this->templateNamespace/dashboard/edit.html.twig", [
             'form' => $form->createView(),
             'dashboard' => $dashboard,
+            'title' => t('type.title_edit', ['type' => 'dashboard', 'label' => $dashboard->getLabel()], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'dashboard'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_edit', ['type' => 'dashboard', 'label' => $dashboard->getLabel()], 'emsco-core')
+            ),
         ]);
     }
 
@@ -114,5 +127,14 @@ class DashboardController extends AbstractController
         $this->dashboardManager->undefine($dashboard);
 
         return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
+    }
+
+    private function breadcrumb(): Navigation
+    {
+        return Navigation::admin()->add(
+            label: t('key.dashboards', [], 'emsco-core'),
+            icon: 'fa fa-dashboard',
+            route: 'emsco_dashboard_admin_index',
+        );
     }
 }

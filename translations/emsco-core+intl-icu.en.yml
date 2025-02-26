@@ -91,6 +91,8 @@ core:
                 browser_file    {File browser}
                 other           {Unknown}
             }
+        exception:
+            title: 'An exception has been raised'
     environment:
         index_count: |-
             {indexes, plural,
@@ -323,6 +325,7 @@ type:
             action        {Create action}
             analyzer      {Create analyzer}
             channel       {Create channel}
+            dashboard     {Create dashboard}
             content_type  {Create content type}
             form          {Create form}
             job           {Launch new job}
@@ -333,6 +336,7 @@ type:
             action        {Edit action: {label}}
             analyzer      {Edit analyzer: {label}}
             channel       {Edit channel: {label}}
+            dashboard     {Edit dashboard: {label}}
             content_type  {Edit content type: {label}}
             form          {Edit form: {label}}
             other         {Edit}

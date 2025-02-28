@@ -189,6 +189,8 @@ key:
     uploaded_files_logs: 'Uploaded Files Logs'
     views: Views
     wysiwyg: WYSIWYG
+    wysiwyg_profiles: Profiles
+    wysiwyg_style_sets: 'Style Sets'
 log:
     error:
         content_type_add_unreferenced: 'Unexpected error while getting unreferenced content type(s) from external environment {environment}: {error}'
@@ -322,24 +324,26 @@ type:
         }
     title_create: |-
         {type, select,
-            action        {Create action}
-            analyzer      {Create analyzer}
-            channel       {Create channel}
-            dashboard     {Create dashboard}
-            content_type  {Create content type}
-            form          {Create form}
-            job           {Launch new job}
-            other         {Create}
+            action          {Create action}
+            analyzer        {Create analyzer}
+            channel         {Create channel}
+            dashboard       {Create dashboard}
+            content_type    {Create content type}
+            form            {Create form}
+            job             {Launch new job}
+            wysiwyg_profile {Create profile}
+            other           {Create}
         }
     title_edit: |-
         {type, select,
-            action        {Edit action: {label}}
-            analyzer      {Edit analyzer: {label}}
-            channel       {Edit channel: {label}}
-            dashboard     {Edit dashboard: {label}}
-            content_type  {Edit content type: {label}}
-            form          {Edit form: {label}}
-            other         {Edit}
+            action          {Edit action: {label}}
+            analyzer        {Edit analyzer: {label}}
+            channel         {Edit channel: {label}}
+            dashboard       {Edit dashboard: {label}}
+            content_type    {Edit content type: {label}}
+            form            {Edit form: {label}}
+            wysiwyg_profile {Edit profile: {label}}
+            other           {Edit}
         }
     title_overview: |-
         {type, select,

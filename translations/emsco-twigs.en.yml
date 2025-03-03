@@ -147,6 +147,15 @@ views:
             dashboards: Dashboards
             content-types: 'Content Types'
     elasticsearch:
+        cluster:
+            bits: 'Bits'
+            public-key: 'Public key'
+            cluster-uuid: 'Cluster UUID'
+            tagline: Tagline
+            node-name: 'Node name'
+            version: 'Version'
+            lucene-version: 'Lucene version'
+            build-date: 'Build date'
         export-search:
             title: 'Export documents'
         search:

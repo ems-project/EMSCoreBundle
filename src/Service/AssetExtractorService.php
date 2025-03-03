@@ -75,6 +75,7 @@ class AssetExtractorService implements CacheWarmerInterface
             return [
                 'code' => $result->getStatusCode(),
                 'content' => $result->getBody()->__toString(),
+                'client' => 'Tika',
             ];
         } else {
             $tempFile = TempFile::create();

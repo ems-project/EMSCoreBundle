@@ -542,9 +542,10 @@
             <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository" />
             <argument type="service" id="ems.repository.search" />
             <argument type="service" id="EMS\CoreBundle\Repository\EnvironmentRepository" />
+            <argument type="service" id="translator" />
+            <argument type="service" id="serializer" />
             <argument>%ems_core.paging_size%</argument>
             <argument>%ems_core.health_check_allow_origin%</argument>
-            <argument>%ems_core.elasticsearch_cluster%</argument>
             <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>

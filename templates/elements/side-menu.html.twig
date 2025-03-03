@@ -8,10 +8,24 @@
             <div class="pull-left info">
                 {% if app.user %}
                     <p><a href="{{ path(routes.USER_PROFILE) }}" class="">{{ app.user.displayName }}</a></p>
-                    <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-{{ status }}"></i> {{ status }}</a>
+                    <a href="{{ path('elasticsearch.status') }}" id="status-overview">
+                        {%- with {
+                            title: 'cluster.status'|trans({color: status}, 'emsco-core'),
+                            status: status,
+                        } -%}
+                            {{ block('status', '@EMSCore/elasticsearch/status.html.twig') }}
+                        {%- endwith -%}
+                    </a>
                 {% else %}
                     <p>{{ 'views.elements.side-menu-html.anonymous-user'|trans }}</p>
-                    <a href="{{ path('elasticsearch.status') }}" id="status-overview"><i class="fa fa-circle text-"></i> </a>
+                    <a href="{{ path('elasticsearch.status') }}" id="status-overview">
+                        {%- with {
+                            title: 'cluster.status'|trans({color: status}, 'emsco-core'),
+                            status: status,
+                        } -%}
+                            {{ block('status', '@EMSCore/elasticsearch/status.html.twig') }}
+                        {%- endwith -%}
+                    </a>
                 {% endif %}
             </div>
         </div>

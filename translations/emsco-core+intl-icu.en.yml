@@ -29,6 +29,29 @@ action:
     update_content_type_from_json: 'Update {name} from a JSON file'
     update_mapping: 'Update mapping'
     view: View
+asset_extractor:
+    status: |-
+        {color, select,
+            green   {Green: Asset extractor is operational}
+            red     {Red: Asset extractor is not fully operational. Contact your system administrator}
+            other   {Well, that’s odd... Contact your system administrator}
+        }
+certificate:
+    status: |-
+        {color, select,
+            green   {Green: A valid certificate is in place}
+            yellow  {Yellow: Certificate missing or not configured}
+            red     {Red: Private key not found}
+            other   {Well, that’s odd... Contact your system administrator}
+        }
+cluster:
+    status: |-
+        {color, select,
+            green   {Green: Search cluster is operating as expected}
+            yellow  {Yellow: Documents are being indexed. This status shouldn’t last forever}
+            red     {Red: System issues detected. Please contact your administrator}
+            other   {Well, that’s odd... Contact your system administrator}
+        }
 color:
     aqua: Aqua
     black: Black
@@ -226,6 +249,9 @@ revision:
         put_back_confirm: 'Put back "{label}" ?'
         put_back_selected: 'Put back selected'
         title: '{pluralName} in trash'
+status:
+    title: "Systems' status"
+    title_sub: 'Is everything working as expected?'
 type:
     confirm: |-
         {type, select,

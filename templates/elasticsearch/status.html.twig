@@ -1,8 +1,11 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-twigs' %}
 
+{% block status -%}
+    <i class="fa fa-circle text-{{ status }}"></i> {{ status }}
+{%- endblock status %}
 
-{% block title %}Elasticsearch cluster's status{% endblock %}
-{% block pagetitle %}Status of the cluster{% endblock %}
+{% block title %}{{ title|trans }}{% endblock %}
+{% block pagetitle %}{{ title|trans }}{% endblock %}
 {% block subtitle %}<small>Life inside a cluster</small>{% endblock %}
 
 {% block breadcrumb %}
@@ -16,97 +19,97 @@
 {% block body %}
 <div class="row">
 	<div class="col-md-6 col-lg-4">
+        {% if cluster|default %}
 		<div class="box box box-solid">
-			<div class="box-header with-border bg-{{ status.status }}">
+			<div class="box-header with-border bg-{{ cluster.status }}">
 				<h4 class="box-title">
-						<i
-							class="icon fa fa-cubes fa-2x"></i>
-						Cluster name: <strong>{{ status.cluster_name }}</strong>
+                    <i class="icon fa fa-cubes fa-2x"></i>
+                    {{ cluster.title }}
 				</h4>
 			</div>
             {% if app.user %}
                 <div class="box-body ">
                     <ul class="list-group">
-                        {% if info is defined and info %}
-                            <li class="list-group-item">{{ 'views.elasticsearch.status.cluster-uuid'|trans }}<span
-                                class=" badge bg-{{ status.status }}">{{ info.cluster_uuid }}</span></li>
-                            <li class="list-group-item">{{ 'views.elasticsearch.status.tagline'|trans }}<span
-                                class=" badge bg-{{ status.status }}">{{ info.tagline }}</span></li>
-                            <li class="list-group-item">{{ 'views.elasticsearch.status.node-name'|trans }}<span
-                                class=" badge bg-{{ status.status }}">{{ info.name }}</span></li>
-                            <li class="list-group-item">{{ 'views.elasticsearch.status.version'|trans }}<span
-                                class=" badge bg-{{ status.status }}">{{ info.version.number }}</span></li>
-                            <li class="list-group-item">{{ 'views.elasticsearch.status.lucene-version'|trans }}<span
-                                class=" badge bg-{{ status.status }}">{{ info.version.lucene_version }}</span></li>
-                            <li class="list-group-item">{{ 'views.elasticsearch.status.build-date'|trans }}<span
-                                class=" badge bg-{{ status.status }}">{{ info.version.build_date|split('.')|first|date(date_time_format) }}</span></li>
-                        {% endif %}
+                        <li class="list-group-item">Cluster name<span
+                                class=" badge bg-{{ status }}">{{ cluster.cluster_name }}</span></li>
+                        <li class="list-group-item">{{ 'views.elasticsearch.cluster.cluster-uuid'|trans }}<span
+                            class=" badge bg-{{ status }}">{{ cluster.cluster_uuid }}</span></li>
+                        <li class="list-group-item">{{ 'views.elasticsearch.cluster.tagline'|trans }}<span
+                            class=" badge bg-{{ status }}">{{ cluster.tagline }}</span></li>
+                        <li class="list-group-item">{{ 'views.elasticsearch.cluster.node-name'|trans }}<span
+                            class=" badge bg-{{ status }}">{{ cluster.name }}</span></li>
+                        <li class="list-group-item">{{ 'views.elasticsearch.cluster.version'|trans }}<span
+                            class=" badge bg-{{ status }}">{{ cluster.version.number }}</span></li>
+                        <li class="list-group-item">{{ 'views.elasticsearch.cluster.lucene-version'|trans }}<span
+                            class=" badge bg-{{ status }}">{{ cluster.version.lucene_version }}</span></li>
+                        <li class="list-group-item">{{ 'views.elasticsearch.cluster.build-date'|trans }}<span
+                            class=" badge bg-{{ status }}">{{ cluster.version.build_date|split('.')|first|date(date_time_format) }}</span></li>
                         <li class="list-group-item">Number of nodes <span
-                            class=" badge bg-{{ status.status }}">{{ status.number_of_nodes }}</span></li>
+                            class=" badge bg-{{ status }}">{{ cluster.number_of_nodes }}</span></li>
                         <li class="list-group-item">Number of data nodes <span
-                            class=" badge bg-{{ status.status }}">{{
-                                status.number_of_data_nodes }}</span></li>
+                            class=" badge bg-{{ status }}">{{
+                                cluster.number_of_data_nodes }}</span></li>
                         <li class="list-group-item">Active primary shards <span
-                            class=" badge bg-{{ status.status }}">{{
-                                status.active_primary_shards }}</span></li>
+                            class=" badge bg-{{ status }}">{{
+                                cluster.active_primary_shards }}</span></li>
                         <li class="list-group-item">Active shards <span
-                            class=" badge bg-{{ status.status }}">{{ status.active_shards }}</span></li>
+                            class=" badge bg-{{ status }}">{{ cluster.active_shards }}</span></li>
                         <li class="list-group-item">Relocating shards <span
-                            class=" badge bg-{{ status.status }}">{{ status.relocating_shards
+                            class=" badge bg-{{ status }}">{{ cluster.relocating_shards
                                 }}</span></li>
                         <li class="list-group-item">Initializing shards <span
-                            class=" badge bg-{{ status.status }}">{{
-                                status.initializing_shards }}</span></li>
+                            class=" badge bg-{{ status }}">{{
+                                cluster.initializing_shards }}</span></li>
                         <li class="list-group-item">Unassigned shards <span
-                            class=" badge bg-{{ status.status }}">{{ status.unassigned_shards
+                            class=" badge bg-{{ status }}">{{ cluster.unassigned_shards
                                 }}</span></li>
                         <li class="list-group-item">Delayed unassigned shards <span
-                            class=" badge bg-{{ status.status }}">{{
-                                status.delayed_unassigned_shards }}</span></li>
+                            class=" badge bg-{{ status }}">{{
+                                cluster.delayed_unassigned_shards }}</span></li>
                         <li class="list-group-item">Number of pending tasks <span
-                            class=" badge bg-{{ status.status }}">{{
-                                status.number_of_pending_tasks }}</span></li>
+                            class=" badge bg-{{ status }}">{{
+                                cluster.number_of_pending_tasks }}</span></li>
                         <li class="list-group-item">Number of in flight fetch <span
-                            class=" badge bg-{{ status.status }}">{{
-                                status.number_of_in_flight_fetch }}</span></li>
+                            class=" badge bg-{{ status }}">{{
+                                cluster.number_of_in_flight_fetch }}</span></li>
                         <li class="list-group-item">Task max waiting in queue <span
-                            class=" badge bg-{{ status.status }}">{{
-                                status.task_max_waiting_in_queue_millis }} ms</span></li>
+                            class=" badge bg-{{ status }}">{{
+                                cluster.task_max_waiting_in_queue_millis }} ms</span></li>
                         <li class="list-group-item">Active shards percent as number <span
-                            class=" badge bg-{{ status.status }}">{{
-                                status.active_shards_percent_as_number }}</span></li>
+                            class=" badge bg-{{ status }}">{{
+                                cluster.active_shards_percent_as_number }}</span></li>
 
                     </ul>
                 </div>
             {% endif %}
 		</div>
+        {% endif %}
 
 	</div>
-	{% if certificate is defined and certificate %}
+	{% if certificate|default %}
 		<div class="col-md-6 col-lg-8">
 		<div class="box box box-solid">
-			<div class="box-header with-border bg-{% if certificate %}green{% else %}red{% endif %}">
+			<div class="box-header with-border bg-{{ certificate.status }}">
 				<h4 class="box-title">
-						<i class="icon fa fa-key fa-2x"></i>
-						{{ 'views.elasticsearch.status.certificate-information'|trans }}
+                    <i class="icon fa fa-key fa-2x"></i>
+                    {{ certificate.title }}
 				</h4>
 			</div>
             {% if app.user %}
                 <div class="box-body ">
                     <ul class="list-group">
-                        {% if certificate %}
+                        {% if certificate.bits|default %}
                             <li class="list-group-item">
-                                {{ 'views.elasticsearch.status.bits'|trans }}
+                                {{ 'views.elasticsearch.cluster.bits'|trans }}
                                 <span class=" badge bg-green">{{ certificate.bits }}</span>
                             </li>
+                        {% endif %}
+                        {% if certificate.key|default %}
                             <li class="list-group-item">
-                                <a href="{{ path('ems_get_public_key') }}">{{ 'views.elasticsearch.status.public-key'|trans }}</a>
+                                <a href="{{ path('ems_get_public_key') }}">{{ 'views.elasticsearch.cluster.public-key'|trans }}</a>
                                 <pre>{{ certificate.key }}</pre>
                             </li>
-                        {% else %}
-                            <li class="list-group-item">{{ 'views.elasticsearch.status.certificate-is-missing'|trans }}</li>
                         {% endif %}
-
                     </ul>
                 </div>
             {% endif %}
@@ -114,20 +117,20 @@
 
 	</div>
 	{% endif %}
-    {% if tika is defined and tika %}
+    {% if asset_extractor|default %}
 		<div class="col-md-6 col-lg-8">
 			<div class="box box box-solid">
-				<div class="box-header with-border bg-{% if tika %}{% if tika.code == 200 %}green{% else %}red{% endif %}{% else %}yellow{% endif %}">
+				<div class="box-header with-border bg-{{ asset_extractor.status }}">
 					<h4 class="box-title">
 						<i class="icon fa fa-external-link fa-2x"></i>
-						{{ 'views.elasticsearch.status.tika-server'|trans }} {% if tika and tika.code != 200 %}({{tika.code}}){% endif %}
+                        {{ asset_extractor.title }}
 					</h4>
 				</div>
                 {% if app.user %}
                     <div class="box-body ">
                         <ul class="list-group">
                             <li class="list-group-item">
-                                {% if tika %}{{ tika.content }}{% else %}{{ 'views.elasticsearch.status.tika-server-not-configured'|trans }}{% endif %}
+                                {% if asset_extractor.content|default %}{{ asset_extractor.content }}{% else %}{{ 'views.elasticsearch.cluster.tika-server-not-configured'|trans }}{% endif %}
                             </li>
                         </ul>
                     </div>

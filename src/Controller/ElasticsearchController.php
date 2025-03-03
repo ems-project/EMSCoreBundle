@@ -15,6 +15,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\Document\DataLinks;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Entity\Form\ExportDocuments;
@@ -45,16 +46,17 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+use function Symfony\Component\Translation\t;
 
 class ElasticsearchController extends AbstractController
 {
-    /**
-     * @param string[] $elasticsearchCluster
-     */
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly IndexService $indexService,
@@ -73,9 +75,10 @@ class ElasticsearchController extends AbstractController
         private readonly ContentTypeRepository $contentTypeRepository,
         private readonly SearchRepository $searchRepository,
         private readonly EnvironmentRepository $environmentRepository,
+        private readonly TranslatorInterface $translator,
+        private readonly SerializerInterface $serializer,
         private readonly int $pagingSize,
         private readonly ?string $healthCheckAllowOrigin,
-        private readonly array $elasticsearchCluster,
         private readonly string $templateNamespace
     ) {
     }
@@ -114,68 +117,75 @@ class ElasticsearchController extends AbstractController
 
     public function healthCheck(string $_format): Response
     {
-        try {
-            $health = $this->elasticaService->getClusterHealth();
+        @\trigger_error(\sprintf('The controller method %s::healthCheck is deprecated, please use %s::status with detailed=false', self::class, self::class), E_USER_DEPRECATED);
 
-            $response = $this->render("@$this->templateNamespace/elasticsearch/status.$_format.twig", [
-                'status' => $health,
-                'globalStatus' => $health['status'] ?? 'red',
-            ]);
-
-            $allowOrigin = $this->healthCheckAllowOrigin;
-            if (\is_string($allowOrigin) && \strlen($allowOrigin) > 0) {
-                $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
-            }
-
-            return $response;
-        } catch (\Exception $e) {
-            throw new ServiceUnavailableHttpException('Due to '.$e->getMessage());
-        }
+        return $this->status($_format, false);
     }
 
-    public function status(string $_format): Response
+    public function status(string $_format, bool $detailed = true): Response
     {
+        if ($detailed && !$this->authorizationChecker->isGranted('ROLE_USER')) {
+            $detailed = false;
+        }
+        $statusCode = 200;
+        $context = [];
         try {
-            $status = $this->elasticaService->getClusterHealth();
-            $certificateInformation = $this->dataService->getCertificateInfo();
+            $health = $this->elasticaService->getClusterHealth();
+            $context['cluster'] = $detailed ? $health : null;
+            $context['cluster']['status'] = $status = $health['status'] ?? 'red';
+            $context['cluster']['title'] = $this->translator->trans('cluster.status', ['color' => $status], 'emsco-core');
+            if ('red' === $status) {
+                $statusCode = 500;
+            }
+        } catch (\Throwable $e) {
+            $status = 'red';
+            $context['cluster']['title'] = $e->getMessage();
+            $statusCode = 503;
+        }
+        $context['status'] = $status;
+        $context['title'] = $context['cluster']['title'];
 
-            $globalStatus = 'green';
+        if ($detailed) {
+            $context['cluster'] = \array_merge($context['cluster'], $this->elasticaService->getClusterInfo());
+
+            $context['certificate'] = $this->dataService->getCertificateInfo();
+            $context['certificate']['title'] = $this->translator->trans('certificate.status', ['color' => $context['certificate']['status'] ?? 'red'], 'emsco-core');
+
             try {
-                $tika = $this->assetExtractorService->hello();
+                $context['asset_extractor'] = $this->assetExtractorService->hello();
+                $context['asset_extractor']['status'] = 'green';
+                $context['asset_extractor']['title'] = $this->translator->trans('asset_extractor.status', ['color' => 'green'], 'emsco-core');
             } catch (\Exception $e) {
-                $globalStatus = 'yellow';
-                $tika = [
-                    'code' => 500,
-                    'content' => $e->getMessage(),
+                $context['asset_extractor'] = [
+                    'status' => 'red',
+                    'title' => $this->translator->trans('asset_extractor.status', ['color' => 'red'], 'emsco-core'),
+                    'message' => $e->getMessage(),
                 ];
             }
-
-            if ('html' === $_format && 'green' !== $status['status']) {
-                $globalStatus = $status['status'];
-                if ('red' === $status['status']) {
-                    $this->logger->error('log.elasticsearch.cluster_red', [
-                        'color_status' => $status['status'],
-                    ]);
-                } else {
-                    $this->logger->warning('log.elasticsearch.cluster_yellow', [
-                        'color_status' => $status['status'],
-                    ]);
-                }
-            }
-
-            return $this->render("@$this->templateNamespace/elasticsearch/status.$_format.twig", [
-                'status' => $status,
-                'certificate' => $certificateInformation,
-                'tika' => $tika,
-                'globalStatus' => $globalStatus,
-                'info' => $this->elasticaService->getClusterInfo(),
-                'specifiedVersion' => $this->elasticaService->getVersion(),
-            ]);
-        } catch (NoNodesAvailableException) {
-            return $this->render("@$this->templateNamespace/elasticsearch/no-nodes-available.$_format.twig", [
-                'cluster' => $this->elasticsearchCluster,
-            ]);
         }
+
+        $htmlTemplate = "@$this->templateNamespace/elasticsearch/status.html.twig";
+        $response = match ($_format) {
+            'json' => new JsonResponse(\array_filter(\array_merge($context, [
+                'body' => $this->renderBlock($htmlTemplate, 'status', $context)->getContent(),
+            ]))),
+            'xml' => new Response($this->serializer->serialize($context, 'xml'), 200, ['Content-Type' => 'application/xml']),
+            default => $this->render($htmlTemplate, \array_filter(\array_merge($context, [
+                'title' => t('status.title', [], 'emsco-core'),
+                'subTitle' => t('status.title_sub', [], 'emsco-core'),
+                'breadcrumb' => new Navigation()->add(
+                    label: t('status.title', [], 'emsco-core'),
+                    icon: 'fa-solid fa-stethoscope',
+                ),
+            ]))),
+        };
+        $response->setStatusCode($statusCode);
+        $allowOrigin = $this->healthCheckAllowOrigin;
+        if (\is_string($allowOrigin) && \strlen($allowOrigin) > 0) {
+            $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
+        }
+
+        return $response;
     }
 
     public function indexSearch(): Response

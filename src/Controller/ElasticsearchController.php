@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Controller;
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Elasticsearch\Aggregation\Bucket;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -52,6 +53,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+
+use function Symfony\Component\Translation\t;
 
 use function Symfony\Component\Translation\t;
 
@@ -112,6 +115,14 @@ class ElasticsearchController extends AbstractController
         return $this->render("@$this->templateNamespace/elasticsearch/add-alias.html.twig", [
             'form' => $form->createView(),
             'name' => $name,
+            'title' => t('type.title_create', ['type' => 'alias', 'label' => $name], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'alias'], 'emsco-core'),
+            'breadcrumb' => Navigation::admin()->environments()->add(
+                label: t('key.orphan_indexes', [], 'emsco-core'),
+                icon: 'fa fa-chain-broken',
+                route: Routes::ADMIN_ELASTIC_ORPHAN
+            )->add(t('type.title_create', ['type' => 'alias', 'label' => $name], 'emsco-core')),
+            'notice' => t('type.notice_message', ['type' => 'alias'], 'emsco-core'),
         ]);
     }
 
@@ -553,7 +564,8 @@ class ElasticsearchController extends AbstractController
             if (null !== $response && $form->isSubmitted() && $form->isValid() && \array_key_exists('exportResults', $request->query->all('search_form'))) {
                 $exportForms = [];
                 $contentTypes = $this->getAllContentType($response);
-                foreach ($contentTypes as $name) {
+                foreach ($contentTypes as $bucket) {
+                    $name = $bucket->getKey();
                     $contentType = $types[$name];
 
                     $exportForm = $this->createForm(ExportDocumentsType::class, new ExportDocuments(
@@ -562,11 +574,20 @@ class ElasticsearchController extends AbstractController
                         Json::encode($this->searchService->generateSearchBody($search))
                     ));
 
-                    $exportForms[] = $exportForm->createView();
+                    $exportForms[] = [
+                        'form' => $exportForm->createView(),
+                        'title' => t('type.export', ['type' => 'documents', 'count' => $bucket->getCount(), 'singular' => $contentType->getSingularName(), 'plural' => $contentType->getPluralName()], 'emsco-core'),
+                        'icon' => $contentType->getIcon(),
+                    ];
                 }
 
                 return $this->render("@$this->templateNamespace/elasticsearch/export-search.html.twig", [
-                    'exportForms' => $exportForms,
+                    'forms' => $exportForms,
+                    'title' => t('key.export_documents', [], 'emsco-core'),
+                    'breadcrumb' => $this->breadcrumb()->add(
+                        label: t('key.export_documents', [], 'emsco-core'),
+                        icon: 'fa fa-archive',
+                    ),
                 ]);
             }
 
@@ -612,15 +633,22 @@ class ElasticsearchController extends AbstractController
     }
 
     /**
-     * @return string[]
+     * @return iterable<Bucket>|Bucket[]
      */
-    private function getAllContentType(CommonResponse $response): array
+    private function getAllContentType(CommonResponse $response): iterable
     {
         $aggregation = $response->getAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION);
-        if (null === $aggregation) {
-            return [];
-        }
 
-        return $aggregation->getKeys();
+        return $aggregation?->getBuckets() ?? [];
+    }
+
+    private function breadcrumb(?Search $search = null): Navigation
+    {
+        return Navigation::admin()->add(
+            label: t('key.search', [], 'emsco-core'),
+            icon: 'fa fa-search',
+            route: 'ems_search',
+            routeParams: ['search_form' => $search?->jsonSerialize() ?? []],
+        );
     }
 }

@@ -190,9 +190,11 @@ key:
     channels: Channels
     content_types: 'Content Types'
     dashboards: Dashboards
+    documentation: Documentation
     environments: Environments
     environments_external: 'External environments'
     environments_local: 'Local environments'
+    export_documents: 'Export documents'
     filters: Filters
     forms: Forms
     i18n: I18N
@@ -206,6 +208,7 @@ key:
     publishers: Publishers
     query_searches: QuerySearch
     schedule: Schedule
+    search: Search
     structure: Structure
     unreferenced_aliases: 'Unreferenced aliases'
     uploaded_files: 'Uploaded Files'
@@ -318,10 +321,19 @@ type:
             wysiwyg_style_set   {Delete all selected WYSIWYG style sets?}
             other               {Delete all selected?}
         }
+    export: |-
+        {type, select,
+            documents {{count, plural,
+                    =1    {Export one {singular}}
+                    other {Export # {plural}}
+            }}
+            other     {Export}
+        }
     notice_message: |-
         {type, select,
             analyzer      {All environments have to be rebuild each times that an analyzer configuration is created or updated.}
             content_type  {The content type won’t be directly available to the authors. You’ll need to activate it later, once the mappings have been updated. Take your time to review the content type.}
+            alias         {This operation will create a new alias to an existing index.}
             other         {}
         }
     reorder: |-
@@ -350,6 +362,7 @@ type:
         }
     title_create: |-
         {type, select,
+            alias           {Add an alias to {label}}
             action          {Create action}
             analyzer        {Create analyzer}
             channel         {Create channel}

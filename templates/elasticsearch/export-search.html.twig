@@ -17,12 +17,13 @@
                         {{ 'views.elasticsearch.export-search.title'|trans }}
                     </h3>
                 </div>
-                {% for exportForm in exportForms %}
+                {% for exportForm in forms %}
                     <div class="box-body">
-                        {{ form(exportForm) }}
+                        <h2>{{ exportForm.title|trans }}</h2>
+                        {{ form(exportForm.form) }}
                     </div>
                 {% endfor %}
             </div>
         </div>
     </div>
-{% endblock %} 
+{% endblock %}

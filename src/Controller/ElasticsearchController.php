@@ -56,8 +56,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function Symfony\Component\Translation\t;
 
-use function Symfony\Component\Translation\t;
-
 class ElasticsearchController extends AbstractController
 {
     public function __construct(

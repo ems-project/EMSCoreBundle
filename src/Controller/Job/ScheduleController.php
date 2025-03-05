@@ -9,6 +9,7 @@ use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Job\ScheduleManager;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\DataTable\Type\Job\JobScheduleDataTableType;
 use EMS\CoreBundle\Entity\Schedule;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -59,11 +60,7 @@ final class ScheduleController extends AbstractController
             'icon' => 'fa fa-calendar-o',
             'title' => t('type.title_overview', ['type' => 'job_schedule'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'job_schedule'], 'emsco-core'),
-            'breadcrumb' => [
-                'admin' => t('key.admin', [], 'emsco-core'),
-                'jobs' => t('key.jobs', [], 'emsco-core'),
-                'page' => t('key.schedule', [], 'emsco-core'),
-            ],
+            'breadcrumb' => $this->breadcrumb(),
         ]);
     }
 
@@ -99,9 +96,26 @@ final class ScheduleController extends AbstractController
             return $this->redirectToRoute(Routes::SCHEDULE_INDEX);
         }
 
+        if ($create) {
+            return $this->render($template, [
+                'form' => $form->createView(),
+                'schedule' => $schedule,
+                'title' => t('type.title_create', ['type' => 'job_schedule'], 'emsco-core'),
+                'subTitle' => t('type.title_sub', ['type' => 'job_schedule'], 'emsco-core'),
+                'breadcrumb' => $this->breadcrumb()->add(
+                    t('type.title_create', ['type' => 'job_schedule'], 'emsco-core')
+                ),
+            ]);
+        }
+
         return $this->render($template, [
             'form' => $form->createView(),
             'schedule' => $schedule,
+            'title' => t('type.title_edit', ['type' => 'job_schedule', 'label' => $schedule->getName()], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'job_schedule'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_edit', ['type' => 'job_schedule', 'label' => $schedule->getName()], 'emsco-core')
+            ),
         ]);
     }
 
@@ -118,5 +132,14 @@ final class ScheduleController extends AbstractController
         $this->scheduleManager->delete($schedule);
 
         return $this->redirectToRoute(Routes::SCHEDULE_INDEX);
+    }
+
+    private function breadcrumb(): Navigation
+    {
+        return Navigation::admin()->add(
+            label: t('key.schedule', [], 'emsco-core'),
+            icon: 'fa fa-calendar-o',
+            route: 'emsco_schedule_index',
+        );
     }
 }

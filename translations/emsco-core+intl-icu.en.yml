@@ -379,6 +379,7 @@ type:
             content_type    {Create content type}
             form            {Create form}
             job             {Launch new job}
+            job_schedule    {Create schedule}
             query_search    {Create query search}
             search          {Create search}
             wysiwyg_profile {Create profile}
@@ -392,6 +393,7 @@ type:
             dashboard       {Edit dashboard: {label}}
             content_type    {Edit content type: {label}}
             form            {Edit form: {label}}
+            job_schedule    {Edit schedule: {label}}
             query_search    {Edit query search: {label}}
             wysiwyg_profile {Edit profile: {label}}
             other           {Edit}

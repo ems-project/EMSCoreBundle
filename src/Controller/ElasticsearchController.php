@@ -508,6 +508,11 @@ class ElasticsearchController extends AbstractController
 
                 return $this->render("@$this->templateNamespace/elasticsearch/save-search.html.twig", [
                     'form' => $form->createView(),
+                    'title' => t('type.title_create', ['type' => 'search'], 'emsco-core'),
+                    'subTitle' => t('type.title_sub', ['type' => 'search'], 'emsco-core'),
+                    'breadcrumb' => $this->breadcrumb($search)->add(
+                        t('type.title_create', ['type' => 'search'], 'emsco-core')
+                    ),
                 ]);
             } elseif ($form->isSubmitted() && $form->isValid() && \array_key_exists('delete', $request->query->all('search_form'))) {
                 // Form treatment after the "Delete" button has been pressed (to delete a previous saved search preset)
@@ -582,7 +587,8 @@ class ElasticsearchController extends AbstractController
                 return $this->render("@$this->templateNamespace/elasticsearch/export-search.html.twig", [
                     'forms' => $exportForms,
                     'title' => t('key.export_documents', [], 'emsco-core'),
-                    'breadcrumb' => $this->breadcrumb()->add(
+                    'subTitle' => t('type.title_sub', ['type' => 'search'], 'emsco-core'),
+                    'breadcrumb' => $this->breadcrumb($search)->add(
                         label: t('key.export_documents', [], 'emsco-core'),
                         icon: 'fa fa-archive',
                     ),
@@ -624,6 +630,9 @@ class ElasticsearchController extends AbstractController
                 'search' => $search,
                 'sortOptions' => $this->sortOptionService->getAll(),
                 'aggregateOptions' => $this->aggregateOptionService->getAll(),
+                'title' => t('search.title', ['count' => $response?->getTotal() ?? -1], 'emsco-core'),
+                'subTitle' => t('type.title_sub', ['type' => 'search'], 'emsco-core'),
+                'breadcrumb' => $this->breadcrumb($search),
             ]);
         } catch (NoNodesAvailableException) {
             return $this->redirectToRoute('elasticsearch.status');
@@ -642,7 +651,7 @@ class ElasticsearchController extends AbstractController
 
     private function breadcrumb(?Search $search = null): Navigation
     {
-        return Navigation::admin()->add(
+        return Navigation::data()->add(
             label: t('key.search', [], 'emsco-core'),
             icon: 'fa fa-search',
             route: 'ems_search',

@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller;
 
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\DataTable\Type\QuerySearchDataTableType;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -56,10 +57,8 @@ final class QuerySearchController extends AbstractController
             'form' => $form->createView(),
             'icon' => 'fa fa-list-alt',
             'title' => t('type.title_overview', ['type' => 'query_search'], 'emsco-core'),
-            'breadcrumb' => [
-                'admin' => t('key.admin', [], 'emsco-core'),
-                'page' => t('key.query_searches', [], 'emsco-core'),
-            ],
+            'subTitle' => t('type.title_sub', ['type' => 'query_search'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb(),
         ]);
     }
 
@@ -72,9 +71,6 @@ final class QuerySearchController extends AbstractController
 
     public function edit(Request $request, QuerySearch $querySearch, ?string $view = null): Response
     {
-        if (null == $view) {
-            $view = "@$this->templateNamespace/query-search/edit.html.twig";
-        }
         $form = $this->createForm(QuerySearchType::class, $querySearch);
         $form->handleRequest($request);
 
@@ -84,8 +80,26 @@ final class QuerySearchController extends AbstractController
             return $this->redirectToRoute('ems_core_query_search_index');
         }
 
+        if (null == $view) {
+            $view = "@$this->templateNamespace/query-search/edit.html.twig";
+
+            return $this->render($view, [
+                'form' => $form->createView(),
+                'title' => t('type.title_edit', ['type' => 'query_search', 'label' => $querySearch->getLabel()], 'emsco-core'),
+                'subTitle' => t('type.title_sub', ['type' => 'query_search'], 'emsco-core'),
+                'breadcrumb' => $this->breadcrumb()->add(
+                    t('type.title_edit', ['type' => 'query_search', 'label' => $querySearch->getLabel()], 'emsco-core'),
+                ),
+            ]);
+        }
+
         return $this->render($view, [
             'form' => $form->createView(),
+            'title' => t('type.title_create', ['type' => 'query_search'], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'query_search'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_create', ['type' => 'query_search'], 'emsco-core'),
+            ),
         ]);
     }
 
@@ -94,5 +108,14 @@ final class QuerySearchController extends AbstractController
         $this->querySearchService->delete($querySearch);
 
         return $this->redirectToRoute('ems_core_query_search_index');
+    }
+
+    private function breadcrumb(): Navigation
+    {
+        return Navigation::admin()->add(
+            label: t('key.query_search', [], 'emsco-core'),
+            icon: 'fa fa-list-alt',
+            route: 'ems_core_query_search_index',
+        );
     }
 }

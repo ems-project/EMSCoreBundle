@@ -190,6 +190,7 @@ key:
     channels: Channels
     content_types: 'Content Types'
     dashboards: Dashboards
+    details: Details
     documentation: Documentation
     environments: Environments
     environments_external: 'External environments'
@@ -211,6 +212,7 @@ key:
     schedule: Schedule
     search: Search
     structure: Structure
+    trash: Trash
     unreferenced_aliases: 'Unreferenced aliases'
     uploaded_files: 'Uploaded Files'
     uploaded_files_logs: 'Uploaded Files Logs'
@@ -248,7 +250,6 @@ revision:
         ouuid: Ouuid
     new: 'New {contentType}'
     trash:
-        label: Trash
         put_back: 'Put back'
         put_back_confirm: 'Put back "{label}" ?'
         put_back_selected: 'Put back selected'

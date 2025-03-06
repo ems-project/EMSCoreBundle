@@ -8,6 +8,7 @@ use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\DataTable\Type\Revision\RevisionTrashDataTableType;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Form\Form\TableType;
@@ -61,10 +62,8 @@ class TrashController extends AbstractController
             'form' => $form->createView(),
             'icon' => 'fa fa-trash',
             'title' => t('revision.trash.title', ['pluralName' => $contentType->getPluralName()], 'emsco-core'),
-            'breadcrumb' => [
-                'contentType' => $contentType,
-                'page' => t('revision.trash.label', [], 'emsco-core'),
-            ],
+            'subTitle' => t('type.title_sub', ['type' => 'trash'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb($contentType),
         ]);
     }
 
@@ -118,5 +117,13 @@ class TrashController extends AbstractController
         }
 
         return $this->redirectToRoute(Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentType->getId()]);
+    }
+
+    private function breadcrumb(ContentType $contentType): Navigation
+    {
+        return Navigation::data($contentType)->add(
+            label: t('key.trash', [], 'emsco-core'),
+            icon: 'fa fa-trash',
+        );
     }
 }

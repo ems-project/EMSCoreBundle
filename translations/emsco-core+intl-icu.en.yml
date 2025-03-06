@@ -341,6 +341,7 @@ type:
     notice_message: |-
         {type, select,
             analyzer      {All environments have to be rebuild each times that an analyzer configuration is created or updated.}
+            filter        {All environments have to be rebuild each times that a filter configuration is created or updated.}
             content_type  {The content type won’t be directly available to the authors. You’ll need to activate it later, once the mappings have been updated. Take your time to review the content type.}
             alias         {This operation will create a new alias to an existing index.}
             other         {}
@@ -377,6 +378,7 @@ type:
             channel         {Create channel}
             dashboard       {Create dashboard}
             content_type    {Create content type}
+            filter          {Create filter}
             form            {Create form}
             job             {Launch new job}
             job_schedule    {Create schedule}
@@ -392,6 +394,7 @@ type:
             channel         {Edit channel: {label}}
             dashboard       {Edit dashboard: {label}}
             content_type    {Edit content type: {label}}
+            filter          {Edit filter: {label}}
             form            {Edit form: {label}}
             job_schedule    {Edit schedule: {label}}
             query_search    {Edit query search: {label}}

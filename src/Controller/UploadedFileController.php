@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller;
 
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\DataTable\Type\UploadedAsset\UploadedAssetAdminDataTableType;
 use EMS\CoreBundle\DataTable\Type\UploadedAsset\UploadedAssetDataTableType;
 use EMS\CoreBundle\Entity\UploadedAsset;
@@ -59,10 +60,11 @@ class UploadedFileController extends AbstractController
             'form' => $form->createView(),
             'icon' => 'fa fa-upload',
             'title' => t('key.uploaded_files_logs', [], 'emsco-core'),
-            'breadcrumb' => [
-                'admin' => t('key.admin', [], 'emsco-core'),
-                'page' => t('key.uploaded_files', [], 'emsco-core'),
-            ],
+            'breadcrumb' => Navigation::admin()->add(
+                label: t('key.uploaded_files', [], 'emsco-core'),
+                icon: 'fa fa-upload',
+                route: Routes::UPLOAD_ASSET_ADMIN_OVERVIEW,
+            ),
         ]);
     }
 
@@ -109,10 +111,11 @@ class UploadedFileController extends AbstractController
             'form' => $form->createView(),
             'icon' => 'fa fa-upload',
             'title' => t('key.uploaded_files', [], 'emsco-core'),
-            'breadcrumb' => [
-                'publishers' => t('key.publishers', [], 'emsco-core'),
-                'page' => t('key.uploaded_files', [], 'emsco-core'),
-            ],
+            'breadcrumb' => Navigation::publishers()->add(
+                label: t('key.uploaded_files', [], 'emsco-core'),
+                icon: 'fa fa-upload',
+                route: Routes::UPLOAD_ASSET_PUBLISHER_OVERVIEW,
+            ),
         ]);
     }
 

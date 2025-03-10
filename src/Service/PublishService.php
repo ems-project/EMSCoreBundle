@@ -382,7 +382,7 @@ class PublishService
         $contentType = $revision->giveContentType();
         $versioning = $contentType->getVersioning();
 
-        if (!$versioning->enabled()) {
+        if (!$versioning->enabled() || 0 === \count($versioning->getTags())) {
             return;
         }
 

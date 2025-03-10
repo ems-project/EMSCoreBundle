@@ -382,6 +382,7 @@ type:
             filter          {Create filter}
             form            {Create form}
             job             {Launch new job}
+            i18n            {Create I18N}
             job_schedule    {Create schedule}
             query_search    {Create query search}
             search          {Create search}
@@ -397,6 +398,7 @@ type:
             content_type    {Edit content type: {label}}
             filter          {Edit filter: {label}}
             form            {Edit form: {label}}
+            i18n            {Edit I18N: {label}}
             job_schedule    {Edit schedule: {label}}
             query_search    {Edit query search: {label}}
             wysiwyg_profile {Edit profile: {label}}

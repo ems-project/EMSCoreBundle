@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller;
 
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\DataTable\Type\I18nDataTableType;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -48,6 +49,11 @@ class I18nController extends AbstractController
         return $this->render("@$this->templateNamespace/i18n/new.html.twig", [
             'i18n' => $i18n,
             'form' => $form->createView(),
+            'title' => t('type.title_create', ['type' => 'i18n'], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'i18n'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_create', ['type' => 'i18n'], 'emsco-core')
+            ),
         ]);
     }
 
@@ -79,9 +85,17 @@ class I18nController extends AbstractController
             return $this->redirectToRoute(Routes::I18N_INDEX);
         }
 
+        $form = $editForm->createView();
+
         return $this->render("@$this->templateNamespace/i18n/edit.html.twig", [
             'i18n' => $i18n,
-            'edit_form' => $editForm->createView(),
+            'edit_form' => $form,
+            'form' => $form,
+            'title' => t('type.title_edit', ['type' => 'i18n', 'label' => $i18n->getName()], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'i18n'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_edit', ['type' => 'i18n', 'label' => $i18n->getName()], 'emsco-core')
+            ),
         ]);
     }
 
@@ -105,10 +119,17 @@ class I18nController extends AbstractController
             'form' => $form->createView(),
             'icon' => 'fa fa-language',
             'title' => t('type.title_overview', ['type' => 'i18n'], 'emsco-core'),
-            'breadcrumb' => [
-                'admin' => t('key.admin', [], 'emsco-core'),
-                'page' => t('key.i18n', [], 'emsco-core'),
-            ],
+            'subTitle' => t('type.title_sub', ['type' => 'i18n'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb(),
         ]);
+    }
+
+    private function breadcrumb(): Navigation
+    {
+        return Navigation::admin()->add(
+            label: t('key.i18n', [], 'emsco-core'),
+            icon: 'fa fa-language',
+            route: Routes::I18N_INDEX,
+        );
     }
 }

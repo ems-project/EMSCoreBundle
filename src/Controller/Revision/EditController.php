@@ -9,6 +9,7 @@ use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\DataTable\Type\Revision\RevisionDraftsDataTableType;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
@@ -274,10 +275,10 @@ class EditController extends AbstractController
             'form' => $form->createView(),
             'icon' => 'fa fa-fire',
             'title' => t('revision.draft.title', ['pluralName' => $contentTypeId->getPluralName()], 'emsco-core'),
-            'breadcrumb' => [
-                'contentType' => $contentTypeId,
-                'page' => t('revision.draft.label', [], 'emsco-core'),
-            ],
+            'breadcrumb' => Navigation::data($contentTypeId)->add(
+                label: t('revision.draft.label', [], 'emsco-core'),
+                icon: 'fa fa-fire',
+            ),
         ]);
     }
 

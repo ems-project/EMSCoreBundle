@@ -77,6 +77,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('ems_core.template_namespace', $config['template_namespace']);
         $container->setParameter('ems_core.dynamic_mapping', $config['dynamic_mapping']);
         $container->setParameter('ems_core.image_max_size', $config['image_max_size']);
+        $container->setParameter('ems_core.forgot_password_url', $config['forgot_password_url']);
 
         $container->setParameter('ems_core.security.firewall.core', $config['security']['firewall']['core']);
         $container->setParameter('ems_core.security.firewall.api', $config['security']['firewall']['api']);
@@ -106,6 +107,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             'trigger_job_from_web' => $configs[0]['trigger_job_from_web'] ?? Configuration::TRIGGER_JOB_FROM_WEB,
             'routes' => (new \ReflectionClass(Routes::class))->getConstants(),
             'image_max_size' => $configs[0]['image_max_size'] ?? Configuration::IMAGE_MAX_SIZE,
+            'forgot_password_url' => $configs[0]['forgot_password_url'] ?? null,
         ];
 
         if (!empty($configs[0]['template_options'])) {

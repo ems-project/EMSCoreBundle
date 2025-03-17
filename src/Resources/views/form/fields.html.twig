@@ -100,7 +100,8 @@
 
 
 {% block ems_choice_row %}
-	{{form_row(form.value, {'attr': attr, 'required': required, 'disabled': disabled})}}
+    {{form_row(form.value, {'attr': attr, 'required': required, 'disabled': disabled})}}
+    {{ block('form_help') }}
 {%- endblock ems_choice_row %}
 
 {% block colorpicker_widget -%}

@@ -12,6 +12,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DateTimeFieldType extends DataFieldType
 {
+    public const string DEFAULT_PARSE_FORMAT = 'd/m/Y H:i:s';
+    public const string DEFAULT_DISPLAY_FORMAT = 'dd/MM/yyyy HH:mm:ss';
+
     #[\Override]
     public function getLabel(): string
     {
@@ -59,7 +62,7 @@ class DateTimeFieldType extends DataFieldType
             'disabled' => $this->isDisabled($options),
             'attr' => [
                 'class' => 'datetime-picker',
-                'data-date-format' => $fieldType->getDisplayOption('displayFormat', 'D/MM/YYYY HH:mm:ss'),
+                'data-date-format' => $fieldType->getDisplayOption('displayFormat', self::DEFAULT_DISPLAY_FORMAT),
                 'data-date-days-of-week-disabled' => \sprintf('[%s]', $fieldType->getDisplayOption('daysOfWeekDisabled')),
                 'data-date-disabled-hours' => \sprintf('[%s]', $fieldType->getDisplayOption('hoursDisabled')),
             ],
@@ -86,11 +89,11 @@ class DateTimeFieldType extends DataFieldType
         $optionsForm->get('displayOptions')
             ->add('displayFormat', TextType::class, [
                 'required' => false,
-                'attr' => ['placeholder' => 'dd/MM/yyyy HH:mm'],
+                'attr' => ['placeholder' => self::DEFAULT_DISPLAY_FORMAT],
             ])
             ->add('parseFormat', TextType::class, [
                 'required' => false,
-                'attr' => ['placeholder' => '(PHP) d/m/Y H:i'],
+                'attr' => ['placeholder' => \sprintf('(PHP) %s', self::DEFAULT_PARSE_FORMAT)],
             ])
             ->add('daysOfWeekDisabled', TextType::class, [
                 'required' => false,
@@ -114,9 +117,9 @@ class DateTimeFieldType extends DataFieldType
             $fieldType = $dataField->getFieldType();
             $parseFormat = (null !== $fieldType) ? $fieldType->getDisplayOption('parseFormat') : null;
             if ($dateTime instanceof \DateTimeInterface) {
-                $value = $dateTime->format($parseFormat ?? 'd/m/Y H:i:s');
+                $value = $dateTime->format($parseFormat ?? self::DEFAULT_PARSE_FORMAT);
             } else {
-                $dataField->addMessage(\sprintf('Invalid parse format %s for date string: %s', $parseFormat ?? 'd/m/Y H:i:s', $data));
+                $dataField->addMessage(\sprintf('Invalid parse format %s for date string: %s', $parseFormat ?? self::DEFAULT_PARSE_FORMAT, $data));
                 $value = $data;
             }
         }
@@ -136,7 +139,7 @@ class DateTimeFieldType extends DataFieldType
             return parent::reverseViewTransform(null, $fieldType);
         }
 
-        $parseFormat = $fieldType->getDisplayOption('parseFormat', 'd/m/Y H:i:s');
+        $parseFormat = $fieldType->getDisplayOption('parseFormat', self::DEFAULT_PARSE_FORMAT);
         $parseDateTime = \DateTimeImmutable::createFromFormat($parseFormat, $value);
 
         if ($parseDateTime) {

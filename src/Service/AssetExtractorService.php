@@ -182,20 +182,11 @@ class AssetExtractorService implements CacheWarmerInterface
         }
 
         if ($canBePersisted && isset($out)) {
-            try {
-                $cacheData = new CacheAssetExtractor();
-                $cacheData->setHash($hash);
-                $cacheData->setData($out->getSource());
-                $manager->persist($cacheData);
-                $manager->flush();
-            } catch (\Exception $e) {
-                $this->logger->warning('service.asset_extractor.persist_error', [
-                    'file_hash' => $hash,
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                    EmsFields::LOG_EXCEPTION_FIELD => $e,
-                    'tika' => 'jar',
-                ]);
-            }
+            $cacheData = new CacheAssetExtractor();
+            $cacheData->setHash($hash);
+            $cacheData->setData($out->getSource());
+            $manager->persist($cacheData);
+            $manager->flush();
         }
 
         return $out ?? new ExtractedData([], $this->tikaMaxContent);

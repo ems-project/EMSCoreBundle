@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Revision;
 
+use Doctrine\DBAL\Exception;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Json\JsonMenuNested;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
@@ -117,6 +118,8 @@ final readonly class PostProcessingService
                             EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getPrevious()->getMessage(),
                         ]);
                     }
+                } elseif ($e->getPrevious() && $e->getPrevious() instanceof Exception) {
+                    throw $e->getPrevious();
                 } elseif ($e instanceof SyntaxError) {
                     if (!$migration) {
                         $twigContext = $e->getSourceContext();

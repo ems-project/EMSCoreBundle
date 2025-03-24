@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class DateTimeFieldType extends DataFieldType
 {
     public const string DEFAULT_PARSE_FORMAT = 'd/m/Y H:i:s';
-    public const string DEFAULT_DISPLAY_FORMAT = 'dd/MM/yyyy HH:mm:ss';
+    public const string DEFAULT_DISPLAY_FORMAT = 'D/MM/YYYY HH:mm:ss';
 
     #[\Override]
     public function getLabel(): string

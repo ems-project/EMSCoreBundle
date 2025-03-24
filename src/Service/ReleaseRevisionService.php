@@ -90,6 +90,11 @@ final readonly class ReleaseRevisionService implements QueryServiceInterface, En
     public function finalizeDraftEvent(RevisionFinalizeDraftEvent $event): void
     {
         $revision = $event->getRevision();
+
+        if ($revision->isLazyIndex()) {
+            return;
+        }
+
         $releaseRevisions = $this->releaseRevisionRepository->getRevisionsLinkedToReleasesByOuuid($revision->giveOuuid(), $revision->giveContentType());
         foreach ($releaseRevisions as $releaseRevision) {
             $this->logger->warning('log.service.release_revision.preceding.revision.in.release', [

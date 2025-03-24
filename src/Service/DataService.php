@@ -151,8 +151,9 @@ class DataService
             }
         }
 
-        /** @var Notification $notification */
-        foreach ($revision->getNotifications() as $notification) {
+        /** @var Notification[] $revisionNotifications */
+        $revisionNotifications = $revision->isLazyIndex() ? [] : $revision->getNotifications();
+        foreach ($revisionNotifications as $notification) {
             if (Notification::PENDING === $notification->getStatus() && !$this->authorizationChecker->isGranted($notification->getTemplate()->getRole())) {
                 throw new PrivilegeException($revision, 'A pending "'.$notification->getTemplate()->getName().'" notification is locking this content');
             }
@@ -175,7 +176,7 @@ class DataService
 
         $twigExtension = $this->container->get('app.twig_extension');
 
-        if (!$username && $twigExtension instanceof AppExtension && !$twigExtension->oneGranted($revision->giveContentType()->getFieldType()->getFieldsRoles(), $super)) {
+        if (!$username && !$revision->isLazyIndex() && $twigExtension instanceof AppExtension && !$twigExtension->oneGranted($revision->giveContentType()->getFieldType()->getFieldsRoles(), $super)) {
             throw new PrivilegeException($revision);
         }
         // TODO: test circles
@@ -752,7 +753,9 @@ class DataService
 
         $objectArray = $revision->getRawData();
 
-        $this->updateDataStructure($revision->giveContentType()->getFieldType(), $form->get('data')->getNormData());
+        if (!$revision->isLazyIndex()) {
+            $this->updateDataStructure($revision->giveContentType()->getFieldType(), $form->get('data')->getNormData());
+        }
         if ($computeFields && $this->propagateDataToComputedField($form->get('data'), $objectArray, $revision->giveContentType(), $revision->giveContentType()->getName(), $revision->getOuuid())) {
             $revision->setRawData($objectArray);
         }
@@ -1384,6 +1387,11 @@ class DataService
         $data->setOrderKey($revision->giveContentType()->getFieldType()->getOrderKey());
         $data->setRawData($revision->getRawData());
         $revision->setDataField($data);
+
+        if ($revision->isLazyIndex()) {
+            return;
+        }
+
         $this->updateDataStructure($revision->giveContentType()->getFieldType(), $data);
         $object = $revision->getRawData();
         $this->updateDataValue($data, $object);

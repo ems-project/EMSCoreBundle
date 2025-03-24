@@ -385,10 +385,12 @@ class CrudController extends AbstractController
 
     public function index(Request $request, string $name, ?string $ouuid = null, string $replaceOrMerge = 'replace'): JsonResponse
     {
+        $lazyIndex = $request->query->getBoolean('lazy');
         $revision = null;
         if (null !== $ouuid) {
             try {
                 $revision = $this->dataService->getNewestRevision($name, $ouuid);
+                $revision->setLazyIndex($lazyIndex);
             } catch (NotFoundHttpException) {
             }
         }
@@ -397,6 +399,7 @@ class CrudController extends AbstractController
         if (null === $revision) {
             $contentType = $this->contentTypeService->giveByName($name);
             $revision = $this->dataService->createData($ouuid, $rawData, $contentType);
+            $revision->setLazyIndex($lazyIndex);
         } else {
             $revision = $this->dataService->replaceData($revision, $rawData, $replaceOrMerge);
         }

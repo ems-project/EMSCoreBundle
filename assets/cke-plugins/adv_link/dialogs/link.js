@@ -326,6 +326,8 @@
                             var fileInfo = [];
                             var onFileChangeFunction = function(event){
 								self.getDialog().getContentElement( 'info', 'fileLink' ).setValue('Upload starting...');
+                                var okButton = self.getDialog().getButton('ok');
+                                okButton.disable();
 								for (var loop = 0; loop < event.target.files.length; loop++) {
 									var fileUploader = new FileUploader({
 										file: event.target.files[loop],
@@ -345,9 +347,11 @@
 											var link = 'ems://asset:' + fileInfo['hash'] + '?name=' + encodeURI(fileInfo['name']) + '&type=' + encodeURI(fileInfo['type']);
 											self.getDialog().getContentElement( 'info', 'fileLink' ).setValue(fileInfo['name']);
 											self.getDialog().getContentElement( 'info', 'fileLink' ).getInputElement().$.setAttribute('data-link', link);
+                                            okButton.enable();
 										},
 										onError: function(message, code){
 											alert(message);
+                                            okButton.enable();
 										},
 									});
 									break;

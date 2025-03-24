@@ -66,6 +66,7 @@ class Revision implements EntityInterface, \Stringable
     private bool $selfUpdate = false;
 
     public const VERSION_BLANK = 'silent';
+    private bool $lazyIndex = false;
 
     public function enableSelfUpdate(): void
     {
@@ -94,7 +95,21 @@ class Revision implements EntityInterface, \Stringable
      */
     public function getData(): array
     {
+        if ($this->isLazyIndex()) {
+            return [];
+        }
+
         return RawDataTransformer::transform($this->giveContentType()->getFieldType(), $this->rawData ?? []);
+    }
+
+    public function setLazyIndex(bool $lazyIndex): void
+    {
+        $this->lazyIndex = $lazyIndex;
+    }
+
+    public function isLazyIndex(): bool
+    {
+        return $this->lazyIndex;
     }
 
     /**
@@ -146,6 +161,7 @@ class Revision implements EntityInterface, \Stringable
                 $this->taskCurrent = $ancestor->taskCurrent;
                 $this->taskPlannedIds = $ancestor->taskPlannedIds;
                 $this->taskApprovedIds = $ancestor->taskApprovedIds;
+                $this->lazyIndex = $ancestor->lazyIndex;
 
                 if (null !== $versionUuid = $ancestor->getVersionUuid()) {
                     $this->setVersionId($versionUuid);
@@ -822,6 +838,10 @@ class Revision implements EntityInterface, \Stringable
         if (null === $this->getVersionUuid()) {
             $versionId = isset($this->rawData['_version_uuid']) ? Uuid::fromString($this->rawData['_version_uuid']) : Uuid::uuid4();
             $this->setVersionId($versionId);
+        }
+
+        if ($this->isLazyIndex()) {
+            return;
         }
 
         if (\count($versioning->getTags()) > 0) {

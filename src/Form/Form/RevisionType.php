@@ -53,6 +53,7 @@ class RevisionType extends AbstractType
             'migration' => $options['migration'],
             'with_warning' => $options['with_warning'],
             'raw_data' => $options['raw_data'],
+            'lazy_index' => $revision && $revision->isLazyIndex(),
             'disabled_fields' => $contentType->getDisabledDataFields(),
             'referrer-ems-id' => $revision && $revision->hasOuuid() ? $revision->getEmsId() : null,
         ]);

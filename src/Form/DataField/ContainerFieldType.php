@@ -62,6 +62,10 @@ class ContainerFieldType extends DataFieldType
             throw new \RuntimeException('Unexpected non-FieldType entity');
         }
 
+        if (true === $options['lazy_index']) {
+            return;
+        }
+
         foreach ($fieldType->getChildren() as $child) {
             $this->buildChildForm($child, $options, $builder);
         }
@@ -82,8 +86,11 @@ class ContainerFieldType extends DataFieldType
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
-        $resolver->setDefault('icon', null);
-        $resolver->setDefault('language', null);
+        $resolver->setDefaults([
+            'icon' => null,
+            'language' => null,
+            'lazy_index' => false,
+        ]);
     }
 
     #[\Override]

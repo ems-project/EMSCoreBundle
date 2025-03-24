@@ -67,6 +67,7 @@ class HolderFieldType extends DataFieldType
     {
         parent::configureOptions($resolver);
         $resolver->setDefault('is_visible', false);
+        $resolver->setDefault('lazy_index', false);
     }
 
     #[\Override]

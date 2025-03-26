@@ -7,9 +7,9 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Elastica\Query\AbstractQuery;
 use Elastica\Query\BoolQuery;
-use Elastica\Query\Exists;
-use Elastica\Query\Terms;
+use Elastica\Query\Term;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\Document as ElasticsearchDocument;
 use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -124,15 +124,15 @@ class SearchService
         $searchQuery = null;
 
         $versioning = $contentType->getVersioning();
-        if ($versioning->enabled() && null !== $dateToField = $versioning->field(VersionFields::DATE_TO)) {
-            $shouldVersion = new BoolQuery();
-            $shouldVersion->addMust($this->elasticaService->getTermsQuery(Mapping::VERSION_UUID, [$ouuid]));
-            $shouldVersion->addMustNot(new Exists($dateToField));
+        if ($versioning->enabled() && null !== $dateFromField = $versioning->field(VersionFields::DATE_FROM)) {
+            $searchLatestVersion = new CommonSearch([$index], new Term([Mapping::VERSION_UUID => $ouuid]));
+            $searchLatestVersion->setSize(1);
+            $searchLatestVersion->setSort([$dateFromField => ['order' => 'desc']]);
 
-            $searchQuery = new BoolQuery();
-            $searchQuery->setMinimumShouldMatch(1);
-            $searchQuery->addShould($shouldVersion);
-            $searchQuery->addShould(new Terms('_id', [$ouuid]));
+            $searchLatestResults = $this->elasticaService->search($searchLatestVersion)->getResults();
+            if (isset($searchLatestResults[0])) {
+                return Document::fromResult($searchLatestResults[0]);
+            }
         }
 
         return $this->elasticaService->getDocument($index, $contentType->getName(), $ouuid, [], [], $searchQuery);

@@ -178,7 +178,7 @@ class ElasticsearchController extends AbstractController
             'json' => new JsonResponse(\array_filter(\array_merge($context, [
                 'body' => $this->renderBlock($htmlTemplate, 'status', $context)->getContent(),
             ]))),
-            'xml' => new Response($this->serializer->serialize($context, 'xml'), \Symfony\Component\HttpFoundation\Response::HTTP_OK, ['Content-Type' => 'application/xml']),
+            'xml' => new Response($this->serializer->serialize($context, 'xml'), Response::HTTP_OK, ['Content-Type' => 'application/xml']),
             default => $this->render($htmlTemplate, \array_filter(\array_merge($context, [
                 'title' => t('status.title', [], 'emsco-core'),
                 'subTitle' => t('status.title_sub', [], 'emsco-core'),

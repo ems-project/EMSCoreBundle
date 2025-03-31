@@ -38,7 +38,7 @@ class MailerService
      */
     public function send(array $emails, string $title, string $body): void
     {
-        $email = (new Email())
+        $email = new Email()
             ->from($this->from)
             ->to(...$emails)
             ->subject($title)
@@ -58,7 +58,7 @@ class MailerService
 
     public function sendMailTemplate(MailTemplate $template, string $type = 'html'): void
     {
-        $email = (new Email())
+        $email = new Email()
             ->from($this->from)
             ->subject($template->getSubject());
         if (\count($template->getTo()) > 0) {

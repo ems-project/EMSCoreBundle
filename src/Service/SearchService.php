@@ -90,7 +90,7 @@ class SearchService
                     $boolQuery->addMustNot($esFilter);
                     break;
                 case 'filter':
-                    $boolQuery->addFilter((new BoolQuery())->addMust($esFilter));
+                    $boolQuery->addFilter(new BoolQuery()->addMust($esFilter));
                     break;
                 default:
                     throw new \RuntimeException(\sprintf('Unexpected %s boolean clause', $filter->getBooleanClause()));

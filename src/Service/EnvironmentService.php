@@ -300,7 +300,7 @@ class EnvironmentService implements EntityServiceInterface
             });
         }
 
-        return (new ArrayCollection($circleEnvironments))->filter(function (Environment $e) {
+        return new ArrayCollection($circleEnvironments)->filter(function (Environment $e) {
             $role = $e->getRolePublish();
 
             return null === $role || $this->authorizationChecker->isGranted($role);

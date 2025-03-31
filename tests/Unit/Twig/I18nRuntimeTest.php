@@ -91,7 +91,7 @@ class I18nRuntimeTest extends TestCase
         $results = [];
 
         foreach ($dbResults as $result) {
-            $i18n = (new I18n())
+            $i18n = new I18n()
                 ->setIdentifier($result['identifier'])
                 ->setCreated(new \DateTime($result['created']))
                 ->setModified(new \DateTime($result['modified']))

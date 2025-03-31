@@ -20,6 +20,6 @@ class Equals implements ConditionInterface
     #[\Override]
     public function valid($objectOrArray): bool
     {
-        return $this->value === (new PropertyAccessor())->getValue($objectOrArray, $this->pathProperty);
+        return $this->value === new PropertyAccessor()->getValue($objectOrArray, $this->pathProperty);
     }
 }

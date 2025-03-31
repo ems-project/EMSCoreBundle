@@ -86,7 +86,7 @@ final readonly class IndexService
      */
     public function indexDocument(string $index, string $contentTypeName, ?string $ouuid, array $source): ?string
     {
-        $source[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTimeInterface::ATOM);
+        $source[Mapping::PUBLISHED_DATETIME_FIELD] = new \DateTime()->format(\DateTimeInterface::ATOM);
         $source[EMSSource::FIELD_CONTENT_TYPE] = $contentTypeName;
         $endpoint = new Index();
         $endpoint->setIndex($index);

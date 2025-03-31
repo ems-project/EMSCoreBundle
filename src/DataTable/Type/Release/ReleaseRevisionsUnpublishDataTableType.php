@@ -190,7 +190,7 @@ class ReleaseRevisionsUnpublishDataTableType extends AbstractTableType implement
             $searchValueQuery = new BoolQuery();
             $searchValueQuery
                 ->setMinimumShouldMatch(1)
-                ->addShould((new QueryString($searchValueEscaped))->setDefaultField('_all'))
+                ->addShould(new QueryString($searchValueEscaped)->setDefaultField('_all'))
                 ->addShould(new MatchQuery('_all', $searchValue))
                 ->addShould(new Wildcard('_all', \sprintf('*%s*', $searchValueEscaped)));
 

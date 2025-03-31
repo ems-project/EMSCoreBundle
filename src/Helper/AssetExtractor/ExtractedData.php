@@ -60,7 +60,7 @@ class ExtractedData
             return null;
         }
 
-        return (new \DateTimeImmutable())->setTimestamp($parseDate);
+        return new \DateTimeImmutable()->setTimestamp($parseDate);
     }
 
     public function getDate(): string

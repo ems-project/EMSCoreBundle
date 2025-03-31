@@ -116,7 +116,7 @@ class ActionImportController
 
     private function configOptionsResolver(): OptionsResolver
     {
-        return (new OptionsResolver())
+        return new OptionsResolver()
             ->setRequired(['type', 'field', 'columns'])
             ->setAllowedValues('type', ['jsonMenuNested'])
             ->setAllowedTypes('type', 'string')

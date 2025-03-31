@@ -213,7 +213,7 @@ class JsonMenuNestedService
         $username = $this->userService->getCurrentUser()->getUsername();
 
         $rawData = [];
-        (new PropertyAccessor())->setValue($rawData, $path, $structure);
+        new PropertyAccessor()->setValue($rawData, $path, $structure);
 
         $this->revisionService->updateRawData($config->revision, $rawData, $username);
         $this->elasticaService->refresh($config->revision->giveContentType()->giveEnvironment()->getAlias());

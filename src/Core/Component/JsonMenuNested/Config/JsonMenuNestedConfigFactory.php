@@ -39,7 +39,7 @@ class JsonMenuNestedConfigFactory extends AbstractConfigFactory
             throw new NotFoundHttpException('Revision not found');
         }
 
-        $structure = (new PropertyAccessor())->getValue($revision->getData(), $options['field_path']);
+        $structure = new PropertyAccessor()->getValue($revision->getData(), $options['field_path']);
         if (null === $fieldType = $revision->giveContentType()->getFieldType()->findChildByPath($options['field_path'])) {
             throw new NotFoundHttpException('Field type not found');
         }

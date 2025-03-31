@@ -64,10 +64,10 @@ final class TaskNotificationMailCommand extends AbstractCommand
         $this->limit = $this->getOptionInt(self::OPTION_LIMIT);
 
         if ($deadlineStart = $this->getOptionStringNull(self::OPTION_DEADLINE_START)) {
-            $this->deadlineStart = (new \DateTimeImmutable())->modify($deadlineStart);
+            $this->deadlineStart = new \DateTimeImmutable()->modify($deadlineStart);
         }
         if ($deadlineEnd = $this->getOptionStringNull(self::OPTION_DEADLINE_END)) {
-            $this->deadlineEnd = (new \DateTimeImmutable())->modify($deadlineEnd);
+            $this->deadlineEnd = new \DateTimeImmutable()->modify($deadlineEnd);
         }
     }
 

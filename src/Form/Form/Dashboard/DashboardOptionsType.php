@@ -103,7 +103,7 @@ class DashboardOptionsType extends AbstractType
             ])
             ->setNormalizer(
                 'label_format',
-                fn (Options $options) => 'dashboard.'.\strtolower((new \ReflectionClass($options['dashboard']))->getShortName()).'.%name%'
+                fn (Options $options) => 'dashboard.'.\strtolower(new \ReflectionClass($options['dashboard'])->getShortName()).'.%name%'
             )
             ->setRequired(['dashboard'])
             ->setAllowedTypes('dashboard', DashboardInterface::class)

@@ -95,7 +95,7 @@ class Bulker
         $body[Mapping::CONTENT_TYPE_FIELD] = $contentType;
 
         if ($this->publish) {
-            $body[Mapping::PUBLISHED_DATETIME_FIELD] = (new \DateTime())->format(\DateTimeInterface::ATOM);
+            $body[Mapping::PUBLISHED_DATETIME_FIELD] = new \DateTime()->format(\DateTimeInterface::ATOM);
         }
 
         $action = $this->createAction($index, $ouuid);

@@ -57,8 +57,8 @@ class MediaLibraryFolderFactory
     {
         $query = $this->elasticaService->getBoolQuery();
         $query
-            ->addMust((new Term())->setTerm($config->fieldPath, $path->getValue()))
-            ->addMustNot((new Nested())->setPath($config->fieldFile)->setQuery(new Exists($config->fieldFile)));
+            ->addMust(new Term()->setTerm($config->fieldPath, $path->getValue()))
+            ->addMustNot(new Nested()->setPath($config->fieldFile)->setQuery(new Exists($config->fieldFile)));
 
         $search = new Search([$config->contentType->giveEnvironment()->getAlias()], $query);
         $search->setContentTypes([$config->contentType->getName()]);

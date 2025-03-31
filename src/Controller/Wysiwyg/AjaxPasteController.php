@@ -36,7 +36,7 @@ class AjaxPasteController
         }
 
         try {
-            $html = (new Html($content))
+            $html = new Html($content)
                 ->sanitize($pasteConfig['sanitize'] ?? [])
                 ->prettyPrint($pasteConfig['prettyPrint'] ?? []);
 

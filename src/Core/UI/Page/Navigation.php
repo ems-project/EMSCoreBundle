@@ -17,22 +17,22 @@ class Navigation
 
     public static function admin(): self
     {
-        return (new self())->add(label: t('key.admin', [], 'emsco-core'));
+        return new self()->add(label: t('key.admin', [], 'emsco-core'));
     }
 
     public static function dashboards(): self
     {
-        return (new self())->add(label: t('key.dashboards', [], 'emsco-core'));
+        return new self()->add(label: t('key.dashboards', [], 'emsco-core'));
     }
 
     public static function publishers(): self
     {
-        return (new self())->add(label: t('key.publishers', [], 'emsco-core'));
+        return new self()->add(label: t('key.publishers', [], 'emsco-core'));
     }
 
     public static function data(?ContentType $contentType = null): self
     {
-        $navigation = (new self())->add(label: t('key.content_types', [], 'emsco-core'));
+        $navigation = new self()->add(label: t('key.content_types', [], 'emsco-core'));
         if (null !== $contentType) {
             $navigation->add(
                 text: $contentType->getPluralName(),

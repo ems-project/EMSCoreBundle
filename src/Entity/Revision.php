@@ -845,7 +845,9 @@ class Revision implements EntityInterface, \Stringable
         }
 
         if (\count($versioning->getTags()) > 0) {
-            $this->setVersionTag($this->rawData[Mapping::VERSION_TAG] ?? $this->getVersionTagDefault());
+            if (null === $this->getVersionTag()) {
+                $this->setVersionTag($this->rawData[Mapping::VERSION_TAG] ?? $this->getVersionTagDefault());
+            }
             $this->updateVersionNextTag();
         }
 

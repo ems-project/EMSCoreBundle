@@ -831,7 +831,10 @@ class Revision implements EntityInterface, \Stringable
             $this->setVersionId($versionId);
         }
 
-        $this->setVersionTag($this->rawData[Mapping::VERSION_TAG] ?? $this->getVersionTagDefault());
+        if (null === $this->getVersionTag()) {
+            $this->setVersionTag($this->rawData[Mapping::VERSION_TAG] ?? $this->getVersionTagDefault());
+        }
+
         $this->updateVersionNextTag();
 
         if (null === $this->getVersionDate('from') && null === $this->getVersionDate('to')) {

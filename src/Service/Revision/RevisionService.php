@@ -334,7 +334,6 @@ class RevisionService implements RevisionServiceInterface
         $originalRawData = $revision->getRawData();
         $this->lock($revision, $user);
 
-        $rootFieldType = $revision->giveContentType()->getFieldType();
         $data = [...$revision->getRawData(), ...$autoSave];
 
         $revision->setRawData($data);

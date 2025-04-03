@@ -33,12 +33,18 @@ class AlignIndexesType extends Select2Type
             'label' => 'Align with:',
             'placeholder' => 'select managed alias',
             'choices' => \array_keys($choices),
+            'choice_label' => function (string $choice) use ($choices): string {
+                $managedAlias = $choices[$choice];
+
+                return $managedAlias->getLabel();
+            },
             'choice_attr' => function ($name) use ($choices) {
                 $managedAlias = $choices[$name];
 
                 return [
                     'data-indexes' => '["'.\implode('", "', \array_keys($managedAlias->getIndexes())).'"]',
                     'data-content' => '<span class="text-'.$managedAlias->getColor().'"><i class="fa fa-code-fork"></i>&nbsp;&nbsp;'.$managedAlias->getName().'</span>',
+                    'data-icon' => \sprintf('fa fa-code-fork text-%s', $managedAlias->getColor()),
                 ];
             },
         ]);

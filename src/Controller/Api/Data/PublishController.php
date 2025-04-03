@@ -10,16 +10,17 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use Ramsey\Uuid\Nonstandard\Uuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class PublishController
+readonly class PublishController
 {
     public function __construct(
-        private readonly PublishService $publishService,
-        private readonly RevisionService $revisionService,
-        private readonly ContentTypeService $contentTypeService,
-        private readonly EnvironmentService $environmentService,
+        private PublishService $publishService,
+        private RevisionService $revisionService,
+        private ContentTypeService $contentTypeService,
+        private EnvironmentService $environmentService,
     ) {
     }
 
@@ -47,5 +48,17 @@ class PublishController
             'success' => true,
             'already-published' => 0 === $publishedCounter,
         ]);
+    }
+
+    public function publishVersions(string $contentTypeName, string $versionUuid, string $environment): JsonResponse
+    {
+        $contentType = $this->contentTypeService->giveByName($contentTypeName);
+        $published = $this->revisionService->publishVersion(
+            $contentType->validate(),
+            Uuid::fromString($versionUuid),
+            $environment
+        );
+
+        return new JsonResponse(['success' => true, 'published' => $published]);
     }
 }

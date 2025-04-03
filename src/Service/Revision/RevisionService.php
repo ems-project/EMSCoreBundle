@@ -540,4 +540,26 @@ class RevisionService implements RevisionServiceInterface
 
         return 1 === $this->publishService->publish($revision, $environment);
     }
+
+    /**
+     * @return list<string> published document ids
+     */
+    public function publishVersion(ContentType $contentType, UuidInterface $versionUuid, string $environmentName): array
+    {
+        $environment = $this->environmentService->giveByName($environmentName);
+        $versions = $this->revisionRepository->findAllByVersionUuid($versionUuid, $contentType->giveEnvironment());
+
+        $results = [];
+        foreach ($versions as $version) {
+            if ($version->isPublished($environment->getName())) {
+                continue;
+            }
+
+            $results[$version->getOuuid()] = $this->publishService->publish($version, $environment);
+        }
+
+        $published = \array_filter($results, static fn ($result) => 1 === $result);
+
+        return \array_keys($published);
+    }
 }

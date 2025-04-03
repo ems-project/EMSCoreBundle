@@ -22,11 +22,17 @@ class ViewTypePickerType extends Select2Type
             'attr' => [
                 'data-live-search' => true,
             ],
+            'choice_label' => function (string $choice): string {
+                $viewType = $this->viewTypes->get($choice);
+
+                return $viewType->getLabel();
+            },
             'choice_attr' => function ($category, $key, $id) {
                 $viewType = $this->viewTypes->get($id);
 
                 return [
-                    'data-content' => "<div class='text-".$category."'><i class='fa fa-square'></i>&nbsp;&nbsp;".$viewType->getLabel().'</div>',
+                    'data-content' => "<i class='fa fa-square'></i>&nbsp;&nbsp;".$viewType->getLabel(),
+                    'data-icon' => 'fa fa-square',
                 ];
             },
             'choice_value' => fn ($value) => $value,

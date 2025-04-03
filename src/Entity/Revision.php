@@ -836,7 +836,7 @@ class Revision implements EntityInterface, \Stringable
         }
 
         if (null === $this->getVersionUuid()) {
-            $versionId = isset($this->rawData['_version_uuid']) ? Uuid::fromString($this->rawData['_version_uuid']) : Uuid::uuid4();
+            $versionId = isset($this->rawData[Mapping::VERSION_UUID]) ? Uuid::fromString($this->rawData[Mapping::VERSION_UUID]) : Uuid::uuid4();
             $this->setVersionId($versionId);
         }
 

@@ -91,14 +91,14 @@ class ViewType extends AbstractType
             ])
                 ->add('save', SubmitEmsType::class, [
                     'attr' => [
-                        'class' => 'btn-primary btn-sm',
+                        'class' => 'btn btn-primary btn-sm',
                         'data-ajax-save-url' => $options['ajax-save-url'],
                     ],
                     'icon' => 'fa fa-save',
                 ])
                 ->add('saveAndClose', SubmitEmsType::class, [
                     'attr' => [
-                        'class' => 'btn-primary btn-sm',
+                        'class' => 'btn btn-primary btn-sm',
                     ],
                     'icon' => 'fa fa-save',
                 ]);

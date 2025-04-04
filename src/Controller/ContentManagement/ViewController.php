@@ -70,7 +70,7 @@ class ViewController extends AbstractController
                 parameters: ['type' => 'content_type_view', 'contentType' => $contentType->getSingularName()],
                 domain: 'emsco-core'
             ),
-            'breadcrumb' => Navigation::admin()->contentType($contentType)->contentTypeViews($contentType),
+            'breadcrumb' => $this->breadcrumb($contentType),
         ]);
     }
 
@@ -118,6 +118,11 @@ class ViewController extends AbstractController
         return $this->render("@$this->templateNamespace/view/add.html.twig", [
             'contentType' => $contentType,
             'form' => $form->createView(),
+            'title' => t('type.title_create', ['type' => 'view'], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'view'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb($contentType)->add(
+                t('type.title_create', ['type' => 'view'], 'emsco-core')
+            ),
         ]);
     }
 
@@ -153,6 +158,11 @@ class ViewController extends AbstractController
             'form' => $form->createView(),
             'contentType' => $view->getContentType(),
             'view' => $view,
+            'title' => t('type.title_edit', ['type' => 'view', 'label' => $view->getLabel()], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'view'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb($view->getContentType())->add(
+                t('type.title_edit', ['type' => 'view', 'label' => $view->getLabel()], 'emsco-core')
+            ),
         ]);
     }
 
@@ -179,5 +189,10 @@ class ViewController extends AbstractController
         return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_VIEW_INDEX, [
             'contentType' => $view->getContentType()->getId(),
         ]);
+    }
+
+    private function breadcrumb(ContentType $contentType): Navigation
+    {
+        return Navigation::admin()->contentType($contentType)->contentTypeViews($contentType);
     }
 }

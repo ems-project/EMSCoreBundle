@@ -386,6 +386,7 @@ type:
             job_schedule    {Create schedule}
             query_search    {Create query search}
             search          {Create search}
+            view            {Create view}
             wysiwyg_profile {Create profile}
             other           {Create}
         }
@@ -401,6 +402,7 @@ type:
             i18n            {Edit I18N: {label}}
             job_schedule    {Edit schedule: {label}}
             query_search    {Edit query search: {label}}
+            view            {Edit view: {label}}
             wysiwyg_profile {Edit profile: {label}}
             other           {Edit}
         }
@@ -441,5 +443,6 @@ type:
             job           {Running process}
             job_schedule  {When you are not at work}
             log           {Who did what}
+            view          {Customize the menu}
             other         {}
         }

@@ -12,6 +12,7 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Exception\NotFoundException;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -117,5 +118,15 @@ readonly class CoreDataServiceBridge implements CoreDataBridgeInterface
     public function publish(EMSLink $emsLink, string $environment): CoreBridgeResponse
     {
         return $this->response(fn () => $this->revisionService->publish($emsLink, $environment));
+    }
+
+    #[\Override]
+    public function publishVersions(string $versionUuid, string $environment): CoreBridgeResponse
+    {
+        return $this->response(fn () => $this->revisionService->publishVersion(
+            $this->contentType->validate(),
+            Uuid::fromString($versionUuid),
+            $environment
+        ));
     }
 }

@@ -26,8 +26,10 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\Mapping;
 use EMS\CoreBundle\Service\PublishService;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormInterface;
@@ -350,6 +352,10 @@ class RevisionService implements RevisionServiceInterface
             ->setAutoSaveBy($user->getUsername())
             ->setAutoSave($validatedAutoSaveData);
 
+        if (isset($autoSave[Mapping::VERSION_UUID])) {
+            $revision->setVersionId(Uuid::fromString($autoSave[Mapping::VERSION_UUID]));
+        }
+
         $this->revisionRepository->save($revision);
     }
 
@@ -533,5 +539,27 @@ class RevisionService implements RevisionServiceInterface
         }
 
         return 1 === $this->publishService->publish($revision, $environment);
+    }
+
+    /**
+     * @return list<string> published document ids
+     */
+    public function publishVersion(ContentType $contentType, UuidInterface $versionUuid, string $environmentName): array
+    {
+        $environment = $this->environmentService->giveByName($environmentName);
+        $versions = $this->revisionRepository->findAllByVersionUuid($versionUuid, $contentType->giveEnvironment());
+
+        $results = [];
+        foreach ($versions as $version) {
+            if ($version->isPublished($environment->getName())) {
+                continue;
+            }
+
+            $results[$version->getOuuid()] = $this->publishService->publish($version, $environment);
+        }
+
+        $published = \array_filter($results, static fn ($result) => 1 === $result);
+
+        return \array_keys($published);
     }
 }

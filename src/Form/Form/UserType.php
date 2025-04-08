@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\Form;
 
 use Doctrine\ORM\EntityRepository;
+use EMS\CoreBundle\Core\User\GroupManager;
 use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Entity\Group;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
@@ -31,7 +33,7 @@ final class UserType extends AbstractType
     public const string MODE_CREATE = 'create';
     public const string MODE_UPDATE = 'update';
 
-    public function __construct(private readonly UserService $userService, private readonly ?string $circleObject)
+    public function __construct(private readonly UserService $userService, private readonly GroupManager $groupManager, private readonly ?string $circleObject)
     {
     }
 
@@ -64,6 +66,11 @@ final class UserType extends AbstractType
                 'second_options' => ['label' => 'user.password_confirmation'],
                 'invalid_message' => 'user.password.mismatch',
             ]);
+        }
+
+        $choices = [];
+        foreach ($this->groupManager->getAll() as $group) {
+            $choices[$group->getLabel()] = $group->getId();
         }
 
         $builder
@@ -121,6 +128,17 @@ final class UserType extends AbstractType
                 'required' => false,
                 'choices' => \array_flip(Locales::getNames()),
                 'choice_translation_domain' => false,
+            ])
+            ->add('group', EntityType::class, [
+                'required' => false,
+                'label' => 'Group',
+                'class' => Group::class,
+                'choice_label' => 'name',
+                'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('g'),
+                'attr' => [
+                    'data-live-search' => true,
+                    'class' => 'user-group-picker',
+                ],
             ])
             ->add('userOptions', UserOptionsType::class, [
                 'label' => 'user.option.title',

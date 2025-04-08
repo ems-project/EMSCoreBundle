@@ -48,6 +48,11 @@
             <argument type="service" id="logger"/>
             <tag name="emsco.entity.service" priority="70" />
         </service>
+        <service id="ems.group.manager" class="EMS\CoreBundle\Core\User\GroupManager">
+            <argument type="service" id="ems.repository.group"/>
+            <argument type="service" id="logger"/>
+            <tag name="emsco.entity.service" priority="70" />
+        </service>
         <service id="ems.service.channel" class="EMS\CoreBundle\Service\Channel\ChannelService">
             <argument type="service" id="ems.repository.channel"/>
             <argument type="service" id="logger"/>

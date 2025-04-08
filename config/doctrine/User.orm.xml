@@ -37,6 +37,9 @@
     <many-to-one field="wysiwygProfile" target-entity="EMS\CoreBundle\Entity\WysiwygProfile">
       <join-column name="wysiwyg_profile_id"/>
     </many-to-one>
+    <many-to-one field="group" target-entity="EMS\CoreBundle\Entity\Group">
+        <join-column name="group_id"/>
+    </many-to-one>
     <one-to-many field="authTokens" target-entity="EMS\CoreBundle\Entity\AuthToken" mapped-by="user">
       <cascade>
         <cascade-remove/>

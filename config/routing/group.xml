@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="emsco_group_admin_index" path="/admin/group"
+           controller="EMS\CoreBundle\Controller\User\GroupController::index"
+           methods="GET|POST"/>
+    <route id="emsco_group_admin_add" path="/admin/group/add"
+           controller="EMS\CoreBundle\Controller\User\GroupController::addGroup"
+           methods="GET|POST"/>
+    <route id="emsco_group_admin_delete" path="/admin/group/delete/{group}"
+           controller="EMS\CoreBundle\Controller\User\GroupController::deleteGroup"
+           methods="POST"/>
+    <route id="emsco_group_admin_edit" path="/admin/group/edit/{group}"
+           controller="EMS\CoreBundle\Controller\User\GroupController::editGroup"
+           methods="GET|POST"/>
+</routes>

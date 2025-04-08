@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller;
 
+use Doctrine\ORM\EntityNotFoundException;
 use EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\FieldType\FieldTypeService;
 use EMS\CoreBundle\Core\ContentType\FieldType\FieldTypeTreeItem;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
+use EMS\CoreBundle\Core\User\GroupManager;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\DataTable\Type\UserDataTableType;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Form\Form\UserType;
@@ -35,6 +38,7 @@ class UserController extends AbstractController
         private readonly ContentTypeRepository $contentTypeRepository,
         private readonly UserService $userService,
         private readonly UserManager $userManager,
+        private readonly GroupManager $groupManager,
         private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGenerator,
         private readonly DataTableFactory $dataTableFactory,
         private readonly AuthTokenRepository $authTokenRepository,
@@ -306,5 +310,34 @@ class UserController extends AbstractController
         }
 
         return true;
+    }
+
+    public function removeFromGroup(User $user, string $groupName): Response
+    {
+        $userGroup = $user->getGroup();
+        if (null === $userGroup || $userGroup->getName() !== $groupName) {
+            throw new \RuntimeException(\sprintf('The user is not in the group "%s".', $groupName));
+        }
+        $user->setGroup(null);
+        $this->userService->updateUser($user);
+
+        return $this->redirectToRoute(Routes::GROUP_EDIT, [
+            'group' => $groupName,
+        ]);
+    }
+
+    public function addToGroup(User $user, string $group): Response
+    {
+        $userGroup = $this->groupManager->getByItemId($group);
+        if (!$userGroup instanceof EntityInterface) {
+            throw new EntityNotFoundException();
+        }
+
+        $user->setGroup($userGroup);
+        $this->userService->updateUser($user);
+
+        return $this->redirectToRoute(Routes::GROUP_EDIT, [
+            'group' => $userGroup->getId(),
+        ]);
     }
 }

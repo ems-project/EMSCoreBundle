@@ -101,7 +101,9 @@ class TwigElementsController extends AbstractController
         if (!$this->isGranted('ROLE_USER_MANAGEMENT')) {
             return $menu;
         }
-        $menu->addChild('views.elements.side-menu-html.users', 'fa fa-users', Routes::USER_INDEX)->setTranslation([]);
+        $userMenu = $menu->addChild(t('key.user-management', [], 'emsco-core'), 'fa fa-users', Routes::USER_INDEX);
+        $userMenu->addChild(t('key.users', [], 'emsco-core'), 'fa fa-users', Routes::USER_INDEX);
+        $userMenu->addChild(t('key.groups', [], 'emsco-core'), 'fa fa-list-ul', Routes::GROUP_INDEX);
 
         return $menu;
     }

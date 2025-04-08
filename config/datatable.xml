@@ -132,6 +132,10 @@
             <argument type="service" id="ems.form.manager" />
             <tag name="emsco.datatable" />
         </service>
+        <service id="emsco.data_table.group" class="EMS\CoreBundle\DataTable\Type\GroupDataTableType">
+            <argument type="service" id="ems.group.manager" />
+            <tag name="emsco.datatable" />
+        </service>
         <service id="emsco.data_table.form_submission" class="EMS\CoreBundle\DataTable\Type\FormSubmissionDataTableType">
             <argument type="service" id="ems.form_submission" />
             <tag name="emsco.datatable" />

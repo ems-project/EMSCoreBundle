@@ -10,6 +10,7 @@
     <import resource="@EMSCoreBundle/config/routing/public.xml"/>
     <import resource="@EMSCoreBundle/config/routing/dashboard.xml"/>
     <import resource="@EMSCoreBundle/config/routing/form.xml"/>
+    <import resource="@EMSCoreBundle/config/routing/group.xml"/>
     <import resource="@EMSCoreBundle/config/routing/channel.xml"
             prefix="/channel-admin"/>
     <import resource="@EMSCoreBundle/config/routing/component.xml"

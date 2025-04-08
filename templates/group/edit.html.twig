@@ -1,0 +1,28 @@
+{% extends '@EMSCore/crud/overview.html.twig' %}
+{% trans_default_domain 'EMSCoreBundle' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-5">
+            {{ form(form) }}
+        </div>
+        <div class="col-md-7">
+            <div class="md-4">
+                <h2>{{ 'view.user.index.user-in-group'|trans }}</h2>
+                {% with {
+                    form: datatableForm,
+                } %}
+                    {{ parent() }}
+                {% endwith %}
+            </div>
+            <div class="md-4">
+                <h2>{{ 'view.user.index.user-not-in-group'|trans }}</h2>
+                {% with {
+                    form: userNotInGroupDataTable,
+                } %}
+                    {{ parent() }}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

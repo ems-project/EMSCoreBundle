@@ -756,6 +756,7 @@ user:
             locale_preferred: 'Locale preferred'
             wysiwyg_profile: 'WYSIWYG profile'
             locale_ui: UI
+            user_group: Group
     add:
         button: 'Add user'
     export:
@@ -824,6 +825,8 @@ view:
     user:
         index:
             title: 'User list'
+            user-in-group: 'User in group'
+            user-not-in-group: 'User not in group'
         permissions:
             page_title: 'Permissions Overview'
             titles:

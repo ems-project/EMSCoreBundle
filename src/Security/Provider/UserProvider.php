@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Security\Provider;
 
+use EMS\CoreBundle\Entity\Group;
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Repository\GroupRepository;
 use EMS\CoreBundle\Repository\UserRepository;
 use Symfony\Component\Security\Core\Exception\AccountExpiredException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -17,8 +19,10 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
  */
 class UserProvider implements UserProviderInterface
 {
-    public function __construct(private readonly UserRepository $userRepository)
-    {
+    public function __construct(
+        private readonly UserRepository $userRepository,
+        private readonly GroupRepository $groupRepository
+    ) {
     }
 
     #[\Override]
@@ -56,6 +60,13 @@ class UserProvider implements UserProviderInterface
 
         if ($user->isExpired()) {
             throw new AccountExpiredException(\sprintf('The account "%s" is expired', $user->getUserIdentifier()));
+        }
+        $userGroup = $user->getGroup();
+        $group = $userGroup instanceof Group ? $this->groupRepository->getById($userGroup->getId()) : null;
+        if (null !== $group) {
+            $user->setGroupRoles($group->getRoles());
+        } else {
+            $user->setGroupRoles([]);
         }
 
         return $user;

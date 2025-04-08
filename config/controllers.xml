@@ -295,6 +295,16 @@
             <tag name="controller.service_arguments"/>
         </service>
 
+        <service id="EMS\CoreBundle\Controller\User\GroupController" public="true">
+            <argument type="service" id="emsco.logger"/>
+            <argument type="service" id="ems.group.manager" />
+            <argument type="service" id="emsco.data_table.factory" />
+            <argument>%ems_core.template_namespace%</argument>
+            <call method="setContainer"/>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
+
         <!-- Submission -->
         <service id="EMS\CoreBundle\Controller\Form\SubmissionController" public="true">
             <argument type="service" id="ems.form_submission" />
@@ -627,6 +637,7 @@
             <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
             <argument type="service" id="ems.service.user" />
             <argument type="service" id="emsco.manager.user" />
+            <argument type="service" id="ems.group.manager" />
             <argument type="service" id="EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface"/>
             <argument type="service" id="emsco.data_table.factory"/>
             <argument type="service" id="ems.repository.auth_token" />

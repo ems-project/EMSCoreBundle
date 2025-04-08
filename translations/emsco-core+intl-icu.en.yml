@@ -198,6 +198,7 @@ key:
     export_documents: 'Export documents'
     filters: Filters
     forms: Forms
+    groups: Groups
     i18n: I18N
     job_logs: 'Jobs logs'
     jobs: Jobs
@@ -216,6 +217,8 @@ key:
     unreferenced_aliases: 'Unreferenced aliases'
     uploaded_files: 'Uploaded Files'
     uploaded_files_logs: 'Uploaded Files Logs'
+    user-management: 'User management'
+    users: Users
     views: Views
     wysiwyg: WYSIWYG
     wysiwyg_profiles: Profiles

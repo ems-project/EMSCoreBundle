@@ -6,8 +6,10 @@ namespace EMS\CoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Core\Security\Canonicalizer;
+use EMS\CoreBundle\Core\User\UserContextDTO;
 use EMS\CoreBundle\Core\User\UserList;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
@@ -122,19 +124,19 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
         return new UserList($resultSet);
     }
 
-    public function countUsers(string $searchValue): int
+    public function countUsers(string $searchValue, ?UserContextDTO $context = null): int
     {
         $qb = $this->createQueryBuilder('user');
         $qb->select('count(user.id)');
         $this->addSearchFilters($qb, $searchValue);
 
-        return (int) $qb->getQuery()->getSingleScalarResult();
+        return (int) $this->getQuery($qb, $context)->getSingleScalarResult();
     }
 
     /**
-     * @return array<mixed>
+     * @return User[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, ?UserContextDTO $context = null): array
     {
         $qb = $this->createQueryBuilder('user');
         $qb->setFirstResult($from)
@@ -145,7 +147,7 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
             $qb->orderBy(\sprintf('user.%s', $orderField), $orderDirection);
         }
 
-        return $qb->getQuery()->execute();
+        return $this->getQuery($qb, $context)->execute();
     }
 
     private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
@@ -160,5 +162,27 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
             $qb->andWhere($or)
                 ->setParameter(':term', '%'.$searchValue.'%');
         }
+    }
+
+    /**
+     * @return Query<null, User>
+     */
+    private function getQuery(QueryBuilder $qb, ?UserContextDTO $context): Query
+    {
+        if (null == $context || null == $context->groupId) {
+            return $qb->getQuery();
+        }
+        if ($context->inGroup) {
+            $inGroup = $qb->expr()->eq('user.group', ':userGroup');
+            $qb->andWhere($inGroup);
+        } else {
+            $inGroup = $qb->expr()->neq('user.group', ':userGroup');
+            $isNull = $qb->expr()->isNull('user.group');
+            $qb->orWhere($inGroup);
+            $qb->orWhere($isNull);
+        }
+        $qb->setParameter('userGroup', $context->groupId);
+
+        return $qb->getQuery();
     }
 }

@@ -3486,6 +3486,7 @@ schedule:
 user:
     locale: 'Language UI'
     locale_preferred: 'Language preferred'
+    group: 'Group'
     display_name: 'Display name'
     email: Email
     email_notification: 'Email notification'

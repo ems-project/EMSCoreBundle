@@ -74,6 +74,10 @@ class Routes
     final public const string FILTER_EXPORT = 'emsco_filter_export';
     final public const string FORM_ADMIN_INDEX = 'emsco_form_admin_index';
     final public const string FORM_ADMIN_ADD = 'emsco_form_admin_add';
+    final public const string GROUP_ADD = 'emsco_group_admin_add';
+    final public const string GROUP_INDEX = 'emsco_group_admin_index';
+    final public const string GROUP_EDIT = 'emsco_group_admin_edit';
+    final public const string GROUP_DELETE = 'emsco_group_admin_delete';
     final public const string FORM_ADMIN_EDIT = 'emsco_form_admin_edit';
     final public const string FORM_ADMIN_REORDER = 'emsco_form_admin_reorder';
     final public const string FORM_ADMIN_DELETE = 'emsco_form_admin_delete';
@@ -117,6 +121,8 @@ class Routes
     final public const string USER_ENABLING = 'emsco_user_enabling';
     final public const string USER_API_KEY = 'emsco_user_api_key';
     final public const string USER_DELETE = 'emsco_user_delete';
+    final public const string USER_REMOVE_FROM_GROUP = 'emsco_remove_user_from_group';
+    final public const string USER_ADD_TO_GROUP = 'emsco_add_user_to_group';
     final public const string USER_PROFILE = 'emsco_user_profile';
     final public const string USER_PROFILE_EDIT = 'emsco_user_profile_edit';
     final public const string USER_CHANGE_PASSWORD = 'emsco_user_change_password';

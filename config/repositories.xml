@@ -41,6 +41,9 @@
         <service id="ems.repository.task" class="EMS\CoreBundle\Repository\TaskRepository">
             <argument type="service" id="doctrine"/>
         </service>
+        <service id="ems.repository.group" class="EMS\CoreBundle\Repository\GroupRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
         <service id="ems.repository.dashboard" class="EMS\CoreBundle\Repository\DashboardRepository">
             <argument type="service" id="doctrine"/>
         </service>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\User;
 
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Form\User\ChangePasswordType;
 use EMS\CoreBundle\Form\User\UserProfileType;
@@ -12,6 +13,8 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+
+use function Symfony\Component\Translation\t;
 
 class ProfileController extends AbstractController
 {
@@ -23,6 +26,9 @@ class ProfileController extends AbstractController
     {
         return $this->render("@$this->templateNamespace/user/profile/show.html.twig", [
             'user' => $this->userManager->getAuthenticatedUser(),
+            'title' => t('profile.title', [], 'emsco-core'),
+            'subTitle' => t('profile.title_sub', [], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb(),
         ]);
     }
 
@@ -61,5 +67,14 @@ class ProfileController extends AbstractController
         return $this->render("@$this->templateNamespace/user/profile/change_password.html.twig", [
             'form' => $form->createView(),
         ]);
+    }
+
+    private function breadcrumb(): Navigation
+    {
+        return new Navigation()->add(
+            label: t('profile.title', [], 'emsco-core'),
+            icon: 'fa fa-user',
+            route: Routes::USER_PROFILE,
+        );
     }
 }

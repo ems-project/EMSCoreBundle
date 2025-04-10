@@ -108,7 +108,7 @@ final class UserType extends AbstractType
                     'class' => 'wysiwyg-profile-picker',
                 ],
             ])
-            ->add('roles', ChoiceType::class, [
+            ->add('userRoles', ChoiceType::class, [
                 'choices' => $this->userService->getExistingRoles(),
                 'label' => 'Roles',
                 'expanded' => true,
@@ -133,7 +133,7 @@ final class UserType extends AbstractType
                 'required' => false,
                 'label' => 'Group',
                 'class' => Group::class,
-                'choice_label' => 'name',
+                'choice_label' => 'label',
                 'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('g'),
                 'attr' => [
                     'data-live-search' => true,

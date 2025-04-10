@@ -76,9 +76,9 @@ class GroupController extends AbstractController
 
         return $this->render("@$this->templateNamespace/group/create.html.twig", [
             'form' => $form,
-            'title' => t('type.title_overview', ['type' => 'group'], 'emsco-core'),
+            'title' => t('type.title_create', ['type' => 'group'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'group'], 'emsco-core'),
-            'breadcrumb' => $this->breadcrumb(),
+            'breadcrumb' => $this->breadcrumb()->add(t('type.title_create', ['type' => 'group'], 'emsco-core')),
         ]);
     }
 
@@ -109,9 +109,9 @@ class GroupController extends AbstractController
             'form' => $form,
             'datatableForm' => $userGroupDataTable->createView(),
             'userNotInGroupDataTable' => $userNotInGroupDataTable->createView(),
-            'title' => t('type.title_edit', ['type' => 'group'], 'emsco-core'),
+            'title' => t('type.title_edit', ['type' => 'group', 'label' => $group->getLabel()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'group'], 'emsco-core'),
-            'breadcrumb' => $this->breadcrumb()->add(t('type.title_overview', ['type' => 'group'], 'emsco-core')),
+            'breadcrumb' => $this->breadcrumb()->add(t('type.title_edit', ['type' => 'group', 'label' => $group->getLabel()], 'emsco-core')),
         ]);
     }
 

@@ -164,6 +164,7 @@ field:
     release_environment_target: 'Environment for (un)publication'
     revision_version_tag: 'Yes as {version_tag}'
     revision_version_tag_empty: 'No (Silent publish)'
+    roles: Roles
     severity: Severity
     singular: Singular
     status: Status
@@ -240,6 +241,9 @@ log:
         draft_not_found: 'Draft not found with id "{revisionId}"'
         duplicate_environment: 'Environment "{name}" already exists!'
         index_not_found: 'Index "{index}" not found'
+profile:
+    title: 'Your profile'
+    title_sub: 'All about you'
 revision:
     draft:
         delete: 'Delete this draft'
@@ -297,6 +301,7 @@ type:
             environment_external {Delete the "{label}" external environment?}
             filter               {Delete the "{label}" filter?}
             form                 {Delete the "{label}" form?}
+            group                {Delete the "{label}" group?}
             i18n                 {Delete the "{label}" i18n key?}
             orphan_index         {Delete the orphan index "{label}"?}
             job                  {Delete the job?}
@@ -322,6 +327,7 @@ type:
             environment         {Delete all selected environments?}
             filter              {Delete all selected filters?}
             form                {Delete all selected forms?}
+            group               {Delete all selected groups?}
             i18n                {Delete all selected i18n keys?}
             orphan_index        {Delete all selected orphan indexes?}
             job                 {Delete all selected jobs?}
@@ -385,6 +391,7 @@ type:
             filter          {Create filter}
             form            {Create form}
             job             {Launch new job}
+            group           {Create Group}
             i18n            {Create I18N}
             job_schedule    {Create schedule}
             query_search    {Create query search}
@@ -402,6 +409,7 @@ type:
             content_type    {Edit content type: {label}}
             filter          {Edit filter: {label}}
             form            {Edit form: {label}}
+            group           {Edit Group: {label}}
             i18n            {Edit I18N: {label}}
             job_schedule    {Edit schedule: {label}}
             query_search    {Edit query search: {label}}
@@ -420,6 +428,7 @@ type:
             environment         {Overview}
             filter              {List of filters}
             form                {List of forms}
+            group               {List of groups}
             i18n                {I18n list}
             i18n_translations   {Translations for key "{key}"}
             job                 {Jobs list}

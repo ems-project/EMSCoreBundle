@@ -748,6 +748,7 @@ user:
             email: E-mail
             email_notification: 'E-mail notifications'
             enabled: Enabled
+            group: Group
             id: 'User ID'
             lastLogin: 'Last Login'
             expirationDate: 'Expiration Date'

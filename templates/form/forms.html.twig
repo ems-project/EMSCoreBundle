@@ -131,6 +131,11 @@
     {%- endif -%}
 {% endblock emsco_form_table_column_data_value_translation %}
 
+{% block emsco_form_table_column_data_value_entity %}
+    {%- set value = attribute(line.data, column.attribute)|default(false) -%}
+    {{ value.label|default('') }}
+{% endblock emsco_form_table_column_data_value_entity %}
+
 {% block emsco_form_table_column_data_translation %}
     {%- set value = attribute(line.data, column.attribute)|default(false) -%}
     <td data-order="{% if value %}{{ value }}{% endif %}">

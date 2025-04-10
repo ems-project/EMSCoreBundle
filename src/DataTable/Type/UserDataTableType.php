@@ -11,6 +11,7 @@ use EMS\CoreBundle\Form\Data\Condition\Terms;
 use EMS\CoreBundle\Form\Data\DataLinksTableColumn;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\EntityTableColumn;
 use EMS\CoreBundle\Form\Data\RolesTableColumn;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
@@ -51,7 +52,7 @@ class UserDataTableType extends AbstractEntityTableType
             }
             $table->addColumnDefinition(new BoolTableColumn('user.index.column.enabled', 'enabled'));
             $table->addColumnDefinition(new RolesTableColumn('user.index.column.roles', 'roles'));
-            $table->addColumn('user.index.column.roles', 'userGroup');
+            $table->addColumnDefinition(new EntityTableColumn('user.index.column.group', 'group'));
             $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.lastLogin', 'lastLogin'));
             $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.expirationDate', 'expirationDate'));
 

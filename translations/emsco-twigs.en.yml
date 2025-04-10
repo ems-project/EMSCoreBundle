@@ -1,3 +1,5 @@
+field:
+    group: Group
 form:
     reorder:
         title: 'Reorder %label%'

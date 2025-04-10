@@ -56,6 +56,9 @@
                             </i>
                         </li>
                         <li class="list-group-item">
+                            <b>{{ 'field.group'|trans }}</b> <i class="pull-right">{{ user.group.label }}</i>
+                        </li>
+                        <li class="list-group-item">
                             <b>{{ 'view.profile.show.wysiwyg'|trans }}</b> <i class="pull-right">{% if user.wysiwygProfile %}{{ user.wysiwygProfile.name }}{% endif %}</i>
                         </li>
                     </ul>

@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -39,15 +41,15 @@ final class GroupType extends AbstractType
 
         $builder
             ->add('name', TextType::class, [
-                'label' => 'name',
                 'required' => true,
+                'label' => t('field.name', [], 'emsco-core'),
             ])
             ->add('label', TextType::class, [
-                'label' => 'label',
+                'label' => t('field.label', [], 'emsco-core'),
             ])
             ->add('roles', ChoiceType::class, [
+                'label' => t('field.roles', [], 'emsco-core'),
                 'choices' => $this->userService->getExistingRoles(),
-                'label' => 'Roles',
                 'expanded' => true,
                 'multiple' => true,
                 'mapped' => true,
@@ -55,11 +57,13 @@ final class GroupType extends AbstractType
 
         if (self::MODE_CREATE === $mode) {
             $builder->add(self::CREATE_BUTTON, SubmitEmsType::class, [
+                'label' => t('action.add', [], 'emsco-core'),
                 'attr' => ['class' => 'btn btn-primary btn-sm'],
                 'icon' => 'fa fa-plus',
             ]);
         } elseif (self::MODE_UPDATE === $mode) {
             $builder->add(self::UPDATE_BUTTON, SubmitEmsType::class, [
+                'label' => t('action.save', [], 'emsco-core'),
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm ',
                 ],

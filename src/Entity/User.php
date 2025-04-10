@@ -531,4 +531,20 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     {
         $this->group = $group;
     }
+
+    /**
+     * @return string[]
+     */
+    public function getUserRoles(): array
+    {
+        return $this->roles;
+    }
+
+    /**
+     * @param string[] $roles
+     */
+    public function setUserRoles(array $roles): void
+    {
+        $this->roles = $roles;
+    }
 }

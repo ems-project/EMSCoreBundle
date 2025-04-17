@@ -22,8 +22,11 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 
 class LdapAuthTokenLoginAuthenticator extends AbstractAuthenticator
 {
-    public function __construct(private readonly LdapConfig $ldapConfig, private readonly AuthTokenRepository $authTokenRepository)
-    {
+    public function __construct(
+        private readonly LdapConfig $ldapConfig,
+        private readonly LdapUserProvider $ldapUserProvider,
+        private readonly AuthTokenRepository $authTokenRepository
+    ) {
     }
 
     #[\Override]
@@ -46,7 +49,7 @@ class LdapAuthTokenLoginAuthenticator extends AbstractAuthenticator
         }
 
         return new Passport(
-            new UserBadge($username),
+            new UserBadge($username, fn ($userIdentifier) => $this->ldapUserProvider->loadUserByIdentifier($userIdentifier)),
             new PasswordCredentials($password),
             [
                 new LdapBadge(

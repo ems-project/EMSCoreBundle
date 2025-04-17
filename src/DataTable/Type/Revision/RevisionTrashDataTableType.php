@@ -48,7 +48,7 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
             ->setLabelAttribute('label')
             ->setDefaultOrder('modified', 'desc');
 
-        $table->addColumnDefinition(new RevisionDisplayTableColumn(t('field.label', [], 'emsco-core'), 'label'))->setOrderField('labelField');;
+        $table->addColumnDefinition(new RevisionDisplayTableColumn(t('field.label', [], 'emsco-core'), 'label'))->setOrderField('labelField');
         if ($this->userService->isSuper()) {
             $table->addColumn(t('revision.field.ouuid', [], 'emsco-core'), 'ouuid');
         }

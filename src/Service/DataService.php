@@ -1223,14 +1223,14 @@ class DataService
                 }
                 $revision->removeEnvironment($environment);
             }
-            $revision->setDeleted(true);
-            $revision->setDeletedBy($username);
+            $revision->delete($username);
 
             if (null === $revision->getEndTime()) {
                 $this->auditLogger->notice('log.revision.deleted', LogRevisionContext::delete($revision));
             }
 
             $em->persist($revision);
+            $this->unlockRevision($revision, $username);
         }
         $em->flush();
 
@@ -1253,16 +1253,14 @@ class DataService
         $revisions = $this->revRepository->findTrashRevisions($contentType, ...$ouuids);
 
         foreach ($revisions as $revision) {
-            $revision->setDeleted(false);
-            $revision->setDeletedBy(null);
+            $this->lockRevision($revision);
+            $revision->restore();
             if (null === $revision->getEndTime()) {
-                $this->lockRevision($revision);
                 $revision->setDraft(true);
                 $this->auditLogger->notice('log.revision.restored', LogRevisionContext::update($revision));
-            } else {
-                $revision->enableSelfUpdate();
             }
             $this->em->persist($revision);
+            $this->unlockRevision($revision);
         }
         $this->em->flush();
 

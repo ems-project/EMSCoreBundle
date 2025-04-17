@@ -390,6 +390,22 @@ class Revision implements EntityInterface, \Stringable
         return $this;
     }
 
+    public function delete(string $username): self
+    {
+        $this->deletedBy = $username;
+        $this->deleted = true;
+
+        return $this;
+    }
+
+    public function restore(): self
+    {
+        $this->deletedBy = null;
+        $this->deleted = false;
+
+        return $this;
+    }
+
     public function setDeleted(bool $deleted): self
     {
         $this->deleted = $deleted;
@@ -541,13 +557,6 @@ class Revision implements EntityInterface, \Stringable
     public function setArchivedBy(?string $archivedBy): void
     {
         $this->archivedBy = $archivedBy;
-    }
-
-    public function setDeletedBy(?string $deletedBy): self
-    {
-        $this->deletedBy = $deletedBy;
-
-        return $this;
     }
 
     public function getDeletedBy(): ?string

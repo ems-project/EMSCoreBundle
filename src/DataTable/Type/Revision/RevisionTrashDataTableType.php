@@ -12,6 +12,7 @@ use EMS\CoreBundle\DataTable\Type\DataTableTypeTrait;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\QueryTable;
+use EMS\CoreBundle\Form\Data\RevisionDisplayTableColumn;
 use EMS\CoreBundle\Form\Data\UserTableColumn;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Routes;
@@ -48,7 +49,7 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
             ->setLabelAttribute('label')
             ->setDefaultOrder('modified', 'desc');
 
-        $table->addColumn(t('field.label', [], 'emsco-core'), 'label');
+        $table->addColumnDefinition(new RevisionDisplayTableColumn(t('field.label', [], 'emsco-core'), 'label'))->setOrderField('labelField');
         if ($this->userService->isSuper()) {
             $table->addColumn(t('revision.field.ouuid', [], 'emsco-core'), 'ouuid');
         }

@@ -461,6 +461,8 @@
             <argument type="service" id="EMS\CoreBundle\Repository\JobRepository"/>
             <argument type="service" id="ems.schedule.manager"/>
             <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="messenger.default_bus"/>
+            <argument>%ems_core.async.enabled%</argument>
             <tag name="emsco.entity.service" priority="10" />
         </service>
         <service id="ems.service.document" class="EMS\CoreBundle\Service\DocumentService">
@@ -504,6 +506,18 @@
             <argument type="service" id="EMS\CoreBundle\Repository\ManagedAliasRepository" />
             <argument>%ems_core.instance_id%</argument>
             <tag name="emsco.entity.service" priority="90" />
+        </service>
+        <service id="emsco.job_message_handler" class="EMS\CoreBundle\Core\MessageHandler\JobHandler">
+            <argument type="service" id="EMS\CoreBundle\Service\JobService"/>
+            <tag name="messenger.message_handler" handles="EMS\CoreBundle\Core\Message\Job" />
+        </service>
+        <service id="emsco.messenger.middleware.user_token_stamp" class="EMS\CoreBundle\Core\Messenger\Middleware\UserTokenStampMiddleware">
+            <argument type="service" id="security.token_storage"/>
+            <tag name="messenger.middleware"/>
+        </service>
+        <service id="emsco.messenger.middleware.restore_user_from_stamp" class="EMS\CoreBundle\Core\Messenger\Middleware\RestoreUserFromStampMiddleware">
+            <argument type="service" id="security.token_storage"/>
+            <tag name="messenger.middleware"/>
         </service>
 
         <!-- Aliases -->

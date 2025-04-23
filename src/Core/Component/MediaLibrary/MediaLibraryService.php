@@ -55,6 +55,7 @@ class MediaLibraryService
         private readonly MediaLibraryTemplateFactory $templateFactory,
         private readonly MediaLibraryFileFactory $fileFactory,
         private readonly MediaLibraryFolderFactory $folderFactory,
+        private readonly bool $asyncEnabled,
     ) {
     }
 
@@ -177,7 +178,7 @@ class MediaLibraryService
             $folder->id,
         ]);
 
-        return $this->jobService->createCommand($user, $command);
+        return $this->jobService->createCommand($user, $command, null, $this->asyncEnabled);
     }
 
     public function jobFolderRename(UserInterface $user, MediaLibraryFolder $folder): Job
@@ -197,7 +198,7 @@ class MediaLibraryService
             $folder->giveName(),
         ]);
 
-        return $this->jobService->createCommand($user, $command);
+        return $this->jobService->createCommand($user, $command, null, $this->asyncEnabled);
     }
 
     /**

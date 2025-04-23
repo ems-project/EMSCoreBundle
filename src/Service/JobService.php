@@ -9,6 +9,7 @@ use Doctrine\Persistence\ObjectManager;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Command\JobOutput;
 use EMS\CoreBundle\Core\Job\ScheduleManager;
+use EMS\CoreBundle\Core\Message\Job as JobMessage;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Repository\JobRepository;
@@ -17,6 +18,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -33,8 +35,15 @@ class JobService implements EntityServiceInterface
         private readonly JobRepository $repository,
         private readonly ScheduleManager $scheduleManager,
         private readonly TokenStorageInterface $tokenStorage,
+        private readonly MessageBusInterface $bus,
+        private readonly bool $asyncEnabled,
     ) {
         $this->em = $doctrine->getManager();
+    }
+
+    public function getById(int $id): ?Job
+    {
+        return $this->repository->findById($id);
     }
 
     public function deleteByIds(string ...$ids): void
@@ -113,12 +122,18 @@ class JobService implements EntityServiceInterface
         return $job;
     }
 
-    public function createCommand(UserInterface $user, ?string $command, ?string $tag = null): Job
+    public function createCommand(UserInterface $user, ?string $command, ?string $tag = null, ?bool $addToAsyncQueue = false): Job
     {
         $job = $this->newJob($user);
         $job->setCommand($command);
         $job->setTag($tag);
         $this->save($job);
+
+        if ($this->asyncEnabled && $addToAsyncQueue) {
+            $this->bus->dispatch(
+                new JobMessage($job->getId())
+            );
+        }
 
         return $job;
     }

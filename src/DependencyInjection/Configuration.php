@@ -94,6 +94,7 @@ class Configuration implements ConfigurationInterface
 
         $this->addSecuritySection($rootNode);
         $this->addLdapSection($rootNode);
+        $this->addAsyncSection($rootNode);
 
         return $treeBuilder;
     }
@@ -138,6 +139,17 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('display_name_field')->end()
                     ->end()
                 ->end()
+            ->end()
+        ;
+    }
+
+    private function addAsyncSection(ArrayNodeDefinition $rootNode): void
+    {
+        $rootNode
+            ->children()
+            ->arrayNode('async')
+            ->canBeEnabled()
+            ->end()
             ->end()
         ;
     }

@@ -371,6 +371,13 @@ export default class MediaLibrary {
         ajaxModal.load({ url: `${this.#pathPrefix}/folder/${folderId}/delete`, size: modalSize }, (json) => {
             if (!json.hasOwnProperty('success') || json.success === false) return;
             if (!json.hasOwnProperty('jobId')) return;
+            if (json.hasOwnProperty('async') && json.async === true) {
+              return Promise.allSettled([
+                new Promise(resolve => setTimeout(resolve, 2000))
+              ])
+                .then(() => ajaxModal.close())
+              ;
+            }
 
             let jobProgressBar = new ProgressBar('progress-' + json.jobId, {
                 label: 'Deleting folder',
@@ -398,6 +405,13 @@ export default class MediaLibrary {
         ajaxModal.load({ url: `${this.#pathPrefix}/folder/${folderId}/rename`, size: 'sm'}, (json) => {
             if (!json.hasOwnProperty('success') || json.success === false) return;
             if (!json.hasOwnProperty('jobId') || !json.hasOwnProperty('path')) return;
+            if (json.hasOwnProperty('async') && json.async === true) {
+              return Promise.allSettled([
+                new Promise(resolve => setTimeout(resolve, 2000))
+              ])
+                .then(() => ajaxModal.close())
+              ;
+            }
 
             let jobProgressBar = new ProgressBar('progress-' + json.jobId, {
                 label: 'Renaming',

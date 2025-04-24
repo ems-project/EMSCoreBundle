@@ -83,9 +83,14 @@ class ExtractedData
         return isset($this->source['content']);
     }
 
-    public function getContent(): string
+    public function getContent(bool $applyMaxContentSize = true): string
     {
         $content = (string) ($this->source['content'] ?? '');
+
+        if (!$applyMaxContentSize) {
+            return $content;
+        }
+
         $trimContent = Text::superTrim($content);
 
         return \mb_substr($trimContent, 0, $this->maxContentSize, 'UTF-8');

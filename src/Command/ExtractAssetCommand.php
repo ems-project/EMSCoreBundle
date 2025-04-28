@@ -126,15 +126,13 @@ class ExtractAssetCommand extends AbstractCommand
         $rows[] = new TableSeparator();
         $rows[] = ['name' => '<info>totals</info>', ...$totals];
 
-        $this->io->table(['name', 'size', 'length', 'words', 'tokens'], \array_map(static function ($row) {
-            return \is_array($row) ? [
-                $row['name'],
-                Number::formatBytes($row['size']),
-                Number::format($row['length']),
-                Number::format($row['words']),
-                Number::format($row['tokens']),
-            ] : $row;
-        }, $rows));
+        $this->io->table(['name', 'size', 'length', 'words', 'tokens'], \array_map(static fn ($row) => \is_array($row) ? [
+            $row['name'],
+            Number::formatBytes($row['size']),
+            Number::format($row['length']),
+            Number::format($row['words']),
+            Number::format($row['tokens']),
+        ] : $row, $rows));
     }
 
     private function estimateTokens(string $content): int

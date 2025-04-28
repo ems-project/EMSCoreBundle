@@ -9,7 +9,7 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-class Group implements EntityInterface
+class Group implements EntityInterface, \Stringable
 {
     use CreatedModifiedTrait;
 

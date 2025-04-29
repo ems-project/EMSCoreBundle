@@ -41,12 +41,12 @@ class Versioning
 
     public function getFields(): VersionFields
     {
-        return new VersionFields($this->fields ?? []);
+        return new VersionFields($this->fields);
     }
 
     public function getOptions(): VersionOptions
     {
-        return new VersionOptions($this->options ?? []);
+        return new VersionOptions($this->options);
     }
 
     /** @return string[] */

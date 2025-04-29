@@ -199,7 +199,7 @@ final class LoadLinkModalEntity
 
                 return;
             case LoadLinkModalType::LINK_TYPE_URL:
-                if ('' === ($this->url ?? '')) {
+                if ('' === $this->url) {
                     $context->buildViolation('modal.link.url.mandatory')->atPath(LoadLinkModalType::FIELD_HREF)->addViolation();
                 }
 

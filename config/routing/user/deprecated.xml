@@ -22,5 +22,7 @@
            methods="POST"/>
     <route id="EMS_user_apikey" path="/{username}/apikey"
            controller="EMS\CoreBundle\Controller\UserController::apiKey"
-           methods="POST"/>
+           methods="POST">
+        <option key="openapi">true</option>
+    </route>
 </routes>

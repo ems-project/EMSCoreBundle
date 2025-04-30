@@ -133,6 +133,7 @@
     <route id="emsco.media_library.create_file" path="/media-lib/{hash}/add-file/{folderId}"
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::addFile"
            methods="POST">
+        <option key="openapi">true</option>
         <requirement key="hash">.*</requirement>
         <default key="folderId" xsi:nil="true"/>
     </route>

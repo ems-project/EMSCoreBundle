@@ -38,7 +38,9 @@
            methods="POST"/>
     <route id="emsco_discard_draft" path="/draft/discard/{revisionId}"
            controller="EMS\CoreBundle\Controller\ContentManagement\DataController::discardRevision"
-           methods="POST"/>
+           methods="POST">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_data_cancel_modifications" path="/cancel/{revision}"
            controller="EMS\CoreBundle\Controller\ContentManagement\DataController::cancelModifications"
            methods="POST"/>
@@ -164,7 +166,9 @@
            methods="POST"/>
     <route id="revision.discard" path="/draft/discard/{revisionId}"
            controller="EMS\CoreBundle\Controller\ContentManagement\DataController::discardRevision"
-           methods="POST"/>
+           methods="POST">
+        <option key="openapi">true</option>
+    </route>
     <route id="revision.cancel" path="/cancel/{revision}"
            controller="EMS\CoreBundle\Controller\ContentManagement\DataController::cancelModifications"
            methods="POST"/>

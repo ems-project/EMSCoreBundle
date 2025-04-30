@@ -33,7 +33,9 @@
            methods="POST"/>
     <route id="emsco_user_api_key" path="/api-key/{username}"
            controller="EMS\CoreBundle\Controller\UserController::apiKey"
-           methods="POST"/>
+           methods="POST">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_user_spreadsheet_export" path="/users.{_format}"
            controller="EMS\CoreBundle\Controller\UserController::spreadsheetExport"
            methods="GET"

@@ -6,15 +6,19 @@
 
     <route id="emsco_admin_managed_alias_add" path="/add"
            controller="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::add"
-           methods="GET POST"/>
+           methods="GET POST">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_admin_managed_alias_edit" path="/edit/{managedAlias}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::edit"
            methods="GET POST">
+        <option key="openapi">true</option>
         <requirement key="id">\d+</requirement>
     </route>
     <route id="emsco_admin_managed_alias_delete" path="/remove/{managedAlias}"
            controller="EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController::remove"
            methods="POST">
+        <option key="openapi">true</option>
         <requirement key="id">\d+</requirement>
     </route>
 </routes>

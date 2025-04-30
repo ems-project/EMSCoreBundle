@@ -7,11 +7,14 @@
     <route id="emsco_api_forms_submissions" path="/submissions"
            controller="EMS\CoreBundle\Controller\Api\Form\SubmissionController::submit"
            methods="POST"
-           format="json"/>
+           format="json">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_forms_submissions_file" path="/submissions/{submissionId}/files/{submissionFileId}"
            controller="EMS\CoreBundle\Controller\Api\Form\SubmissionController::submissionFile"
            methods="GET"
            format="json">
+        <option key="openapi">true</option>
         <requirement key="submissionId">.*</requirement>
         <requirement key="submissionFileId">.*</requirement>
     </route>
@@ -19,12 +22,15 @@
            controller="EMS\CoreBundle\Controller\Api\Form\SubmissionController::submission"
            methods="GET"
            format="json">
+        <option key="openapi">true</option>
         <requirement key="submissionId">.*</requirement>
     </route>
     <route id="emsco_api_forms_post_verifications" path="/verifications"
            controller="EMS\CoreBundle\Controller\Api\Form\VerificationController::createVerification"
            methods="POST"
-           format="json"/>
+           format="json">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_forms_get_verifications" path="/verifications"
            controller="EMS\CoreBundle\Controller\Api\Form\VerificationController::getVerification"
            methods="GET"

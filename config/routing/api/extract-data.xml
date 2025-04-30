@@ -6,6 +6,8 @@
 
     <route id="emsco_api_extract_data" path="/get/{hash}"
            controller="EMS\CoreBundle\Controller\Api\File\ExtractDataController::get"
-           methods="GET"/>
+           methods="GET">
+        <option key="openapi">true</option>
+    </route>
 
 </routes>

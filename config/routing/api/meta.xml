@@ -7,11 +7,15 @@
     <route id="emsco_api_meta_info_documents" path="/info/documents"
            controller="EMS\CoreBundle\Controller\Api\Admin\MetaController::infoDocuments"
            methods="POST"
-           format="json"/>
+           format="json">
+        <option key="openapi">true</option>
+    </route>
 
     <route id="emsco_api_meta_content_type" path="/content-type/{contentTypeName}"
            controller="EMS\CoreBundle\Controller\Api\Admin\MetaController::contentType"
            methods="GET"
-           format="json"/>
+           format="json">
+        <option key="openapi">true</option>
+    </route>
 
 </routes>

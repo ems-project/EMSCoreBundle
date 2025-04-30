@@ -6,52 +6,80 @@
 
     <route id="emsco_api_start_job" path="/start-job/{job}"
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::startJob"
-           methods="POST"/>
+           methods="POST">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_start_next_job" path="/next-job/{tag}"
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::startNextJob"
-           methods="POST"/>
+           methods="POST">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_job_completed" path="/job-completed/{job}"
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::jobCompleted"
-           methods="POST"/>
+           methods="POST">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_job_failed" path="/job-failed/{job}"
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::jobFailed"
-           methods="POST"/>
+           methods="POST">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_job_write" path="/job-write/{job}"
            controller="EMS\CoreBundle\Controller\ContentManagement\JobController::jobWrite"
-           methods="POST"/>
+           methods="POST">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_content_type" path="/content-types"
            controller="EMS\CoreBundle\Controller\Api\Admin\MetaController::contentTypes"
-           methods="GET"/>
+           methods="GET">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_get_versions" path="/versions"
            controller="EMS\CoreBundle\Controller\Api\Admin\InfoController::versions"
-           methods="GET"/>
+           methods="GET">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_job_status" path="/job-status/{job}"
            controller="EMS\CoreBundle\Controller\Api\Admin\EntitiesController::jobStatus"
            methods="GET"
-           format="json"/>
+           format="json">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_config_types" path="/config-types"
            controller="EMS\CoreBundle\Controller\Api\Admin\EntitiesController::getEntityNames"
            methods="GET"
-           format="json"/>
+           format="json">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_content_type_index" path="/{entity}"
            controller="EMS\CoreBundle\Controller\Api\Admin\EntitiesController::index"
            methods="GET"
-           format="json"/>
+           format="json">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_content_type_create" path="/{entity}"
            controller="EMS\CoreBundle\Controller\Api\Admin\EntitiesController::create"
            methods="POST"
-           format="json"/>
+           format="json">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_content_type_get" path="/{entity}/{name}"
            controller="EMS\CoreBundle\Controller\Api\Admin\EntitiesController::get"
            methods="GET"
-           format="json"/>
+           format="json">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_content_type_update" path="/{entity}/{name}"
            controller="EMS\CoreBundle\Controller\Api\Admin\EntitiesController::update"
            methods="POST"
-           format="json"/>
+           format="json">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_content_type_delete" path="/{entity}/{name}"
            controller="EMS\CoreBundle\Controller\Api\Admin\EntitiesController::delete"
            methods="DELETE"
-           format="json"/>
+           format="json">
+        <option key="openapi">true</option>
+    </route>
 
 </routes>

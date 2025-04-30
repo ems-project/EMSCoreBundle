@@ -7,5 +7,7 @@
     <route id="ems_api_images_index" path="/images"
            controller="EMS\CoreBundle\Controller\ContentManagement\FileController::indexImages"
            methods="GET|HEAD"
-           format="json"/>
+           format="json">
+        <option key="openapi">true</option>
+    </route>
 </routes>

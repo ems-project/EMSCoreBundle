@@ -46,6 +46,13 @@
             <argument type="service" id="ems_common.composer.info" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Api\Admin\DocumentationController">
+            <argument>%ems_core.template_namespace%</argument>
+            <argument type="service" id="router" />
+            <call method="setContainer"/>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
 
         <!-- Api\File -->
         <service id="EMS\CoreBundle\Controller\Api\File\ExtractDataController">

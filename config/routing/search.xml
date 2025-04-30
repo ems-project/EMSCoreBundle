@@ -6,7 +6,9 @@
 
     <route id="elasticsearch.api.search" path="/search.json"
            controller="EMS\CoreBundle\Controller\Search\QuerySearchController"
-           methods="GET"/>
+           methods="GET">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_ajax_query_search" path="/search.json"
            controller="EMS\CoreBundle\Controller\Search\QuerySearchController"
            methods="GET"/>

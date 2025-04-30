@@ -8,12 +8,14 @@
            controller="EMS\CoreBundle\Controller\Api\Data\PublishController::publish"
            methods="POST"
            format="json">
+        <option key="openapi">true</option>
         <default key="revision" xsi:nil="true"/>
     </route>
     <route id="emsco_api_data_publish_versions" path="/{contentTypeName}/publish-versions/{versionUuid}/{environment}"
            controller="EMS\CoreBundle\Controller\Api\Data\PublishController::publishVersions"
            methods="POST"
            format="json">
+        <option key="openapi">true</option>
         <default key="revision" xsi:nil="true"/>
     </route>
 

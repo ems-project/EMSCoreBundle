@@ -65,7 +65,7 @@ class DocumentService
     {
         $newRevision = $this->dataService->getEmptyRevision($documentImportContext->getContentType(), $documentImportContext->getLockUser());
         if (!$documentImportContext->shouldFinalize()) {
-            $newRevision->removeEnvironment($documentImportContext->getEnvironment());
+            $newRevision->removeEnvironment($documentImportContext->getEnvironment(), $documentImportContext->getLockUser());
         }
         $newRevision->setOuuid($ouuid);
         $newRevision->setRawData($rawData);
@@ -104,7 +104,7 @@ class DocumentService
             $currentRevision->setDraft(false);
             $currentRevision->autoSaveClear();
             if ($documentImportContext->shouldFinalize()) {
-                $currentRevision->removeEnvironment($documentImportContext->getEnvironment());
+                $currentRevision->removeEnvironment($documentImportContext->getEnvironment(), $documentImportContext->getLockUser());
             }
             $this->getEntityManager()->persist($currentRevision);
         }

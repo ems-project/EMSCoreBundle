@@ -325,7 +325,7 @@ class DataService
      */
     public function hitToBusinessDocument(ContentType $contentType, array $hit): DocumentInterface
     {
-        $revision = $this->getEmptyRevision($contentType);
+        $revision = $this->getEmptyRevision($contentType, 'hitToBusinessDocument');
         $revision->setRawData($hit['_source']);
         $revision->setOuuid($hit['_id']);
         $revisionType = $this->formFactory->create(RevisionType::class, $revision, ['migration' => false, 'raw_data' => $revision->getRawData()]);
@@ -775,13 +775,13 @@ class DataService
                 if ($item) {
                     $this->lockRevision($item, null, false, $username);
                     $previousObjectArray = $item->getRawData();
-                    $item->removeEnvironment($revision->giveContentType()->giveEnvironment());
+                    $item->removeEnvironment($revision->giveContentType()->giveEnvironment(), $username);
                     $em->persist($item);
                     $this->unlockRevision($item, $username);
                 }
             }
 
-            $revision->addEnvironment($revision->giveContentType()->giveEnvironment());
+            $revision->addEnvironment($revision->giveContentType()->giveEnvironment(), $username);
             $revision->setDraft(false);
 
             $revision->setFinalizedBy($username);
@@ -1235,7 +1235,7 @@ class DataService
                     }
                     throw $e;
                 }
-                $revision->removeEnvironment($environment);
+                $revision->removeEnvironment($environment, $username);
             }
             $revision->delete($username);
 
@@ -1498,20 +1498,18 @@ class DataService
         return $out;
     }
 
-    public function getEmptyRevision(ContentType $contentType, ?string $user = null): Revision
+    public function getEmptyRevision(ContentType $contentType, string $user): Revision
     {
         $now = new \DateTime();
         $until = new \DateTime($this->lockTime);
         $newRevision = new Revision();
         $newRevision->setContentType($contentType);
-        $newRevision->addEnvironment($contentType->giveEnvironment());
+        $newRevision->addEnvironment($contentType->giveEnvironment(), $user);
         $newRevision->setStartTime($now);
         $newRevision->setEndTime(null);
         $newRevision->setDeleted(false);
         $newRevision->setDraft(true);
-        if ($user) {
-            $newRevision->setLockBy($user);
-        }
+        $newRevision->setLockBy($user);
         $newRevision->setLockUntil($until);
         $newRevision->setRawData([]);
 
@@ -1878,7 +1876,7 @@ class DataService
      */
     public function hitFromBusinessIdToDataLink(ContentType $contentType, string $ouuid, array $rawData): DocumentInterface
     {
-        $revision = $this->getEmptyRevision($contentType);
+        $revision = $this->getEmptyRevision($contentType, 'hitFromBusinessIdToDataLink');
         $revision->setRawData($rawData);
         $revision->setOuuid($ouuid);
         $revisionType = $this->formFactory->create(RevisionType::class, $revision, ['migration' => true, 'raw_data' => $revision->getRawData(), 'with_warning' => false]);

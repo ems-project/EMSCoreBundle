@@ -49,22 +49,13 @@
     <many-to-one field="contentType" target-entity="EMS\CoreBundle\Entity\ContentType">
       <join-column name="content_type_id"/>
     </many-to-one>
-    <many-to-many field="environments" target-entity="EMS\CoreBundle\Entity\Environment" inversed-by="revisions">
-      <order-by>
-        <order-by-field name="orderKey"/>
-      </order-by>
+
+    <one-to-many field="environmentRevisions" target-entity="EMS\CoreBundle\Entity\EnvironmentRevision" mapped-by="revision">
       <cascade>
+        <cascade-remove/>
         <cascade-persist/>
       </cascade>
-      <join-table name="environment_revision">
-        <join-columns>
-          <join-column name="revision_id" on-delete="CASCADE" />
-        </join-columns>
-        <inverse-join-columns>
-          <join-column name="environment_id" on-delete="CASCADE" />
-        </inverse-join-columns>
-      </join-table>
-    </many-to-many>
+    </one-to-many>
     <one-to-many field="notifications" target-entity="EMS\CoreBundle\Entity\Notification" mapped-by="revision">
       <order-by>
         <order-by-field name="created"/>

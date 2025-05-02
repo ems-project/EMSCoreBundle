@@ -58,7 +58,7 @@ class RevisionService implements RevisionServiceInterface
 
     public function archive(Revision $revision, string $archivedBy, bool $flush = true): bool
     {
-        $this->publishService->silentUnpublish($revision, $flush);
+        $this->publishService->silentUnpublish($revision, $archivedBy, $flush);
 
         $revision
             ->setArchived(true)

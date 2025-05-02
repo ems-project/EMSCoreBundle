@@ -44,8 +44,8 @@ class Revision implements EntityInterface, \Stringable
     private ?string $lockBy = null;
     private ?string $autoSaveBy = null;
     private ?\DateTime $lockUntil = null;
-    /** @var Collection<int, Environment> */
-    private Collection $environments;
+    /** @var Collection<int, EnvironmentRevision> */
+    private Collection $environmentRevisions;
     /** @var Collection<int, Notification> */
     private Collection $notifications;
     /** @var ?array<mixed> */
@@ -138,7 +138,7 @@ class Revision implements EntityInterface, \Stringable
 
     public function __construct()
     {
-        $this->environments = new ArrayCollection();
+        $this->environmentRevisions = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->releases = new ArrayCollection();
         $this->created = new \DateTime();
@@ -210,13 +210,12 @@ class Revision implements EntityInterface, \Stringable
         ];
     }
 
-    public function convertToDraft(): Revision
+    public function convertToDraft(string $username): Revision
     {
         $draft = clone $this;
-        $draft->environments = new ArrayCollection();
-
+        $draft->environmentRevisions = new ArrayCollection();
         $now = new \DateTime('now');
-        $draft->addEnvironment($this->giveContentType()->giveEnvironment());
+        $draft->addEnvironment($this->giveContentType()->giveEnvironment(), $username);
         $draft->setStartTime($now);
         $draft->setCreated($now);
         $draft->setEndTime(null);
@@ -239,7 +238,7 @@ class Revision implements EntityInterface, \Stringable
         $clone->finalizedBy = null;
         $clone->finalizedDate = null;
         $clone->startTime = new \DateTime('now');
-        $clone->environments = new ArrayCollection(); // clear publications
+        $clone->environmentRevisions = new ArrayCollection(); // clear publications
         $clone->notifications = new ArrayCollection(); // clear notifications
 
         return $clone;
@@ -248,14 +247,14 @@ class Revision implements EntityInterface, \Stringable
     /**
      * Close a revision.
      */
-    public function close(\DateTime $endTime): void
+    public function close(\DateTime $endTime, string $username): void
     {
         if (null === $this->endTime) {
             $this->setEndTime($endTime);
         }
         $this->setDraft(false);
         $this->autoSaveClear();
-        $this->removeEnvironment($this->giveContentType()->giveEnvironment());
+        $this->removeEnvironment($this->giveContentType()->giveEnvironment(), $username);
     }
 
     public function getAllFieldsAreThere(): ?bool
@@ -527,16 +526,38 @@ class Revision implements EntityInterface, \Stringable
         return $this->dataField;
     }
 
-    public function addEnvironment(Environment $environment): self
+    public function addEnvironment(Environment $environment, string $username): self
     {
-        $this->environments[] = $environment;
+        foreach ($this->environmentRevisions as $environmentRevision) {
+            if ($environmentRevision->getEnvironment() === $environment) {
+                return $this;
+            }
+        }
+        $environmentRevision = new EnvironmentRevision();
+        $environmentRevision->setEnvironment($environment);
+        $environmentRevision->setRevision($this);
+        $environmentRevision->setCreatedBy($username);
+        $this->environmentRevisions[] = $environmentRevision;
 
         return $this;
     }
 
-    public function removeEnvironment(Environment $environment): self
+    public function addEnvironmentRevision(EnvironmentRevision $environmentRevision): self
     {
-        $this->environments->removeElement($environment);
+        $this->environmentRevisions[] = $environmentRevision;
+
+        return $this;
+    }
+
+    public function removeEnvironment(Environment $environment, string $username): self
+    {
+        foreach ($this->environmentRevisions as $key => $environmentRevision) {
+            if ($environmentRevision->getEnvironment() === $environment) {
+                $environmentRevision->setDeleted(new \DateTime());
+                $environmentRevision->setDeletedBy($username);
+                break;
+            }
+        }
 
         return $this;
     }
@@ -544,15 +565,17 @@ class Revision implements EntityInterface, \Stringable
     /**
      * @return Collection<int, Environment>
      */
-    public function getEnvironments()
+    public function getEnvironments(): Collection
     {
-        return $this->environments;
+        return $this->environmentRevisions
+            ->filter(fn (EnvironmentRevision $er) => null === $er->getDeleted())
+            ->map(fn (EnvironmentRevision $er) => $er->getEnvironment());
     }
 
     public function isPublished(string $environmentName): bool
     {
-        foreach ($this->environments as $environment) {
-            if ($environment->getName() === $environmentName) {
+        foreach ($this->environmentRevisions as $environmentRevision) {
+            if ($environmentRevision->getEnvironment()->getName() === $environmentName) {
                 return true;
             }
         }

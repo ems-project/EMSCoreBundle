@@ -215,7 +215,7 @@ final readonly class ReleaseService implements EntityServiceInterface
         return $this->releaseRepository->findReadyAndDue();
     }
 
-    public function executeRelease(Release $release, bool $command = false): void
+    public function executeRelease(Release $release, ?string $userCommand = null): void
     {
         if (Release::READY_STATUS !== $release->getStatus()) {
             $this->logger->error('log.service.release.not.ready', [
@@ -228,7 +228,7 @@ final readonly class ReleaseService implements EntityServiceInterface
         foreach ($release->getRevisions() as $releaseRevision) {
             match ($releaseRevision->getType()) {
                 ReleaseRevisionType::PUBLISH => $this->executePublish($release, $releaseRevision),
-                ReleaseRevisionType::UNPUBLISH => $this->executeUnpublish($release, $releaseRevision, $command),
+                ReleaseRevisionType::UNPUBLISH => $this->executeUnpublish($release, $releaseRevision, $userCommand),
             };
         }
 
@@ -252,9 +252,9 @@ final readonly class ReleaseService implements EntityServiceInterface
         $this->publishService->publish($releaseRevision->getRevision(), $release->getEnvironmentTarget(), 'SYSTEM_RELEASE');
     }
 
-    private function executeUnpublish(Release $release, ReleaseRevision $releaseRevision, bool $command): void
+    private function executeUnpublish(Release $release, ReleaseRevision $releaseRevision, ?string $userCommand = null): void
     {
-        $this->publishService->unpublish($releaseRevision->getRevision(), $release->getEnvironmentTarget(), $command);
+        $this->publishService->unpublish($releaseRevision->getRevision(), $release->getEnvironmentTarget(), $userCommand);
     }
 
     /**

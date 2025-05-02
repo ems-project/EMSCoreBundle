@@ -93,10 +93,10 @@ class PublishService
         }
     }
 
-    public function silentUnpublish(Revision $revision, bool $flush = true): void
+    public function silentUnpublish(Revision $revision, string $username, bool $flush = true): void
     {
         $environment = $revision->giveContentType()->giveEnvironment();
-        $revision->removeEnvironment($environment);
+        $revision->removeEnvironment($environment, $username);
         $this->indexService->delete($revision, $environment);
 
         if ($flush) {
@@ -141,10 +141,10 @@ class PublishService
         $already = $revisionEnvironment === $revision;
 
         if (!$already && $revisionEnvironment) {
-            $this->revRepository->removeEnvironment($revisionEnvironment, $environment);
+            $this->revRepository->removeEnvironment($revisionEnvironment, $environment, $commandUser);
         }
         if (!$already) {
-            $this->revRepository->addEnvironment($revision, $environment);
+            $this->revRepository->addEnvironment($revision, $environment, $commandUser);
         }
 
         $this->dataService->sign($revision, true);
@@ -224,12 +224,13 @@ class PublishService
 
         $item = $this->revRepository->findByOuuidContentTypeAndEnvironment($revision, $environment);
 
+        $username = $commandUser ?? $this->userService->getCurrentUser()->getUsername();
         $already = false;
         if ($item === $revision) {
             $already = true;
             $this->logger->notice('service.publish.already_published', $logContext);
         } elseif ($item) {
-            $this->revRepository->removeEnvironment($item, $environment);
+            $this->revRepository->removeEnvironment($item, $environment, $username);
         }
 
         if (null === $commandUser) {
@@ -250,7 +251,7 @@ class PublishService
         }
 
         if (!$already) {
-            $this->revRepository->addEnvironment($revision, $environment);
+            $this->revRepository->addEnvironment($revision, $environment, $username);
 
             if (null === $commandUser) {
                 $this->auditLogger->notice('log.published.success', [...[
@@ -267,9 +268,9 @@ class PublishService
     /**
      * @throws DBALException
      */
-    public function unpublish(Revision $revision, Environment $environment, bool $command = false): void
+    public function unpublish(Revision $revision, Environment $environment, ?string $userCommand = null): void
     {
-        if (!$command) {
+        if (null === $userCommand) {
             $user = $this->userService->getCurrentUser();
             if (!empty($environment->getCircles() && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && empty(\array_intersect($environment->getCircles(), $user->getCircles())))) {
                 $this->logger->warning('service.publish.not_in_circles', [
@@ -291,6 +292,9 @@ class PublishService
 
                 return;
             }
+            $username = $user->getUsername();
+        } else {
+            $username = $userCommand;
         }
 
         if ($revision->giveContentType()->giveEnvironment() === $environment) {
@@ -306,9 +310,11 @@ class PublishService
 
         /** @var Connection $connection */
         $connection = $this->doctrine->getConnection();
-        $statement = $connection->prepare('delete from environment_revision where environment_id = :envId and revision_id = :revId');
+        $statement = $connection->prepare('update environment_revision set deleted = :now, deleted_by = :username  where environment_id = :envId and revision_id = :revId and deleted is null');
         $statement->bindValue('envId', $environment->getId());
         $statement->bindValue('revId', $revision->getId());
+        $statement->bindValue('now', new \DateTime()->format('Y-m-d H:i:s'));
+        $statement->bindValue('username', $username);
         $statement->executeStatement();
 
         try {

@@ -81,7 +81,7 @@ class JobCommand extends AbstractCommand
         }
 
         foreach ($releases as $release) {
-            $this->releaseService->executeRelease($release, true);
+            $this->releaseService->executeRelease($release, self::USER_JOB_COMMAND);
             $this->io->writeln(\sprintf('Release %s has been published', $release->getName()));
         }
 

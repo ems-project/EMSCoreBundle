@@ -162,7 +162,7 @@ final class RecomputeCommand extends AbstractCommand
                     }
                 }
 
-                $newRevision = $revision->convertToDraft();
+                $newRevision = $revision->convertToDraft(self::LOCK_BY);
                 $revisionType = $this->formFactory->create(RevisionType::class, $newRevision, [
                     'migration' => true,
                     'content_type' => $this->contentType,
@@ -197,7 +197,7 @@ final class RecomputeCommand extends AbstractCommand
                     continue;
                 }
 
-                $revision->close(new \DateTime('now'));
+                $revision->close(new \DateTime('now'), self::LOCK_BY);
                 $newRevision->setDraft(false);
 
                 $newRevision->setFinalizedBy(self::LOCK_BY);

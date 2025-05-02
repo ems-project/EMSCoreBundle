@@ -12,11 +12,13 @@ use Ramsey\Uuid\Uuid;
 
 final class Version20250430054415 extends AbstractMigration
 {
+    #[\Override]
     public function getDescription(): string
     {
         return 'Converts the many-to-many relation between Environment and Revision by an associative Entity';
     }
 
+    #[\Override]
     public function up(Schema $schema): void
     {
         $this->abortIf(
@@ -65,6 +67,7 @@ final class Version20250430054415 extends AbstractMigration
         SQL);
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

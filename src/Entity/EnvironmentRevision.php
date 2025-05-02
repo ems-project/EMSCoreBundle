@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity;
 
+use EMS\CommonBundle\Entity\EntityInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-class EnvironmentRevision implements \EMS\CommonBundle\Entity\EntityInterface
+class EnvironmentRevision implements EntityInterface
 {
-    private UuidInterface $id;
+    private readonly UuidInterface $id;
     private Environment $environment;
     private Revision $revision;
     private \DateTime $created;
@@ -21,8 +22,6 @@ class EnvironmentRevision implements \EMS\CommonBundle\Entity\EntityInterface
     {
         $this->id = Uuid::uuid4();
         $this->created = new \DateTime();
-        $this->deleted = null;
-        $this->deletedBy = null;
     }
 
     #[\Override]

@@ -93,4 +93,5 @@
     <import resource="@EMSCoreBundle/config/routing/images.xml"
             prefix="/images"/>
     <import resource="@EMSCoreBundle/config/routing/icons.xml"/>
+    <import resource="@EMSCoreBundle/config/routing/mercure.xml"/>
 </routes>

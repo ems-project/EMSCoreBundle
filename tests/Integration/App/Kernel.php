@@ -9,6 +9,7 @@ use EMS\ClientHelperBundle\EMSClientHelperBundle;
 use EMS\CommonBundle\EMSCommonBundle;
 use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\MercureBundle\MercureBundle;
 use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
@@ -47,6 +48,7 @@ final class Kernel extends BaseKernel
             new EMSCommonBundle(),
             new EMSClientHelperBundle(),
             new EMSCoreBundle(),
+            new MercureBundle(),
         ];
     }
 

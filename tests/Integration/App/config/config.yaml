@@ -41,6 +41,15 @@ twig:
     strict_variables: true
     exception_controller: null
 
+mercure:
+    hubs:
+        default:
+            url: 'http://mercure.localhost/.well-known/mercure'
+            public_url: 'http://mercure.localhost/.well-known/mercure'
+            jwt:
+                secret: '0Qq7Zsoj9QAOIHptsF3J3PdZPQAxqwWDXWS8O27+C8w='
+                publish: '*'
+
 ems_client_helper:
     locales: '%env(json:EMSCH_LOCALES)%'
     request_environments: '%env(json:EMSCH_ENVS)%'

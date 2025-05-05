@@ -36,6 +36,7 @@
         "symfony/form": "6.4.*",
         "symfony/ldap": "6.4.*",
         "symfony/mailer": "6.4.*",
+        "symfony/mercure-bundle": "^0.3.9",
         "symfony/messenger": "6.4.*",
         "symfony/monolog-bridge": "6.4.*",
         "symfony/redis-messenger": "6.4.*",

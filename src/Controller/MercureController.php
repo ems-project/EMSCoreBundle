@@ -15,6 +15,6 @@ class MercureController
 
     public function getToken(): JsonResponse
     {
-        return new JsonResponse($this->mercureService->generateToken(expiresAt: '+30 minutes'));
+        return new JsonResponse(['token' => $this->mercureService->generateToken()]);
     }
 }

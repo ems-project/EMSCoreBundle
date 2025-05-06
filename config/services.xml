@@ -111,8 +111,6 @@
         <service id="emsco.core_mercure.mercure_service" class="EMS\CoreBundle\Core\Mercure\MercureService">
             <argument type="service" id="mercure.hub.default"/>
             <argument type="service" id="emsco.manager.user"/>
-            <argument>%env(MERCURE_PUBLIC_URL)%</argument>
-            <argument>%env(MERCURE_SUBSCRIBER_JWT_KEY)%</argument>
             <argument>%ems_core.url_user%</argument>
         </service>
 

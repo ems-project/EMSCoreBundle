@@ -7,9 +7,7 @@ namespace EMS\CoreBundle\Core\Mercure;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\User;
 use EMS\Helpers\Standard\Json;
-use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Signer\Hmac\Sha256;
-use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\JWT\Token\RegisteredClaims;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 
@@ -18,42 +16,33 @@ use function Symfony\Component\String\u;
 class MercureService
 {
     public const string TOPIC_NOTIFICATIONS = 'notifications';
+    private const string TOKEN_EXPIRATION_TIME = '+1 hour';
 
     public function __construct(
         private readonly HubInterface $mercureHub,
         private readonly UserManager $userManager,
-        private readonly string $mercurePublicUrl,
-        private readonly string $subscriberJWT,
         private readonly string $userUrl,
     ) {
     }
 
-    /** @return array{ 'token': string, 'url': string } */
-    public function generateToken(string $expiresAt): array
+    public function generateToken(): string
     {
-        if ('' === $this->subscriberJWT) {
-            throw new \RuntimeException('MERCURE_SUBSCRIBER_JWT_KEY not defined');
+        if (null === $factory = $this->mercureHub->getFactory()) {
+            throw new \RuntimeException('No factory was provided');
         }
 
-        $config = Configuration::forSymmetricSigner(
-            new Sha256(),
-            InMemory::plainText($this->subscriberJWT)
-        );
-
         $now = new \DateTimeImmutable('now');
-        $token = $config->builder()
-            ->issuedAt($now)
-            ->expiresAt($now->modify($expiresAt))
-            ->withClaim('mercure', ['subscribe' => [
+
+        return $factory->create(
+            subscribe: [
                 $this->topic(self::TOPIC_NOTIFICATIONS),
                 $this->topic('user/'.$this->userManager->getAuthenticatedUser()->getId()),
-            ]])
-            ->getToken($config->signer(), $config->signingKey());
-
-        return [
-            'token' => $token->toString(),
-            'url' => $this->mercurePublicUrl,
-        ];
+            ],
+            additionalClaims: [
+                RegisteredClaims::ISSUED_AT => $now,
+                RegisteredClaims::EXPIRATION_TIME => $now->modify(self::TOKEN_EXPIRATION_TIME),
+            ],
+        );
     }
 
     /**
@@ -63,7 +52,7 @@ class MercureService
     {
         $topics = \array_map(fn (string $name) => $this->topic($name), $topicNames);
 
-        $this->mercureHub->publish(new Update($topics, Json::encode($data)));
+        $this->mercureHub->publish(new Update($topics, Json::encode($data), true));
     }
 
     /**

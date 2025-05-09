@@ -19,7 +19,7 @@ use Symfony\Component\Intl\Locales;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-final class MultiplexedTabContainerFieldType extends DataFieldType
+class MultiplexedTabContainerFieldType extends DataFieldType
 {
     private const string LOCALE_PREFERRED_FIRST_DISPLAY_OPTION = 'localePreferredFirst';
     private const string WITH_LOCALES_VARIABLE_DISPLAY_OPTION = 'withLocalesVariable';

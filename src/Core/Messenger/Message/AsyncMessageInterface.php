@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Core\Message;
+namespace EMS\CoreBundle\Core\Messenger\Message;
 
 interface AsyncMessageInterface
 {

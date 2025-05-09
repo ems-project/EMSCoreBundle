@@ -9,6 +9,9 @@
         <service id="ems.repository.auth_token" class="EMS\CoreBundle\Repository\AuthTokenRepository">
             <argument type="service" id="doctrine"/>
         </service>
+        <service id="ems.repository.cache_action" class="EMS\CoreBundle\Repository\CacheActionRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
         <service id="ems.repository.channel" class="EMS\CoreBundle\Repository\ChannelRepository">
             <argument type="service" id="doctrine"/>
         </service>

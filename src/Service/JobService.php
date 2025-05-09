@@ -9,7 +9,7 @@ use Doctrine\Persistence\ObjectManager;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Command\JobOutput;
 use EMS\CoreBundle\Core\Job\ScheduleManager;
-use EMS\CoreBundle\Core\Message\Job as JobMessage;
+use EMS\CoreBundle\Core\Messenger\Message\JobMessage;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Repository\JobRepository;
@@ -130,9 +130,7 @@ class JobService implements EntityServiceInterface
         $this->save($job);
 
         if ($this->asyncEnabled && $addToAsyncQueue) {
-            $this->bus->dispatch(
-                new JobMessage($job->getId())
-            );
+            $this->bus->dispatch(new JobMessage($job->getId()));
         }
 
         return $job;

@@ -19,6 +19,15 @@ class FieldTypeService
     ) {
     }
 
+    public function getById(int $id): FieldType
+    {
+        if (null === $fieldType = $this->fieldTypeRepository->findOneBy(['id' => $id])) {
+            throw new \RuntimeException(\sprintf('Field type with the id "%d" does not exist.', $id));
+        }
+
+        return $fieldType;
+    }
+
     public function getTree(ContentType $contentType): FieldTypeTreeItem
     {
         return new FieldTypeTreeItem($contentType->getFieldType(), $this->getFieldTypes());

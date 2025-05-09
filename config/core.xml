@@ -5,6 +5,19 @@
         http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
 
+        <service id="emsco.core_action.action_service" class="EMS\CoreBundle\Core\Action\ActionService">
+            <argument type="service" id="ems.repository.cache_action" />
+            <argument type="service" id="emsco.manager.user" />
+            <argument type="service" id="messenger.default_bus" />
+            <argument type="service" id="emsco.core_mercure.mercure_service" />
+        </service>
+        <service id="emsco.core_action.action_revision_service" class="EMS\CoreBundle\Core\Action\ActionRevisionService">
+            <argument type="service" id="emsco.core_action.action_service" />
+            <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="emsco.core.content_type.field_type.service" />
+            <argument type="service" id="ems_common.ai.open_ai" />
+        </service>
+
         <service id="emsco.core_bridge.service" class="EMS\CoreBundle\Core\Bridge\Core\CoreServiceBridge">
             <argument type="service" id="EMS\CoreBundle\Service\DataService" />
             <argument type="service" id="ems.service.revision" />

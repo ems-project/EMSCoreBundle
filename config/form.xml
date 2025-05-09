@@ -150,6 +150,13 @@
             <tag name="ems.form.datafieldtype" alias="icon" />
             <tag name="form.type"/>
         </service>
+        <service id="ems.fieldtype.action" class="EMS\CoreBundle\Form\DataField\ActionFieldType">
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="form.registry" />
+            <argument type="service" id="ems.service.elasticsearch" />
+            <tag name="ems.form.datafieldtype" alias="action" />
+            <tag name="form.type"/>
+        </service>
         <service id="ems.fieldtype.asset" class="EMS\CoreBundle\Form\DataField\AssetFieldType">
             <argument type="service" id="security.authorization_checker" />
             <argument type="service" id="form.registry" />

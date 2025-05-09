@@ -32,7 +32,7 @@ class OptionsType extends AbstractType
 
         $builder->add('restrictionOptions', RestrictionOptionsType::class, $options);
         $builder->add('migrationOptions', MigrationOptionsType::class, $options);
-        $builder->add('extraOptions', ExtraOptionsType::class);
+        $builder->add('extraOptions', ExtraOptionsType::class, ['field_type' => $fieldType]);
     }
 
     #[\Override]

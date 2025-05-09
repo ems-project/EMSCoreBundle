@@ -9,12 +9,17 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class MercureController
 {
-    public function __construct(private readonly MercureService $mercureService)
-    {
+    public function __construct(
+        private readonly MercureService $mercureService,
+    ) {
     }
 
     public function getToken(): JsonResponse
     {
-        return new JsonResponse(['token' => $this->mercureService->generateToken()]);
+        return new JsonResponse([
+            'token' => $this->mercureService->generateToken(),
+            'url' => $this->mercureService->getPublicUrl(),
+            'topics' => $this->mercureService->getTopics(),
+        ]);
     }
 }

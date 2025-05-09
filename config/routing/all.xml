@@ -4,6 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
+    <import resource="@EMSCoreBundle/config/routing/action.xml" />
     <import resource="@EMSCoreBundle/config/routing/data.xml"
             prefix="/data"/>
     <import resource="@EMSCoreBundle/config/routing/api.xml" />

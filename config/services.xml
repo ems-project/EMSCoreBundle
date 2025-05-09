@@ -512,9 +512,15 @@
             <argument>%ems_core.instance_id%</argument>
             <tag name="emsco.entity.service" priority="90" />
         </service>
-        <service id="emsco.job_message_handler" class="EMS\CoreBundle\Core\MessageHandler\JobHandler">
+        <service id="emsco.core_messenger_handler.action_handler" class="EMS\CoreBundle\Core\Messenger\Handler\ActionHandler">
+            <argument type="service" id="emsco.core_action.action_service" />
+            <argument type="service" id="ems_common.ai.open_ai" />
+            <argument type="service" id="emsco.core_mercure.mercure_service" />
+            <tag name="messenger.message_handler" handles="EMS\CoreBundle\Core\Messenger\Message\ActionMessage" />
+        </service>
+        <service id="ems_core.core_messenger_handler.job_handler" class="EMS\CoreBundle\Core\Messenger\Handler\JobHandler">
             <argument type="service" id="EMS\CoreBundle\Service\JobService"/>
-            <tag name="messenger.message_handler" handles="EMS\CoreBundle\Core\Message\Job" />
+            <tag name="messenger.message_handler" handles="EMS\CoreBundle\Core\Messenger\Message\JobMessage" />
         </service>
         <service id="emsco.messenger.middleware.user_token_stamp" class="EMS\CoreBundle\Core\Messenger\Middleware\UserTokenStampMiddleware">
             <argument type="service" id="security.token_storage"/>

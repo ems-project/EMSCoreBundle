@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Core\MessageHandler;
+namespace EMS\CoreBundle\Core\Messenger\Handler;
 
-use EMS\CoreBundle\Core\Message\Job;
+use EMS\CoreBundle\Core\Messenger\Message\JobMessage;
 use EMS\CoreBundle\Service\JobService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -16,7 +16,7 @@ readonly class JobHandler
     ) {
     }
 
-    public function __invoke(Job $message): void
+    public function __invoke(JobMessage $message): void
     {
         if ($job = $this->service->getById($message->getContent())) {
             $this->service->run($job);

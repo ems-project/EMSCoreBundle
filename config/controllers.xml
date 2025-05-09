@@ -5,6 +5,10 @@
         https://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service id="EMS\CoreBundle\Controller\ActionController" public="true">
+            <argument type="service" id="emsco.core_action.action_revision_service" />
+            <tag name="controller.service_arguments"/>
+        </service>
         <!-- Admin -->
         <service id="EMS\CoreBundle\Controller\Admin\EnvironmentController" public="true">
             <argument type="service" id="emsco.logger" />

@@ -60,6 +60,17 @@ class FieldTypeTreeItem implements \IteratorAggregate, \Stringable
         return new FieldTypeTreeItemCollection($this->toArray());
     }
 
+    public function findByName(string $name): ?FieldTypeTreeItem
+    {
+        $result = \array_filter($this->toArray(), static fn (FieldTypeTreeItem $item) => $item->getName() === $name);
+
+        if (\count($result) > 1) {
+            throw new \RuntimeException(\sprintf('Found multiple fields named "%s"', $name));
+        }
+
+        return \array_pop($result);
+    }
+
     public function getFieldType(): FieldType
     {
         return $this->fieldType;

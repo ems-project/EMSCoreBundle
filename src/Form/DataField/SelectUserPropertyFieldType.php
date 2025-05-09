@@ -19,7 +19,7 @@ use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-final class SelectUserPropertyFieldType extends DataFieldType
+class SelectUserPropertyFieldType extends DataFieldType
 {
     public function __construct(
         private readonly UserService $userService,

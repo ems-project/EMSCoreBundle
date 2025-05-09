@@ -9,11 +9,11 @@
             <custom-id-generator class="Ramsey\Uuid\Doctrine\UuidGenerator"/>
         </id>
 
-        <many-to-one field="revision" target-entity="EMS\CoreBundle\Entity\Revision">
+        <many-to-one field="revision" target-entity="EMS\CoreBundle\Entity\Revision" inversed-by="environmentRevisions">
             <join-column name="revision_id" nullable="false"/>
         </many-to-one>
 
-        <many-to-one field="environment" target-entity="EMS\CoreBundle\Entity\Environment">
+        <many-to-one field="environment" target-entity="EMS\CoreBundle\Entity\Environment" inversed-by="environmentRevisions">
             <join-column name="environment_id" nullable="false"/>
         </many-to-one>
 

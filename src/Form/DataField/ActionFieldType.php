@@ -54,6 +54,7 @@ class ActionFieldType extends DataFieldType
         $view->vars['revisionId'] = $revision->getId();
     }
 
+    #[\Override]
     public function getDefaultOptions(string $name): array
     {
         $defaultOptions = parent::getDefaultOptions($name);

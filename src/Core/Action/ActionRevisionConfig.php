@@ -46,12 +46,10 @@ class ActionRevisionConfig
 
     private static function getConfigResolver(FieldTypeTreeItem $fieldTree): OptionsResolver
     {
-        $fieldNormalizer = function (Options $options, array $value) use ($fieldTree) {
-            return \array_filter(\array_map(
-                callback: static fn (string $name) => $fieldTree->findByName($name)?->getFieldType(),
-                array: $value
-            ));
-        };
+        $fieldNormalizer = (fn (Options $options, array $value) => \array_filter(\array_map(
+            callback: static fn (string $name) => $fieldTree->findByName($name)?->getFieldType(),
+            array: $value
+        )));
 
         $optionResolver = new OptionsResolver();
         $optionResolver

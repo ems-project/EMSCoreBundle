@@ -10,7 +10,7 @@ use Ramsey\Uuid\UuidInterface;
 
 class EnvironmentRevision implements EntityInterface
 {
-    private readonly UuidInterface $id;
+    private UuidInterface $id;
     private Environment $environment;
     private Revision $revision;
     private \DateTime $created;

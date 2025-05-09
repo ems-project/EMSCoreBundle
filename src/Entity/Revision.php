@@ -528,10 +528,12 @@ class Revision implements EntityInterface, \Stringable
 
     public function addEnvironment(Environment $environment, string $username): self
     {
-        foreach ($this->environmentRevisions as $environmentRevision) {
-            if ($environmentRevision->getEnvironment() === $environment) {
-                return $this;
-            }
+        if (\array_any(
+            $this->environmentRevisions->toArray(),
+            static fn (EnvironmentRevision $er) => $er->getEnvironment() === $environment && null === $er->getDeleted()
+        )
+        ) {
+            return $this;
         }
         $environmentRevision = new EnvironmentRevision();
         $environmentRevision->setEnvironment($environment);
@@ -551,7 +553,7 @@ class Revision implements EntityInterface, \Stringable
 
     public function removeEnvironment(Environment $environment, string $username): self
     {
-        foreach ($this->environmentRevisions as $key => $environmentRevision) {
+        foreach ($this->environmentRevisions as $environmentRevision) {
             if ($environmentRevision->getEnvironment() === $environment) {
                 $environmentRevision->setDeleted(new \DateTime());
                 $environmentRevision->setDeletedBy($username);

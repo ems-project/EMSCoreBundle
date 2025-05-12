@@ -6,10 +6,11 @@ namespace EMS\CoreBundle\Entity;
 
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-class Group implements EntityInterface, \Stringable
+class Group extends JsonDeserializer implements EntityInterface, \JsonSerializable
 {
     use CreatedModifiedTrait;
 
@@ -17,7 +18,7 @@ class Group implements EntityInterface, \Stringable
     protected string $name;
     protected ?string $label = null;
     /** @var mixed[] */
-    private array $roles = [];
+    protected array $roles = [];
 
     public function __construct()
     {
@@ -92,5 +93,15 @@ class Group implements EntityInterface, \Stringable
     public function __toString(): string
     {
         return $this->getName();
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        $json = new JsonClass(\get_object_vars($this), self::class);
+        $json->removeProperty('id');
+        $json->removeProperty('created');
+        $json->removeProperty('modified');
+
+        return $json;
     }
 }

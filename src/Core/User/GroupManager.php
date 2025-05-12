@@ -85,7 +85,10 @@ class GroupManager implements EntityServiceInterface
 
     public function createEntityFromJson(string $json, ?string $name = null): EntityInterface
     {
-        return Group::fromJson($json);
+        $group = Group::fromJson($json);
+        $this->groupRepository->save($group);
+
+        return $group;
     }
 
     public function deleteByItemName(string $name): string

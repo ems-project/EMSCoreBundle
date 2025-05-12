@@ -544,6 +544,18 @@ class Revision implements EntityInterface, \Stringable
         return $this;
     }
 
+    public function getCurrentEnvironmentRevision(Environment $environment): EnvironmentRevision
+    {
+        foreach ($this->environmentRevisions as $environmentRevision) {
+            if ($environmentRevision->getEnvironment() !== $environment || null !== $environmentRevision->getDeleted()) {
+                continue;
+            }
+
+            return $environmentRevision;
+        }
+        throw new \RuntimeException(\sprintf('No EnvironmentRevision for revision %d and environment %s!', $this->getId(), $environment->getName()));
+    }
+
     public function addEnvironmentRevision(EnvironmentRevision $environmentRevision): self
     {
         $this->environmentRevisions[] = $environmentRevision;
@@ -598,12 +610,17 @@ class Revision implements EntityInterface, \Stringable
     /**
      * @return array<mixed>
      */
-    public function getRawData(): array
+    public function getRawData(?Environment $environment = null): array
     {
         $rawData = $this->rawData ?? [];
 
         if (null !== $this->versionUuid) {
             $rawData[Mapping::VERSION_UUID] = $this->versionUuid->toString();
+        }
+        if (null !== $environment) {
+            $environmentRevision = $this->getCurrentEnvironmentRevision($environment);
+            $rawData[Mapping::PUBLISHED_DATETIME_FIELD] = $environmentRevision->getCreated()->format(\DateTime::ATOM);
+            $rawData[Mapping::PUBLISHED_BY_FIELD] = $environmentRevision->getCreatedBy();
         }
 
         return $rawData;

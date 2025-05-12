@@ -238,13 +238,6 @@ class PublishService
         }
 
         $this->dataService->sign($revision, true);
-        if ($this->indexService->indexRevision($revision, $environment)) {
-            $this->revRepository->save($revision);
-        } else {
-            $this->logger->warning('service.publish.publish_failed', [...[
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-            ], ...$logContext]);
-        }
 
         if (null === $commandUser) {
             $this->dataService->unlockRevision($revision);
@@ -260,6 +253,11 @@ class PublishService
             }
 
             $this->dispatcher->dispatch(new RevisionPublishEvent($revision, $environment));
+        }
+        if (!$this->indexService->indexRevision($revision, $environment)) {
+            $this->logger->warning('service.publish.publish_failed', [...[
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
+            ], ...$logContext]);
         }
 
         return $already ? 0 : 1;

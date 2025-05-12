@@ -180,7 +180,7 @@ class ReindexCommand extends AbstractCommand
                             $this->reloaded += $this->dataService->reloadData($revision, false);
                         }
 
-                        $rawData = $revision->getRawData();
+                        $rawData = $revision->getRawData($environment);
                         $this->bulker->index($contentType->getName(), $revision->giveOuuid(), $index, $rawData);
                     }
 

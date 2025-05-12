@@ -777,12 +777,12 @@ class DataService
             }
 
             $revision->addEnvironment($revision->giveContentType()->giveEnvironment(), $username);
+            $this->indexService->indexRevision($revision);
+
             $revision->setDraft(false);
             $revision->setFinalizedBy($username);
             $em->persist($revision);
             $em->flush();
-
-            $this->indexService->indexRevision($revision);
 
             $this->unlockRevision($revision, $username);
             $this->dispatcher->dispatch(new RevisionFinalizeDraftEvent($revision));

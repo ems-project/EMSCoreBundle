@@ -79,7 +79,7 @@
                         } %}
                         {% set contentTypeActions = contentTypeActions|merge([action]) %}
                     {%- endif -%}
-                {% else %}
+                {% elseif template.renderOption not in [constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EVENT')] %}
                     {% set action = {
                         link: path(template.public?'ems_data_custom_template_public':'ems_data_custom_template_protected', {
                             environmentName: environment.name,

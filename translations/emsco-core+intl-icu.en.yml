@@ -70,6 +70,17 @@ color:
     teal: Teal
     yellow: Yellow
 core:
+    action:
+        render-option:
+            embed: Embed
+            event: Event
+            export: Export
+            external-link: 'External link'
+            import: Import
+            job: Job
+            notification: Notification
+            pdf: PDF
+            raw-html: 'Raw HTML'
     content_type:
         view_define: |-
             {define, select,

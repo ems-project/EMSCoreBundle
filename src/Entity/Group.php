@@ -10,7 +10,7 @@ use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-class Group extends JsonDeserializer implements EntityInterface, \JsonSerializable
+class Group extends JsonDeserializer implements EntityInterface, \JsonSerializable, \Stringable
 {
     use CreatedModifiedTrait;
 

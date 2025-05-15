@@ -11,6 +11,7 @@ use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Service\ElasticsearchService;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -103,16 +104,26 @@ class MultiplexedTabContainerFieldType extends DataFieldType
         $resolver->setDefault(self::ICON_DISPLAY_OPTION, null);
     }
 
+    /** @return string[] */
+    private static function getLocaleValues(FieldType $fieldType): array
+    {
+        if ($fieldType->getDisplayOption(self::WITH_LOCALES_VARIABLE_DISPLAY_OPTION, false)) {
+            return Json::decode($_ENV['EMSCH_LOCALES'] ?? []);
+        }
+
+        if ($values = $fieldType->getDisplayOption(self::VALUES_DISPLAY_OPTION)) {
+            return self::textAreaToArray($values);
+        }
+
+        return [];
+    }
+
     #[\Override]
     public function generateMapping(FieldType $current): array
     {
-        $values = $current->getDisplayOption(self::VALUES_DISPLAY_OPTION);
-        if (null === $values) {
-            return [];
-        }
-
-        $values = self::textAreaToArray($values);
         $mapping = [];
+        $values = self::getLocaleValues($current);
+
         foreach ($values as $value) {
             $mapping[$value] = ['properties' => []];
         }
@@ -123,12 +134,7 @@ class MultiplexedTabContainerFieldType extends DataFieldType
     #[\Override]
     public static function getJsonNames(FieldType $current): array
     {
-        $values = $current->getDisplayOption(self::VALUES_DISPLAY_OPTION);
-        if (null === $values) {
-            return [];
-        }
-
-        return self::textAreaToArray($values);
+        return self::getLocaleValues($current);
     }
 
     #[\Override]

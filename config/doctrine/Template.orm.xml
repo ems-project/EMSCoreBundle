@@ -43,6 +43,7 @@
       </options>
     </field>
     <field name="tag" length="255" nullable="true"/>
+    <field name="allowedRemoteHosts" column="allowed_remote_hosts" type="json" nullable="true"/>
 
     <many-to-one field="contentType" target-entity="EMS\CoreBundle\Entity\ContentType" inversed-by="templates">
       <join-column name="content_type_id"/>

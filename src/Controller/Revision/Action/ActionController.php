@@ -96,6 +96,7 @@ class ActionController
             PdfPrintOptions::HTML5_PARSING => true,
             PdfPrintOptions::ORIENTATION => $action->getOrientation() ?? 'portrait',
             PdfPrintOptions::SIZE => $action->getSize() ?? 'A4',
+            PdfPrintOptions::ALLOWED_REMOTE_HOSTS => $action->getAllowedRemoteHosts(),
         ]);
 
         return $this->pdfPrinter->getStreamedResponse($pdf, $printOptions);

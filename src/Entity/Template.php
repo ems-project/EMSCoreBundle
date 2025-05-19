@@ -48,6 +48,8 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     protected bool $public = false;
     protected bool $spreadsheet = false;
     protected ?string $tag = null;
+    /** @var string[] */
+    protected ?array $allowedRemoteHosts = [];
 
     public function __construct()
     {
@@ -475,5 +477,21 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
     public function setTag(?string $tag): void
     {
         $this->tag = $tag;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAllowedRemoteHosts(): array
+    {
+        return $this->allowedRemoteHosts ?? [];
+    }
+
+    /**
+     * @param string[]|null $allowedRemoteHosts
+     */
+    public function setAllowedRemoteHosts(?array $allowedRemoteHosts): void
+    {
+        $this->allowedRemoteHosts = $allowedRemoteHosts;
     }
 }

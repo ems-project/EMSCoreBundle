@@ -107,6 +107,32 @@ class JobRepository extends EntityRepository
         return $qb->getQuery()->execute();
     }
 
+    /**
+     * @return array<int, array{
+     *     'tag'?: string,
+     *     'last_created': string,
+     *     'last_modified': string,
+     *     'count_jobs': int,
+     *     'count_jobs_done': int,
+     *     'count_jobs_started': int,
+     * }>|list<array<string, mixed>>
+     */
+    public function summary(): array
+    {
+        $qb = $this->getEntityManager()->getConnection()->createQueryBuilder();
+        $qb
+            ->addSelect('tag')
+            ->addSelect('max(created) as last_created')
+            ->addSelect('max(modified) as last_modified')
+            ->addSelect('count(id) as count_jobs')
+            ->addSelect('count(CASE WHEN done = TRUE THEN 1 END) AS count_jobs_done')
+            ->addSelect('count(CASE WHEN started = TRUE THEN 1 END) AS count_jobs_started')
+            ->from('job')
+            ->groupBy('tag');
+
+        return $qb->executeQuery()->fetchAllAssociative();
+    }
+
     private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
     {
         if (\strlen($searchValue) > 0) {

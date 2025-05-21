@@ -58,6 +58,10 @@ ems_client_helper:
             api: { "enable": true, "name": "backend" }
             hosts: '["http://localhost:9200"]'
 
+ems_common:
+    metric:
+        enabled: true
+
 ems_core:
     private_key: ''
     public_key: ''

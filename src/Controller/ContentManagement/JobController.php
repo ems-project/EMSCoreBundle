@@ -170,6 +170,8 @@ class JobController extends AbstractController
             return EmsCoreResponse::createJsonResponse($request, true, ['message' => 'no next job']);
         }
 
+        $this->jobService->start($job);
+
         return EmsCoreResponse::createJsonResponse($request, true, [
             'message' => \sprintf('job %d flagged has started', $job->getId()),
             'job_id' => (string) $job->getId(),

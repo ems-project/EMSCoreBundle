@@ -92,5 +92,10 @@
             <tag name="validator.constraint_validator" />
         </service>
 
+        <service id="emsco.metric.job_metric_collector" class="EMS\CoreBundle\Core\Metric\JobMetricCollector">
+            <argument type="service" id="EMS\CoreBundle\Repository\JobRepository"/>
+            <tag name="ems.metric_collector"/>
+        </service>
+
     </services>
 </container>

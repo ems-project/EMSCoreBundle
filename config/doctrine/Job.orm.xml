@@ -8,6 +8,10 @@
       <generator/>
     </id>
 
+    <indexes>
+      <index name="tag_idx" columns="tag" />
+    </indexes>
+
     <field name="status" type="text" nullable="true"/>
     <field name="output" type="text" nullable="true"/>
     <field name="done" type="boolean"/>

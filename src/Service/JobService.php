@@ -6,10 +6,12 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
+use EMS\CommonBundle\Common\Metric\MetricCollector;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Command\JobOutput;
 use EMS\CoreBundle\Core\Job\ScheduleManager;
 use EMS\CoreBundle\Core\Messenger\Message\JobMessage;
+use EMS\CoreBundle\Core\Metric\JobMetricCollector;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Repository\JobRepository;
@@ -34,6 +36,7 @@ class JobService implements EntityServiceInterface
         private readonly LoggerInterface $logger,
         private readonly JobRepository $repository,
         private readonly ScheduleManager $scheduleManager,
+        private readonly MetricCollector $metricCollector,
         private readonly TokenStorageInterface $tokenStorage,
         private readonly MessageBusInterface $bus,
         private readonly bool $asyncEnabled,
@@ -56,6 +59,13 @@ class JobService implements EntityServiceInterface
 
     public function nextJob(?string $tag = null): ?Job
     {
+        $this->metricCollector->gauge(
+            namespace: JobMetricCollector::NAMESPACE,
+            name: 'last_ping',
+            help: 'Timestamp of the last ping',
+            labels: ['tag']
+        )->set(\time(), [$tag ?? '']);
+
         return $this->repository->findOneBy(
             ['started' => false, 'done' => false, 'tag' => $tag],
             ['created' => 'ASC']

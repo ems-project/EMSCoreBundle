@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 use function Symfony\Component\Translation\t;
@@ -161,7 +162,21 @@ class JobController extends AbstractController
 
     public function startNextJob(Request $request, UserInterface $user, string $tag): Response
     {
-        $job = $this->jobService->nextJob($tag);
+        $jobId = $request->query->get('job_id');
+        if (null !== $jobId) {
+            $job = $this->jobService->getById((int) $jobId);
+            if (null === $job) {
+                throw new NotFoundHttpException(\sprintf('job with id %s not found', $jobId));
+            }
+            if ($job->getTag() !== $tag) {
+                throw new \RuntimeException(\sprintf('job tag mismatched %s', $job->getTag()));
+            }
+            if ($job->getStarted()) {
+                throw new \RuntimeException('job already started');
+            }
+        } else {
+            $job = $this->jobService->nextJob($tag);
+        }
         if (null === $job) {
             $job = $this->jobService->nextJobScheduled($user->getUserIdentifier(), $tag);
         }

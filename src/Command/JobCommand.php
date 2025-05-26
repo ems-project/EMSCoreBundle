@@ -10,6 +10,7 @@ use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\ReleaseService;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,12 +23,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class JobCommand extends AbstractCommand
 {
+    private const string ARGUMENT_JOB_ID = 'job-id';
     private const string OPTION_DUMP = 'dump';
     private const string OPTION_TAG = 'tag';
     private const string USER_JOB_COMMAND = 'User-Job-Command';
 
     private bool $dump = false;
     private ?string $tag = null;
+    private ?string $jobId;
 
     public function __construct(
         private readonly JobService $jobService,
@@ -42,7 +45,7 @@ class JobCommand extends AbstractCommand
     protected function configure(): void
     {
         $this
-
+            ->addArgument(self::ARGUMENT_JOB_ID, InputArgument::OPTIONAL, 'Job ID to execute')
             ->addOption(self::OPTION_DUMP, null, InputOption::VALUE_NONE, 'Shows the job\'s output at the end of the execution')
             ->addOption(self::OPTION_TAG, null, InputOption::VALUE_OPTIONAL, 'Will treat the next scheduled job flagged with the provided tag (do not execute pending jobs)')
         ;
@@ -52,6 +55,7 @@ class JobCommand extends AbstractCommand
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
+        $this->jobId = $this->getArgumentStringNull(self::ARGUMENT_JOB_ID);
         $this->dump = $this->getOptionBool(self::OPTION_DUMP);
         $this->tag = $this->getOptionStringNull(self::OPTION_TAG);
     }
@@ -90,7 +94,20 @@ class JobCommand extends AbstractCommand
 
     private function processNextJob(): bool
     {
-        $nextJob = $this->jobService->nextJob($this->tag);
+        if (null !== $this->jobId) {
+            $nextJob = $this->jobService->getById((int) $this->jobId);
+            if (null === $nextJob) {
+                throw new \RuntimeException(\sprintf('Job %d not found', $this->jobId));
+            }
+            if (null !== $this->tag && $this->tag !== $nextJob->getTag()) {
+                throw new \RuntimeException(\sprintf('job tag mismatched %s', $nextJob->getTag()));
+            }
+            if ($nextJob->getStarted()) {
+                throw new \RuntimeException('job already started');
+            }
+        } else {
+            $nextJob = $this->jobService->nextJob($this->tag);
+        }
 
         if (null === $nextJob) {
             $this->io->comment('No jobs pending to treat');

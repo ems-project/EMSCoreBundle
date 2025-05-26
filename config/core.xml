@@ -65,7 +65,6 @@
             <argument type="service" id="emsco.core.media_library.template_factory" />
             <argument type="service" id="emsco.core.media_library.file_factory" />
             <argument type="service" id="emsco.core.media_library.folder_factory" />
-            <argument>%ems_core.async.enabled%</argument>
         </service>
         <service id="emsco.core.media_library.file_factory" class="EMS\CoreBundle\Core\Component\MediaLibrary\File\MediaLibraryFileFactory">
             <argument type="service" id="ems_common.service.elastica"/>

@@ -520,7 +520,9 @@
             <tag name="messenger.message_handler" handles="EMS\CoreBundle\Core\Messenger\Message\ActionMessage" />
         </service>
         <service id="ems_core.core_messenger_handler.job_handler" class="EMS\CoreBundle\Core\Messenger\Handler\JobHandler">
-            <argument type="service" id="EMS\CoreBundle\Service\JobService"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.job"/>
+            <argument type="service" id="ems_common.runner.manager"/>
             <tag name="messenger.message_handler" handles="EMS\CoreBundle\Core\Messenger\Message\JobMessage" />
         </service>
         <service id="emsco.messenger.middleware.user_token_stamp" class="EMS\CoreBundle\Core\Messenger\Middleware\UserTokenStampMiddleware">

@@ -25,7 +25,7 @@ class RenderOptionType extends ChoiceType
     final public const string PDF = 'pdf';
 
     /** @var array<string, string> */
-    private array $choices;
+    private readonly array $choices;
 
     public function __construct(?ChoiceListFactoryInterface $choiceListFactory = null, ?TranslatorInterface $translator = null)
     {

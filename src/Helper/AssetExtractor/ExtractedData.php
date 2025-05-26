@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Helper\AssetExtractor;
 
 use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Text;
+use EMS\Helpers\Standard\Type;
 
 class ExtractedData
 {
@@ -117,7 +118,7 @@ class ExtractedData
         if (!\mb_check_encoding($data)) {
             $data = \mb_convert_encoding($data, \mb_internal_encoding(), 'ASCII');
         }
-        $cleaned = \preg_replace("/\r/", '', $data);
+        $cleaned = \preg_replace("/\r/", '', Type::string($data));
         if (null === $cleaned) {
             throw new \RuntimeException('It was possible to parse meta information');
         }

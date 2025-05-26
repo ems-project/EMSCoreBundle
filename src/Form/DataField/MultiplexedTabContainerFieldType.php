@@ -108,7 +108,7 @@ class MultiplexedTabContainerFieldType extends DataFieldType
     private static function getLocaleValues(FieldType $fieldType): array
     {
         if ($fieldType->getDisplayOption(self::WITH_LOCALES_VARIABLE_DISPLAY_OPTION, false)) {
-            return Json::decode($_ENV['EMSCH_LOCALES'] ?? '[]');
+            return Json::decode($_ENV['EMSCH_LOCALES'] ?? $_SERVER['EMSCH_LOCALES'] ?? '[]');
         }
 
         if ($values = $fieldType->getDisplayOption(self::VALUES_DISPLAY_OPTION)) {

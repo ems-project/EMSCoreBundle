@@ -23,7 +23,7 @@ class JobMetricCollector implements MetricCollectorInterface
     ];
 
     public function __construct(
-        private JobRepository $jobRepository,
+        private readonly JobRepository $jobRepository,
     ) {
     }
 
@@ -42,7 +42,7 @@ class JobMetricCollector implements MetricCollectorInterface
 
             foreach ($jobSummary as $info) {
                 if ('last_created' === $name || 'last_modified' === $name) {
-                    $value = (float) \strtotime($info[$name]);
+                    $value = (float) \strtotime((string) $info[$name]);
                 } else {
                     $value = (float) $info[$name];
                 }

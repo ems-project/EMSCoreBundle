@@ -173,7 +173,7 @@ class AssetExtractorService implements CacheWarmerInterface
                     if (!\mb_check_encoding($text)) {
                         $text = \mb_convert_encoding($text, \mb_internal_encoding(), 'ASCII');
                     }
-                    $text = \preg_replace('/(\n)(\s*\n)+/', '${1}', $text);
+                    $text = \preg_replace('/(\n)(\s*\n)+/', '${1}', Type::string($text));
                     $out->setContent($text ?? '');
                 }
                 if (!empty($out->getLocale())) {

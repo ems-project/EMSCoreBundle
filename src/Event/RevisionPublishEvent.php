@@ -14,6 +14,7 @@ class RevisionPublishEvent extends RevisionEvent
         parent::__construct($revision);
     }
 
+    #[\Override]
     public function getEnvironment(): Environment
     {
         return $this->environment;

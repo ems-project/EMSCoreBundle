@@ -740,6 +740,8 @@ user:
         edit: Edit
         generate_api: 'API key'
         generate_api_confirm: 'Generate API key for this user?'
+        remove: Remove
+        remove_confirm: 'Remove this user from the group?'
         switch: 'Switch user'
     index:
         column:
@@ -826,8 +828,8 @@ view:
     user:
         index:
             title: 'User list'
-            user-in-group: 'User in group'
-            user-not-in-group: 'User not in group'
+            user-in-group: 'Users in group %label%'
+            user-not-in-group: 'Users not in group %label%'
         permissions:
             page_title: 'Permissions Overview'
             titles:

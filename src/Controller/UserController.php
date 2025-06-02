@@ -315,7 +315,7 @@ class UserController extends AbstractController
     public function removeFromGroup(User $user, string $groupName): Response
     {
         $userGroup = $user->getGroup();
-        if (null === $userGroup || $userGroup->getName() !== $groupName) {
+        if (null === $userGroup || $userGroup->getId() !== $groupName) {
             throw new \RuntimeException(\sprintf('The user is not in the group "%s".', $groupName));
         }
         $user->setGroup(null);

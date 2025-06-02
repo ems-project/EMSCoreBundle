@@ -1,9 +1,16 @@
 {% extends '@EMSCore/base.html.twig' %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-md-5">
-            {{ form(form) }}
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">Create Group</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-5">
+                    {{ form(form) }}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -80,7 +80,7 @@ class TrashController extends AbstractController
 
     public function putBack(ContentType $contentType, string $ouuid): RedirectResponse
     {
-        if (!$this->isGranted($contentType->role(ContentTypeRoles::CREATE))) {
+        if (!$this->isGranted($contentType->role(ContentTypeRoles::EDIT))) {
             throw $this->createAccessDeniedException();
         }
 

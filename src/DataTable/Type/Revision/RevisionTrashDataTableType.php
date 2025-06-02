@@ -56,7 +56,7 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
         $table->addColumnDefinition(new UserTableColumn(t('field.user_deleted', [], 'emsco-core'), 'deletedBy'));
         $table->addColumnDefinition(new DatetimeTableColumn(t('field.date_modified', [], 'emsco-core'), 'modified'));
 
-        if ($this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::CREATE))) {
+        if ($this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::EDIT))) {
             $table->addDynamicItemPostAction(
                 route: Routes::DATA_TRASH_PUT_BACK,
                 labelKey: t('revision.trash.put_back', [], 'emsco-core'),

@@ -142,7 +142,7 @@ class FileService implements EntityServiceInterface
     }
 
     /**
-     * @return UploadedAsset[]|iterable
+     * @return iterable<array{ 'type': string, 'name': string, 'user': string, 'sha1': string }>
      */
     public function getImages(): iterable
     {

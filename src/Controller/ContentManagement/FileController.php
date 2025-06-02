@@ -185,14 +185,14 @@ class FileController extends AbstractController
         $response = [];
         foreach ($images as $image) {
             $url = $this->generateUrl('ems_file_view', [
-                'sha1' => $image->getSha1(),
-                'name' => $image->getName(),
-                'type' => $image->getType(),
+                'sha1' => $image['sha1'],
+                'name' => $image['name'],
+                'type' => $image['type'],
             ]);
             $response[] = [
                 'image' => $url,
                 'thumb' => $url,
-                'folder' => $image->getUser(),
+                'folder' => $image['user'],
             ];
         }
 

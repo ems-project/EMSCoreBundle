@@ -211,8 +211,8 @@ class MultiplexedTabContainerFieldType extends DataFieldType
 
         $withLocalesVariable = true === $fieldType->getDisplayOption(self::WITH_LOCALES_VARIABLE_DISPLAY_OPTION, false);
         if ($withLocalesVariable) {
-            foreach ($this->locales as $locale) {
-                $choices[$locale] = Locales::getName($locale);
+            foreach ($this->locales as $varLocale) {
+                $choices[$varLocale] = Locales::getName($varLocale);
             }
         }
 

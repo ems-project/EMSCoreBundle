@@ -30,7 +30,7 @@ final class Version20250112174825 extends AbstractMigration
         );
         $fieldTypes = $this->connection->executeQuery('select id, type, options from field_type');
         while ($fieldType = $fieldTypes->fetchAssociative()) {
-            $options = Json::decode($fieldType['options']);
+            $options = Json::decode($fieldType['options'] ?? '{}');
             if ('EMS\CoreBundle\Form\DataField\RadioFieldType' === $fieldType['type']) {
                 $options[FieldType::DISPLAY_OPTIONS]['expanded'] = true;
                 $options[FieldType::DISPLAY_OPTIONS]['multiple'] = false;

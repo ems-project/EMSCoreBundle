@@ -42,7 +42,7 @@ final class Version20250111190930 extends AbstractMigration
         );
         $fieldTypes = $this->connection->executeQuery('select id, type, options from field_type');
         while ($fieldType = $fieldTypes->fetchAssociative()) {
-            $options = Json::decode($fieldType['options']);
+            $options = Json::decode($fieldType['options'] ?? '{}');
             if (!isset($options[FieldType::MAPPING_OPTIONS]['index'])) {
                 continue;
             }

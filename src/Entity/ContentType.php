@@ -964,8 +964,8 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getVersioning(): Versioning
     {
         $versioning = new Versioning(
-            fields: $this->versionFields ?? [],
-            options: $this->versionOptions ?? [],
+            fields: new VersionFields($this->versionFields ?? []),
+            options: new VersionOptions($this->versionOptions ?? []),
             tags: $this->versionTags ?? []
         );
 

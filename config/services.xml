@@ -336,6 +336,7 @@
             <argument type="service" id="logger" />
             <argument type="service" id="ems_common.service.elastica" />
             <argument type="service" id="ems.service.alias" />
+            <argument type="service" id="ems.repository.environment_revision" />
             <argument>%ems_core.instance_id%</argument>
             <tag name="emsco.entity.service" priority="80" />
         </service>

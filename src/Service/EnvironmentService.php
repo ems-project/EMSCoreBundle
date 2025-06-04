@@ -22,6 +22,7 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\AnalyzerRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\EnvironmentRevisionRepository;
 use EMS\CoreBundle\Repository\FilterRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -44,6 +45,7 @@ class EnvironmentService implements EntityServiceInterface
         private readonly LoggerInterface $logger,
         private readonly ElasticaService $elasticaService,
         private readonly AliasService $aliasService,
+        private readonly EnvironmentRevisionRepository $environmentRevisionRepository,
         private readonly string $instanceId,
     ) {
         $environmentRepository = $doctrine->getRepository(Environment::class);
@@ -546,8 +548,8 @@ class EnvironmentService implements EntityServiceInterface
 
         if (null === $stats) {
             $stats = [
-                'revisions' => $this->environmentRepository->countRevisionsById(),
-                'revisions_deleted' => $this->environmentRepository->countRevisionsById(deleted: true),
+                'revisions' => $this->environmentRevisionRepository->countDocumentsByEnvironments(),
+                'revisions_deleted' => $this->environmentRevisionRepository->countDocumentsByEnvironments(deleted: true),
             ];
         }
 

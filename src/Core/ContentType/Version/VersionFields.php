@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\ContentType\Version;
 
-use EMS\Helpers\ArrayHelper\ArrayHelper;
-
 /**
  * @implements \ArrayAccess<string, ?string>
  */
@@ -30,7 +28,8 @@ class VersionFields implements \ArrayAccess
     public function __construct(array $data)
     {
         foreach (self::FIELDS as $field) {
-            $this->fields[$field] = $data[$field] ?? null;
+            $value = $data[$field] ?? null;
+            $this->fields[$field] = ('' === $value ? null : $value);
         }
     }
 
@@ -39,10 +38,7 @@ class VersionFields implements \ArrayAccess
      */
     public function getData(): array
     {
-        /** @var array<string, ?string> $cleaned */
-        $cleaned = ArrayHelper::map($this->fields, fn (?string $v) => (null !== $v && \strlen($v) > 0 ? $v : null));
-
-        return $cleaned;
+        return $this->fields;
     }
 
     #[\Override]
@@ -60,7 +56,7 @@ class VersionFields implements \ArrayAccess
     #[\Override]
     public function offsetSet($offset, $value): void
     {
-        $this->fields[$offset] = $value;
+        $this->fields[$offset] = ('' === $value ? null : $value);
     }
 
     #[\Override]

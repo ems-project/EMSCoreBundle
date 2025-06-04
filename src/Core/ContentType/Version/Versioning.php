@@ -13,13 +13,11 @@ class Versioning
     private ?FieldType $rootFieldType = null;
 
     /**
-     * @param array<string, ?string> $fields
-     * @param array<string, bool>    $options
-     * @param string[]               $tags
+     * @param string[] $tags
      */
     public function __construct(
-        private array $fields,
-        private array $options,
+        private VersionFields $fields,
+        private VersionOptions $options,
         private array $tags
     ) {
     }
@@ -41,12 +39,12 @@ class Versioning
 
     public function getFields(): VersionFields
     {
-        return new VersionFields($this->fields);
+        return $this->fields;
     }
 
     public function getOptions(): VersionOptions
     {
-        return new VersionOptions($this->options);
+        return $this->options;
     }
 
     /** @return string[] */
@@ -57,12 +55,12 @@ class Versioning
 
     public function setFields(VersionFields $versionFields): void
     {
-        $this->fields = $versionFields->getData();
+        $this->fields = $versionFields;
     }
 
     public function setOptions(VersionOptions $versionOptions): void
     {
-        $this->options = $versionOptions->getData();
+        $this->options = $versionOptions;
     }
 
     public function setRootFieldType(?FieldType $rootFieldType): void

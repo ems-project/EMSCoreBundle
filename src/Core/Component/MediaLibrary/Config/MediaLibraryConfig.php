@@ -9,6 +9,9 @@ use EMS\CoreBundle\Entity\ContentType;
 
 class MediaLibraryConfig implements ConfigInterface
 {
+    public const TERM_SEARCH_TYPE = 'term';
+    public const PREFIX_SEARCH_TYPE = 'prefix';
+    public const ALL_SEARCH_TYPE = 'all';
     public const DEFAULT_SEARCH_FILE_QUERY = [
         'bool' => [
             'must' => [
@@ -54,6 +57,7 @@ class MediaLibraryConfig implements ConfigInterface
         public readonly string $fieldFolder,
         public readonly string $fieldFile,
         private readonly array $sort = [],
+        private readonly string $searchType = self::TERM_SEARCH_TYPE,
     ) {
     }
 
@@ -78,5 +82,10 @@ class MediaLibraryConfig implements ConfigInterface
         $defaultSorts = \array_filter($this->sort, static fn (MediaLibraryConfigSort $sort) => null !== $sort->defaultOrder);
 
         return \array_shift($defaultSorts);
+    }
+
+    public function getSearchType(): string
+    {
+        return $this->searchType;
     }
 }

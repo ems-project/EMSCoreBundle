@@ -243,14 +243,15 @@ class MediaLibraryService
     /**
      * @return array<mixed>
      */
-    public function renderFiles(int $from, ?MediaLibraryFolder $folder = null, ?string $sortId = null, ?string $sortOrder = null, int $selectionFiles = 0, ?string $searchValue = null): array
+    public function renderFiles(int $from, ?MediaLibraryFolder $folder = null, ?string $sortId = null, ?string $sortOrder = null, int $selectionFiles = 0, ?string $searchValue = null, string $searchType = MediaLibraryConfig::TERM_SEARCH_TYPE): array
     {
         $findFiles = $this->findFiles(
             from: $from,
             folder: $folder,
             sortId: $sortId,
             sortOrder: $sortOrder,
-            searchValue: $searchValue
+            searchValue: $searchValue,
+            searchType: $searchType,
         );
 
         $template = $this->templateFactory->create($this->getConfig(), \array_filter([
@@ -339,15 +340,19 @@ class MediaLibraryService
         return $search;
     }
 
-    private function buildFileSearch(?MediaLibraryFolder $folder = null, ?string $searchValue = null): Search
+    private function buildFileSearch(?MediaLibraryFolder $folder = null, ?string $searchValue = null, string $searchType = MediaLibraryConfig::TERM_SEARCH_TYPE): Search
     {
         $path = $folder ? $folder->getPath()->getValue().'/' : '/';
         $hashField = \sprintf('%s.%s', $this->getConfig()->fieldFile, EmsFields::CONTENT_FILE_HASH_FIELD);
 
         $query = $this->elasticaService->getBoolQuery();
-        $query
-            ->addMust(new NestedQuery()->setPath($this->getConfig()->fieldFile)->setQuery(new Exists($hashField)))
-            ->addMust(new Term()->setTerm($this->getConfig()->fieldFolder, $path));
+        $query->addMust(new NestedQuery()->setPath($this->getConfig()->fieldFile)->setQuery(new Exists($hashField)));
+
+        if (MediaLibraryConfig::PREFIX_SEARCH_TYPE === $searchType && null !== $searchValue && \strlen($searchValue) > 0) {
+            $query->addMust(new Prefix()->setPrefix($this->getConfig()->fieldFolder, $path));
+        } elseif (MediaLibraryConfig::ALL_SEARCH_TYPE !== $searchType || null === $searchValue || 0 === \strlen($searchValue)) {
+            $query->addMust(new Term()->setTerm($this->getConfig()->fieldFolder, $path));
+        }
 
         $search = $this->buildSearch($query);
 
@@ -434,9 +439,9 @@ class MediaLibraryService
      *     sort: null|array{id: string, order: string}
      * }
      */
-    private function findFiles(int $from, ?MediaLibraryFolder $folder, ?string $sortId = null, ?string $sortOrder = null, ?string $searchValue = null): array
+    private function findFiles(int $from, ?MediaLibraryFolder $folder, ?string $sortId = null, ?string $sortOrder = null, ?string $searchValue = null, string $searchType = MediaLibraryConfig::TERM_SEARCH_TYPE): array
     {
-        $search = $this->buildFileSearch($folder, $searchValue);
+        $search = $this->buildFileSearch($folder, $searchValue, $searchType);
         $search->setFrom($from);
         $search->setSize($this->getConfig()->searchSize);
 

@@ -19,12 +19,14 @@ export default class MediaLibrary {
     #searchValue = null;
     #sortId = null;
     #sortOrder = null;
+    #searchType = 'term'
 
     constructor (element, options) {
         this.id = element.id;
         this.element = element;
         this.#pathPrefix = `${options.urlMediaLib}/${element.dataset.hash}`;
         this.#options = options;
+        this.#searchType = element.dataset.searchType ?? 'term';
 
         this.#elements = {
             header:  element.querySelector('div.media-nav-bar'),
@@ -479,7 +481,7 @@ export default class MediaLibrary {
             this.#elements.listFiles.innerHTML = '';
         }
 
-        const query = new URLSearchParams({ from: from.toString() });
+        const query = new URLSearchParams({ from: from.toString(), searchType: this.#searchType });
         if (this.getSelectionFiles().length > 0) query.append('selectionFiles', this.getSelectionFiles().length.toString());
         if (this.#searchValue) query.append('search', this.#searchValue);
         if (this.#sortId) query.append('sortId', this.#sortId);

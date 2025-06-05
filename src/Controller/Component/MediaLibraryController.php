@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Component;
 
+use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig;
 use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryService;
 use EMS\CoreBundle\Core\UI\AjaxModal;
 use EMS\CoreBundle\Core\UI\AjaxService;
@@ -187,6 +188,7 @@ class MediaLibraryController
         if ($sortOrder && !\in_array($sortOrder, ['asc', 'desc'])) {
             $sortOrder = 'asc';
         }
+        $searchType = $query->getString('searchType', MediaLibraryConfig::TERM_SEARCH_TYPE);
 
         return new JsonResponse($this->mediaLibraryService->renderFiles(
             from: $query->getInt('from'),
@@ -194,7 +196,8 @@ class MediaLibraryController
             sortId: $query->get('sortId'),
             sortOrder: $sortOrder,
             selectionFiles: $query->has('selectionFiles') ? $query->getInt('selectionFiles') : 0,
-            searchValue: $query->get('search')
+            searchValue: $query->get('search'),
+            searchType: $searchType,
         ));
     }
 

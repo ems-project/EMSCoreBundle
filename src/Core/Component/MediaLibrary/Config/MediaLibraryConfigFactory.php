@@ -30,6 +30,7 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
      *   searchSize: int,
      *   searchQuery: array<mixed>,
      *   searchFileQuery: array<mixed>,
+     *   searchType: string,
      * } $options
      */
     #[\Override]
@@ -44,7 +45,8 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
             fieldPath: $this->getField($contentType, $options['fieldPath'])->getName(),
             fieldFolder: $this->getField($contentType, $options['fieldFolder'])->getName(),
             fieldFile: $this->getField($contentType, $options['fieldFile'])->getName(),
-            sort: $options['sort']
+            sort: $options['sort'],
+            searchType: $options['searchType'],
         );
 
         $config->defaultValue = $options['defaultValue'];
@@ -76,6 +78,7 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
                 'searchSize' => MediaLibraryConfig::DEFAULT_SEARCH_SIZE,
                 'searchQuery' => [],
                 'searchFileQuery' => MediaLibraryConfig::DEFAULT_SEARCH_FILE_QUERY,
+                'searchType' => MediaLibraryConfig::TERM_SEARCH_TYPE,
                 'context' => [],
                 'template' => null,
             ])
@@ -90,8 +93,14 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
             ->setAllowedTypes('defaultValue', 'array')
             ->setAllowedTypes('searchQuery', 'array')
             ->setAllowedTypes('searchFileQuery', 'array')
+            ->setAllowedTypes('searchType', 'string')
             ->setAllowedTypes('searchSize', 'int')
             ->setAllowedTypes('context', 'array')
+            ->addAllowedValues('searchType', [
+                MediaLibraryConfig::TERM_SEARCH_TYPE,
+                MediaLibraryConfig::ALL_SEARCH_TYPE,
+                MediaLibraryConfig::PREFIX_SEARCH_TYPE,
+            ])
             ->setNormalizer('sort', function (OptionsResolver $optionsResolver, array $definitions): array {
                 $sorts = [];
 

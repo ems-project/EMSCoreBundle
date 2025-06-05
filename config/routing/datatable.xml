@@ -19,7 +19,7 @@
 
     <route id="ems_core_datatable_ajax_elastica" path="/ajax/{hashConfig}.json"
            controller="EMS\CoreBundle\Controller\ContentManagement\DatatableController::ajaxElastica"
-           methods="GET|HEAD"/>
+           methods="GET|HEAD|POST"/>
 
     <route id="ems_core_datatable_excel_elastica" path="/excel/{hashConfig}"
            controller="EMS\CoreBundle\Controller\ContentManagement\DatatableController::excelElastica"

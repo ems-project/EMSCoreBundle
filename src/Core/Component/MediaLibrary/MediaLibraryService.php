@@ -306,6 +306,7 @@ class MediaLibraryService
 
         return [
             'header' => $template->block('media_lib_header'),
+            'breadcrumb' => $template->block('media_lib_breadcrumb'),
             'footer' => $template->block('media_lib_footer'),
         ];
     }

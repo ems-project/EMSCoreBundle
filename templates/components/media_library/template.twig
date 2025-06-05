@@ -6,7 +6,6 @@
 
 {%- block media_lib_header -%}
     <div class="media-lib-container">
-        {{- template.block('media_lib_button_home', _context)|raw -}}
         {{- template.block('media_lib_button_folder_add', _context)|raw -}}
         {{- template.block('media_lib_button_upload', _context)|raw -}}
         {%- if mediaFile is defined -%}
@@ -21,7 +20,6 @@
             {{- template.block('media_lib_button_folder_delete', _context)|raw -}}
             {{- template.block('media_lib_button_folder_rename', _context)|raw -}}
         {%- endif -%}
-        {{- template.block('media_lib_breadcrumb', _context)|raw -}}
     </div>
     <div class="media-lib-container">
         {{- template.block('media_lib_search_box', _context)|raw -}}
@@ -173,7 +171,7 @@
 
 {%- block media_lib_breadcrumb -%}
     <ul class="media-lib-list-breadcrumb">
-        <li><button class="breadcrumb-item">Home</button></li>
+        <li><button class="breadcrumb-item"><i class="fa fa-home"></i> Home</button></li>
         {%- if mediaFolder is defined -%}
             {%- for parent in mediaFolder.parents -%}
                 <li><button class="breadcrumb-item" data-id="{{- parent.id -}}">{{- parent.name -}}</button></li>

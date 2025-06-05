@@ -29,9 +29,10 @@ export default class MediaLibrary {
         this.#searchType = element.dataset.searchType ?? 'term';
 
         this.#elements = {
-            header:  element.querySelector('div.media-nav-bar'),
-            footer:  element.querySelector('div.media-lib-footer'),
-            inputUpload:  element.querySelector('input.file-uploader-input'),
+            header: element.querySelector('div.media-nav-bar'),
+            footer: element.querySelector('div.media-lib-footer'),
+            breadcrumb: element.querySelector('div.media-lib-breadcrumb'),
+            inputUpload: element.querySelector('input.file-uploader-input'),
             files: element.querySelector('div.media-lib-files'),
             loadMoreFiles: element.querySelector('div.media-lib-files > div.media-lib-load-more'),
             listFiles: element.querySelector("ul.media-lib-list-files"),
@@ -471,6 +472,7 @@ export default class MediaLibrary {
 
         return this._get(path).then((json) => {
             if (json.hasOwnProperty('header')) this._refreshHeader(json.header);
+            if (json.hasOwnProperty('breadcrumb')) this.#elements.breadcrumb.innerHTML = json.breadcrumb;
             if (json.hasOwnProperty('footer')) this.#elements.footer.innerHTML = json.footer;
         });
     }
@@ -520,6 +522,7 @@ export default class MediaLibrary {
             this._refreshHeader(json.header);
             this.#activeFolderHeader = json.header;
         }
+        if (json.hasOwnProperty('breadcrumb')) this.#elements.breadcrumb.innerHTML = json.breadcrumb;
         if (json.hasOwnProperty('footer')) this.#elements.footer.innerHTML = json.footer;
         if (json.hasOwnProperty('rowHeader')) {
             this.#elements.listFiles.innerHTML += json.rowHeader;

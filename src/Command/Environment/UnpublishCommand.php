@@ -81,7 +81,7 @@ final class UnpublishCommand extends AbstractEnvironmentCommand
                 $this->io->progressAdvance();
 
                 try {
-                    $this->publishService->bulkUnpublish($revision, $transactionEnvironment);
+                    $this->publishService->bulkUnpublish($revision, $transactionEnvironment, self::LOCK_USER);
                     ++$this->counter;
                 } catch (\LogicException $e) {
                     $this->warnings[$e->getMessage()] = ($this->warnings[$e->getMessage()] ?? 0) + 1;

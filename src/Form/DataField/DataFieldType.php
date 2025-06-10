@@ -401,8 +401,7 @@ abstract class DataFieldType extends AbstractType
 
             if (null === $parent || !isset($restrictionOptions['mandatory_if'])
                 || null === $parent->getRawData()
-                || !empty(static::resolve($masterRawData ?? [], $parentRawDataArray, $restrictionOptions['mandatory_if']))) {
-                // Get rawData
+                || $this->isSet($masterRawData ?? [], $parentRawDataArray, $restrictionOptions['mandatory_if'])) {
                 $rawData = $dataField->getRawData();
                 if (null === $rawData || (\is_string($rawData) && '' === $rawData) || (\is_array($rawData) && 0 === \count($rawData))) {
                     $isValidMandatory = false;
@@ -418,7 +417,7 @@ abstract class DataFieldType extends AbstractType
      * @param array<mixed> $rawData
      * @param array<mixed> $parentRawData
      */
-    public static function resolve(array $rawData, array $parentRawData, string $path, ?string $default = null): ?string
+    public function isSet(array $rawData, array $parentRawData, string $path): bool
     {
         $current = $rawData;
         if (\strlen($path) && \str_starts_with($path, '.')) {
@@ -428,13 +427,13 @@ abstract class DataFieldType extends AbstractType
         $p = \strtok($path, '.');
         while (false !== $p) {
             if (!isset($current[$p])) {
-                return $default;
+                return false;
             }
             $current = $current[$p];
             $p = \strtok('.');
         }
 
-        return $current;
+        return !empty($current);
     }
 
     public function hasDeletedParent(?DataField $parent = null): bool

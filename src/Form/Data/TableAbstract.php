@@ -331,7 +331,10 @@ abstract class TableAbstract implements TableInterface
             $options = \array_merge($options, [
                 'processing' => true,
                 'serverSide' => true,
-                'ajax' => $this->ajaxUrl,
+                'ajax' => [
+                    'url' => $this->ajaxUrl,
+                    'type' => 'POST',
+                ],
             ]);
         }
 

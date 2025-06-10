@@ -197,7 +197,7 @@ class AlignCommand extends AbstractEnvironmentCommand
                     continue;
                 }
 
-                $this->publishService->bulkUnpublish($revision, $this->target);
+                $this->publishService->bulkUnpublish($revision, $this->target, self::LOCK_USER);
                 ++$countUnpublished;
             }
 

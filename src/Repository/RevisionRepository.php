@@ -113,10 +113,11 @@ class RevisionRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('r');
         $qb
-            ->addSelect('ce, c')
+            ->addSelect('ce, c, er, e')
             ->join('r.contentType', 'c')
             ->join('c.environment', 'ce')
             ->join('r.environmentRevisions', 'er')
+            ->join('er.environment', 'e')
             ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
             ->andWhere($qb->expr()->isNull('er.deleted'))
             ->andWhere($qb->expr()->eq('er.environment', ':environment'))

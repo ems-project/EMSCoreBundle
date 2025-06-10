@@ -7,8 +7,7 @@ namespace EMS\CoreBundle\EventListener;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 final readonly class LoginListener implements EventSubscriberInterface
 {
@@ -23,13 +22,17 @@ final readonly class LoginListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            SecurityEvents::INTERACTIVE_LOGIN => 'onLogin',
+            LoginSuccessEvent::class => 'onLoginSuccess',
         ];
     }
 
-    public function onLogin(InteractiveLoginEvent $event): void
+    public function onLoginSuccess(LoginSuccessEvent $event): void
     {
-        $user = $event->getAuthenticationToken()->getUser();
+        if ('ems_core' !== $event->getFirewallName()) {
+            return;
+        }
+
+        $user = $event->getUser();
 
         if ($user instanceof User) {
             $user->setLastLogin(new \DateTime());

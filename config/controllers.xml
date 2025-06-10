@@ -628,6 +628,7 @@
             <argument type="service" id="ems.dashboard.manager"/>
             <argument type="service" id="ems.service.contenttype"/>
             <argument>%ems_core.template_namespace%</argument>
+            <argument>%ems_core.group_feature%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>

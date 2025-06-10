@@ -89,6 +89,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('dynamic_mapping')->defaultValue(self::DYNAMIC_MAPPING)->end()
                 ->scalarNode('image_max_size')->defaultValue(self::IMAGE_MAX_SIZE)->end()
                 ->scalarNode('forgot_password_url')->defaultValue(null)->end()
+                ->booleanNode('group_feature')->defaultValue(false)->end()
             ->end()
         ;
 

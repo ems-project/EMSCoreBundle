@@ -24,6 +24,7 @@ class UserDataTableType extends AbstractEntityTableType
     public function __construct(
         UserService $entityService,
         private readonly ?string $circleObject,
+        private readonly bool $groupFeature,
     ) {
         parent::__construct($entityService);
     }
@@ -35,7 +36,7 @@ class UserDataTableType extends AbstractEntityTableType
         $table->addColumn('user.index.column.displayname', 'displayName');
         $table->addColumn('user.index.column.email', 'email');
         $context = $table->getContext();
-        if (!$context->inGroup) {
+        if (!$context->inGroup && $context->light && $this->groupFeature) {
             $table->addColumnDefinition(new EntityTableColumn('user.index.column.group', 'group'));
         }
         if ($context instanceof UserContextDTO && $context->inGroup && null !== $context->groupId) {
@@ -54,8 +55,10 @@ class UserDataTableType extends AbstractEntityTableType
                 $table->addColumnDefinition(new DataLinksTableColumn('user.index.column.circles', 'circles'));
             }
             $table->addColumnDefinition(new BoolTableColumn('user.index.column.enabled', 'enabled'));
+            if ($this->groupFeature) {
+                $table->addColumnDefinition(new EntityTableColumn('user.index.column.group', 'group'));
+            }
             $table->addColumnDefinition(new RolesTableColumn('user.index.column.roles', 'roles'));
-            $table->addColumnDefinition(new EntityTableColumn('user.index.column.group', 'group'));
             $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.lastLogin', 'lastLogin'));
             $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.expirationDate', 'expirationDate'));
 

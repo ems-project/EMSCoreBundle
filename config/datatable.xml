@@ -174,6 +174,7 @@
         <service id="emsco.data_table.user" class="EMS\CoreBundle\DataTable\Type\UserDataTableType">
             <argument type="service" id="ems.service.user" />
             <argument>%ems_core.circles_object%</argument>
+            <argument>%ems_core.group_feature%</argument>
             <tag name="emsco.datatable" />
         </service>
     </services>

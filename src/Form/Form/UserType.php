@@ -33,8 +33,12 @@ final class UserType extends AbstractType
     public const string MODE_CREATE = 'create';
     public const string MODE_UPDATE = 'update';
 
-    public function __construct(private readonly UserService $userService, private readonly GroupManager $groupManager, private readonly ?string $circleObject)
-    {
+    public function __construct(
+        private readonly UserService $userService,
+        private readonly GroupManager $groupManager,
+        private readonly ?string $circleObject,
+        private readonly bool $groupFeature,
+    ) {
     }
 
     /**
@@ -129,7 +133,13 @@ final class UserType extends AbstractType
                 'choices' => \array_flip(Locales::getNames()),
                 'choice_translation_domain' => false,
             ])
-            ->add('group', EntityType::class, [
+            ->add('userOptions', UserOptionsType::class, [
+                'label' => 'user.option.title',
+                'context' => UserOptionsType::CONTEXT_USER_MANAGEMENT,
+            ])
+        ;
+        if ($this->groupFeature) {
+            $builder->add('group', EntityType::class, [
                 'required' => false,
                 'label' => 'Group',
                 'class' => Group::class,
@@ -139,12 +149,8 @@ final class UserType extends AbstractType
                     'data-live-search' => true,
                     'class' => 'user-group-picker',
                 ],
-            ])
-            ->add('userOptions', UserOptionsType::class, [
-                'label' => 'user.option.title',
-                'context' => UserOptionsType::CONTEXT_USER_MANAGEMENT,
-            ])
-        ;
+            ]);
+        }
 
         if ($this->circleObject) {
             $builder->add('circles', ObjectPickerType::class, [

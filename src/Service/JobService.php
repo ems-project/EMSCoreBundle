@@ -195,8 +195,7 @@ class JobService implements EntityServiceInterface
         $job->setStarted(true);
         $this->repository->save($job);
 
-        $output = new JobOutput($this->repository, $job->getId());
-        $output->setDecorated(true);
+        $output = $this->getJobOutput($job);
         $output->writeln('Job ready to be launch');
 
         return $output;
@@ -342,11 +341,16 @@ class JobService implements EntityServiceInterface
     public function write(int $jobId, string $message, bool $newLine): void
     {
         $job = $this->repository->findById($jobId);
-        $job->setOutput($job->getOutput().$message.($newLine ? PHP_EOL : ''));
 
-        $this->em->persist($job);
-        $this->em->flush();
+        $output = $this->getJobOutput($job);
+        $output->doWrite($message, $newLine);
+    }
 
-        $this->logger->info('Job '.$job->getCommand().' completed.');
+    private function getJobOutput(Job $job): JobOutput
+    {
+        $output = new JobOutput($this->repository, $job->getId());
+        $output->setDecorated(true);
+
+        return $output;
     }
 }

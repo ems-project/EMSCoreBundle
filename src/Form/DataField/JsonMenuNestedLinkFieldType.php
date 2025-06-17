@@ -291,10 +291,11 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
 
     private function createJsonMenuNested(string $index, string $jmnQuery, string $jmnField): JsonMenuNested
     {
+        $searchQuery = Json::decode($jmnQuery);
         $search = $this->elasticaService->convertElasticsearchSearch([
-            'size' => 5000,
+            'size' => $searchQuery['size'] ?? 5000,
             'index' => $index,
-            'body' => $jmnQuery,
+            'body' => $searchQuery,
         ]);
 
         $structures = [];

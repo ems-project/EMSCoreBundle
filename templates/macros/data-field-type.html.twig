@@ -994,7 +994,7 @@
 	{%- set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' -%}
 	{%- set displayOptions = dataField.fieldType.options.displayOptions -%}
 	{%- set jmnField = displayOptions.json_menu_nested_field|default(false) -%}
-	{%- set jmnQuery = displayOptions.query|default(false) -%}
+    {%- set jmnQuery = displayOptions.query is defined ? displayOptions.query|ems_json_decode : false -%}
 
 	{%- if jmnField and jmnQuery and dataField.rawData is not null -%}
         {% if displayOptions.environment|default(null) is not null %}
@@ -1002,11 +1002,11 @@
         {% else %}
             {% set index = dataField.fieldType.contentType.environment.alias %}
         {% endif %}
-		{%-  set hits = emsco_search(
+		{%- set hits = emsco_search(
 			index,
 			jmnQuery.query|default({}),
 			[],
-			20,
+            jmnQuery.size|default(5000),
 			jmnQuery.from|default(0),
 			jmnQuery.sort|default(null),
 			jmnQuery._source|default(null)

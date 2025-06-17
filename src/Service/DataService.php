@@ -1193,7 +1193,7 @@ class DataService
         $contentType = (\is_string($contentType)) ? $this->contentTypeService->giveByName($contentType) : $contentType;
         $contentType->validate();
 
-        if (!$this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::DELETE))) {
+        if (null === $username && !$this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::DELETE))) {
             throw new AccessDeniedException('Delete role not granted!');
         }
 

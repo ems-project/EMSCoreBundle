@@ -855,7 +855,7 @@ class RevisionRepository extends EntityRepository
         if ($environment) {
             $qb
                 ->join('r.environmentRevisions', 'er')
-                ->andWhere($qb->expr()->eq('er.environmpent', ':environment'))
+                ->andWhere($qb->expr()->eq('er.environment', ':environment'))
                 ->andWhere($qb->expr()->isNull('er.deleted'))
                 ->setParameter('environment', $environment);
         } else {

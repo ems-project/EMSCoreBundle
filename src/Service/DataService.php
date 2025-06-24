@@ -767,7 +767,7 @@ class DataService
             $ouuid = $revision->getOuuid();
             if (null !== $ouuid) {
                 $item = $repository->findByOuuidContentTypeAndEnvironment($revision);
-                if ($item) {
+                if ($item && $revision !== $item) {
                     $this->lockRevision($item, null, false, $username);
                     $previousObjectArray = $item->getRawData();
                     $item->removeEnvironment($revision->giveContentType()->giveEnvironment(), $username);

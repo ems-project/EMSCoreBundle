@@ -97,6 +97,10 @@ final class Version20250426083639 extends AbstractMigration
         );
 
         $this->addSql(<<<'SQL'
+            DELETE FROM environment_revision WHERE deleted IS NOT NULL
+        SQL);
+
+        $this->addSql(<<<'SQL'
             ALTER TABLE environment_revision DROP CONSTRAINT fk_895f7b701dfa7c8f
         SQL);
         $this->addSql(<<<'SQL'

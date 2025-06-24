@@ -21,7 +21,6 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\Revision;
-use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -133,31 +132,6 @@ class RevisionRepository extends EntityRepository
     {
         $this->getEntityManager()->persist($revision);
         $this->getEntityManager()->flush();
-    }
-
-    public function addEnvironment(Revision $revision, Environment $environment, string $username): int
-    {
-        $conn = $this->getEntityManager()->getConnection();
-        $stmt = $conn->prepare('insert into environment_revision (id, environment_id, revision_id, created,  created_by, deleted, deleted_by) VALUES(:id, :envId, :revId, :now, :username, null, null)');
-        $stmt->bindValue('id', Uuid::uuid4()->toString());
-        $stmt->bindValue('envId', $environment->getId());
-        $stmt->bindValue('revId', $revision->getId());
-        $stmt->bindValue('now', new \DateTime()->format('Y-m-d H:i:s'));
-        $stmt->bindValue('username', $username);
-
-        return (int) $stmt->executeStatement();
-    }
-
-    public function removeEnvironment(Revision $revision, Environment $environment, string $username): int
-    {
-        $conn = $this->getEntityManager()->getConnection();
-        $stmt = $conn->prepare('update environment_revision set deleted = :now, deleted_by = :username  where environment_id = :envId and revision_id = :revId and deleted is null');
-        $stmt->bindValue('envId', $environment->getId());
-        $stmt->bindValue('revId', $revision->getId());
-        $stmt->bindValue('now', new \DateTime()->format('Y-m-d H:i:s'));
-        $stmt->bindValue('username', $username);
-
-        return (int) $stmt->executeStatement();
     }
 
     /**

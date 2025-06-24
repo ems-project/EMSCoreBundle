@@ -222,6 +222,10 @@ class PublishService
             return 0;
         }
 
+        if (null === $commandUser) {
+            $this->dataService->lockRevision($revision, $environment);
+        }
+
         $this->publishVersion($revision, $environment, $commandUser);
 
         $item = $this->revRepository->findByOuuidContentTypeAndEnvironment($revision, $environment);
@@ -232,19 +236,13 @@ class PublishService
             $already = true;
             $this->logger->notice('service.publish.already_published', $logContext);
         } elseif ($item) {
+            $this->dataService->lockRevision($item, $environment);
             $item->removeEnvironment($environment, $username);
             $this->revRepository->save($item);
-        }
-
-        if (null === $commandUser) {
-            $this->dataService->lockRevision($revision, $environment);
+            $this->dataService->unlockRevision($item);
         }
 
         $this->dataService->sign($revision, true);
-
-        if (null === $commandUser) {
-            $this->dataService->unlockRevision($revision);
-        }
 
         if (!$already) {
             $revision->addEnvironment($environment, $username);
@@ -262,6 +260,10 @@ class PublishService
             $this->logger->warning('service.publish.publish_failed', [...[
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
             ], ...$logContext]);
+        }
+
+        if (null === $commandUser) {
+            $this->dataService->unlockRevision($revision);
         }
 
         return $already ? 0 : 1;

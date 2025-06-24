@@ -141,10 +141,12 @@ class PublishService
         $already = $revisionEnvironment === $revision;
 
         if (!$already && $revisionEnvironment) {
-            $this->revRepository->removeEnvironment($revisionEnvironment, $environment, $commandUser);
+            $revisionEnvironment->removeEnvironment($environment, $commandUser);
+            $this->revRepository->save($revisionEnvironment);
         }
         if (!$already) {
-            $this->revRepository->addEnvironment($revision, $environment, $commandUser);
+            $revision->addEnvironment($environment, $commandUser);
+            $this->revRepository->save($revision);
         }
 
         $this->dataService->sign($revision, true);
@@ -230,7 +232,8 @@ class PublishService
             $already = true;
             $this->logger->notice('service.publish.already_published', $logContext);
         } elseif ($item) {
-            $this->revRepository->removeEnvironment($item, $environment, $username);
+            $item->removeEnvironment($environment, $username);
+            $this->revRepository->save($item);
         }
 
         if (null === $commandUser) {
@@ -244,7 +247,8 @@ class PublishService
         }
 
         if (!$already) {
-            $this->revRepository->addEnvironment($revision, $environment, $username);
+            $revision->addEnvironment($environment, $username);
+            $this->revRepository->save($revision);
 
             if (null === $commandUser) {
                 $this->auditLogger->notice('log.published.success', [...[

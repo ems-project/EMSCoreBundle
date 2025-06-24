@@ -566,6 +566,10 @@ class Revision implements EntityInterface, \Stringable
     public function removeEnvironment(Environment $environment, string $username): self
     {
         foreach ($this->environmentRevisions as $environmentRevision) {
+            if (null !== $environmentRevision->getDeleted()) {
+                continue;
+            }
+
             if ($environmentRevision->getEnvironment() === $environment) {
                 $environmentRevision->setDeleted(new \DateTime());
                 $environmentRevision->setDeletedBy($username);

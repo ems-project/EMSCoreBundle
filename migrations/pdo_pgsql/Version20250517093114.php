@@ -38,7 +38,7 @@ final class Version20250517093114 extends AbstractMigration
         );
 
         $this->addSql(<<<'SQL'
-            ALTER TABLE template DROP allowed_remote_host
+            ALTER TABLE template DROP allowed_remote_hosts
         SQL);
     }
 }

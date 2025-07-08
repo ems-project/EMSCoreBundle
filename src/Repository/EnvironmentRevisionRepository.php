@@ -7,7 +7,10 @@ namespace EMS\CoreBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\ParameterType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\EnvironmentRevision;
+use EMS\CoreBundle\Entity\Revision;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<EnvironmentRevision>
@@ -52,5 +55,30 @@ class EnvironmentRevisionRepository extends ServiceEntityRepository
         $result = $qb->fetchAllKeyValue();
 
         return $result;
+    }
+
+    public function delete(Revision $revision, Environment $environment, string $username): int
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare('update environment_revision set deleted = :now, deleted_by = :username  where environment_id = :envId and revision_id = :revId and deleted is null');
+        $stmt->bindValue('envId', $environment->getId());
+        $stmt->bindValue('revId', $revision->getId());
+        $stmt->bindValue('now', new \DateTime()->format('Y-m-d H:i:s'));
+        $stmt->bindValue('username', $username);
+
+        return (int) $stmt->executeStatement();
+    }
+
+    public function create(Revision $revision, Environment $environment, string $username): int
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare('insert into environment_revision (id, environment_id, revision_id, created,  created_by, deleted, deleted_by) VALUES(:id, :envId, :revId, :now, :username, null, null)');
+        $stmt->bindValue('id', Uuid::uuid4()->toString());
+        $stmt->bindValue('envId', $environment->getId());
+        $stmt->bindValue('revId', $revision->getId());
+        $stmt->bindValue('now', new \DateTime()->format('Y-m-d H:i:s'));
+        $stmt->bindValue('username', $username);
+
+        return (int) $stmt->executeStatement();
     }
 }

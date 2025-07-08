@@ -20,6 +20,7 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
+use EMS\CoreBundle\Repository\EnvironmentRevisionRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -43,6 +44,7 @@ class PublishService
         private readonly LoggerInterface $logger,
         private readonly LoggerInterface $auditLogger,
         private readonly Bulker $bulker,
+        private readonly EnvironmentRevisionRepository $environmentRevisionRepository,
     ) {
         /** @var RevisionRepository $revRepository */
         $revRepository = $this->doctrine->getManager()->getRepository(Revision::class);
@@ -141,12 +143,10 @@ class PublishService
         $already = $revisionEnvironment === $revision;
 
         if (!$already && $revisionEnvironment) {
-            $revisionEnvironment->removeEnvironment($environment, $commandUser);
-            $this->revRepository->save($revisionEnvironment);
+            $this->environmentRevisionRepository->delete($revisionEnvironment, $environment, $commandUser);
         }
         if (!$already) {
-            $revision->addEnvironment($environment, $commandUser);
-            $this->revRepository->save($revision);
+            $this->environmentRevisionRepository->create($revision, $environment, $commandUser);
         }
 
         $this->dataService->sign($revision, true);

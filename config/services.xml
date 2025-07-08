@@ -419,6 +419,7 @@
             <argument type="service" id="emsco.logger"/>
             <argument type="service" id="emsco.logger.audit"/>
             <argument type="service" id="ems.elasticsearch.bulker"/>
+            <argument type="service" id="ems.repository.environment_revision"/>
         </service>
         <service id="ems.service.notification" class="EMS\CoreBundle\Service\NotificationService">
             <argument type="service" id="doctrine"/>

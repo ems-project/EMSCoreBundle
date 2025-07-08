@@ -20,6 +20,7 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
+use EMS\CoreBundle\Repository\EnvironmentRevisionRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -43,6 +44,7 @@ class PublishService
         private readonly LoggerInterface $logger,
         private readonly LoggerInterface $auditLogger,
         private readonly Bulker $bulker,
+        private readonly EnvironmentRevisionRepository $environmentRevisionRepository,
     ) {
         /** @var RevisionRepository $revRepository */
         $revRepository = $this->doctrine->getManager()->getRepository(Revision::class);
@@ -141,12 +143,10 @@ class PublishService
         $already = $revisionEnvironment === $revision;
 
         if (!$already && $revisionEnvironment) {
-            $revisionEnvironment->removeEnvironment($environment, $commandUser);
-            $this->revRepository->save($revisionEnvironment);
+            $this->environmentRevisionRepository->delete($revisionEnvironment, $environment, $commandUser);
         }
         if (!$already) {
-            $revision->addEnvironment($environment, $commandUser);
-            $this->revRepository->save($revision);
+            $this->environmentRevisionRepository->create($revision, $environment, $commandUser);
         }
 
         $this->dataService->sign($revision, true);
@@ -222,6 +222,10 @@ class PublishService
             return 0;
         }
 
+        if (null === $commandUser) {
+            $this->dataService->lockRevision($revision, $environment);
+        }
+
         $this->publishVersion($revision, $environment, $commandUser);
 
         $item = $this->revRepository->findByOuuidContentTypeAndEnvironment($revision, $environment);
@@ -232,19 +236,13 @@ class PublishService
             $already = true;
             $this->logger->notice('service.publish.already_published', $logContext);
         } elseif ($item) {
+            $this->dataService->lockRevision($item, $environment);
             $item->removeEnvironment($environment, $username);
             $this->revRepository->save($item);
-        }
-
-        if (null === $commandUser) {
-            $this->dataService->lockRevision($revision, $environment);
+            $this->dataService->unlockRevision($item);
         }
 
         $this->dataService->sign($revision, true);
-
-        if (null === $commandUser) {
-            $this->dataService->unlockRevision($revision);
-        }
 
         if (!$already) {
             $revision->addEnvironment($environment, $username);
@@ -262,6 +260,10 @@ class PublishService
             $this->logger->warning('service.publish.publish_failed', [...[
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
             ], ...$logContext]);
+        }
+
+        if (null === $commandUser) {
+            $this->dataService->unlockRevision($revision);
         }
 
         return $already ? 0 : 1;

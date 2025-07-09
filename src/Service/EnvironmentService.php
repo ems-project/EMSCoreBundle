@@ -151,10 +151,9 @@ class EnvironmentService implements EntityServiceInterface
     }
 
     /**
-     * @deprecated  https://github.com/ems-project/EMSCoreBundle/issues/281
-     *
      * @return array<string, Environment>
      */
+    #[\Deprecated(message: 'https://github.com/ems-project/EMSCoreBundle/issues/281')]
     public function getNotSnapshotEnvironments(): array
     {
         if ([] !== $this->notSnapshotEnvironments) {
@@ -172,10 +171,9 @@ class EnvironmentService implements EntityServiceInterface
     }
 
     /**
-     * @deprecated  https://github.com/ems-project/EMSCoreBundle/issues/281
-     *
      * @return string[]
      */
+    #[\Deprecated(message: 'https://github.com/ems-project/EMSCoreBundle/issues/281')]
     public function getNotSnapshotEnvironmentsNames(): array
     {
         return \array_keys($this->getNotSnapshotEnvironments());

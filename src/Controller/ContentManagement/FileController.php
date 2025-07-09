@@ -101,9 +101,8 @@ class FileController extends AbstractController
 
     /**
      * @param int $size
-     *
-     * @deprecated
      */
+    #[\Deprecated]
     public function initUploadFile(?string $sha1, $size, bool $apiRoute, Request $request): Response
     {
         if ($sha1 || $size) {
@@ -144,7 +143,7 @@ class FileController extends AbstractController
         return $this->jsonResponse($uploadedAsset, $apiRoute);
     }
 
-    /** @deprecated */
+    #[\Deprecated]
     public function uploadChunk(?string $sha1, ?string $hash, bool $apiRoute, Request $request): Response
     {
         if (null !== $sha1) {

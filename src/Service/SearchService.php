@@ -40,10 +40,9 @@ class SearchService
     }
 
     /**
-     * @deprecated
-     *
      * @return array<mixed>
      */
+    #[\Deprecated]
     public function generateSearchBody(Search $search): array
     {
         @\trigger_error('SearchService::generateSearchBody is deprecated use the SearchService::generateSearch method instead', E_USER_DEPRECATED);

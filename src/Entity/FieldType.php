@@ -639,9 +639,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
 
     /**
      * Get child by path.
-     *
-     * @deprecated it's not clear if its the mapping of the rawdata or of the formdata (with ou without the virtual fields) see the same function in the contenttypeservice
      */
+    #[\Deprecated(message: "it's not clear if its the mapping of the rawdata or of the formdata (with ou without the virtual fields) see the same function in the contenttypeservice")]
     public function getChildByPath(string $path): FieldType|false
     {
         $elem = \explode('.', $path);

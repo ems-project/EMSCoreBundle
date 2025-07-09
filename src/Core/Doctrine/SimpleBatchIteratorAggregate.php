@@ -7,10 +7,9 @@ namespace EMS\CoreBundle\Core\Doctrine;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use EMS\CoreBundle\Entity\EntityInterface;
-use IteratorAggregate;
 
 /**
- * @implements IteratorAggregate<string|int, EntityInterface>
+ * @implements \IteratorAggregate<string|int, EntityInterface>
  */
 final readonly class SimpleBatchIteratorAggregate implements \IteratorAggregate
 {

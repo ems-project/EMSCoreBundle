@@ -236,10 +236,9 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
     }
 
     /**
-     * @deprecated
-     *
      * @throws \Exception
      */
+    #[\Deprecated]
     public function updateDataStructure(FieldType $meta): never
     {
         throw new \Exception('Deprecated method');
@@ -248,12 +247,11 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
     /**
      * Assign data in dataValues based on the elastic index content.
      *
-     * @deprecated
      *
      * @param array<mixed> $elasticIndexDatas
-     *
      * @throws \Exception
      */
+    #[\Deprecated]
     public function updateDataValue(array &$elasticIndexDatas, mixed $isMigration = false): never
     {
         throw new \Exception('Deprecated method');

@@ -30,7 +30,7 @@ class JobCommand extends AbstractCommand
 
     private bool $dump = false;
     private ?string $tag = null;
-    private ?string $jobId;
+    private ?string $jobId = null;
 
     public function __construct(
         private readonly JobService $jobService,

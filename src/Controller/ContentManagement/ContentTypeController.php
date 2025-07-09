@@ -70,9 +70,7 @@ class ContentTypeController extends AbstractController
     ) {
     }
 
-    /**
-     * @deprecated
-     */
+    #[\Deprecated]
     public static function isValidName(string $name): bool
     {
         @\trigger_error('Deprecated isValidName function, please use the FieldTypeManager::isValidName function', E_USER_DEPRECATED);

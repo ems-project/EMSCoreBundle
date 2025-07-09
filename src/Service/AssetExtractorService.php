@@ -89,10 +89,9 @@ class AssetExtractorService implements CacheWarmerInterface
     }
 
     /**
-     * @deprecated
-     *
      * @return mixed[]
      */
+    #[\Deprecated]
     public function extractData(string $hash, ?string $file = null, bool $forced = false): array
     {
         return $this->extractMetaData($hash, $file, $forced)->getSource();

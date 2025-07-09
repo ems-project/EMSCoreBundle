@@ -281,9 +281,8 @@ abstract class DataFieldType extends AbstractType
      * See if we can asume that we should find this field directly or if its a more complex type such as file or date range.
      *
      * @param array<mixed> $option
-     *
-     * @deprecated
      */
+    #[\Deprecated]
     public static function isVirtualField(array $option): bool
     {
         return false;

@@ -75,13 +75,12 @@ final class UnpublishCommand extends AbstractEnvironmentCommand
         foreach ($this->revisionSearcher->search($this->environment, $search) as $revisions) {
             $this->revisionSearcher->lock($revisions, $this->lockUser);
             $this->publishService->bulkStart($bulkSize, $this->logger);
-            $transactionEnvironment = $this->environmentService->clearCache()->giveByName($this->environment->getName());
 
             foreach ($revisions->transaction() as $revision) {
                 $this->io->progressAdvance();
 
                 try {
-                    $this->publishService->bulkUnpublish($revision, $transactionEnvironment, self::LOCK_USER);
+                    $this->publishService->bulkUnpublish($revision, $this->environment, self::LOCK_USER);
                     ++$this->counter;
                 } catch (\LogicException $e) {
                     $this->warnings[$e->getMessage()] = ($this->warnings[$e->getMessage()] ?? 0) + 1;

@@ -166,7 +166,7 @@ class PublishService
             throw new \LogicException('Unpublish failed: is default environment');
         }
 
-        $revision->removeEnvironment($environment, $username);
+        $this->environmentRevisionRepository->delete($revision, $environment, $username);
         $this->bulker->delete($environment->getAlias(), $revision->giveOuuid());
     }
 

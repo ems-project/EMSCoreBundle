@@ -11,6 +11,7 @@ use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -75,6 +76,12 @@ class RevisionTaskFiltersType extends AbstractType
                 'choices' => $versionTags,
             ]);
         }
+
+        $builder->add('isOverdue', CheckboxType::class, [
+            'required' => false,
+            'label' => 'task.filter.is_overdue',
+            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+        ]);
 
         $builder->add('submit', SubmitType::class, [
             'label' => 'task.filter.submit',

@@ -337,6 +337,19 @@ import JsonMenuNestedComponent from "./component/jsonMenuNestedComponent";
         });
     }
 
+  function initFormSubmitOnChoiceChange() {
+    const parents = document.querySelectorAll('[data-ems-form-submit-on-choice-change]');
+    [].forEach.call(parents, function (parent) {
+      let choices = parent.querySelectorAll('select, input[type=checkbox], input[type=radio]');
+      [].forEach.call(choices, function (choice) {
+        if ('checkbox' === choice.getAttribute('type')) {
+          $(choice).iCheck('destroy');
+        }
+        choice.onchange = () => { choice.form.submit(); }
+      });
+    });
+  }
+
 
     $(document).ready(function() {
         activeMenu();
@@ -355,6 +368,7 @@ import JsonMenuNestedComponent from "./component/jsonMenuNestedComponent";
         initJsonMenuNestedComponent()
         intAjaxModalLinks();
         initPostButtons();
+        initFormSubmitOnChoiceChange();
 
         //cron to update the cluster status
         window.setInterval(function(){

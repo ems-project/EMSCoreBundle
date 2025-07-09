@@ -300,6 +300,9 @@
             <div class="col-md-4">{{ form_row(form.deadline) }}</div>
         {% endif %}
         <div class="col-md-12">{{ form_row(form.description) }}</div>
+        <div class="col-md-12">
+            <div id="ems-task-helptext" class="alert alert-info mt-4 mb-0" role="alert" style="display: none"></div>
+        </div>
     </div>
     {{ form_end(form) }}
 {% endblock %}

@@ -99,6 +99,9 @@
         <service id="emsco.command.media_lib.folder.rename" class="EMS\CoreBundle\Command\MediaLibrary\MediaLibraryFolderRenameCommand" parent="emsco.command.media_lib">
             <tag name="console.command"/>
         </service>
+        <service id="emsco.command.media_lib.folder.move" class="EMS\CoreBundle\Command\MediaLibrary\MediaLibraryFolderMoveCommand" parent="emsco.command.media_lib">
+            <tag name="console.command"/>
+        </service>
 
         <!-- EMS notification -->
         <service id="ems.command.notification.bulk_action" class="EMS\CoreBundle\Command\Notification\BulkActionCommand">

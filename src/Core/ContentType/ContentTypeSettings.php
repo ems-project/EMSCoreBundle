@@ -16,11 +16,13 @@ class ContentTypeSettings implements \ArrayAccess
 
     final public const string TASKS_ENABLED = 'tasks_enabled';
     final public const string TASKS_TITLES = 'tasks_titles';
+    final public const string TASKS_HELPTEXTS = 'tasks_helptexts';
     final public const string HIDE_REVISION_SIDEBAR = 'hide_revision_sidebar';
 
     private const array SETTINGS = [
         self::TASKS_ENABLED,
         self::TASKS_TITLES,
+        self::TASKS_HELPTEXTS,
         self::HIDE_REVISION_SIDEBAR,
     ];
 
@@ -32,6 +34,7 @@ class ContentTypeSettings implements \ArrayAccess
         foreach (self::SETTINGS as $field) {
             $this->settings[$field] = match ($field) {
                 self::TASKS_TITLES => $data[$field] ?? [],
+                self::TASKS_HELPTEXTS => $data[$field] ?? [],
                 default => $data[$field] ?? false,
             };
         }

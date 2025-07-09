@@ -54,6 +54,7 @@ final class Commands
 
     public const string MEDIA_LIB_FOLDER_DELETE = 'emsco:medialib:folder-delete';
     public const string MEDIA_LIB_FOLDER_RENAME = 'emsco:medialib:folder-rename';
+    public const string MEDIA_LIB_FOLDER_MOVE = 'emsco:medialib:folder-move';
 
     public const string USER_ACTIVATE = 'emsco:user:activate';
     public const string USER_CHANGE_PASSWORD = 'emsco:user:change-password';

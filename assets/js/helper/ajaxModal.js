@@ -190,6 +190,11 @@ class AjaxModal {
             document.addEventListener('keydown', this.onKeyDown);
         }
 
+        let selects = document.querySelectorAll('[data-ems-toggle-notification-on-select-change]');
+        if (selects.length > 0) {
+          this.initToggleNotificationOnSelectChange(selects);
+        }
+
         tooltipDataLinks(this.modal);
 
         if (typeof callback === 'function') { callback(json, this.modal); }
@@ -215,6 +220,37 @@ class AjaxModal {
             'afterbegin',
             '<div class="alert '+ messageClass +'" role="alert">' + message.replace(/\n/g, '<br>') +'</div>'
         );
+    }
+
+    initToggleNotificationOnSelectChange(selects) {
+      [].forEach.call(selects, function (select) {
+        let data_notifications = select.getAttribute('data-ems-toggle-notification-on-select-change');
+        let data_target_id = select.getAttribute('data-ems-target');
+
+        let notifications = JSON.parse(data_notifications);
+        let target = document.getElementById(data_target_id);
+
+        if (!target || notifications.length === 0) {
+            target.style.display = 'none';
+        }
+
+        let notification = notifications[0] || '';
+        if (notification.length > 0) {
+          target.innerHTML = notification;
+          target.style.display = 'block';
+        }
+
+        select.onchange = (event) => {
+            let notification = notifications[event.target.selectedIndex] || '';
+
+            if (notification.length > 0) {
+                target.innerHTML = notification;
+                target.style.display = 'block';
+            } else {
+                target.style.display = 'none';
+            }
+        };
+      });
     }
 }
 

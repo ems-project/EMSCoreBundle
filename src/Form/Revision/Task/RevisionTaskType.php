@@ -9,6 +9,7 @@ use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Core\Revision\Task\TaskStatus;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -92,6 +93,7 @@ final class RevisionTaskType extends AbstractType
     private function addTitle(FormBuilderInterface $builder, ContentType $contentType): void
     {
         $tasksTitles = $contentType->getSettings()->getSettingArrayString(ContentTypeSettings::TASKS_TITLES);
+        $tasksHelptexts = $contentType->getSettings()->getSettingArrayString(ContentTypeSettings::TASKS_HELPTEXTS);
 
         if (0 === \count($tasksTitles)) {
             $builder->add('title', TextType::class, ['label' => 'task.field.title']);
@@ -100,14 +102,19 @@ final class RevisionTaskType extends AbstractType
         }
 
         $choiceTitles = \array_combine($tasksTitles, $tasksTitles);
-        $formModifier = static function (FormInterface $form, ?string $title) use ($choiceTitles) {
+        $formModifier = static function (FormInterface $form, ?string $title) use ($choiceTitles, $tasksHelptexts) {
             if ($title && !\array_key_exists($title, $choiceTitles)) {
                 $choiceTitles[$title] = $title;
             }
 
             $form->add('title', ChoiceType::class, [
                 'label' => 'task.field.title',
-                'attr' => ['data-tags' => true, 'class' => 'select2'],
+                'attr' => [
+                    'data-tags' => true,
+                    'class' => 'select2',
+                    'data-ems-target' => 'ems-task-helptext',
+                    'data-ems-toggle-notification-on-select-change' => Json::encode($tasksHelptexts),
+                ],
                 'choices' => $choiceTitles,
                 'multiple' => false,
                 'choice_translation_domain' => false,

@@ -27,9 +27,9 @@
         {% endfor %}
         {% if filterForm is defined %}
             <li class="pull-right">
-                <div>
-                    <a class="btn btn-sm btn-primary" role="button" data-toggle="collapse" href="#filters" aria-expanded="{{ showFilters ? 'true' : 'false' }}" aria-controls="filters">
-                        <i class="fa fa-filter" aria-hidden="true"></i> {{ 'task.filters'|trans }}
+                <div class="p-1">
+                    <a class="btn btn-md btn-primary" role="button" data-toggle="collapse" href="#filters" aria-expanded="{{ showFilters ? 'true' : 'false' }}" aria-controls="filters">
+                        <i class="fa fa-filter mr-2" aria-hidden="true"></i> {{ 'task.filters'|trans }}
                     </a>
                 </div>
             </li>
@@ -66,7 +66,7 @@
     {% if filterForm is defined %}
         <div class="collapse {{ showFilters ? 'in' }}" id="filters">
             <div class="well">
-                <div class="row">
+                <div class="row" data-ems-form-submit-on-choice-change>
                     {{ form_start(filterForm) }}
                     {{ form_row(filterForm.status, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.status'|trans }) }}
                     {% if filterForm.assignee is defined %}
@@ -77,6 +77,9 @@
                     {% endif %}
                     {% if filterForm.versionNextTag is defined %}
                         {{ form_row(filterForm.versionNextTag, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.version_next_tag'|trans  }) }}
+                    {% endif %}
+                    {% if filterForm.isOverdue is defined %}
+                        {{ form_row(filterForm.isOverdue, {'row_attr': { 'class': 'col-md-3 pt-4' }, 'label': 'task.filter.is_overdue'|trans  }) }}
                     {% endif %}
                     <div class="col-md-12">
                         <input type="hidden" name="tab" value="{{ currentTab }}" />

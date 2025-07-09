@@ -113,6 +113,7 @@ export default class MediaLibrary {
             if (classList.contains('btn-folder-add')) this._onClickButtonFolderAdd();
             if (classList.contains('btn-folder-delete')) this._onClickButtonFolderDelete(event.target);
             if (classList.contains('btn-folder-rename')) this._onClickButtonFolderRename(event.target);
+            if (classList.contains('btn-folder-move')) this._onClickButtonFolderMove(event.target);
 
             if (classList.contains('btn-home')) this._onClickButtonHome(event.target);
             if (classList.contains('breadcrumb-item')) this._onClickBreadcrumbItem(event.target);
@@ -347,6 +348,7 @@ export default class MediaLibrary {
 
     _onClickFolder(folder) {
         this.loading(true);
+        this.#searchValue = null;
 
         this.getFolders().forEach((f) => f.classList.remove('active'));
         folder.classList.add('active');
@@ -378,9 +380,10 @@ export default class MediaLibrary {
             if (!json.hasOwnProperty('jobId')) return;
             if (json.hasOwnProperty('async') && json.async === true) {
               return Promise.allSettled([
-                new Promise(resolve => setTimeout(resolve, 2000))
+                new Promise(resolve => setTimeout(resolve, 3500))
               ])
                 .then(() => ajaxModal.close())
+                .then(() => location.reload())
               ;
             }
 
@@ -412,9 +415,10 @@ export default class MediaLibrary {
             if (!json.hasOwnProperty('jobId') || !json.hasOwnProperty('path')) return;
             if (json.hasOwnProperty('async') && json.async === true) {
               return Promise.allSettled([
-                new Promise(resolve => setTimeout(resolve, 2000))
+                new Promise(resolve => setTimeout(resolve, 3500))
               ])
                 .then(() => ajaxModal.close())
+                .then(() => location.reload())
               ;
             }
 
@@ -437,6 +441,46 @@ export default class MediaLibrary {
             ;
         });
     }
+
+  _onClickButtonFolderMove(button, targetId) {
+    const folderId = button.dataset.id;
+    const modalSize = button.dataset.modalSize ?? 'sm';
+
+    const path = `${this.#pathPrefix}/folder/${folderId}/move`;
+    const query = new URLSearchParams({});
+    if (targetId) query.append('targetId', targetId);
+
+    ajaxModal.load({ url: path + '?' + query.toString(), size: modalSize}, (json) => {
+      if (!json.hasOwnProperty('success') || json.success === false) return;
+      if (!json.hasOwnProperty('jobId') || !json.hasOwnProperty('path')) return;
+      if (json.hasOwnProperty('async') && json.async === true) {
+        return Promise.allSettled([
+          new Promise(resolve => setTimeout(resolve, 3500))
+        ])
+          .then(() => ajaxModal.close())
+          .then(() => location.reload())
+          ;
+      }
+
+      let jobProgressBar = new ProgressBar('progress-' + json.jobId, {
+        label: 'Moving',
+        value: 100,
+        showPercentage: false,
+      });
+
+      ajaxModal.getBodyElement().append(jobProgressBar.element());
+      this.loading(true);
+
+      Promise.allSettled([
+        this._startJob(json.jobId),
+        this._jobPolling(json.jobId, jobProgressBar)
+      ])
+        .then(() => this._getFolders(json.path))
+        .then(() => new Promise(resolve => setTimeout(resolve, 2000)))
+        .then(() => ajaxModal.close())
+      ;
+    });
+  }
 
     _onClickButtonHome() {
         this.loading(true);

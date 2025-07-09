@@ -124,6 +124,12 @@
         <requirement key="hash">.*</requirement>
         <requirement key="folderId">.*</requirement>
     </route>
+    <route id="emsco.media_library.folder.move" path="/media-lib/{hash}/folder/{folderId}/move"
+           controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::moveFolder"
+           methods="GET|POST">
+        <requirement key="hash">.*</requirement>
+        <requirement key="folderId">.*</requirement>
+    </route>
     <route id="emsco.media_library.add_folder" path="/media-lib/{hash}/add-folder/{folderId}"
            controller="EMS\CoreBundle\Controller\Component\MediaLibraryController::addFolder"
            methods="GET|POST">

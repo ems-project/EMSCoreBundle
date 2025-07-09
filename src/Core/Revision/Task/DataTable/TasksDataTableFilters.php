@@ -17,6 +17,7 @@ class TasksDataTableFilters
     public array $requester = [];
     /** @var array<int, string|null> */
     public array $versionNextTag = [];
+    public bool $isOverdue = false;
 
     public function __construct()
     {

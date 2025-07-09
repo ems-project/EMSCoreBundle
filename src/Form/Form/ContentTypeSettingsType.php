@@ -41,6 +41,22 @@ class ContentTypeSettingsType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'block_prefix' => 'tags',
+            ])
+            ->add(ContentTypeSettings::TASKS_HELPTEXTS, CollectionType::class, [
+                'entry_type' => TextType::class,
+                'attr' => [
+                    'class' => 'a2lix_lib_sf_collection',
+                    'data-lang-add' => 'Add help-text',
+                    'data-lang-remove' => 'X',
+                    'data-entry-remove-class' => 'btn btn-danger',
+                ],
+                'entry_options' => [
+                    'label' => false,
+                    'attr' => ['style' => 'width: 350px; float: left;'],
+                ],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'block_prefix' => 'tags',
             ]);
     }
 }

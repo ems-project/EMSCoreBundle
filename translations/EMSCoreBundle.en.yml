@@ -723,12 +723,13 @@ task:
         done: Finish
         reject: Reject
         send: Send
-    filters: Filters
+    filters: 'Filtering the tasks'
     filter:
         status: Statuses
         assignee: Assignees
         requester: Requesters
         version_next_tag: New versions
+        is_overdue: 'Overdue only'
         submit: Search
         reset: Clear
 user:

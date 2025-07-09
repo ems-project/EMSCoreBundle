@@ -100,6 +100,7 @@
         <service id="EMS\CoreBundle\Controller\Component\MediaLibraryController" public="true">
             <argument type="service" id="emsco.core.media_library" />
             <argument type="service" id="ems_core.core_ui.ajax_service" />
+            <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <argument type="service" id="translator" />
             <argument type="service" id="form.factory" />
             <argument>%ems_core.template_namespace%</argument>

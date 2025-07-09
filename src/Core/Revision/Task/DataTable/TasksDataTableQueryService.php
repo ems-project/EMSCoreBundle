@@ -130,6 +130,12 @@ class TasksDataTableQueryService implements QueryServiceInterface
                 ->setParameter('term', '%'.$searchValue.'%');
         }
 
+        if ($context->filters->isOverdue) {
+            $qb
+                ->andWhere('t.deadline < CURRENT_TIMESTAMP')
+                ->andWhere('t.deadline IS NOT NULL');
+        }
+
         $filters = [
             'status' => ['t.status', $context->filters->status],
             'assignee' => ['t.assignee', $context->filters->assignee],

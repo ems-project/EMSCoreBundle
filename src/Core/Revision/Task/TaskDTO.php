@@ -17,6 +17,7 @@ final class TaskDTO
     public ?string $assignee = null;
     public ?\DateTimeInterface $deadline = null;
     public ?string $description = null;
+    public ?string $helptext = null;
     #[Assert\NotBlank]
     #[Assert\Range(min: 0)]
     public ?int $delay = null;

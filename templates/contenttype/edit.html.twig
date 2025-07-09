@@ -103,7 +103,10 @@
                             {% block body %}
                                 <div class="row">
                                     <div class="col-md-2">{{ form_row(form.settings.tasks_enabled) }}</div>
-                                    <div class="col-md-8">{{ form_row(form.settings.tasks_titles) }}</div>
+                                    <div class="col-md-8">
+                                        {{ form_row(form.settings.tasks_titles) }}
+                                        {{ form_row(form.settings.tasks_helptexts) }}
+                                    </div>
                                 </div>
                             {% endblock body %}
                         {% endembed  %}

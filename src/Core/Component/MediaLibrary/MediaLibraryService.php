@@ -200,6 +200,26 @@ class MediaLibraryService
         return $this->jobService->createCommand($user, $command);
     }
 
+    public function jobFolderMove(UserInterface $user, MediaLibraryFolder $folder, string $targetFolderId): Job
+    {
+        $revision = $this->getRevision($folder);
+        if ($revision->isLocked()) {
+            throw new MediaLibraryException('media_library.locked');
+        }
+
+        $this->revisionService->lock($revision, $user, new \DateTime('+1 hour'));
+
+        $command = \vsprintf("%s --hash=%s --username='%s' -- %s %s", [
+            Commands::MEDIA_LIB_FOLDER_MOVE,
+            $this->getConfig()->getHash(),
+            $user->getUserIdentifier(),
+            $folder->id,
+            $targetFolderId,
+        ]);
+
+        return $this->jobService->createCommand($user, $command);
+    }
+
     /**
      * @param array<string, mixed> $context
      */

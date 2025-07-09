@@ -133,6 +133,12 @@
     </button>
 {%- endblock media_lib_button_folder_rename -%}
 
+{%- block media_lib_button_folder_move -%}
+    <button class="btn btn-sm btn-default btn-folder-move" data-id="{{- mediaFolder.id -}}" data-modal-size="md">
+        <i class="fa fa-location-arrow" aria-hidden="true"></i> {{- buttonLabel|default('media_library.folder.move.title'|trans) -}}
+    </button>
+{%- endblock media_lib_button_folder_move -%}
+
 {%- block media_lib_button_file_rename -%}
     <button class="btn btn-sm btn-default btn-file-rename" data-id="{{- mediaFile.id -}}">
         <i class="fa fa-pencil" aria-hidden="true"></i> {{- buttonLabel|default('media_library.file.rename.title'|trans) -}}
@@ -150,6 +156,12 @@
         <i class="fa fa-eye" aria-hidden="true"></i> {{- buttonLabel|default('media_library.file.view.title'|trans) -}}
     </button>
 {%- endblock media_lib_button_file_view -%}
+
+{%- block media_lib_button_file_revision -%}
+    <a class="btn btn-sm btn-default" href="{{ path('emsco_view_revisions', { 'type': mediaFile.document.contentType, 'ouuid': mediaFile.id  }) }}">
+        <i class="fa fa-archive" aria-hidden="true"></i> {{- buttonLabel|default('media_library.file.revision.title'|trans) -}}
+    </a>
+{%- endblock media_lib_button_file_revision -%}
 
 {%- block media_lib_button_files_delete -%}
     <button class="btn btn-sm btn-default btn-files-delete" data-modal-size="md">

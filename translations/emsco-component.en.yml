@@ -18,6 +18,15 @@ media_library:
                 This action will also remove any subfolders and files within.
             job_info: 'Folder removing in progress. Please wait...'
             job_info_async: 'Folder will be removed ASAP.'
+        move:
+            title: 'Move folder'
+            submit: Move
+            info: 'Current location: "%path%"'
+            job_info: |
+                Moving the selected folder from "%from%" to "%to%"
+                Please wait...
+            job_info_async: 'Folder will be moved ASAP.'
+            select_folder: 'Select new location:'
         rename:
             title: 'Rename folder'
             submit: Rename
@@ -33,6 +42,8 @@ media_library:
             title: 'Delete file'
         rename:
             title: 'Rename file'
+        revision:
+            title: 'Revision'
         view:
             title: 'View file'
             title_modal: 'View file: %name%'

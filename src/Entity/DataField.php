@@ -247,8 +247,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
     /**
      * Assign data in dataValues based on the elastic index content.
      *
-     *
-     * @param array<mixed> $elasticIndexDatas
+     * @param  array<mixed> $elasticIndexDatas
      * @throws \Exception
      */
     #[\Deprecated]

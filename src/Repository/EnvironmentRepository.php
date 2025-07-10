@@ -207,6 +207,7 @@ class EnvironmentRepository extends EntityRepository
             ->join('er', 'environment', 'e', 'er.environment_id = e.id')
             ->andWhere($qb->expr()->eq('e.id', ':environment_id'))
             ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
+            ->andWhere($qb->expr()->isNull('er.deleted'))
             ->setParameter('environment_id', $environment->getId())
             ->setParameter('ouuids', $ouuids, ArrayParameterType::STRING);
 

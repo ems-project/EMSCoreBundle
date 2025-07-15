@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\ChannelDataTableType;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -14,6 +15,7 @@ use EMS\CoreBundle\Form\Form\ChannelType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Service\Channel\ChannelService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,7 +33,7 @@ final class ChannelController extends AbstractController
     ) {
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): Page|RedirectResponse
     {
         $table = $this->dataTableFactory->create(ChannelDataTableType::class);
 
@@ -52,8 +54,8 @@ final class ChannelController extends AbstractController
             return $this->redirectToRoute('ems_core_channel_index');
         }
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'icon' => 'fa fa-eye',
             'title' => t('type.title_overview', ['type' => 'channel'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'channel'], 'emsco-core'),

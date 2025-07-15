@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\I18nDataTableType;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -15,6 +16,7 @@ use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\I18nService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -99,7 +101,7 @@ class I18nController extends AbstractController
         ]);
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): Page|RedirectResponse
     {
         $table = $this->dataTableFactory->create(I18nDataTableType::class);
 
@@ -115,8 +117,8 @@ class I18nController extends AbstractController
             return $this->redirectToRoute(Routes::FILTER_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'icon' => 'fa fa-language',
             'title' => t('type.title_overview', ['type' => 'i18n'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'i18n'], 'emsco-core'),

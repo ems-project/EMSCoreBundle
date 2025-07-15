@@ -30,7 +30,6 @@
             <argument type="service" id="EMS\CoreBundle\Service\EnvironmentService" />
             <argument type="service" id="emsco.data_table.factory" />
             <argument type="service" id="emsco.logger" />
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
         </service>
@@ -428,7 +427,6 @@
             <argument type="service" id="ems.service.data" />
             <argument type="service" id="emsco.data_table.factory" />
             <argument type="service" id="emsco.logger" />
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -638,7 +636,6 @@
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.file" />
             <argument type="service" id="emsco.data_table.factory" />
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
         </service>

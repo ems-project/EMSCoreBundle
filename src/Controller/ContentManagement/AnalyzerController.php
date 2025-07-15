@@ -10,6 +10,7 @@ use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Mapping\AnalyzerManager;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\Mapping\AnalyzerDataTableType;
 use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -121,7 +122,7 @@ class AnalyzerController extends AbstractController
         return $response;
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): Page|RedirectResponse
     {
         $table = $this->dataTableFactory->create(AnalyzerDataTableType::class);
 
@@ -142,8 +143,8 @@ class AnalyzerController extends AbstractController
             return $this->redirectToRoute(Routes::ANALYZER_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'icon' => 'fa fa-signal',
             'title' => t('type.title_overview', ['type' => 'analyzer'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'analyzer'], 'emsco-core'),

@@ -12,6 +12,7 @@ use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Form\FieldTypeManager;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeDataTableType;
 use EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeUnreferencedDataTableType;
 use EMS\CoreBundle\Entity\ContentType;
@@ -243,7 +244,7 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): Page|RedirectResponse
     {
         $table = $this->dataTableFactory->create(ContentTypeDataTableType::class);
 
@@ -267,8 +268,8 @@ class ContentTypeController extends AbstractController
             return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'icon' => 'fa fa-sitemap',
             'title' => t('type.title_overview', ['type' => 'content_type'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'content_type'], 'emsco-core'),
@@ -276,13 +277,13 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    public function addReferencedIndex(): Response
+    public function addReferencedIndex(): Page
     {
         $table = $this->dataTableFactory->create(ContentTypeUnreferencedDataTableType::class);
         $form = $this->createForm(TableType::class, $table);
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'title' => t('action.add_referenced_content_type', ['type' => 'content_type'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'content_type'], 'emsco-core'),
             'breadcrumb' => Navigation::admin()->contentTypes()->add(

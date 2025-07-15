@@ -8,6 +8,7 @@ use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\Environment\EnvironmentOrphanIndexDataTableType;
 use EMS\CoreBundle\DataTable\Type\Environment\EnvironmentUnreferencedAliasDataTableType;
 use EMS\CoreBundle\Entity\Environment;
@@ -35,11 +36,10 @@ class ElasticSearchController extends AbstractController
         private readonly EnvironmentService $environmentService,
         private readonly DataTableFactory $dataTableFactory,
         private readonly LocalizedLoggerInterface $logger,
-        private readonly string $templateNamespace,
     ) {
     }
 
-    public function orphanIndexes(Request $request): Response
+    public function orphanIndexes(Request $request): Page|RedirectResponse
     {
         $table = $this->dataTableFactory->create(EnvironmentOrphanIndexDataTableType::class);
         $form = $this->createForm(TableType::class, $table);
@@ -55,8 +55,8 @@ class ElasticSearchController extends AbstractController
             return $this->redirectToRoute(Routes::ADMIN_ELASTIC_ORPHAN);
         }
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'icon' => 'fa fa-chain-broken',
             'title' => t('key.orphan_indexes', [], 'emsco-core'),
             'breadcrumb' => Navigation::admin()->environments()->add(
@@ -67,13 +67,13 @@ class ElasticSearchController extends AbstractController
         ]);
     }
 
-    public function unreferencedAliases(): Response
+    public function unreferencedAliases(): Page
     {
         $table = $this->dataTableFactory->create(EnvironmentUnreferencedAliasDataTableType::class);
         $form = $this->createForm(TableType::class, $table);
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'icon' => 'fa fa-chain',
             'title' => t('key.unreferenced_aliases', [], 'emsco-core'),
             'breadcrumb' => Navigation::admin()->environments()->add(

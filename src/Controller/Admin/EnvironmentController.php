@@ -10,6 +10,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\Environment\EnvironmentDataTableType;
 use EMS\CoreBundle\DataTable\Type\Environment\EnvironmentManagedAliasDataTableType;
 use EMS\CoreBundle\Entity\Environment;
@@ -213,13 +214,13 @@ class EnvironmentController extends AbstractController
         ]);
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): Page|RedirectResponse
     {
         $datatableEnvironment = $this->dataTableEnvironment($request);
 
         return match (true) {
             $datatableEnvironment instanceof RedirectResponse => $datatableEnvironment,
-            default => $this->render("@$this->templateNamespace/crud/overview.html.twig", [
+            default => new Page([
                 'icon' => 'fa fa-list-ul',
                 'title' => t('type.title_overview', ['type' => 'environment'], 'emsco-core'),
                 'datatables' => [

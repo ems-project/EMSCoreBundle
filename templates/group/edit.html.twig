@@ -1,4 +1,4 @@
-{% extends '@EMSCore/crud/overview.html.twig' %}
+{% extends '@EMSCore/page/page.html.twig' %}
 {% trans_default_domain 'EMSCoreBundle' %}
 
 {% block body %}
@@ -17,7 +17,7 @@
             <div class="md-4">
                 <h2>{{ 'view.user.index.user-in-group'|trans({'%label%': form.vars.value.label}) }}</h2>
                 {% with {
-                    form: datatableForm,
+                    datatable: {'form': datatableForm},
                 } %}
                     {{ parent() }}
                 {% endwith %}
@@ -25,7 +25,7 @@
             <div class="md-4">
                 <h2>{{ 'view.user.index.user-not-in-group'|trans({'%label%': form.vars.value.label}) }}</h2>
                 {% with {
-                    form: userNotInGroupDataTable,
+                    datatable: {'form': userNotInGroupDataTable},
                 } %}
                     {{ parent() }}
                 {% endwith %}

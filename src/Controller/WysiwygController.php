@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\Wysiwyg\WysiwygProfileDataTableType;
 use EMS\CoreBundle\DataTable\Type\Wysiwyg\WysiwygStylesSetDataTableType;
 use EMS\CoreBundle\EMSCoreBundle;
@@ -47,7 +48,7 @@ class WysiwygController extends AbstractController
     ) {
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): Page|Response
     {
         $datatableProfiles = $this->datatableProfiles($request);
         $datatableStyleSets = $this->datatableStyleSets($request);
@@ -55,7 +56,7 @@ class WysiwygController extends AbstractController
         return match (true) {
             $datatableProfiles instanceof RedirectResponse => $datatableProfiles,
             $datatableStyleSets instanceof RedirectResponse => $datatableStyleSets,
-            default => $this->render("@$this->templateNamespace/crud/overview.html.twig", [
+            default => new Page([
                 'icon' => 'fa fa-language',
                 'datatables' => [
                     [

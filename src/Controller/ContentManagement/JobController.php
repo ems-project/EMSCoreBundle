@@ -9,6 +9,7 @@ use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\Job\JobDataTableType;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -43,7 +44,7 @@ class JobController extends AbstractController
     ) {
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): Page|RedirectResponse
     {
         $table = $this->dataTableFactory->create(JobDataTableType::class);
         $form = $this->createForm(TableType::class, $table);
@@ -59,8 +60,8 @@ class JobController extends AbstractController
             return $this->redirectToRoute('job.index');
         }
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'icon' => 'fa fa-file-text-o',
             'title' => t('type.title_overview', ['type' => 'job'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'job'], 'emsco-core'),

@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Controller;
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\QuerySearchDataTableType;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -32,7 +33,7 @@ final class QuerySearchController extends AbstractController
     ) {
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): Page|RedirectResponse
     {
         $table = $this->dataTableFactory->create(QuerySearchDataTableType::class);
 
@@ -53,8 +54,8 @@ final class QuerySearchController extends AbstractController
             return $this->redirectToRoute('ems_core_query_search_index');
         }
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'icon' => 'fa fa-list-alt',
             'title' => t('type.title_overview', ['type' => 'query_search'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'query_search'], 'emsco-core'),

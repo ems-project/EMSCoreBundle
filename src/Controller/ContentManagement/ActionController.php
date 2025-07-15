@@ -11,6 +11,7 @@ use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeActionDataTableType;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
@@ -42,7 +43,7 @@ final class ActionController extends AbstractController
     ) {
     }
 
-    public function index(Request $request, ContentType $contentType): Response
+    public function index(Request $request, ContentType $contentType): Page|RedirectResponse
     {
         $table = $this->dataTableFactory->create(ContentTypeActionDataTableType::class, [
             'content_type_name' => $contentType->getName(),
@@ -67,8 +68,8 @@ final class ActionController extends AbstractController
             ]);
         }
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'icon' => 'fa fa-gear',
             'title' => t(
                 message: 'type.title_overview',

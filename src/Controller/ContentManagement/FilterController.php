@@ -9,6 +9,7 @@ use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Mapping\FilterManager;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\Mapping\FilterDataTableType;
 use EMS\CoreBundle\Entity\Filter;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -17,6 +18,7 @@ use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Routes;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -101,7 +103,7 @@ class FilterController extends AbstractController
         return $response;
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): Page|RedirectResponse
     {
         $table = $this->dataTableFactory->create(FilterDataTableType::class);
 
@@ -122,8 +124,8 @@ class FilterController extends AbstractController
             return $this->redirectToRoute(Routes::FILTER_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'icon' => 'fa fa-filter',
             'title' => t('type.title_overview', ['type' => 'filter'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'filter'], 'emsco-core'),

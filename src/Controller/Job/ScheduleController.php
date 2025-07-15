@@ -10,6 +10,7 @@ use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Job\ScheduleManager;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\Job\JobScheduleDataTableType;
 use EMS\CoreBundle\Entity\Schedule;
 use EMS\CoreBundle\Form\Data\TableAbstract;
@@ -17,6 +18,7 @@ use EMS\CoreBundle\Form\Form\ScheduleType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Routes;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -35,7 +37,7 @@ final class ScheduleController extends AbstractController
     ) {
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): Page|RedirectResponse
     {
         $table = $this->dataTableFactory->create(JobScheduleDataTableType::class);
         $form = $this->createForm(TableType::class, $table, [
@@ -55,8 +57,8 @@ final class ScheduleController extends AbstractController
             return $this->redirectToRoute(Routes::SCHEDULE_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'icon' => 'fa fa-calendar-o',
             'title' => t('type.title_overview', ['type' => 'job_schedule'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'job_schedule'], 'emsco-core'),

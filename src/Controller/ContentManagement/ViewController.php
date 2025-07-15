@@ -10,6 +10,7 @@ use EMS\CoreBundle\Core\ContentType\ViewDefinition;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\Core\View\ViewManager;
 use EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeViewDataTableType;
 use EMS\CoreBundle\Entity\ContentType;
@@ -19,6 +20,7 @@ use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Form\Form\ViewType;
 use EMS\CoreBundle\Routes;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -37,7 +39,7 @@ class ViewController extends AbstractController
     ) {
     }
 
-    public function index(ContentType $contentType, Request $request): Response
+    public function index(ContentType $contentType, Request $request): Page|RedirectResponse
     {
         $table = $this->dataTableFactory->create(ContentTypeViewDataTableType::class, [
             'content_type_name' => $contentType->getName(),
@@ -62,8 +64,8 @@ class ViewController extends AbstractController
             ]);
         }
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'icon' => 'fa fa-filter',
             'title' => t(
                 message: 'type.title_overview',

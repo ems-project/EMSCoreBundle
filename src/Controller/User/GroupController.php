@@ -8,6 +8,7 @@ use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\Core\User\GroupManager;
 use EMS\CoreBundle\DataTable\Type\GroupDataTableType;
 use EMS\CoreBundle\DataTable\Type\UserDataTableType;
@@ -19,6 +20,7 @@ use EMS\CoreBundle\Form\Form\UserType;
 use EMS\CoreBundle\Routes;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -36,7 +38,7 @@ class GroupController extends AbstractController
     ) {
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): Page|RedirectResponse
     {
         $table = $this->dataTableFactory->create(GroupDataTableType::class);
 
@@ -53,8 +55,8 @@ class GroupController extends AbstractController
             return $this->redirectToRoute(Routes::GROUP_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form,
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'title' => t('type.title_overview', ['type' => 'group'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'group'], 'emsco-core'),
             'breadcrumb' => $this->breadcrumb(),

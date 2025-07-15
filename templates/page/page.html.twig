@@ -39,31 +39,31 @@
 {% endblock %}
 
 {% block body %}
-	{% if datatables is defined %}
-		{{ block('renderDatatables') }}
-	{% elseif form is defined %}
-		{% set tableOptions = {} %}
-		{% if tableIcon is defined %}{% set tableOptions = tableOptions|merge({ 'table_title_icon': tableIcon }) %}{% endif %}
-		{% if tableTitle is defined %}{% set tableOptions = tableOptions|merge({ 'table_title': tableTitle|trans }) %}{% endif %}
-
-		{% form_theme form '@EMSCore/form/forms.html.twig' %}
-		{{ form(form, tableOptions) }}
-	{% endif %}
+    {%- if datatable is defined -%}
+        {{ block('render_datatable') }}
+    {%- elseif datatables is defined -%}
+        {{ block('render_datatables') }}
+    {%- endif -%}
 {% endblock %}
 
-{% block renderDatatables %}
-<div class="row">
-	{% for datatable in datatables %}
-		<div class="{{ datatables|length == 2 ? 'col-md-6': 'col-md-12' }}">
-			<div>
-				{% set tableOptions = {} %}
-				{% if datatable.icon is defined %}{% set tableOptions = tableOptions|merge({ 'table_title_icon': datatable.icon }) %}{% endif %}
-				{% if datatable.title is defined %}{% set tableOptions = tableOptions|merge({ 'table_title': datatable.title|trans }) %}{% endif %}
+{%- block render_datatable -%}
+    {% set tableOptions = {} %}
+    {% if datatable.icon is defined %}{% set tableOptions = tableOptions|merge({ 'table_title_icon': datatable.icon }) %}{% endif %}
+    {% if datatable.title is defined %}{% set tableOptions = tableOptions|merge({ 'table_title': datatable.title|trans }) %}{% endif %}
 
-				{% form_theme datatable.form '@EMSCore/form/forms.html.twig' %}
-				{{ form(datatable.form, tableOptions) }}
-			</div>
-		</div>
-	{% endfor %}
-</div>
-{% endblock renderDatatables %}
+    {% form_theme datatable.form '@EMSCore/form/forms.html.twig' %}
+    {{ form(datatable.form, tableOptions) }}
+{%- endblock render_datatable -%}
+
+{% block render_datatables %}
+    <div class="row">
+        {% for datatable in datatables %}
+            <div class="{{ datatables|length == 2 ? 'col-md-6': 'col-md-12' }}">
+                <div>
+                    {{ block('render_datatable') }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock render_datatables %}
+

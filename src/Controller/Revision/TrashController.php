@@ -9,6 +9,7 @@ use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\Revision\RevisionTrashDataTableType;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Form\Form\TableType;
@@ -29,11 +30,10 @@ class TrashController extends AbstractController
         private readonly DataService $dataService,
         private readonly DataTableFactory $dataTableFactory,
         private readonly LocalizedLoggerInterface $logger,
-        private readonly string $templateNamespace,
     ) {
     }
 
-    public function trash(Request $request, ContentType $contentType): Response
+    public function trash(Request $request, ContentType $contentType): Page|Response
     {
         if (!$this->isGranted($contentType->role(ContentTypeRoles::TRASH))) {
             throw $this->createAccessDeniedException();
@@ -58,8 +58,8 @@ class TrashController extends AbstractController
             };
         }
 
-        return $this->render("@$this->templateNamespace/crud/overview.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
             'icon' => 'fa fa-trash',
             'title' => t('revision.trash.title', ['pluralName' => $contentType->getPluralName()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'trash'], 'emsco-core'),

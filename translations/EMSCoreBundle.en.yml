@@ -265,14 +265,11 @@ form:
             unicode_case: UNICODE_CASE
             unicode_character_class: UNICODE_CHARACTER_CLASS
             unix_lines: UNIX_LINES
-        label: Label
         lowercase: Lowercase
         max_output_size: 'Max Output Size'
         max_token_length: 'Max Token Length'
-        name: Name
         pattern: Pattern
         position_increment_gap: 'Position Increment Gap'
-        save: Save
         separator: Separator
         stopwords:
             _arabic_: Arabic
@@ -352,11 +349,6 @@ form:
             file_not_found: 'File not found with the hash "%file_hash%"'
     email: Email
     form:
-        channel:
-            alias: Alias
-            label: Label
-            name: Name
-            public: 'Make channel available for non-authenticated users ?'
         query_search:
             environments: Environments
             label: Label
@@ -374,10 +366,6 @@ form:
             format_tags:
                 label: 'Format tags (override styles sets config)'
     subform:
-        channel:
-            attributes: 'Request extra attributes'
-            entryPath: 'Default entry path'
-            searchConfig: 'Search config'
         searchquery:
             query: 'Default query'
             searchConfig: 'Search config'
@@ -390,9 +378,6 @@ form:
             error_with_document: 'It was impossible to update the document "%label%" : %error_message%'
             ordered: 'The %contenttype%''s documents have been ordered with the view "%view_label%"'
             too_many_documents: 'This content type have to much document (%total%) to be reorder them all in once'
-    wysiwyg_style_set:
-        table_default_css:
-            title: 'Default Table class attribute (deprecated)'
 ROLE_ADMIN: Administrator
 ROLE_ALLOW_ALIGN: 'Align Environment'
 ROLE_API: API
@@ -416,14 +401,6 @@ ROLE_USER: User
 ROLE_USER_MANAGEMENT: 'User Management'
 ROLE_USER_READ: 'User read'
 ROLE_WEBMASTER: Webmaster
-channel:
-    add:
-        save: Create
-        title: 'Add a channel'
-    edit:
-        save: Save
-        title: 'Edit a channel'
-    menu: Channels
 command:
     reindex:
         end: 'The content type %contenttype%''s documents have been reindexed in %environment% (index: %index%)'
@@ -491,7 +468,6 @@ form-submission:
         reorder: Reorder
 form_submissions:
     download: Download
-    overview: Overview
     process:
         button: 'Delete Submission'
         confirm_body: "After confirmation you can NOT download the form data anymore!\nAre you sure, you want to delete the form submission?\n"
@@ -499,14 +475,6 @@ form_submissions:
         error: 'Form deletion failed!'
         success: 'Form submission with id "%id%" has been deleted!'
     title: 'Form Submissions'
-query_search:
-    add:
-        save: Create
-        title: 'Add a QuerySearch'
-    edit:
-        save: Save
-        title: 'Edit a QuerySearch'
-    menu: QuerySearch
 release:
     actions:
         add_publish: 'Add documents for publication'
@@ -767,8 +735,6 @@ user:
         excel: 'Excel export'
         csv: 'CSV export'
 view:
-    breadcrumb:
-        wysiwyg-options: 'WYSIWYG Options'
     contenttype:
         reorder_item:
             edit_field_button: 'Edit %name%'
@@ -809,9 +775,7 @@ view:
             title: 'Form Submissions Overview'
     icon:
         class:
-            channel: 'fa fa-eye'
             release: 'fa fa-cube'
-            query_search: 'fa fa-list-alt'
             uploaded-file: 'fa fa-upload'
     macros:
         data-field-type:
@@ -881,7 +845,6 @@ view:
             column:
                 profileName: Profiles
                 stylesSetName: 'Styles set'
-        wysiwyg_profiles_label: 'WYSIWYG profiles'
         wysiwyg_styles_set_label: 'WYSIWYG styles set'
     index:
         reorder: 'Reorder views'
@@ -916,8 +879,6 @@ views:
         revision-toolbar-html:
             add-to-release: 'Add to release'
 wysiwyg:
-    actions:
-        edit_button: Edit
     invalid_config_format: 'Format not valid: %msg%'
 revision:
     draft-in-progress:
@@ -928,16 +889,7 @@ revision:
 'The server returned a %status_code%': 'The server returned a %status_code%'
 'With the message "%status_text%"':
     '': 'With the message "%status_text%".'
-'Add an Analyzer': 'Add an Analyzer'
-'expert mode': 'expert mode'
-Analyzers: Analyzers
-'Add an analyzer': 'Add an analyzer'
-'Edit an Analyzer': 'Edit an Analyzer'
 Notice: Notice
-'All environments have to be re-builded each times that the analyzers configuration is updated':
-    '': 'All environments have to be re-builded each times that the analyzers configuration is updated.'
-'List analyzers': 'List analyzers'
-'Add analyzer': 'Add analyzer'
 '#': '#'
 Name: Name
 Label: Label
@@ -985,11 +937,6 @@ Environments: Environments
 'Content type': 'Content type'
 'Add managed alias': 'Add managed alias'
 'Edit managed alias': 'Edit managed alias'
-'Add a Filter': 'Add a Filter'
-'Edit a Filter': 'Edit a Filter'
-'All environments have to be re-builded each times that the filters configuration is updated':
-    '': 'All environments have to be re-builded each times that the filters configuration is updated.'
-'List filters': 'List filters'
 Add: Add
 show: Show
 hide: Hide
@@ -999,11 +946,8 @@ hide: Hide
 Info: Info
 View: View
 Clear: Clear
-'I18N edit': 'I18N edit'
-I18N: I18N
 Cancel: Cancel
 Edit: Edit
-'I18N create': 'I18N create'
 'Not defined': 'Not defined'
 Download: Download
 'Title :': 'Title :'
@@ -1038,17 +982,6 @@ Outbox: Outbox
 Views: Views
 'gallery view plugin': 'gallery view plugin'
 'Reorganise:': 'Reorganise:'
-'Edit WYSIWYG styles set': 'Edit WYSIWYG styles set'
-'New WYSIWYG styles set': 'New WYSIWYG styles set'
-'Edit WYSIWYG profile': 'Edit WYSIWYG profile'
-'WYSIWYG profiles': 'WYSIWYG profiles'
-'WYSIWYG options': 'WYSIWYG options'
-'Add a profile': 'Add a profile'
-'Click on ''Add a profile'' to create a first WYSIWYG profile': 'Click on ''Add a profile'' to create a first WYSIWYG profile'
-'WYSIWYG styles sets': 'WYSIWYG styles sets'
-'Add a style set': 'Add a style set'
-'Click on ''Add a styles set'' to create a first styles set': 'Click on ''Add a styles set'' to create a first styles set'
-'New WYSIWYG profile': 'New WYSIWYG profile'
 '%date% Finalized by %user%': '%date% Finalized by %user%'
 'no revision in %env%': 'no revision in %env%'
 'Unpublish in %env%': 'Unpublish in %env%'

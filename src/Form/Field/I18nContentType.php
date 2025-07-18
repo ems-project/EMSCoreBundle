@@ -23,12 +23,12 @@ class I18nContentType extends AbstractType
     {
         $builder->add('locale', TextType::class, [
             'required' => true,
+            'row_attr' => ['class' => 'col-md-2'],
         ])
         ->add('text', TextareaType::class, [
+            'attr' => ['rows' => 4],
             'required' => true,
-            'attr' => [
-                'rows' => 4,
-            ],
+            'row_attr' => ['class' => 'col-md-10'],
         ]);
     }
 

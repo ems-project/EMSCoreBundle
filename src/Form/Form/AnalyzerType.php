@@ -12,6 +12,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -26,23 +28,23 @@ class AnalyzerType extends AbstractType
     {
         $builder
             ->add('name', null, [
+                'label' => t('field.name', [], 'emsco-core'),
                 'required' => true,
-                'label' => 'form.analyzer.name',
+                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add('label', null, [
+                'label' => t('field.label', [], 'emsco-core'),
                 'required' => true,
-                'label' => 'form.analyzer.label',
+                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add('options', AnalyzerOptionsType::class, [
-                'attr' => [
-                    'class' => 'fields-to-display-by-value',
-                ],
+                'attr' => ['class' => 'fields-to-display-by-value'],
+                'label' => false,
+                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add('save', SubmitEmsType::class, [
-                'label' => 'form.analyzer.save',
-                'attr' => [
-                    'class' => 'btn btn-primary pull-right',
-                ],
+                'attr' => ['class' => 'btn btn-primary'],
+                'label' => t('action.save', [], 'emsco-core'),
                 'icon' => 'fa fa-save',
             ]);
     }

@@ -23,9 +23,9 @@ use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ActionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 use function Symfony\Component\Translation\t;
 
@@ -39,7 +39,6 @@ final class ActionController extends AbstractController
         private readonly LocalizedLoggerInterface $logger,
         private readonly TemplateRepository $templateRepository,
         private readonly FlashMessageLogger $flashMessageLogger,
-        private readonly string $templateNamespace,
     ) {
     }
 
@@ -81,7 +80,7 @@ final class ActionController extends AbstractController
         ]);
     }
 
-    public function add(ContentType $contentType, Request $request): Response
+    public function add(Request $request, ContentType $contentType): Page|RedirectResponse
     {
         $action = new Template();
         $action->setContentType($contentType);
@@ -103,8 +102,7 @@ final class ActionController extends AbstractController
             ]);
         }
 
-        return $this->render("@$this->templateNamespace/action/add.html.twig", [
-            'contentType' => $contentType,
+        return new Page([
             'form' => $form->createView(),
             'title' => t('type.title_create', ['type' => 'action'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'action'], 'emsco-core'),
@@ -114,7 +112,7 @@ final class ActionController extends AbstractController
         ]);
     }
 
-    public function edit(Template $action, Request $request, string $_format): Response
+    public function edit(Request $request, Template $action): Page|RedirectResponse|JsonResponse
     {
         $id = $action->getId();
 
@@ -130,10 +128,8 @@ final class ActionController extends AbstractController
                 'action_name' => $action->getName(),
             ]);
 
-            if ('json' === $_format) {
-                return $this->flashMessageLogger->buildJsonResponse([
-                    'success' => true,
-                ]);
+            if ('json' === $request->getRequestFormat()) {
+                return $this->flashMessageLogger->buildJsonResponse(['success' => true]);
             }
 
             return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_ACTION_INDEX, [
@@ -141,7 +137,7 @@ final class ActionController extends AbstractController
             ]);
         }
 
-        if ('json' === $_format) {
+        if ('json' === $request->getRequestFormat()) {
             foreach ($form->getErrors() as $error) {
                 if ($error instanceof FormError) {
                     $this->logger->error('log.error', [EmsFields::LOG_ERROR_MESSAGE_FIELD => $error->getMessage()]);
@@ -153,10 +149,8 @@ final class ActionController extends AbstractController
             ]);
         }
 
-        return $this->render("@$this->templateNamespace/action/edit.html.twig", [
+        return new Page([
             'form' => $form->createView(),
-            'action' => $action,
-            'contentType' => $action->giveContentType(),
             'title' => t('type.title_edit', ['type' => 'action', 'label' => $action->getLabel()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'action'], 'emsco-core'),
             'breadcrumb' => Navigation::admin()->contentType($action->giveContentType())->contentTypeActions($action->giveContentType())->add(

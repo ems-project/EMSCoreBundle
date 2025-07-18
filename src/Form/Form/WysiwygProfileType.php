@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\IconTextType;
@@ -13,6 +12,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * @extends AbstractType<mixed>
@@ -29,48 +30,35 @@ class WysiwygProfileType extends AbstractType
         $builder
             ->add('name', IconTextType::class, [
                 'icon' => 'fa fa-tag',
-                'label' => 'wysiwyg_profile.name.label',
-                'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+                'label' => t('field.name', [], 'emsco-core'),
             ])
             ->add('editor', ChoiceType::class, [
                 'required' => true,
                 'choices' => [
-                    'wysiwyg_profile.editor.ckeditor4' => WysiwygProfile::CKEDITOR4,
-                    'wysiwyg_profile.editor.ckeditor5' => WysiwygProfile::CKEDITOR5,
+                    t('key.ckeditor4', [], 'emsco-core')->getMessage() => WysiwygProfile::CKEDITOR4,
+                    t('key.ckeditor5', [], 'emsco-core')->getMessage() => WysiwygProfile::CKEDITOR5,
                 ],
-                'label' => 'wysiwyg_profile.editor.label',
-                'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+                'label' => t('field.editor', [], 'emsco-core'),
+                'choice_translation_domain' => 'emsco-core',
             ])
             ->add('config', CodeEditorType::class, [
                 'language' => 'ace/mode/json',
+                'label' => t('field.config', [], 'emsco-core'),
             ])
             ->add('save', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm ',
                 ],
+                'label' => t('action.save', [], 'emsco-core'),
                 'icon' => 'fa fa-save',
-                'label' => 'wysiwyg_profile.save.label',
-                'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
             ]);
-
-        if (!$options['createform']) {
-            $builder->add('remove', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary btn-sm ',
-                ],
-                'icon' => 'fa fa-trash',
-                'label' => 'wysiwyg_profile.remove.label',
-                'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
-            ]);
-        }
     }
 
     #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'createform' => false,
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
+            'data_class' => WysiwygProfile::class,
         ]);
     }
 }

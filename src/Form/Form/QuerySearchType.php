@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Form\DataTransformer\QuerySearchOptionsTransformer;
@@ -16,6 +15,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * @extends AbstractType<mixed>
@@ -35,18 +36,21 @@ final class QuerySearchType extends AbstractType
     {
         $builder
             ->add('label', null, [
+                'label' => t('field.label', [], 'emsco-core'),
                 'required' => true,
                 'row_attr' => [
                     'class' => 'col-md-6',
                 ],
             ])
             ->add('name', null, [
+                'label' => t('field.name', [], 'emsco-core'),
                 'required' => true,
                 'row_attr' => [
                     'class' => 'col-md-6',
                 ],
             ])
             ->add('environments', ChoiceType::class, [
+                'label' => t('field.environments', [], 'emsco-core'),
                 'attr' => [
                     'class' => 'select2',
                 ],
@@ -64,12 +68,16 @@ final class QuerySearchType extends AbstractType
 
                     return $value;
                 },
+                'choice_translation_domain' => false,
             ])
-            ->add('options', QuerySearchOptionsType::class)
+            ->add('options', QuerySearchOptionsType::class, [
+                'label' => false,
+            ])
             ->add('save', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm ',
                 ],
+                'label' => t('action.save', [], 'emsco-core'),
                 'icon' => 'fa fa-save',
             ]);
         $builder->get('options')->addModelTransformer(new QuerySearchOptionsTransformer());
@@ -80,8 +88,6 @@ final class QuerySearchType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => QuerySearch::class,
-            'label_format' => 'form.form.query_search.%name%',
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             'constraints' => [
                 new UniqueEntity(['fields' => ['name']]),
             ],

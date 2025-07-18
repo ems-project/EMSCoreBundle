@@ -29,12 +29,11 @@ class I18nController extends AbstractController
     public function __construct(
         private readonly I18nService $i18nService,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly LocalizedLoggerInterface $logger,
-        private readonly string $templateNamespace,
+        private readonly LocalizedLoggerInterface $logger
     ) {
     }
 
-    public function add(Request $request): Response
+    public function add(Request $request): Page|RedirectResponse
     {
         $i18n = new I18n();
         $i18n->setContent([['locale' => '', 'text' => '']]);
@@ -48,8 +47,7 @@ class I18nController extends AbstractController
             return $this->redirectToRoute(Routes::I18N_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/i18n/new.html.twig", [
-            'i18n' => $i18n,
+        return new Page([
             'form' => $form->createView(),
             'title' => t('type.title_create', ['type' => 'i18n'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'i18n'], 'emsco-core'),
@@ -66,15 +64,10 @@ class I18nController extends AbstractController
         return $this->redirectToRoute(Routes::I18N_INDEX);
     }
 
-    public function edit(Request $request, I18n $i18n): Response
+    public function edit(Request $request, I18n $i18n): Page|RedirectResponse
     {
         if (empty($i18n->getContent())) {
-            $i18n->setContent([
-                [
-                    'locale' => '',
-                    'text' => '',
-                ],
-            ]);
+            $i18n->setContent([['locale' => '', 'text' => '']]);
         }
         $editForm = $this->createForm(I18nType::class, $i18n);
         $editForm->handleRequest($request);
@@ -89,9 +82,7 @@ class I18nController extends AbstractController
 
         $form = $editForm->createView();
 
-        return $this->render("@$this->templateNamespace/i18n/edit.html.twig", [
-            'i18n' => $i18n,
-            'edit_form' => $form,
+        return new Page([
             'form' => $form,
             'title' => t('type.title_edit', ['type' => 'i18n', 'label' => $i18n->getName()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'i18n'], 'emsco-core'),

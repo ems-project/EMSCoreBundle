@@ -136,10 +136,18 @@ core:
             }
     version: 'Version {core} with Symfony {symfony}'
 field:
+    accumulate_file: 'Accumulate in one file'
     alias: Alias
+    allowed_remote_hosts: 'Allowed remote hosts'
+    attributes: 'Request extra attributes'
     available: Available
     channel: Channel
+    circles_to: 'Circles to'
+    color: Color
     command: Command
+    config: Config
+    content_css: 'Content css'
+    content_js: 'Content js'
     context: Context
     count: Count
     cron: Cron
@@ -151,18 +159,37 @@ field:
     date_run_previous: 'Date previous run'
     date_upload: 'Date upload'
     definition: Definition
+    editor: Editor
+    email_content_type: 'Content type (ie: text/html)'
+    entry_path: 'Default entry path'
     environment_default: 'Default environment'
     environment_external: 'External environment'
+    environments: Environments
     extra: Extra
     file:
+        disposition: Disposition
+        extension: Extension
+        mimetype: Mime-Type
+        name: Filename
+        orientation: Orientation
+        paper_size: 'Paper size'
         size: Size
         type: Type
+    format_tags: 'Format tags'
     hash: 'Hash signature'
+    header: Header
+    header_allow_origin: 'The Access-Control-Allow-Origin header'
     hidden: Hidden
+    icon: Icon
     index: Index
     indexes: Indexes
     is_active: Active
     is_dirty: Dirty
+    is_edit_wysiwyg: 'Edit with WYSIWYG'
+    is_menu_notification: 'Visible in the notification menu'
+    is_menu_sidebar: 'Visible in the sidebar menu'
+    is_preview: Preview
+    is_public: Public
     key: Key
     label: Label
     last_seen: 'Last seen'
@@ -171,15 +198,28 @@ field:
     name: Name
     plural: Plural
     public_access: 'Public Access'
+    query: Query
     release_environment_source: 'Source Environment for publication'
     release_environment_target: 'Environment for (un)publication'
+    render_option: 'Render option'
     revision_version_tag: 'Yes as {version_tag}'
     revision_version_tag_empty: 'No (Silent publish)'
+    role: Role
+    role_cc: 'Role cc'
+    role_to: 'Role to'
     roles: Roles
+    save_dir: 'Save dir'
+    search_config: 'Search config'
     severity: Severity
     singular: Singular
+    spreadsheet: Spreadsheet
     status: Status
+    table_default_css: 'Default Table class attribute (deprecated)'
     tag: Tag
+    template_body: 'Template body'
+    template_footer: 'Template footer'
+    template_header: 'Template header'
+    template_response: 'Template response'
     text: Text
     total: Total
     total_deleted: 'Total deleted'
@@ -199,7 +239,10 @@ key:
     actions: Actions
     admin: Admin
     analyzers: Analyzers
+    attachment: Attachment
     channels: Channels
+    ckeditor4: 'CK Editor 4'
+    ckeditor5: 'CK Editor 5'
     content_types: 'Content Types'
     dashboards: Dashboards
     details: Details
@@ -209,20 +252,30 @@ key:
     environments_local: 'Local environments'
     export_documents: 'Export documents'
     filters: Filters
+    form_submissions: 'Form Submissions'
     forms: Forms
     groups: Groups
     i18n: I18N
+    inline: Inline
     job_logs: 'Jobs logs'
     jobs: Jobs
+    landscape: Landscape
     logs: Logs
     loop_count: '#'
     managed_aliases: 'Managed aliases'
+    none: None
+    notice: Notice
     orphan_indexes: 'Orphan indexes'
     overview: Overview
+    portrait: Portrait
+    public_channel: 'Make channel available for non-authenticated users ?'
+    public_view: 'Publicly available (without authentication)'
     publishers: Publishers
     query_search: 'Query search'
     query_searches: QuerySearch
     schedule: Schedule
+    schedule_cron: '<Minute> <Hour> <Day_of_the_Month> <Month_of_the_Year> <Day_of_the_Week>. E.g. every 15 minutes: */15 * * * *'
+    schedule_tag: 'Used to indentify workers (e.g. CLI) which would remotely execute the job'
     search: Search
     structure: Structure
     trash: Trash
@@ -412,20 +465,21 @@ type:
         }
     title_edit: |-
         {type, select,
-            action          {Edit action: {label}}
-            analyzer        {Edit analyzer: {label}}
-            channel         {Edit channel: {label}}
-            dashboard       {Edit dashboard: {label}}
-            content_type    {Edit content type: {label}}
-            filter          {Edit filter: {label}}
-            form            {Edit form: {label}}
-            group           {Edit Group: {label}}
-            i18n            {Edit I18N: {label}}
-            job_schedule    {Edit schedule: {label}}
-            query_search    {Edit query search: {label}}
-            view            {Edit view: {label}}
-            wysiwyg_profile {Edit profile: {label}}
-            other           {Edit}
+            action            {Edit action: {label}}
+            analyzer          {Edit analyzer: {label}}
+            channel           {Edit channel: {label}}
+            dashboard         {Edit dashboard: {label}}
+            content_type      {Edit content type: {label}}
+            filter            {Edit filter: {label}}
+            form              {Edit form: {label}}
+            group             {Edit Group: {label}}
+            i18n              {Edit I18N: {label}}
+            job_schedule      {Edit schedule: {label}}
+            query_search      {Edit query search: {label}}
+            view              {Edit view: {label}}
+            wysiwyg_profile   {Edit profile: {label}}
+            wysiwyg_style_set {Edit style set: {label}}
+            other             {Edit}
         }
     title_overview: |-
         {type, select,
@@ -438,6 +492,7 @@ type:
             environment         {Overview}
             filter              {List of filters}
             form                {List of forms}
+            form_submission     {List of form submissions}
             group               {List of groups}
             i18n                {I18n list}
             i18n_translations   {Translations for key "{key}"}

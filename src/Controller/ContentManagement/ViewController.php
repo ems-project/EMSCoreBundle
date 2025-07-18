@@ -20,6 +20,7 @@ use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Form\Form\ViewType;
 use EMS\CoreBundle\Routes;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,8 +35,7 @@ class ViewController extends AbstractController
         private readonly ViewManager $viewManager,
         private readonly DataTableFactory $dataTableFactory,
         private readonly LocalizedLoggerInterface $logger,
-        private readonly FlashMessageLogger $flashMessageLogger,
-        private readonly string $templateNamespace,
+        private readonly FlashMessageLogger $flashMessageLogger
     ) {
     }
 
@@ -94,14 +94,12 @@ class ViewController extends AbstractController
         ]);
     }
 
-    public function add(ContentType $contentType, Request $request): Response
+    public function add(Request $request, ContentType $contentType): Page|RedirectResponse
     {
         $view = new View();
         $view->setContentType($contentType);
 
-        $form = $this->createForm(ViewType::class, $view, [
-            'create' => true,
-        ]);
+        $form = $this->createForm(ViewType::class, $view, ['create' => true]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -117,8 +115,7 @@ class ViewController extends AbstractController
             ]);
         }
 
-        return $this->render("@$this->templateNamespace/view/add.html.twig", [
-            'contentType' => $contentType,
+        return new Page([
             'form' => $form->createView(),
             'title' => t('type.title_create', ['type' => 'view'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'view'], 'emsco-core'),
@@ -128,10 +125,9 @@ class ViewController extends AbstractController
         ]);
     }
 
-    public function edit(View $view, string $_format, Request $request): Response
+    public function edit(Request $request, View $view): Page|RedirectResponse|JsonResponse
     {
         $form = $this->createForm(ViewType::class, $view, [
-            'create' => false,
             'ajax-save-url' => $this->generateUrl(Routes::ADMIN_CONTENT_TYPE_VIEW_EDIT, ['view' => $view->getId(), '_format' => 'json']),
         ]);
 
@@ -145,10 +141,8 @@ class ViewController extends AbstractController
                 'view_label' => $view->getLabel(),
             ]);
 
-            if ('json' === $_format) {
-                return $this->flashMessageLogger->buildJsonResponse([
-                    'success' => true,
-                ]);
+            if ('json' === $request->getRequestFormat()) {
+                return $this->flashMessageLogger->buildJsonResponse(['success' => true]);
             }
 
             return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_VIEW_INDEX, [
@@ -156,10 +150,8 @@ class ViewController extends AbstractController
             ]);
         }
 
-        return $this->render("@$this->templateNamespace/view/edit.html.twig", [
+        return new Page([
             'form' => $form->createView(),
-            'contentType' => $view->getContentType(),
-            'view' => $view,
             'title' => t('type.title_edit', ['type' => 'view', 'label' => $view->getLabel()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'view'], 'emsco-core'),
             'breadcrumb' => $this->breadcrumb($view->getContentType())->add(

@@ -33,12 +33,11 @@ class AnalyzerController extends AbstractController
     public function __construct(
         private readonly AnalyzerManager $analyzerManager,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly LocalizedLoggerInterface $logger,
-        private readonly string $templateNamespace,
+        private readonly LocalizedLoggerInterface $logger
     ) {
     }
 
-    public function add(Request $request): Response
+    public function add(Request $request): Page|RedirectResponse
     {
         $analyzer = new Analyzer();
 
@@ -57,7 +56,7 @@ class AnalyzerController extends AbstractController
             return $this->redirectToRoute(Routes::ANALYZER_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/analyzer/add.html.twig", [
+        return new Page([
             'form' => $form->createView(),
             'title' => t('type.title_create', ['type' => 'analyzer'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'analyzer'], 'emsco-core'),
@@ -81,7 +80,7 @@ class AnalyzerController extends AbstractController
         return $this->redirectToRoute(Routes::ANALYZER_INDEX);
     }
 
-    public function edit(Analyzer $analyzer, Request $request): Response
+    public function edit(Analyzer $analyzer, Request $request): Page|RedirectResponse
     {
         $form = $this->createForm(AnalyzerType::class, $analyzer);
         $form->handleRequest($request);
@@ -98,7 +97,7 @@ class AnalyzerController extends AbstractController
             return $this->redirectToRoute(Routes::ANALYZER_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/analyzer/edit.html.twig", [
+        return new Page([
             'form' => $form->createView(),
             'title' => t('type.title_edit', ['type' => 'analyzer', 'label' => $analyzer->getLabel()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'analyzer'], 'emsco-core'),

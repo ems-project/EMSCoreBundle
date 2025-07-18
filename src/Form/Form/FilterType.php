@@ -11,6 +11,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -24,18 +26,24 @@ class FilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', null, ['required' => true])
-            ->add('label', null, ['required' => true])
+            ->add('name', null, [
+                'label' => t('field.name', [], 'emsco-core'),
+                'required' => true,
+                'row_attr' => ['class' => 'col-md-12'],
+            ])
+            ->add('label', null, [
+                'label' => t('field.label', [], 'emsco-core'),
+                'required' => true,
+                'row_attr' => ['class' => 'col-md-12'],
+            ])
             ->add('options', FilterOptionsType::class, [
-                'attr' => [
-                    'class' => 'fields-to-display-by-value',
-                ],
+                'attr' => ['class' => 'fields-to-display-by-value'],
+                'label' => false,
+                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add('save', SubmitEmsType::class, [
-                'label' => 'Save',
-                'attr' => [
-                    'class' => 'btn btn-primary pull-right',
-                ],
+                'attr' => ['class' => 'btn btn-primary'],
+                'label' => t('action.save', [], 'emsco-core'),
                 'icon' => 'fa fa-save',
             ]);
     }

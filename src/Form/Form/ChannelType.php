@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Form\DataTransformer\ChannelOptionsTransformer;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -13,6 +12,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * @extends AbstractType<mixed>
@@ -28,31 +29,38 @@ final class ChannelType extends AbstractType
     {
         $builder
             ->add('label', null, [
+                'label' => t('field.label', [], 'emsco-core'),
                 'required' => true,
                 'row_attr' => [
                     'class' => 'col-md-3',
                 ],
             ])
             ->add('name', null, [
+                'label' => t('field.name', [], 'emsco-core'),
                 'required' => true,
                 'row_attr' => [
                     'class' => 'col-md-3',
                 ],
             ])
             ->add('alias', null, [
+                'label' => t('field.alias', [], 'emsco-core'),
                 'required' => true,
                 'row_attr' => [
                     'class' => 'col-md-3',
                 ],
             ])
             ->add('public', CheckboxType::class, [
+                'label' => t('key.public_channel', [], 'emsco-core'),
                 'required' => false,
                 'row_attr' => [
                     'class' => 'col-md-12',
                 ],
             ])
-            ->add('options', ChannelOptionsType::class)
+            ->add('options', ChannelOptionsType::class, [
+                'label' => false,
+            ])
             ->add('save', SubmitEmsType::class, [
+                'label' => t('action.save', [], 'emsco-core'),
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm ',
                 ],
@@ -66,8 +74,6 @@ final class ChannelType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Channel::class,
-            'label_format' => 'form.form.channel.%name%',
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
 }

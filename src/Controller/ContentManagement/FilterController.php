@@ -32,12 +32,11 @@ class FilterController extends AbstractController
     public function __construct(
         private readonly FilterManager $filterManager,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly LocalizedLoggerInterface $logger,
-        private readonly string $templateNamespace,
+        private readonly LocalizedLoggerInterface $logger
     ) {
     }
 
-    public function add(Request $request): Response
+    public function add(Request $request): Page|RedirectResponse
     {
         $filter = new Filter();
         $form = $this->createForm(FilterType::class, $filter);
@@ -49,7 +48,7 @@ class FilterController extends AbstractController
             return $this->redirectToRoute(Routes::FILTER_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/filter/add.html.twig", [
+        return new Page([
             'form' => $form->createView(),
             'title' => t('type.title_create', ['type' => 'filter'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'filter'], 'emsco-core'),
@@ -68,7 +67,7 @@ class FilterController extends AbstractController
         return $this->redirectToRoute(Routes::FILTER_INDEX);
     }
 
-    public function edit(Filter $filter, Request $request): Response
+    public function edit(Filter $filter, Request $request): Page|RedirectResponse
     {
         $form = $this->createForm(FilterType::class, $filter);
         $form->handleRequest($request);
@@ -79,7 +78,7 @@ class FilterController extends AbstractController
             return $this->redirectToRoute(Routes::FILTER_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/filter/edit.html.twig", [
+        return new Page([
             'form' => $form->createView(),
             'title' => t('type.title_edit', ['type' => 'filter', 'label' => $filter->getLabel()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'filter'], 'emsco-core'),

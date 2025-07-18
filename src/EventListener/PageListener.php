@@ -37,7 +37,7 @@ class PageListener implements EventSubscriberInterface
             return;
         }
 
-        $content = $this->twig->render("@$this->templateNamespace/".$page->getTemplate(), $page->context);
+        $content = $this->twig->render("@$this->templateNamespace/".$page->template, $page->context);
         $event->setResponse(new Response($content, Response::HTTP_OK));
     }
 }

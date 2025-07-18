@@ -31,7 +31,6 @@ class DashboardController extends AbstractController
         private readonly LocalizedLoggerInterface $logger,
         private readonly DashboardManager $dashboardManager,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly string $templateNamespace,
     ) {
     }
 
@@ -65,7 +64,7 @@ class DashboardController extends AbstractController
         ]);
     }
 
-    public function add(Request $request): Response
+    public function add(Request $request): Page|RedirectResponse
     {
         $dashboard = new Dashboard();
         $form = $this->createForm(DashboardType::class, $dashboard, [
@@ -78,9 +77,8 @@ class DashboardController extends AbstractController
             return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_EDIT, ['dashboard' => $dashboard->getId()]);
         }
 
-        return $this->render("@$this->templateNamespace/dashboard/add.html.twig", [
+        return new Page([
             'form' => $form->createView(),
-            'dashboard' => $dashboard,
             'title' => t('type.title_create', ['type' => 'dashboard'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'dashboard'], 'emsco-core'),
             'breadcrumb' => $this->breadcrumb()->add(
@@ -89,7 +87,7 @@ class DashboardController extends AbstractController
         ]);
     }
 
-    public function edit(Request $request, Dashboard $dashboard): Response
+    public function edit(Request $request, Dashboard $dashboard): Page|RedirectResponse
     {
         $form = $this->createForm(DashboardType::class, $dashboard);
         $form->handleRequest($request);
@@ -99,9 +97,8 @@ class DashboardController extends AbstractController
             return $this->redirectToRoute(Routes::DASHBOARD_ADMIN_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/dashboard/edit.html.twig", [
+        return new Page([
             'form' => $form->createView(),
-            'dashboard' => $dashboard,
             'title' => t('type.title_edit', ['type' => 'dashboard', 'label' => $dashboard->getLabel()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'dashboard'], 'emsco-core'),
             'breadcrumb' => $this->breadcrumb()->add(

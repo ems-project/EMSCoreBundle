@@ -43,6 +43,8 @@
         {{ block('render_datatable') }}
     {%- elseif datatables is defined -%}
         {{ block('render_datatables') }}
+    {%- elseif form is defined -%}
+        {{ block('render_form') }}
     {%- endif -%}
 {% endblock %}
 
@@ -67,3 +69,42 @@
     </div>
 {% endblock render_datatables %}
 
+{%- block render_form -%}
+    <div class="row">
+        {%- if notice is defined -%}
+            <div class="col-md-3">{{ block('render_notice') }}</div>
+        {%- endif -%}
+        <div class="{{ notice is defined ? 'col-md-9' : 'col-md-12' }}">
+            <div class="box box-primary">
+                {{ form_start(form) }}
+                <div class="box-body ">
+                    {{ form_errors(form) }}
+                    <div class="row">
+                        {% for child in form|filter(c => not (c.vars.name in ['save', 'save_close'])) %}
+                            {{ form_row(child) }}
+                            <div class="clearfix"></div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="box-footer">
+                    {%- for button in form|filter(c => c.vars.name in ['save', 'save_close'])  -%}
+                        {{ form_widget(button) }}
+                    {%- endfor -%}
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{%- endblock render_form -%}
+
+{%- block render_notice -%}
+    <div class="box">
+        <div class="box-header with-border">
+            <i class="fa fa-warning"></i>
+            <h3 class="box-title">{{ 'key.notice'|trans({}, 'emsco-core') }}</h3>
+        </div>
+        <div class="box-body">
+            <p>{{ notice|trans }}</p>
+        </div>
+    </div>
+{%- endblock render_notice -%}

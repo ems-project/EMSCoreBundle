@@ -6,6 +6,8 @@ namespace EMS\CoreBundle\Controller\Form;
 
 use EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\FormSubmissionDataTableType;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\TableType;
@@ -25,6 +27,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+use function Symfony\Component\Translation\t;
+
 final class SubmissionController extends AbstractController
 {
     final public const int BUFFER_SIZE = 8192;
@@ -33,12 +37,11 @@ final class SubmissionController extends AbstractController
         private readonly FormSubmissionService $formSubmissionService,
         private readonly LoggerInterface $logger,
         private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGeneratorService,
-        private readonly DataTableFactory $dataTableFactory,
-        private readonly string $templateNamespace,
+        private readonly DataTableFactory $dataTableFactory
     ) {
     }
 
-    public function index(Request $request, UserInterface $user): Response
+    public function index(Request $request, UserInterface $user): Page|Response
     {
         $table = $this->dataTableFactory->create(FormSubmissionDataTableType::class);
         $form = $this->createForm(TableType::class, $table);
@@ -66,8 +69,11 @@ final class SubmissionController extends AbstractController
             return $this->redirectToRoute('form.submissions');
         }
 
-        return $this->render("@$this->templateNamespace/form-submission/index.html.twig", [
-            'form' => $form->createView(),
+        return new Page([
+            'datatable' => ['form' => $form->createView()],
+            'icon' => 'fa fa-list-alt',
+            'title' => t('type.title_overview', ['type' => 'form_submission'], 'emsco-core'),
+            'breadcrumb' => Navigation::formSubmissions(),
         ]);
     }
 

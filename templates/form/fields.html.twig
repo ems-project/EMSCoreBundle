@@ -1428,33 +1428,6 @@
 </li>
 {%- endblock fieldTypeType_row %}
 
-
-{% block i18n_content_row -%}
-	<div class="filter-container row">
-		<div class="col-md-2 col-sm-3">
-			<div class="form-group col-xs-6 col-sm-12">
-				{{- form_label(form.locale) -}}
-				{{- form_widget(form.locale) -}}
-				{{- form_errors(form.locale) -}}
-			</div>
-			<div class="form-group col-xs-6 col-sm-12">
-					<div class="control-label visible-xs-block">&nbsp;
-					</div>
-					{% if not form|ems_first_in_array(form.parent.children)  %}
-						<a class="btn btn-danger btn-remove form-control" href="#">
-							<i class="fa fa-trash"></i>
-						</a>
-					{% endif %}
-			</div>
-			<div class="clearfix visible-xs-block"></div>
-		</div>
-		<div class="col-md-10 col-sm-9">
-			{{- form_row(form.text) -}}
-		</div>
-		{{- form_errors(form) -}}
-	</div>
-{%- endblock i18n_content_row %}
-
 {%- block ems_version_tag_row -%}
 	{% if form.value is defined %}
 		{{- form_row(form.value) -}}

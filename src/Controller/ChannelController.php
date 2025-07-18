@@ -63,7 +63,7 @@ final class ChannelController extends AbstractController
         ]);
     }
 
-    public function add(Request $request): Response
+    public function add(Request $request): Page|RedirectResponse
     {
         $channel = new Channel();
         $form = $this->createForm(ChannelType::class, $channel);
@@ -75,7 +75,7 @@ final class ChannelController extends AbstractController
             return $this->redirectToRoute('ems_core_channel_index');
         }
 
-        return $this->render("@$this->templateNamespace/channel/add.html.twig", [
+        return new Page([
             'form' => $form->createView(),
             'title' => t('type.title_create', ['type' => 'channel'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'channel'], 'emsco-core'),
@@ -85,7 +85,7 @@ final class ChannelController extends AbstractController
         ]);
     }
 
-    public function edit(Request $request, Channel $channel): Response
+    public function edit(Request $request, Channel $channel): Page|RedirectResponse
     {
         $form = $this->createForm(ChannelType::class, $channel);
         $form->handleRequest($request);
@@ -96,7 +96,7 @@ final class ChannelController extends AbstractController
             return $this->redirectToRoute('ems_core_channel_index');
         }
 
-        return $this->render("@$this->templateNamespace/channel/edit.html.twig", [
+        return new Page([
             'form' => $form->createView(),
             'title' => t('type.title_edit', ['type' => 'channel', 'label' => $channel->getLabel()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'channel'], 'emsco-core'),

@@ -18,6 +18,7 @@ use EMS\CoreBundle\Form\Form\ScheduleType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Routes;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,8 +33,7 @@ final class ScheduleController extends AbstractController
         private readonly ScheduleManager $scheduleManager,
         private readonly DataTableFactory $dataTableFactory,
         private readonly LocalizedLoggerInterface $logger,
-        private readonly FlashMessageLogger $flashMessageLogger,
-        private readonly string $templateNamespace,
+        private readonly FlashMessageLogger $flashMessageLogger
     ) {
     }
 
@@ -66,53 +66,50 @@ final class ScheduleController extends AbstractController
         ]);
     }
 
-    public function add(Request $request): Response
+    public function add(Request $request): Page|RedirectResponse
     {
         $schedule = new Schedule();
 
-        return $this->edit($request, $schedule, 'html', true, 'log.schedule.created', "@$this->templateNamespace/schedule/add.html.twig");
+        $form = $this->createForm(ScheduleType::class, $schedule);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->scheduleManager->update($schedule);
+            $this->logger->notice('log.schedule.created', ['name' => $schedule->getName()]);
+
+            return $this->redirectToRoute(Routes::SCHEDULE_INDEX);
+        }
+
+        return new Page([
+            'form' => $form->createView(),
+            'title' => t('type.title_create', ['type' => 'job_schedule'], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'job_schedule'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_create', ['type' => 'job_schedule'], 'emsco-core')
+            ),
+        ]);
     }
 
-    public function edit(Request $request, Schedule $schedule, string $_format, bool $create = false, string $logMessage = 'log.schedule.updated', ?string $template = null): Response
+    public function edit(Request $request, Schedule $schedule): Page|RedirectResponse|JsonResponse
     {
-        if (null === $template) {
-            $template = "@$this->templateNamespace/schedule/edit.html.twig";
-        }
         $form = $this->createForm(ScheduleType::class, $schedule, [
-            'create' => $create,
             'ajax-save-url' => $this->generateUrl(Routes::SCHEDULE_EDIT, ['schedule' => $schedule->getId(), '_format' => 'json']),
         ]);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->scheduleManager->update($schedule);
-            $this->logger->notice($logMessage, [
-                'name' => $schedule->getName(),
-            ]);
+            $this->logger->notice('log.schedule.updated', ['name' => $schedule->getName()]);
 
-            if ('json' === $_format) {
-                return $this->flashMessageLogger->buildJsonResponse([
-                    'success' => true,
-                ]);
+            if ('json' === $request->getRequestFormat()) {
+                return $this->flashMessageLogger->buildJsonResponse(['success' => true]);
             }
 
             return $this->redirectToRoute(Routes::SCHEDULE_INDEX);
         }
 
-        if ($create) {
-            return $this->render($template, [
-                'form' => $form->createView(),
-                'schedule' => $schedule,
-                'title' => t('type.title_create', ['type' => 'job_schedule'], 'emsco-core'),
-                'subTitle' => t('type.title_sub', ['type' => 'job_schedule'], 'emsco-core'),
-                'breadcrumb' => $this->breadcrumb()->add(
-                    t('type.title_create', ['type' => 'job_schedule'], 'emsco-core')
-                ),
-            ]);
-        }
-
-        return $this->render($template, [
+        return new Page([
             'form' => $form->createView(),
-            'schedule' => $schedule,
             'title' => t('type.title_edit', ['type' => 'job_schedule', 'label' => $schedule->getName()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'job_schedule'], 'emsco-core'),
             'breadcrumb' => $this->breadcrumb()->add(

@@ -17,7 +17,6 @@ use EMS\CoreBundle\Service\QuerySearchService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 use function Symfony\Component\Translation\t;
 
@@ -29,7 +28,6 @@ final class QuerySearchController extends AbstractController
         private readonly LocalizedLoggerInterface $logger,
         private readonly QuerySearchService $querySearchService,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly string $templateNamespace,
     ) {
     }
 
@@ -63,14 +61,30 @@ final class QuerySearchController extends AbstractController
         ]);
     }
 
-    public function add(Request $request): Response
+    public function add(Request $request): Page|RedirectResponse
     {
         $querySearch = new QuerySearch();
 
-        return $this->edit($request, $querySearch, "@$this->templateNamespace/query-search/add.html.twig");
+        $form = $this->createForm(QuerySearchType::class, $querySearch);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->querySearchService->update($querySearch);
+
+            return $this->redirectToRoute('ems_core_query_search_index');
+        }
+
+        return new Page([
+            'form' => $form->createView(),
+            'title' => t('type.title_create', ['type' => 'query_search'], 'emsco-core'),
+            'subTitle' => t('type.title_sub', ['type' => 'query_search'], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb()->add(
+                t('type.title_create', ['type' => 'query_search'], 'emsco-core'),
+            ),
+        ]);
     }
 
-    public function edit(Request $request, QuerySearch $querySearch, ?string $view = null): Response
+    public function edit(Request $request, QuerySearch $querySearch): Page|RedirectResponse
     {
         $form = $this->createForm(QuerySearchType::class, $querySearch);
         $form->handleRequest($request);
@@ -81,22 +95,9 @@ final class QuerySearchController extends AbstractController
             return $this->redirectToRoute('ems_core_query_search_index');
         }
 
-        if (null == $view) {
-            $view = "@$this->templateNamespace/query-search/edit.html.twig";
-
-            return $this->render($view, [
-                'form' => $form->createView(),
-                'title' => t('type.title_edit', ['type' => 'query_search', 'label' => $querySearch->getLabel()], 'emsco-core'),
-                'subTitle' => t('type.title_sub', ['type' => 'query_search'], 'emsco-core'),
-                'breadcrumb' => $this->breadcrumb()->add(
-                    t('type.title_edit', ['type' => 'query_search', 'label' => $querySearch->getLabel()], 'emsco-core'),
-                ),
-            ]);
-        }
-
-        return $this->render($view, [
+        return new Page([
             'form' => $form->createView(),
-            'title' => t('type.title_create', ['type' => 'query_search'], 'emsco-core'),
+            'title' => t('type.title_edit', ['type' => 'query_search', 'label' => $querySearch->getLabel()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'query_search'], 'emsco-core'),
             'breadcrumb' => $this->breadcrumb()->add(
                 t('type.title_create', ['type' => 'query_search'], 'emsco-core'),

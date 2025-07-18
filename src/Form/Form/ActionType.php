@@ -21,7 +21,10 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * @extends AbstractType<mixed>
@@ -38,7 +41,10 @@ class ActionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         parent::configureOptions($resolver);
-        $resolver->setDefault('ajax-save-url', null);
+        $resolver->setDefaults([
+            'ajax-save-url' => null,
+            'attr' => ['class' => 'fields-to-display-by-value'],
+        ]);
     }
 
     /**
@@ -49,101 +55,225 @@ class ActionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', IconTextType::class, ['icon' => 'fa fa-tag'])
-            ->add('label', IconTextType::class, ['icon' => 'fa fa-header'])
-            ->add('icon', IconPickerType::class, ['required' => false])
-            ->add('public', CheckboxType::class, ['required' => false])
-            ->add('editWithWysiwyg', CheckboxType::class, ['required' => false])
-            ->add('preview', CheckboxType::class, ['required' => false, 'label' => 'Preview'])
+            ->add('name', IconTextType::class, [
+                'label' => t('field.name', [], 'emsco-core'),
+                'icon' => 'fa fa-tag',
+                'row_attr' => ['class' => 'col-md-8'],
+            ])
+            ->add('label', IconTextType::class, [
+                'label' => t('field.label', [], 'emsco-core'),
+                'icon' => 'fa fa-header',
+                'row_attr' => ['class' => 'col-md-8'],
+            ])
+            ->add('icon', IconPickerType::class, [
+                'label' => t('field.icon', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-4'],
+            ])
+            ->add('public', CheckboxType::class, [
+                'label' => t('field.is_public', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-12'],
+            ])
             ->add('environments', ChoiceType::class, [
                 'attr' => ['class' => 'select2'],
-                'multiple' => true,
                 'choices' => $this->service->getEnvironments(),
-                'required' => false,
                 'choice_label' => fn (Environment $value) => '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName(),
                 'choice_value' => fn (Environment $value) => $value->getId(),
-            ])
-            ->add('role', RolePickerType::class)
-            ->add('active', CheckboxType::class, ['required' => false, 'label' => 'Active'])
-            ->add('renderOption', RenderOptionType::class, ['required' => true])
-            ->add('accumulateInOneFile', CheckboxType::class, ['required' => false])
-            ->add('spreadsheet', CheckboxType::class, ['required' => false])
-            ->add('mimeType', TextType::class, ['required' => false])
-            ->add('emailContentType', TextType::class, ['required' => false, 'label' => 'Content type (ie: text/html)'])
-            ->add('filename', CodeEditorType::class, [
+                'choice_translation_domain' => false,
+                'label' => t('field.environments', [], 'emsco-core'),
+                'multiple' => true,
                 'required' => false,
-                'slug' => 'template-filename',
-                'max-lines' => 5,
-                'min-lines' => 5,
+                'row_attr' => ['class' => 'col-md-8'],
             ])
-            ->add('extension', TextType::class, ['required' => false])
-            ->add('body', CodeEditorType::class, ['required' => false, 'slug' => 'template-body'])
-            ->add('header', TextareaType::class, ['required' => false, 'attr' => ['rows' => '10']])
-            ->add('roleCc', RolePickerType::class)
-            ->add('roleTo', RolePickerType::class)
+            ->add('body', CodeEditorType::class, [
+                'label' => t('field.template_body', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-12'],
+                'slug' => 'template-body',
+            ])
+            ->add('editWithWysiwyg', CheckboxType::class, [
+                'label' => t('field.is_edit_wysiwyg', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-12'],
+            ])
+            ->add('active', CheckboxType::class, [
+                'label' => t('field.is_active', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-12'],
+            ])
+            ->add('role', RolePickerType::class, [
+                'label' => t('field.role', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-4'],
+            ])
+            ->add('renderOption', RenderOptionType::class, [
+                'attr' => ['class' => 'fields-to-display-by-input-value'],
+                'label' => t('field.render_option', [], 'emsco-core'),
+                'required' => true,
+                'row_attr' => ['class' => 'col-md-4'],
+            ])
+            ->add('header', TextareaType::class, [
+                'attr' => [
+                    'rows' => '10',
+                    'class' => 'action_renderOption fields-to-display-for fields-to-display-for-embed',
+                ],
+                'label' => t('field.header', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-12'],
+            ])
+            ->add('accumulateInOneFile', CheckboxType::class, [
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-export'],
+                'label' => t('field.accumulate_file', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-12'], ])
+            ->add('spreadsheet', CheckboxType::class, [
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-export'],
+                'label' => t('field.spreadsheet', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-12'], ])
+            ->add('mimeType', TextType::class, [
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-export'],
+                'label' => t('field.file.mimetype', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-6'], ])
+            ->add('extension', TextType::class, [
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-export'],
+                'label' => t('field.file.extension', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-6'],
+            ])
+            ->add('roleTo', RolePickerType::class, [
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-notification'],
+                'label' => t('field.role_to', [], 'emsco-core'),
+                'row_attr' => ['class' => 'col-md-6'],
+            ])
+            ->add('roleCc', RolePickerType::class, [
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-notification'],
+                'label' => t('field.role_cc', [], 'emsco-core'),
+                'row_attr' => ['class' => 'col-md-6'],
+            ])
+            ->add('emailContentType', TextType::class, [
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-notification'],
+                'label' => t('field.email_content_type', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-12'],
+            ]);
+
+        if ('' !== $this->circleType) {
+            $builder->add('circlesTo', ObjectPickerType::class, [
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-notification'],
+                'label' => t('field.circles_to', [], 'emsco-core'),
+                'multiple' => true,
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-12'],
+                'type' => $this->circleType,
+            ]);
+        }
+
+        $builder
             ->add('responseTemplate', CodeEditorType::class, [
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-notification'],
+                'label' => t('field.template_response', [], 'emsco-core'),
                 'required' => false,
+                'row_attr' => ['class' => 'col-md-12'],
                 'slug' => 'template-response',
             ])
-            ->add('orientation', ChoiceType::class, [
+            ->add('tag', TextType::class, [
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-job'],
+                'label' => t('field.tag', [], 'emsco-core'),
                 'required' => false,
-                'choices' => [
-                    'Portrait' => 'portrait',
-                    'Landscape' => 'landscape',
-                ],
+                'row_attr' => ['class' => 'col-md-6'],
             ])
-            ->add('size', ChoiceType::class, [
+            ->add('preview', CheckboxType::class, [
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-pdf'],
+                'label' => t('field.is_preview', [], 'emsco-core'),
                 'required' => false,
-                'choices' => \array_combine(\array_keys(CPDF::$PAPER_SIZES), \array_keys(CPDF::$PAPER_SIZES)),
+                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add('disposition', ChoiceType::class, [
-                'label' => 'File diposition',
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-pdf'],
+                'label' => t('field.file.disposition', [], 'emsco-core'),
                 'expanded' => true,
                 'choices' => [
-                    'None' => null,
-                    'Attachment' => 'attachment',
-                    'Inline' => 'inline',
+                    t('key.none', [], 'emsco-core')->getMessage() => null,
+                    t('key.attachment', [], 'emsco-core')->getMessage() => ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                    t('key.inline', [], 'emsco-core')->getMessage() => ResponseHeaderBag::DISPOSITION_INLINE,
                 ],
+                'choice_translation_domain' => 'emsco-core',
+                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add('allow_origin', TextType::class, [
-                'label' => 'The Access-Control-Allow-Originm header',
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-pdf'],
+                'label' => t('field.header_allow_origin', [], 'emsco-core'),
                 'required' => false,
+                'row_attr' => ['class' => 'col-md-12'],
             ])
-            ->add('tag', TextType::class, ['required' => false])
-            ->add('saveAndClose', SubmitEmsType::class, [
-                'attr' => ['class' => 'btn btn-primary btn-sm '],
-                'icon' => 'fa fa-save',
+            ->add('filename', CodeEditorType::class, [
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-pdf'],
+                'max-lines' => 5,
+                'min-lines' => 5,
+                'label' => t('field.file.name', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-12'],
+                'slug' => 'template-filename',
+            ])
+            ->add('orientation', ChoiceType::class, [
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-pdf'],
+                'choices' => [
+                    t('key.portrait', [], 'emsco-core')->getMessage() => 'portrait',
+                    t('key.landscape', [], 'emsco-core')->getMessage() => 'landscape',
+                ],
+                'choice_translation_domain' => 'emsco-core',
+                'label' => t('field.file.orientation', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => ['class' => 'col-md-12'],
+            ])
+            ->add('size', ChoiceType::class, [
+                'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-pdf'],
+                'required' => false,
+                'choices' => \array_combine(\array_keys(CPDF::$PAPER_SIZES), \array_keys(CPDF::$PAPER_SIZES)),
+                'label' => t('field.file.paper_size', [], 'emsco-core'),
+                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add('allowedRemoteHosts', CollectionType::class, [
-                'entry_type' => TextType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
                 'attr' => [
-                    'class' => 'a2lix_lib_sf_collection',
-                    'data-lang-remove' => 'X',
+                    'class' => 'a2lix_lib_sf_collection action_renderOption fields-to-display-for fields-to-display-for-pdf',
+                    'data-lang-add' => 'Add',
+                    'data-lang-remove' => 'Remove',
                     'data-entry-remove-class' => 'btn btn-danger',
                 ],
+                'entry_type' => TextType::class,
                 'entry_options' => [
                     'label' => false,
                     'attr' => ['style' => 'width: 300px; float: left;'],
                 ],
-                'allow_add' => true,
-                'allow_delete' => true,
+                'label' => t('field.allowed_remote_hosts', [], 'emsco-core'),
+                'row_attr' => ['class' => 'col-md-12'],
             ])
         ;
 
-        if ('' !== $this->circleType) {
-            $builder->add('circlesTo', ObjectPickerType::class, [
-                'required' => false,
-                'type' => $this->circleType,
-                'multiple' => true,
-            ]);
-        }
-
-        if ($options['ajax-save-url']) {
+        if (null !== $options['ajax-save-url']) {
             $builder->add('save', SubmitEmsType::class, [
+                'label' => t('action.save', [], 'emsco-core'),
                 'attr' => [
-                    'class' => 'btn btn-primary btn-sm ',
+                    'class' => 'btn btn-primary btn-sm',
                     'data-ajax-save-url' => $options['ajax-save-url'],
                 ],
+                'icon' => 'fa fa-save',
+            ])->add('save_close', SubmitEmsType::class, [
+                'label' => t('action.save_close', [], 'emsco-core'),
+                'attr' => [
+                    'class' => 'btn btn-primary btn-sm',
+                ],
+                'icon' => 'fa fa-save',
+            ]);
+        } else {
+            $builder->add('save', SubmitEmsType::class, [
+                'label' => t('action.save', [], 'emsco-core'),
+                'attr' => ['class' => 'btn btn-primary btn-sm'],
                 'icon' => 'fa fa-save',
             ]);
         }

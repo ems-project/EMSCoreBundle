@@ -66,12 +66,10 @@ module.exports = (env, argv) => {
             'edit-revision': './assets/edit-revision.js',
             'managed-alias': './assets/managed-alias.js',
             'user-profile': './assets/user-profile.js',
-            'template': './assets/template.js',
             'hierarchical': './assets/hierarchical.js',
             'calendar': './assets/calendar.js',
             'criteria-view': './assets/criteria-view.js',
             'criteria-table': './assets/criteria-table.js',
-            'i18n': './assets/i18n.js',
             'dashboard-browser': './assets/js/module/dashboardBrowser.js',
         },
         output: {

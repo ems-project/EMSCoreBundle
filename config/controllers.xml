@@ -114,7 +114,6 @@
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="EMS\CoreBundle\Repository\TemplateRepository" />
             <argument type="service" id="ems_core.core_ui.flash_message_logger" />
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -123,7 +122,6 @@
             <argument type="service" id="emsco.helper.analyzer" />
             <argument type="service" id="emsco.data_table.factory" />
             <argument type="service" id="emsco.logger" />
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -221,7 +219,6 @@
             <argument type="service" id="emsco.helper.filter" />
             <argument type="service" id="emsco.data_table.factory" />
             <argument type="service" id="emsco.logger" />
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -272,7 +269,6 @@
             <argument type="service" id="emsco.data_table.factory" />
             <argument type="service" id="emsco.logger"/>
             <argument type="service" id="ems_core.core_ui.flash_message_logger" />
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -283,7 +279,6 @@
             <argument type="service" id="emsco.logger"/>
             <argument type="service" id="ems.dashboard.manager" />
             <argument type="service" id="emsco.data_table.factory" />
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -323,7 +318,6 @@
             <argument type="service" id="logger" />
             <argument type="service" id="EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface"/>
             <argument type="service" id="emsco.data_table.factory"/>
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -335,7 +329,6 @@
             <argument type="service" id="emsco.data_table.factory" />
             <argument type="service" id="emsco.logger"/>
             <argument type="service" id="ems_core.core_ui.flash_message_logger"/>
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -541,7 +534,6 @@
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\DefaultController" public="true">
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
         </service>
@@ -576,7 +568,6 @@
             <argument type="service" id="ems.service.i18n" />
             <argument type="service" id="emsco.data_table.factory" />
             <argument type="service" id="emsco.logger" />
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -604,7 +595,6 @@
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.query_search" />
             <argument type="service" id="emsco.data_table.factory" />
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>
@@ -672,7 +662,6 @@
             <argument type="service" id="form.factory" />
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="translator" />
-            <argument>%ems_core.template_namespace%</argument>
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
             <tag name="controller.service_arguments"/>

@@ -5,24 +5,24 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="emsco_wysiwyg_index" path="/"
-           controller="EMS\CoreBundle\Controller\WysiwygController::index"
+           controller="EMS\CoreBundle\Controller\Admin\WysiwygController::index"
            methods="GET|POST"/>
     <route id="emsco_wysiwyg_profile_add" path="/profile/add"
-           controller="EMS\CoreBundle\Controller\WysiwygController::profileAdd"
+           controller="EMS\CoreBundle\Controller\Admin\WysiwygController::profileAdd"
            methods="GET|POST"/>
     <route id="emsco_wysiwyg_profile_edit" path="/profile/{wysiwygProfile}/edit"
-           controller="EMS\CoreBundle\Controller\WysiwygController::profileEdit"
+           controller="EMS\CoreBundle\Controller\Admin\WysiwygController::profileEdit"
            methods="GET|POST"/>
     <route id="emsco_wysiwyg_profile_delete" path="/profile/{wysiwygProfile}/delete"
-           controller="EMS\CoreBundle\Controller\WysiwygController::profileDelete"
+           controller="EMS\CoreBundle\Controller\Admin\WysiwygController::profileDelete"
            methods="GET|POST"/>
     <route id="emsco_wysiwyg_style_set_new" path="/styles-set/add"
-           controller="EMS\CoreBundle\Controller\WysiwygController::styleSetAdd"
+           controller="EMS\CoreBundle\Controller\Admin\WysiwygController::styleSetAdd"
            methods="GET|POST"/>
     <route id="emsco_wysiwyg_style_set_edit" path="/styles-set/{wysiwygStyleSet}/edit"
-           controller="EMS\CoreBundle\Controller\WysiwygController::styleSetEdit"
+           controller="EMS\CoreBundle\Controller\Admin\WysiwygController::styleSetEdit"
            methods="GET|POST"/>
     <route id="emsco_wysiwyg_style_set_delete" path="/styles-set/{wysiwygStyleSet}/delete"
-           controller="EMS\CoreBundle\Controller\WysiwygController::styleSetDelete"
+           controller="EMS\CoreBundle\Controller\Admin\WysiwygController::styleSetDelete"
            methods="POST"/>
 </routes>

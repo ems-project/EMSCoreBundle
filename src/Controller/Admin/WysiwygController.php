@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Controller;
+namespace EMS\CoreBundle\Controller\Admin;
 
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
+use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\Core\UI\Page\Page;

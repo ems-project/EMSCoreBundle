@@ -21,21 +21,21 @@
            methods="POST"
            format="html"/>
     <route id="emsco_schedule_index" path="/schedule"
-           controller="EMS\CoreBundle\Controller\Job\ScheduleController::index"
+           controller="EMS\CoreBundle\Controller\Admin\ScheduleController::index"
            methods="GET|POST"
            format="html"/>
     <route id="emsco_schedule_add" path="/schedule/add"
-           controller="EMS\CoreBundle\Controller\Job\ScheduleController::add"
+           controller="EMS\CoreBundle\Controller\Admin\ScheduleController::add"
            methods="GET|POST"/>
     <route id="emsco_schedule_edit" path="/schedule/edit/{schedule}.{_format}"
-           controller="EMS\CoreBundle\Controller\Job\ScheduleController::edit"
+           controller="EMS\CoreBundle\Controller\Admin\ScheduleController::edit"
            methods="GET|POST"
            format="html"/>
     <route id="emsco_schedule_duplicate" path="/schedule/duplicate/{schedule}"
-           controller="EMS\CoreBundle\Controller\Job\ScheduleController::duplicate"
+           controller="EMS\CoreBundle\Controller\Admin\ScheduleController::duplicate"
            methods="POST"/>
     <route id="emsco_schedule_delete" path="/schedule/delete/{schedule}"
-           controller="EMS\CoreBundle\Controller\Job\ScheduleController::delete"
+           controller="EMS\CoreBundle\Controller\Admin\ScheduleController::delete"
            methods="POST"/>
 
 

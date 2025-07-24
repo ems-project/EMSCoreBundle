@@ -11,22 +11,22 @@
            controller="EMS\CoreBundle\Controller\DashboardController::dashboard"
            methods="GET|POST"/>
     <route id="emsco_dashboard_admin_index" path="/admin/dashboard"
-           controller="EMS\CoreBundle\Controller\Dashboard\DashboardController::index"
+           controller="EMS\CoreBundle\Controller\Admin\DashboardController::index"
            methods="GET|POST"/>
     <route id="emsco_dashboard_admin_add" path="/admin/dashboard/add"
-           controller="EMS\CoreBundle\Controller\Dashboard\DashboardController::add"
+           controller="EMS\CoreBundle\Controller\Admin\DashboardController::add"
            methods="GET|POST"/>
     <route id="emsco_dashboard_admin_edit" path="/admin/dashboard/edit/{dashboard}"
-           controller="EMS\CoreBundle\Controller\Dashboard\DashboardController::edit"
+           controller="EMS\CoreBundle\Controller\Admin\DashboardController::edit"
            methods="GET|POST"/>
     <route id="emsco_dashboard_admin_delete" path="/admin/dashboard/delete/{dashboard}"
-           controller="EMS\CoreBundle\Controller\Dashboard\DashboardController::delete"
+           controller="EMS\CoreBundle\Controller\Admin\DashboardController::delete"
            methods="POST"/>
     <route id="emsco_dashboard_admin_define" path="/admin/dashboard/{dashboard}/define/{definition}"
-           controller="EMS\CoreBundle\Controller\Dashboard\DashboardController::define"
+           controller="EMS\CoreBundle\Controller\Admin\DashboardController::define"
            methods="POST"/>
     <route id="emsco_dashboard_admin_undefine" path="/admin/dashboard/{dashboard}/undefine"
-           controller="EMS\CoreBundle\Controller\Dashboard\DashboardController::undefine"
+           controller="EMS\CoreBundle\Controller\Admin\DashboardController::undefine"
            methods="POST"/>
 
     <route id="emsco_dashboard_browse" path="/dashboard/browse/{dashboardName}"

@@ -5,18 +5,18 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="emsco_analyzer_index" path="/"
-           controller="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController::index"
+           controller="EMS\CoreBundle\Controller\Admin\AnalyzerController::index"
            methods="GET|POST"/>
     <route id="emsco_analyzer_edit" path="/edit/{analyzer}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController::edit"
+           controller="EMS\CoreBundle\Controller\Admin\AnalyzerController::edit"
            methods="GET|POST"/>
     <route id="emsco_analyzer_delete" path="/delete/{analyzer}"
-           controller="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController::delete"
+           controller="EMS\CoreBundle\Controller\Admin\AnalyzerController::delete"
            methods="POST"/>
     <route id="emsco_analyzer_add" path="/add"
-           controller="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController::add"
+           controller="EMS\CoreBundle\Controller\Admin\AnalyzerController::add"
            methods="GET|POST"/>
     <route id="emsco_analyzer_export" path="/export/{analyzer}.json"
-           controller="EMS\CoreBundle\Controller\ContentManagement\AnalyzerController::export"
+           controller="EMS\CoreBundle\Controller\Admin\AnalyzerController::export"
            methods="GET"/>
 </routes>

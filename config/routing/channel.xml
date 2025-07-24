@@ -5,16 +5,16 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="ems_core_channel_index" path="/"
-           controller="EMS\CoreBundle\Controller\ChannelController::index"
+           controller="EMS\CoreBundle\Controller\Admin\ChannelController::index"
            methods="GET|POST"/>
     <route id="ems_core_channel_add" path="/add"
-           controller="EMS\CoreBundle\Controller\ChannelController::add"
+           controller="EMS\CoreBundle\Controller\Admin\ChannelController::add"
            methods="GET|POST"/>
     <route id="ems_core_channel_edit" path="/edit/{channel}"
-           controller="EMS\CoreBundle\Controller\ChannelController::edit"
+           controller="EMS\CoreBundle\Controller\Admin\ChannelController::edit"
            methods="GET|POST"/>
     <route id="ems_core_channel_delete" path="/delete/{channel}"
-           controller="EMS\CoreBundle\Controller\ChannelController::delete"
+           controller="EMS\CoreBundle\Controller\Admin\ChannelController::delete"
            methods="POST"/>
 
 </routes>

@@ -5,15 +5,15 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="ems_core_query_search_index" path="/"
-           controller="EMS\CoreBundle\Controller\QuerySearchController::index"
+           controller="EMS\CoreBundle\Controller\Admin\QuerySearchController::index"
            methods="GET|POST"/>
     <route id="ems_core_query_search_add" path="/add"
-           controller="EMS\CoreBundle\Controller\QuerySearchController::add"
+           controller="EMS\CoreBundle\Controller\Admin\QuerySearchController::add"
            methods="GET|POST"/>
     <route id="ems_core_query_search_edit" path="/edit/{querySearch}"
-           controller="EMS\CoreBundle\Controller\QuerySearchController::edit"
+           controller="EMS\CoreBundle\Controller\Admin\QuerySearchController::edit"
            methods="GET|POST"/>
     <route id="ems_core_query_search_delete" path="/delete/{querySearch}"
-           controller="EMS\CoreBundle\Controller\QuerySearchController::delete"
+           controller="EMS\CoreBundle\Controller\Admin\QuerySearchController::delete"
            methods="POST"/>
 </routes>

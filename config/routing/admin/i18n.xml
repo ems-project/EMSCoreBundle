@@ -5,15 +5,15 @@
         xsi:schemaLocation="http://symfony.com/schema/routing https://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="emsco_i18n_index" path="/"
-           controller="EMS\CoreBundle\Controller\I18nController::index"
+           controller="EMS\CoreBundle\Controller\Admin\I18nController::index"
            methods="GET|POST"/>
     <route id="emsco_i18n_add" path="/add"
-           controller="EMS\CoreBundle\Controller\I18nController::add"
+           controller="EMS\CoreBundle\Controller\Admin\I18nController::add"
            methods="GET|POST"/>
     <route id="emsco_i18n_edit" path="/{i18n}/edit"
-           controller="EMS\CoreBundle\Controller\I18nController::edit"
+           controller="EMS\CoreBundle\Controller\Admin\I18nController::edit"
            methods="GET|POST"/>
     <route id="emsco_i18n_delete" path="/{i18n}/delete"
-           controller="EMS\CoreBundle\Controller\I18nController::delete"
+           controller="EMS\CoreBundle\Controller\Admin\I18nController::delete"
            methods="POST"/>
 </routes>

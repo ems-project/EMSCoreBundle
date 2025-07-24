@@ -35,7 +35,7 @@
                             source: source
                         }) -%}
                         {%- if rawHTML != '' -%}
-                            {% set contentTypeActions = contentTypeActions|merge([{ label: rawHTML|raw }]) %}
+                            {% set contentTypeActions = contentTypeActions|merge([{ label: rawHTML|raw, rawHtml: true }]) %}
                         {%- endif -%}
                     {%- endif -%}
                 {% elseif template.renderOption is constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::NOTIFICATION') %}
@@ -127,7 +127,9 @@
             <ul class="dropdown-menu" role="menu">
                 {% for a in contentTypeActions %}
                     <li class="{{ a.list_item_classes|default([])|length > 0 ? a.list_item_classes|join(' ') }}">
-                        {% if a.post_button|default %}
+                        {% if a.rawHtml|default %}
+                            {{ a.label|raw }}
+                        {% elseif a.post_button|default %}
                             {% include '@EMSCore/elements/post-button.html.twig' with {
                                 'url': a.link,
                                 'label': a.label,
@@ -135,15 +137,11 @@
                                 'btnClass': ''
                             }%}
                         {% else %}
-                            {% if a.link|default %}
-                                <a href="{{ a.link }}" {% for attribute in a.link_attributes|default([]) %}{{ attribute.name }}="{{ attribute.value }}" {% endfor %}>
-                            {% endif %}
+                            <a href="{{ a.link|default('#') }}" {% for attribute in a.link_attributes|default([]) %}{{ attribute.name }}="{{ attribute.value }}" {% endfor %}>
                             {% if a.icon|default %}<i class="{{ a.icon|raw }}"></i>{% endif %}
                             {% if a.label|default %}{{ a.label|raw }}{% endif %}
                             {% if a.suffix_icon|default %}<i class="{{ a.suffix_icon }}"></i>{% endif %}
-                            {% if a.link|default %}
-                                </a>
-                            {% endif %}
+                            </a>
                         {% endif %}
                     </li>
                 {% endfor %}

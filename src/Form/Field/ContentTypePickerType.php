@@ -39,7 +39,7 @@ class ContentTypePickerType extends ChoiceType
             'attr' => [
                 'class' => 'select2',
             ],
-            'choice_label' => fn (ContentType $contentType) => \sprintf('<span class="text-%s"><i class="%s"></i>&nbsp;%s', $contentType->getColor(), $contentType->getIcon() ?? 'fa fa-book', $contentType->getPluralName()),
+            'choice_label' => fn (ContentType $contentType) => \sprintf('<span class="text-%s"><i class="%s"></i>&nbsp;%s</span>', $contentType->getColor(), $contentType->getIcon() ?? 'fa fa-book', $contentType->getPluralName()),
             'choice_value' => function ($value) {
                 if ($value instanceof ContentType) {
                     return $value->getName();

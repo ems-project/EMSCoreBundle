@@ -25,6 +25,7 @@ $ionicons-font-path: $node-modules-path + "ionicons/dist/fonts/";
 @import "~font-awesome/scss/font-awesome";
 @import "~ionicons/dist/scss/ionicons";
 @import "~bootstrap-select/sass/bootstrap-select";
+@import "bootstrap-select-fix";
 @import "~bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css";
 @import "~bootstrap-datepicker/dist/css/bootstrap-datepicker.css";
 

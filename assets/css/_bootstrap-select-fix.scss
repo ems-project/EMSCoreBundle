@@ -1,0 +1,9 @@
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  background-color: #f4f4f4 !important;
+  border-color: #ddd !important;
+  color: #333 !important;
+  .select2-selection__choice__remove {
+    color: #333 !important;
+  }
+}

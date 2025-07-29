@@ -218,19 +218,12 @@ class DateRangeFieldType extends DataFieldType
 
     public static function convertJavascriptDateRangeFormat(string $format): string
     {
-        $dateFormat = $format;
         // see http://www.daterangepicker.com/#examples
-        $dateFormat = \str_replace('DD', 'd', $dateFormat);
-        $dateFormat = \str_replace('MM', 'm', $dateFormat);
-        $dateFormat = \str_replace('YYYY', 'Y', $dateFormat);
-        $dateFormat = \str_replace('YY', 'y', $dateFormat);
-        $dateFormat = \str_replace('hh', 'h', $dateFormat);
-        $dateFormat = \str_replace('HH', 'H', $dateFormat);
-        $dateFormat = \str_replace('mm', 'i', $dateFormat);
-        $dateFormat = \str_replace('ss', 's', $dateFormat);
-        $dateFormat = \str_replace('aa', 'A', $dateFormat);
-
-        return $dateFormat;
+        return \str_replace(
+            search: ['DD', 'MM', 'YYYY', 'YY', 'hh', 'HH', 'mm', 'ss', 'aa'],
+            replace: ['d', 'm', 'Y', 'y', 'h', 'H', 'i', 's', 'A'],
+            subject: $format
+        );
     }
 
     #[\Override]

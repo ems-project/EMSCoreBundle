@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
+use EMS\CoreBundle\Core\Revision\EventType;
 use EMS\CoreBundle\Elasticsearch\Bulker;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Context\DocumentImportContext;
@@ -51,7 +52,7 @@ class DocumentService
         $revision->setData($data);
         $objectArray = $revision->getRawData();
 
-        $this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $documentImportContext->getContentType(), $documentImportContext->getContentType()->getName(), $revision->getOuuid(), true);
+        $this->dataService->propagateDataToComputedField($revisionType->get('data'), $objectArray, $documentImportContext->getContentType(), $documentImportContext->getContentType()->getName(), $revision->getOuuid(), EventType::importEvent());
         $revision->setRawData($objectArray);
 
         unset($revisionType);

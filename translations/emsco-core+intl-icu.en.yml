@@ -69,6 +69,18 @@ color:
     red: Red
     teal: Teal
     yellow: Yellow
+content-type:
+    field:
+        hide_revision_sidebar:
+            label: 'Hide revision sidebar'
+        recompute_on_publish:
+            label: 'Recompute documents on publication'
+        tasks_enabled:
+            label: Enabled
+        tasks_helptexts:
+            label: Helptexts
+        tasks_titles:
+            label: Titles
 core:
     action:
         render-option:

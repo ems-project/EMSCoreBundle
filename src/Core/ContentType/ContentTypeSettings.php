@@ -18,12 +18,14 @@ class ContentTypeSettings implements \ArrayAccess
     final public const string TASKS_TITLES = 'tasks_titles';
     final public const string TASKS_HELPTEXTS = 'tasks_helptexts';
     final public const string HIDE_REVISION_SIDEBAR = 'hide_revision_sidebar';
+    final public const string RECOMPUTE_ON_PUBLISH = 'recompute_on_publish';
 
     private const array SETTINGS = [
         self::TASKS_ENABLED,
         self::TASKS_TITLES,
         self::TASKS_HELPTEXTS,
         self::HIDE_REVISION_SIDEBAR,
+        self::RECOMPUTE_ON_PUBLISH,
     ];
 
     /**

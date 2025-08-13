@@ -225,6 +225,7 @@ class PublishService
         if (null === $commandUser) {
             $this->dataService->lockRevision($revision, $environment);
         }
+        $revision = $this->dataService->recomputeOnPublish($revision, $environment);
 
         $this->publishVersion($revision, $environment, $commandUser);
 

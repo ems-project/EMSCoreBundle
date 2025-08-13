@@ -10,6 +10,7 @@ use EMS\CommonBundle\Helper\MimeTypeHelper;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
+use EMS\CoreBundle\Core\Revision\EventType;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
@@ -611,7 +612,7 @@ class DataController extends AbstractController
 
             $this->dataService->isValid($form, null, $objectArray);
             if (\is_array($objectArray)) {
-                $this->dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->giveContentType(), $revision->giveContentType()->getName(), $revision->getOuuid(), false, false);
+                $this->dataService->propagateDataToComputedField($form->get('data'), $objectArray, $revision->giveContentType(), $revision->giveContentType()->getName(), $revision->getOuuid(), EventType::autoSaveEvent());
             }
 
             $session = $request->getSession();

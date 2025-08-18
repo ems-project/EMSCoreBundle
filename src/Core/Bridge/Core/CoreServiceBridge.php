@@ -7,10 +7,13 @@ namespace EMS\CoreBundle\Core\Bridge\Core;
 use EMS\CommonBundle\Common\Composer\ComposerInfo;
 use EMS\CommonBundle\Contracts\Bridge\Core\CoreBridgeInterface;
 use EMS\CommonBundle\Contracts\Bridge\Core\CoreDataBridgeInterface;
+use EMS\CommonBundle\Contracts\Bridge\Core\CoreFileBridgeInterface;
 use EMS\CommonBundle\Contracts\Bridge\Core\CoreInfoBridgeInterface;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
+use EMS\CoreBundle\Service\UserService;
 
 readonly class CoreServiceBridge implements CoreBridgeInterface
 {
@@ -19,6 +22,8 @@ readonly class CoreServiceBridge implements CoreBridgeInterface
         private RevisionService $revisionService,
         private ComposerInfo $composerInfo,
         private ContentTypeService $contentTypeService,
+        private FileService $fileService,
+        private UserService $userService,
     ) {
     }
 
@@ -42,5 +47,12 @@ readonly class CoreServiceBridge implements CoreBridgeInterface
     public function info(): CoreInfoBridgeInterface
     {
         return new CoreInfoServiceBridge($this->revisionService);
+    }
+
+    public function file(): CoreFileBridgeInterface
+    {
+        $user = $this->userService->getCurrentUser()->getUsername();
+
+        return new CoreFileServiceBridge($this->fileService, $user);
     }
 }

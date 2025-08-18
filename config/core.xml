@@ -23,6 +23,8 @@
             <argument type="service" id="ems.service.revision" />
             <argument type="service" id="ems_common.composer.info" />
             <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
+            <argument type="service" id="ems.service.file" />
+            <argument type="service" id="ems.service.user" />
         </service>
 
         <!-- Config -->

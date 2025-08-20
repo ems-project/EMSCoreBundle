@@ -116,6 +116,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_revision_update', [RevisionRuntime::class, 'updateRevision']),
             new TwigFunction('emsco_revision_merge', [RevisionRuntime::class, 'mergeRevision']),
             new TwigFunction('emsco_json_menu_nested', [JsonMenuRenderer::class, 'generateNested'], ['is_safe' => ['html']]),
+            new TwigFunction('emsco_job', [JobRuntime::class, 'create']),
             new TwigFunction('emsco_wysiwyg_info', [WysiwygRuntime::class, 'getInfo']),
             new TwigFunction('emsco_i18n_all', [I18nRuntime::class, 'findAll']),
             new TwigFunction('emsco_get_environments', [EnvironmentRuntime::class, 'getEnvironments']),

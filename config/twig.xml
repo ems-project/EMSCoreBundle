@@ -79,6 +79,12 @@
             <argument type="service" id="emsco.manager.user"/>
             <tag name="twig.runtime" />
         </service>
+        <service id="ems.twig.runtime.job" class="EMS\CoreBundle\Twig\JobRuntime">
+            <argument type="service" id="EMS\CoreBundle\Service\JobService"/>
+            <argument type="service" id="emsco.manager.user"/>
+            <argument type="service" id="router"/>
+            <tag name="twig.runtime" />
+        </service>
 
         <service id="ems.twig.runtime.data_extractor" class="EMS\CoreBundle\Twig\DataExtractorRuntime">
             <argument type="service" id="ems.service.asset_extractor"/>

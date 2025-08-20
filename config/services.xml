@@ -496,6 +496,9 @@
         <service id="ems.service.action" class="EMS\CoreBundle\Service\ActionService">
             <argument type="service" id="ems.repository.template"/>
             <argument type="service" id="logger"/>
+            <argument type="service" id="ems.service.search"/>
+            <argument type="service" id="twig"/>
+            <argument type="service" id="EMS\CoreBundle\Service\JobService"/>
         </service>
         <service id="ems.service.release" class="EMS\CoreBundle\Service\ReleaseService">
             <argument type="service" id="ems.repository.release"/>

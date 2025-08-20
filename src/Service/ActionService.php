@@ -5,15 +5,82 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service;
 
 use EMS\CommonBundle\Entity\EntityInterface;
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Entity\Template;
+use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Twig\Environment as Twig;
 
 final readonly class ActionService implements EntityServiceInterface
 {
-    public function __construct(private TemplateRepository $templateRepository, private LoggerInterface $logger)
+    public function __construct(
+        private TemplateRepository $templateRepository,
+        private LoggerInterface $logger,
+        private SearchService $searchService,
+        private Twig $twig,
+        private JobService $jobService,
+    ) {
+    }
+
+    public function giveById(int $id): Template
     {
+        if (null === $action = $this->templateRepository->findOneBy(['id' => $id])) {
+            throw new \RuntimeException(\sprintf('Action with id "%s" could not be found.', $id));
+        }
+
+        return $action;
+    }
+
+    public function executeJobAction(UserInterface $user, Template $jobAction, string $uuid, ?Environment $environment): Job
+    {
+        try {
+            if (RenderOptionType::JOB !== $jobAction->getRenderOption()) {
+                throw new \RuntimeException('Expected render option job action.');
+            }
+
+            $contentType = $jobAction->giveContentType();
+            $environment ??= $contentType->giveEnvironment();
+
+            $document = $this->searchService->getDocument($contentType, $uuid, $environment);
+
+            $command = $this->twig->createTemplate($jobAction->getBody())->render([
+                'environment' => $environment->getName(),
+                'contentType' => $contentType,
+                'object' => $document,
+                'source' => $document->getSource(),
+            ]);
+
+            $job = $this->jobService->createCommand($user, $command, $jobAction->getTag());
+
+            $this->logger->notice('log.data.job.initialized', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
+                EmsFields::LOG_OUUID_FIELD => $uuid,
+                'template_id' => $jobAction->getId(),
+                'job_id' => $job->getId(),
+                'template_name' => $jobAction->getName(),
+                'template_label' => $jobAction->getLabel(),
+                'environment' => $environment->getLabel(),
+            ]);
+
+            return $job;
+        } catch (\Throwable $e) {
+            $this->logger->error('log.data.job.initialize_failed', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $jobAction->giveContentType()->getName(),
+                EmsFields::LOG_OUUID_FIELD => $uuid,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                'template_name' => $jobAction->getName(),
+                'template_label' => $jobAction->getLabel(),
+                'environment' => $environment?->getLabel(),
+            ]);
+            throw $e;
+        }
     }
 
     /**

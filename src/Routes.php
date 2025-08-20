@@ -85,6 +85,8 @@ class Routes
     final public const string I18N_ADD = 'emsco_i18n_add';
     final public const string I18N_EDIT = 'emsco_i18n_edit';
     final public const string I18N_DELETE = 'emsco_i18n_delete';
+    final public const string JOB_START = 'emsco_job_start';
+    final public const string JOB_STATUS = 'emsco_job_status';
     final public const string RELEASE_INDEX = 'emsco_release_index';
     final public const string RELEASE_VIEW = 'emsco_release_view';
     final public const string RELEASE_ADD = 'emsco_release_add';

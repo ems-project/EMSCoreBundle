@@ -457,7 +457,7 @@ class MediaLibraryService
      *     files: MediaLibraryFile[],
      *     total: int,
      *     total_documents: int,
-     *     sort: null|array{id: string, order: string}
+     *     sort: array{id: string, order: string}|null
      * }
      */
     private function findFiles(int $from, ?MediaLibraryFolder $folder, ?string $sortId = null, ?string $sortOrder = null, ?string $searchValue = null, string $searchType = MediaLibraryConfig::TERM_SEARCH_TYPE): array

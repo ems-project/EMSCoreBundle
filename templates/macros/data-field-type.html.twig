@@ -960,16 +960,20 @@
 		</dt>
 		<dd>
 			<ul>
-				{%  set contentType = dataField.fieldType.displayOptions.json_menu_content_type|default('')|emsco_get_content_type %}
+				{% set contentType = dataField.fieldType.displayOptions.json_menu_content_type|default('')|emsco_get_content_type %}
 				{% set choices = {} %}
 				{% set labels = {} %}
-				{% if contentType %}
-					{% set hits = emsco_search(
-						contentType.environment.alias,
-						dataField.fieldType.displayOptions.query|default('{}'),
-						contentType.name,
-						20,
-					).response.data.hits.hits %}
+                {% set jmQuery = dataField.fieldType.displayOptions.query is defined ? dataField.fieldType.displayOptions.query|ems_json_decode : false %}
+                {% if contentType and jmQuery %}
+                    {%- set hits = emsco_search(
+                        contentType.environment.alias,
+                        jmQuery.query|default({}),
+                        contentType.name,
+                        jmQuery.size|default(5000),
+                        jmQuery.from|default(0),
+                        jmQuery.sort|default(null),
+                        jmQuery._source|default(null)
+                    ).response.data.hits.hits -%}
 					{%  for hit in hits %}
 						{% set label = attribute(hit._source, contentType.labelField|default(false))|default(hit._id) ~ ' /'  %}
 						{% set choices = choices|merge([hit._id]) %}

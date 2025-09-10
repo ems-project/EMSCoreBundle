@@ -963,7 +963,7 @@
 				{% set contentType = dataField.fieldType.displayOptions.json_menu_content_type|default('')|emsco_get_content_type %}
 				{% set choices = {} %}
 				{% set labels = {} %}
-                {% set jmQuery = dataField.fieldType.displayOptions.query is defined ? dataField.fieldType.displayOptions.query|ems_json_decode : false %}
+                {% set jmQuery = dataField.fieldType.displayOptions.query|default(null) is not null ? dataField.fieldType.displayOptions.query|ems_json_decode : false %}
                 {% if contentType and jmQuery %}
                     {%- set hits = emsco_search(
                         contentType.environment.alias,
@@ -998,7 +998,7 @@
 	{%- set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' -%}
 	{%- set displayOptions = dataField.fieldType.options.displayOptions -%}
 	{%- set jmnField = displayOptions.json_menu_nested_field|default(false) -%}
-    {%- set jmnQuery = displayOptions.query is defined ? displayOptions.query|ems_json_decode : false -%}
+    {%- set jmnQuery = displayOptions.query|default(null) is not null ? displayOptions.query|ems_json_decode : false -%}
 
 	{%- if jmnField and jmnQuery and dataField.rawData is not null -%}
         {% if displayOptions.environment|default(null) is not null %}

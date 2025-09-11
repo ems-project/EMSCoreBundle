@@ -280,6 +280,7 @@ key:
     orphan_indexes: 'Orphan indexes'
     overview: Overview
     portrait: Portrait
+    prefix_instance_id: 'Prefix alias with instance ID'
     public_channel: 'Make channel available for non-authenticated users ?'
     public_view: 'Publicly available (without authentication)'
     publishers: Publishers

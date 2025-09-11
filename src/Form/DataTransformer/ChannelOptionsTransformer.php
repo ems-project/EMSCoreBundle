@@ -19,6 +19,7 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
         $attributes = $this->jsonFormat($value, 'attributes');
 
         return [
+            'prefix_instance_id' => $value['prefix_instance_id'] ?? false,
             'searchConfig' => $searchConfig,
             'entryPath' => $value['entryPath'] ?? null,
             'attributes' => $attributes,
@@ -29,6 +30,7 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
     public function reverseTransform($value)
     {
         return [
+            'prefix_instance_id' => $value['prefix_instance_id'] ?? '',
             'searchConfig' => $value['searchConfig'] ?? '',
             'entryPath' => $value['entryPath'] ?? '',
             'attributes' => $value['attributes'] ?? '',

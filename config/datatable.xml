@@ -113,6 +113,7 @@
         </service>
         <service id="emsco.data_table.channel" class="EMS\CoreBundle\DataTable\Type\ChannelDataTableType">
             <argument type="service" id="ems.service.channel"/>
+            <argument>%ems_core.template_namespace%</argument>
             <tag name="emsco.datatable" />
         </service>
         <service id="emsco.data_table.wysiwygProfile" class="EMS\CoreBundle\DataTable\Type\Wysiwyg\WysiwygProfileDataTableType">

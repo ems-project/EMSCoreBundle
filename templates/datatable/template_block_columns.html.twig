@@ -145,3 +145,10 @@
         }) -}}
     {%- endif -%}
 {% endblock release_unpublish_target %}
+
+{%- block channel_alias -%}
+    {%- if line.data.options.prefix_instance_id|default(false) -%}
+        {{- ems_instance_id -}}
+    {%- endif -%}
+    {{- line.data.alias -}}
+{%- endblock channel_alias -%}

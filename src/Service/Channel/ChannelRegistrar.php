@@ -23,6 +23,7 @@ final readonly class ChannelRegistrar
         private LoggerInterface $logger,
         private IndexService $indexService,
         private string $firewallName,
+        private string $instanceId
     ) {
     }
 
@@ -46,9 +47,17 @@ final readonly class ChannelRegistrar
         }
 
         $baseUrl = \vsprintf('%s://%s%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath()]);
-        $defaultSearchConfigOption = (isset($channel->getOptions()['searchConfig']) && '' !== $channel->getOptions()['searchConfig']) ? $channel->getOptions()['searchConfig'] : '{}';
+
+        $options = $channel->getOptions();
+
+        $prefixInstanceId = $options['prefix_instance_id'] ?? false;
+        if (true === $prefixInstanceId) {
+            $alias = $this->instanceId.$alias;
+        }
+
+        $defaultSearchConfigOption = (isset($options['searchConfig']) && '' !== $options['searchConfig']) ? $options['searchConfig'] : '{}';
         $searchConfig = Json::decode((string) $defaultSearchConfigOption);
-        $defaultAttributesOption = (isset($channel->getOptions()['attributes']) && '' !== $channel->getOptions()['attributes']) ? $channel->getOptions()['attributes'] : '{}';
+        $defaultAttributesOption = (isset($options['attributes']) && '' !== $options['attributes']) ? $options['attributes'] : '{}';
         $attributes = Json::decode((string) $defaultAttributesOption);
 
         if (!$this->indexService->hasIndex($alias)) {

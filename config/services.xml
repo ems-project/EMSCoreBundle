@@ -69,6 +69,7 @@
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.index"/>
             <argument>%ems_core.security.firewall.core%</argument>
+            <argument>%ems_core.instance_id%</argument>
         </service>
         <service id="emsco.data_table.type.collection" class="EMS\CoreBundle\Core\DataTable\Type\DataTableTypeCollection">
             <argument type="tagged_iterator" tag="emsco.datatable" />

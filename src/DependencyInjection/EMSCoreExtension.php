@@ -99,6 +99,7 @@ class EMSCoreExtension extends Extension implements PrependExtensionInterface
             'theme_color' => $configs[0]['theme_color'] ?? Configuration::THEME_COLOR,
             'ems_name' => $configs[0]['name'] ?? Configuration::NAME,
             'ems_shortname' => $configs[0]['shortname'] ?? Configuration::SHORTNAME,
+            'ems_instance_id' => $configs[0]['instance_id'] ?? Configuration::INSTANCE_ID,
             'paging_size' => $configs[0]['paging_size'] ?? Configuration::PAGING_SIZE,
             'circles_object' => $configs[0]['circles_object'] ?? Configuration::CIRCLES_OBJECT,
             'datepicker_daysofweek_highlighted' => $configs[0]['datepicker_daysofweek_highlighted'] ?? Configuration::DATEPICKER_DAYSOFWEEK_HIGHLIGHTED,

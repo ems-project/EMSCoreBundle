@@ -8,6 +8,7 @@ use EMS\CoreBundle\Core\DataTable\Type\AbstractEntityTableType;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Form\Data\BoolTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
+use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Service\Channel\ChannelService;
 
@@ -17,7 +18,7 @@ class ChannelDataTableType extends AbstractEntityTableType
 {
     use DataTableTypeTrait;
 
-    public function __construct(ChannelService $entityService)
+    public function __construct(ChannelService $entityService, private readonly string $templateNamespace)
     {
         parent::__construct($entityService);
     }
@@ -31,7 +32,13 @@ class ChannelDataTableType extends AbstractEntityTableType
             target: '_blank'
         );
 
-        $table->addColumn(t('field.alias', [], 'emsco-core'), 'alias');
+        $table->addColumnDefinition(
+            new TemplateBlockTableColumn(
+                label: t('field.alias', [], 'emsco-core'),
+                blockName: 'channel_alias',
+                template: "@$this->templateNamespace/datatable/template_block_columns.html.twig"
+            )
+        );
         $table->addColumnDefinition(new BoolTableColumn(t('field.public_access', [], 'emsco-core'), 'public'));
 
         $this

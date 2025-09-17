@@ -157,11 +157,11 @@ final readonly class FormSubmissionService implements EntityServiceInterface
     }
 
     /**
-     * @return FormSubmission[]
+     * @return \Generator<FormSubmission>
      */
-    public function getUnprocessed(): array
+    public function getUnprocessed(int $batchSize = 500): \Generator
     {
-        return $this->formSubmissionRepository->findAllUnprocessed();
+        return $this->formSubmissionRepository->findAllUnprocessed($batchSize);
     }
 
     /**
@@ -236,9 +236,13 @@ final readonly class FormSubmissionService implements EntityServiceInterface
         ];
     }
 
-    public function removeExpiredSubmissions(): int
+    public function removeExpiredSubmissions(bool $keepMetadata): int
     {
-        return $this->formSubmissionRepository->removeAllOutdatedSubmission();
+        if ($keepMetadata) {
+            return $this->formSubmissionRepository->clearDataOnExpiredSubmissions();
+        }
+
+        return $this->formSubmissionRepository->deleteAllExpiredSubmission();
     }
 
     /**
@@ -323,5 +327,10 @@ final readonly class FormSubmissionService implements EntityServiceInterface
         }
 
         return $rows;
+    }
+
+    public function removeExpiredSubmissionAttachments(): int
+    {
+        return $this->formSubmissionFileRepository->removeExpiredSubmissionAttachments();
     }
 }

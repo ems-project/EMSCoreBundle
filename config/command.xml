@@ -272,6 +272,10 @@
             <argument type="service" id="ems.config.resolver"/>
             <tag name="console.command"/>
         </service>
+        <service id="ems.submission.generate-dummies" class="EMS\CoreBundle\Command\Submission\GenerateDummySubmissionsCommand">
+            <argument type="service" id="ems.form_submission"/>
+            <tag name="console.command"/>
+        </service>
         <service id="ems.environment.updatemetafield" class="EMS\CoreBundle\Command\UpdateMetaFieldCommand">
             <argument type="service" id="doctrine"/>
             <argument type="service" id="logger"/>

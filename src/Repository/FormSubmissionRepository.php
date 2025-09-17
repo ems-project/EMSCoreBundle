@@ -48,16 +48,24 @@ class FormSubmissionRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return FormSubmission[]
+     * @return \Generator<FormSubmission>
      */
-    public function findAllUnprocessed(): array
+    public function findAllUnprocessed(int $batchSize = 500): \Generator
     {
-        $qb = $this->createQueryBuilder('fs');
-        $qb
-            ->andWhere($qb->expr()->isNotNull('fs.data'))
-            ->orderBy('fs.created', 'desc');
+        $query = $this->createQueryBuilder('fs')
+            ->andWhere('fs.data IS NOT NULL')
+            ->orderBy('fs.created', 'DESC')
+            ->addOrderBy('fs.id', 'DESC')
+            ->getQuery();
 
-        return $qb->getQuery()->execute();
+        $i = 0;
+
+        foreach ($query->toIterable() as $entity) {
+            yield $entity;
+            if ((++$i % $batchSize) === 0) {
+                $this->getEntityManager()->clear();
+            }
+        }
     }
 
     public function countAllUnprocessed(string $searchValue): int
@@ -69,24 +77,31 @@ class FormSubmissionRepository extends ServiceEntityRepository
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function removeAllOutdatedSubmission(): int
+    public function deleteAllExpiredSubmission(): int
     {
-        $outdatedSubmissions = $this->createQueryBuilder('fs')
-            ->andWhere('fs.expireDate < :today')
-            ->setParameter('today', new \DateTime())
+        $now = new \DateTimeImmutable();
+
+        return $this->createQueryBuilder('fs')
+            ->delete()
+            ->where('fs.expireDate < :now')
+            ->setParameter('now', $now)
             ->getQuery()
-            ->getResult();
+            ->execute();
+    }
 
-        $removedCount = 0;
+    public function clearDataOnExpiredSubmissions(): int
+    {
+        $now = new \DateTimeImmutable();
 
-        foreach ($outdatedSubmissions as $submission) {
-            $this->remove($submission);
-            ++$removedCount;
-        }
-
-        $this->flush();
-
-        return $removedCount;
+        return $this->createQueryBuilder('fs')
+            ->update()
+            ->set('fs.data', ':nullValue')
+            ->where('fs.expireDate < :now')
+            ->andWhere('fs.data IS NOT NULL')
+            ->setParameter('now', $now)
+            ->setParameter('nullValue', null)
+            ->getQuery()
+            ->execute();
     }
 
     /**

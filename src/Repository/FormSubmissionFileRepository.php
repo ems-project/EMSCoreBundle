@@ -8,6 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\Parameter;
+use EMS\SubmissionBundle\Entity\FormSubmission;
 use EMS\SubmissionBundle\Entity\FormSubmissionFile;
 
 /**
@@ -36,5 +37,22 @@ class FormSubmissionFileRepository extends ServiceEntityRepository
             ]));
 
         return $qb->getQuery()->getOneOrNullResult();
+    }
+
+    public function removeExpiredSubmissionAttachments(): int
+    {
+        $now = new \DateTimeImmutable();
+        $qb = $this->createQueryBuilder('f')
+            ->delete()
+            ->where(\sprintf(
+                'EXISTS (
+                    SELECT 1 FROM %s s
+                    WHERE s = f.formSubmission AND s.expireDate < :now
+                )',
+                FormSubmission::class
+            ))
+            ->setParameter('now', $now);
+
+        return $qb->getQuery()->execute();
     }
 }

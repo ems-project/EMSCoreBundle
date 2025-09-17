@@ -20,6 +20,7 @@ final readonly class ExportConfig
         public ?string $filter = null,
         public ?string $filename = 'crm-export',
         public ?string $format = 'xlsx',
+        public int $batchSize = 500,
     ) {
     }
 
@@ -33,6 +34,7 @@ final readonly class ExportConfig
             'filter' => null,
             'filename' => 'crm-export',
             'format' => 'xlsx',
+            'batch-size' => 500,
         ]);
 
         $resolver->setAllowedTypes('columns', 'array');
@@ -41,6 +43,7 @@ final readonly class ExportConfig
         $resolver->setAllowedTypes('filter', ['null', 'string']);
         $resolver->setAllowedTypes('filename', ['null', 'string']);
         $resolver->setAllowedTypes('format', ['null', 'string']);
+        $resolver->setAllowedTypes('batch-size', ['int']);
 
         $resolver->setNormalizer('emails-to', function ($options, $value) {
             foreach ($value as $email) {
@@ -58,7 +61,8 @@ final readonly class ExportConfig
          *     subject: string,
          *     filter: string|null,
          *     filename: string|null,
-         *     format: string|null
+         *     format: string|null,
+         *     batch-size: int
          * } $options */
         $options = $resolver->resolve($raw);
 
@@ -68,7 +72,8 @@ final readonly class ExportConfig
             $options['subject'],
             $options['filter'],
             $options['filename'],
-            $options['format']
+            $options['format'],
+            $options['batch-size'],
         );
     }
 }

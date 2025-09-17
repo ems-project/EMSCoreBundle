@@ -30,10 +30,9 @@ final readonly class SubmissionExporter
         $sheet = [];
         $headers = \array_column($config->columns, 'name');
 
-        $unprocessedSubmissions = $this->formSubmissionService->getUnprocessed();
-        $unprocessedSubmissionsCount = \count($unprocessedSubmissions);
-
-        foreach ($unprocessedSubmissions as $submission) {
+        $unprocessedSubmissionsCount = 0;
+        foreach ($this->formSubmissionService->getUnprocessed($config->batchSize) as $submission) {
+            ++$unprocessedSubmissionsCount;
             $data = [
                 'instance' => $submission->getInstance(),
                 'name' => $submission->getName(),

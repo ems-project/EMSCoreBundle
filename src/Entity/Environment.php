@@ -416,6 +416,9 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
         $json->removeProperty('revisions');
         $json->removeProperty('contentTypesHavingThisAsDefault');
         $json->removeProperty('environmentRevisions');
+        if (true === $this->managed) {
+            $json->removeProperty('alias');
+        }
 
         return $json;
     }

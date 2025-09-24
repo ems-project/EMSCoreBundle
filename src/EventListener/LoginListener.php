@@ -28,15 +28,10 @@ final readonly class LoginListener implements EventSubscriberInterface
 
     public function onLoginSuccess(LoginSuccessEvent $event): void
     {
-        if ('ems_core' !== $event->getFirewallName()) {
-            return;
-        }
-
         $user = $event->getUser();
 
-        if ($user instanceof User) {
-            $user->setLastLogin(new \DateTime());
-            $this->userManager->update($user);
+        if ('ems_core' === $event->getFirewallName() && $user instanceof User) {
+            $this->userManager->loginUser($user);
         }
     }
 }

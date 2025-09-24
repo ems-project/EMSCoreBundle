@@ -250,6 +250,8 @@
             <argument type="service" id="ems_core.core_mail.mailer_service" />
             <argument type="service" id="ems.repository.user" />
             <argument type="service" id="security.user_password_hasher" />
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="ems.repository.auth_token" />
             <argument>%ems_core.template_namespace%</argument>
         </service>
 

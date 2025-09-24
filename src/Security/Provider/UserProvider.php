@@ -9,6 +9,7 @@ use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\GroupRepository;
 use EMS\CoreBundle\Repository\UserRepository;
 use Symfony\Component\Security\Core\Exception\AccountExpiredException;
+use Symfony\Component\Security\Core\Exception\DisabledException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -29,11 +30,6 @@ class UserProvider implements UserProviderInterface
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
         return $this->findUser($identifier);
-    }
-
-    public function loadUserByUsername(string $username): UserInterface
-    {
-        return $this->loadUserByIdentifier($username);
     }
 
     #[\Override]
@@ -61,6 +57,11 @@ class UserProvider implements UserProviderInterface
         if ($user->isExpired()) {
             throw new AccountExpiredException(\sprintf('The account "%s" is expired', $user->getUserIdentifier()));
         }
+
+        if (!$user->isEnabled()) {
+            throw new DisabledException(\sprintf('The account "%s" is disabled', $user->getUserIdentifier()));
+        }
+
         $userGroup = $user->getGroup();
         $group = $userGroup instanceof Group ? $this->groupRepository->getById($userGroup->getId()) : null;
         if (null !== $group) {

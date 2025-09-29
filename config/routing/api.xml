@@ -33,7 +33,7 @@
     <import resource="@EMSCoreBundle/config/routing/api/data.xml"
             prefix="/api/data"/>
 
-    <route id="emsco_api_user_sub_authenticate" path="/api/user/sub-authenticate"
+    <route id="emsco_api_user_proxy_authenticate" path="/api/user/proxy-authenticate"
            controller="EMS\CoreBundle\Controller\Api\UserController::proxyAuthenticate"
            methods="POST">
         <option key="openapi">true</option>

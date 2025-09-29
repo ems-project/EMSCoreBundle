@@ -180,7 +180,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
             } elseif (View::class == $class && 'contentType' == $property && \method_exists($object, 'setContentType')) {
                 $object->setContentType($context['contentType']);
             } else {
-                $setter = 'set'.\ucfirst($property);
+                $setter = 'set'.\ucfirst((string) $property);
                 if (\method_exists($object, $setter)) {
                     $object->$setter($value);
                 }

@@ -27,7 +27,7 @@ class GenerateDummySubmissionsCommand extends AbstractCommand
     private int $count;
 
     public function __construct(
-        private FormSubmissionService $formSubmissionService,
+        private readonly FormSubmissionService $formSubmissionService,
     ) {
         parent::__construct();
     }

@@ -32,12 +32,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class RebuildCommand extends AbstractCommand
 {
-    final public const string ALL = 'all';
+    private const string ARGUMENT_NAME = 'name';
+    private const string OPTION_ALL = 'all';
+    private const string OPTION_IGNORE_REFERRERS = 'ignore-referrers';
+    private const string OPTION_BULK_SIZE = 'bulk-size';
+    private const string OPTION_DONT_SIGN = 'dont-sign';
+    private const string OPTION_SIGN_DATA = 'sign-data';
+    private const string OPTION_YELLOW_OK = 'yellow-ok';
     private bool $signData;
     private int $bulkSize;
     private ObjectManager $em;
     private bool $yellowOk;
     private bool $all;
+    private bool $ignoreReferrers;
+    private ?string $environmentName = null;
 
     public function __construct(private readonly Registry $doctrine, protected LoggerInterface $logger, private readonly ContentTypeService $contentTypeService, private readonly EnvironmentService $environmentService, private readonly ReindexCommand $reindexCommand, private readonly ElasticaService $elasticaService, private readonly Mapping $mapping, private readonly AliasService $aliasService, private readonly string $instanceId, private readonly string $defaultBulkSize)
     {
@@ -49,75 +57,87 @@ class RebuildCommand extends AbstractCommand
     {
         $this
             ->addArgument(
-                'name',
+                self::ARGUMENT_NAME,
                 InputArgument::OPTIONAL,
                 'Environment name'
             )
             ->addOption(
-                self::ALL,
+                self::OPTION_ALL,
                 null,
                 InputOption::VALUE_NONE,
                 'Rebuild all managed indexes'
             )
             ->addOption(
-                'yellow-ok',
+                self::OPTION_YELLOW_OK,
                 null,
                 InputOption::VALUE_NONE,
                 'Agree to rebuild on a yellow status cluster'
             )
             ->addOption(
-                'sign-data',
+                self::OPTION_SIGN_DATA,
                 null,
                 InputOption::VALUE_NONE,
                 'Deprecated: the data are signed by default'
             )
             ->addOption(
-                'dont-sign',
+                self::OPTION_DONT_SIGN,
                 null,
                 InputOption::VALUE_NONE,
                 'Don\'t (re)signed the documents during the rebuilding process'
             )
             ->addOption(
-                'bulk-size',
+                self::OPTION_BULK_SIZE,
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Number of item that will be indexed together during the same elasticsearch operation',
                 $this->defaultBulkSize
             )
+            ->addOption(
+                self::OPTION_IGNORE_REFERRERS,
+                null,
+                InputOption::VALUE_NONE,
+                'Don\'t update other aliases that refers to the previous index'
+            )
         ;
+    }
+
+    #[\Override]
+    protected function initialize(InputInterface $input, OutputInterface $output): void
+    {
+        parent::initialize($input, $output);
+        $this->environmentName = $this->getArgumentStringNull(self::ARGUMENT_NAME);
+        $this->yellowOk = $this->getOptionBool(self::OPTION_YELLOW_OK);
+        $this->all = $this->getOptionBool(self::OPTION_ALL);
+        $this->bulkSize = $this->getOptionInt(self::OPTION_BULK_SIZE);
+        $this->signData = !$this->getOptionBool(self::OPTION_DONT_SIGN);
+        $this->ignoreReferrers = $this->getOptionBool(self::OPTION_IGNORE_REFERRERS);
+
+        if ($this->bulkSize <= 0) {
+            throw new \RuntimeException('Unexpected bulk size option');
+        }
     }
 
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->aliasService->build();
-        $this->yellowOk = true === $input->getOption('yellow-ok');
-        $this->all = true === $input->getOption(self::ALL);
         $this->waitFor($this->yellowOk, $output);
 
-        $this->bulkSize = (int) $input->getOption('bulk-size');
-        if ($this->bulkSize <= 0) {
-            throw new \RuntimeException('Unexpected bulk size option');
-        }
-
-        if ($input->getOption('sign-data')) {
+        if ($input->getOption(self::OPTION_SIGN_DATA)) {
             $this->logger->warning('command.rebuild.sign-data');
             $output->writeln('The option --sign-data is deprecated');
         }
 
-        $this->signData = !$input->getOption('dont-sign');
-
         $this->em = $this->doctrine->getManager();
-        $name = $input->getArgument('name');
         $envRepo = $this->em->getRepository(Environment::class);
         if (!$envRepo instanceof EnvironmentRepository) {
             throw new \RuntimeException('Unexpected environment repository');
         }
 
-        if (\is_string($name)) {
-            $environment = $envRepo->findOneBy(['name' => $name, 'managed' => true]);
+        if (null !== $this->environmentName) {
+            $environment = $envRepo->findOneBy(['name' => $this->environmentName, 'managed' => true]);
             if (!$environment instanceof Environment) {
-                $output->writeln('WARNING: Managed environment named '.$name.' not found');
+                $output->writeln('WARNING: Managed environment named '.$this->environmentName.' not found');
 
                 return -1;
             }
@@ -201,7 +221,7 @@ class RebuildCommand extends AbstractCommand
 
         $this->waitFor($this->yellowOk, $output);
 
-        $atomicSwitch = $this->aliasService->atomicSwitch($environment, $newIndexName);
+        $atomicSwitch = $this->aliasService->atomicSwitch($environment, $newIndexName, $this->ignoreReferrers);
 
         foreach ($atomicSwitch as $action) {
             if (isset($action['add'])) {

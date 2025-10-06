@@ -41,7 +41,7 @@ class AliasService
     /**
      * @return array<int, array{ add: array{alias: string, index: string}}>|array<int, array{remove: array{alias: string, index: string}}>
      */
-    public function atomicSwitch(Environment $environment, string $newIndex): array
+    public function atomicSwitch(Environment $environment, string $newIndex, bool $ignoreReferrers = false): array
     {
         $aliasName = $environment->getAlias();
         $actions = [];
@@ -50,7 +50,7 @@ class AliasService
         if ($oldIndex = $this->getEnvironmentIndex($environment)) {
             $actions[] = ['remove' => ['alias' => $aliasName, 'index' => $oldIndex]];
 
-            if ($environment->isUpdateReferrers()) {
+            if (!$ignoreReferrers && $environment->isUpdateReferrers()) {
                 foreach ($this->getReferrers($oldIndex) as $referrerAlias) {
                     if ($referrerAlias['name'] === $environment->getAlias()) {
                         continue;

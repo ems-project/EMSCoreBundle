@@ -15,8 +15,6 @@
     <field name="description" type="text" nullable="true"/>
     <field name="indexTwig" column="indexTwig" type="text" nullable="true"/>
     <field name="extra" type="text" nullable="true"/>
-    <field name="lockBy" column="lockBy" length="100" nullable="true"/>
-    <field name="lockUntil" column="lockUntil" type="datetime" nullable="true"/>
     <field name="deleted" type="boolean"/>
     <field name="askForOuuid" column="ask_for_ouuid" type="boolean"/>
     <field name="dirty" type="boolean"/>

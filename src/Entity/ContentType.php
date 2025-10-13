@@ -40,10 +40,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected $indexTwig;
     /** @var string */
     protected $extra;
-    /** @var string */
-    protected $lockBy;
-    /** @var \DateTime */
-    protected $lockUntil;
     protected bool $deleted = false;
     /** @var bool */
     protected $askForOuuid;
@@ -185,54 +181,6 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * Set lockBy.
-     *
-     * @param string $lockBy
-     *
-     * @return ContentType
-     */
-    public function setLockBy($lockBy)
-    {
-        $this->lockBy = $lockBy;
-
-        return $this;
-    }
-
-    /**
-     * Get lockBy.
-     *
-     * @return string
-     */
-    public function getLockBy()
-    {
-        return $this->lockBy;
-    }
-
-    /**
-     * Set lockUntil.
-     *
-     * @param \DateTime $lockUntil
-     *
-     * @return ContentType
-     */
-    public function setLockUntil($lockUntil)
-    {
-        $this->lockUntil = $lockUntil;
-
-        return $this;
-    }
-
-    /**
-     * Get lockUntil.
-     *
-     * @return \DateTime
-     */
-    public function getLockUntil()
-    {
-        return $this->lockUntil;
     }
 
     /**

@@ -6,10 +6,10 @@
 
     <services>
         <!-- EMS content-type -->
-        <service id="ems.contenttype.lock" class="EMS\CoreBundle\Command\ContentType\LockCommand">
-            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository"/>
+        <service id="ems.contenttype.lock" class="EMS\CoreBundle\Command\Revision\LockCommand">
+            <argument type="service" id="ems.service.contenttype"/>
             <argument type="service" id="ems_common.service.elastica"/>
-            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
+            <argument type="service" id="ems.service.data"/>
             <tag name="console.command"/>
         </service>
         <service id="ems.contenttype.transform" class="EMS\CoreBundle\Command\ContentType\TransformCommand">
@@ -352,7 +352,7 @@
             <argument type="service" id="ems.service.data"/>
             <tag name="console.command"/>
         </service>
-        <service id="ems.revisions.unlock" class="EMS\CoreBundle\Command\UnlockRevisionsCommand">
+        <service id="ems.revisions.unlock" class="EMS\CoreBundle\Command\Revision\UnlockCommand">
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.data"/>
             <argument type="service" id="ems.service.contenttype"/>

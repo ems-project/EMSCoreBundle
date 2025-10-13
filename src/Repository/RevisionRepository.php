@@ -536,7 +536,7 @@ class RevisionRepository extends EntityRepository
         return $this->deleteByQueryBuilder($qb);
     }
 
-    public function lockRevisions(?ContentType $contentType, \DateTime $until, string $by, bool $force = false, ?string $ouuid = null, bool $onlyCurrentRevision = true): int
+    public function lockRevisions(?ContentType $contentType, \DateTimeInterface $until, string $by, bool $force = false, ?string $ouuid = null, bool $onlyCurrentRevision = true): int
     {
         $qbSelect = $this->createQueryBuilder('s');
         $qbSelect
@@ -721,6 +721,23 @@ class RevisionRepository extends EntityRepository
         ;
 
         return new Paginator($qb->getQuery());
+    }
+
+    public function countLockedRevisions(ContentType $contentType, string $lockBy): int
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->select('count(r.id)')
+            ->andWhere($qb->expr()->eq('r.contentType', ':content_type'))
+            ->andWhere($qb->expr()->eq('r.lockBy', ':username'))
+            ->andWhere($qb->expr()->isNull('r.endTime'))
+            ->setParameters(new ArrayCollection([
+                new Parameter('content_type', $contentType),
+                new Parameter('username', $lockBy),
+            ]))
+        ;
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**

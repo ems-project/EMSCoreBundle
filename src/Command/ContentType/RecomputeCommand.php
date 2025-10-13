@@ -9,6 +9,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
+use EMS\CoreBundle\Command\Revision\LockCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Revision\EventType;
 use EMS\CoreBundle\Entity\ContentType;

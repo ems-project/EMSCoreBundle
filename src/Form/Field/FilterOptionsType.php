@@ -211,8 +211,7 @@ class FilterOptionsType extends AbstractType
 
                 return $tagsAsArray;
             },
-            fn ($tagsAsString) => // transform the string back to an array
-\explode(', ', (string) $tagsAsString)
+            fn ($tagsAsString) => null === $tagsAsString ? null : \explode(', ', (string) $tagsAsString)
         );
 
         $builder->get('articles')->addModelTransformer($textArea2Array);

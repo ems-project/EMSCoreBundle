@@ -295,19 +295,95 @@
 						}
 					}]
 				},
-					{
-						type: 'vbox',
-						id: 'fileLinkOptions',
-						children: [
-              {
-								type: 'button',
-								id: 'fileBrowse',
-								hidden: 'true',
-								filebrowser: 'info:fileTxt',
-								label: commonLang.browseServer
-							},
-              ]
-					},
+				{
+					type : 'vbox',
+					id : 'fileLinkOptions',
+					children : [
+            {
+              type: 'button',
+              id: 'fileBrowse',
+              hidden: 'true',
+              filebrowser: 'info:fileTxt',
+              label: commonLang.browseServer
+            },
+            {
+              type : 'file',
+              label : linkLang.selectFileLabel,
+              id : 'file',
+              className : emsConfig.hasOwnProperty('medialibraryOnlyFileHandling') && true === emsConfig.medialibraryOnlyFileHandling ? 'upload-file hidden' : 'upload-file',
+              title : linkLang.selectFileTitle,
+              items : []
+            },
+            {
+              type : 'text',
+              label : linkLang.selectFileFilenameLabel,
+              id : 'fileLink',
+              className : emsConfig.hasOwnProperty('medialibraryOnlyFileHandling') && true === emsConfig.medialibraryOnlyFileHandling ? 'filename hidden' : 'filename',
+              title : linkLang.selectFileFilenameTitle,
+              items : [],
+              onLoad : function(element) {},
+              setup: function( data ) {
+                var body = $('body');
+                var hashAlgo = body.data('hash-algo');
+                var initUpload = body.data('init-upload');
+                self = this;
+                var fileUploadField = this.getDialog().getContentElement( 'info', 'file' )
+                var fileInfo = [];
+                var onFileChangeFunction = function(event){
+                  self.getDialog().getContentElement( 'info', 'fileLink' ).setValue('Upload starting...');
+                  var okButton = self.getDialog().getButton('ok');
+                  okButton.disable();
+                  for (var loop = 0; loop < event.target.files.length; loop++) {
+                    var fileUploader = new FileUploader({
+                      file: event.target.files[loop],
+                      algo: hashAlgo,
+                      initUrl: initUpload,
+                      emsListener: self,
+                      onHashAvailable: function(hash, type, name){
+                        fileInfo['hash'] = hash;
+                        fileInfo['type'] = type;
+                        fileInfo['name'] = name;
+                        self.getDialog().getContentElement( 'info', 'fileLink' ).setValue('File\'s hash: '+hash);
+                      },
+                      onProgress: function(status, progress, remaining){
+                        self.getDialog().getContentElement( 'info', 'fileLink' ).setValue('Upload in progress: '+remaining);
+                      },
+                      onUploaded: function(assetUrl, previewUrl){
+                        var link = 'ems://asset:' + fileInfo['hash'] + '?name=' + encodeURI(fileInfo['name']) + '&type=' + encodeURI(fileInfo['type']);
+                        self.getDialog().getContentElement( 'info', 'fileLink' ).setValue(fileInfo['name']);
+                        self.getDialog().getContentElement( 'info', 'fileLink' ).getInputElement().$.setAttribute('data-link', link);
+                                              okButton.enable();
+                      },
+                      onError: function(message, code){
+                        alert(message);
+                                              okButton.enable();
+                      },
+                    });
+                    break;
+                  }
+                };
+
+                var node = fileUploadField.getInputElement().$;
+                if ('INPUT' !== node.nodeName) {
+                  var iframe = node.getElementsByTagName('iframe')[0];
+                  var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                  iframe.onload = function(){
+                    iframeDocument.querySelector('input').onchange = onFileChangeFunction;
+                  };
+                } else {
+                  node.onchange = onFileChangeFunction;
+                }
+              },
+              commit : function( data ) {
+                if ( !data.filename ) { data.filename = {}; }
+                data.filename = this.getValue();
+
+                if ( !data.fileLink ) { data.fileLink = {}; }
+                data.fileLink = self.getDialog().getContentElement( 'info', 'fileLink' ).getInputElement().$.getAttribute('data-link');
+              }
+            }
+          ]
+				},
 				{
 					type: 'vbox',
 					id: 'urlOptions',
@@ -1060,93 +1136,6 @@
 			advLinkConfig.contents["0"].elements.splice(2,1);
 			advLinkConfig.contents["0"].elements["0"].items.splice(3,1);
 		}
-
-    if (emsConfig.hasOwnProperty('oldFileHandling') && true === emsConfig.oldFileHandling) {
-      const oldFileInput = {
-          type: 'file',
-          label: linkLang.selectFileLabel,
-          id: 'file',
-          className: 'upload-file',
-          title: linkLang.selectFileTitle,
-          items: []
-      };
-
-      const oldFilenameInput = {
-        type: 'text',
-        label: linkLang.selectFileFilenameLabel,
-        id: 'fileLink',
-        className: 'filename',
-        title: linkLang.selectFileFilenameTitle,
-        items: [],
-        onLoad: function (element) {
-        },
-        setup: function (data) {
-          var body = $('body');
-          var hashAlgo = body.data('hash-algo');
-          var initUpload = body.data('init-upload');
-          self = this;
-          var fileUploadField = this.getDialog().getContentElement('info', 'file');
-          var fileInfo = [];
-          var onFileChangeFunction = function (event) {
-            self.getDialog().getContentElement('info', 'fileLink').setValue('Upload starting...');
-            var okButton = self.getDialog().getButton('ok');
-            okButton.disable();
-            for (var loop = 0; loop < event.target.files.length; loop++) {
-              var fileUploader = new FileUploader({
-                file: event.target.files[loop],
-                algo: hashAlgo,
-                initUrl: initUpload,
-                emsListener: self,
-                onHashAvailable: function (hash, type, name) {
-                  fileInfo['hash'] = hash;
-                  fileInfo['type'] = type;
-                  fileInfo['name'] = name;
-                  self.getDialog().getContentElement('info', 'fileLink').setValue('File\'s hash: ' + hash);
-                },
-                onProgress: function (status, progress, remaining) {
-                  self.getDialog().getContentElement('info', 'fileLink').setValue('Upload in progress: ' + remaining);
-                },
-                onUploaded: function (assetUrl, previewUrl) {
-                  var link = 'ems://asset:' + fileInfo['hash'] + '?name=' + encodeURI(fileInfo['name']) + '&type=' + encodeURI(fileInfo['type']);
-                  self.getDialog().getContentElement('info', 'fileLink').setValue(fileInfo['name']);
-                  self.getDialog().getContentElement('info', 'fileLink').getInputElement().$.setAttribute('data-link', link);
-                  okButton.enable();
-                },
-                onError: function (message, code) {
-                  alert(message);
-                  okButton.enable();
-                },
-              });
-              break;
-            }
-
-          };
-
-          var node = fileUploadField.getInputElement().$;
-          if ('INPUT' !== node.nodeName) {
-            var iframe = node.getElementsByTagName('iframe')[0];
-            var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-            iframe.onload = function () {
-              iframeDocument.querySelector('input').onchange = onFileChangeFunction;
-            };
-          } else {
-            node.onchange = onFileChangeFunction;
-          }
-        },
-        commit: function (data) {
-          if (!data.filename) {
-            data.filename = {};
-          }
-          data.filename = this.getValue();
-
-          if (!data.fileLink) {
-            data.fileLink = {};
-          }
-          data.fileLink = self.getDialog().getContentElement('info', 'fileLink').getInputElement().$.getAttribute('data-link');
-        }
-      };
-      advLinkConfig.contents[0].elements.find(x => x.id === 'fileLinkOptions').children.push(oldFileInput, oldFilenameInput);
-    }
 
 		return advLinkConfig;
 	} );

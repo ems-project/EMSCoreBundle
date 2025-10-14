@@ -56,13 +56,13 @@ final class LockCommand extends AbstractCommand
     protected function configure(): void
     {
         $this
-            ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'content type to recompute')
-            ->addArgument(self::ARGUMENT_TIME, InputArgument::REQUIRED, 'lock until (+1day, +5min, now)')
+            ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'Content type to lock')
+            ->addArgument(self::ARGUMENT_TIME, InputArgument::REQUIRED, 'Lock until (+1day, +5min, now)')
             ->addOption(self::OPTION_QUERY, null, InputOption::VALUE_OPTIONAL, 'ES query', '{}')
-            ->addOption(self::OPTION_USER, null, InputOption::VALUE_REQUIRED, 'lock username', 'EMS_COMMAND')
-            ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'do not check for already locked revisions')
-            ->addOption(self::OPTION_IF_EMPTY, null, InputOption::VALUE_NONE, 'lock if there are no pending locks for the same user')
-            ->addOption(self::OPTION_OUUID, null, InputOption::VALUE_OPTIONAL, 'lock a specific ouuid')
+            ->addOption(self::OPTION_USER, null, InputOption::VALUE_REQUIRED, 'Lock username', 'EMS_COMMAND')
+            ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'Do not check for already locked revisions')
+            ->addOption(self::OPTION_IF_EMPTY, null, InputOption::VALUE_NONE, 'Lock if there are no pending locks for the same user')
+            ->addOption(self::OPTION_OUUID, null, InputOption::VALUE_OPTIONAL, 'Lock a specific ouuid')
         ;
     }
 

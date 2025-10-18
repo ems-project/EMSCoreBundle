@@ -205,7 +205,6 @@
             <argument type="service" id="emsco.logger" />
             <argument type="service" id="ems.service.mapping" />
             <argument type="service" id="ems.form.field-type.manager" />
-            <argument type="service" id="EMS\CoreBundle\Repository\ContentTypeRepository" />
             <argument type="service" id="EMS\CoreBundle\Repository\EnvironmentRepository" />
             <argument type="service" id="ems.repository.field_type" />
             <argument>%ems_core.template_namespace%</argument>

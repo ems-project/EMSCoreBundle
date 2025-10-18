@@ -30,7 +30,6 @@ use EMS\CoreBundle\Form\Form\ContentTypeUpdateType;
 use EMS\CoreBundle\Form\Form\EditFieldTypeType;
 use EMS\CoreBundle\Form\Form\ReorderType;
 use EMS\CoreBundle\Form\Form\TableType;
-use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Routes;
@@ -64,7 +63,6 @@ class ContentTypeController extends AbstractController
         private readonly LocalizedLoggerInterface $logger,
         private readonly Mapping $mappingService,
         private readonly FieldTypeManager $fieldTypeManager,
-        private readonly ContentTypeRepository $contentTypeRepository,
         private readonly EnvironmentRepository $environmentRepository,
         private readonly FieldTypeRepository $fieldTypeRepository,
         private readonly string $templateNamespace
@@ -128,7 +126,7 @@ class ContentTypeController extends AbstractController
         }
 
         $contentType->setActive(true);
-        $this->contentTypeRepository->save($contentType);
+        $this->contentTypeService->update($contentType, false);
 
         return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
     }
@@ -136,7 +134,7 @@ class ContentTypeController extends AbstractController
     public function disable(ContentType $contentType): Response
     {
         $contentType->setActive(false);
-        $this->contentTypeRepository->save($contentType);
+        $this->contentTypeService->update($contentType, false);
 
         return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
     }
@@ -178,15 +176,11 @@ class ContentTypeController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
             /** @var ContentType $contentTypeAdded */
             $contentTypeAdded = $form->getData();
-            $contentTypes = $this->contentTypeRepository->findBy([
-                'name' => $contentTypeAdded->getName(),
-                'deleted' => false,
-            ]);
-
-            if (0 != \count($contentTypes)) {
+            $alreadyExistingContentType = $this->contentTypeService->getByItemName($contentTypeAdded->getName());
+            if (null !== $alreadyExistingContentType) {
                 $form->get('name')->addError(new FormError('Another content type named '.$contentTypeAdded->getName().' already exists'));
             }
 
@@ -194,43 +188,44 @@ class ContentTypeController extends AbstractController
                 $form->get('name')->addError(new FormError('The content type name is malformed (format: [a-z][a-z0-9_-]*)'));
             }
 
-            $normData = $form->get('import')->getNormData();
-            if ($normData) {
-                $name = $contentTypeAdded->getName();
-                $pluralName = $contentTypeAdded->getPluralName();
-                $singularName = $contentTypeAdded->getSingularName();
-                $environment = $contentTypeAdded->getEnvironment();
-                /** @var UploadedFile $file */
-                $file = $request->files->get('form')['import'];
-                $realPath = $file->getRealPath();
-                $json = $realPath ? \file_get_contents($realPath) : false;
+            if ($form->isValid()) {
+                $normData = $form->get('import')->getNormData();
+                if ($normData) {
+                    $name = $contentTypeAdded->getName();
+                    $pluralName = $contentTypeAdded->getPluralName();
+                    $singularName = $contentTypeAdded->getSingularName();
+                    $environment = $contentTypeAdded->getEnvironment();
+                    /** @var UploadedFile $file */
+                    $file = $request->files->get('form')['import'];
+                    $realPath = $file->getRealPath();
+                    $json = $realPath ? \file_get_contents($realPath) : false;
 
-                if (!\is_string($json)) {
-                    throw new NotFoundHttpException('JSON file not found');
+                    if (!\is_string($json)) {
+                        throw new NotFoundHttpException('JSON file not found');
+                    }
+                    if (!$environment instanceof Environment) {
+                        throw new NotFoundHttpException('Environment not found');
+                    }
+                    $contentType = $this->contentTypeService->contentTypeFromJson($json, $environment);
+                    $contentType->setName($name);
+                    $contentType->setSingularName($singularName);
+                    $contentType->setPluralName($pluralName);
+                    $contentType = $this->contentTypeService->importContentType($contentType);
+                } else {
+                    $contentType = $contentTypeAdded;
+                    $contentType->setAskForOuuid(false);
+                    $this->contentTypeService->update($contentType, false);
                 }
-                if (!$environment instanceof Environment) {
-                    throw new NotFoundHttpException('Environment not found');
-                }
-                $contentType = $this->contentTypeService->contentTypeFromJson($json, $environment);
-                $contentType->setName($name);
-                $contentType->setSingularName($singularName);
-                $contentType->setPluralName($pluralName);
-                $contentType = $this->contentTypeService->importContentType($contentType);
-            } else {
-                $contentType = $contentTypeAdded;
-                $contentType->setAskForOuuid(false);
-                $contentType->setOrderKey($this->contentTypeRepository->nextOrderKey());
-                $this->contentTypeRepository->save($contentType);
+
+                $this->logger->notice('log.contenttype.created', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                    EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
+                ]);
+
+                return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_EDIT, [
+                    'contentType' => $contentType->getId(),
+                ]);
             }
-
-            $this->logger->notice('log.contenttype.created', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
-            ]);
-
-            return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_EDIT, [
-                'contentType' => $contentType->getId(),
-            ]);
         }
 
         return $this->render("@$this->templateNamespace/contenttype/add.html.twig", [
@@ -403,7 +398,7 @@ class ContentTypeController extends AbstractController
                 if (\array_key_exists('saveAndUpdateMapping', $inputContentType)) {
                     $this->contentTypeService->updateMapping($contentType);
                 }
-                $this->contentTypeRepository->save($contentType);
+                $this->contentTypeService->update($contentType, false);
 
                 if ($contentType->getDirty()) {
                     $this->logger->warning('log.contenttype.dirty', [
@@ -444,18 +439,9 @@ class ContentTypeController extends AbstractController
         ]);
     }
 
-    public function editStructure(int $id, Request $request): Response
+    public function editStructure(ContentType $id, Request $request): Response
     {
-        $contentType = $this->contentTypeRepository->findById($id);
-
-        if (null === $contentType) {
-            $this->logger->error('log.contenttype.not_found', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $id,
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-            ]);
-
-            return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
-        }
+        $contentType = $id;
 
         $inputContentType = $request->request->all('content_type_structure');
 
@@ -504,7 +490,7 @@ class ContentTypeController extends AbstractController
             } else {
                 $openModal = $this->fieldTypeManager->handleRequest($contentType->getFieldType(), $inputContentType['fieldType']);
                 $contentType->getFieldType()->updateOrderKeys();
-                $this->contentTypeRepository->save($contentType);
+                $this->contentTypeService->update($contentType, false);
 
                 return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_STRUCTURE, \array_filter([
                     'id' => $id,

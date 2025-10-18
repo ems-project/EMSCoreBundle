@@ -18,6 +18,7 @@ use EMS\CoreBundle\Repository\JobRepository;
 use EMS\Helpers\Standard\DateTime;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -170,13 +171,15 @@ class JobService implements EntityServiceInterface
 
             $input = new StringInput($escapedCommand);
 
-            $application->run($input, $output);
-        } catch (\Exception $e) {
-            $output->writeln('An exception has been raised!');
-            $output->writeln('Exception:'.$e->getMessage());
-        }
+            $returnCode = $application->run($input, $output);
+            if (Command::SUCCESS !== $returnCode) {
+                throw new \RuntimeException(\sprintf('Command return: %d', $returnCode));
+            }
 
-        $this->finish($job->getId());
+            $this->finish($job->getId());
+        } catch (\Exception $e) {
+            $this->finish($job->getId(), $e->getMessage());
+        }
     }
 
     /**

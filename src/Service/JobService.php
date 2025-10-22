@@ -81,7 +81,7 @@ class JobService implements EntityServiceInterface
             return null;
         }
 
-        return $this->initJob($username, $nextScheduled->getCommand(), $nextScheduled->givePreviousRun());
+        return $this->initJob($username, $nextScheduled->getCommand(), $nextScheduled->givePreviousRun(), $tag);
     }
 
     public function clean(): void
@@ -220,11 +220,12 @@ class JobService implements EntityServiceInterface
         $this->logger->info('Job '.$job->getCommand().' completed.');
     }
 
-    public function initJob(string $username, ?string $command, \DateTime $startDate): Job
+    public function initJob(string $username, ?string $command, \DateTime $startDate, ?string $tag): Job
     {
         $job = new Job();
         $job->setCommand($command);
         $job->setUser($username);
+        $job->setTag($tag);
         $job->setStarted(true);
         $job->setDone(false);
         $job->setCreated($startDate);

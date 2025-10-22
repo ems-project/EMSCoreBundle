@@ -7,6 +7,8 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Order;
 use Doctrine\Common\Collections\ReadableCollection;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Entity\EntityInterface;
@@ -300,11 +302,14 @@ class EnvironmentService implements EntityServiceInterface
             });
         }
 
-        return new ArrayCollection($circleEnvironments)->filter(function (Environment $e) {
-            $role = $e->getRolePublish();
+        return new ArrayCollection($circleEnvironments)
+            ->filter(function (Environment $e) {
+                $role = $e->getRolePublish();
 
-            return null === $role || $this->authorizationChecker->isGranted($role);
-        });
+                return null === $role || $this->authorizationChecker->isGranted($role);
+            })
+            ->matching(Criteria::create()->orderBy(['orderKey' => Order::Ascending]))
+        ;
     }
 
     public function clearCache(): self

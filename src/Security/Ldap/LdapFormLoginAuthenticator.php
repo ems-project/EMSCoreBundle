@@ -55,7 +55,7 @@ class LdapFormLoginAuthenticator extends AbstractLoginFormAuthenticator
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $username);
 
         return new Passport(
-            new UserBadge($username, fn ($userIdentifier) => $this->ldapUserProvider->loadUserByIdentifier($userIdentifier)),
+            new UserBadge($username, $this->ldapUserProvider->loadUserByIdentifier(...)),
             new PasswordCredentials($password),
             [
                 new CsrfTokenBadge('authenticate', $csrfToken),

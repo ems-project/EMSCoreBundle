@@ -42,7 +42,7 @@ final class LockCommand extends AbstractCommand
     public const string OPTION_IF_EMPTY = 'if-empty';
     public const string OPTION_OUUID = 'ouuid';
     private bool $ifEmpty;
-    private ?string $ouuid;
+    private ?string $ouuid = null;
 
     public function __construct(
         private readonly ContentTypeService $contentTypeService,

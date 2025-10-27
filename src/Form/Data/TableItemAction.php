@@ -153,12 +153,6 @@ final class TableItemAction
      */
     public function valid($objectOrArray): bool
     {
-        foreach ($this->conditions as $condition) {
-            if (!$condition->valid($objectOrArray)) {
-                return false;
-            }
-        }
-
-        return true;
+        return \array_all($this->conditions, fn ($condition) => $condition->valid($objectOrArray));
     }
 }

@@ -985,13 +985,8 @@ class AppExtension extends AbstractExtension
         if ($super && !$this->isSuper()) {
             return false;
         }
-        foreach ($roles as $role) {
-            if (!$this->authorizationChecker->isGranted($role)) {
-                return false;
-            }
-        }
 
-        return true;
+        return \array_all($roles, fn ($role) => $this->authorizationChecker->isGranted($role));
     }
 
     /**
@@ -1165,13 +1160,8 @@ class AppExtension extends AbstractExtension
         if ($super && !$this->isSuper()) {
             return false;
         }
-        foreach ($roles as $role) {
-            if ($this->authorizationChecker->isGranted($role)) {
-                return true;
-            }
-        }
 
-        return false;
+        return \array_any($roles, fn ($role) => $this->authorizationChecker->isGranted($role));
     }
 
     private function contrastRatio(string $c1, string $c2): float

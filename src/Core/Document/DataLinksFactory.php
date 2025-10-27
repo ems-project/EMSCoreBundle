@@ -52,7 +52,7 @@ final readonly class DataLinksFactory
     private function handleType(DataLinks $dataLinks, string $type): void
     {
         $types = \array_filter(\explode(',', $type));
-        $contentTypes = \array_map(fn (string $type) => $this->contentTypeService->giveByName($type), $types);
+        $contentTypes = \array_map($this->contentTypeService->giveByName(...), $types);
         $dataLinks->addContentTypes(...$contentTypes);
 
         if (1 !== \count($contentTypes)) {

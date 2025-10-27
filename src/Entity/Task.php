@@ -197,7 +197,7 @@ class Task implements EntityInterface
      */
     public function getLogs(): array
     {
-        return \array_map(static fn (array $log) => TaskLog::fromData($log), $this->logs);
+        return \array_map(TaskLog::fromData(...), $this->logs);
     }
 
     public function isOpen(): bool

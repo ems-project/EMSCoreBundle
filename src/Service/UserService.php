@@ -224,15 +224,7 @@ class UserService implements EntityServiceInterface
             return $users;
         }
 
-        return \array_filter($users, function (User $user) use ($roles) {
-            foreach ($roles as $role) {
-                if ($user->hasRole($role)) {
-                    return true;
-                }
-            }
-
-            return false;
-        });
+        return \array_filter($users, fn (User $user) => \array_any($roles, $user->hasRole(...)));
     }
 
     #[\Override]

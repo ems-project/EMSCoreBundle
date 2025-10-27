@@ -49,7 +49,7 @@ class LdapAuthTokenLoginAuthenticator extends AbstractAuthenticator
         }
 
         return new Passport(
-            new UserBadge($username, fn ($userIdentifier) => $this->ldapUserProvider->loadUserByIdentifier($userIdentifier)),
+            new UserBadge($username, $this->ldapUserProvider->loadUserByIdentifier(...)),
             new PasswordCredentials($password),
             [
                 new LdapBadge(

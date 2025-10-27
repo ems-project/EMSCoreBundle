@@ -28,7 +28,7 @@ final class UnlockCommand extends AbstractCommand
     private const string ARGUMENT_CONTENT_TYPE = 'content-type';
     private const string OPTION_ALL = 'all';
     private const string OPTION_STRICT = 'strict';
-    private ?string $contentTypeName;
+    private ?string $contentTypeName = null;
     private string $username;
     private ?bool $all = null;
 

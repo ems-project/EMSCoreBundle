@@ -21,7 +21,15 @@ use Psr\Log\LoggerInterface;
 class AliasService
 {
     private const string COUNTER_AGGREGATION = 'counter_aggregation';
-    /** @var array<string, array{name: string, total: int, indexes: Index[], environment: string, managed: bool}> */
+    /** @var array<string, array{
+     *     name: string,
+     *     countIndexes: int,
+     *     total: int,
+     *     indexes: Index[],
+     *     environment: string,
+     *     managed: bool
+     * }>
+     */
     private array $aliases = [];
     /** @var Index[] */
     private array $orphanIndexes = [];
@@ -347,8 +355,11 @@ class AliasService
     private function addAlias(string $name, string $index, array $env = [], bool $managed = false): void
     {
         if ($this->hasAlias($name)) {
-            $this->aliases[$name]['indexes'][$index] = $this->getIndex($index);
-            $this->aliases[$name]['countIndexes'] = \count($this->aliases[$name]['indexes']);
+            $alias = $this->getAlias($name);
+            $alias['indexes'][$index] = $this->getIndex($index);
+            $alias['countIndexes'] = \count($alias['indexes']);
+
+            $this->aliases[$name] = $alias;
 
             return;
         }

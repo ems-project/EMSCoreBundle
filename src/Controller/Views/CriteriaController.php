@@ -716,13 +716,7 @@ class CriteriaController extends AbstractController
 
         $found = false;
         foreach ($rawData[$criteriaField] as &$criteriaSet) {
-            $found = true;
-            foreach ($filters as $criterion => $value) {
-                if ($criterion != $multipleField && $value != $criteriaSet[$criterion]) {
-                    $found = false;
-                    break;
-                }
-            }
+            $found = \array_all($filters, fn ($value, $criterion) => !($criterion != $multipleField && $value != $criteriaSet[$criterion]));
             if ($found) {
                 if ($multipleField && false === \array_search($filters[$multipleField], $criteriaSet[$multipleField])) {
                     $criteriaSet[$multipleField][] = $filters[$multipleField];
@@ -973,13 +967,7 @@ class CriteriaController extends AbstractController
 
         $found = false;
         foreach ($rawData[$criteriaField] as $index => $criteriaSet) {
-            $found = true;
-            foreach ($filters as $criterion => $value) {
-                if ($criterion != $multipleField && $value != $criteriaSet[$criterion]) {
-                    $found = false;
-                    break;
-                }
-            }
+            $found = \array_all($filters, fn ($value, $criterion) => !($criterion != $multipleField && $value != $criteriaSet[$criterion]));
             if ($found) {
                 if ($multipleField) {
                     $indexKey = \array_search($filters[$multipleField], $criteriaSet[$multipleField]);

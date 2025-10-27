@@ -1076,13 +1076,7 @@ class DataService
             if (empty($userCircles)) {
                 throw new HasNotCircleException($environment);
             }
-            $found = false;
-            foreach ($userCircles as $userCircle) {
-                if (\in_array($userCircle, $environmentCircles)) {
-                    $found = true;
-                    break;
-                }
-            }
+            $found = \array_any($userCircles, fn ($userCircle) => \in_array($userCircle, $environmentCircles));
             if (!$found) {
                 throw new HasNotCircleException($environment);
             }

@@ -35,7 +35,7 @@ class EnvironmentsRevision
             $publishEnvironments = $userPublishEnvironments->filter(fn (Environment $e) => $e->getManaged() && $e !== $this->default);
 
             $this->publish = $publishEnvironments->filter(fn (Environment $e) => !$environments->contains($e));
-            $this->unpublish = $publishEnvironments->filter(fn (Environment $e) => $environments->contains($e));
+            $this->unpublish = $publishEnvironments->filter($environments->contains(...));
         }
     }
 }

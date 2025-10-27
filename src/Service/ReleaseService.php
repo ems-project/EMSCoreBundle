@@ -129,7 +129,7 @@ final readonly class ReleaseService implements EntityServiceInterface
      */
     public function removeRevisions(Release $release, array $ids): void
     {
-        $revisionIds = \array_map('intval', $ids);
+        $revisionIds = \array_map(intval(...), $ids);
 
         foreach ($release->getRevisions() as $releaseRevision) {
             if (\in_array($releaseRevision->getId(), $revisionIds, true)) {

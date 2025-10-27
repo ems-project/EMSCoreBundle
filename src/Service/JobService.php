@@ -15,6 +15,7 @@ use EMS\CoreBundle\Core\Metric\JobMetricCollector;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Repository\JobRepository;
+use EMS\Helpers\Env\RuntimeEnvPlaceholderResolver;
 use EMS\Helpers\Standard\DateTime;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -164,12 +165,13 @@ class JobService implements EntityServiceInterface
 
         try {
             $application = new Application($this->kernel);
+            $envVarResolver = new RuntimeEnvPlaceholderResolver();
             $application->setAutoExit(false);
 
             $command = ($job->getCommand() ?? 'list');
             $escapedCommand = u($command)->replace('\\', '\\\\')->toString();
-
-            $input = new StringInput($escapedCommand);
+            $resolvedCommand = $envVarResolver->resolve($escapedCommand);
+            $input = new StringInput($resolvedCommand);
 
             $returnCode = $application->run($input, $output);
             if (Command::SUCCESS !== $returnCode) {

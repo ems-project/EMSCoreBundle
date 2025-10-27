@@ -355,7 +355,7 @@ class AliasService
     private function addAlias(string $name, string $index, array $env = [], bool $managed = false): void
     {
         if ($this->hasAlias($name)) {
-            $alias = $this->getAlias($name);
+            $alias = $this->aliases[$name];
             $alias['indexes'][$index] = $this->getIndex($index);
             $alias['countIndexes'] = \count($alias['indexes']);
 

@@ -442,6 +442,7 @@ class ContentTypeController extends AbstractController
     public function editStructure(ContentType $id, Request $request): Response
     {
         $contentType = $id;
+        $id = $contentType->getId();
 
         $inputContentType = $request->request->all('content_type_structure');
 

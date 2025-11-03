@@ -104,6 +104,7 @@ class ContentTypeController extends AbstractController
             'breadcrumb' => Navigation::admin()->contentType($contentType)->add(
                 t('action.update_content_type_from_json', ['name' => $contentType->getName()], 'emsco-core')
             ),
+            'contentType' => $contentType,
         ]);
     }
 

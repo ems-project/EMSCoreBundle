@@ -122,7 +122,7 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
         $this->orderKey = $orderKey;
     }
 
-    public function getEntryPath(): ?string
+    public function getEntryPath(string $baseUrl = '/'): ?string
     {
         $entryPath = $this->getOptions()['entryPath'] ?? null;
 
@@ -136,7 +136,7 @@ class Channel extends JsonDeserializer implements \JsonSerializable, EntityInter
             $entryPath = '';
         }
 
-        return \sprintf('/channel/%s%s', $this->getName(), $entryPath);
+        return \sprintf('%schannel/%s%s', $baseUrl, $this->getName(), $entryPath);
     }
 
     #[\Override]

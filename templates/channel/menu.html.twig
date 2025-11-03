@@ -6,9 +6,10 @@
         <i class="fa fa-eye"></i>
     </a>
     <ul class="dropdown-menu">
+        {% set homepage = path('homepage') %}
         {% for channel in channels %}
         <li>
-            <a href="{{ channel.entryPath }}" target="_blank">
+            <a href="{{ channel.getEntryPath(homepage) }}" target="_blank">
                 <i class="fa fa-{{ channel.public|default ? 'unlock-alt' : 'lock' }}" aria-hidden="true"></i>
                 {{ channel.label }}
             </a>

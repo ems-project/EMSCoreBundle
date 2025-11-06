@@ -72,7 +72,7 @@ class SearchService
                 continue;
             }
 
-            if ($filter->getField() && ($nestedPath = $this->getNestedPath($filter->getField(), $mapping))) {
+            if ($filter->getField() && ($nestedPath = $this->getNestedFieldPath($filter->getField(), $mapping))) {
                 $esFilter = $this->nestFilter($nestedPath, $esFilter);
             }
 
@@ -104,11 +104,11 @@ class SearchService
         $sortBy = $search->getSortBy();
         if (null !== $sortBy && \strlen($sortBy) > 0) {
             $commonSearch->setSort([
-                $search->getSortBy() => \array_filter([
+                $sortBy => \array_filter([
                     'order' => (empty($search->getSortOrder()) ? 'asc' : $search->getSortOrder()),
                     'missing' => '_last',
                     'unmapped_type' => 'long',
-                    'nested_path' => $this->getNestedPath($sortBy, $mapping),
+                    'nested' => $this->getNestedFieldPath($sortBy, $mapping),
                 ]),
             ]);
         }
@@ -144,13 +144,14 @@ class SearchService
     }
 
     /**
-     * @param array<mixed> $esFilter
+     * @param array{'path': string} $nested
+     * @param array<mixed>          $esFilter
      *
      * @return array<mixed>
      */
-    private function nestFilter(string $nestedPath, array $esFilter): array
+    private function nestFilter(array $nested, array $esFilter): array
     {
-        $path = \explode('.', $nestedPath);
+        $path = \explode('.', $nested['path']);
 
         for ($i = \count($path); $i > 0; --$i) {
             $esFilter = [
@@ -166,8 +167,10 @@ class SearchService
 
     /**
      * @param array<mixed> $mapping
+     *
+     * @return ?array{path: string}
      */
-    private function getNestedPath(string $field, ?array $mapping): ?string
+    private function getNestedFieldPath(string $field, ?array $mapping): ?array
     {
         if (!\strpos($field, '.')) {
             return null;
@@ -195,7 +198,7 @@ class SearchService
             }
         }
 
-        return \implode('.', $nestedPath);
+        return \count($nestedPath) > 0 ? ['path' => \implode('.', $nestedPath)] : null;
     }
 
     /**

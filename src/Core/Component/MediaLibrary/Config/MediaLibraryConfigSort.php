@@ -10,19 +10,19 @@ class MediaLibraryConfigSort
         public readonly string $id,
         public readonly string $field,
         public readonly ?string $defaultOrder,
-        public readonly ?string $nestedPath,
+        public readonly ?string $parentField,
     ) {
     }
 
     /**
-     * @return array<string, array{order: string, nested_path?: string}>
+     * @return array<string, array{order: string, nested?: array{path: string}}>
      */
     public function getQuery(string $order): array
     {
         $query = ['order' => $order];
 
-        if ($this->nestedPath) {
-            $query['nested_path'] = $this->nestedPath;
+        if ($this->parentField) {
+            $query['nested'] = ['path' => $this->parentField];
         }
 
         return [$this->field => $query];

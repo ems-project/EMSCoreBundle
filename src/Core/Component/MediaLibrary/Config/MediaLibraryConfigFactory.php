@@ -71,8 +71,8 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
                 'fieldFile' => 'media_file',
                 'sort' => [
                     ['id' => 'name', 'field' => 'media_path.alpha_order', 'defaultOrder' => 'asc'],
-                    ['id' => 'type', 'field' => 'media_file.mimetype', 'nested_path' => 'media_file'],
-                    ['id' => 'size', 'field' => 'media_file.filesize', 'nested_path' => 'media_file'],
+                    ['id' => 'type', 'field' => 'media_file.mimetype', 'parent_field' => 'media_file'],
+                    ['id' => 'size', 'field' => 'media_file.filesize', 'parent_field' => 'media_file'],
                 ],
                 'defaultValue' => [],
                 'searchSize' => MediaLibraryConfig::DEFAULT_SEARCH_SIZE,
@@ -105,11 +105,16 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
                 $sorts = [];
 
                 foreach ($definitions as $definition) {
+                    if (isset($definition['nested_path'])) {
+                        @\trigger_error('The "nested_path" option is deprecated and will be removed in ems 7. Please use "parent_field" instead.', E_USER_DEPRECATED);
+                        $definition['parent_field'] = $definition['nested_path'];
+                    }
+
                     $sorts[$definition['id']] = new MediaLibraryConfigSort(
                         id: $definition['id'],
                         field: $definition['field'],
                         defaultOrder: $definition['defaultOrder'] ?? null,
-                        nestedPath: $definition['nested_path'] ?? null
+                        parentField: $definition['parent_field'] ?? null
                     );
                 }
 

@@ -27,7 +27,7 @@
 	{% if contentType.name == view.contentType.name %}
 		<ol style="display:none;" data-parent-id="{{ child }}">
             {% include "@EMSCore/view/custom/hierarchical_item.html.twig" with {
-        		parent: data,
+        		parent: data.source,
             	view: view,
         	} %}
 		</ol>

@@ -83,6 +83,7 @@ class UserProfileType extends AbstractType
             ->add('wysiwygProfile', EntityType::class, [
                 'required' => false,
                 'label' => 'user.wysiwyg_profile',
+                'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
                 'class' => WysiwygProfile::class,
                 'disabled' => !$allowToChangeWysiwygProfile,
                 'choice_label' => 'name',

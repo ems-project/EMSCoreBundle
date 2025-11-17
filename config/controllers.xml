@@ -678,6 +678,12 @@
             <argument type="service" id="ems.service.environment" />
             <tag name="controller.service_arguments"/>
         </service>
+        <service id="EMS\CoreBundle\Controller\Api\WebhookSubscriptionController">
+            <argument type="service" id="emsco.service.webhook_subscription" />
+            <call method="setContainer"/>
+            <tag name="container.service_subscriber"/>
+            <tag name="controller.service_arguments"/>
+        </service>
 
     </services>
 </container>

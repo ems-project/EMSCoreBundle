@@ -125,5 +125,8 @@
             <factory service="doctrine.orm.default_entity_manager" method="getRepository" />
             <argument>EMS\CoreBundle\Entity\UploadedAsset</argument>
         </service>
+        <service id="ems.repository.webhook_subscription" class="EMS\CoreBundle\Repository\WebhookSubscriptionRepository">
+            <argument type="service" id="doctrine"/>
+        </service>
     </services>
 </container>

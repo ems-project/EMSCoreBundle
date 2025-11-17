@@ -36,6 +36,12 @@
             <tag name="doctrine.orm.entity_listener" event="preRemove" entity="EMS\CoreBundle\Entity\Revision" lazy="true" entity_manager="default" method="preRemoveRevision"/>
             <tag name="doctrine.orm.entity_listener" event="postRemove" entity="EMS\CoreBundle\Entity\Revision" lazy="true" entity_manager="default" method="postRemoveRevision"/>
         </service>
+        <service id="emsco.event_listener.events_to_webhook_subscribers" class="EMS\CoreBundle\EventListener\EventsToWebhookSubscribers">
+            <argument type="service" id="ems.repository.webhook_subscription"/>
+            <argument type="service" id="messenger.default_bus"/>
+            <argument type="service" id="logger"/>
+            <tag name="kernel.event_subscriber" />
+        </service>
 
         <!-- core service -->
         <service id="ems.dashboard.manager" class="EMS\CoreBundle\Core\Dashboard\DashboardManager">
@@ -518,6 +524,9 @@
             <argument type="service" id="ems.service.contenttype"/>
             <tag name="kernel.event_listener" event="EMS\CoreBundle\Event\RevisionFinalizeDraftEvent" method="finalizeDraftEvent" priority="0" />
         </service>
+        <service id="emsco.service.webhook_subscription" class="EMS\CoreBundle\Service\WebhookSubscriptionService">
+            <argument type="service" id="ems.repository.webhook_subscription"/>
+        </service>
         <service id="ems.form_submission" class="EMS\CoreBundle\Service\Form\Submission\FormSubmissionService">
             <argument type="service" id="ems.repository.form_submission"/>
             <argument type="service" id="ems.repository.form_submission_file"/>
@@ -553,6 +562,11 @@
         <service id="emsco.messenger.middleware.restore_user_from_stamp" class="EMS\CoreBundle\Core\Messenger\Middleware\RestoreUserFromStampMiddleware">
             <argument type="service" id="security.token_storage"/>
             <tag name="messenger.middleware"/>
+        </service>
+        <service id="ems_core.core_messenger_handler.webhook_subscription_handler" class="EMS\CoreBundle\Core\Messenger\Handler\WebhookSubscriptionHandler">
+            <argument type="service" id="ems.repository.webhook_subscription"/>
+            <argument type="service" id="http_client"/>
+            <tag name="messenger.message_handler" handles="EMS\CoreBundle\Core\Messenger\Message\WebhookSubscriberMessage" />
         </service>
 
         <!-- Aliases -->

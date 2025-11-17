@@ -32,6 +32,8 @@
             prefix="/api/search"/>
     <import resource="@EMSCoreBundle/config/routing/api/data.xml"
             prefix="/api/data"/>
+    <import resource="@EMSCoreBundle/config/routing/api/webhook.xml"
+            prefix="/api"/>
 
     <route id="emsco_api_user_proxy_authenticate" path="/api/user/proxy-authenticate"
            controller="EMS\CoreBundle\Controller\Api\UserController::proxyAuthenticate"

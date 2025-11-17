@@ -42,6 +42,15 @@ view:
                 profile:
                     title: 'Your profile'
                 cancel: Cancel
+status:
+    bus:
+        title: 'Messages in the bus'
+        queue: 'Messages in the queue'
+        failed: 'Messages in error'
+    jobs:
+        title: Jobs
+        pending: 'Pending jobs'
+        failed: 'Failed jobs'
 views:
     data:
         edit-revision-html:

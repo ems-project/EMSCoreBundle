@@ -86,15 +86,16 @@
         {% endif %}
 
 	</div>
+
+    <div class="col-md-6 col-lg-8">
 	{% if certificate|default %}
-		<div class="col-md-6 col-lg-8">
-		<div class="box box box-solid">
-			<div class="box-header with-border bg-{{ certificate.status }}">
-				<h4 class="box-title">
+        <div class="box box box-solid">
+            <div class="box-header with-border bg-{{ certificate.status }}">
+                <h4 class="box-title">
                     <i class="icon fa fa-key fa-2x"></i>
                     {{ certificate.title }}
-				</h4>
-			</div>
+                </h4>
+            </div>
             {% if app.user %}
                 <div class="box-body ">
                     <ul class="list-group">
@@ -113,31 +114,60 @@
                     </ul>
                 </div>
             {% endif %}
-		</div>
-
-	</div>
+        </div>
 	{% endif %}
     {% if asset_extractor|default %}
-		<div class="col-md-6 col-lg-8">
-			<div class="box box box-solid">
-				<div class="box-header with-border bg-{{ asset_extractor.status }}">
-					<h4 class="box-title">
-						<i class="icon fa fa-external-link fa-2x"></i>
-                        {{ asset_extractor.title }}
-					</h4>
-				</div>
-                {% if app.user %}
-                    <div class="box-body ">
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                {% if asset_extractor.content|default %}{{ asset_extractor.content }}{% else %}{{ 'views.elasticsearch.cluster.tika-server-not-configured'|trans }}{% endif %}
-                            </li>
-                        </ul>
-                    </div>
-                {% endif %}
-			</div>
-		</div>
+        <div class="box box box-solid">
+            <div class="box-header with-border bg-{{ asset_extractor.status }}">
+                <h4 class="box-title">
+                    <i class="icon fa fa-external-link fa-2x"></i>
+                    {{ asset_extractor.title }}
+                </h4>
+            </div>
+            {% if app.user %}
+                <div class="box-body ">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            {% if asset_extractor.content|default %}{{ asset_extractor.content }}{% else %}{{ 'views.elasticsearch.cluster.tika-server-not-configured'|trans }}{% endif %}
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
     {% endif %}
+    {% if jobs|default %}
+        <div class="box box box-solid">
+            <div class="box-header with-border bg-{{ jobs.status }}">
+                <h4 class="box-title">
+                    <i class="icon fa fa-terminal fa-2x"></i>
+                    {{ jobs.status|capitalize }}: {{ 'status.jobs.title'|trans }}
+                </h4>
+            </div>
+            <div class="box-body ">
+                <ul class="list-group">
+                    <li class="list-group-item">{{ 'status.jobs.pending'|trans }}<span class=" badge bg-{{ jobs.pending|default(0) > 0 ? jobs.status : 'green' }}">{{ jobs.pending|default(0) }}</span></li>
+                    <li class="list-group-item">{{ 'status.jobs.failed'|trans }}<span class=" badge bg-{{ jobs.failed|default(0) > 0 ? jobs.status : 'green' }}">{{ jobs.failed|default(0) }}</span></li>
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+    {% if bus|default %}
+        <div class="box box box-solid">
+            <div class="box-header with-border bg-{{ bus.status }}">
+                <h4 class="box-title">
+                    <i class="icon fa fa-bus fa-2x"></i>
+                    {{ bus.status|capitalize }}: {{ 'status.bus.title'|trans }}
+                </h4>
+            </div>
+            <div class="box-body ">
+                <ul class="list-group">
+                    <li class="list-group-item">{{ 'status.bus.queue'|trans }}<span class=" badge bg-{{ bus.queue|default(0) > 0 ? bus.status : 'green' }}">{{ bus.queue|default(0) }}</span></li>
+                    <li class="list-group-item">{{ 'status.bus.failed'|trans }}<span class=" badge bg-{{ bus.failed|default(0) > 0 ? bus.status : 'green' }}">{{ bus.failed|default(0) }}</span></li>
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+    </div>
 
 </div>
 {% include '@EMSCore/app/menu.html.twig' with {

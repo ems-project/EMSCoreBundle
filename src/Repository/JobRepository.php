@@ -48,6 +48,15 @@ class JobRepository extends EntityRepository
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
+    public function countFailedJobs(): int
+    {
+        $qb = $this->createQueryBuilder('job')->select('COUNT(job)');
+        $qb->where($qb->expr()->eq('job.status', ':failed'));
+        $qb->setParameter('failed', 'failed');
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
     /**
      * @return Job[]
      */

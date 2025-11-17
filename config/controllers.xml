@@ -589,6 +589,7 @@
             <argument type="service" id="EMS\CoreBundle\Repository\EnvironmentRepository" />
             <argument type="service" id="translator" />
             <argument type="service" id="serializer" />
+            <argument type="service" id="ems.repository.messenger_messages_repository" />
             <argument>%ems_core.paging_size%</argument>
             <argument>%ems_core.health_check_allow_origin%</argument>
             <argument>%ems_core.template_namespace%</argument>

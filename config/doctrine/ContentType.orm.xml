@@ -54,9 +54,6 @@
       <join-column name="field_types_id"/>
     </one-to-one>
     <many-to-one field="environment" target-entity="EMS\CoreBundle\Entity\Environment" inversed-by="contentTypesHavingThisAsDefault">
-      <cascade>
-        <cascade-remove/>
-      </cascade>
       <join-column name="environment_id"/>
     </many-to-one>
     <one-to-many field="templates" target-entity="EMS\CoreBundle\Entity\Template" mapped-by="contentType">

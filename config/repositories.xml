@@ -128,5 +128,8 @@
         <service id="ems.repository.webhook_subscription" class="EMS\CoreBundle\Repository\WebhookSubscriptionRepository">
             <argument type="service" id="doctrine"/>
         </service>
+        <service id="ems.repository.messenger_messages_repository" class="EMS\CoreBundle\Repository\MessengerMessagesRepository">
+            <argument type="service" id="doctrine.dbal.default_connection"/>
+        </service>
     </services>
 </container>

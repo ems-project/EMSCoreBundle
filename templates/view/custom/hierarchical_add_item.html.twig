@@ -17,17 +17,17 @@
       	</div>
 		<i class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
 		<h3 class="box-title">
-	    {% if (contentType.labelField) and (attribute(data, contentType.labelField)  is defined ) %}
-    		{{ attribute(data, contentType.labelField) }}
-    	{% else %}
-    		{{ child }}
-    	{% endif %}
+		{%- if contentType.labelField and data.source.(contentType.labelField) is defined -%}
+			{{- data.source.(contentType.labelField) -}}
+		{%- else -%}
+			{{- child -}}
+		{%- endif -%}
         </h3>
 	</div>
 	{% if contentType.name == view.contentType.name %}
 		<ol style="display:none;" data-parent-id="{{ child }}">
             {% include "@EMSCore/view/custom/hierarchical_item.html.twig" with {
-        		parent: data,
+        		parent: data.source,
             	view: view,
         	} %}
 		</ol>

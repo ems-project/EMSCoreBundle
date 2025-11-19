@@ -29,6 +29,7 @@ use EMS\CoreBundle\Form\Form\ExportDocumentsType;
 use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\MessengerMessagesRepository;
 use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\AggregateOptionService;
@@ -78,6 +79,7 @@ class ElasticsearchController extends AbstractController
         private readonly EnvironmentRepository $environmentRepository,
         private readonly TranslatorInterface $translator,
         private readonly SerializerInterface $serializer,
+        private readonly MessengerMessagesRepository $messengerMessagesRepository,
         private readonly int $pagingSize,
         private readonly ?string $healthCheckAllowOrigin,
         private readonly string $templateNamespace
@@ -124,14 +126,14 @@ class ElasticsearchController extends AbstractController
         ]);
     }
 
-    public function healthCheck(string $_format): Response
+    public function healthCheck(Request $request, string $_format): Response
     {
         @\trigger_error(\sprintf('The controller method %s::healthCheck is deprecated, please use %s::status with detailed=false', self::class, self::class), E_USER_DEPRECATED);
 
-        return $this->status($_format, false);
+        return $this->status($request, $_format, false);
     }
 
-    public function status(string $_format, bool $detailed = true): Response
+    public function status(Request $request, string $_format, bool $detailed = true): Response
     {
         if ($detailed && !$this->authorizationChecker->isGranted('ROLE_USER')) {
             $detailed = false;
@@ -153,6 +155,46 @@ class ElasticsearchController extends AbstractController
         }
         $context['status'] = $status;
         $context['title'] = $context['cluster']['title'];
+
+        try {
+            $jobFailed = $this->jobService->countFailed();
+            $jobPending = $this->jobService->countPending();
+            $jobStatus = $jobFailed > 0 ? 'yellow' : 'green';
+            $jobPendingLimit = (int) $request->query->get('jobs_pending_limit', '0');
+            if ($jobPendingLimit > 0 && $jobPending >= $jobPendingLimit) {
+                $jobStatus = 'red';
+                $statusCode = 500;
+            }
+            $jobFailedLimit = (int) $request->query->get('jobs_failed_limit', '0');
+            if ($jobFailedLimit > 0 && $jobFailed >= $jobFailedLimit) {
+                $jobStatus = 'red';
+                $statusCode = 500;
+            }
+            $context['jobs']['pending'] = $jobPending;
+            $context['jobs']['failed'] = $jobFailed;
+            $context['jobs']['status'] = $jobStatus;
+        } catch (\Throwable) {
+        }
+
+        try {
+            $messageFailed = $this->messengerMessagesRepository->errorCount();
+            $messageQueue = $this->messengerMessagesRepository->waitingCount() - $messageFailed;
+            $messageStatus = $messageFailed > 0 ? 'yellow' : 'green';
+            $busQueueLimit = (int) $request->query->get('bus_queue_limit', '0');
+            if ($busQueueLimit > 0 && $messageQueue >= $busQueueLimit) {
+                $messageStatus = 'red';
+                $statusCode = 500;
+            }
+            $busFailedLimit = (int) $request->query->get('bus_failed_limit', '0');
+            if ($busFailedLimit > 0 && $messageFailed >= $busFailedLimit) {
+                $messageStatus = 'red';
+                $statusCode = 500;
+            }
+            $context['bus']['queue'] = $messageQueue;
+            $context['bus']['failed'] = $messageFailed;
+            $context['bus']['status'] = $messageStatus;
+        } catch (\Throwable) {
+        }
 
         if ($detailed) {
             $context['cluster'] = \array_merge($context['cluster'], $this->elasticaService->getClusterInfo());

@@ -125,6 +125,11 @@ class JobService implements EntityServiceInterface
         return $this->repository->countPendingJobs();
     }
 
+    public function countFailed(): int
+    {
+        return $this->repository->countFailedJobs();
+    }
+
     public function newJob(UserInterface $user): Job
     {
         $job = new Job();

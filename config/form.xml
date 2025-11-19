@@ -381,6 +381,12 @@
             <argument type="service" id="ems.service.contenttype" />
             <tag name="form.type"/>
         </service>
+        <service id="ems.form.field.icon_picker_type" class="EMS\CoreBundle\Form\Field\IconPickerType">
+            <call method="setTemplateNamespace">
+                <argument>%ems_core.template_namespace%</argument>
+            </call>
+            <tag name="form.type"/>
+        </service>
         <service id="ems.form.fieldtype.fieldtypetype" class="EMS\CoreBundle\Form\FieldType\FieldTypeType">
             <argument type="service" id="ems.form.field.datafieldtypepickertype" />
             <argument type="service" id="form.registry" />

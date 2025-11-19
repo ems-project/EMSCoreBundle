@@ -9,8 +9,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IconPickerType extends Select2Type
 {
+    private ?string $templateNamespace = null;
+
+    public function setTemplateNamespace(string $namespace): void
+    {
+        $this->templateNamespace = $namespace;
+    }
+
     /**
-     * @var array<string, array<string, string>|null>
+     * @var array{
+     *     'icon.not-defined': null,
+     *     'icon.elasticms-icons': array<string,string>,
+     *     'icon.fa6-icons': array<string,string>,
+     *     'icon.fa6-brands-icons': array<string,string>,
+     *     'icon.fa4-icons': array<string,string>,
+     *     'icon.glyphicon-bs3-icons': array<string,string>
+     * }
      */
     private array $choices = [
         'icon.not-defined' => null,
@@ -3294,8 +3308,19 @@ class IconPickerType extends Select2Type
     #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
+        if ('EMSAdminUI/bootstrap5' === $this->templateNamespace) {
+            $choices = $this->choices;
+        } else {
+            $choices = [
+                'icon.not-defined' => null,
+                ...$this->choices['icon.elasticms-icons'],
+                ...$this->choices['icon.fa4-icons'],
+                ...$this->choices['icon.glyphicon-bs3-icons'],
+            ];
+        }
+
         $resolver->setDefaults([
-            'choices' => $this->choices,
+            'choices' => $choices,
             'attr' => [
                 'data-live-search' => true,
             ],

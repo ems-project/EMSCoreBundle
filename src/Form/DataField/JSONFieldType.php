@@ -47,11 +47,15 @@ class JSONFieldType extends DataFieldType
     }
 
     /**
-     * @return array{'value': string}
+     * @return array{'value': ?string}
      */
     #[\Override]
     public function viewTransform(DataField $dataField): array
     {
+        if (null === $dataField->getRawData()) {
+            return ['value' => null];
+        }
+
         $prettyPrint = (bool) $dataField->giveFieldType()->getDisplayOption('prettyPrint', false);
 
         return ['value' => Json::encode($dataField->getRawData(), $prettyPrint)];

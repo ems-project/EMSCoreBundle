@@ -179,6 +179,7 @@
         </service>
       <service id="emsco.revision.task.filter_type" class="EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType">
         <argument type="service" id="EMS\CoreBundle\Service\ContentTypeService" />
+        <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface" />
         <tag name="form.type" />
       </service>
         <service id="emsco.revision.task.handle_type" class="EMS\CoreBundle\Form\Revision\Task\RevisionTaskHandleType">

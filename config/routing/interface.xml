@@ -110,6 +110,24 @@
         <default key="interface">api</default>
         <requirement key="interface">api|json</requirement>
     </route>
+    <route id="emsco_interface_document_index_from_asset" path="/{interface}/data/{name}/index-from-asset/{ouuid}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::indexFromAsset"
+           methods="POST"
+           format="json">
+        <option key="openapi">true</option>
+        <default key="ouuid" xsi:nil="true"/>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
+    <route id="emsco_interface_document_update_from_asset" path="/{interface}/data/{name}/update-from-asset/{ouuid}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::indexFromAsset"
+           methods="POST"
+           format="json">
+        <option key="openapi">true</option>
+        <default key="replaceOrMerge">merge</default>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
     <route id="emsco_interface_document_merge" path="/{interface}/data/{name}/merge/{ouuid}"
            controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::merge"
            methods="POST"

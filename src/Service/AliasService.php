@@ -14,9 +14,11 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Environment\Index;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\ManagedAlias;
+use EMS\CoreBundle\Event\NewIndexEvent;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\ManagedAliasRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class AliasService
 {
@@ -43,6 +45,7 @@ class AliasService
         private readonly EnvironmentRepository $envRepo,
         private readonly ManagedAliasRepository $managedAliasRepo,
         private readonly ElasticaService $elasticaService,
+        protected EventDispatcherInterface $dispatcher,
     ) {
     }
 
@@ -54,15 +57,17 @@ class AliasService
         $aliasName = $environment->getAlias();
         $actions = [];
         $actions[] = ['add' => ['alias' => $aliasName, 'index' => $newIndex]];
+        $aliases[] = $aliasName;
 
         if ($oldIndex = $this->getEnvironmentIndex($environment)) {
             $actions[] = ['remove' => ['alias' => $aliasName, 'index' => $oldIndex]];
 
             if (!$ignoreReferrers && $environment->isUpdateReferrers()) {
                 foreach ($this->getReferrers($oldIndex) as $referrerAlias) {
-                    if ($referrerAlias['name'] === $environment->getAlias()) {
+                    if (\in_array($referrerAlias['name'], $aliases)) {
                         continue;
                     }
+                    $aliases[] = $referrerAlias['name'];
 
                     $actions[] = ['remove' => ['alias' => $referrerAlias['name'], 'index' => $oldIndex]];
                     $actions[] = ['add' => ['alias' => $referrerAlias['name'], 'index' => $newIndex]];
@@ -73,6 +78,9 @@ class AliasService
         $endpoint = new UpdateAliases();
         $endpoint->setBody(['actions' => $actions]);
         $this->elasticaClient->requestEndpoint($endpoint);
+
+        $event = new NewIndexEvent($environment, $newIndex, $aliases, $oldIndex);
+        $this->dispatcher->dispatch($event);
 
         return $actions;
     }

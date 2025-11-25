@@ -25,6 +25,7 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Entity\Revision;
+use EMS\CoreBundle\Event\RevisionDeleteEvent;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionNewDraftEvent;
 use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
@@ -1279,6 +1280,7 @@ class DataService
 
             if (null === $revision->getEndTime()) {
                 $this->auditLogger->notice('log.revision.deleted', LogRevisionContext::delete($revision));
+                $this->dispatcher->dispatch(new RevisionDeleteEvent($revision));
             }
 
             $em->persist($revision);

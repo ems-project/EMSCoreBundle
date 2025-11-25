@@ -222,9 +222,7 @@ class PublishService
             return 0;
         }
 
-        if (null === $commandUser) {
-            $this->dataService->lockRevision($revision, $environment);
-        }
+        $this->dataService->lockRevision(revision: $revision, publishEnv: $environment, username: $commandUser);
         $revision = $this->dataService->recomputeOnPublish($revision, $environment);
 
         $this->publishVersion($revision, $environment, $commandUser);
@@ -237,10 +235,10 @@ class PublishService
             $already = true;
             $this->logger->notice('service.publish.already_published', $logContext);
         } elseif ($item) {
-            $this->dataService->lockRevision($item, $environment);
+            $this->dataService->lockRevision(revision: $item, publishEnv: $environment, username: $commandUser);
             $item->removeEnvironment($environment, $username);
             $this->revRepository->save($item);
-            $this->dataService->unlockRevision($item);
+            $this->dataService->unlockRevision($item, $commandUser);
         }
 
         $this->dataService->sign($revision, true);
@@ -263,9 +261,7 @@ class PublishService
             ], ...$logContext]);
         }
 
-        if (null === $commandUser) {
-            $this->dataService->unlockRevision($revision);
-        }
+        $this->dataService->unlockRevision($revision, $commandUser);
 
         return $already ? 0 : 1;
     }

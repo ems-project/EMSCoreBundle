@@ -7,7 +7,7 @@
     "bootstrap-sass": "^3.4.1",
     "bootstrap-select": "^1.13.18",
     "buffer": "^4.9.2",
-    "ckeditor4": "^4.16.0",
+    "ckeditor4": "4.17.2",
     "crypto-js": "^3.3.0",
     "datatables.net": "^1.12.1",
     "datatables.net-bs": "^1.12.1",

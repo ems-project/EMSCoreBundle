@@ -63,6 +63,7 @@
 
         <service id="ems_core.twig.core_runtime" class="EMS\CoreBundle\Twig\CoreRuntime">
             <argument type="service" id="logger"/>
+            <argument type="service" id="event_dispatcher"/>
             <tag name="twig.runtime"/>
         </service>
 

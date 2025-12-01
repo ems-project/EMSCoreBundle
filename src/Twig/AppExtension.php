@@ -133,6 +133,7 @@ class AppExtension extends AbstractExtension
             new TwigFunction('emsco_warning', $this->warning(...)),
             new TwigFunction('emsco_get_revision_id', [RevisionRuntime::class, 'getRevisionId']),
             new TwigFunction('emsco_search', $this->search(...)),
+            new TwigFunction('emsco_webhook', [CoreRuntime::class, 'dispatchWebhook']),
             new TwigFunction('get_default_environments', [EnvironmentRuntime::class, 'getDefaultEnvironmentNames'], [
                 'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '5.0.0', 'emsco_get_default_environment_names'),
             ]),

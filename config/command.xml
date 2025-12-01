@@ -375,5 +375,9 @@
             <argument type="service" id="ems.service.index" />
             <tag name="console.command"/>
         </service>
+        <service id="EMS\CoreBundle\Command\Webhook\DispatchWebhookCommand">
+            <argument type="service" id="emsco.service.webhook" />
+            <tag name="console.command"/>
+        </service>
     </services>
 </container>

@@ -71,4 +71,5 @@ final class Commands
     public const string ASSET_REFRESH_FILE_FIELD = 'emsco:asset:refresh-file-fields';
     final public const string SUBMISSION_EXPORT = 'emsco:submissions:export';
     final public const string GENERATE_DUMMY_SUBMISSIONS = 'emsco:submissions:generate-dummy-submissions';
+    final public const string WEBHOOK_DISPATCH = 'emsco:webhook:dispatch';
 }

@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\EventListener;
 
 use EMS\CoreBundle\Core\Messenger\Message\WebhookSubscriberMessage;
+use EMS\CoreBundle\Event\DispatchToWebhookEvent;
 use EMS\CoreBundle\Event\NewIndexEvent;
 use EMS\CoreBundle\Event\RevisionDeleteEvent;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Event\RevisionPublishEvent;
 use EMS\CoreBundle\Event\RevisionUnpublishEvent;
-use EMS\CoreBundle\Repository\WebhookSubscriptionRepository;
+use EMS\CoreBundle\Event\ValidateWebhookSubscriptionEvent;
+use EMS\CoreBundle\Service\WebhookService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 final readonly class EventsToWebhookSubscribers implements EventSubscriberInterface
 {
     public function __construct(
-        private WebhookSubscriptionRepository $repository,
-        private MessageBusInterface $bus,
+        private WebhookService $webhookService,
         private LoggerInterface $logger,
     ) {
     }
@@ -34,12 +34,14 @@ final readonly class EventsToWebhookSubscribers implements EventSubscriberInterf
             WorkerMessageFailedEvent::class => 'onMessageFailed',
             NewIndexEvent::class => 'onNewIndex',
             RevisionDeleteEvent::class => 'onDelete',
+            DispatchToWebhookEvent::class => 'onDispatchToWebhook',
+            ValidateWebhookSubscriptionEvent::class => 'onValidateWebhookSubscription',
         ];
     }
 
     public function onRevisionPublished(RevisionPublishEvent $event): void
     {
-        $this->dispatch(\sprintf('content.published.%s', $event->getEnvironment()->getName()), [
+        $this->webhookService->dispatch(\sprintf('content.published.%s', $event->getEnvironment()->getName()), [
             'environment' => $event->getEnvironment()->getName(),
             'alias' => $event->getEnvironment()->getAlias(),
             'content_type' => $event->getRevision()->giveContentType()->getName(),
@@ -50,7 +52,7 @@ final readonly class EventsToWebhookSubscribers implements EventSubscriberInterf
 
     public function onFinalizeDraft(RevisionFinalizeDraftEvent $event): void
     {
-        $this->dispatch('content.finalize', [
+        $this->webhookService->dispatch('content.finalize', [
             'environment' => $event->getEnvironment()->getName(),
             'alias' => $event->getEnvironment()->getAlias(),
             'content_type' => $event->getRevision()->giveContentType()->getName(),
@@ -61,7 +63,7 @@ final readonly class EventsToWebhookSubscribers implements EventSubscriberInterf
 
     public function onUnpublish(RevisionUnpublishEvent $event): void
     {
-        $this->dispatch('content.unpublish', [
+        $this->webhookService->dispatch('content.unpublish', [
             'environment' => $event->getEnvironment()->getName(),
             'alias' => $event->getEnvironment()->getAlias(),
             'content_type' => $event->getRevision()->giveContentType()->getName(),
@@ -78,7 +80,7 @@ final readonly class EventsToWebhookSubscribers implements EventSubscriberInterf
         if (!$message instanceof WebhookSubscriberMessage) {
             return;
         }
-        $this->repository->disable($message->subscriptionId, $event->getThrowable()->getMessage());
+        $this->webhookService->disable($event, $message);
         $this->logger->error('webhook.subscriber.disabled', [
             'subscriptionId' => $message->subscriptionId,
             'event' => $message->eventName,
@@ -88,7 +90,7 @@ final readonly class EventsToWebhookSubscribers implements EventSubscriberInterf
 
     public function onNewIndex(NewIndexEvent $event): void
     {
-        $this->dispatch(\sprintf('environment.new_index.%s', $event->getEnvironment()->getName()), [
+        $this->webhookService->dispatch(\sprintf('environment.new_index.%s', $event->getEnvironment()->getName()), [
             'environment' => $event->getEnvironment()->getName(),
             'index' => $event->getIndex(),
             'aliases' => $event->getAliases(),
@@ -98,7 +100,7 @@ final readonly class EventsToWebhookSubscribers implements EventSubscriberInterf
 
     public function onDelete(RevisionDeleteEvent $event): void
     {
-        $this->dispatch('content.delete', [
+        $this->webhookService->dispatch('content.delete', [
             'environment' => $event->getEnvironment()->getName(),
             'alias' => $event->getEnvironment()->getAlias(),
             'content_type' => $event->getRevision()->giveContentType()->getName(),
@@ -106,24 +108,13 @@ final readonly class EventsToWebhookSubscribers implements EventSubscriberInterf
         ]);
     }
 
-    /**
-     * @param mixed[] $data
-     */
-    private function dispatch(string $eventName, array $data): void
+    public function onDispatchToWebhook(DispatchToWebhookEvent $event): void
     {
-        $payload = [
-            'event' => $eventName,
-            'data' => $data,
-        ];
+        $this->webhookService->dispatch($event->name, $event->data);
+    }
 
-        foreach ($this->repository->findEnabled() as $subscription) {
-            if (!\in_array($eventName, $subscription->getEvents(), true)) {
-                continue;
-            }
-
-            $this->bus->dispatch(
-                new WebhookSubscriberMessage($subscription->getId(), $eventName, $payload)
-            );
-        }
+    public function onValidateWebhookSubscription(ValidateWebhookSubscriptionEvent $event): void
+    {
+        $this->webhookService->validate($event->webhookSubscription);
     }
 }

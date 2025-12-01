@@ -36,9 +36,12 @@
             <tag name="doctrine.orm.entity_listener" event="preRemove" entity="EMS\CoreBundle\Entity\Revision" lazy="true" entity_manager="default" method="preRemoveRevision"/>
             <tag name="doctrine.orm.entity_listener" event="postRemove" entity="EMS\CoreBundle\Entity\Revision" lazy="true" entity_manager="default" method="postRemoveRevision"/>
         </service>
-        <service id="emsco.event_listener.events_to_webhook_subscribers" class="EMS\CoreBundle\EventListener\EventsToWebhookSubscribers">
+        <service id="emsco.service.webhook" class="EMS\CoreBundle\Service\WebhookService">
             <argument type="service" id="ems.repository.webhook_subscription"/>
             <argument type="service" id="messenger.default_bus"/>
+        </service>
+        <service id="emsco.event_listener.events_to_webhook_subscribers" class="EMS\CoreBundle\EventListener\EventsToWebhookSubscribers">
+            <argument type="service" id="emsco.service.webhook"/>
             <argument type="service" id="logger"/>
             <tag name="kernel.event_subscriber" />
         </service>

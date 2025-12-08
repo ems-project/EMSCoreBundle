@@ -215,6 +215,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('emsco_display_name', $this->displayName(...)),
             new TwigFilter('emsco_date_difference', $this->dateDifference(...)),
             new TwigFilter('emsco_debug', $this->debug(...)),
+            new TwigFilter('emsco_src_path', $this->srcPath(...)),
             new TwigFilter('emsco_search', $this->search(...)),
             new TwigFilter('emsco_search_query', $this->searchQuery(...)),
             new TwigFilter('emsco_call_user_func', $this->callUserFunc(...)),
@@ -304,7 +305,7 @@ class AppExtension extends AbstractExtension
                 'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '6.0.0', 'emsco_internal_links'),
             ]),
             new TwigFilter('src_path', $this->srcPath(...), [
-                'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '6.0.0'),
+                'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '6.0.0', 'emsco_src_path'),
             ]),
             new TwigFilter('get_user', $this->getUser(...), [
                 'deprecation_info' => new DeprecatedCallableInfo('elasticms/core-bundle', '6.0.0', 'emsco_get_user'),

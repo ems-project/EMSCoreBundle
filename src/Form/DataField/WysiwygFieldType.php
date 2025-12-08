@@ -83,7 +83,7 @@ class WysiwygFieldType extends DataFieldType
             if (null !== $assets && \is_string($hash) && null !== $saveDir) {
                 $this->assetRuntime->unzip($hash, $saveDir);
             }
-            if (null === $saveDir && $contentCss) {
+            if ($hash && null === $saveDir && $contentCss) {
                 $contentCss = $this->router->generate('ems_asset_in_archive', [
                     'hash' => $hash,
                     'path' => $contentCss,

@@ -928,7 +928,7 @@ class RevisionRepository extends EntityRepository
         $qb
             ->addSelect('er_all')
             ->join('r.contentType', 'c')
-            ->leftJoin('r.environmentRevisions', 'er_all')
+            ->leftJoin('r.environmentRevisions', 'er_all', Join::WITH, $qb->expr()->isNull('er_all.deleted'))
             ->join(
                 'r.environmentRevisions',
                 'er_env',

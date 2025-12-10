@@ -11,6 +11,7 @@ use Doctrine\DBAL\Query\QueryBuilder as DBALQueryBuilder;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -925,15 +926,22 @@ class RevisionRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('r');
         $qb
-            ->addSelect('er')
+            ->addSelect('er_all')
             ->join('r.contentType', 'c')
-            ->join('r.environmentRevisions', 'er')
-            ->andWhere($qb->expr()->eq('er.environment', ':environment'))
+            ->leftJoin('r.environmentRevisions', 'er_all', Join::WITH, $qb->expr()->isNull('er_all.deleted'))
+            ->join(
+                'r.environmentRevisions',
+                'er_env',
+                Join::WITH,
+                $qb->expr()->andX(
+                    $qb->expr()->eq('er_env.environment', ':environment'),
+                    $qb->expr()->isNull('er_env.deleted')
+                )
+            )
             ->andWhere($qb->expr()->eq('r.versionUuid', ':version_uuid'))
             ->andWhere($qb->expr()->eq('c.deleted', $qb->expr()->literal(false)))
             ->andWhere($qb->expr()->eq('c.active', $qb->expr()->literal(true)))
             ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
-            ->andWhere($qb->expr()->isNull('er.deleted'))
             ->setParameters(new ArrayCollection([
                 new Parameter('version_uuid', $versionUuid),
                 new Parameter('environment', $defaultEnvironment),

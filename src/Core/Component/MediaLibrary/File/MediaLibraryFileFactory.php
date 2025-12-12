@@ -28,7 +28,7 @@ class MediaLibraryFileFactory
             $config->fieldFolder => $parentFolder?->getPath()->getValue().'/',
         ]);
 
-        $document = Document::fromData($config->contentType, $uuid->toString(), $rawData);
+        $document = Document::fromData($config->contentType->getName(), $uuid->toString(), $rawData);
 
         return $this->createFromDocument($config, $document);
     }

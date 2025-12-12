@@ -354,7 +354,7 @@ class DataService
         });
         unset($revisionType);
 
-        return Document::fromData($contentType, $revision->giveOuuid(), $result);
+        return Document::fromData($contentType->getName(), $revision->giveOuuid(), $result);
     }
 
     /**
@@ -1946,7 +1946,7 @@ class DataService
         });
         unset($revisionType);
 
-        return Document::fromData($contentType, $ouuid, $result);
+        return Document::fromData($contentType->getName(), $ouuid, $result);
     }
 
     public function lockAllRevisions(\DateTime $until, string $by): int

@@ -35,7 +35,7 @@ readonly class JobHandler
         }
 
         try {
-            $runnerId = $this->runnerManager->startJob($job);
+            $runnerId = $this->runnerManager->startJob($tag, (string) $job->getId(), $job->getCommand());
             $this->logger->info('job_handler.runner_started', ['jobId' => $runnerId]);
         } catch (RunnerNotFoundException) {
             $this->logger->info('job_handler.runner_not_found', ['tag' => $tag]);

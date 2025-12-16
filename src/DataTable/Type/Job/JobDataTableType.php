@@ -44,6 +44,7 @@ class JobDataTableType extends AbstractEntityTableType
 
         $table->addColumn(t('field.command', [], 'emsco-core'), 'command');
         $table->addColumn(t('field.tag', [], 'emsco-core'), 'tag');
+        $table->addColumn(t('field.user', [], 'emsco-core'), 'user');
 
         $table->addColumnDefinition(new TemplateBlockTableColumn(
             label: t('field.status', [], 'emsco-core'),

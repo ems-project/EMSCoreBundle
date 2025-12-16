@@ -129,6 +129,7 @@ class EntitiesController
             'done' => $job->getDone(),
             'output' => $job->getOutput(),
             'started' => $job->getStarted(),
+            'status' => $job->getStatus(),
         ]);
     }
 

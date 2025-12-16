@@ -797,11 +797,24 @@ class RevisionRepository extends EntityRepository
     }
 
     /**
+     * @param string[] $circles
+     *
      * @return Revision[]
      */
-    public function findAllDrafts(): array
+    public function findAllDrafts(array $circles = []): array
     {
-        return $this->makeQueryBuilder(isDraft: true)->orderBy('r.id', 'asc')->getQuery()->execute();
+        $qb = $this->makeQueryBuilder(isDraft: true)->orderBy('r.id', 'asc');
+
+        if (\count($circles) > 0) {
+            $inCircles = $qb->expr()->orX();
+            foreach ($circles as $counter => $circle) {
+                $inCircles->add($qb->expr()->like('r.circles', ':circle'.$counter));
+                $qb->setParameter('circle'.$counter, '%'.$circle.'%');
+            }
+            $qb->andWhere($inCircles);
+        }
+
+        return $qb->getQuery()->execute();
     }
 
     /**

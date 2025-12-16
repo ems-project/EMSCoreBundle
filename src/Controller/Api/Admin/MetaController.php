@@ -56,4 +56,29 @@ class MetaController
 
         return new JsonResponse($contentTypes);
     }
+
+    public function drafts(Request $request): Response
+    {
+        $drafts = [];
+        $includeRawData = $request->query->getBoolean('includeRawData', false);
+        $circles = $request->query->all('circles');
+
+        foreach ($this->revisionService->findAllDrafts($circles) as $revision) {
+            $draft = [
+                'id' => (string) $revision->getId(),
+                'ouuid' => $revision->getOuuid(),
+                'circles' => $revision->getCircles(),
+                'save_date' => $revision->getDraftSaveDate()?->format(\DATE_ATOM),
+                'created' => $revision->getCreated()->format(\DATE_ATOM),
+            ];
+
+            if ($includeRawData) {
+                $draft['raw_data'] = $revision->getRawData();
+            }
+
+            $drafts[] = $draft;
+        }
+
+        return new JsonResponse($drafts);
+    }
 }

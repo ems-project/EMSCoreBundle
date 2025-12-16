@@ -10,7 +10,12 @@
            format="json">
         <option key="openapi">true</option>
     </route>
-
+    <route id="emsco_api_meta_environments" path="/environments"
+           controller="EMS\CoreBundle\Controller\Api\Admin\MetaController::environments"
+           methods="GET"
+           format="json">
+        <option key="openapi">true</option>
+    </route>
     <route id="emsco_api_meta_info_documents" path="/info/documents"
            controller="EMS\CoreBundle\Controller\Api\Admin\MetaController::infoDocuments"
            methods="POST"

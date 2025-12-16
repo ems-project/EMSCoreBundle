@@ -92,6 +92,19 @@ class EnvironmentService implements EntityServiceInterface
     }
 
     /**
+     * @return array<Environment>
+     */
+    public function findEnvironments(?bool $managed = null, ?bool $snapshot = null): array
+    {
+        $criteria = \array_filter([
+            'managed' => $managed,
+            'snapshot' => $snapshot,
+        ], static fn ($value) => null !== $value);
+
+        return $this->environmentRepository->findBy($criteria, ['orderKey' => 'ASC']);
+    }
+
+    /**
      * @return Environment[]
      */
     public function getEnvironments(): array

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Api\Admin;
 
 use EMS\CommonBundle\Common\EMSLinkCollection;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\ContentTypeService;
+use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
@@ -19,6 +21,7 @@ class MetaController
     public function __construct(
         private readonly ContentTypeService $contentTypeService,
         private readonly RevisionService $revisionService,
+        private readonly EnvironmentService $environmentService,
     ) {
     }
 
@@ -80,5 +83,19 @@ class MetaController
         }
 
         return new JsonResponse($drafts);
+    }
+
+    public function environments(Request $request): Response
+    {
+        $environments = $this->environmentService->findEnvironments(
+            managed: $request->query->has('managed') ? $request->query->getBoolean('managed') : null,
+            snapshot: $request->query->has('snapshot') ? $request->query->getBoolean('snapshot') : null,
+        );
+
+        return new JsonResponse(\array_map(fn (Environment $environment) => [
+            'name' => $environment->getName(),
+            'managed' => $environment->getManaged(),
+            'snapshot' => $environment->getSnapshot(),
+        ], $environments));
     }
 }

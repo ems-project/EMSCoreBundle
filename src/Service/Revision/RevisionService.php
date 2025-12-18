@@ -212,6 +212,16 @@ class RevisionService implements RevisionServiceInterface
     }
 
     /**
+     * @param string[] $circles
+     *
+     * @return iterable<Revision>
+     */
+    public function findAllDrafts(array $circles = []): iterable
+    {
+        return yield from $this->revisionRepository->findAllDrafts($circles);
+    }
+
+    /**
      * @return iterable|Revision[]
      */
     public function findAllDraftsByContentTypeName(string $contentTypeName): iterable

@@ -352,10 +352,18 @@
             <argument type="service" id="ems.service.data"/>
             <tag name="console.command"/>
         </service>
+        <service id="ems.revisions.lock_all" class="EMS\CoreBundle\Command\Revision\LockAllCommand">
+            <argument type="service" id="ems.service.data"/>
+            <tag name="console.command"/>
+        </service>
         <service id="ems.revisions.unlock" class="EMS\CoreBundle\Command\Revision\UnlockCommand">
             <argument type="service" id="logger"/>
             <argument type="service" id="ems.service.data"/>
             <argument type="service" id="ems.service.contenttype"/>
+            <tag name="console.command"/>
+        </service>
+        <service id="ems.revisions.unlock_all" class="EMS\CoreBundle\Command\Revision\UnLockAllCommand">
+            <argument type="service" id="ems.service.data"/>
             <tag name="console.command"/>
         </service>
         <service id="ems.job.run" class="EMS\CoreBundle\Command\JobCommand">

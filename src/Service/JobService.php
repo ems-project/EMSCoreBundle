@@ -205,10 +205,7 @@ class JobService implements EntityServiceInterface
         $job->setStarted(true);
         $this->repository->save($job);
 
-        $output = $this->getJobOutput($job);
-        $output->writeln('Job ready to be launch');
-
-        return $output;
+        return $this->getJobOutput($job);
     }
 
     public function finish(int $jobId, ?string $errorMessage = null): void

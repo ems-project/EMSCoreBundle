@@ -111,6 +111,7 @@
         <service id="EMS\CoreBundle\Controller\Api\Admin\MetaController">
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="EMS\CoreBundle\Service\EnvironmentService" />
             <tag name="controller.service_arguments"/>
         </service>
         <service id="EMS\CoreBundle\Controller\Api\Admin\InfoController">

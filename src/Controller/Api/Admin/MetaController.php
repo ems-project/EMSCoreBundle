@@ -13,7 +13,6 @@ use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MetaController
@@ -35,7 +34,7 @@ class MetaController
         return new JsonResponse(['info' => $this->revisionService->getInfos($environments, $emsLinks)]);
     }
 
-    public function contentType(string $contentTypeName): Response
+    public function contentType(string $contentTypeName): JsonResponse
     {
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (false === $contentType) {
@@ -48,7 +47,7 @@ class MetaController
         ]);
     }
 
-    public function contentTypes(): Response
+    public function contentTypes(): JsonResponse
     {
         $contentTypes = [];
         foreach ($this->contentTypeService->getAll() as $contentType) {
@@ -60,7 +59,7 @@ class MetaController
         return new JsonResponse($contentTypes);
     }
 
-    public function drafts(Request $request): Response
+    public function drafts(Request $request): JsonResponse
     {
         $drafts = [];
         $includeRawData = $request->query->getBoolean('includeRawData', false);
@@ -85,7 +84,7 @@ class MetaController
         return new JsonResponse($drafts);
     }
 
-    public function environments(Request $request): Response
+    public function environments(Request $request): JsonResponse
     {
         $environments = $this->environmentService->findEnvironments(
             managed: $request->query->has('managed') ? $request->query->getBoolean('managed') : null,
@@ -97,5 +96,13 @@ class MetaController
             'managed' => $environment->getManaged(),
             'snapshot' => $environment->getSnapshot(),
         ], $environments));
+    }
+
+    public function aliasAttachEnvironment(Request $request): JsonResponse
+    {
+        $content = Json::decode(Type::string($request->getContent()));
+        $this->environmentService->attachToAlias($content['environment'], $content['alias']);
+
+        return new JsonResponse(['success' => true]);
     }
 }

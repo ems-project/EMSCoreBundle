@@ -16,6 +16,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\Environment\EnvironmentsRevision;
+use EMS\CoreBundle\Core\Environment\Index;
 use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -27,6 +28,7 @@ use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\EnvironmentRevisionRepository;
 use EMS\CoreBundle\Repository\FilterRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class EnvironmentService implements EntityServiceInterface
@@ -55,6 +57,24 @@ class EnvironmentService implements EntityServiceInterface
             throw new \RuntimeException('Not found repository');
         }
         $this->environmentRepository = $environmentRepository;
+    }
+
+    public function attachToAlias(string $environmentName, string $targetAlias): void
+    {
+        $aliases = $this->aliasService->getAliases();
+
+        $environment = $this->giveByName($environmentName);
+        $indexes = $aliases[$environment->getAlias()]['indexes'] ?? [];
+        $index = \array_shift($indexes);
+
+        if (!$index instanceof Index) {
+            throw new \RuntimeException(\sprintf('Could not find index for environment %s', $environment->getName()));
+        }
+        if (!isset($aliases[$targetAlias])) {
+            throw new NotFoundHttpException(\sprintf('Alias "%s" does not exist', $targetAlias));
+        }
+
+        $this->aliasService->updateAlias($targetAlias, ['add' => [$index->name]]);
     }
 
     public function createEnvironment(string $name, string $color = 'default', bool $updateReferrers = false): Environment

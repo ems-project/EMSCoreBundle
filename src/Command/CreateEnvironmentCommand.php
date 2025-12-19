@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
+use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Psr\Log\LoggerInterface;
@@ -27,6 +28,8 @@ class CreateEnvironmentCommand extends AbstractCommand
     final public const string OPTION_STRICT = 'strict';
     final public const string OPTION_UPDATE_REFERRERS = 'update-referrers';
     final public const string OPTION_POSITION = 'position';
+    final public const string OPTION_ROLE_PUBLISH = 'role-publish';
+    final public const string OPTION_COLOR = 'color';
 
     public function __construct(
         private readonly LoggerInterface $logger,
@@ -63,6 +66,19 @@ class CreateEnvironmentCommand extends AbstractCommand
                 InputOption::VALUE_REQUIRED,
                 'Specifies the position at which the environment should be created'
             )
+            ->addOption(
+                self::OPTION_COLOR,
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Specifies the color of the environment',
+                'default'
+            )
+            ->addOption(
+                self::OPTION_ROLE_PUBLISH,
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Sets the publishing role for the environment (use false to disable publishing)'
+            )
         ;
     }
 
@@ -91,8 +107,10 @@ class CreateEnvironmentCommand extends AbstractCommand
             $updateReferrers = (bool) $input->getOption(self::OPTION_UPDATE_REFERRERS);
             $environment = $this->environmentService->createEnvironment(
                 name: $environmentName,
+                color: $this->getOptionString(self::OPTION_COLOR),
                 updateReferrers: $updateReferrers,
-                position: $this->getOptionIntNull(self::OPTION_POSITION)
+                position: $this->getOptionIntNull(self::OPTION_POSITION),
+                rolePublish: $this->getRolePublish(),
             );
         } catch (\Exception $e) {
             $this->io->error($e->getMessage());
@@ -140,6 +158,17 @@ class CreateEnvironmentCommand extends AbstractCommand
             $this->setEnvironmentNameArgument($input, $message);
             $this->checkEnvironmentNameArgument($input);
         }
+    }
+
+    private function getRolePublish(): ?string
+    {
+        $rolePublish = $this->input->getOption(self::OPTION_ROLE_PUBLISH);
+
+        return match (true) {
+            'false' === $rolePublish => Roles::NOT_DEFINED,
+            \is_string($rolePublish) => $rolePublish,
+            default => null,
+        };
     }
 
     private function setEnvironmentNameArgument(InputInterface $input, string $message): string

@@ -213,4 +213,27 @@ class EnvironmentRepository extends EntityRepository
 
         return $qb->executeQuery()->fetchAllKeyValue();
     }
+
+    public function getMaxOrder(): int
+    {
+        return (int) $this->createQueryBuilder('e')
+            ->select('COALESCE(MAX(e.orderKey), 0)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function shiftOrderKeyFrom(int $position, int $offset): void
+    {
+        if (!\in_array($offset, [1, -1], true)) {
+            throw new \InvalidArgumentException('Offset must be 1 or -1.');
+        }
+
+        $this->createQueryBuilder('e')
+            ->update()
+            ->set('e.orderKey', \sprintf('e.orderKey %+d', $offset))
+            ->where('e.orderKey >= :position')
+            ->setParameter('position', $position)
+            ->getQuery()
+            ->execute();
+    }
 }

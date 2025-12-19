@@ -77,7 +77,7 @@ class EnvironmentService implements EntityServiceInterface
         $this->aliasService->updateAlias($targetAlias, ['add' => [$index->name]]);
     }
 
-    public function createEnvironment(string $name, string $color = 'default', bool $updateReferrers = false, ?int $position = null): Environment
+    public function createEnvironment(string $name, string $color = 'default', bool $updateReferrers = false, ?int $position = null, ?string $rolePublish = null): Environment
     {
         if (!$this->validateEnvironmentName($name)) {
             throw new \Exception('An environment name must respects the following regex /^[a-z][a-z0-9\-_]*$/');
@@ -90,6 +90,7 @@ class EnvironmentService implements EntityServiceInterface
         $environment->setManaged(true);
         $environment->setUpdateReferrers($updateReferrers);
         $environment->setOrderKey($this->count(context: ['managed' => true]));
+        $environment->setRolePublish($rolePublish);
 
         if (null !== $position) {
             $max = $this->environmentRepository->getMaxOrder();

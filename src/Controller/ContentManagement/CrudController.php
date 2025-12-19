@@ -9,10 +9,12 @@ use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Exception\DataStateException;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\Helpers\Standard\Json;
@@ -37,6 +39,7 @@ class CrudController extends AbstractController
         private readonly FlashMessageLogger $flashMessageLogger,
         private readonly RevisionService $revisionService,
         private readonly StorageManager $storageManager,
+        private readonly EnvironmentService $environmentService,
     ) {
     }
 
@@ -122,6 +125,18 @@ class CrudController extends AbstractController
             'ouuid' => $revision->getOuuid(),
             'id' => $revision->getId(),
         ]);
+    }
+
+    public function environments(string $name, string $ouuid): JsonResponse
+    {
+        $revision = $this->dataService->getNewestRevision($name, $ouuid);
+        $environments = $this->environmentService->getPublishedForRevision($revision, true);
+
+        return new JsonResponse($environments->map(fn (Environment $e) => [
+            'name' => $e->getName(),
+            'label' => $e->getLabel(),
+            'snapshot' => $e->getSnapshot(),
+        ])->toArray());
     }
 
     public function getDraft(int $revisionId): JsonResponse

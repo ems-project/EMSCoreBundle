@@ -220,6 +220,7 @@
             <argument type="service" id="ems.service.contenttype" />
             <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <argument type="service" id="ems.service.revision" />
+            <argument type="service" id="EMS\CoreBundle\Service\EnvironmentService" />
             <call method="setContainer"/>
             <tag name="container.service_subscriber"/>
         </service>

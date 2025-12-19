@@ -76,6 +76,14 @@
         <default key="interface">api</default>
         <requirement key="interface">api|json</requirement>
     </route>
+    <route id="emsco_interface_document_environments" path="/{interface}/data/{name}/environments/{ouuid}"
+           controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::environments"
+           methods="GET"
+           format="json">
+        <option key="openapi">true</option>
+        <default key="interface">api</default>
+        <requirement key="interface">api|json</requirement>
+    </route>
     <route id="emsco_interface_document_delete" path="/{interface}/data/{name}/delete/{ouuid}"
            controller="EMS\CoreBundle\Controller\ContentManagement\CrudController::delete"
            methods="POST"

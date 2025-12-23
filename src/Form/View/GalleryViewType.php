@@ -101,10 +101,14 @@ class GalleryViewType extends ViewType
         }
         $resultSet = $this->elasticaService->search($elasticaSearch);
 
+        $fieldType = $view->getContentType()->getFieldType();
+        $imageAssetConfigIdentifier = $view->getOptions()['imageAssetConfigIdentifier'] ?? null;
+        $imageField = $view->getOptions()['imageField'] ?? null;
+
         return [
             'view' => $view,
-            'field' => $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['imageField']),
-            'imageAssetConfigIdentifier' => $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['imageAssetConfigIdentifier']),
+            'field' => $imageField ? $fieldType->findChildByName($imageField) : null,
+            'imageAssetConfigIdentifier' => $imageAssetConfigIdentifier ? $fieldType->findChildByName($imageAssetConfigIdentifier) : null,
             'contentType' => $view->getContentType(),
             'environment' => $view->getContentType()->getEnvironment(),
             'form' => $form->createView(),

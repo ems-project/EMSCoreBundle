@@ -92,16 +92,21 @@ class CriteriaViewType extends ViewType
 
         $categoryField = false;
         if ($view->getContentType()->getCategoryField()) {
-            $categoryField = $view->getContentType()->getFieldType()->get('ems_'.$view->getContentType()->getCategoryField());
+            $categoryField = $view->getContentType()->getFieldType()->findChildByName($view->getContentType()->getCategoryField());
+        }
+
+        $criteriaField = $view->getOptions()['criteriaField'] ?? null;
+        if ($criteriaField) {
+            $criterionList = $view->getContentType()->getFieldType()->findChildByName($criteriaField);
         }
 
         return [
-            'criteriaField' => $view->getOptions()['criteriaField'],
+            'criteriaField' => $criteriaField,
             'categoryField' => $categoryField,
             'view' => $view,
             'contentType' => $view->getContentType(),
             'environment' => $view->getContentType()->getEnvironment(),
-            'criterionList' => $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['criteriaField']),
+            'criterionList' => $criterionList ?? null,
             'form' => $form->createView(),
         ];
     }

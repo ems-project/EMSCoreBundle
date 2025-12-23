@@ -82,9 +82,12 @@ class CalendarViewType extends ViewType
 
         $form->handleRequest($request);
 
+        $fieldType = $view->getContentType()->getFieldType();
+        $dateRangeField = $view->getOptions()['dateRangeField'] ?? null;
+
         return [
             'view' => $view,
-            'field' => $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['dateRangeField']),
+            'field' => $dateRangeField ? $fieldType->findChildByName($dateRangeField) : null,
             'contentType' => $view->getContentType(),
             'environment' => $view->getContentType()->getEnvironment(),
             'form' => $form->createView(),

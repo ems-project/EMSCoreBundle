@@ -536,3 +536,5 @@ type:
             view          {Customize the menu}
             other         {}
         }
+view:
+    title: '{name} of {plural}'

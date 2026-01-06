@@ -1,0 +1,10 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'emsco-core' %}
+
+{% block title %}{{ 'view.title'|trans({
+    'name': view.label,
+    'label': view.name,
+    'plural': view.contentType.pluralName,
+    'singular': view.contentType.singularName,
+}) }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}

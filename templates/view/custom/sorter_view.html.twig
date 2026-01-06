@@ -1,9 +1,4 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
-
-{% block title %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
-{% block pagetitle %}{{ view.name }} of {{contentType.singularName}}{% endblock %}
-
-
+{% extends '@EMSCore/view/custom/abstract.html.twig' %}
 {% block body %}
 	<div class="row">
 		<div class="col-md-12">

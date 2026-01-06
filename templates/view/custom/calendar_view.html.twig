@@ -1,12 +1,6 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
-
-{% block title %}{{ view.name }} of {{contentType.name}}{% endblock %}
-{% block pagetitle %}{{ view.name }} of {{contentType.name}}{% endblock %}
-
+{% extends '@EMSCore/view/custom/abstract.html.twig' %}
 
 {% block body %}
-      
-      
 	<div class="row">
     	<div class="col-md-12">
             {% include "@EMSCore/elasticsearch/search-form-filter.html.twig" with {

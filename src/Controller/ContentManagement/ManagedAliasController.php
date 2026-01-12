@@ -104,10 +104,6 @@ class ManagedAliasController extends AbstractController
         $submitted = $form->get('indexes')->getData();
         $indexes = \array_keys($form->getConfig()->getOption('indexes'));
 
-        if (empty($submitted)) {
-            return $actions;
-        }
-
         foreach ($indexes as $index) {
             if (\in_array($index, $submitted)) {
                 $actions['add'][] = $index;

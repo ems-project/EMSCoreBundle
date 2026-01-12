@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\EventListener;
 
 use EMS\CoreBundle\Core\Messenger\Message\WebhookSubscriberMessage;
+use EMS\CoreBundle\Event\AliasUpdateEvent;
 use EMS\CoreBundle\Event\DispatchToWebhookEvent;
 use EMS\CoreBundle\Event\NewIndexEvent;
 use EMS\CoreBundle\Event\RevisionDeleteEvent;
@@ -36,6 +37,7 @@ final readonly class EventsToWebhookSubscribers implements EventSubscriberInterf
             RevisionDeleteEvent::class => 'onDelete',
             DispatchToWebhookEvent::class => 'onDispatchToWebhook',
             ValidateWebhookSubscriptionEvent::class => 'onValidateWebhookSubscription',
+            AliasUpdateEvent::class => 'onAliasUpdateSubscription',
         ];
     }
 
@@ -116,5 +118,12 @@ final readonly class EventsToWebhookSubscribers implements EventSubscriberInterf
     public function onValidateWebhookSubscription(ValidateWebhookSubscriptionEvent $event): void
     {
         $this->webhookService->validate($event->webhookSubscription);
+    }
+
+    public function onAliasUpdateSubscription(AliasUpdateEvent $event): void
+    {
+        $this->webhookService->dispatch(\sprintf('alias.update.%s', $event->getAlias()), [
+            'actions' => $event->getActions(),
+        ]);
     }
 }

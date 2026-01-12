@@ -14,6 +14,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\Environment\Index;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\ManagedAlias;
+use EMS\CoreBundle\Event\AliasUpdateEvent;
 use EMS\CoreBundle\Event\NewIndexEvent;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\ManagedAliasRepository;
@@ -336,6 +337,9 @@ class AliasService
         $endpoint = new UpdateAliases();
         $endpoint->setBody(['actions' => $json]);
         $this->elasticaClient->requestEndpoint($endpoint);
+
+        $event = new AliasUpdateEvent($alias, $actions);
+        $this->dispatcher->dispatch($event);
     }
 
     public function removeAlias(string $name): bool

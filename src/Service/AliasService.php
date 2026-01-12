@@ -314,15 +314,26 @@ class AliasService
      */
     public function updateAlias(string $alias, array $actions): void
     {
-        if (empty($actions)) {
-            return;
+        if ($this->hasAlias($alias)) {
+            $existingMembers = \array_keys($this->getAlias($alias)['indexes']);
+        } else {
+            $existingMembers = [];
         }
 
         $json = [];
         foreach ($actions as $type => $indexes) {
             foreach ($indexes as $index) {
+                if ('add' === $type && \in_array($index, $existingMembers)) {
+                    continue;
+                }
+                if ('remove' === $type && !\in_array($index, $existingMembers)) {
+                    continue;
+                }
                 $json[] = [$type => ['index' => $index, 'alias' => $alias]];
             }
+        }
+        if (empty($json)) {
+            return;
         }
 
         $endpoint = new UpdateAliases();

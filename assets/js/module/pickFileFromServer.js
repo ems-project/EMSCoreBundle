@@ -62,7 +62,15 @@ export default class PickFileFromServer {
                     if(mutation.addedNodes.length < 1) {
                         return;
                     }
-                    [].forEach.call(mutation.addedNodes, function(node) {
+                    [].forEach.call(mutation.addedNodes, function (node) {
+                        if (node.nodeType !== Node.ELEMENT_NODE) {
+                            return;
+                        }
+
+                        if (node.matches('div[data-json] > a')) {
+                            addClickCallbacks([node]);
+                        }
+
                         addClickCallbacks(node.querySelectorAll('div[data-json] > a'));
                     });
                 });

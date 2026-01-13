@@ -69,7 +69,9 @@ $.fn.modal.Constructor.prototype.enforceFocus = function() {
     $(document).on('focusin.modal', function (e) {
         if (modal_this.$element[0] !== e.target && !modal_this.$element.has(e.target).length
             && !$(e.target.parentNode).hasClass('cke_dialog_ui_input_select')
-            && !$(e.target.parentNode).hasClass('cke_dialog_ui_input_text')) {
+            && !$(e.target.parentNode).hasClass('cke_dialog_ui_input_text')
+            && !$(e.target).closest('.dataTables_filter').length
+        ) {
             modal_this.$element.focus()
         }
     })

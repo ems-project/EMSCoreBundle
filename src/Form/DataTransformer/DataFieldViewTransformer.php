@@ -22,30 +22,26 @@ class DataFieldViewTransformer implements DataTransformerInterface
     /**
      * Transforms from Norm to View (DataField to array).
      *
-     * @param DataField $data
-     *
      * @return array<mixed>|string|int|float|bool|null
      */
     #[\Override]
-    public function transform($data)
+    public function transform(mixed $value): mixed
     {
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($this->fieldType->getType())->getInnerType();
 
-        return $dataFieldType->viewTransform($data);
+        return $dataFieldType->viewTransform($value);
     }
 
     /**
      * Transforms from View to Norm (array to DataField).
-     *
-     * @param array<mixed>|string|int|float|bool|null $data from the Form
      */
     #[\Override]
-    public function reverseTransform($data): DataField
+    public function reverseTransform(mixed $value): DataField
     {
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($this->fieldType->getType())->getInnerType();
 
-        return $dataFieldType->reverseViewTransform($data, $this->fieldType);
+        return $dataFieldType->reverseViewTransform($value, $this->fieldType);
     }
 }

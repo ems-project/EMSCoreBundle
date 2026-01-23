@@ -12,12 +12,10 @@ use Symfony\Component\Form\DataTransformerInterface;
 class ArrayValuesTransformer implements DataTransformerInterface
 {
     /**
-     * @param mixed[]|null $value
-     *
      * @return mixed[]|null
      */
     #[\Override]
-    public function transform($value)
+    public function transform(mixed $value): ?array
     {
         if (null === $value) {
             return null;
@@ -30,12 +28,10 @@ class ArrayValuesTransformer implements DataTransformerInterface
     }
 
     /**
-     * @param mixed[]|null $value
-     *
      * @return mixed[]|null
      */
     #[\Override]
-    public function reverseTransform($value)
+    public function reverseTransform(mixed $value): ?array
     {
         return $this->transform($value);
     }

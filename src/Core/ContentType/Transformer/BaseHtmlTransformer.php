@@ -19,6 +19,9 @@ abstract class BaseHtmlTransformer extends AbstractTransformer
         if (!\str_contains((string) $data, '<body')) {
             $transformed = \str_replace(['<body>', '</body>'], '', $transformed);
         }
+        if (!\str_contains((string) $data, '<head')) {
+            $transformed = \str_replace(['<head>', '</head>'], '', $transformed);
+        }
 
         if (\str_starts_with((string) $data, '<!DOCTYPE')) {
             $transformed = <<<transformed

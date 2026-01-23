@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\DataField;
 
-use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
@@ -38,19 +37,6 @@ class TextStringFieldType extends DataFieldType
         $view->vars['class'] = null;
         $view->vars['attr']['placeholder'] = $options['placeholder'];
     }
-
-    //     /**
-    //      *
-    //      * {@inheritDoc}
-    //      * @see \EMS\CoreBundle\Form\DataField\DataFieldType::viewTransform()
-    //      */
-    //     public function viewTransform(DataField $data){
-    //         $out = parent::viewTransform($data);
-    //         if(empty($out)) {
-    //             return "";
-    //         }
-    //         return $out;
-    //     }
 
     #[\Override]
     public static function getIcon(): string

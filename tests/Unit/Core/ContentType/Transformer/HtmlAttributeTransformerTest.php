@@ -147,11 +147,11 @@ class HtmlAttributeTransformerTest extends AbstractTransformerTestCase
             <div id="table-test">
                 <h1 style="font-size: 18px;">Table TEST</h1>
                 <table>
-                    <tr>
+                    <tbody><tr>
                         <td>Col1</td>
                         <td>Col2</td>
                     </tr>
-                </table>
+                </tbody></table>
             </div>
             HTML;
 
@@ -195,7 +195,7 @@ class HtmlAttributeTransformerTest extends AbstractTransformerTestCase
     public function testHtmlBodyTagsNotRemoved(): void
     {
         $input = '<html> <body> <h1 style="font-size: 10px;">TEST</h1> </body> </html>';
-        $output = '<html> <body> <h1>TEST</h1> </body> </html>';
+        $output = '<html><body> <h1>TEST</h1>  </body></html>';
 
         $this->assertEqualsInputOutPut($input, $output, [
             'attribute' => 'style',

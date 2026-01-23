@@ -20,7 +20,7 @@ readonly class EntityNameModelTransformer implements DataTransformerInterface
     }
 
     #[\Override]
-    public function transform(mixed $value)
+    public function transform(mixed $value): EntityInterface|array|null
     {
         if (null === $value) {
             return null;
@@ -30,7 +30,7 @@ readonly class EntityNameModelTransformer implements DataTransformerInterface
     }
 
     #[\Override]
-    public function reverseTransform(mixed $value)
+    public function reverseTransform(mixed $value): string|array|null
     {
         if (null === $value) {
             return null;

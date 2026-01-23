@@ -51,20 +51,19 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
     ];
 
     /**
-     * @param mixed        $object
      * @param array<mixed> $context
      *
      * @return array<mixed>
      */
     #[\Override]
-    public function normalize($object, $format = null, array $context = []): array
+    public function normalize(mixed $data, $format = null, array $context = []): array
     {
-        $data = [];
+        $value = [];
 
-        $reflectionClass = new \ReflectionClass($object);
+        $reflectionClass = new \ReflectionClass($data);
 
-        $data['__jsonclass__'] = [
-            $object::class,
+        $value['__jsonclass__'] = [
+            $data::class,
             [], // constructor arguments
         ];
         // Parsing all methods of the object
@@ -78,13 +77,13 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
             }
 
             $property = \lcfirst(('get' === \strtolower(\substr($reflectionMethod->getName(), 0, 3))) ? \substr($reflectionMethod->getName(), 3) : \substr($reflectionMethod->getName(), 2));
-            $value = $reflectionMethod->invoke($object);
+            $value = $reflectionMethod->invoke($data);
             if ('deleted' == $property && true == $value) {
                 break;
             }
             if (null != $value) {
                 // If you want to parse a new object, provide here the way to normalize it.
-                if ($object instanceof ContentType) {
+                if ($data instanceof ContentType) {
                     if (\in_array($property, $this->toSkip['ContentType'])) {
                         continue;
                     }
@@ -105,7 +104,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                         }
                         $value = $arrayValues;
                     }
-                } elseif ($object instanceof FieldType) {
+                } elseif ($data instanceof FieldType) {
                     if (\in_array($property, $this->toSkip['FieldType'])) {
                         continue;
                     }
@@ -118,32 +117,27 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                         }
                         $value = $arrayValues;
                     }
-                } elseif ($object instanceof Template) {
+                } elseif ($data instanceof Template) {
                     if (\in_array($property, $this->toSkip['Template'])) {
                         continue;
                     }
-                } elseif ($object instanceof View) {
+                } elseif ($data instanceof View) {
                     if (\in_array($property, $this->toSkip['View'])) {
                         continue;
                     }
                 }
             }
-            $data[$property] = $value;
+            $value[$property] = $value;
         }
 
-        return $data;
+        return $value;
     }
 
     /**
-     * @param array<mixed> $data
-     * @param string       $class
-     * @param string|null  $format
      * @param array<mixed> $context
-     *
-     * @return array<mixed>|object
      */
     #[\Override]
-    public function denormalize($data, $class, $format = null, array $context = []): array|object
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
         $class = $data['__jsonclass__'][0];
         $reflectionClass = new \ReflectionClass($class);
@@ -191,14 +185,25 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
     }
 
     #[\Override]
-    public function supportsNormalization($data, $format = null): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return \is_object($data) && 'json' === $format;
     }
 
     #[\Override]
-    public function supportsDenormalization($data, $type, $format = null): bool
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
     {
         return isset($data['__jsonclass__']) && 'json' === $format;
+    }
+
+    #[\Override]
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            ContentType::class => true,
+            FieldType::class => true,
+            Template::class => true,
+            View::class => true,
+        ];
     }
 }

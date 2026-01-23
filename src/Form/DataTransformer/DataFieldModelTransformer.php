@@ -32,33 +32,27 @@ class DataFieldModelTransformer implements DataTransformerInterface
 
     /**
      * Transforms from Model to Norm (array to Datafield).
-     *
-     * @param array<mixed>|float|int|string|bool|null $data
      */
     #[\Override]
-    public function transform($data): DataField
+    public function transform(mixed $value): DataField
     {
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($this->fieldType->getType())->getInnerType();
         $dataFieldType->setFormOptions($this->formOptions);
 
-        return $dataFieldType->modelTransform($data, $this->fieldType);
+        return $dataFieldType->modelTransform($value, $this->fieldType);
     }
 
     /**
      * Transforms from Norm to Model (DataField to array).
-     *
-     * @param DataField $data
-     *
-     * @return array<mixed>|float|int|string|bool|null
      */
     #[\Override]
-    public function reverseTransform($data)
+    public function reverseTransform(mixed $value): mixed
     {
         /** @var DataFieldType $dataFieldType */
         $dataFieldType = $this->formRegistry->getType($this->fieldType->getType())->getInnerType();
         $dataFieldType->setFormOptions($this->formOptions);
 
-        return $dataFieldType->reverseModelTransform($data);
+        return $dataFieldType->reverseModelTransform($value);
     }
 }

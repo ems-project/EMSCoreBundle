@@ -79,6 +79,10 @@ class ContentTypeRoles implements \ArrayAccess
     #[\Override]
     public function offsetSet($offset, $value): void
     {
+        if (null === $offset) {
+            return;
+        }
+
         $this->roles[$offset] = $value;
     }
 

@@ -531,7 +531,11 @@ class ContentTypeService implements EntityServiceInterface
 
     public function getCircleContentType(): ?ContentType
     {
-        return $this->contentTypeArrayByName[$this->circleContentTypeName] ?? null;
+        if (null === $circleContentTypeName = $this->circleContentTypeName) {
+            return null;
+        }
+
+        return $this->contentTypeArrayByName[$circleContentTypeName] ?? null;
     }
 
     public function getContentTypeMenu(): Menu

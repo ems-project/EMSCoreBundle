@@ -102,8 +102,12 @@ class CriteriaController extends AbstractController
                             }
                         }
                         if (!$found) {
-                            $filters[$criteriaUpdateConfig->getRowCriteria()] = $rowId;
-                            $filters[$criteriaUpdateConfig->getColumnCriteria()] = $colId;
+                            if (null !== $rowCriteria = $criteriaUpdateConfig->getRowCriteria()) {
+                                $filters[$rowCriteria] = $rowId;
+                            }
+                            if (null !== $columnCriteria = $criteriaUpdateConfig->getColumnCriteria()) {
+                                $filters[$columnCriteria] = $colId;
+                            }
 
                             if ('internal' == $view->getOptions()['criteriaMode']) {
                                 if (isset($itemToFinalize[$toremove->getValue()])) {
@@ -155,8 +159,12 @@ class CriteriaController extends AbstractController
                             }
                         }
                         if (!$found) {
-                            $filters[$criteriaUpdateConfig->getRowCriteria()] = $rowId;
-                            $filters[$criteriaUpdateConfig->getColumnCriteria()] = $colId;
+                            if (null !== $rowCriteria = $criteriaUpdateConfig->getRowCriteria()) {
+                                $filters[$rowCriteria] = $rowId;
+                            }
+                            if (null !== $columnCriteria = $criteriaUpdateConfig->getColumnCriteria()) {
+                                $filters[$columnCriteria] = $colId;
+                            }
 
                             if ('internal' == $view->getOptions()['criteriaMode']) {
                                 if (isset($itemToFinalize[$toadd->getValue()])) {
@@ -187,7 +195,7 @@ class CriteriaController extends AbstractController
 
                                 $revision = $this->addCriteriaRevision($view, $rawData, $targetFieldName, $itemToFinalize);
                                 if ($revision) {
-                                    $itemToFinalize[$revision->getOuuid()] = $revision;
+                                    $itemToFinalize[$revision->giveOuuid()] = $revision;
                                 }
                             }
                         }
@@ -413,12 +421,18 @@ class CriteriaController extends AbstractController
         //        $rowField = $criteriaField->getChildByPath($criteriaUpdateConfig->getRowCriteria());
 
         $table = [];
-        /** @var ObjectChoiceListItem $rowItem */
-        foreach ($criteriaChoiceLists[$criteriaUpdateConfig->getRowCriteria()] as $rowItem) {
-            $table[$rowItem->getValue()] = [];
-            /** @var ObjectChoiceListItem $columnItem */
-            foreach ($criteriaChoiceLists[$criteriaUpdateConfig->getColumnCriteria()] as $columnItem) {
-                $table[$rowItem->getValue()][$columnItem->getValue()] = null;
+
+        $rowCriteria = $criteriaUpdateConfig->getRowCriteria();
+        $columnCriteria = $criteriaUpdateConfig->getColumnCriteria();
+
+        if (null !== $rowCriteria && null !== $columnCriteria) {
+            foreach ($criteriaChoiceLists[$rowCriteria] as $rowItem) {
+                /* @var ObjectChoiceListItem $rowItem */
+                $table[$rowItem->getValue()] = [];
+                /** @var ObjectChoiceListItem $columnItem */
+                foreach ($criteriaChoiceLists[$columnCriteria] as $columnItem) {
+                    $table[$rowItem->getValue()][$columnItem->getValue()] = null;
+                }
             }
         }
 
@@ -1043,6 +1057,14 @@ class CriteriaController extends AbstractController
         if (!\is_array($criterionList)) {
             $criterionList = [$criterionList];
         }
+
+        $rowCriteria = $config->getRowCriteria();
+        $columnCriteria = $config->getColumnCriteria();
+
+        if (null === $rowCriteria || null === $columnCriteria) {
+            return;
+        }
+
         foreach ($criterionList as $value) {
             if (isset($criteriaChoiceLists[$criteriaName][$value])) {
                 $context[$criteriaName] = $value;
@@ -1051,10 +1073,10 @@ class CriteriaController extends AbstractController
                     $this->addToTable($choice, $table, $criterion, $criteriaNames, $criteriaChoiceLists, $config, $context);
                 } else {
                     // all criterion apply the current choice can be added to the table depending the context
-                    if (!isset($table[$context[$config->getRowCriteria()]][$context[$config->getColumnCriteria()]])) {
-                        $table[$context[$config->getRowCriteria()]][$context[$config->getColumnCriteria()]] = [];
+                    if (!isset($table[$context[$rowCriteria]][$context[$columnCriteria]])) {
+                        $table[$context[$rowCriteria]][$context[$columnCriteria]] = [];
                     }
-                    $table[$context[$config->getRowCriteria()]][$context[$config->getColumnCriteria()]][] = $choice;
+                    $table[$context[$rowCriteria]][$context[$columnCriteria]][] = $choice;
                 }
             }
         }

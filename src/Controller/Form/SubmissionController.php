@@ -79,7 +79,7 @@ final class SubmissionController extends AbstractController
 
     public function process(Request $request, UserInterface $user): RedirectResponse
     {
-        $this->formSubmissionService->process($request->get('formSubmission'), $user);
+        $this->formSubmissionService->process($request->attributes->getString('formSubmission'), $user);
 
         return $this->redirectToRoute('form.submissions');
     }

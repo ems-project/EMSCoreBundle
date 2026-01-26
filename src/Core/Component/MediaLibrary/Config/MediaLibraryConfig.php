@@ -75,7 +75,7 @@ class MediaLibraryConfig implements ConfigInterface
 
     public function getSort(?string $id): ?MediaLibraryConfigSort
     {
-        if (isset($this->sort[$id])) {
+        if (null !== $id && isset($this->sort[$id])) {
             return $this->sort[$id];
         }
 

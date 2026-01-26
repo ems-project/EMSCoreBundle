@@ -39,9 +39,8 @@ class MediaLibraryController
     ) {
     }
 
-    public function addFile(Request $request): JsonResponse
+    public function addFile(Request $request, ?string $folderId): JsonResponse
     {
-        $folderId = $request->get('folderId');
         $parentFolder = $folderId ? $this->mediaLibraryService->getFolder($folderId) : null;
 
         $newFile = $this->mediaLibraryService->newFile($parentFolder);
@@ -65,9 +64,8 @@ class MediaLibraryController
         return new JsonResponse([], Response::HTTP_CREATED);
     }
 
-    public function addFolder(Request $request): JsonResponse
+    public function addFolder(Request $request, ?string $folderId): JsonResponse
     {
-        $folderId = $request->get('folderId');
         $parentFolder = $folderId ? $this->mediaLibraryService->getFolder($folderId) : null;
 
         $newFolder = $this->mediaLibraryService->newFolder($parentFolder);
@@ -103,10 +101,9 @@ class MediaLibraryController
         return new JsonResponse(['success' => true]);
     }
 
-    public function deleteFiles(Request $request): JsonResponse
+    public function deleteFiles(Request $request, ?string $folderId): JsonResponse
     {
         $selectionFiles = $request->query->getInt('selectionFiles');
-        $folderId = $request->get('folderId');
         $folder = $folderId ? $this->mediaLibraryService->getFolder($folderId) : null;
 
         $componentModal = $this->mediaLibraryService->modal([
@@ -179,11 +176,9 @@ class MediaLibraryController
         return new JsonResponse($componentModal->render());
     }
 
-    public function getFiles(Request $request): JsonResponse
+    public function getFiles(Request $request, ?string $folderId): JsonResponse
     {
         $query = $request->query;
-
-        $folderId = $request->get('folderId');
         $folder = $folderId ? $this->mediaLibraryService->getFolder($folderId) : null;
 
         $sortOrder = $query->get('sortOrder');
@@ -249,10 +244,9 @@ class MediaLibraryController
         return new JsonResponse(['success' => true]);
     }
 
-    public function moveFiles(Request $request): JsonResponse
+    public function moveFiles(Request $request, ?string $folderId): JsonResponse
     {
         $selectionFiles = $request->query->getInt('selectionFiles');
-        $folderId = $request->get('folderId');
         $folder = $folderId ? $this->mediaLibraryService->getFolder($folderId) : null;
         $currentPath = ($folder ? $folder->getPath()->getLabel() : 'Home');
 

@@ -311,7 +311,7 @@ class DataController extends AbstractController
 
         return $this->redirectToRoute(Routes::EDIT_REVISION, [
             'revisionId' => $this->dataService->initNewDraft($type, $ouuid)->getId(),
-            'item' => $request->get('item'),
+            'item' => $request->query->get('item'),
         ]);
     }
 
@@ -649,8 +649,7 @@ class DataController extends AbstractController
 
     public function duplicateWithJsonContent(ContentType $contentType, string $ouuid, Request $request): RedirectResponse
     {
-        $content = $request->get('JSON_BODY');
-        $jsonContent = Json::decode((string) $content);
+        $jsonContent = Json::decode($request->request->getString('JSON_BODY', '{}'));
         $jsonContent = \array_merge($this->dataService->getNewestRevision($contentType->getName(), $ouuid)->getRawData(), $jsonContent);
 
         return $this->intNewDocumentFromArray($contentType, $jsonContent);
@@ -659,8 +658,7 @@ class DataController extends AbstractController
     public function addFromJsonContent(ContentType $contentType, Request $request): RedirectResponse
     {
         try {
-            $content = $request->get('JSON_BODY');
-            $jsonContent = Json::decode((string) $content);
+            $jsonContent = Json::decode($request->request->getString('JSON_BODY', '{}'));
         } catch (\Throwable) {
             $this->logger->error('log.data.revision.add_from_json_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
@@ -801,14 +799,17 @@ class DataController extends AbstractController
             }
 
             if (\in_array($category, ['asset', 'file'])) {
-                if (empty($contentType->getAssetField()) && empty($revision->getRawData()[$contentType->getAssetField()])) {
+                $rawData = $revision->getRawData();
+                $assetField = $contentType->getAssetField();
+
+                if (null === $assetField || isset($rawData[$assetField])) {
                     throw new NotFoundHttpException('Asset field not found for '.$revision);
                 }
 
                 return $this->redirectToRoute('ems_file_view', [
-                    'sha1' => $revision->getRawData()[$contentType->getAssetField()][EmsFields::CONTENT_FILE_HASH_FIELD_] ?? $revision->getRawData()[$contentType->getAssetField()][EmsFields::CONTENT_FILE_HASH_FIELD],
-                    'type' => $revision->getRawData()[$contentType->getAssetField()][EmsFields::CONTENT_MIME_TYPE_FIELD_] ?? $revision->getRawData()[$contentType->getAssetField()][EmsFields::CONTENT_MIME_TYPE_FIELD],
-                    'name' => $revision->getRawData()[$contentType->getAssetField()][EmsFields::CONTENT_FILE_NAME_FIELD_] ?? $revision->getRawData()[$contentType->getAssetField()][EmsFields::CONTENT_FILE_NAME_FIELD],
+                    'sha1' => $rawData[$assetField][EmsFields::CONTENT_FILE_HASH_FIELD_] ?? $rawData[$assetField][EmsFields::CONTENT_FILE_HASH_FIELD],
+                    'type' => $rawData[$assetField][EmsFields::CONTENT_MIME_TYPE_FIELD_] ?? $rawData[$assetField][EmsFields::CONTENT_MIME_TYPE_FIELD],
+                    'name' => $rawData[$assetField][EmsFields::CONTENT_FILE_NAME_FIELD_] ?? $rawData[$assetField][EmsFields::CONTENT_FILE_NAME_FIELD],
                 ]);
             }
         }

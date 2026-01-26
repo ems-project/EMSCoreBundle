@@ -32,7 +32,8 @@ final class TableType extends AbstractType
     public static function getReorderedKeys(string $formName, Request $request): array
     {
         $newOrder = [];
-        foreach ($request->get($formName, [])['reordered'] ?? [] as $id) {
+
+        foreach ($request->request->all($formName)['reordered'] ?? [] as $id) {
             if (!\is_string($id)) {
                 throw new \RuntimeException('Unexpected type for id');
             }

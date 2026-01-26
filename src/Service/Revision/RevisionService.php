@@ -565,7 +565,7 @@ class RevisionService implements RevisionServiceInterface
                 continue;
             }
 
-            $results[$version->getOuuid()] = $this->publishService->publish($version, $environment);
+            $results[$version->giveOuuid()] = $this->publishService->publish($version, $environment);
         }
 
         $published = \array_filter($results, static fn ($result) => 1 === $result);

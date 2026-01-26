@@ -46,7 +46,9 @@ class ModalController extends AbstractController
                     continue;
                 }
                 $id = $node->nodeValue;
-                $targets[$id] = "#$id";
+                if (null !== $id) {
+                    $targets[$id] = "#$id";
+                }
             }
         }
         $anchorTargets = $request->query->get('anchorTargets');

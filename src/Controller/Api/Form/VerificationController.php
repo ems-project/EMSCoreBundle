@@ -35,7 +35,7 @@ final class VerificationController extends AbstractController
     public function getVerification(Request $request): Response
     {
         try {
-            $value = $request->get('value', null);
+            $value = $request->query->get('value');
             if (null === $value) {
                 throw new FormVerificationException('value is required!');
             }

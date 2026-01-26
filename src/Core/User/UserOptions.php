@@ -63,6 +63,10 @@ class UserOptions implements \ArrayAccess
     #[\Override]
     public function offsetSet($offset, $value): void
     {
+        if (null === $offset) {
+            return;
+        }
+
         $this->options[$offset] = $value;
     }
 

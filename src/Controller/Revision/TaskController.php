@@ -41,7 +41,7 @@ final class TaskController extends AbstractController
         $ajaxTemplate = $this->getAjaxTemplate();
 
         if ($revision->hasTaskCurrent()) {
-            $handle = $request->get('handle');
+            $handle = $request->request->getString('handle');
             $formHandle = $this->createForm(RevisionTaskHandleType::class, [], [
                 'task' => $revision->getTaskCurrent(),
                 'user' => $user,

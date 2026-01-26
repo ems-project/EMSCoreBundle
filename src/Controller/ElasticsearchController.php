@@ -610,7 +610,9 @@ class ElasticsearchController extends AbstractController
                 $exportForms = [];
                 $contentTypes = $this->getAllContentType($response);
                 foreach ($contentTypes as $bucket) {
-                    $name = $bucket->getKey();
+                    if (null === $name = $bucket->getKey()) {
+                        continue;
+                    }
                     $contentType = $types[$name];
 
                     $exportForm = $this->createForm(ExportDocumentsType::class, new ExportDocuments(

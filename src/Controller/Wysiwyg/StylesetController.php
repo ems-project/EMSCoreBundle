@@ -29,13 +29,13 @@ class StylesetController extends AbstractController
 
     public function iframe(Request $request, string $name, string $language): Response
     {
-        $emsLink = $request->get('emsLink');
+        $emsLink = $request->query->get('emsLink');
 
         return $this->render("@$this->templateNamespace/wysiwyg_styles_set/iframe.html.twig", [
             'styleSet' => $this->wysiwygStylesSetService->getByName($name),
             'language' => $language,
-            'field' => $request->get('field'),
-            'fieldPath' => $request->get('fieldPath'),
+            'field' => $request->query->get('field'),
+            'fieldPath' => $request->query->get('fieldPath'),
             'emsLink' => $emsLink ? EMSLink::fromText($emsLink) : null,
         ]);
     }

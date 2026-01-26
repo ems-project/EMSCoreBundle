@@ -40,7 +40,8 @@ class RequestListener
     public function onKernelResponse(ResponseEvent $event): void
     {
         $response = $event->getResponse();
-        $redirectUrl = $event->getRequest()->get('redirectToUrl');
+        $redirectUrl = $event->getRequest()->query->get('redirectToUrl');
+
         if ($response instanceof RedirectResponse && \is_string($redirectUrl)) {
             $response->setTargetUrl($redirectUrl);
         }

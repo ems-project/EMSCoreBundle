@@ -15,6 +15,7 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function Symfony\Component\Translation\t;
@@ -82,7 +83,12 @@ class ViewType extends AbstractType
                 'row_attr' => ['class' => 'col-md-6'],
             ]);
         } else {
-            $builder->add('options', Type::string($this->container->get($view->getType())::class), [
+            $viewOptionsType = Type::string($this->container->get($view->getType())::class);
+            if (!\is_subclass_of($viewOptionsType, FormTypeInterface::class)) {
+                throw new \UnexpectedValueException();
+            }
+
+            $builder->add('options', $viewOptionsType, [
                 'view' => $view,
                 'row_attr' => ['class' => 'col-md-12'],
             ]);

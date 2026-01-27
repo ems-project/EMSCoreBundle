@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Elastica\Query\AbstractQuery;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\Term;
 use EMS\CommonBundle\Common\EMSLink;
@@ -36,24 +35,6 @@ class SearchService
     public function getAll(): array
     {
         return $this->searchRepository->getAll();
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    #[\Deprecated]
-    public function generateSearchBody(Search $search): array
-    {
-        @\trigger_error('SearchService::generateSearchBody is deprecated use the SearchService::generateSearch method instead', E_USER_DEPRECATED);
-        $commonSearch = $this->generateSearch($search);
-        $body = [];
-        $query = $commonSearch->getQuery();
-        if (null !== $query) {
-            $body['query'] = $query instanceof AbstractQuery ? $query->toArray() : $query;
-        }
-        $body['sort'] = $commonSearch->getSort();
-
-        return $body;
     }
 
     public function generateSearch(Search $search): CommonSearch

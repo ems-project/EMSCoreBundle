@@ -10,6 +10,7 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\DataField\DataLinkFieldType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Service\ContentTypeService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -21,6 +22,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ReorganizeType extends AbstractType
 {
+    public function __construct(private readonly ContentTypeService $contentTypeService)
+    {
+    }
+
     /**
      * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed>        $options
@@ -43,7 +48,7 @@ class ReorganizeType extends AbstractType
         /** @var View */
         $view = $options['view'];
         if ($view instanceof View) {
-            $fieldType = $view->getContentType()->getFieldType()->getChildByPath($view->getOptions()['field']);
+            $fieldType = $this->contentTypeService->getChildByPath($view->getContentType()->getFieldType(), $view->getOptions()['field']);
 
             if ($fieldType instanceof FieldType) {
                 $builder->add('addItem', DataLinkFieldType::class, [

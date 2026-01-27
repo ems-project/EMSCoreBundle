@@ -28,7 +28,7 @@ final class QuerySearchController extends AbstractController
         if ($dataLinks->isQuerySearch()) {
             $this->querySearchService->querySearchDataLinks($dataLinks);
         } elseif (!$dataLinks->hasItems()) {
-            $this->elasticsearchController->deprecatedSearchApi($request, $dataLinks);
+            $this->elasticsearchController->legacySearch($request, $dataLinks);
         }
 
         return new JsonResponse($dataLinks->toArray());

@@ -83,9 +83,11 @@ use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Form\Form\UserOptionsType;
 use EMS\CoreBundle\Form\Form\UserType;
 use EMS\CoreBundle\Form\Form\ViewType;
+use EMS\CoreBundle\Form\Nature\ReorganizeType;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskType;
 use EMS\CoreBundle\Form\Submission\ProcessType;
+use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 
@@ -141,6 +143,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('ems.service.data'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'nested'])
         ->tag('form.type');
@@ -654,6 +657,13 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems_core.form.user_group', GroupType::class)
         ->args([service('ems.service.user')])
+        ->tag('form.type');
+
+    $services->set(CriteriaFilterType::class)
+        ->args([service(ContentTypeService::class)])
+        ->tag('form.type');
+    $services->set(ReorganizeType::class)
+        ->args([service(ContentTypeService::class)])
         ->tag('form.type');
 
     $services->set('emsco.form_extension.locale_form_extension', LocaleFormExtension::class)

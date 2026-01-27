@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Entity\Form;
 
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\View;
+use EMS\CoreBundle\Service\ContentTypeService;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -20,13 +21,16 @@ class CriteriaUpdateConfig
     /** @var array<mixed> */
     private array $criterion = [];
 
-    public function __construct(View $view, private readonly LoggerInterface $logger)
-    {
+    public function __construct(
+        View $view,
+        private readonly ContentTypeService $contentTypeService,
+        private readonly LoggerInterface $logger
+    ) {
         $contentType = $view->getContentType();
 
         $rootFieldType = $contentType->getFieldType();
 
-        if (!empty($view->getOptions()['categoryFieldPath']) && $categoryField = $rootFieldType->getChildByPath($view->getOptions()['categoryFieldPath'])) {
+        if (!empty($view->getOptions()['categoryFieldPath']) && $categoryField = $this->contentTypeService->getChildByPath($rootFieldType, $view->getOptions()['categoryFieldPath'])) {
             $dataField = new DataField();
             $dataField->setFieldType($categoryField);
             $this->setCategory($dataField);
@@ -45,7 +49,7 @@ class CriteriaUpdateConfig
 
         if (\is_array($fieldPaths)) {
             foreach ($fieldPaths as $path) {
-                $child = $criteriaField->getChildByPath($path);
+                $child = $this->contentTypeService->getChildByPath($criteriaField, $path);
                 if ($child) {
                     $dataField = new DataField();
                     $dataField->setFieldType($child);

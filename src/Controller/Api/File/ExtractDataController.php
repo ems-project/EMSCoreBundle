@@ -16,6 +16,6 @@ class ExtractDataController
 
     public function get(string $hash): Response
     {
-        return new JsonResponse($this->assetExtractorService->extractData($hash));
+        return new JsonResponse($this->assetExtractorService->extractMetaData($hash)->getSource());
     }
 }

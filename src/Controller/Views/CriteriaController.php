@@ -60,7 +60,7 @@ class CriteriaController extends AbstractController
 
     public function align(View $view, Request $request): Response
     {
-        $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->logger);
+        $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->contentTypeService, $this->logger);
         $form = $this->createForm(CriteriaFilterType::class, $criteriaUpdateConfig, [
             'view' => $view,
         ]);
@@ -242,7 +242,7 @@ class CriteriaController extends AbstractController
             }
         }
 
-        $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->logger);
+        $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->contentTypeService, $this->logger);
 
         $form = $this->createForm(CriteriaFilterType::class, $criteriaUpdateConfig, [
             'view' => $view,
@@ -298,8 +298,7 @@ class CriteriaController extends AbstractController
         $authorized = $this->isAuthorized($criteriaField, $this->authorizationChecker) && $this->authorizationChecker->isGranted($view->getContentType()->role(ContentTypeRoles::EDIT));
 
         foreach ($fieldPaths as $path) {
-            /** @var false|FieldType $child */
-            $child = $criteriaField->getChildByPath($path);
+            $child = $this->contentTypeService->getChildByPath($criteriaField, $path);
             if ($child) {
                 if ($child->getName() == $criteriaUpdateConfig->getColumnCriteria()) {
                     $columnField = $child;
@@ -454,7 +453,7 @@ class CriteriaController extends AbstractController
         $loaderTypes = $view->getContentType()->getName();
         $targetContentType = null;
         if ($view->getOptions()['targetField']) {
-            $targetField = $contentType->getFieldType()->getChildByPath($view->getOptions()['targetField']);
+            $targetField = $this->contentTypeService->getChildByPath($contentType->getFieldType(), $view->getOptions()['targetField']);
             if ($targetField && isset($targetField->getOptions()['displayOptions']['type'])) {
                 $loaderTypes = $targetField->getOptions()['displayOptions']['type'];
                 $targetContentType = $this->contentTypeService->getByName($loaderTypes);

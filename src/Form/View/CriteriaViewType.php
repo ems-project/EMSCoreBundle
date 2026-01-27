@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Form\View;
 use EMS\CoreBundle\Entity\Form\CriteriaUpdateConfig;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
+use EMS\CoreBundle\Service\ContentTypeService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -21,8 +22,14 @@ use Twig\Environment;
 
 class CriteriaViewType extends ViewType
 {
-    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger, protected RouterInterface $router, string $templateNamespace)
-    {
+    public function __construct(
+        FormFactory $formFactory,
+        private readonly ContentTypeService $contentTypeService,
+        Environment $twig,
+        LoggerInterface $logger,
+        protected RouterInterface $router,
+        string $templateNamespace
+    ) {
         parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
@@ -79,7 +86,7 @@ class CriteriaViewType extends ViewType
     #[\Override]
     public function getParameters(View $view, FormFactoryInterface $formFactory, Request $request): array
     {
-        $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->logger);
+        $criteriaUpdateConfig = new CriteriaUpdateConfig($view, $this->contentTypeService, $this->logger);
 
         $form = $formFactory->create(CriteriaFilterType::class, $criteriaUpdateConfig, [
             'view' => $view,

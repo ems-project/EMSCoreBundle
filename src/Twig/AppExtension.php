@@ -374,7 +374,7 @@ class AppExtension extends AbstractExtension
             unset($config['_published_datetime']);
         }
 
-        return $this->commonRequestRuntime->assetPath($fileField, $config, $route, $fileHashField, $filenameField, $mimeTypeField, $referenceType);
+        return $this->assetRuntime->assetPath($fileField, $assetConfig, $route, $fileHashField, $filenameField, $mimeTypeField, $referenceType);
     }
 
     public function getFieldByPath(ContentType $contentType, string $path, bool $skipVirtualFields = false): ?FieldType

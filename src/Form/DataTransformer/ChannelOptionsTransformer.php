@@ -12,6 +12,9 @@ use Symfony\Component\Form\DataTransformerInterface;
  */
 final class ChannelOptionsTransformer implements DataTransformerInterface
 {
+    /**
+     * @return array<mixed>
+     */
     #[\Override]
     public function transform(mixed $value): array
     {
@@ -26,6 +29,9 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
         ];
     }
 
+    /**
+     * @return array<mixed>
+     */
     #[\Override]
     public function reverseTransform(mixed $value): array
     {

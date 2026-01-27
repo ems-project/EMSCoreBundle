@@ -30,6 +30,9 @@ class FormModelTransformer implements DataTransformerInterface
         return $this->nestedTransformer->transform($data);
     }
 
+    /**
+     * @return array<mixed>
+     */
     #[\Override]
     public function reverseTransform(mixed $value): array
     {

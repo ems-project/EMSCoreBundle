@@ -7,10 +7,14 @@ namespace EMS\CoreBundle\Form\DataField;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Service\DataService;
+use EMS\CoreBundle\Service\ElasticsearchService;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * Defined a Nested obecjt.
@@ -20,6 +24,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class NestedFieldType extends DataFieldType
 {
+    public function __construct(
+        protected AuthorizationCheckerInterface $authorizationChecker,
+        protected FormRegistryInterface $formRegistry,
+        protected ElasticsearchService $elasticsearchService,
+        private readonly DataService $dataService,
+    ) {
+        parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
+    }
+
     #[\Override]
     public function getLabel(): string
     {
@@ -39,7 +52,7 @@ class NestedFieldType extends DataFieldType
         if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
             foreach ($dataField->getChildren() as $child) {
                 if (\is_array($sourceArray)) {
-                    $child->updateDataValue($sourceArray);
+                    $this->dataService->updateDataValue($child, $sourceArray, $isMigration);
                 }
             }
         }

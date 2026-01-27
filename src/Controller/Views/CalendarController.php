@@ -91,7 +91,8 @@ class CalendarController extends AbstractController
         /* @var Search $search */
         $search->setEnvironments([$view->getContentType()->getName()]);
 
-        $body = $this->searchService->generateSearchBody($search);
+        $esSearch = $this->searchService->generateSearch($search);
+        $body = \array_filter(['query' => $esSearch->getQueryArray(), 'sort' => $esSearch->getSort()]);
 
         $from = new \DateTime(Type::string($request->query->get('from')));
         $to = new \DateTime(Type::string($request->query->get('to')));

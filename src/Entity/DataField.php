@@ -209,14 +209,6 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
                 $input->setParent($this);
             }
 
-            if (null === $this->getFieldType()) {
-                if (null === $parent = $this->getParent()) {
-                    throw new \Exception('null parent !!!!!! '.$key);
-                } else {
-                    $this->updateDataStructure($parent->giveFieldType());
-                }
-            }
-
             /** @var DataField $dataField */
             foreach ($this->children as &$dataField) {
                 $fieldType = $dataField->getFieldType();
@@ -233,27 +225,6 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
         } else {
             throw new \Exception('__set a DataField wich is not a valid object'.$key);
         }
-    }
-
-    /**
-     * @throws \Exception
-     */
-    #[\Deprecated]
-    public function updateDataStructure(FieldType $meta): never
-    {
-        throw new \Exception('Deprecated method');
-    }
-
-    /**
-     * Assign data in dataValues based on the elastic index content.
-     *
-     * @param  array<mixed> $elasticIndexDatas
-     * @throws \Exception
-     */
-    #[\Deprecated]
-    public function updateDataValue(array &$elasticIndexDatas, mixed $isMigration = false): never
-    {
-        throw new \Exception('Deprecated method');
     }
 
     /**

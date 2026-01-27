@@ -232,7 +232,7 @@ class IndexFileCommand extends AbstractCommand
                 }
 
                 if ($file) {
-                    $data = $this->extractorService->extractData($rawData['sha1'], $file);
+                    $data = $this->extractorService->extractMetaData($rawData['sha1'], $file)->getSource();
 
                     if (!empty($data)) {
                         if (isset($data['date']) && $data['date']) {

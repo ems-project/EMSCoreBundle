@@ -16,6 +16,7 @@ use EMS\CoreBundle\Form\View\ImporterViewType;
 use EMS\CoreBundle\Form\View\KeywordsViewType;
 use EMS\CoreBundle\Form\View\ReportViewType;
 use EMS\CoreBundle\Form\View\SorterViewType;
+use EMS\CoreBundle\Service\ContentTypeService;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services();
@@ -56,6 +57,7 @@ return static function (ContainerConfigurator $container) {
     $services->set('ems.view.criteria', CriteriaViewType::class)
         ->args([
             service('form.factory'),
+            service(ContentTypeService::class),
             service('twig'),
             service('logger'),
             service('router'),

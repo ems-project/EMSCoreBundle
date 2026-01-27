@@ -1040,7 +1040,7 @@ class DataService
                     $revision->setCircles([$revision->getRawData()[$contentType->getCirclesField()]]);
                 }
             } else {
-                $fieldType = $contentType->getFieldType()->getChildByPath($contentType->getCirclesField());
+                $fieldType = $this->contentTypeService->getChildByPath($contentType->getFieldType(), $contentType->getCirclesField());
 
                 if ($fieldType) {
                     $options = $fieldType->getDisplayOptions();

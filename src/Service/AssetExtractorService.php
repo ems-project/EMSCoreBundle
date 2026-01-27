@@ -88,15 +88,6 @@ class AssetExtractorService implements CacheWarmerInterface
         }
     }
 
-    /**
-     * @return mixed[]
-     */
-    #[\Deprecated]
-    public function extractData(string $hash, ?string $file = null, bool $forced = false): array
-    {
-        return $this->extractMetaData($hash, $file, $forced)->getSource();
-    }
-
     public function findCachedExtractedData(string $hash): ?ExtractedData
     {
         $manager = $this->doctrine->getManager();

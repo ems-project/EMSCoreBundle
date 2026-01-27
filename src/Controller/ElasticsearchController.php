@@ -334,8 +334,7 @@ class ElasticsearchController extends AbstractController
         return $this->redirectToRoute('elasticsearch.search', ['searchId' => $id]);
     }
 
-    #[\Deprecated]
-    public function deprecatedSearchApi(Request $request, DataLinks $dataLinks): void
+    public function legacySearch(Request $request, DataLinks $dataLinks): void
     {
         @\trigger_error('QuerySearch not defined, you should refer to one', E_USER_DEPRECATED);
         $environments = Type::string($request->query->get('environment', ''));
@@ -576,6 +575,8 @@ class ElasticsearchController extends AbstractController
             $esSearch->addTermsAggregation(AggregateOptionService::INDEXES_AGGREGATION, '_index', 15);
             $esSearch->addAggregations($this->aggregateOptionService->getAllAggregations());
 
+            $searchBody = \array_filter(['query' => $esSearch->getQueryArray(), 'sort' => $esSearch->getSort()]);
+
             try {
                 $response = CommonResponse::fromResultSet($this->elasticaService->search($esSearch));
                 if ($response->getTotal() >= 50000) {
@@ -618,7 +619,7 @@ class ElasticsearchController extends AbstractController
                     $exportForm = $this->createForm(ExportDocumentsType::class, new ExportDocuments(
                         $contentType,
                         $this->generateUrl('emsco_search_export', ['contentType' => $contentType->getId()]),
-                        Json::encode($this->searchService->generateSearchBody($search))
+                        Json::encode($searchBody)
                     ));
 
                     $exportForms[] = [
@@ -669,7 +670,7 @@ class ElasticsearchController extends AbstractController
                 'page' => $page,
                 'searchId' => $searchId,
                 'currentFilters' => $request->query,
-                'body' => $this->searchService->generateSearchBody($search),
+                'body' => $searchBody,
                 'openSearchForm' => $openSearchForm,
                 'search' => $search,
                 'sortOptions' => $this->sortOptionService->getAll(),

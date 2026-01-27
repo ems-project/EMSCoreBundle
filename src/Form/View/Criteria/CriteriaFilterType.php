@@ -8,6 +8,7 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Service\ContentTypeService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -20,6 +21,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CriteriaFilterType extends AbstractType
 {
+    public function __construct(private readonly ContentTypeService $contentTypeService)
+    {
+    }
+
     /**
      * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed>        $options
@@ -52,8 +57,8 @@ class CriteriaFilterType extends AbstractType
             }
 
             foreach ($fieldPaths as $path) {
-                /** @var FieldType $child */
-                $child = $criteriaField->getChildByPath($path);
+                $child = $this->contentTypeService->getChildByPath($criteriaField, $path);
+
                 if ($child instanceof FieldType) {
                     $label = $child->getDisplayOptions()['label'] ?: $child->getName();
                     $choices[$label] = $child->getName();
@@ -86,7 +91,7 @@ class CriteriaFilterType extends AbstractType
             ]);
 
             if ($view->getOptions()['categoryFieldPath']) {
-                $categoryField = $view->getContentType()->getFieldType()->getChildByPath($view->getOptions()['categoryFieldPath']);
+                $categoryField = $this->contentTypeService->getChildByPath($view->getContentType()->getFieldType(), $view->getOptions()['categoryFieldPath']);
 
                 if ($categoryField) {
                     $displayOptions = $categoryField->getDisplayOptions();
@@ -131,8 +136,8 @@ class CriteriaFilterType extends AbstractType
             }
 
             foreach ($fieldPaths as $path) {
-                /** @var FieldType $child */
-                $child = $criteriaField->getChildByPath($path);
+                $child = $this->contentTypeService->getChildByPath($criteriaField, $path);
+
                 if ($child instanceof FieldType) {
                     $childOptions = $child->getOptions();
                     if (isset($childOptions['restrictionOptions']) && isset($childOptions['restrictionOptions']['minimum_role'])) {

@@ -243,7 +243,6 @@ class UserManager
         $hashedPassword = $this->userPasswordHasher->hashPassword($user, $plainPassword);
 
         $user->setPassword($hashedPassword);
-        $user->eraseCredentials();
     }
 
     private function getToken(): TokenInterface

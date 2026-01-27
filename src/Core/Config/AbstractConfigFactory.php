@@ -60,12 +60,7 @@ abstract class AbstractConfigFactory implements ConfigFactoryInterface
             throw new \RuntimeException('No current request');
         }
 
-        $hash = $request->attributes->getAlnum('hash');
-        if (!\is_string($hash)) {
-            throw new \RuntimeException('Could not find request hash attribute on request');
-        }
-
-        return $this->createFromHash($hash);
+        return $this->createFromHash(hash: $request->attributes->getString('hash'));
     }
 
     public function getStorageManager(): StorageManager

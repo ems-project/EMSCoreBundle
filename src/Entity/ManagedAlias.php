@@ -17,7 +17,7 @@ class ManagedAlias extends JsonDeserializer implements \JsonSerializable, \Strin
     use CreatedModifiedTrait;
     use IdentifierIntegerTrait;
 
-    /** @EMSAssert\AliasName() */
+    #[EMSAssert\AliasName]
     protected string $name;
     protected ?string $label = null;
     private ?string $alias = null;

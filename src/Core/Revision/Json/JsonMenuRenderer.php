@@ -208,7 +208,7 @@ final readonly class JsonMenuRenderer implements RuntimeExtensionInterface
                 'blocks' => [],
                 'context' => [],
             ])
-            ->setDefault('actions', function (Options $options) {
+            ->setDefault('actions', function () {
                 $actions = [];
                 foreach (self::ITEM_ACTIONS as $action) {
                     $actions[$action] = ['allow' => [], 'deny' => []];

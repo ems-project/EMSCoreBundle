@@ -47,7 +47,7 @@ class RevisionType extends AbstractType
         }
 
         $builder->add('data', $contentType->getFieldType()->getType(), [
-            'constraints' => [new RevisionRawData(['contentType' => $contentType])],
+            'constraints' => [new RevisionRawData(contentType: $contentType)],
             'metadata' => $contentType->getFieldType(),
             'error_bubbling' => false,
             'migration' => $options['migration'],

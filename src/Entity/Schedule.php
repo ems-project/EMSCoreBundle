@@ -17,7 +17,7 @@ class Schedule extends JsonDeserializer implements \JsonSerializable, EntityInte
 
     private UuidInterface $id;
     protected string $name = '';
-    /** @EMSAssert\Cron() */
+    #[EMSAssert\Cron]
     protected string $cron = '';
     protected ?string $command = null;
     private ?\DateTime $previousRun = null;

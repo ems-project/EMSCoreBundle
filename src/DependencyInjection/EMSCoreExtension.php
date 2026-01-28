@@ -10,9 +10,9 @@ use EMS\CoreBundle\Routes;
 use Ramsey\Uuid\Doctrine\UuidType;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class EMSCoreExtension extends Extension implements PrependExtensionInterface
 {

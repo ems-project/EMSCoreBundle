@@ -6,9 +6,9 @@
 {% block pagetitle %}{{ 'task.title'|trans }}{% endblock %}
 
 {% block body %}
-{%- set route = app.request.get('_route') -%}
+{%- set route = app.request.attributes.get('_route') -%}
 {%- set requestQuery = app.request.query.all -%}
-{%- set routeParams = app.request.get('_route_params')|merge(requestQuery) -%}
+{%- set routeParams = app.request.attributes.get('_route_params')|merge(requestQuery) -%}
 {%- set showFilters = attribute(requestQuery, 'filters')|default([])|length > 0 -%}
 <div id="task-dashboard" class="nav-tabs-custom">
     <ul class="nav nav-tabs">
@@ -85,7 +85,7 @@
                         <input type="hidden" name="tab" value="{{ currentTab }}" />
                         <div class="btn-group">
                             {{ form_widget(filterForm.submit, { 'attr': { 'class': 'btn btn-primary' } }) }}
-                            <a href="{{ path(route, app.request.get('_route_params')|merge({ 'tab': currentTab }) ) }}"  class="btn btn-default">
+                            <a href="{{ path(route, app.request.attributes.get('_route_params')|merge({ 'tab': currentTab }) ) }}"  class="btn btn-default">
                                 <i class="fa fa-remove" aria-hidden="true"></i>  {{ 'task.filter.reset'|trans }}
                             </a>
                         </div>

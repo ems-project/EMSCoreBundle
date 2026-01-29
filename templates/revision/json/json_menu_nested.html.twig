@@ -16,7 +16,7 @@
          data-urls="{{ def.urls|json_encode|e('html_attr') }}"
          data-config="{{ def.config }}"
 
-         {%- if app.request.get('item', false) %}data-select-item-id="{{- app.request.get('item') -}}"{% endif -%}
+         {%- if app.request.query.get('item', false) %}data-select-item-id="{{- app.request.query.get('item') -}}"{% endif -%}
          data-hidden-field-id="{{ def.id }}"
         >
         <div class="json-menu-nested-loading"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>

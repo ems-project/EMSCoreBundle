@@ -222,9 +222,8 @@ class DataService
             if (!empty($fieldValue)) {
                 if (\is_array($fieldValue)) {
                     return $fieldValue;
-                } else {
-                    $out[] = $fieldValue;
                 }
+                $out[] = $fieldValue;
             }
         }
 
@@ -956,9 +955,8 @@ class DataService
 
             if (null === $endTime) {
                 return $revisions[0];
-            } else {
-                throw new NotFoundHttpException('Revision for ouuid '.$ouuid.' and contenttype '.$contentType->getName().' with end time '.$endTime->format(\DateTimeInterface::ATOM));
             }
+            throw new NotFoundHttpException('Revision for ouuid '.$ouuid.' and contenttype '.$contentType->getName().' with end time '.$endTime->format(\DateTimeInterface::ATOM));
         } elseif (0 == \count($revisions)) {
             throw new NotFoundHttpException('Revision not found for ouuid '.$ouuid.' and contenttype '.$contentType->getName());
         } else {
@@ -1673,9 +1671,8 @@ class DataService
 
             if (null === $endTime) {
                 return $revisions[0];
-            } else {
-                throw new \Exception('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$endTime->format(\DateTimeInterface::ATOM));
             }
+            throw new \Exception('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$endTime->format(\DateTimeInterface::ATOM));
         } elseif (0 == \count($revisions)) {
             throw new NotFoundHttpException('Revision not found for id '.$id.' and contenttype '.$type);
         } else {
@@ -1729,16 +1726,15 @@ class DataService
             $em->flush();
 
             return $newDraft;
-        } else {
-            $this->logger->error('service.data.not_a_draft', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
-                'update_type' => $replaceOrMerge,
-                'label' => $revision->getLabel(),
-            ]);
         }
+        $this->logger->error('service.data.not_a_draft', [
+            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
+            EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
+            'update_type' => $replaceOrMerge,
+            'label' => $revision->getLabel(),
+        ]);
 
         return $revision;
     }

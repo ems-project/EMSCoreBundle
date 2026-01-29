@@ -90,9 +90,8 @@ class DateRangeFieldType extends DataFieldType
             }
 
             $dataField->setRawData($convertedDates);
-        } else {
-            // TODO: log warnign
         }
+        // TODO: log warnign
 
         return $dataField;
     }
@@ -156,9 +155,9 @@ class DateRangeFieldType extends DataFieldType
                 $dataField->setRawData($in);
 
                 return $out;
-            } else {
-                return parent::importData($dataField, $sourceArray, $isMigration);
             }
+
+            return parent::importData($dataField, $sourceArray, $isMigration);
         }
 
         return [$dataField->giveFieldType()->getName()];

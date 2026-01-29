@@ -198,9 +198,8 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
     {
         if (!\str_starts_with($key, 'ems_')) {
             throw new \Exception('unprotected ems set with key '.$key);
-        } else {
-            $key = \substr($key, 4);
         }
+        $key = \substr($key, 4);
 
         if (null === $input || $input instanceof DataField) {
             $found = false;
@@ -250,23 +249,21 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
     {
         if (!\str_starts_with($key, 'ems_')) {
             throw new \Exception('unprotected ems get with key '.$key);
-        } else {
-            $key = \substr($key, 4);
         }
+        $key = \substr($key, 4);
 
         $fieldType = $this->getFieldType();
 
         if ($fieldType && 0 == \strcmp($fieldType->getType(), CollectionFieldType::class)) {
             // Symfony wants iterate on children
             return $this;
-        } else {
-            /** @var DataField $dataField */
-            foreach ($this->children as $dataField) {
-                $childFieldType = $dataField->getFieldType();
+        }
+        /** @var DataField $dataField */
+        foreach ($this->children as $dataField) {
+            $childFieldType = $dataField->getFieldType();
 
-                if (null !== $childFieldType && !$childFieldType->getDeleted() && 0 == \strcmp($key, $childFieldType->getName())) {
-                    return $dataField;
-                }
+            if (null !== $childFieldType && !$childFieldType->getDeleted() && 0 == \strcmp($key, $childFieldType->getName())) {
+                return $dataField;
             }
         }
 

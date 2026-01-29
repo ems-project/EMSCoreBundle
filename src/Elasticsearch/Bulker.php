@@ -148,9 +148,8 @@ class Bulker
                 \sleep(10);
 
                 return $this->send($force, true);
-            } else {
-                throw $e;
             }
+            throw $e;
         } catch (ResponseException $e) {
             $this->counter = 0;
             $exceptions = $e->getActionExceptions();

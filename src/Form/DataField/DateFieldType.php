@@ -83,9 +83,9 @@ class DateFieldType extends DataFieldType
         if (!$dataField->giveFieldType()->getDisplayBoolOption('multidate', false)) {
             if (empty($out)) {
                 return null;
-            } else {
-                return $out[0];
             }
+
+            return $out[0];
         }
 
         return $out;

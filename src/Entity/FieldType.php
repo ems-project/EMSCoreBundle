@@ -446,9 +446,8 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     {
         if (!\str_starts_with($key, 'ems_')) {
             throw new \Exception('unprotected ems get with key '.$key);
-        } else {
-            $key = \substr($key, 4);
         }
+        $key = \substr($key, 4);
 
         /** @var FieldType $fieldType */
         foreach ($this->getChildren() as $fieldType) {

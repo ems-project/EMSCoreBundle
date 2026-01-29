@@ -77,15 +77,14 @@ class AssetExtractorService implements CacheWarmerInterface
                 'content' => $result->getBody()->__toString(),
                 'client' => 'Tika',
             ];
-        } else {
-            $tempFile = TempFile::create();
-            File::putContents($tempFile->path, "elasticms's built in TikaWrapper : àêïôú");
-
-            return [
-                'code' => 200,
-                'content' => self::cleanString($this->getTikaWrapper()->getText($tempFile->path)),
-            ];
         }
+        $tempFile = TempFile::create();
+        File::putContents($tempFile->path, "elasticms's built in TikaWrapper : àêïôú");
+
+        return [
+            'code' => 200,
+            'content' => self::cleanString($this->getTikaWrapper()->getText($tempFile->path)),
+        ];
     }
 
     public function findCachedExtractedData(string $hash): ?ExtractedData

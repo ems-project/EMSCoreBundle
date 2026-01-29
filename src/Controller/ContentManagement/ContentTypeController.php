@@ -481,16 +481,15 @@ class ContentTypeController extends AbstractController
                 return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_STRUCTURE, [
                     'id' => $id,
                 ]);
-            } else {
-                $openModal = $this->fieldTypeManager->handleRequest($contentType->getFieldType(), $inputContentType['fieldType']);
-                $contentType->getFieldType()->updateOrderKeys();
-                $this->contentTypeService->update($contentType, false);
-
-                return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_STRUCTURE, \array_filter([
-                    'id' => $id,
-                    'open' => $openModal,
-                ]));
             }
+            $openModal = $this->fieldTypeManager->handleRequest($contentType->getFieldType(), $inputContentType['fieldType']);
+            $contentType->getFieldType()->updateOrderKeys();
+            $this->contentTypeService->update($contentType, false);
+
+            return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_STRUCTURE, \array_filter([
+                'id' => $id,
+                'open' => $openModal,
+            ]));
         }
 
         if ($contentType->getDirty()) {

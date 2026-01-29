@@ -104,13 +104,12 @@ class CrudController extends AbstractController
         } catch (\Exception $e) {
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
-            } else {
-                $this->logger->error('log.crud.read_error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                    EmsFields::LOG_EXCEPTION_FIELD => $e,
-                ]);
             }
+            $this->logger->error('log.crud.read_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
 
             return $this->flashMessageLogger->buildJsonResponse([
                 'success' => false,
@@ -210,13 +209,12 @@ class CrudController extends AbstractController
             $isDiscard = false;
             if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
                 throw $e;
-            } else {
-                $this->logger->error('log.crud.discard_error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                    EmsFields::LOG_EXCEPTION_FIELD => $e,
-                ]);
             }
+            $this->logger->error('log.crud.discard_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
 
             return $this->flashMessageLogger->buildJsonResponse([
                 'success' => $isDiscard,
@@ -283,13 +281,12 @@ class CrudController extends AbstractController
             $isReplaced = false;
             if ($e instanceof NotFoundHttpException) {
                 throw $e;
-            } else {
-                $this->logger->error('log.crud.replace_error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                    EmsFields::LOG_EXCEPTION_FIELD => $e,
-                ]);
             }
+            $this->logger->error('log.crud.replace_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
 
             return $this->flashMessageLogger->buildJsonResponse([
                 'success' => $isReplaced,
@@ -326,13 +323,13 @@ class CrudController extends AbstractController
         } catch (\Exception $e) {
             if ($e instanceof NotFoundHttpException) {
                 throw $e;
-            } else {
-                $this->logger->error('log.crud.merge_error', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                    EmsFields::LOG_EXCEPTION_FIELD => $e,
-                ]);
             }
+            $this->logger->error('log.crud.merge_error', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $e,
+            ]);
+
             $isMerged = false;
 
             return $this->flashMessageLogger->buildJsonResponse([

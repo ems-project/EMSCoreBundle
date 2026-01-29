@@ -190,11 +190,11 @@ class EditController extends AbstractController
                                 'ouuid' => $revision->getOuuid(),
                                 'type' => $contentType->getName(),
                             ]);
-                        } else {
-                            return $this->redirectToRoute(Routes::EDIT_REVISION, [
-                                'revisionId' => $revision->getId(),
-                            ]);
                         }
+
+                        return $this->redirectToRoute(Routes::EDIT_REVISION, [
+                            'revisionId' => $revision->getId(),
+                        ]);
                     }
                 }
             }
@@ -215,11 +215,11 @@ class EditController extends AbstractController
                         'type' => $contentType->getName(),
                         'revisionId' => $revision->getId(),
                     ]);
-                } else {
-                    return $this->redirectToRoute('data.draft_in_progress', [
-                        'contentTypeId' => $contentType->getId(),
-                    ]);
                 }
+
+                return $this->redirectToRoute('data.draft_in_progress', [
+                    'contentTypeId' => $contentType->getId(),
+                ]);
             }
         } else {
             $objectArray = $revision->getRawData();

@@ -694,22 +694,21 @@ class CriteriaController extends AbstractController
             }
 
             return $revision;
-        } else {
-            $message = false;
-            /** @var Document $document */
-            foreach ($response->getDocuments() as $document) {
-                if ($message) {
-                    $message .= ', ';
-                } else {
-                    $message = '';
-                }
-                $message .= $document->getId();
-            }
-            $this->logger->error('log.view.criteria.too_may_criteria', [
-                'total' => $response->getTotal(),
-                'message' => $message,
-            ]);
         }
+        $message = false;
+        /** @var Document $document */
+        foreach ($response->getDocuments() as $document) {
+            if ($message) {
+                $message .= ', ';
+            } else {
+                $message = '';
+            }
+            $message .= $document->getId();
+        }
+        $this->logger->error('log.view.criteria.too_may_criteria', [
+            'total' => $response->getTotal(),
+            'message' => $message,
+        ]);
 
         return null;
     }
@@ -746,15 +745,15 @@ class CriteriaController extends AbstractController
                     ]);
 
                     return $revision;
-                } else {
-                    $this->logger->notice('log.view.criteria.already_exists', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
-                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        'field_name' => $multipleField,
-                        'field_data' => $filters[$multipleField],
-                    ]);
                 }
+                $this->logger->notice('log.view.criteria.already_exists', [
+                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
+                    EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
+                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                    'field_name' => $multipleField,
+                    'field_data' => $filters[$multipleField],
+                ]);
+
                 break;
             }
         }
@@ -935,15 +934,14 @@ class CriteriaController extends AbstractController
                 ]);
 
                 return $revision;
-            } else {
-                $this->logger->warning('log.view.criteria.already_missing', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    'field_name' => $targetFieldName,
-                    'field_data' => $rawData[$targetFieldName],
-                ]);
             }
+            $this->logger->warning('log.view.criteria.already_missing', [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
+                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
+                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                'field_name' => $targetFieldName,
+                'field_data' => $rawData[$targetFieldName],
+            ]);
         } else {
             $message = false;
             /** @var Document $document */

@@ -4,9 +4,9 @@ parameters:
     env(EMSCH_ENVS): '{"preview":{"regex":"/.*/","alias":"test_preview","backend":"https://localhost"}}'
 
 framework:
+    test: true
     http_method_override: false
     handle_all_throwables: true
-    test: true
     secret: 1621180219f163d89dc399e88cfc1807ab6448cf
     csrf_protection: ~
     session:

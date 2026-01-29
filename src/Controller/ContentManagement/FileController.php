@@ -298,14 +298,13 @@ class FileController extends AbstractController
                     'type' => $uploadedAsset->getType(),
                 ]),
             ]);
-        } else {
-            $this->logger->warning('log.file.upload_error', [
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $file->getError(),
-            ]);
-            $this->flashMessageLogger->buildJsonResponse([
-                'success' => false,
-            ]);
         }
+        $this->logger->warning('log.file.upload_error', [
+            EmsFields::LOG_ERROR_MESSAGE_FIELD => $file->getError(),
+        ]);
+        $this->flashMessageLogger->buildJsonResponse([
+            'success' => false,
+        ]);
 
         return $this->flashMessageLogger->buildJsonResponse([
             'success' => false,

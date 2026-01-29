@@ -13,7 +13,7 @@ final readonly class CoreRuntime implements RuntimeExtensionInterface
 {
     public function __construct(
         private LoggerInterface $logger,
-        protected EventDispatcherInterface $dispatcher,
+        private EventDispatcherInterface $dispatcher,
     ) {
     }
 

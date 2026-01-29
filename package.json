@@ -32,7 +32,7 @@
     "type": "git",
     "url": "https://github.com/ems-project/EMSCoreBundle.git"
   },
-  "license": "LGPL-3.0",
+  "license": "LGPL-3.0-or-later",
   "scripts": {
     "build": "webpack --mode=production",
     "dev": "webpack --mode=development",

@@ -127,7 +127,7 @@
 {%- endblock selectpicker_widget %}
 
 {%- block submitems_widget -%}
-    {%- if label is not defined -%}
+    {%- if label is not defined or label is null -%}
         {%- if label_format is not empty -%}
             {% set label = label_format|replace({
                 '%name%': name,

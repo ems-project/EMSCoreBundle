@@ -590,7 +590,7 @@ class Revision implements EntityInterface, \Stringable
         return $this->environmentRevisions
             ->filter(fn (EnvironmentRevision $er) => null === $er->getDeleted())
             ->map(fn (EnvironmentRevision $er) => $er->getEnvironment())
-            ->matching(Criteria::create()->orderBy(['orderKey' => Order::Ascending]));
+            ->matching(new Criteria(accessRawFieldValues: true)->orderBy(['orderKey' => Order::Ascending]));
     }
 
     public function isPublished(string $environmentName): bool

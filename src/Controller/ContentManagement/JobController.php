@@ -73,6 +73,7 @@ class JobController extends AbstractController
     {
         $encoder = new Encoder();
         $converter = new AnsiToHtmlConverter(new Theme());
+        $jobOutput = $job->getOutput();
 
         if ('json' === $request->getRequestFormat() || 'json' === $request->getContentTypeFormat()) {
             $output = $request->query->getBoolean('output');
@@ -82,7 +83,7 @@ class JobController extends AbstractController
                 'progress' => $job->getProgress(),
                 'done' => $job->getDone(),
                 'started' => $job->getStarted(),
-                'output' => $output ? $encoder->encodeUrl($converter->convert($job->getOutput())) : null,
+                'output' => $output && $jobOutput ? $encoder->encodeUrl($converter->convert($jobOutput)) : null,
             ]);
         }
 
@@ -91,7 +92,7 @@ class JobController extends AbstractController
             'subTitle' => t('type.title_sub', ['type' => 'job'], 'emsco-core'),
             'job' => $job,
             'status' => $encoder->encodeUrl($job->getStatus()),
-            'output' => $encoder->encodeUrl($converter->convert($job->getOutput())),
+            'output' => $jobOutput ? $encoder->encodeUrl($converter->convert($jobOutput)) : null,
             'launchJob' => true === $this->triggerJobFromWeb && false === $job->getStarted() && !$job->hasTag(),
             'breadcrumb' => $this->breadcrumb()->add(
                 t('type.title_status', ['type' => 'job', 'job_id' => $job->getId()], 'emsco-core'),

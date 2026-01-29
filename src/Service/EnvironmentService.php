@@ -350,7 +350,7 @@ class EnvironmentService implements EntityServiceInterface
 
                 return null === $role || $this->authorizationChecker->isGranted($role);
             })
-            ->matching(Criteria::create()->orderBy(['orderKey' => Order::Ascending]))
+            ->matching(new Criteria(accessRawFieldValues: true)->orderBy(['orderKey' => Order::Ascending]))
         ;
     }
 

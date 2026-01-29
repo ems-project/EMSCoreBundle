@@ -77,7 +77,7 @@ class EnvironmentService implements EntityServiceInterface
         $this->aliasService->updateAlias($targetAlias, ['add' => [$index->name]]);
     }
 
-    public function createEnvironment(string $name, string $color = 'default', bool $updateReferrers = false, ?int $position = null, ?string $rolePublish = null): Environment
+    public function createEnvironment(string $name, ?string $color = 'default', bool $updateReferrers = false, ?int $position = null, ?string $rolePublish = null): Environment
     {
         if (!$this->validateEnvironmentName($name)) {
             throw new \Exception('An environment name must respects the following regex /^[a-z][a-z0-9\-_]*$/');
@@ -85,7 +85,7 @@ class EnvironmentService implements EntityServiceInterface
 
         $environment = new Environment();
         $environment->setName($name);
-        $environment->setColor($color);
+        $environment->setColor($color ?? 'default');
         $environment->setAlias($this->generateAlias($environment));
         $environment->setManaged(true);
         $environment->setUpdateReferrers($updateReferrers);

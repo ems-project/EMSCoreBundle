@@ -18,8 +18,7 @@ use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\File\TempFile;
 use EMS\Helpers\Html\MimeTypes;
-use EMS\Xliff\Xliff\Entity\InsertReport;
-use EMS\Xliff\Xliff\Inserter;
+use EMS\Xliff\Xliff;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -112,19 +111,19 @@ final class UpdateCommand extends AbstractCommand
         ]);
 
         $fileGetter = $this->storageManager->getFile($this->xliffFilename);
-        $inserter = Inserter::fromFile($fileGetter->getFilename());
-        $this->io->progressStart($inserter->count());
-        $insertReport = new InsertReport();
-        foreach ($inserter->getDocuments() as $document) {
+        $xliff = Xliff::create();
+        $xliff->fromFile($fileGetter->getFilename());
+        $this->io->progressStart(\count($xliff->getPackage()->getDocuments()));
+        foreach ($xliff->getPackage()->getDocuments() as $document) {
             if ($this->dryRun) {
-                $this->xliffService->testInsert($insertReport, $document, $this->localeField);
+                $this->xliffService->testInsert($xliff->getPackage(), $document, $this->localeField);
                 $this->io->progressAdvance();
                 continue;
             }
             try {
-                $revision = $this->xliffService->insert($insertReport, $document, $this->localeField, $this->translationField, $this->publishTo, self::XLIFF_UPLOAD_COMMAND, $this->currentRevisionOnly);
+                $revision = $this->xliffService->insert($xliff->getPackage(), $document, $this->localeField, $this->translationField, $this->publishTo, self::XLIFF_UPLOAD_COMMAND, $this->currentRevisionOnly);
             } catch (XliffException $e) {
-                $output->writeln(\sprintf('Update for %s:%s:%s failed :  %s', $document->getContentType(), $document->getOuuid(), $document->getRevisionId(), $e->getMessage()));
+                $output->writeln(\sprintf('Update for %s failed :  %s', $document->id, $e->getMessage()));
                 continue;
             }
             if (null !== $this->publishTo) {
@@ -137,13 +136,13 @@ final class UpdateCommand extends AbstractCommand
         }
         $this->io->progressFinish();
 
-        if (0 === $insertReport->countErrors()) {
+        if (0 === $xliff->getPackage()->getInsertReport()->countErrors()) {
             return self::EXECUTE_SUCCESS;
         }
 
-        $output->writeln(\sprintf('%d documents faced issue(s)', $insertReport->countErrors()));
+        $output->writeln(\sprintf('%d documents faced issue(s)', $xliff->getPackage()->getInsertReport()->countErrors()));
         $tempFile = TempFile::create();
-        $insertReport->export($tempFile->path);
+        $xliff->getPackage()->getInsertReport()->export($tempFile->path);
         $hash = $this->storageManager->saveFile($tempFile->path, StorageInterface::STORAGE_USAGE_CONFIG);
 
         $url = ($this->baseUrl ?? '').$this->assetRuntime->assetPath(

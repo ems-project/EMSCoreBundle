@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Asset;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
-use EMS\CommonBundle\Common\PropertyAccess\PropertyAccessor;
 use EMS\CommonBundle\Common\Standard\Image;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\Processor\Config;
@@ -17,6 +16,7 @@ use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Html\MimeTypes;
+use EMS\Helpers\PropertyAccess\PropertyAccessor;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -66,7 +66,7 @@ class RefreshFileFieldCommand extends AbstractCommand
         $propertyAccessor = PropertyAccessor::createPropertyAccessor();
         $rawData = $revision->getRawData();
         $fieldsFound = false;
-        foreach ($propertyAccessor->fileFields($revision->getRawData()) as $propertyPath => $fileField) {
+        foreach ($propertyAccessor->fieldsWithAttributes($revision->getRawData(), [EmsFields::CONTENT_FILE_HASH_FIELD, EmsFields::CONTENT_FILE_HASH_FIELD_], 1) as $propertyPath => $fileField) {
             $fieldsFound = true;
             $hash = $fileField[EmsFields::CONTENT_FILE_HASH_FIELD] ?? $fileField[EmsFields::CONTENT_FILE_HASH_FIELD_] ?? null;
             $filename = $fileField[EmsFields::CONTENT_FILE_NAME_FIELD] ?? $fileField[EmsFields::CONTENT_FILE_NAME_FIELD_] ?? null;

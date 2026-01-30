@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Component\MediaLibrary\Folder;
 
-use EMS\CommonBundle\Common\PropertyAccess\PropertyAccessor;
-use EMS\CommonBundle\Common\PropertyAccess\PropertyPath;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig;
 use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryPath;
+use EMS\Helpers\PropertyAccess\PropertyAccessor;
+use EMS\Helpers\PropertyAccess\PropertyPath;
 
 class MediaLibraryFolders
 {

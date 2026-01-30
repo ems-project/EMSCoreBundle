@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service\Internationalization;
 
 use Doctrine\ORM\UnexpectedResultException;
-use EMS\CommonBundle\Common\PropertyAccess\PropertyAccessor;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
 use EMS\CommonBundle\Search\Search;
@@ -16,6 +15,7 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\XliffException;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Html\HtmlHelper;
+use EMS\Helpers\PropertyAccess\PropertyAccessor;
 use EMS\Xliff\Xliff\Entity\InsertReport;
 use EMS\Xliff\Xliff\Extractor;
 use EMS\Xliff\Xliff\InsertionRevision;

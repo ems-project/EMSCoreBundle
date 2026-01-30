@@ -8,6 +8,7 @@ use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Service\I18nService;
 use EMS\CoreBundle\Twig\I18nRuntime;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
 class I18nRuntimeTest extends TestCase
@@ -23,6 +24,7 @@ class I18nRuntimeTest extends TestCase
         $this->i18nRuntime = new I18nRuntime($this->i18nService, $userManager);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testFindAllI18nIsNull()
     {
         $this->i18nService
@@ -35,6 +37,7 @@ class I18nRuntimeTest extends TestCase
         $this->assertEquals([], $result);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testFindAllDecodeFalse()
     {
         $i18n = $this->getResults('config');
@@ -54,6 +57,7 @@ class I18nRuntimeTest extends TestCase
         $this->assertEquals($content, $result);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testFindAllThrowsRunTimeException()
     {
         $i18n = $this->getResults('invalid');
@@ -67,6 +71,7 @@ class I18nRuntimeTest extends TestCase
         $this->i18nRuntime->findAll('config');
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testFallbackLocale()
     {
         $this->i18nService

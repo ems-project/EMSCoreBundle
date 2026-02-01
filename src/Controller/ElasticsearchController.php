@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller;
 
-use Elasticsearch\Common\Exceptions\ElasticsearchException;
-use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
+use Elastic\Transport\Exception\NoNodeAvailableException;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Aggregation\Bucket;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
@@ -588,7 +587,7 @@ class ElasticsearchController extends AbstractController
                 } else {
                     $lastPage = \ceil($response->getTotal() / $this->pagingSize);
                 }
-            } catch (ElasticsearchException $e) {
+            } catch (\Throwable $e) {
                 $this->logger->warning('log.error', [
                     EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
@@ -679,7 +678,7 @@ class ElasticsearchController extends AbstractController
                 'subTitle' => t('type.title_sub', ['type' => 'search'], 'emsco-core'),
                 'breadcrumb' => $this->breadcrumb($search),
             ]);
-        } catch (NoNodesAvailableException) {
+        } catch (NoNodeAvailableException) {
             return $this->redirectToRoute('elasticsearch.status');
         }
     }

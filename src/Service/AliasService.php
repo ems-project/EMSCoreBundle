@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service;
 
 use Elastica\Aggregation\Terms;
-use Elasticsearch\Endpoints\Cat\Indices;
-use Elasticsearch\Endpoints\Indices\GetAlias;
-use Elasticsearch\Endpoints\Indices\UpdateAliases;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -76,9 +73,7 @@ class AliasService
             }
         }
 
-        $endpoint = new UpdateAliases();
-        $endpoint->setBody(['actions' => $actions]);
-        $this->elasticaClient->requestEndpoint($endpoint);
+        $this->elasticaClient->indices()->updateAliases(['body' => ['actions' => $actions]]);
 
         $event = new NewIndexEvent($environment, $newIndex, $aliases, $oldIndex);
         $this->dispatcher->dispatch($event);
@@ -93,10 +88,8 @@ class AliasService
 
     public function hasAliasInCluster(string $name): bool
     {
-        $endpoint = new GetAlias();
-        $endpoint->setName($name);
         try {
-            $this->elasticaClient->requestEndpoint($endpoint)->getData();
+            $this->elasticaClient->indices()->getAlias(['name' => $name]);
 
             return true;
         } catch (\Throwable) {
@@ -175,11 +168,9 @@ class AliasService
     public function getAllIndexes(): array
     {
         $indexes = [];
-        $endpoint = new Indices();
-        $endpoint->setParams([
-            'format' => 'JSON',
-        ]);
-        $indices = $this->elasticaClient->requestEndpoint($endpoint)->getData();
+        $indices = $this->elasticaClient->resolveResponse(
+            $this->elasticaClient->cat()->indices(['format' => 'json'])
+        )->getData();
 
         foreach ($indices as $data) {
             $name = $data['index'];
@@ -345,9 +336,7 @@ class AliasService
             return;
         }
 
-        $endpoint = new UpdateAliases();
-        $endpoint->setBody(['actions' => $json]);
-        $this->elasticaClient->requestEndpoint($endpoint);
+        $this->elasticaClient->indices()->updateAliases(['body' => ['actions' => $json]]);
 
         $event = new AliasUpdateEvent($alias, $actions);
         $this->dispatcher->dispatch($event);
@@ -417,8 +406,9 @@ class AliasService
      */
     private function getData(): array
     {
-        $endpoint = new GetAlias();
-        $indexesAliases = $this->elasticaClient->requestEndpoint($endpoint)->getData();
+        $indexesAliases = $this->elasticaClient->resolveResponse(
+            $this->elasticaClient->indices()->getAlias()
+        )->getData();
 
         return \array_filter(
             $indexesAliases,

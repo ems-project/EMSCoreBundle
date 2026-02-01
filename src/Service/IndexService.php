@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
-use Elastica\Exception\ResponseException;
-use Elasticsearch\Endpoints\Index;
-use Elasticsearch\Endpoints\Indices\Exists;
-use Elasticsearch\Endpoints\Indices\GetAlias;
-use Elasticsearch\Endpoints\Indices\UpdateAliases;
+use Elastic\Elasticsearch\Exception\ClientResponseException;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\NotFoundException;
+use Symfony\Component\HttpFoundation\Response;
 
 final readonly class IndexService
 {
@@ -50,11 +47,11 @@ final readonly class IndexService
             }
 
             $index->delete();
-        } catch (ResponseException $e) {
-            match ($e->getResponse()->getStatus()) {
-                404 => throw NotFoundException::index($indexName),
-                default => throw $e,
-            };
+        } catch (ClientResponseException $e) {
+            if (Response::HTTP_NOT_FOUND === $e->getResponse()->getStatusCode()) {
+                throw throw NotFoundException::index($indexName);
+            }
+            throw $e;
         }
     }
 
@@ -84,13 +81,16 @@ final readonly class IndexService
     {
         $source[Mapping::PUBLISHED_DATETIME_FIELD] = new \DateTime()->format(\DateTimeInterface::ATOM);
         $source[EMSSource::FIELD_CONTENT_TYPE] = $contentTypeName;
-        $endpoint = new Index();
-        $endpoint->setIndex($index);
-        $endpoint->setBody($source);
+
+        $params = [
+            'index' => $index,
+            'body' => $source,
+        ];
         if (null !== $ouuid) {
-            $endpoint->setID($ouuid);
+            $params['id'] = $ouuid;
         }
-        $result = $this->client->requestEndpoint($endpoint)->getData();
+
+        $result = $this->client->resolveResponse($this->client->index($params))->getData();
 
         $ouuid = null;
         if (\is_array($result) && (int) ($result['_shards']['successful'] ?? 0) > 0) {
@@ -134,16 +134,13 @@ final readonly class IndexService
 
     public function hasIndex(string $name): bool
     {
-        $endpoint = new Exists();
-        $endpoint->setIndex($name);
-
-        return $this->client->requestEndpoint($endpoint)->isOk();
+        return $this->client->getIndex($name)->exists();
     }
 
     /**
      * @return string[]
      */
-    public function getIndexesByAlias(?string $alias): array
+    public function getIndexesByAlias(string $alias): array
     {
         return \array_keys($this->getAliases($alias));
     }
@@ -151,7 +148,7 @@ final readonly class IndexService
     /**
      * @return string[]
      */
-    public function getAliasesByIndex(?string $indexName): array
+    public function getAliasesByIndex(string $indexName): array
     {
         $aliases = [];
         foreach ($this->getAliases($indexName) as $indexInfo) {
@@ -172,7 +169,6 @@ final readonly class IndexService
      */
     public function addIndexesToAlias(string $alias, array $indexes, array $indexesToRemove = []): bool
     {
-        $endpoint = new UpdateAliases();
         $actions = [];
         foreach ($indexes as $index) {
             $actions[] = [
@@ -190,33 +186,26 @@ final readonly class IndexService
                 ],
             ];
         }
-        $endpoint->setBody([
-            'actions' => $actions,
-        ]);
-        $result = $this->client->requestEndpoint($endpoint);
 
-        return $result->isOk();
+        return $this->client->resolveResponse(
+            $this->client->indices()->updateAliases(['body' => ['actions' => $actions]])
+        )->isOk();
     }
 
     /**
      * @return array<string, mixed>
      */
-    private function getAliases(?string $indexName): array
+    private function getAliases(string $indexName): array
     {
-        $endpoint = new GetAlias();
-        if (null !== $indexName) {
-            $endpoint->setIndex($indexName);
-        }
         try {
-            $result = $this->client->requestEndpoint($endpoint);
-        } catch (ResponseException) {
-            return [];
+            return $this->client->resolveResponse(
+                $this->client->indices()->getAlias(['index' => $indexName])
+            )->getData();
+        } catch (ClientResponseException $e) {
+            if (Response::HTTP_NOT_FOUND === $e->getResponse()->getStatusCode()) {
+                return [];
+            }
+            throw $e;
         }
-        $data = $result->getData();
-        if (!\is_array($data)) {
-            return [];
-        }
-
-        return $data;
     }
 }

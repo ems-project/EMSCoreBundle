@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use EMS\ClientHelperBundle\Contracts\Environment\EnvironmentHelperInterface;
+use EMS\CommonBundle\Contracts\Elasticsearch\QueryLoggerInterface;
 use EMS\CommonBundle\Contracts\ExpressionServiceInterface;
 use EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface;
+use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Core\ContentType\FieldType\FieldTypeService;
 use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformer;
@@ -369,7 +371,7 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('twig'),
             service('translator'),
-            service('ems_common.elasticsearch.elastica_logger'),
+            service(QueryLoggerInterface::class),
         ]);
 
     $services->set('ems_core.core_data_table.table_exporter', TableExporter::class)
@@ -441,7 +443,7 @@ return static function (ContainerConfigurator $container) {
     $services->set('ems.service.mapping', Mapping::class)
         ->args([
             service('emsco.logger'),
-            service('ems_common.elastica.client'),
+            service(Client::class),
             service('ems.form.fieldtype.fieldtypetype'),
             service('ems.service.elasticsearch'),
             service('ems_common.service.elastica'),
@@ -514,7 +516,7 @@ return static function (ContainerConfigurator $container) {
     $services->set('ems.service.alias', AliasService::class)
         ->args([
             service('logger'),
-            service('ems_common.elastica.client'),
+            service(Client::class),
             service(EnvironmentRepository::class),
             service(ManagedAliasRepository::class),
             service('ems_common.service.elastica'),
@@ -524,13 +526,13 @@ return static function (ContainerConfigurator $container) {
     $services->set('ems.service.index', IndexService::class)
         ->args([
             service('ems.service.alias'),
-            service('ems_common.elastica.client'),
+            service(Client::class),
             service('ems.service.contenttype'),
         ]);
 
     $services->set('ems.elasticsearch.bulker', Bulker::class)
         ->args([
-            service('ems_common.elastica.client'),
+            service(Client::class),
             service('logger'),
             service('ems.service.data'),
         ]);

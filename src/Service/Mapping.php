@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
-use Elastica\Client;
-use Elasticsearch\Endpoints\Indices\Create;
-use Elasticsearch\Endpoints\Indices\Exists;
-use Elasticsearch\Endpoints\Indices\PutAlias;
-use Elasticsearch\Endpoints\Indices\PutMapping;
+use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
@@ -58,23 +54,19 @@ class Mapping
     ) {
     }
 
-    /**
-     * @return array<mixed>
-     */
-    public function generateMapping(ContentType $contentType): array
+    public function generateMapping(ContentType $contentType): \Elastica\Mapping
     {
-        $out = [
-            'properties' => [],
-            'dynamic' => $this->dynamicMapping,
-        ];
+        $mapping = new \Elastica\Mapping();
+        $mapping->setParam('dynamic', $this->dynamicMapping);
 
+        $properties = [];
         if (null != $contentType->getFieldType()) {
-            $out['properties'] = $this->fieldTypeType->generateMapping($contentType->getFieldType());
+            $properties = $this->fieldTypeType->generateMapping($contentType->getFieldType());
         }
 
-        $this->addCopyToAllField($out['properties']);
-        $out['properties'] = \array_merge(['_all' => ['type' => 'text']], $out['properties']);
-        $out['properties'] = \array_merge(
+        $this->addCopyToAllField($properties);
+        $properties = \array_merge(['_all' => ['type' => 'text']], $properties);
+        $properties = \array_merge(
             [
                 Mapping::HASH_FIELD => $this->elasticsearchService->getKeywordMapping(),
                 Mapping::SIGNATURE_FIELD => $this->elasticsearchService->getNotIndexedStringMapping(),
@@ -84,23 +76,24 @@ class Mapping
                 Mapping::FINALIZATION_DATETIME_FIELD => $this->elasticsearchService->getDateTimeMapping(),
                 Mapping::PUBLISHED_DATETIME_FIELD => $this->elasticsearchService->getDateTimeMapping(),
             ],
-            $out['properties']
+            $properties
         );
 
         if ($contentType->getVersioning()->enabled()) {
-            $out['properties'][Mapping::VERSION_UUID] = $this->elasticsearchService->getKeywordMapping();
+            $properties[Mapping::VERSION_UUID] = $this->elasticsearchService->getKeywordMapping();
         }
         if ($contentType->getVersioning()->enabled() && \count($contentType->getVersioning()->getTags()) > 0) {
-            $out['properties'][Mapping::VERSION_TAG] = $this->elasticsearchService->getKeywordMapping();
+            $properties[Mapping::VERSION_TAG] = $this->elasticsearchService->getKeywordMapping();
         }
 
-        $out['_meta'] = [
+        $mapping->setProperties($properties);
+        $mapping->setMeta([
             Mapping::GENERATOR_META_FIELD => Mapping::GENERATOR_META_FIELD_VALUE,
             Mapping::CORE_VERSION_META_FIELD => $this->elasticaService->getVersion(),
             Mapping::INSTANCE_ID_META_FIELD => $this->instanceId,
-        ];
+        ]);
 
-        return $out;
+        return $mapping;
     }
 
     /**
@@ -160,43 +153,33 @@ class Mapping
      */
     public function createIndex(string $indexName, array $body, ?string $aliasName = null): bool
     {
-        $existsEndpoint = new Exists();
-        $existsEndpoint->setIndex($indexName);
-        $existResponse = $this->elasticaClient->requestEndpoint($existsEndpoint);
-        if ($existResponse->isOk()) {
+        $index = $this->elasticaClient->getIndex($indexName);
+
+        if ($index->exists()) {
             return true;
         }
 
-        $createEndpoint = new Create();
-        $createEndpoint->setIndex($indexName);
-        $createEndpoint->setBody($body);
-        if (!$this->elasticaClient->requestEndpoint($createEndpoint)->isOk()) {
+        if (!$index->create($body)->isOk()) {
             return false;
         }
 
         if (null === $aliasName) {
             return true;
         }
-        $putAliasEndpoint = new PutAlias();
-        $putAliasEndpoint->setIndex($indexName);
-        $putAliasEndpoint->setName($aliasName);
 
-        return $this->elasticaClient->requestEndpoint($putAliasEndpoint)->isOk();
+        return $index->addAlias($indexName, true)->isOk();
     }
 
     public function putMapping(ContentType $contentType, string $indexes): bool
     {
         $body = $this->generateMapping($contentType);
-        $endpoint = new PutMapping();
-        $endpoint->setIndex($indexes);
-        $endpoint->setBody($body);
-        $result = $this->elasticaClient->requestEndpoint($endpoint);
+        $response = $this->elasticaClient->getIndex($indexes)->setMapping($body);
 
-        if (!$result->isOk()) {
+        if (!$response->isOk()) {
             $this->logger->warning('service.contenttype.mappings_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 'environments' => $indexes,
-                'elasticsearch_dump' => $result->getError(),
+                'elasticsearch_dump' => $response->getError(),
             ]);
 
             return false;
@@ -215,10 +198,10 @@ class Mapping
      */
     public function updateMapping(string $name, array $mappings): void
     {
-        $endpoint = new PutMapping();
-        $endpoint->setIndex($name);
-        $endpoint->setBody($mappings);
-        $this->elasticaClient->requestEndpoint($endpoint);
+        $mapping = new \Elastica\Mapping($mappings['properties']);
+        $mapping->setMeta($mappings['_meta']);
+
+        $this->elasticaClient->getIndex($name)->setMapping($mapping);
     }
 
     /** @param array<string, array<string, mixed>> $properties */

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Elastica\Exception\ResponseException;
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Entity\EntityInterface;
@@ -177,7 +176,7 @@ class ContentTypeService implements EntityServiceInterface
             }
 
             $this->contentTypeRepository->save($contentType);
-        } catch (ResponseException $e) {
+        } catch (\Throwable $e) {
             $contentType->setDirty(true);
             $message = $e->getMessage();
             if (!empty($e->getPrevious())) {

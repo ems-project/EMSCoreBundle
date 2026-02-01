@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\DataTable;
 
-use EMS\CommonBundle\Elasticsearch\ElasticaLogger;
+use EMS\CommonBundle\Contracts\Elasticsearch\QueryLoggerInterface;
 use EMS\CoreBundle\Form\Data\ElasticaTable;
 use EMS\CoreBundle\Form\Data\TableInterface;
 use EMS\CoreBundle\Form\Data\TableRowInterface;
@@ -18,7 +18,7 @@ final readonly class TableRenderer
     public function __construct(
         private Environment $twig,
         private TranslatorInterface $translator,
-        private ElasticaLogger $elasticaLogger,
+        private QueryLoggerInterface $queryLogger,
     ) {
     }
 
@@ -75,7 +75,7 @@ final readonly class TableRenderer
      */
     private function buildAllRowsElastica(ElasticaTable $table, bool $export = false): array
     {
-        $this->elasticaLogger->disable();
+        $this->queryLogger->disable();
 
         $rows = [];
         $template = $this->twig->createTemplate($table->getRowTemplate());
@@ -84,7 +84,7 @@ final readonly class TableRenderer
             $rows[] = $this->lineToRow($template, $table, $line, $export);
         }
 
-        $this->elasticaLogger->enable();
+        $this->queryLogger->enable();
 
         return $rows;
     }

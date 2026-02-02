@@ -175,6 +175,7 @@ return static function (ContainerConfigurator $container) {
         ->args([service('doctrine')]);
 
     $services->set('ems.repository.uploaded_asset_repository', UploadedAssetRepository::class)
+        ->lazy()
         ->args([UploadedAsset::class])
         ->factory([service('doctrine.orm.default_entity_manager'), 'getRepository']);
 

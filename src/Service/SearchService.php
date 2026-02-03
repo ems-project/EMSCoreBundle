@@ -191,7 +191,7 @@ class SearchService
 
         $search = null;
         if (1 === \count($contentTypes)) {
-            $contentTypeName = \array_values($contentTypes)[0];
+            $contentTypeName = \array_first($contentTypes);
             $contentType = $this->contentTypeService->giveByName($contentTypeName);
             $search = $searchRepository->findOneBy(['contentType' => $contentType]);
 

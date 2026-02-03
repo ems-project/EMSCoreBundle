@@ -33,8 +33,8 @@ class DocumentationController extends AbstractController
                 $controller = $route->getDefault('_controller') ?? 'Not defined';
 
                 $tag = 'Default';
-                if (\str_contains($controller, 'Controller')) {
-                    $parts = \explode('\\', $controller);
+                if (\str_contains((string) $controller, 'Controller')) {
+                    $parts = \explode('\\', (string) $controller);
                     $controllerName = \end($parts);
                     $tag = \str_replace('Controller', '', \explode('::', $controllerName)[0]);
                 }

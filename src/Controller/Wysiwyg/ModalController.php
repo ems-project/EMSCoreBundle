@@ -117,7 +117,7 @@ class ModalController extends AbstractController
         ]);
     }
 
-    public function validate(LoadLinkModalEntity $loadLinkModalEntity, ExecutionContextInterface $context): void
+    private function validate(LoadLinkModalEntity $loadLinkModalEntity, ExecutionContextInterface $context): void
     {
         $loadLinkModalEntity->validate($context);
     }

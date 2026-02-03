@@ -15,7 +15,19 @@ use Symfony\Component\Console\Question\Question;
 #[AsCommand(
     name: Commands::USER_CHANGE_PASSWORD,
     description: 'Change the password of a user.',
-    hidden: false
+    hidden: false,
+    help: <<<TXT
+        The <info>emsco:user:change-password</info> command changes the password of a user:
+
+          <info>php %command.full_name% matthieu</info>
+
+        This interactive shell will first ask you for a password.
+
+        You can alternatively specify the password as a second argument:
+
+          <info>php %command.full_name% matthieu mypassword</info>
+
+        TXT
 )]
 class ChangePasswordCommand extends AbstractUserCommand
 {
@@ -26,21 +38,7 @@ class ChangePasswordCommand extends AbstractUserCommand
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
-            ])
-            ->setHelp(
-                <<<'EOT'
-                    The <info>emsco:user:change-password</info> command changes the password of a user:
-
-                      <info>php %command.full_name% matthieu</info>
-
-                    This interactive shell will first ask you for a password.
-
-                    You can alternatively specify the password as a second argument:
-
-                      <info>php %command.full_name% matthieu mypassword</info>
-
-                    EOT
-            );
+            ]);
     }
 
     #[\Override]

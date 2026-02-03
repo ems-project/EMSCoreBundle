@@ -68,6 +68,8 @@ class DataController extends AbstractController
         private readonly RevisionRepository $revisionRepository,
         private readonly ActionService $actionService,
         private readonly FlashMessageLogger $flashMessageLogger,
+        private readonly PublishService $publishService,
+        private readonly ContentTypeService $ctService,
         private readonly string $templateNamespace,
     ) {
     }
@@ -392,7 +394,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function cancelModifications(Revision $revision, PublishService $publishService): RedirectResponse
+    public function cancelModifications(Revision $revision): RedirectResponse
     {
         $contentTypeId = $revision->giveContentType()->getId();
         $type = $revision->giveContentType()->getName();
@@ -404,7 +406,7 @@ class DataController extends AbstractController
 
         if (null != $ouuid) {
             if ($revision->giveContentType()->isAutoPublish()) {
-                $publishService->silentPublish($revision);
+                $this->publishService->silentPublish($revision);
 
                 $this->logger->warning('log.data.revision.auto_publish_rollback', [
                     EmsFields::LOG_OUUID_FIELD => $ouuid,
@@ -489,7 +491,7 @@ class DataController extends AbstractController
         }
     }
 
-    public function ajaxUpdate(int $revisionId, Request $request, PublishService $publishService): Response
+    public function ajaxUpdate(int $revisionId, Request $request): Response
     {
         $formErrors = [];
 
@@ -568,7 +570,7 @@ class DataController extends AbstractController
             $formErrors = $form->getErrors(true, true);
 
             if (0 === $formErrors->count() && $revision->giveContentType()->isAutoPublish()) {
-                $publishService->silentPublish($revision);
+                $this->publishService->silentPublish($revision);
             }
         }
 
@@ -703,11 +705,7 @@ class DataController extends AbstractController
         $revision = new Revision();
         $form = $this->createFormBuilder($revision)
             ->add('ouuid', IconTextType::class, [
-                'constraints' => [new Regex([
-                    'pattern' => '/^[A-Za-z0-9_\.\-~]*$/',
-                    'match' => true,
-                    'message' => 'Ouuid has an unauthorized character.',
-                ]),
+                'constraints' => [new Regex(pattern: '/^[A-Za-z0-9_\.\-~]*$/', match: true, message: 'Ouuid has an unauthorized character.'),
                 ],
                 'attr' => [
                     'class' => 'form-control',
@@ -762,7 +760,7 @@ class DataController extends AbstractController
         ]);
     }
 
-    public function linkData(string $key, ContentTypeService $ctService): Response
+    public function linkData(string $key): Response
     {
         $category = $type = $ouuid = null;
         $split = \explode(':', $key);
@@ -774,7 +772,7 @@ class DataController extends AbstractController
         }
 
         if (null != $ouuid && null != $type) {
-            $contentType = $ctService->getByName($type);
+            $contentType = $this->ctService->getByName($type);
 
             if (empty($contentType)) {
                 throw new NotFoundHttpException('Content type '.$type.'not found');

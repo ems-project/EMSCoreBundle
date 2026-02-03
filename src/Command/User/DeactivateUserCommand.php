@@ -15,7 +15,12 @@ use Symfony\Component\Console\Question\Question;
 #[AsCommand(
     name: Commands::USER_DEACTIVATE,
     description: 'Deactivate a user.',
-    hidden: false
+    hidden: false,
+    help: <<<TXT
+        The <info>emsco:user:deactivate</info> command deactivates a user (will not be able to log in)
+
+          <info>php %command.full_name% matthieu</info>
+        TXT
 )]
 class DeactivateUserCommand extends AbstractUserCommand
 {
@@ -25,14 +30,7 @@ class DeactivateUserCommand extends AbstractUserCommand
         $this
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
-            ])
-            ->setHelp(
-                <<<'EOT'
-                    The <info>emsco:user:deactivate</info> command deactivates a user (will not be able to log in)
-
-                      <info>php %command.full_name% matthieu</info>
-                    EOT
-            );
+            ]);
     }
 
     #[\Override]

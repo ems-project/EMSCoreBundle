@@ -53,6 +53,8 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Attribute\AsTwigFilter;
+use Twig\Attribute\AsTwigFunction;
 use Twig\DeprecatedCallableInfo;
 use Twig\Environment as TwigEnvironment;
 use Twig\Extension\AbstractExtension;
@@ -89,24 +91,6 @@ class AppExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('emsco_cant_be_finalized', $this->cantBeFinalized(...)),
-            new TwigFunction('emsco_sequence', $this->getSequenceNextValue(...)),
-            new TwigFunction('emsco_diff_text', $this->diffText(...), ['is_safe' => ['html']]),
-            new TwigFunction('emsco_diff', $this->diff(...), ['is_safe' => ['html']]),
-            new TwigFunction('emsco_diff_html', $this->diffHtml(...), ['is_safe' => ['html']]),
-            new TwigFunction('emsco_diff_icon', $this->diffIcon(...), ['is_safe' => ['html']]),
-            new TwigFunction('emsco_diff_raw', $this->diffRaw(...), ['is_safe' => ['html']]),
-            new TwigFunction('emsco_diff_color', $this->diffColor(...), ['is_safe' => ['html']]),
-            new TwigFunction('emsco_diff_boolean', $this->diffBoolean(...), ['is_safe' => ['html']]),
-            new TwigFunction('emsco_diff_choice', $this->diffChoice(...), ['is_safe' => ['html']]),
-            new TwigFunction('emsco_diff_data_link', $this->diffDataLink(...), ['is_safe' => ['html']]),
-            new TwigFunction('emsco_diff_date', $this->diffDate(...), ['is_safe' => ['html']]),
-            new TwigFunction('emsco_diff_time', $this->diffTime(...), ['is_safe' => ['html']]),
-            new TwigFunction('emsco_is_super', $this->isSuper(...)),
-            new TwigFunction('emsco_asset_path', $this->assetPath(...), ['is_safe' => ['html']]),
-            new TwigFunction('emsco_call_user_func', $this->callUserFunc(...)),
-            new TwigFunction('emsco_generate_email', $this->generateEmailMessage(...)),
-            new TwigFunction('emsco_send_email', $this->sendEmail(...)),
             new TwigFunction('emsco_users_enabled', [UserRuntime::class, 'getUsersEnabled']),
             new TwigFunction('emsco_datatable', [DatatableRuntime::class, 'generateDatatable'], ['is_safe' => ['html']]),
             new TwigFunction('emsco_datatable_excel_path', [DatatableRuntime::class, 'getExcelPath'], ['is_safe' => ['html']]),
@@ -197,13 +181,6 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFilter('emsco_convert_java_date_format', fn (string $format) => DateTime::convertFormat('java', $format)),
             new TwigFilter('emsco_convert_javascript_date_format', fn (string $format) => DateTime::convertFormat('js', $format)),
-            new TwigFilter('emsco_convert_javascript_date_range_format', $this->convertJavascriptDateRangeFormat(...)),
-            new TwigFilter('emsco_time_field_time_format', $this->getTimeFieldTimeFormat(...)),
-            new TwigFilter('emsco_soap_request', $this->soapRequest(...)),
-            new TwigFilter('emsco_all_granted', $this->allGranted(...)),
-            new TwigFilter('emsco_one_granted', $this->oneGranted(...)),
-            new TwigFilter('emsco_in_my_circles', $this->inMyCircles(...)),
-            new TwigFilter('emsco_data_link', $this->dataLink(...), ['is_safe' => ['html']]),
             new TwigFilter('emsco_get_environment', [EnvironmentRuntime::class, 'getEnvironment']),
             new TwigFilter('emsco_generate_from_template', $this->generateFromTemplate(...)),
             new TwigFilter('emsco_object_choice_loader', $this->objectChoiceLoader(...)),
@@ -337,6 +314,7 @@ class AppExtension extends AbstractExtension
         ];
     }
 
+    #[AsTwigFunction(name: 'emsco_generate_email')]
     public function generateEmailMessage(string $title): Email
     {
         $mail = new Email();
@@ -345,6 +323,7 @@ class AppExtension extends AbstractExtension
         return $mail;
     }
 
+    #[AsTwigFunction(name: 'emsco_send_email')]
     public function sendEmail(Email $email): void
     {
         $this->mailer->sendMail($email);
@@ -355,6 +334,7 @@ class AppExtension extends AbstractExtension
      * @param array<mixed> $assetConfig
      * @param int          $referenceType
      */
+    #[AsTwigFunction(name: 'emsco_asset_path', isSafe: ['html'])]
     public function assetPath(array $fileField, string $processorIdentifier, array $assetConfig = [], string $route = 'ems_asset', string $fileHashField = EmsFields::CONTENT_FILE_HASH_FIELD, string $filenameField = EmsFields::CONTENT_FILE_NAME_FIELD, string $mimeTypeField = EmsFields::CONTENT_MIME_TYPE_FIELD, $referenceType = UrlGeneratorInterface::RELATIVE_PATH): string
     {
         $config = $assetConfig;
@@ -423,6 +403,7 @@ class AppExtension extends AbstractExtension
         return $encoded;
     }
 
+    #[AsTwigFunction(name: 'emsco_diff', isSafe: ['html'])]
     public function diff(?string $a, ?string $b, bool $compare, bool $escape = false, bool $htmlDiff = false, bool $raw = false): string
     {
         $tag = 'span';
@@ -469,6 +450,7 @@ class AppExtension extends AbstractExtension
      * @param mixed|null $rawData
      * @param mixed|null $compareRawData
      */
+    #[AsTwigFunction(name: 'emsco_diff_boolean', isSafe: ['html'])]
     public function diffBoolean($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
         $a = $rawData ? true : false;
@@ -485,6 +467,7 @@ class AppExtension extends AbstractExtension
     /**
      * @param mixed[]|null $compareRawData
      */
+    #[AsTwigFunction(name: 'emsco_diff_icon', isSafe: ['html'])]
     public function diffIcon(?string $rawData, bool $compare, string $fieldName, ?array $compareRawData): string
     {
         $b = $a = null;
@@ -504,6 +487,7 @@ class AppExtension extends AbstractExtension
      * @param mixed|null $rawData
      * @param mixed|null $compareRawData
      */
+    #[AsTwigFunction(name: 'emsco_diff_time', isSafe: ['html'])]
     public function diffTime($rawData, bool $compare, string $fieldName, $compareRawData, string $format1, string $format2): string
     {
         return $this->diffDate($rawData, $compare, $fieldName, $compareRawData, $format1, $format2, TimeFieldType::STOREFORMAT);
@@ -513,6 +497,7 @@ class AppExtension extends AbstractExtension
      * @param mixed|null $rawData
      * @param mixed|null $compareRawData
      */
+    #[AsTwigFunction(name: 'emsco_diff_date', isSafe: ['html'])]
     public function diffDate($rawData, bool $compare, string $fieldName, $compareRawData, string $format1, ?string $format2 = null, ?string $internalFormat = null): string
     {
         $b = $a = [];
@@ -631,6 +616,7 @@ class AppExtension extends AbstractExtension
      * @param array<mixed>|null $choices
      * @param mixed|null        $compareRawData
      */
+    #[AsTwigFunction(name: 'emsco_diff_choice', isSafe: ['html'])]
     public function diffChoice($rawData, ?array $labels, ?array $choices, bool $compare, string $fieldName, $compareRawData): string
     {
         $b = $a = [];
@@ -698,6 +684,7 @@ class AppExtension extends AbstractExtension
      * @param mixed|null $rawData
      * @param mixed|null $compareRawData
      */
+    #[AsTwigFunction(name: 'emsco_diff_data_link', isSafe: ['html'])]
     public function diffDataLink($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
         $b = $a = [];
@@ -739,6 +726,7 @@ class AppExtension extends AbstractExtension
     /**
      * @param mixed[]|null $compareRawData
      */
+    #[AsTwigFunction(name: 'emsco_diff_color', isSafe: ['html'])]
     public function diffColor(?string $rawData, bool $compare, string $fieldName, ?array $compareRawData): string
     {
         $b = $a = null;
@@ -760,6 +748,7 @@ class AppExtension extends AbstractExtension
      * @param mixed|null $rawData
      * @param mixed|null $compareRawData
      */
+    #[AsTwigFunction(name: 'emsco_diff_raw', isSafe: ['html'])]
     public function diffRaw($rawData, bool $compare, string $fieldName, $compareRawData): string
     {
         if (\is_array($rawData)) {
@@ -781,6 +770,7 @@ class AppExtension extends AbstractExtension
      * @param mixed|null   $rawData
      * @param mixed[]|null $compareRawData
      */
+    #[AsTwigFunction(name: 'emsco_diff_text', isSafe: ['html'])]
     public function diffText($rawData, bool $compare, string $fieldName, ?array $compareRawData): string
     {
         $b = Type::getAsNullableString($compareRawData[$fieldName] ?? null);
@@ -792,6 +782,7 @@ class AppExtension extends AbstractExtension
      * @param mixed|null   $rawData
      * @param mixed[]|null $compareRawData
      */
+    #[AsTwigFunction(name: 'emsco_diff_html', isSafe: ['html'])]
     public function diffHtml($rawData, bool $compare, string $fieldName, ?array $compareRawData): string
     {
         $b = Type::getAsNullableString($compareRawData[$fieldName] ?? null);
@@ -799,6 +790,7 @@ class AppExtension extends AbstractExtension
         return $this->diff(Type::getAsNullableString($rawData), $b, $compare, false, true, true);
     }
 
+    #[AsTwigFunction(name: 'emsco_sequence')]
     public function getSequenceNextValue(string $name): int
     {
         $em = $this->doctrine->getManager();
@@ -810,6 +802,7 @@ class AppExtension extends AbstractExtension
         return $repo->nextValue($name);
     }
 
+    #[AsTwigFunction(name: 'emsco_cant_be_finalized')]
     public function cantBeFinalized(string $message = '', int $code = 0, ?\Throwable $previous = null): never
     {
         throw new CantBeFinalizedException($message, $code, $previous);
@@ -818,6 +811,7 @@ class AppExtension extends AbstractExtension
     /**
      * @return mixed
      */
+    #[AsTwigFunction(name: 'emsco_call_user_func')]
     public function callUserFunc(mixed $function, mixed ...$parameter)
     {
         return \call_user_func($function, $parameter);
@@ -974,6 +968,7 @@ class AppExtension extends AbstractExtension
         return $this->srcPath($out, $asFileName);
     }
 
+    #[AsTwigFunction(name: 'emsco_is_super')]
     public function isSuper(): bool
     {
         return $this->userService->isSuper();
@@ -982,6 +977,7 @@ class AppExtension extends AbstractExtension
     /**
      * @param string[] $roles
      */
+    #[AsTwigFilter(name: 'emsco_all_granted')]
     public function allGranted(array $roles, bool $super = false): bool
     {
         if ($super && !$this->isSuper()) {
@@ -994,6 +990,7 @@ class AppExtension extends AbstractExtension
     /**
      * @param string|string[] $circles
      */
+    #[AsTwigFilter(name: 'emsco_in_my_circles')]
     public function inMyCircles(string|array $circles): bool
     {
         return $this->userService->inMyCircles($circles);
@@ -1046,6 +1043,7 @@ class AppExtension extends AbstractExtension
         return $this->revisionService->display($key);
     }
 
+    #[AsTwigFilter(name: 'emsco_data_link', isSafe: ['html'])]
     public function dataLink(string $key, ?string $revisionId = null, ?string $diffMod = null): string
     {
         $emsLink = EMSLink::fromText($key);
@@ -1157,6 +1155,7 @@ class AppExtension extends AbstractExtension
     /**
      * @param string[] $roles
      */
+    #[AsTwigFilter(name: 'emsco_one_granted')]
     public function oneGranted(array $roles, bool $super = false): bool
     {
         if ($super && !$this->isSuper()) {
@@ -1174,6 +1173,7 @@ class AppExtension extends AbstractExtension
         return $color1->contrastRatio($color2);
     }
 
+    #[AsTwigFilter(name: 'emsco_convert_javascript_date_range_format')]
     public function convertJavascriptDateRangeFormat(string $format): string
     {
         return DateRangeFieldType::convertJavascriptDateRangeFormat($format);
@@ -1182,6 +1182,7 @@ class AppExtension extends AbstractExtension
     /**
      * @param array<array<string>> $options
      */
+    #[AsTwigFilter(name: 'emsco_time_field_time_format')]
     public function getTimeFieldTimeFormat(array $options): string
     {
         return TimeFieldType::getFormat($options);
@@ -1192,6 +1193,7 @@ class AppExtension extends AbstractExtension
      *
      * @return mixed
      */
+    #[AsTwigFilter(name: 'emsco_soap_request')]
     public function soapRequest(mixed $wsdl, array $arguments)
     {
         $soapClient = new \SoapClient($wsdl, $arguments['options'] ?? []);

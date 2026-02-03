@@ -106,10 +106,10 @@ class ActionImportController
         return $this->formFactory->createBuilder(FormType::class, [])
             ->add('import_file', FileType::class, ['constraints' => [
                 new Assert\NotBlank(),
-                new Assert\File(['mimeTypes' => [
+                new Assert\File(mimeTypes: \array_filter([
                     MimeType::fromExtension('xlsx'),
                     MimeType::fromExtension('csv'),
-                ]]),
+                ])),
             ]])->getForm();
     }
 

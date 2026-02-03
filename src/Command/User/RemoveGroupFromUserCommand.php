@@ -19,7 +19,17 @@ use Symfony\Component\Console\Question\Question;
 #[AsCommand(
     name: Commands::USER_REMOVE_GROUP,
     description: 'Remove a group from a user.',
-    hidden: false
+    hidden: false,
+    help: <<<TXT
+        The <info>emsco:user:delete-group</info> command removes the group from a user:
+
+          <info>php %command.full_name% matthieu</info>
+
+        This interactive shell will ask you for the username if not provided.
+
+        The group associated with the user will be removed automatically.
+
+        TXT
 )]
 class RemoveGroupFromUserCommand extends AbstractUserCommand
 {
@@ -36,19 +46,7 @@ class RemoveGroupFromUserCommand extends AbstractUserCommand
         $this
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
-            ])
-            ->setHelp(
-                <<<'EOT'
-                    The <info>emsco:user:delete-group</info> command removes the group from a user:
-
-                      <info>php %command.full_name% matthieu</info>
-
-                    This interactive shell will ask you for the username if not provided.
-
-                    The group associated with the user will be removed automatically.
-
-                    EOT
-            );
+            ]);
     }
 
     #[\Override]

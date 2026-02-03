@@ -366,6 +366,8 @@ return static function (ContainerConfigurator $container) {
             service(RevisionRepository::class),
             service('ems.service.action'),
             service('ems_core.core_ui.flash_message_logger'),
+            service('ems.service.publish'),
+            service(ContentTypeService::class),
             '%ems_core.template_namespace%',
         ])
         ->call('setContainer')

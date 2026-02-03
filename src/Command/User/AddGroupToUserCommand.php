@@ -19,7 +19,19 @@ use Symfony\Component\Console\Question\Question;
 #[AsCommand(
     name: Commands::USER_ADD_GROUP,
     description: 'Specify a user Group.',
-    hidden: false
+    hidden: false,
+    help: <<<TXT
+        The <info>emsco:user:add-group</info> command adds a group to a user:
+
+          <info>php %command.full_name% matthieu admins</info>
+
+        This interactive shell will first ask you for a group if not provided.
+
+        You can alternatively specify the group as a second argument:
+
+          <info>php %command.full_name% matthieu admins</info>
+
+        TXT
 )]
 class AddGroupToUserCommand extends AbstractUserCommand
 {
@@ -37,21 +49,7 @@ class AddGroupToUserCommand extends AbstractUserCommand
             ->setDefinition([
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
                 new InputArgument('group', InputArgument::REQUIRED, 'The group to add'),
-            ])
-            ->setHelp(
-                <<<'EOT'
-                    The <info>emsco:user:add-group</info> command adds a group to a user:
-
-                      <info>php %command.full_name% matthieu admins</info>
-
-                    This interactive shell will first ask you for a group if not provided.
-
-                    You can alternatively specify the group as a second argument:
-
-                      <info>php %command.full_name% matthieu admins</info>
-
-                    EOT
-            );
+            ]);
     }
 
     #[\Override]

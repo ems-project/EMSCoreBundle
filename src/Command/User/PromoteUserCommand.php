@@ -10,7 +10,13 @@ use Symfony\Component\Console\Attribute\AsCommand;
 #[AsCommand(
     name: Commands::USER_PROMOTE,
     description: 'Promotes a user by adding a role.',
-    hidden: false
+    hidden: false,
+    help: <<<TXT
+        The <info>emsco:user:promote</info> command promotes a user by adding a role
+
+          <info>php %command.full_name% matthieu ROLE_CUSTOM</info>
+          <info>php %command.full_name% --super matthieu</info>
+        TXT
 )]
 class PromoteUserCommand extends RoleCommand
 {
@@ -18,16 +24,6 @@ class PromoteUserCommand extends RoleCommand
     protected function configure(): void
     {
         parent::configure();
-
-        $this
-            ->setHelp(
-                <<<'EOT'
-                    The <info>emsco:user:promote</info> command promotes a user by adding a role
-
-                      <info>php %command.full_name% matthieu ROLE_CUSTOM</info>
-                      <info>php %command.full_name% --super matthieu</info>
-                    EOT
-            );
     }
 
     #[\Override]

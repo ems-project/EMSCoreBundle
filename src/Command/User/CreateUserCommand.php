@@ -16,7 +16,27 @@ use Symfony\Component\Console\Question\Question;
 #[AsCommand(
     name: Commands::USER_CREATE,
     description: 'Create a user.',
-    hidden: false
+    hidden: false,
+    help: <<<TXT
+        The <info>emsco:user:create</info> command creates a user:
+
+          <info>php %command.full_name% matthieu</info>
+
+        This interactive shell will ask you for an email and then a password.
+
+        You can alternatively specify the email and password as the second and third arguments:
+
+          <info>php %command.full_name% matthieu matthieu@example.com mypassword</info>
+
+        You can create a super admin via the super-admin flag:
+
+          <info>php %command.full_name% admin --super-admin</info>
+
+        You can create an inactive user (will not be able to log in):
+
+          <info>php %command.full_name% thibault --inactive</info>
+
+        TXT
 )]
 class CreateUserCommand extends AbstractUserCommand
 {
@@ -30,29 +50,7 @@ class CreateUserCommand extends AbstractUserCommand
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
                 new InputOption('super-admin', null, InputOption::VALUE_NONE, 'Set the user as super admin'),
                 new InputOption('inactive', null, InputOption::VALUE_NONE, 'Set the user as inactive'),
-            ])
-            ->setHelp(
-                <<<'EOT'
-                    The <info>emsco:user:create</info> command creates a user:
-
-                      <info>php %command.full_name% matthieu</info>
-
-                    This interactive shell will ask you for an email and then a password.
-
-                    You can alternatively specify the email and password as the second and third arguments:
-
-                      <info>php %command.full_name% matthieu matthieu@example.com mypassword</info>
-
-                    You can create a super admin via the super-admin flag:
-
-                      <info>php %command.full_name% admin --super-admin</info>
-
-                    You can create an inactive user (will not be able to log in):
-
-                      <info>php %command.full_name% thibault --inactive</info>
-
-                    EOT
-            );
+            ]);
     }
 
     #[\Override]

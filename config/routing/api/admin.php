@@ -5,10 +5,21 @@ declare(strict_types=1);
 use EMS\CoreBundle\Controller\Api\Admin\EntitiesController;
 use EMS\CoreBundle\Controller\Api\Admin\InfoController;
 use EMS\CoreBundle\Controller\Api\Admin\MetaController;
+use EMS\CoreBundle\Controller\Api\JobApiController;
 use EMS\CoreBundle\Controller\ContentManagement\JobController;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 return function (RoutingConfigurator $routes) {
+    $routes->add('emsco_api_job_create', '/job/create')
+        ->controller([JobApiController::class, 'create'])
+        ->defaults(['_format' => 'json'])
+        ->methods(['POST']);
+    $routes->add('emsco_api_job_status', '/job/{job}/status')
+        ->controller([JobApiController::class, 'status'])
+        ->defaults(['_format' => 'json'])
+        ->methods(['GET'])
+        ->options(['openapi' => true]);
+
     $routes->add('emsco_api_start_job', '/start-job/{job}')
         ->controller([JobController::class, 'startJob'])
         ->methods(['POST'])
@@ -41,12 +52,6 @@ return function (RoutingConfigurator $routes) {
 
     $routes->add('emsco_api_get_versions', '/versions')
         ->controller([InfoController::class, 'versions'])
-        ->methods(['GET'])
-        ->options(['openapi' => true]);
-
-    $routes->add('emsco_api_job_status', '/job-status/{job}')
-        ->controller([EntitiesController::class, 'jobStatus'])
-        ->defaults(['_format' => 'json'])
         ->methods(['GET'])
         ->options(['openapi' => true]);
 

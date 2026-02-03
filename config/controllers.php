@@ -21,6 +21,7 @@ use EMS\CoreBundle\Controller\Api\Admin\MetaController;
 use EMS\CoreBundle\Controller\Api\AuthTokenLoginController;
 use EMS\CoreBundle\Controller\Api\File\ExtractDataController;
 use EMS\CoreBundle\Controller\Api\Form\VerificationController;
+use EMS\CoreBundle\Controller\Api\JobApiController;
 use EMS\CoreBundle\Controller\Api\WebhookSubscriptionController;
 use EMS\CoreBundle\Controller\ChannelController;
 use EMS\CoreBundle\Controller\Component\JsonMenuNestedController;
@@ -262,6 +263,10 @@ return static function (ContainerConfigurator $container) {
         ->tag('controller.service_arguments');
 
     $services->set(AuthTokenLoginController::class);
+
+    $services->set(JobApiController::class)
+        ->args([service('ems.service.job')])
+        ->tag('controller.service_arguments');
 
     $services->set(\EMS\CoreBundle\Controller\Api\UserController::class)
         ->args([service('emsco.manager.user')])

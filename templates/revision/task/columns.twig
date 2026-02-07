@@ -45,10 +45,10 @@
 
 {%- block actions -%}
     <div class="btn-group">
-        <a class="btn btn-sm btn-default" href="{{ path('data.revisions', { 'type': data.content_type_name, 'ouuid': data.revision_ouuid }) }}">
+        <a class="btn btn-sm btn-default" href="{{ path('emsco_view_revisions', { 'type': data.content_type_name, 'ouuid': data.revision_ouuid }) }}">
             <i class="fa fa-file" aria-hidden="true"></i> {{ 'task.dashboard.action.go_revision'|trans }}
         </a>
-        <a class="btn btn-sm btn-default" href="{{ path('revision.new-draft', { 'type': data.content_type_name, 'ouuid': data.revision_ouuid }) }}">
+        <a class="btn btn-sm btn-default" href="{{ path('emsco_data_new_draft', { 'type': data.content_type_name, 'ouuid': data.revision_ouuid }) }}">
             <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'task.dashboard.action.edit_revision'|trans }}
         </a>
     </div>

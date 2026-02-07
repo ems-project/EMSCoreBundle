@@ -109,7 +109,7 @@ class JobController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->jobService->save($job);
 
-            return $this->redirectToRoute('job.status', ['job' => $job->getId()]);
+            return $this->redirectToRoute('emsco_job_status', ['job' => $job->getId()]);
         }
 
         return $this->render("@$this->templateNamespace/job/add.html.twig", [

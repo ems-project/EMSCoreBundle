@@ -217,7 +217,7 @@ class EditController extends AbstractController
                     ]);
                 }
 
-                return $this->redirectToRoute('data.draft_in_progress', [
+                return $this->redirectToRoute('emsco_draft_in_progress', [
                     'contentTypeId' => $contentType->getId(),
                 ]);
             }
@@ -244,7 +244,7 @@ class EditController extends AbstractController
 
         if (!$revision->getDraft()) {
             $this->logger->warning('controller.revision.edit-controller.warning.edit-draft', [
-                'path' => $this->generateUrl('revision.new-draft', [
+                'path' => $this->generateUrl('emsco_data_new_draft', [
                     'type' => $revision->giveContentType(),
                     'ouuid' => $revision->giveOuuid(),
                 ], UrlGeneratorInterface::ABSOLUTE_PATH),

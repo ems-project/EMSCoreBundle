@@ -32,7 +32,7 @@ readonly class JobRuntime implements RuntimeExtensionInterface
             'done' => $job->getDone(),
             'created' => $job->getCreated()->format(\DateTimeInterface::ATOM),
             'statusUrl' => $this->urlGenerator->generate(
-                'job.status',
+                'emsco_job_status',
                 ['job' => $job->getId()],
                 UrlGeneratorInterface::ABSOLUTE_URL
             ),

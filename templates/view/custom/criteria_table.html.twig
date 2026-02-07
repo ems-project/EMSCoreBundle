@@ -15,7 +15,7 @@
 			data-add-url="{{ path('views.criteria.add', {view: view.id}) |e('html_attr') }}"
 			data-remove-url="{{ path('views.criteria.remove', {view: view.id})|e('html_attr') }}"
 			data-criteria-field="{{ view.options.criteriaField|e('html_attr') }}"
-			data-revision-url="{{ path('data.revisions', {type: '__type__' , ouuid: '__ouuid__' })|e('html_attr') }}">
+			data-revision-url="{{ path('emsco_view_revisions', {type: '__type__' , ouuid: '__ouuid__' })|e('html_attr') }}">
 		<div class="box">
 			<div class="box-header">
 				<h3 class="box-title">

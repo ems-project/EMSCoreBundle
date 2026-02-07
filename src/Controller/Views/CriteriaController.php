@@ -248,7 +248,7 @@ class CriteriaController extends AbstractController
             'view' => $view,
             'attr' => [
                 'id' => 'criteria_filter',
-                'action' => $this->generateUrl('data.customindexview', ['viewId' => $view->getId()], UrlGeneratorInterface::RELATIVE_PATH),
+                'action' => $this->generateUrl('emsco_data_private_view', ['viewId' => $view->getId()], UrlGeneratorInterface::RELATIVE_PATH),
             ],
         ]);
 

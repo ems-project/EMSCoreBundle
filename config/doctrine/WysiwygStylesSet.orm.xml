@@ -20,7 +20,6 @@
     <field name="contentCss" column="content_css" length="2048" nullable="true"/>
     <field name="contentJs" column="content_js" length="2048" nullable="true"/>
     <field name="assets" type="json" nullable="true"/>
-    <field name="saveDir" column="save_dir" length="2048" nullable="true"/>
 
     <field name="created" type="datetime"/>
     <field name="modified" type="datetime"/>

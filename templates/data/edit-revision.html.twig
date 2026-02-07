@@ -14,7 +14,7 @@
 		{%- else -%}
 			autoSave
 		{%- endif -%}"
-	data-ajax-update="{{ path('revision.ajaxupdate', { revisionId: revision.id })|e('html_attr') }}">
+	data-ajax-update="{{ path('emsco_data_ajax_update', { revisionId: revision.id })|e('html_attr') }}">
 	<div class="box-header with-border">
 		<h3 class="box-title text-{{ revision.contentType.color }}"><i class="{% if revision.contentType.icon %}{{ revision.contentType.icon }} {% else %} fa fa-question {% endif %} "></i>&nbsp;&nbsp;&nbsp;{{ revision.contentType.singularName }}</h3>
 	</div>
@@ -45,7 +45,7 @@
 							{% endif %}
 							<li>
 								{% include '@EMSCore/elements/post-button.html.twig' with {
-									'url': path('revision.cancel', {'revision': revision.id}),
+									'url': path('emsco_data_cancel_modifications', {'revision': revision.id}),
 									'btnClass': '',
 									'label': 'views.data.edit-revision-html.cancel-label'|trans,
 									'icon': 'remove'
@@ -58,7 +58,7 @@
 
 			{% if revision.draft %}
 				{% include '@EMSCore/elements/post-button.html.twig' with {
-					'url': path('revision.discard', {'revisionId': revision.id, 'type': revision.contentType.name}),
+					'url': path('emsco_discard_draft', {'revisionId': revision.id, 'type': revision.contentType.name}),
 					'message': 'views.data.edit-revision-html.discard-draft-message'|trans,
 					'btnType': 'outline-danger',
 					'label': 'views.data.edit-revision-html.discard-draft-label'|trans,

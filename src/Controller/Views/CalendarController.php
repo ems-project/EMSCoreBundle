@@ -157,7 +157,7 @@ class CalendarController extends AbstractController
             $event = [
                 'id' => $item['id'] ?? null,
                 'title' => $contentType->hasLabelField() && isset($item['_source'][$contentType->giveLabelField()]) ? $item['_source'][$contentType->giveLabelField()] : $item['id'] ?? null,
-                'url' => $this->generateUrl('data.revisions', [
+                'url' => $this->generateUrl('emsco_view_revisions', [
                     'type' => $contentType->getName(),
                     'ouuid' => $item['id'] ?? 'not-found',
                 ]),

@@ -18,13 +18,4 @@ return function (RoutingConfigurator $routes): void {
         ->controller([JobController::class, 'startJob'])
         ->methods(['POST'])
         ->format('html');
-
-    // Deprecated route
-    $routes->add('job.status', '/status/{job}.{_format}')
-        ->controller([JobController::class, 'jobStatus'])
-        ->methods(['GET'])
-        ->format('html')
-        ->requirements([
-            '_format' => 'html|json',
-        ]);
 };

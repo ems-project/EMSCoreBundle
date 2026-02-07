@@ -220,7 +220,6 @@ field:
     role_cc: 'Role cc'
     role_to: 'Role to'
     roles: Roles
-    save_dir: 'Save dir'
     search_config: 'Search config'
     severity: Severity
     singular: Singular

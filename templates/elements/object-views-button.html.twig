@@ -58,7 +58,7 @@
                             link: '#',
                             link_attributes: [
                                 { name: 'class', value: 'request_job' },
-                                { name: 'data-url', value: path('ems_job_custom_view', {'environmentName': environment.name, 'templateId': template.id, 'ouuid': ouuid}) }
+                                { name: 'data-url', value: path('emsco_job_custom_view', {'environmentName': environment.name, 'templateId': template.id, 'ouuid': ouuid}) }
                             ],
                             icon: template.icon,
                             label: template.label
@@ -81,7 +81,7 @@
                     {%- endif -%}
                 {% elseif template.renderOption not in [constant('EMS\\CoreBundle\\Form\\Field\\RenderOptionType::EVENT')] %}
                     {% set action = {
-                        link: path(template.public?'ems_data_custom_template_public':'ems_data_custom_template_protected', {
+                        link: path(template.public?'emsco_data_public_action':'emsco_data_private_action', {
                             environmentName: environment.name,
                             ouuid: ouuid,
                             templateId: template.id
@@ -97,7 +97,7 @@
 
     {% if is_granted('ROLE_COPY_PASTE') %}
         {% set contentTypeActions = contentTypeActions|merge([{
-            link: path('revision.copy', {'environment': environment.name, 'type': contentType.name, 'ouuid': ouuid} ),
+            link: path('emsco_data_copy', {'environment': environment.name, 'type': contentType.name, 'ouuid': ouuid} ),
             icon: 'views.elements.object-views-button.copy-data-icon-class'|trans,
             label: 'views.elements.object-views-button.copy-data'|trans
         }]) %}
@@ -110,7 +110,7 @@
             }]) %}
         {% endif %}
         {% set contentTypeActions = contentTypeActions|merge([{
-            link: path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': ouuid} ),
+            link: path('emsco_data_view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': ouuid} ),
             icon: 'views.elements.object-views-button.raw-view-icon-class'|trans,
             label: 'views.elements.object-views-button.raw-view'|trans
         }]) %}
@@ -154,7 +154,7 @@
         {% endif %}
     </div>
 {% else %}
-    <a class="btn btn-sm btn-default " href="{{ path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': object.ouuid} ) }}">
+    <a class="btn btn-sm btn-default " href="{{ path('emsco_data_view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': object.ouuid} ) }}">
         <i class="{{ 'views.elements.object-views-button.raw-view-icon-class'|trans }}"></i>
         {{ 'views.elements.object-views-button.raw-view'|trans }}
     </a>

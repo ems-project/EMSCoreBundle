@@ -155,7 +155,7 @@ class PublishController extends AbstractController
 
             $job = $this->jobService->createCommand($user, \implode(' ', $command));
 
-            return $this->redirectToRoute('job.status', [
+            return $this->redirectToRoute('emsco_job_status', [
                 'job' => $job->getId(),
             ]);
         }

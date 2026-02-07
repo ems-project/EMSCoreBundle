@@ -218,7 +218,7 @@ class DataController extends AbstractController
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
             ]);
 
-            return $this->redirectToRoute('data.draft_in_progress', ['contentTypeId' => $contentType->getId()]);
+            return $this->redirectToRoute('emsco_draft_in_progress', ['contentTypeId' => $contentType->getId()]);
         }
     }
 
@@ -254,7 +254,7 @@ class DataController extends AbstractController
                 EmsFields::LOG_CONTENTTYPE_FIELD => $type,
             ]);
 
-            return $this->redirectToRoute('data.view', [
+            return $this->redirectToRoute('emsco_data_view', [
                 'environmentName' => $environment,
                 'type' => $type,
                 'ouuid' => $ouuid,
@@ -297,7 +297,7 @@ class DataController extends AbstractController
             EmsFields::LOG_CONTENTTYPE_FIELD => $type,
         ]);
 
-        return $this->redirectToRoute('data.view', [
+        return $this->redirectToRoute('emsco_data_view', [
             'environmentName' => $environment,
             'type' => $type,
             'ouuid' => $ouuid,
@@ -389,7 +389,7 @@ class DataController extends AbstractController
             ]);
         }
 
-        return $this->redirectToRoute('data.draft_in_progress', [
+        return $this->redirectToRoute('emsco_draft_in_progress', [
             'contentTypeId' => $contentTypeId,
         ]);
     }

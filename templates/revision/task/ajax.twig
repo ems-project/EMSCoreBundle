@@ -183,10 +183,10 @@
     {% if fromRevision == false %}
         <div class="pull-right">
             <div class="btn-group">
-                <a class="btn btn-sm btn-default" href="{{ path('data.revisions', { 'type': contentType.name, 'ouuid': ouuid }) }}">
+                <a class="btn btn-sm btn-default" href="{{ path('emsco_view_revisions', { 'type': contentType.name, 'ouuid': ouuid }) }}">
                     <i class="fa fa-file" aria-hidden="true"></i> {{ 'task.dashboard.action.go_revision'|trans }}
                 </a>
-                <a class="btn btn-sm btn-default" href="{{ path('revision.new-draft', { 'type': contentType.name, 'ouuid': ouuid }) }}">
+                <a class="btn btn-sm btn-default" href="{{ path('emsco_data_new_draft', { 'type': contentType.name, 'ouuid': ouuid }) }}">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'task.dashboard.action.edit_revision'|trans }}
                 </a>
             </div>

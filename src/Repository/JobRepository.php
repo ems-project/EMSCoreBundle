@@ -51,7 +51,7 @@ class JobRepository extends EntityRepository
     public function countFailedJobs(): int
     {
         $qb = $this->createQueryBuilder('job')->select('COUNT(job)');
-        $qb->where($qb->expr()->eq('job.status', ':failed'));
+        $qb->where($qb->expr()->eq('emsco_job_status', ':failed'));
         $qb->setParameter('failed', 'failed');
 
         return (int) $qb->getQuery()->getSingleScalarResult();

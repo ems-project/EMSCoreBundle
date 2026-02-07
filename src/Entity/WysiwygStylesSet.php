@@ -24,7 +24,6 @@ class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, En
     protected ?string $contentJs = null;
     /** @var ?array<string, mixed> */
     protected ?array $assets = null;
-    protected ?string $saveDir = null;
 
     public function __construct()
     {
@@ -57,26 +56,14 @@ class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, En
         return $this->config;
     }
 
-    /**
-     * Set orderKey.
-     *
-     * @param int $orderKey
-     *
-     * @return WysiwygStylesSet
-     */
-    public function setOrderKey($orderKey)
+    public function setOrderKey(int $orderKey): WysiwygStylesSet
     {
         $this->orderKey = $orderKey;
 
         return $this;
     }
 
-    /**
-     * Get orderKey.
-     *
-     * @return int
-     */
-    public function getOrderKey()
+    public function getOrderKey(): int
     {
         return $this->orderKey;
     }
@@ -119,18 +106,6 @@ class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, En
     public function setAssets(?array $assets): WysiwygStylesSet
     {
         $this->assets = $assets;
-
-        return $this;
-    }
-
-    public function getSaveDir(): ?string
-    {
-        return $this->saveDir;
-    }
-
-    public function setSaveDir(?string $saveDir): WysiwygStylesSet
-    {
-        $this->saveDir = $saveDir;
 
         return $this;
     }

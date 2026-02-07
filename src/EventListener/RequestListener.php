@@ -56,7 +56,7 @@ class RequestListener
             if ($exception instanceof LockedException || $exception instanceof PrivilegeException) {
                 $this->logger->error($exception instanceof LockedException ? 'log.locked_exception_error' : 'log.privilege_exception_error', [...['username' => $exception->getRevision()->getLockBy()], ...LogRevisionContext::read($exception->getRevision())]);
                 if (null == $exception->getRevision()->getOuuid()) {
-                    $response = new RedirectResponse($this->router->generate('data.draft_in_progress', [
+                    $response = new RedirectResponse($this->router->generate('emsco_draft_in_progress', [
                         'contentTypeId' => $exception->getRevision()->giveContentType()->getId(),
                     ], UrlGeneratorInterface::RELATIVE_PATH));
                 } else {

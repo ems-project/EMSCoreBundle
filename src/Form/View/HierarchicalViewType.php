@@ -183,7 +183,7 @@ $dataField->getRawData()
                 'view_label' => $view->getLabel(),
             ]);
 
-            return new RedirectResponse($this->router->generate('data.draft_in_progress', [
+            return new RedirectResponse($this->router->generate('emsco_draft_in_progress', [
                 'contentTypeId' => $view->getContentType()->getId(),
             ], UrlGeneratorInterface::RELATIVE_PATH));
         }

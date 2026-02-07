@@ -52,11 +52,6 @@ class WysiwygStylesSetType extends AbstractType
                 'icon' => 'fa fa-table',
                 'label' => t('field.table_default_css', [], 'emsco-core'),
             ])
-            ->add('saveDir', IconTextType::class, [
-                'required' => false,
-                'icon' => 'fa fa-folder',
-                'label' => t('field.save_dir', [], 'emsco-core'),
-            ])
             ->add('assets', FileType::class, [
                 'required' => false,
                 'meta_fields' => false,

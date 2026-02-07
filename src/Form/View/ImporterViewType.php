@@ -124,7 +124,7 @@ class ImporterViewType extends ViewType
 
             $job = $this->jobService->createCommand($user, $command);
 
-            return new RedirectResponse($this->router->generate('job.status', [
+            return new RedirectResponse($this->router->generate('emsco_job_status', [
                 'job' => $job->getId(),
             ]));
         }

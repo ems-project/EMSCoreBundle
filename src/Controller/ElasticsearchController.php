@@ -470,7 +470,7 @@ class ElasticsearchController extends AbstractController
 
         $job = $this->jobService->createCommand($user, $command);
 
-        return $this->redirectToRoute('job.status', [
+        return $this->redirectToRoute('emsco_job_status', [
             'job' => $job->getId(),
         ]);
     }

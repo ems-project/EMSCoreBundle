@@ -47,7 +47,7 @@ class DetailController extends AbstractController
         $defaultEnvironment = $contentType->giveEnvironment();
 
         if (!$defaultEnvironment->getManaged()) {
-            return $this->redirectToRoute('data.view', [
+            return $this->redirectToRoute('emsco_data_view', [
                 'environmentName' => $defaultEnvironment->getName(),
                 'type' => $type,
                 'ouuid' => $ouuid,

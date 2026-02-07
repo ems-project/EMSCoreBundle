@@ -33,7 +33,6 @@ return function (RoutingConfigurator $routes): void {
     $routes->import('@EMSCoreBundle/config/routing/wysiwyg.php')->prefix('/wysiwyg');
     $routes->import('@EMSCoreBundle/config/routing/admin/wysiwyg.php')->prefix('/admin/wysiwyg');
     $routes->import('@EMSCoreBundle/config/routing/user/user.php');
-    $routes->import('@EMSCoreBundle/config/routing/profile.php')->prefix('/profile');
     $routes->import('@EMSCoreBundle/config/routing/log.php')->prefix('/admin/log');
     $routes->import('@EMSCoreBundle/config/routing/admin/elasticsearch.php')->prefix('/admin/elasticsearch/');
     $routes->import('@EMSCoreBundle/config/routing/admin/environment.php')->prefix('/admin/environment');

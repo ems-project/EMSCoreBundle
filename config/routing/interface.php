@@ -261,17 +261,4 @@ return function (RoutingConfigurator $routes): void {
             'interface' => 'api|json',
         ])
         ->options(['openapi' => true]);
-
-    // Deprecated route
-    $routes->add('api.test', '/{interface}/test')
-        ->controller([CrudController::class, 'test'])
-        ->methods(['GET'])
-        ->format('json')
-        ->defaults([
-            'interface' => 'api',
-        ])
-        ->requirements([
-            'interface' => 'api|json',
-        ])
-        ->options(['openapi' => true]);
 };

@@ -21,17 +21,4 @@ return function (RoutingConfigurator $routes): void {
     $routes->add('emsco_revision_archive', '/archive/{revision}')
         ->controller([EditController::class, 'archiveRevision'])
         ->methods(['POST']);
-
-    // Deprecated routes
-    $routes->add('ems_revision_edit', '/draft/edit/{revisionId}')
-        ->controller([EditController::class, 'editRevision'])
-        ->methods(['GET', 'POST']);
-
-    $routes->add('revision.edit', '/draft/edit/{revisionId}')
-        ->controller([EditController::class, 'editRevision'])
-        ->methods(['GET', 'POST']);
-
-    $routes->add('data.draft_in_progress', '/draft/{contentTypeId}')
-        ->controller([EditController::class, 'draftInProgress'])
-        ->methods(['GET', 'POST']);
 };

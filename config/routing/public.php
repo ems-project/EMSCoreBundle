@@ -27,20 +27,6 @@ return function (RoutingConfigurator $routes): void {
         ->controller([FileController::class, 'downloadFile'])
         ->methods(['GET', 'HEAD']);
 
-    // Deprecated routes
-    $routes->add('ems_custom_view_public', '/public/view/{viewId}')
-        ->controller([DataController::class, 'customIndexView'])
-        ->methods(['GET'])
-        ->defaults(['public' => 1]);
-
-    $routes->add('ems_data_custom_template_public', '/public/template/{environmentName}/{templateId}/{ouuid}/{_download}')
-        ->controller([ActionController::class, 'render'])
-        ->methods(['GET'])
-        ->defaults([
-            'public' => 1,
-            '_download' => 0,
-        ]);
-
     // Public datatable
     $routes->add('ems_core_datatable_ajax_elastica_public', '/public/datatable/ajax/{hashConfig}.json')
         ->controller([DatatableController::class, 'ajaxElastica'])

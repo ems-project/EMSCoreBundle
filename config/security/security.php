@@ -20,7 +20,6 @@ return static function (ContainerConfigurator $container) {
     $services->set('emsco.security.provider.user', UserProvider::class)
         ->args([
             service('ems.repository.user'),
-            service('ems.repository.group'),
         ]);
 
     $services->set('emsco.security.provider.user_api', UserApiProvider::class)

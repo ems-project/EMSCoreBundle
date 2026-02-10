@@ -32,8 +32,6 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     private Collection $authTokens;
     private string $locale = self::DEFAULT_LOCALE;
     private ?string $localePreferred = null;
-    /** @var string[] */
-    private array $groupRoles = [];
     private ?string $username = null;
     private ?string $usernameCanonical = null;
     private ?string $email = null;
@@ -94,14 +92,6 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         $now = new \DateTime('now');
 
         return $now > $this->expirationDate;
-    }
-
-    /**
-     * @param string[] $groupRoles
-     */
-    public function setGroupRoles(array $groupRoles): void
-    {
-        $this->groupRoles = $groupRoles;
     }
 
     public function getLanguage(): string
@@ -396,9 +386,11 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     #[\Override]
     public function getRoles(): array
     {
-        $roles = [...$this->roles, ...$this->groupRoles];
-        // we need to make sure to have at least one role
-        $roles[] = Roles::ROLE_USER;
+        $roles = $this->roles;
+        $group = $this->getGroup();
+        if (null !== $group) {
+            $roles = \array_merge($roles, $group->getRoles());
+        }
 
         return \array_unique($roles);
     }

@@ -8,7 +8,7 @@ use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-class WebhookSubscription
+class WebhookSubscription implements EntityInterface
 {
     use CreatedModifiedTrait;
 
@@ -91,5 +91,10 @@ class WebhookSubscription
     public function setErrorMessage(string $errorMessage): void
     {
         $this->errorMessage = $errorMessage;
+    }
+
+    public function getName(): string
+    {
+        return $this->getId();
     }
 }

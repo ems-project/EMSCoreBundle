@@ -173,10 +173,14 @@ field:
     definition: Definition
     editor: Editor
     email_content_type: 'Content type (ie: text/html)'
+    enabled: Enabled
+    endpoint_url: Endpoint
     entry_path: 'Default entry path'
     environment_default: 'Default environment'
     environment_external: 'External environment'
     environments: Environments
+    error: 'Error message'
+    events: Events
     extra: Extra
     file:
         disposition: Disposition
@@ -296,6 +300,8 @@ key:
     uploaded_files_logs: 'Uploaded Files Logs'
     users: Users
     views: Views
+    webhook_subscriptions: Subscriptions
+    webhooks: Webhooks
     wysiwyg: WYSIWYG
     wysiwyg_profiles: Profiles
     wysiwyg_style_sets: 'Style Sets'
@@ -537,3 +543,11 @@ type:
         }
 view:
     title: '{name} of {plural}'
+webhook:
+    enable:
+        action: Enable
+        disabled: 'The subscription {id} has been disabled'
+        re-enabled: 'The subscription {id} has been re-enabled'
+    test:
+        action: Test
+        dispatched: 'A webhook_test event has been sent to the subscription {id}'

@@ -106,6 +106,24 @@
     </td>
 {% endblock emsco_form_table_column_data_roles %}
 
+{% block emsco_form_table_column_data_value_string_array %}
+    {%- set value = attribute(line.data, column.attribute)|default([]) -%}
+    {%- if value is iterable and column.valid(line.data)  -%}
+        <ul>
+        {%- for string in value -%}
+            <li>{{- string -}}</li>
+        {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{% endblock emsco_form_table_column_data_value_string_array %}
+
+{% block emsco_form_table_column_data_string_array %}
+    {%- set value = attribute(line.data, column.attribute)|default([]) -%}
+    <td>
+        {{- block(column.tableDataValueBlock()) -}}
+    </td>
+{% endblock emsco_form_table_column_data_string_array %}
+
 {% block emsco_form_table_column_data_value_bytes %}
     {%- set value = attribute(line.data, column.attribute)|default(false) -%}
     {%- if value and column.valid(line.data)  -%}

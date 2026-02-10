@@ -36,6 +36,7 @@ use EMS\CoreBundle\DataTable\Type\Revision\RevisionTrashDataTableType;
 use EMS\CoreBundle\DataTable\Type\UploadedAsset\UploadedAssetAdminDataTableType;
 use EMS\CoreBundle\DataTable\Type\UploadedAsset\UploadedAssetDataTableType;
 use EMS\CoreBundle\DataTable\Type\UserDataTableType;
+use EMS\CoreBundle\DataTable\Type\WebhookSubscriptionDataTableType;
 use EMS\CoreBundle\DataTable\Type\Wysiwyg\WysiwygProfileDataTableType;
 use EMS\CoreBundle\DataTable\Type\Wysiwyg\WysiwygStylesSetDataTableType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -263,6 +264,12 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.user'),
             '%ems_core.circles_object%',
             '%ems_core.group_feature%',
+        ])
+        ->tag('emsco.datatable');
+
+    $services->set('emsco.data_table.webhook_subscription', WebhookSubscriptionDataTableType::class)
+        ->args([
+            service('emsco.webhook_subscription.manager'),
         ])
         ->tag('emsco.datatable');
 };

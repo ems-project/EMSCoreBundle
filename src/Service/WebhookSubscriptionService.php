@@ -18,6 +18,10 @@ class WebhookSubscriptionService
      */
     public function create(string $endpointUrl, array $events): WebhookSubscription
     {
+        $webhookSubscription = $this->repository->findByEndpointUrlAndEvents($endpointUrl, $events);
+        if (null !== $webhookSubscription) {
+            return $webhookSubscription;
+        }
         $secret = \bin2hex(\random_bytes(32));
 
         return $this->repository->create($endpointUrl, $events, $secret);

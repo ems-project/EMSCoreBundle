@@ -27,25 +27,32 @@ class WebhookService
      */
     public function dispatch(string $eventName, array $data, array $stamps = []): int
     {
-        $payload = [
-            'event' => $eventName,
-            'data' => $data,
-        ];
-
         $counter = 0;
         foreach ($this->repository->findEnabled() as $subscription) {
             if (!\in_array($eventName, $subscription->getEvents(), true)) {
                 continue;
             }
-
-            $this->bus->dispatch(
-                new WebhookSubscriberMessage($subscription->getId(), $eventName, $payload),
-                $stamps
-            );
+            $this->dispatchTo($subscription, $eventName, $data, $stamps);
             ++$counter;
         }
 
         return $counter;
+    }
+
+    /**
+     * @param mixed[]          $data
+     * @param StampInterface[] $stamps
+     */
+    public function dispatchTo(WebhookSubscription $subscription, string $eventName, array $data, array $stamps = []): void
+    {
+        $payload = [
+            'event' => $eventName,
+            'data' => $data,
+        ];
+        $this->bus->dispatch(
+            new WebhookSubscriberMessage($subscription->getId(), $eventName, $payload),
+            $stamps
+        );
     }
 
     public function disable(WorkerMessageFailedEvent $event, WebhookSubscriberMessage $message): void
@@ -69,5 +76,11 @@ class WebhookService
             ),
             [new DelayStamp(40_000)]
         );
+    }
+
+    public function enable(WebhookSubscription $webhookSubscription, bool $enabled = true): void
+    {
+        $webhookSubscription->setEnabled($enabled);
+        $this->repository->update($webhookSubscription);
     }
 }

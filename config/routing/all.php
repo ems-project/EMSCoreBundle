@@ -47,6 +47,7 @@ return function (RoutingConfigurator $routes): void {
     $routes->import('@EMSCoreBundle/config/routing/admin/content-type.php')->prefix('/admin/content-type');
     $routes->import('@EMSCoreBundle/config/routing/admin/action.php')->prefix('/admin/content-type/action');
     $routes->import('@EMSCoreBundle/config/routing/admin/view.php')->prefix('/admin/content-type/view');
+    $routes->import('@EMSCoreBundle/config/routing/admin/webhook.php')->prefix('/admin/webhook');
     $routes->import('@EMSCoreBundle/config/routing/elasticsearch.php')->prefix('/elasticsearch');
     $routes->import('@EMSCoreBundle/config/routing/public-key.php');
     $routes->import('@EMSCoreBundle/config/routing/interface.php');

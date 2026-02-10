@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Security\Provider;
 
-use EMS\CoreBundle\Entity\Group;
 use EMS\CoreBundle\Entity\User;
-use EMS\CoreBundle\Repository\GroupRepository;
 use EMS\CoreBundle\Repository\UserRepository;
 use Symfony\Component\Security\Core\Exception\AccountExpiredException;
 use Symfony\Component\Security\Core\Exception\DisabledException;
@@ -21,8 +19,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 class UserProvider implements UserProviderInterface
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly GroupRepository $groupRepository
+        private readonly UserRepository $userRepository
     ) {
     }
 
@@ -60,14 +57,6 @@ class UserProvider implements UserProviderInterface
 
         if (!$user->isEnabled()) {
             throw new DisabledException(\sprintf('The account "%s" is disabled', $user->getUserIdentifier()));
-        }
-
-        $userGroup = $user->getGroup();
-        $group = $userGroup instanceof Group ? $this->groupRepository->getById($userGroup->getId()) : null;
-        if (null !== $group) {
-            $user->setGroupRoles($group->getRoles());
-        } else {
-            $user->setGroupRoles([]);
         }
 
         return $user;

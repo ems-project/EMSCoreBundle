@@ -9,7 +9,6 @@
         <!-- User Provider -->
         <service id="emsco.security.provider.user" class="EMS\CoreBundle\Security\Provider\UserProvider">
             <argument type="service" id="ems.repository.user"/>
-            <argument type="service" id="ems.repository.group"/>
         </service>
         <service id="emsco.security.provider.user_api" class="EMS\CoreBundle\Security\Provider\UserApiProvider">
             <argument type="service" id="ems.repository.auth_token" />

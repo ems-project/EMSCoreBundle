@@ -8,10 +8,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CommonBundle\Storage\Processor\Config;
 use EMS\CommonBundle\Storage\Processor\Processor;
-use EMS\CoreBundle\Repository\ChannelRepository;
-use EMS\CoreBundle\Service\Channel\ChannelRegistrar;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -21,8 +18,10 @@ class AssetController extends AbstractController
     /**
      * @param array<string, mixed> $assetConfig
      */
-    public function __construct(private readonly Processor $processor, private readonly ChannelRepository $channelRepository, protected array $assetConfig)
-    {
+    public function __construct(
+        private readonly Processor $processor,
+        protected array $assetConfig
+    ) {
     }
 
     public function asset(string $hash, string $hash_config, string $filename, Request $request): Response
@@ -59,66 +58,6 @@ class AssetController extends AbstractController
         $config = $this->processor->configFactory($hash, $assetConfig);
 
         return $this->processor->getStreamedResponse($request, $config, $filename, false);
-    }
-
-    public function proxyAssetForChannel(Request $request, string $requestPath): Response
-    {
-        @\trigger_error(\sprintf('The route entry %s::proxyAssetForChannel is deprecated, please use EMS\CommonBundle\Controller\FileController::assetInArchive', self::class), E_USER_DEPRECATED);
-        $this->closeSession($request);
-        $referer = $request->headers->get('Referer', null);
-        if (!\is_string($referer)) {
-            throw new NotFoundHttpException(\sprintf('File %s not found', $requestPath));
-        }
-
-        $parsedReferer = \parse_url($referer);
-        if (!\is_array($parsedReferer)) {
-            throw new NotFoundHttpException(\sprintf('File %s not found', $requestPath));
-        }
-
-        $refererPath = $parsedReferer['path'] ?? null;
-        if (!\is_string($refererPath)) {
-            throw new NotFoundHttpException(\sprintf('File %s not found', $requestPath));
-        }
-        $baseUrl = $request->getBaseUrl();
-
-        if (\strlen($baseUrl) > 0 && !\str_starts_with($refererPath, $baseUrl)) {
-            throw new NotFoundHttpException(\sprintf('File %s not found', $requestPath));
-        }
-
-        $refererPathInfo = \substr($refererPath, \strlen($baseUrl));
-
-        \preg_match(ChannelRegistrar::EMSCO_CHANNEL_PATH_REGEX, $refererPathInfo, $matches);
-        if (null === $channelName = $matches['channel'] ?? null) {
-            throw new NotFoundHttpException(\sprintf('File %s not found', $requestPath));
-        }
-
-        try {
-            $channel = $this->channelRepository->findRegistered($channelName);
-        } catch (\Throwable) {
-            throw new NotFoundHttpException(\sprintf('Channel %s not found', $channelName));
-        }
-
-        $alias = $channel->getAlias();
-        if (null === $alias) {
-            throw new NotFoundHttpException(\sprintf('Alias for channel %s not found', $channelName));
-        }
-
-        if (\preg_match('/\/index\.php$/', $baseUrl, $matches)) {
-            $baseUrl = \substr($baseUrl, 0, \strlen($baseUrl) - 10);
-        }
-        $slugs = [
-            $baseUrl,
-            'bundles',
-            $alias,
-            $requestPath,
-        ];
-
-        $url = \sprintf('%s?%s', \implode('/', $slugs), $request->getQueryString());
-        $response = new RedirectResponse($url, Response::HTTP_FOUND);
-        $response->setMaxAge(0);
-        $response->mustRevalidate();
-
-        return $response;
     }
 
     private function closeSession(Request $request): void

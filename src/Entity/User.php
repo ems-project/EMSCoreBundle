@@ -324,9 +324,9 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     }
 
     #[\Override]
+    #[\Deprecated]
     public function eraseCredentials(): void
     {
-        // noop — deprecated since Symfony 7.3
     }
 
     #[\Override]

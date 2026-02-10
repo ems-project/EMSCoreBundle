@@ -509,7 +509,6 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems.revisions.unlock', UnlockCommand::class)
         ->args([
-            service('logger'),
             service('ems.service.data'),
             service('ems.service.contenttype'),
         ])

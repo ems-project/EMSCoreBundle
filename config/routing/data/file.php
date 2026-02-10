@@ -32,23 +32,13 @@ return function (RoutingConfigurator $routes) {
         ->defaults(['_format' => 'json'])
         ->methods(['GET', 'HEAD']);
 
-    $routes->add('file.init-upload', '/init-upload/{sha1}/{size}')
+    $routes->add('emsco_file_data_init_upload', '/init-upload')
         ->controller([FileController::class, 'initUploadFile'])
         ->defaults(['_format' => 'json', 'apiRoute' => false])
         ->methods(['POST']);
 
-    $routes->add('emsco_file_data_init_upload', '/init-upload')
-        ->controller([FileController::class, 'initUploadFile'])
-        ->defaults(['_format' => 'json', 'apiRoute' => false, 'sha1' => null, 'size' => null])
-        ->methods(['POST']);
-
-    $routes->add('file.uploadchunk', '/upload-chunk/{sha1}')
-        ->controller([FileController::class, 'uploadChunk'])
-        ->defaults(['_format' => 'json', 'apiRoute' => false, 'hash' => null])
-        ->methods(['POST']);
-
     $routes->add('emsco_file_data_chunk_upload', '/chunk/{hash}')
         ->controller([FileController::class, 'uploadChunk'])
-        ->defaults(['_format' => 'json', 'apiRoute' => false, 'sha1' => null])
+        ->defaults(['_format' => 'json', 'apiRoute' => false])
         ->methods(['POST']);
 };

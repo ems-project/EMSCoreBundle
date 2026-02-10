@@ -9,7 +9,6 @@ use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\Helpers\Standard\Type;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,21 +18,22 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(
     name: Commands::REVISIONS_UNLOCK,
     description: 'Unlock revisions for a user.',
-    hidden: false,
-    aliases: ['ems:revisions:unlock']
+    aliases: ['ems:revisions:unlock'],
+    hidden: false
 )]
 final class UnlockCommand extends AbstractCommand
 {
     private const string ARGUMENT_USERNAME = 'username';
     private const string ARGUMENT_CONTENT_TYPE = 'content-type';
     private const string OPTION_ALL = 'all';
-    private const string OPTION_STRICT = 'strict';
     private ?string $contentTypeName = null;
     private string $username;
     private ?bool $all = null;
 
-    public function __construct(private readonly LoggerInterface $logger, private readonly DataService $dataService, private readonly ContentTypeService $contentTypeService)
-    {
+    public function __construct(
+        private readonly DataService $dataService,
+        private readonly ContentTypeService $contentTypeService
+    ) {
         parent::__construct();
     }
 
@@ -57,12 +57,6 @@ final class UnlockCommand extends AbstractCommand
                 InputOption::VALUE_NONE,
                 'If set, all the content-types will be unlocked for the user.'
             )
-            ->addOption(
-                self::OPTION_STRICT,
-                null,
-                InputOption::VALUE_NONE,
-                'Deprecated, use the -n option instead.'
-            )
         ;
     }
 
@@ -77,11 +71,6 @@ final class UnlockCommand extends AbstractCommand
         } else {
             $this->choiceArgumentString(self::ARGUMENT_CONTENT_TYPE, 'Select an existing content type', $this->contentTypeService->getAllNames());
             $this->contentTypeName = $this->getArgumentString(self::ARGUMENT_CONTENT_TYPE);
-        }
-
-        if ($this->getOptionBool(self::OPTION_STRICT)) {
-            $this->logger->error('The "--strict" option is deprecated, use "-n" option instead.');
-            throw new \RuntimeException('The "--strict" option is deprecated, use "-n" option instead.');
         }
     }
 

@@ -89,21 +89,6 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
     }
 
     /**
-     * @param mixed $input
-     *
-     * set the data value(s) from a string received from the symfony form) in the context of this field
-     */
-    public function setDataValue(mixed $input, DataField &$dataField): never
-    {
-        throw new \Exception('Deprecated method');
-        //         $type = $this->getType();
-        //         /** @var DataFieldType $dataFieldType */
-        //         $dataFieldType = new $type;
-
-        //         $dataFieldType->setDataValue($input, $dataField, $this->getOptions());
-    }
-
-    /**
      * @return array<mixed>
      */
     public function getFieldsRoles(): array
@@ -118,11 +103,6 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         }
 
         return $out;
-    }
-
-    public function getDataValue(DataField &$dataField): never
-    {
-        throw new \Exception('Deprecated method');
     }
 
     /**

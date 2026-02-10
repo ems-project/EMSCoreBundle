@@ -37,7 +37,6 @@ class RebuildCommand extends AbstractCommand
     private const string OPTION_IGNORE_REFERRERS = 'ignore-referrers';
     private const string OPTION_BULK_SIZE = 'bulk-size';
     private const string OPTION_DONT_SIGN = 'dont-sign';
-    private const string OPTION_SIGN_DATA = 'sign-data';
     private const string OPTION_YELLOW_OK = 'yellow-ok';
     private bool $signData;
     private int $bulkSize;
@@ -72,12 +71,6 @@ class RebuildCommand extends AbstractCommand
                 null,
                 InputOption::VALUE_NONE,
                 'Agree to rebuild on a yellow status cluster'
-            )
-            ->addOption(
-                self::OPTION_SIGN_DATA,
-                null,
-                InputOption::VALUE_NONE,
-                'Deprecated: the data are signed by default'
             )
             ->addOption(
                 self::OPTION_DONT_SIGN,
@@ -122,11 +115,6 @@ class RebuildCommand extends AbstractCommand
     {
         $this->aliasService->build();
         $this->waitFor($this->yellowOk, $output);
-
-        if ($input->getOption(self::OPTION_SIGN_DATA)) {
-            $this->logger->warning('command.rebuild.sign-data');
-            $output->writeln('The option --sign-data is deprecated');
-        }
 
         $this->em = $this->doctrine->getManager();
         $envRepo = $this->em->getRepository(Environment::class);

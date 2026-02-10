@@ -43,8 +43,4 @@ return function (RoutingConfigurator $routes): void {
     $routes->add('emsco_dashboard_browse', '/dashboard/browse/{dashboardName}')
         ->controller(DashboardBrowserController::class)
         ->methods(['GET']);
-
-    $routes->add('ems_core_dashboard', '/dashboard')
-        ->controller([DashboardController::class, 'landing'])
-        ->methods(['GET']);
 };

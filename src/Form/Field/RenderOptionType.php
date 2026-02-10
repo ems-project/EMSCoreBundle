@@ -52,7 +52,6 @@ class RenderOptionType extends ChoiceType
             'choices' => $this->choices,
             'multiple' => false,
             'expanded' => false,
-            'choices_as_values' => null, // to be deprecated in 3.1
             'choice_loader' => null,
             'choice_label' => null,
             'choice_name' => null,
@@ -64,9 +63,6 @@ class RenderOptionType extends ChoiceType
             'placeholder' => null,
             'error_bubbling' => false,
             'compound' => false,
-            // The view data is always a string, even if the "data" option
-            // is manually set to an object.
-            // See https://github.com/symfony/symfony/pull/5582
             'data_class' => null,
             'choice_translation_domain' => EMSCoreBundle::TRANS_CORE,
         ]);

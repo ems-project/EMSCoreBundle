@@ -125,13 +125,6 @@ class ElasticsearchController extends AbstractController
         ]);
     }
 
-    public function healthCheck(Request $request, string $_format): Response
-    {
-        @\trigger_error(\sprintf('The controller method %s::healthCheck is deprecated, please use %s::status with detailed=false', self::class, self::class), E_USER_DEPRECATED);
-
-        return $this->status($request, $_format, false);
-    }
-
     public function status(Request $request, string $_format, bool $detailed = true): Response
     {
         if ($detailed && !$this->authorizationChecker->isGranted('ROLE_USER')) {
@@ -335,7 +328,6 @@ class ElasticsearchController extends AbstractController
 
     public function legacySearch(Request $request, DataLinks $dataLinks): void
     {
-        @\trigger_error('QuerySearch not defined, you should refer to one', E_USER_DEPRECATED);
         $environments = Type::string($request->query->get('environment', ''));
         $searchId = $dataLinks->getSearchId();
         $category = $request->query->get('category');

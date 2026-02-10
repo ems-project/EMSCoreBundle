@@ -349,20 +349,6 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
     }
 
     /**
-     * Set dataValue, the set of field is delegated to the corresponding fieldType class.
-     *
-     * @throws \Exception
-     */
-    public function setDataValue(mixed $inputString): self
-    {
-        if ($fieldType = $this->getFieldType()) {
-            $fieldType->setDataValue($inputString, $this);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return string[]
      */
     public function getMessages(): array

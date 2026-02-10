@@ -201,13 +201,13 @@ class TimeFieldType extends DataFieldType
         ]);
         $optionsForm->get('displayOptions')->add('defaultTime', TextType::class, [
             'required' => false,
-            'label' => 'Default time (Deprecated)',
+            'label' => 'Default time',
         ]);
         $optionsForm->get('displayOptions')->add('showSeconds', CheckboxType::class, [
             'required' => false,
         ]);
         $optionsForm->get('displayOptions')->add('explicitMode', CheckboxType::class, [
-            'label' => 'Explicit mode (Deprecated)',
+            'label' => 'Explicit mode',
             'required' => false,
         ]);
     }

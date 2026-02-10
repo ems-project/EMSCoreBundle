@@ -6,11 +6,6 @@ use EMS\CoreBundle\Controller\ContentManagement\AssetController;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 return function (RoutingConfigurator $routes): void {
-    $routes->add('ems_core_asset_proxy', '/emsch_assets/{requestPath}')
-        ->controller([AssetController::class, 'proxyAssetForChannel'])
-        ->methods(['GET'])
-        ->requirements(['requestPath' => '.+']);
-
     $routes->add('ems_asset', '/data/asset/{hash_config}/{hash}/{filename}')
         ->controller([AssetController::class, 'asset'])
         ->methods(['GET', 'HEAD']);

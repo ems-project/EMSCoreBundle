@@ -105,11 +105,6 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
                 $sorts = [];
 
                 foreach ($definitions as $definition) {
-                    if (isset($definition['nested_path'])) {
-                        @\trigger_error('The "nested_path" option is deprecated and will be removed in ems 7. Please use "parent_field" instead.', E_USER_DEPRECATED);
-                        $definition['parent_field'] = $definition['nested_path'];
-                    }
-
                     $sorts[$definition['id']] = new MediaLibraryConfigSort(
                         id: $definition['id'],
                         field: $definition['field'],

@@ -140,7 +140,7 @@
           <!-- User Account Menu -->
           <li class="dropdown user user-menu">
             <!-- Menu Toggle Button -->
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-test="user-menu">
               <!-- The user image in the navbar-->
               	{% include '@EMSCore/elements/user-image.html.twig' with {
 					'class': 'user-image'
@@ -187,9 +187,9 @@
                 </div>
                 <div class="pull-right">
                		{% if is_granted('IS_IMPERSONATOR') %}
-               			<a href="{{ path('emsco_user_index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat">{{ 'user.logout.exit'|trans({}, 'emsco-user') }}</a>
+               			<a href="{{ path('emsco_user_index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat" data-test="logout">{{ 'user.logout.exit'|trans({}, 'emsco-user') }}</a>
                		{% else %}
-               			<a href="{{ path(routes.USER_LOGOUT) }}" class="btn btn-default btn-flat">{{ 'user.logout.submit'|trans({}, 'emsco-user') }}</a>
+               			<a href="{{ path(routes.USER_LOGOUT) }}" class="btn btn-default btn-flat" data-test="logout">{{ 'user.logout.submit'|trans({}, 'emsco-user') }}</a>
                		{% endif %}
                 </div>
               </li>

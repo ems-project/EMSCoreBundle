@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CoreBundle\Form\DataField\ActionFieldType;
 use EMS\CoreBundle\Form\DataField\AssetFieldType;
 use EMS\CoreBundle\Form\DataField\CheckboxFieldType;
@@ -201,7 +200,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.elasticsearch'),
             service('router'),
             service('ems.service.wysiwyg_styles_set'),
-            service(AssetRuntime::class),
+            service('ems.twig_extension.asset'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'wysiwyg'])
         ->tag('form.type');

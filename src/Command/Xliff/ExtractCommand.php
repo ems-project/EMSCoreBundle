@@ -12,7 +12,7 @@ use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CommonBundle\Storage\StorageManager;
-use EMS\CommonBundle\Twig\AssetRuntime;
+use EMS\CommonBundle\Twig\AssetExtension;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Entity\Environment;
@@ -86,7 +86,7 @@ final class ExtractCommand extends AbstractCommand
         private readonly EnvironmentService $environmentService,
         private readonly ElasticaService $elasticaService,
         private readonly XliffService $xliffService,
-        private readonly AssetRuntime $assetRuntime,
+        private readonly AssetExtension $assetExtension,
         private readonly MailerService $mailerService,
         private readonly StorageManager $storageManager,
         private readonly int $defaultBulkSize,
@@ -190,7 +190,7 @@ final class ExtractCommand extends AbstractCommand
 
         $hash = $this->storageManager->saveFile($tempFile->path, StorageInterface::STORAGE_USAGE_CONFIG);
 
-        $url = ($this->baseUrl ?? '').$this->assetRuntime->assetPath(
+        $url = ($this->baseUrl ?? '').$this->assetExtension->assetPath(
             [
                 EmsFields::CONTENT_FILE_HASH_FIELD => $hash,
                 EmsFields::CONTENT_FILE_NAME_FIELD => \basename($this->xliffBasename),

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface;
-use EMS\CommonBundle\Twig\AssetRuntime;
 use EMS\CoreBundle\Controller\ActionController;
 use EMS\CoreBundle\Controller\Admin\AnalyzerController;
 use EMS\CoreBundle\Controller\Admin\EnvironmentController;
@@ -411,7 +410,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.asset_extractor'),
             service('emsco.logger'),
             service('ems_core.core_ui.flash_message_logger'),
-            service(AssetRuntime::class),
+            service('ems.twig_extension.asset'),
             '%ems_core.asset_config%',
             '%ems_core.theme_color%',
         ])

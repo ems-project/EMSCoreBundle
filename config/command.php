@@ -290,7 +290,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.environment'),
             service('ems_common.service.elastica'),
             service('ems.service.internationalization.xliff'),
-            service('ems_common.twig.runtime.asset'),
+            service('ems.twig_extension.asset'),
             service('ems_core.core_mail.mailer_service'),
             service('ems_common.storage.manager'),
             '%ems_core.default_bulk_size%',
@@ -304,7 +304,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.publish'),
             service('ems.service.revision'),
             service('ems_common.storage.manager'),
-            service('ems_common.twig.runtime.asset'),
+            service('ems.twig_extension.asset'),
         ])
         ->tag('console.command');
 
@@ -339,7 +339,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.data'),
             service('ems.service.contenttype'),
             service('ems.service.environment'),
-            service('ems_common.twig.runtime.asset'),
+            service('ems.twig_extension.asset'),
             service('ems_common.service.elastica'),
             service('ems_common.storage.manager'),
             '%ems_core.instance_id%',

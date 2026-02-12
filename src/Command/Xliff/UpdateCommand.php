@@ -8,7 +8,7 @@ use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CommonBundle\Storage\StorageManager;
-use EMS\CommonBundle\Twig\AssetRuntime;
+use EMS\CommonBundle\Twig\AssetExtension;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Exception\XliffException;
@@ -58,7 +58,7 @@ final class UpdateCommand extends AbstractCommand
         private readonly PublishService $publishService,
         private readonly RevisionService $revisionService,
         private readonly StorageManager $storageManager,
-        private readonly AssetRuntime $assetRuntime,
+        private readonly AssetExtension $assetExtension,
     ) {
         parent::__construct();
     }
@@ -145,7 +145,7 @@ final class UpdateCommand extends AbstractCommand
         $xliff->getPackage()->getInsertReport()->export($tempFile->path);
         $hash = $this->storageManager->saveFile($tempFile->path, StorageInterface::STORAGE_USAGE_CONFIG);
 
-        $url = ($this->baseUrl ?? '').$this->assetRuntime->assetPath(
+        $url = ($this->baseUrl ?? '').$this->assetExtension->assetPath(
             [
                 EmsFields::CONTENT_FILE_HASH_FIELD => $hash,
                 EmsFields::CONTENT_FILE_NAME_FIELD => 'xliff_update_report.zip',

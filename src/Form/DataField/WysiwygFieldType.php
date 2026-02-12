@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\DataField;
 
-use EMS\CommonBundle\Twig\AssetRuntime;
+use EMS\CommonBundle\Twig\AssetExtension;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
@@ -38,7 +38,7 @@ class WysiwygFieldType extends DataFieldType
         ElasticsearchService $elasticsearchService,
         private readonly RouterInterface $router,
         private readonly WysiwygStylesSetService $wysiwygStylesSetService,
-        private readonly AssetRuntime $assetRuntime
+        private readonly AssetExtension $assetExtension
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
@@ -176,7 +176,7 @@ class WysiwygFieldType extends DataFieldType
             Type::string($out)
         );
 
-        foreach ($this->assetRuntime->heads(...\array_keys($collectedAssets)) as $hash) {
+        foreach ($this->assetExtension->heads(...\array_keys($collectedAssets)) as $hash) {
             if (true === $hash) {
                 continue;
             }

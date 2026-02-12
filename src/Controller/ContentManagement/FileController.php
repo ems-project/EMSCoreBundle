@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CommonBundle\Storage\Processor\Config;
-use EMS\CommonBundle\Twig\AssetRuntime;
+use EMS\CommonBundle\Twig\AssetExtension;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Entity\UserInterface;
@@ -40,7 +40,7 @@ class FileController extends AbstractController
         private readonly AssetExtractorService $assetExtractorService,
         private readonly LoggerInterface $logger,
         private readonly FlashMessageLogger $flashMessageLogger,
-        private readonly AssetRuntime $assetRuntime,
+        private readonly AssetExtension $assetExtension,
         protected array $assetConfig,
         private readonly string $themeColor,
     ) {
@@ -367,9 +367,9 @@ class FileController extends AbstractController
             'uploaded' => $asset->getUploaded(),
             'user' => $asset->getUser(),
             'fileName' => $asset->getName(),
-            'previewUrl' => $this->assetRuntime->assetPath($asset->getData(), $config, 'ems_asset', EmsFields::CONTENT_FILE_HASH_FIELD, EmsFields::CONTENT_FILE_NAME_FIELD, EmsFields::CONTENT_MIME_TYPE_FIELD, UrlGeneratorInterface::ABSOLUTE_PATH),
+            'previewUrl' => $this->assetExtension->assetPath($asset->getData(), $config, 'ems_asset', EmsFields::CONTENT_FILE_HASH_FIELD, EmsFields::CONTENT_FILE_NAME_FIELD, EmsFields::CONTENT_MIME_TYPE_FIELD, UrlGeneratorInterface::ABSOLUTE_PATH),
             'chunkUrl' => $this->generateUrl($apiRoute ? 'emsco_file_api_chunk_upload' : 'emsco_file_data_chunk_upload', ['hash' => $asset->getSha1()]),
-            'url' => $this->assetRuntime->assetPath($asset->getData(), [], 'ems_asset', EmsFields::CONTENT_FILE_HASH_FIELD, EmsFields::CONTENT_FILE_NAME_FIELD, EmsFields::CONTENT_MIME_TYPE_FIELD, UrlGeneratorInterface::ABSOLUTE_PATH),
+            'url' => $this->assetExtension->assetPath($asset->getData(), [], 'ems_asset', EmsFields::CONTENT_FILE_HASH_FIELD, EmsFields::CONTENT_FILE_NAME_FIELD, EmsFields::CONTENT_MIME_TYPE_FIELD, UrlGeneratorInterface::ABSOLUTE_PATH),
         ]);
     }
 }

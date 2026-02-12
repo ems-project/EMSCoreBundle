@@ -26,7 +26,6 @@ use EMS\CoreBundle\Form\DataField\HolderFieldType;
 use EMS\CoreBundle\Form\DataField\IconFieldType;
 use EMS\CoreBundle\Form\DataField\IndexedAssetFieldType;
 use EMS\CoreBundle\Form\DataField\IntegerFieldType;
-use EMS\CoreBundle\Form\DataField\JSONFieldType;
 use EMS\CoreBundle\Form\DataField\JsonMenuEditorFieldType;
 use EMS\CoreBundle\Form\DataField\JsonMenuLinkFieldType;
 use EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType;
@@ -174,15 +173,6 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.elasticsearch'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'computed'])
-        ->tag('form.type');
-
-    $services->set('ems.fieldtype.json', JSONFieldType::class)
-        ->args([
-            service('security.authorization_checker'),
-            service('form.registry'),
-            service('ems.service.elasticsearch'),
-        ])
-        ->tag('ems.form.datafieldtype', ['alias' => 'json'])
         ->tag('form.type');
 
     $services->set('ems.fieldtype.dataLink', DataLinkFieldType::class)

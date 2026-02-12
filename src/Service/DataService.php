@@ -41,8 +41,8 @@ use EMS\CoreBundle\Form\DataField\FormFieldType;
 use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Service\Revision\PostProcessingService;
-use EMS\CoreBundle\Twig\AppExtension;
 use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
 use Psr\Log\LoggerInterface;
@@ -88,7 +88,6 @@ class DataService
         protected Mapping $mapping,
         protected string $instanceId,
         protected FormFactoryInterface $formFactory,
-        protected Container $container,
         protected FormRegistryInterface $formRegistry,
         protected EventDispatcherInterface $dispatcher,
         protected ContentTypeService $contentTypeService,
@@ -177,9 +176,8 @@ class DataService
             throw new LockedException($revision);
         }
 
-        $twigExtension = $this->container->get('app.twig_extension');
-
-        if (!$username && !$revision->isLazyIndex() && $twigExtension instanceof AppExtension && !$twigExtension->oneGranted($revision->giveContentType()->getFieldType()->getFieldsRoles(), $super)) {
+        $fieldRoles = $revision->giveContentType()->getFieldType()->getFieldsRoles();
+        if (!$username && !$revision->isLazyIndex() && !$this->authorizationChecker->isGranted(Roles::ROLE_SUPER) && !\array_any($fieldRoles, fn ($role) => $this->authorizationChecker->isGranted($role))) {
             throw new PrivilegeException($revision);
         }
         // TODO: test circles

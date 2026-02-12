@@ -6,14 +6,16 @@ namespace EMS\CoreBundle\Twig;
 
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
-use Twig\Extension\RuntimeExtensionInterface;
+use Twig\Attribute\AsTwigFilter;
+use Twig\Attribute\AsTwigFunction;
 
-class ContentTypeRuntime implements RuntimeExtensionInterface
+class ContentTypeExtension
 {
     public function __construct(private readonly ContentTypeService $contentTypeService)
     {
     }
 
+    #[AsTwigFilter(name: 'emsco_get_content_type')]
     public function getContentType(string $name): ?ContentType
     {
         $contentType = $this->contentTypeService->getByName($name);
@@ -22,20 +24,22 @@ class ContentTypeRuntime implements RuntimeExtensionInterface
     }
 
     /**
-     * @return ContentType[]
-     */
-    public function getContentTypes(): array
-    {
-        return $this->contentTypeService->getAll();
-    }
-
-    /**
      * @return array<string, ?string>
      */
+    #[AsTwigFunction(name: 'emsco_get_content_type_version_tags')]
     public function getContentTypeVersionTags(string $contentTypeName): array
     {
         $contentType = $this->contentTypeService->giveByName($contentTypeName);
 
         return $this->contentTypeService->getVersionTagsByContentType($contentType);
+    }
+
+    /**
+     * @return ContentType[]
+     */
+    #[AsTwigFunction(name: 'emsco_get_content_types')]
+    public function getContentTypes(): array
+    {
+        return $this->contentTypeService->getAll();
     }
 }

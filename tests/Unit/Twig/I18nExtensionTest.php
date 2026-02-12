@@ -7,21 +7,21 @@ namespace EMS\CoreBundle\Tests\Twig;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\I18n;
 use EMS\CoreBundle\Service\I18nService;
-use EMS\CoreBundle\Twig\I18nRuntime;
+use EMS\CoreBundle\Twig\I18nExtension;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
-class I18nRuntimeTest extends TestCase
+class I18nExtensionTest extends TestCase
 {
     private readonly I18nService $i18nService;
-    private I18nRuntime $i18nRuntime;
+    private I18nExtension $i18nRuntime;
 
     #[\Override]
     public function setUp(): void
     {
         $this->i18nService = $this->createMock(I18nService::class);
         $userManager = $this->createMock(UserManager::class);
-        $this->i18nRuntime = new I18nRuntime($this->i18nService, $userManager);
+        $this->i18nRuntime = new I18nExtension($this->i18nService, $userManager);
     }
 
     #[AllowMockObjectsWithoutExpectations]

@@ -8,16 +8,18 @@ use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Service\I18nService;
 use EMS\Helpers\Standard\Json;
-use Twig\Extension\RuntimeExtensionInterface;
+use Twig\Attribute\AsTwigFilter;
+use Twig\Attribute\AsTwigFunction;
 
-class I18nRuntime implements RuntimeExtensionInterface
+readonly class I18nExtension
 {
     public function __construct(
-        private readonly I18nService $i18nService,
-        private readonly UserManager $userManager,
+        private I18nService $i18nService,
+        private UserManager $userManager,
     ) {
     }
 
+    #[AsTwigFilter(name: 'emsco_i18n')]
     public function i18n(string $key, ?string $locale = null): string
     {
         $i18n = $this->i18nService->getAsList($key);
@@ -29,6 +31,7 @@ class I18nRuntime implements RuntimeExtensionInterface
     /**
      * @return array<string, mixed>
      */
+    #[AsTwigFunction(name: 'emsco_i18n_all')]
     public function findAll(string $name, bool $jsonDecode = false): array
     {
         $i18n = $this->i18nService->getByItemName($name);

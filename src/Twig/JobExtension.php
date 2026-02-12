@@ -7,9 +7,9 @@ namespace EMS\CoreBundle\Twig;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Service\JobService;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Twig\Extension\RuntimeExtensionInterface;
+use Twig\Attribute\AsTwigFunction;
 
-readonly class JobRuntime implements RuntimeExtensionInterface
+readonly class JobExtension
 {
     public function __construct(
         private JobService $jobService,
@@ -21,6 +21,7 @@ readonly class JobRuntime implements RuntimeExtensionInterface
     /**
      * @return array{ 'id': int, 'started': bool, 'done': bool, 'created': string, 'statusUrl': string }
      */
+    #[AsTwigFunction(name: 'emsco_job')]
     public function create(string $command, string $tag): array
     {
         $user = $this->userManager->getAuthenticatedUser();

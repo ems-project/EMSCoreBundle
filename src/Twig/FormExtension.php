@@ -15,8 +15,9 @@ use EMS\CoreBundle\Service\Revision\RevisionService;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Twig\Attribute\AsTwigFunction;
 
-class FormRuntime
+class FormExtension
 {
     public function __construct(
         protected FormManager $formManager,
@@ -32,6 +33,7 @@ class FormRuntime
      *
      * @return ?FormInterface<mixed>
      */
+    #[AsTwigFunction(name: 'emsco_get_form')]
     public function getFormByName(string $name, array $rawData = []): ?FormInterface
     {
         $formEntity = $this->formManager->getByItemName($name);
@@ -55,6 +57,7 @@ class FormRuntime
     /**
      * @param FormInterface<mixed> $form
      */
+    #[AsTwigFunction(name: 'emsco_get_data_field')]
     public function getDataField(FormInterface $form): DataField
     {
         return $this->dataService->getDataFieldsStructure($form);
@@ -66,6 +69,7 @@ class FormRuntime
      *
      * @return FormInterface<mixed>
      */
+    #[AsTwigFunction(name: 'emsco_form')]
     public function handleForm(string $name, array $data = [], $options = []): FormInterface
     {
         $options = \array_merge($options, ['form_name' => $name]);

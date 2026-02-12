@@ -8,10 +8,12 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Core\UI\Menu;
+use EMS\CoreBundle\Core\User\UserList;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Repository\UserRepository;
+use EMS\CoreBundle\Roles;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -38,7 +40,7 @@ class UserService implements EntityServiceInterface
 
     public function isSuper(): bool
     {
-        return $this->authorizationChecker->isGranted('ROLE_SUPER');
+        return $this->authorizationChecker->isGranted(Roles::ROLE_SUPER);
     }
 
     public function searchUser(string $search): ?UserInterface
@@ -314,6 +316,11 @@ class UserService implements EntityServiceInterface
     public function isCliSession(): bool
     {
         return 'cli' === \php_sapi_name();
+    }
+
+    public function getEnabledUsers(): UserList
+    {
+        return $this->userRepository->getUsersEnabled();
     }
 
     public function inMyCircles(mixed $circles): bool

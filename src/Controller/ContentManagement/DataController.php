@@ -36,7 +36,7 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
-use EMS\CoreBundle\Twig\AppExtension;
+use EMS\CoreBundle\Twig\CoreExtension;
 use EMS\Helpers\Standard\Json;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -577,7 +577,7 @@ class DataController extends AbstractController
         $serialisedFormErrors = [];
         foreach ($formErrors as $error) {
             $serialisedFormErrors[] = [
-                'propertyPath' => AppExtension::propertyPath($error),
+                'propertyPath' => CoreExtension::propertyPath($error),
                 'message' => $error->getMessage(),
             ];
         }

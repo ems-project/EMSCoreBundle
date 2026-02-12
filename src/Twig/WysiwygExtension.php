@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Core\Revision\Wysiwyg;
+namespace EMS\CoreBundle\Twig;
 
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\User\UserManager;
@@ -11,9 +11,9 @@ use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Twig\Extension\RuntimeExtensionInterface;
+use Twig\Attribute\AsTwigFunction;
 
-final readonly class WysiwygRuntime implements RuntimeExtensionInterface
+readonly class WysiwygExtension
 {
     public function __construct(
         private WysiwygStylesSetService $wysiwygStylesSetService,
@@ -23,6 +23,7 @@ final readonly class WysiwygRuntime implements RuntimeExtensionInterface
     ) {
     }
 
+    #[AsTwigFunction(name: 'emsco_wysiwyg_info')]
     public function getInfo(): string
     {
         return Json::encode([

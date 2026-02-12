@@ -15,10 +15,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
-use Twig\Extension\RuntimeExtensionInterface;
 use Twig\TemplateWrapper;
 
-final readonly class JsonMenuRenderer implements RuntimeExtensionInterface
+final readonly class JsonMenuRenderer
 {
     public const string TYPE_MODAL = 'modal';
     public const string TYPE_PASTE = 'paste';

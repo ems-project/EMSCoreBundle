@@ -32,12 +32,10 @@ class DemoteUserCommand extends RoleCommand
         if ($super) {
             $this->userManager->updateSuperAdmin($username, false);
             $this->io->success(\sprintf('User "%s" has been demoted as a simple user. This change will not apply until the user logs out and back in again.', $username));
+        } elseif ($this->userManager->updateRoleRemove($username, $role)) {
+            $this->io->success(\sprintf('Role "%s" has been removed from user "%s". This change will not apply until the user logs out and back in again.', $role, $username));
         } else {
-            if ($this->userManager->updateRoleRemove($username, $role)) {
-                $this->io->success(\sprintf('Role "%s" has been removed from user "%s". This change will not apply until the user logs out and back in again.', $role, $username));
-            } else {
-                $this->io->warning(\sprintf('User "%s" did not have "%s" role.', $username, $role));
-            }
+            $this->io->warning(\sprintf('User "%s" did not have "%s" role.', $username, $role));
         }
     }
 }

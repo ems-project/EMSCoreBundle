@@ -11,7 +11,7 @@ trait ScriptContentTypeFields
 {
     public function scriptEncodeFields(AbstractMigration $migration): void
     {
-        $emptyStringToNull = fn (?string $value): ?string => null !== $value && \strlen($value) > 0 ? $value : null;
+        $emptyStringToNull = fn (?string $value): ?string => null !== $value && $value !== '' ? $value : null;
 
         $result = $migration->connection->executeQuery('select * from content_type');
         while ($row = $result->fetchAssociative()) {

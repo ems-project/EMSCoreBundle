@@ -100,7 +100,7 @@ final readonly class SimpleBatchIteratorAggregate implements \IteratorAggregate
 
     private function flushAndClearBatch(int $iteration): void
     {
-        if ($iteration % $this->batchSize) {
+        if (0 !== $iteration % $this->batchSize) {
             return;
         }
 

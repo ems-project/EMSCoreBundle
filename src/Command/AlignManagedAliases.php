@@ -13,12 +13,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(
-    name: Commands::MANAGED_ALIAS_ALIGN,
-    description: 'Align a managed alias to another.',
-    hidden: false,
-    aliases: ['ems:managedalias:align']
-)]
+#[AsCommand(name: Commands::MANAGED_ALIAS_ALIGN, description: 'Align a managed alias to another.', aliases: ['ems:managedalias:align'], hidden: false)]
 class AlignManagedAliases extends Command
 {
     public function __construct(protected LoggerInterface $logger, protected AliasService $aliasService)

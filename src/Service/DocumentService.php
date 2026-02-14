@@ -90,7 +90,7 @@ class DocumentService
             $this->dataService->sign($newRevision);
         }
 
-        if ($currentRevision) {
+        if ($currentRevision instanceof Revision) {
             $currentRevision->setLockBy($documentImportContext->getLockUser());
             $currentRevision->setLockUntil(new \DateTime('now')->add(new \DateInterval('PT5M')));
 

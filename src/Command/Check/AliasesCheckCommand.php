@@ -16,12 +16,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(
-    name: Commands::MANAGED_ALIAS_CHECK,
-    description: 'Checks that all managed environments have their corresponding alias and index present in the cluster.',
-    hidden: false,
-    aliases: ['ems:check:aliases']
-)]
+#[AsCommand(name: Commands::MANAGED_ALIAS_CHECK, description: 'Checks that all managed environments have their corresponding alias and index present in the cluster.', aliases: ['ems:check:aliases'], hidden: false)]
 final class AliasesCheckCommand extends Command
 {
     private const string OPTION_REPAIR = 'repair';

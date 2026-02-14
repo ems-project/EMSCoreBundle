@@ -27,12 +27,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(
-    name: Commands::ENVIRONMENT_REINDEX,
-    description: 'Reindex an environment in it\'s existing index.',
-    hidden: false,
-    aliases: ['ems:environment:reindex']
-)]
+#[AsCommand(name: Commands::ENVIRONMENT_REINDEX, description: 'Reindex an environment in it\'s existing index.', aliases: ['ems:environment:reindex'], hidden: false)]
 class ReindexCommand extends AbstractCommand
 {
     private int $count = 0;
@@ -143,7 +138,7 @@ class ReindexCommand extends AbstractCommand
         $revRepo = $em->getRepository(Revision::class);
         $environment = $envRepo->findBy(['name' => $name, 'managed' => true]);
 
-        if ($environment && 1 == \count($environment)) {
+        if ($environment && 1 === \count($environment)) {
             /** @var Environment $environment */
             $environment = $environment[0];
 

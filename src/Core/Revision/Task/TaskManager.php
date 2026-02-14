@@ -113,7 +113,7 @@ final readonly class TaskManager
 
     public function isTaskManager(?UserInterface $user = null): bool
     {
-        if ($user) {
+        if ($user instanceof UserInterface) {
             return $user->hasRole(Roles::ROLE_TASK_MANAGER);
         }
 
@@ -263,7 +263,7 @@ final readonly class TaskManager
         $nextPlannedId = $revision->getTaskNextPlannedId();
         $nextPlannedTask = $nextPlannedId ? $this->getTask($nextPlannedId, $revision) : null;
 
-        if ($nextPlannedTask) {
+        if ($nextPlannedTask instanceof Task) {
             $revision->setTaskCurrent($nextPlannedTask);
             $this->dispatchEvent($this->createTaskEvent($nextPlannedTask, $revision), TaskEvent::PROGRESS);
         } else {

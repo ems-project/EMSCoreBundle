@@ -155,7 +155,7 @@ class FormSubmissionRepository extends ServiceEntityRepository
     private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
     {
         $qb->andWhere($qb->expr()->isNotNull('fs.data'));
-        if (\strlen($searchValue) > 0) {
+        if ('' !== $searchValue) {
             $or = $qb->expr()->orX(
                 $qb->expr()->like('fs.id', ':term'),
                 $qb->expr()->like('fs.instance', ':term'),

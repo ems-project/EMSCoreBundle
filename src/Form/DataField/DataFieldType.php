@@ -40,7 +40,7 @@ abstract class DataFieldType extends AbstractType
      */
     public static function textAreaToArray(?string $textArea): array
     {
-        if (null === $textArea || 0 === \strlen($textArea)) {
+        if (null === $textArea || '' === $textArea) {
             return [];
         }
         $cleaned = \str_replace("\r", '', $textArea);
@@ -263,7 +263,7 @@ abstract class DataFieldType extends AbstractType
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
-        if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
+        if (!$isMigration || [] === $migrationOptions || !$migrationOptions['protected']) {
             $dataField->setRawData($sourceArray);
         }
 
@@ -362,7 +362,7 @@ abstract class DataFieldType extends AbstractType
         // Get FieldType mandatory option
         $restrictionOptions = $dataField->giveFieldType()->getRestrictionOptions();
         if (isset($restrictionOptions['mandatory']) && true == $restrictionOptions['mandatory']) {
-            $parentRawData = $parent ? $parent->getRawData() : [];
+            $parentRawData = $parent instanceof DataField ? $parent->getRawData() : [];
             $parentRawDataArray = \is_array($parentRawData) ? $parentRawData : [];
 
             if (null === $parent || !isset($restrictionOptions['mandatory_if'])
@@ -404,7 +404,7 @@ abstract class DataFieldType extends AbstractType
 
     public function hasDeletedParent(?DataField $parent = null): bool
     {
-        if (!$parent) {
+        if (!$parent instanceof DataField) {
             return false;
         }
 

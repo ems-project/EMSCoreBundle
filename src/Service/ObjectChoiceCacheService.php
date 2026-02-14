@@ -84,7 +84,7 @@ class ObjectChoiceCacheService
 
                     $search->setContentTypes([$type]);
 
-                    if (\is_string($currentType->getSortBy()) && \strlen($currentType->getSortBy()) > 0) {
+                    if (\is_string($currentType->getSortBy()) && '' !== $currentType->getSortBy()) {
                         $search->setSort([
                             $currentType->getSortBy() => [
                                 'order' => $currentType->getSortOrder() ?? 'asc',
@@ -142,34 +142,29 @@ class ObjectChoiceCacheService
                 if (!isset($this->cache[$objectType])) {
                     $this->cache[$objectType] = [];
                 }
-
                 if (isset($this->cache[$objectType][$objectOuuid])) {
                     $choices[$objectId] = $this->cache[$objectType][$objectOuuid];
-                } else {
-                    if (!isset($this->fullyLoaded[$objectType])) {
-                        $contentType = $this->contentTypeService->getByName($objectType);
-                        if ($contentType) {
-                            $index = $this->contentTypeService->getIndex($contentType);
-                            if ($index) {
-                                $missingOuuidsPerIndexAndType[$index][$objectType][] = $objectOuuid;
-                            } elseif ($withWarning) {
-                                $this->logger->warning('service.object_choice_cache.alias_not_found', [
-                                    EmsFields::LOG_CONTENTTYPE_FIELD => $objectType,
-                                ]);
-                            }
+                } elseif (!isset($this->fullyLoaded[$objectType])) {
+                    $contentType = $this->contentTypeService->getByName($objectType);
+                    if ($contentType) {
+                        $index = $this->contentTypeService->getIndex($contentType);
+                        if ('' !== $index && '0' !== $index) {
+                            $missingOuuidsPerIndexAndType[$index][$objectType][] = $objectOuuid;
                         } elseif ($withWarning) {
-                            $this->logger->warning('service.object_choice_cache.contenttype_not_found', [
+                            $this->logger->warning('service.object_choice_cache.alias_not_found', [
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $objectType,
                             ]);
                         }
+                    } elseif ($withWarning) {
+                        $this->logger->warning('service.object_choice_cache.contenttype_not_found', [
+                            EmsFields::LOG_CONTENTTYPE_FIELD => $objectType,
+                        ]);
                     }
                 }
-            } else {
-                if (null !== $objectId && '' !== $objectId && $withWarning) {
-                    $this->logger->warning('service.object_choice_cache.object_key_not_found', [
-                        'object_key' => $objectId,
-                    ]);
-                }
+            } elseif (null !== $objectId && '' !== $objectId && $withWarning) {
+                $this->logger->warning('service.object_choice_cache.object_key_not_found', [
+                    'object_key' => $objectId,
+                ]);
             }
         }
 

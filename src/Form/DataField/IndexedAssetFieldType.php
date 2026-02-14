@@ -126,7 +126,7 @@ class IndexedAssetFieldType extends DataFieldType
     private function testDataField(DataField $dataField): void
     {
         $raw = $dataField->getRawData();
-        if (!\is_array($raw) || empty($raw) || empty($raw['sha1'])) {
+        if (!\is_array($raw) || [] === $raw || empty($raw['sha1'])) {
             $restrictionOptions = $dataField->giveFieldType()->getRestrictionOptions();
             if (isset($restrictionOptions['mandatory']) && $restrictionOptions['mandatory']) {
                 $dataField->addMessage('This entry is required');

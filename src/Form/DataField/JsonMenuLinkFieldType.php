@@ -72,7 +72,7 @@ class JsonMenuLinkFieldType extends DataFieldType
             ]);
 
             $isMigration = $options['migration'] ?? false;
-            $alreadyAssignedUuids = !$isMigration ? $this->collectAlreadyAssignedJsonUuids($fieldType, $options['raw_data'] ?? []) : [];
+            $alreadyAssignedUuids = $isMigration ? [] : $this->collectAlreadyAssignedJsonUuids($fieldType, $options['raw_data'] ?? []);
 
             $scroll = $this->elasticaService->scroll($search);
             foreach ($scroll as $resultSet) {
@@ -90,10 +90,8 @@ class JsonMenuLinkFieldType extends DataFieldType
 
                     $jsonMenu = $this->decoder->jsonMenuDecode($result->getSource()[$options['json_menu_field']] ?? '{}', '/');
                     foreach ($jsonMenu->getUids() as $uid) {
-                        if (!\in_array($uid, $alreadyAssignedUuids)) {
-                            if (($jsonMenu->getItem($uid)['contentType'] ?? false) === $fieldType->giveContentType()->getName()) {
-                                $choices[$label.$jsonMenu->getSlug($uid)] = $uid;
-                            }
+                        if (!\in_array($uid, $alreadyAssignedUuids) && ($jsonMenu->getItem($uid)['contentType'] ?? false) === $fieldType->giveContentType()->getName()) {
+                            $choices[$label.$jsonMenu->getSlug($uid)] = $uid;
                         }
                     }
                 }

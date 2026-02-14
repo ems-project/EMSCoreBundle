@@ -22,12 +22,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(
-    name: Commands::NOTIFICATION_BULK_ACTION,
-    description: 'Bulk all notifications actions for the passed query.',
-    hidden: false,
-    aliases: ['ems:notification:bulk-action']
-)]
+#[AsCommand(name: Commands::NOTIFICATION_BULK_ACTION, description: 'Bulk all notifications actions for the passed query.', aliases: ['ems:notification:bulk-action'], hidden: false)]
 final class BulkActionCommand extends Command
 {
     private const string CONTENT_TYPE_NAME = 'contentTypeName';

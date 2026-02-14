@@ -188,7 +188,7 @@ class ContentTypeRepository extends EntityRepository
     {
         $qb->where($qb->expr()->eq('c.deleted', ':false'));
         $qb->setParameter(':false', false);
-        if (\strlen($searchValue) > 0) {
+        if ('' !== $searchValue) {
             $or = $qb->expr()->orX(
                 $qb->expr()->like('c.label', ':term'),
                 $qb->expr()->like('c.pluralName', ':term'),

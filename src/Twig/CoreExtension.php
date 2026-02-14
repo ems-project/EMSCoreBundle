@@ -43,6 +43,7 @@ use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -83,7 +84,7 @@ readonly class CoreExtension
         while ($parent) {
             $out = $parent->getName().$out;
             $parent = $parent->getParent();
-            if ($parent) {
+            if ($parent instanceof FormInterface) {
                 $out = '_'.$out;
             }
         }
@@ -249,20 +250,14 @@ readonly class CoreExtension
                 }
 
                 if (null !== $a) {
-                    if ($textClass) {
-                        $textClass = 'text-orange';
-                    } else {
-                        $textClass = 'text-green';
-                    }
+                    $textClass = $textClass ? 'text-orange' : 'text-green';
                     $textLabel .= ' <ins class="diffmod">'.($escape ? \htmlentities($a) : $this->internalLinks($a)).'</ins>';
                 }
             }
+        } elseif (null !== $a) {
+            $textLabel = ($escape ? \htmlentities($a) : $this->internalLinks($a));
         } else {
-            if (null !== $a) {
-                $textLabel = ($escape ? \htmlentities($a) : $this->internalLinks($a));
-            } else {
-                return '<span class="text-gray">[not defined]</span>';
-            }
+            return '<span class="text-gray">[not defined]</span>';
         }
 
         if ($raw) {
@@ -315,7 +310,7 @@ readonly class CoreExtension
             $a = $rawData;
         } elseif (\is_scalar($rawData)) {
             $tag = 'span';
-            if (!empty($b)) {
+            if ([] !== $b) {
                 $insColor = $delColor = 'orange';
             }
             $a = [$rawData];
@@ -445,7 +440,7 @@ readonly class CoreExtension
             $a = $rawData;
         } elseif (\is_scalar($rawData)) {
             $tag = 'span';
-            if (!empty($b)) {
+            if ([] !== $b) {
                 $insColor = $delColor = 'orange';
             }
             $a = [$rawData];
@@ -579,11 +574,7 @@ readonly class CoreExtension
             $a = Type::getAsNullableString($rawData);
         }
         $b = $compareRawData[$fieldName] ?? null;
-        if (\is_array($b)) {
-            $b = Json::encode($b);
-        } else {
-            $b = Type::getAsNullableString($b);
-        }
+        $b = \is_array($b) ? Json::encode($b) : Type::getAsNullableString($b);
 
         return $this->diff($a, $b, $compare);
     }
@@ -720,7 +711,7 @@ readonly class CoreExtension
     #[AsTwigFilter(name: 'emsco_get_string')]
     public function getString(array $rawData, string $field): ?string
     {
-        if (empty($rawData) or !isset($rawData[$field])) {
+        if ([] === $rawData || !isset($rawData[$field])) {
             return null;
         }
         if (\is_string($rawData[$field])) {
@@ -856,9 +847,9 @@ readonly class CoreExtension
             $body = Json::decode($body);
         }
         $boolQuery = $this->elasticaService->getBoolQuery();
-        if (!empty($body) && $query instanceof $boolQuery) {
+        if ([] !== $body && $query instanceof $boolQuery) {
             $query->addMust($body);
-        } elseif (!empty($body)) {
+        } elseif ([] !== $body) {
             if (null !== $query) {
                 $boolQuery->addMust($query);
             }

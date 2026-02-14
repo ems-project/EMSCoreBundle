@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Component;
 
 use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig;
+use EMS\CoreBundle\Core\Component\MediaLibrary\Folder\MediaLibraryFolder;
 use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryService;
 use EMS\CoreBundle\Core\UI\AjaxModal;
 use EMS\CoreBundle\Core\UI\AjaxService;
@@ -76,7 +77,7 @@ class MediaLibraryController
         if ($form->isSubmitted() && $form->isValid()) {
             $folder = $this->mediaLibraryService->createFolder($newFolder);
 
-            if ($folder) {
+            if ($folder instanceof MediaLibraryFolder) {
                 $this->flashBag($request)->clear();
 
                 return $this->getAjaxModal()->getSuccessResponse(['path' => $folder->getPath()->getValue()]);
@@ -248,7 +249,7 @@ class MediaLibraryController
     {
         $selectionFiles = $request->query->getInt('selectionFiles');
         $folder = $folderId ? $this->mediaLibraryService->getFolder($folderId) : null;
-        $currentPath = ($folder ? $folder->getPath()->getLabel() : 'Home');
+        $currentPath = ($folder instanceof MediaLibraryFolder ? $folder->getPath()->getLabel() : 'Home');
 
         $componentModal = $this->mediaLibraryService->modal([
             'type' => 'move_files',
@@ -285,7 +286,7 @@ class MediaLibraryController
                 'infoMessage' => $this->translator->trans('media_library.files.move.success', [
                     '%count%' => $selectionFiles,
                     '%from%' => $currentPath,
-                    '%to%' => $targetFolder ? $targetFolder->getPath()->getLabel() : 'Home',
+                    '%to%' => $targetFolder instanceof MediaLibraryFolder ? $targetFolder->getPath()->getLabel() : 'Home',
                 ], EMSCoreBundle::TRANS_COMPONENT),
             ]);
 

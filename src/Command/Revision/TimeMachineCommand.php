@@ -19,12 +19,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(
-    name: Commands::REVISIONS_TIME_MACHINE,
-    description: 'Revert to a copy of the revision wich was the current one for a given timestamp.',
-    hidden: false,
-    aliases: ['ems:revision:time-machine']
-)]
+#[AsCommand(name: Commands::REVISIONS_TIME_MACHINE, description: 'Revert to a copy of the revision wich was the current one for a given timestamp.', aliases: ['ems:revision:time-machine'], hidden: false)]
 final class TimeMachineCommand extends Command
 {
     private SymfonyStyle $style;

@@ -67,7 +67,7 @@ class FieldTypeType extends AbstractType
                 ],
                 'icon' => 'fa fa-plus',
             ]);
-        } elseif (0 != \strcmp(SubfieldType::class, $fieldType->getType())) {
+        } elseif (0 !== \strcmp(SubfieldType::class, $fieldType->getType())) {
             $builder->add('ems:internal:add:subfield:name', TextType::class, [
                 'label' => 'Subfield\'s name',
                 'mapped' => false,

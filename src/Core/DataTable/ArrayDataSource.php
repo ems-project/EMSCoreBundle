@@ -77,11 +77,7 @@ class ArrayDataSource implements \Countable
                 $bValue = $bValue->getTimestamp();
             }
 
-            if (\is_int($aValue) && \is_int($bValue)) {
-                $result = $aValue <=> $bValue;
-            } else {
-                $result = \strcmp((string) $aValue, (string) $bValue);
-            }
+            $result = \is_int($aValue) && \is_int($bValue) ? $aValue <=> $bValue : \strcmp((string) $aValue, (string) $bValue);
 
             return 'desc' === $orderDirection ? $result * -1 : $result;
         });

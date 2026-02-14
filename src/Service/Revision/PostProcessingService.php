@@ -81,8 +81,8 @@ final readonly class PostProcessingService
         }
         $options = $fieldType->getOptions();
 
-        if (!$dataFieldType::isVirtual(!$options ? [] : $options)) {
-            $path .= ('' == $path ? '' : '.').$form->getConfig()->getName();
+        if (!$dataFieldType::isVirtual($options)) {
+            $path .= ('' === $path ? '' : '.').$form->getConfig()->getName();
         }
 
         if ($migration && JsonMenuNestedEditorFieldType::class === $fieldType->getType()) {
@@ -95,7 +95,7 @@ final readonly class PostProcessingService
                 $out = $this->twig->createTemplate($extraOption['postProcessing'])->render($context);
                 $out = \trim($out);
 
-                if (\strlen($out) > 0) {
+                if ('' !== $out) {
                     try {
                         $json = Json::mixedDecode($out);
                         if (null === $fieldType->getParent()) {
@@ -178,7 +178,7 @@ final readonly class PostProcessingService
                     ]);
                 }
             }
-            if (null !== $out && false !== $out && (!\is_array($out) || !empty($out))) {
+            if (null !== $out && false !== $out && (!\is_array($out) || [] !== $out)) {
                 $objectArray[$fieldType->getName()] = $out;
             } elseif (\array_key_exists($fieldType->getName(), $objectArray)) {
                 unset($objectArray[$fieldType->getName()]);
@@ -200,7 +200,7 @@ final readonly class PostProcessingService
                     foreach ($child->all() as $collectionChild) {
                         if (isset($objectArray[$fieldName])) {
                             foreach ($objectArray[$fieldName] as &$elementsArray) {
-                                $childPath = $path.('' == $path ? '' : '.').$fieldName;
+                                $childPath = $path.('' === $path ? '' : '.').$fieldName;
                                 $found = $this->postProcessing($collectionChild, $contentType, $elementsArray, $context, $parent, $childPath) || $found;
                             }
                         }

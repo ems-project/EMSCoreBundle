@@ -43,27 +43,23 @@ final class RawDataTransformer
                 } else {
                     $out[$child->getName()] = $type::filterSubField($data, $child->getOptions());
                 }
-            } else {
-                if ($type::isContainer()) {
-                    if (isset($data[$child->getName()])) {
-                        if ($type::isCollection()) {
-                            if (\is_array($data[$child->getName()])) {
-                                $out[$child->getName()] = [];
-                                foreach ($data[$child->getName()] as $idx => $item) {
-                                    $out[$child->getName()][$idx] = self::transform($child, $item);
-                                }
+            } elseif ($type::isContainer()) {
+                if (isset($data[$child->getName()])) {
+                    if ($type::isCollection()) {
+                        if (\is_array($data[$child->getName()])) {
+                            $out[$child->getName()] = [];
+                            foreach ($data[$child->getName()] as $idx => $item) {
+                                $out[$child->getName()][$idx] = self::transform($child, $item);
                             }
-                        } elseif (\is_array($data[$child->getName()])) {
-                            $out[$child->getName()] = self::transform($child, $data[$child->getName()]);
-                        } else {
-                            $out[$child->getName()] = $data[$child->getName()];
                         }
-                    }
-                } else {
-                    if (isset($data[$child->getName()])) {
+                    } elseif (\is_array($data[$child->getName()])) {
+                        $out[$child->getName()] = self::transform($child, $data[$child->getName()]);
+                    } else {
                         $out[$child->getName()] = $data[$child->getName()];
                     }
                 }
+            } elseif (isset($data[$child->getName()])) {
+                $out[$child->getName()] = $data[$child->getName()];
             }
         }
 
@@ -106,27 +102,23 @@ final class RawDataTransformer
                         $out = \array_merge_recursive($out, $data[$child->getName()]);
                     }
                 }
-            } else {
-                if ($type::isContainer() && isset($data[$child->getName()]) && \is_array($data[$child->getName()])) {
-                    if (!empty($data[$child->getName()])) {
-                        if ($type::isCollection()) {
-                            $out[$child->getName()] = [];
-                            foreach ($data[$child->getName()] as $itemIdx => $item) {
-                                $out[$child->getName()][$itemIdx] = self::reverseTransform($child, $item);
-                            }
-                        } else {
-                            $out[$child->getName()] = self::reverseTransform($child, $data[$child->getName()]);
+            } elseif ($type::isContainer() && isset($data[$child->getName()]) && \is_array($data[$child->getName()])) {
+                if (!empty($data[$child->getName()])) {
+                    if ($type::isCollection()) {
+                        $out[$child->getName()] = [];
+                        foreach ($data[$child->getName()] as $itemIdx => $item) {
+                            $out[$child->getName()][$itemIdx] = self::reverseTransform($child, $item);
                         }
-
-                        if (\is_array($out[$child->getName()]) && empty($out[$child->getName()])) {
-                            unset($out[$child->getName()]);
-                        }
+                    } else {
+                        $out[$child->getName()] = self::reverseTransform($child, $data[$child->getName()]);
                     }
-                } else {
-                    if (isset($data[$child->getName()])) {
-                        $out[$child->getName()] = $data[$child->getName()];
+
+                    if (\is_array($out[$child->getName()]) && empty($out[$child->getName()])) {
+                        unset($out[$child->getName()]);
                     }
                 }
+            } elseif (isset($data[$child->getName()])) {
+                $out[$child->getName()] = $data[$child->getName()];
             }
         }
 

@@ -93,7 +93,7 @@ class GalleryViewType extends ViewType
         $elasticaSearch->setSize(1000);
 
         $sourceFields = $view->getOptions()['sourceFields'] ?? null;
-        if (\is_string($sourceFields) && \strlen($sourceFields) > 0) {
+        if (\is_string($sourceFields) && '' !== $sourceFields) {
             $source = \preg_split('/,/', $sourceFields);
             if (\is_array($source)) {
                 $elasticaSearch->setSources($source);

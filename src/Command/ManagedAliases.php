@@ -14,12 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(
-    name: Commands::MANAGED_ALIAS_LIST,
-    description: 'List managed aliases.',
-    hidden: false,
-    aliases: ['ems:managedalias:list']
-)]
+#[AsCommand(name: Commands::MANAGED_ALIAS_LIST, description: 'List managed aliases.', aliases: ['ems:managedalias:list'], hidden: false)]
 class ManagedAliases extends Command
 {
     public function __construct(protected LoggerInterface $logger, protected AliasService $aliasService)

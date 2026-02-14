@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use EMS\CoreBundle\Controller\Revision\Action\ActionImportController;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 return function (RoutingConfigurator $routes): void {
@@ -63,7 +64,7 @@ return function (RoutingConfigurator $routes): void {
         ->defaults(['public' => 0]);
 
     $routes->add('emsco_data_action_import', '/action/import/{actionId}/{ouuid}')
-        ->controller('EMS\CoreBundle\Controller\Revision\Action\ActionImportController')
+        ->controller(ActionImportController::class)
         ->methods(['GET', 'POST']);
 
     $routes->add('emsco_data_private_action', '/action/{environmentName}/{templateId}/{ouuid}/{_download}')

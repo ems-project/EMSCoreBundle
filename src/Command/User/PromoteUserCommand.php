@@ -31,14 +31,11 @@ class PromoteUserCommand extends RoleCommand
     {
         if ($super) {
             $this->userManager->updateSuperAdmin($username, true);
-
             $this->io->success(\sprintf('User "%s" has been promoted as a super administrator. This change will not apply until the user logs out and back in again.', $username));
+        } elseif ($this->userManager->updateRoleAdd($username, $role)) {
+            $this->io->success(\sprintf('Role "%s" has been added to user "%s". This change will not apply until the user logs out and back in again.', $role, $username));
         } else {
-            if ($this->userManager->updateRoleAdd($username, $role)) {
-                $this->io->success(\sprintf('Role "%s" has been added to user "%s". This change will not apply until the user logs out and back in again.', $role, $username));
-            } else {
-                $this->io->warning(\sprintf('User "%s" did already have "%s" role.', $username, $role));
-            }
+            $this->io->warning(\sprintf('User "%s" did already have "%s" role.', $username, $role));
         }
     }
 }

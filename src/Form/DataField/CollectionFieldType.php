@@ -55,7 +55,7 @@ class CollectionFieldType extends DataFieldType
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
-        if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
+        if (!$isMigration || [] === $migrationOptions || !$migrationOptions['protected']) {
             if (!\is_array($sourceArray)) {
                 $sourceArray = [$sourceArray];
             }
@@ -158,7 +158,7 @@ class CollectionFieldType extends DataFieldType
         $restrictionOptions = $dataField->giveFieldType()->getRestrictionOptions();
         $rawData = $dataField->getRawData();
 
-        if (!empty($restrictionOptions['min']) && (!\is_array($rawData) ? 0 : \count($rawData)) < $restrictionOptions['min']) {
+        if (!empty($restrictionOptions['min']) && (\is_array($rawData) ? \count($rawData) : 0) < $restrictionOptions['min']) {
             if (1 == $restrictionOptions['min']) {
                 $dataField->addMessage('At least 1 item is required');
             } else {

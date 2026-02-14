@@ -28,7 +28,7 @@ class EnvironmentPublisherFactory
         $messages = $currentPublisher ? $currentPublisher->getMessages() : [];
         $publisher = new EnvironmentPublisher($revision, $messages);
 
-        if ($template = $this->getTemplate($environment)) {
+        if (($template = $this->getTemplate($environment)) instanceof TemplateWrapper) {
             $template->render([
                 'publication' => $publisher,
                 'environment' => $environment,

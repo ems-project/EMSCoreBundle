@@ -224,7 +224,7 @@ class ElasticsearchController extends AbstractController
         };
         $response->setStatusCode($statusCode);
         $allowOrigin = $this->healthCheckAllowOrigin;
-        if (\is_string($allowOrigin) && \strlen($allowOrigin) > 0) {
+        if (\is_string($allowOrigin) && '' !== $allowOrigin) {
             $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
         }
 
@@ -410,20 +410,18 @@ class ElasticsearchController extends AbstractController
 
         if (null !== $category && 1 === \count($contentTypes)) {
             $contentType = $this->contentTypeService->getByName(\array_first($contentTypes));
-            if (false !== $contentType) {
-                if ($contentType->hasCategoryField()) {
-                    $categoryField = $contentType->giveCategoryField();
-                    $boolQuery = $this->elasticaService->getBoolQuery();
-                    $query = $commonSearch->getQuery();
-                    if (!$query instanceof $boolQuery) {
-                        if (null !== $query) {
-                            $boolQuery->addMust($query);
-                        }
-                        $query = $boolQuery;
+            if (false !== $contentType && $contentType->hasCategoryField()) {
+                $categoryField = $contentType->giveCategoryField();
+                $boolQuery = $this->elasticaService->getBoolQuery();
+                $query = $commonSearch->getQuery();
+                if (!$query instanceof $boolQuery) {
+                    if (null !== $query) {
+                        $boolQuery->addMust($query);
                     }
-                    $query->addMust($this->elasticaService->getTermsQuery($categoryField, [$category]));
-                    $commonSearch = new CommonSearch($commonSearch->getIndices(), $query);
+                    $query = $boolQuery;
                 }
+                $query->addMust($this->elasticaService->getTermsQuery($categoryField, [$category]));
+                $commonSearch = new CommonSearch($commonSearch->getIndices(), $query);
             }
         }
 
@@ -473,7 +471,7 @@ class ElasticsearchController extends AbstractController
             $search = new Search();
             $search->setEnvironments($this->environmentService->getEnvironmentNames());
 
-            if ('POST' == $request->getMethod()) {
+            if ('POST' === $request->getMethod()) {
                 $request->request->set('search_form', $request->query->all('search_form'));
 
                 $form = $this->createForm(SearchFormType::class, $search);

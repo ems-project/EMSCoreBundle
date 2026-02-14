@@ -179,7 +179,7 @@ trait RevisionTaskTrait
     {
         $this->taskCurrent = $task;
 
-        if ($task) {
+        if ($task instanceof Task) {
             $this->deleteTaskPlanned($task);
         }
     }

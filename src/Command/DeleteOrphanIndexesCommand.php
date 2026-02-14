@@ -11,12 +11,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(
-    name: Commands::DELETE_ORPHANS,
-    description: 'Removes all orphan indexes.',
-    hidden: false,
-    aliases: ['ems:delete:orphans']
-)]
+#[AsCommand(name: Commands::DELETE_ORPHANS, description: 'Removes all orphan indexes.', aliases: ['ems:delete:orphans'], hidden: false)]
 class DeleteOrphanIndexesCommand extends AbstractCommand
 {
     public function __construct(protected IndexService $indexService)

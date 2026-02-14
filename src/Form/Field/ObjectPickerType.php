@@ -36,7 +36,7 @@ class ObjectPickerType extends Select2Type
                 $circleOnly = $options['circle-only'];
                 $withWarning = $options['with_warning'];
                 $querySearch = $options['querySearch'];
-                if (!\is_string($querySearch) || 0 === \strlen($querySearch)) {
+                if (!\is_string($querySearch) || '' === $querySearch) {
                     $querySearch = null;
                 }
 

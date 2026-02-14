@@ -97,7 +97,7 @@ final class FormRepository extends ServiceEntityRepository
 
     private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
     {
-        if (\strlen($searchValue) > 0) {
+        if ('' !== $searchValue) {
             $or = $qb->expr()->orX(
                 $qb->expr()->like('c.label', ':term'),
                 $qb->expr()->like('c.name', ':term'),

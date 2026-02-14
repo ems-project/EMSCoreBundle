@@ -56,9 +56,9 @@ class FieldTypeManager
     {
         if (\array_key_exists('add', $formArray)) {
             if (isset($formArray['ems:internal:add:field:name'])
-                && 0 != \strcmp((string) $formArray['ems:internal:add:field:name'], '')
+                && 0 !== \strcmp((string) $formArray['ems:internal:add:field:name'], '')
                 && isset($formArray['ems:internal:add:field:class'])
-                && 0 != \strcmp((string) $formArray['ems:internal:add:field:class'], '')) {
+                && 0 !== \strcmp((string) $formArray['ems:internal:add:field:class'], '')) {
                 if (static::isValidName($formArray['ems:internal:add:field:name'])) {
                     $fieldTypeNameOrServiceName = $formArray['ems:internal:add:field:class'];
                     $fieldName = $formArray['ems:internal:add:field:name'];
@@ -158,7 +158,7 @@ class FieldTypeManager
                 if (static::isValidName($formArray['ems:internal:add:subfield:target_name'])) {
                     $new = clone $fieldType;
                     $new->setName($formArray['ems:internal:add:subfield:target_name']);
-                    if ($parent = $new->getParent()) {
+                    if (($parent = $new->getParent()) instanceof FieldType) {
                         $parent->addChild($new);
                     }
 

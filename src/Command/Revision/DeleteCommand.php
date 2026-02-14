@@ -118,7 +118,7 @@ class DeleteCommand extends AbstractCommand
             }
         }
 
-        if ($results) {
+        if ([] !== $results) {
             $this->io->success($results);
         }
 

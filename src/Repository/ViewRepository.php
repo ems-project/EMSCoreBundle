@@ -93,7 +93,7 @@ class ViewRepository extends ServiceEntityRepository
             ->setParameter('contentType', $contentType);
         $this->addSearchFilters($qb, $searchValue);
 
-        if (\in_array($orderField, ['name'])) {
+        if ('name' == $orderField) {
             $qb->orderBy(\sprintf('view.%s', $orderField), $orderDirection);
         } else {
             $qb->orderBy('view.orderKey', $orderDirection);
@@ -104,7 +104,7 @@ class ViewRepository extends ServiceEntityRepository
 
     private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
     {
-        if (\strlen($searchValue) > 0) {
+        if ('' !== $searchValue) {
             $or = $qb->expr()->orX(
                 $qb->expr()->like('view.label', ':term'),
                 $qb->expr()->like('view.name', ':term'),

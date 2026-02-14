@@ -82,7 +82,7 @@ final class AddEnvironmentIndexCommand extends AbstractCommand
         if ($this->clearAlias) {
             $indexesToRemove = \array_diff($indexesInManagedAlias, $indexes);
         }
-        if (empty($indexesToAdd) && empty($indexesToRemove)) {
+        if ([] === $indexesToAdd && [] === $indexesToRemove) {
             $this->io->warning('Nothing to add nor to remove');
 
             return self::EXECUTE_SUCCESS;

@@ -289,7 +289,7 @@ class RevisionRepository extends EntityRepository
             $qb->andWhere($qb->expr()->notIn('r.ouuid', $ouuids));
         }
 
-        if (\strlen($searchValue) > 0) {
+        if ('' !== $searchValue) {
             $literal = $qb->expr()->literal('%'.\strtolower($searchValue).'%');
             $or = $qb->expr()->orX(
                 $qb->expr()->like('LOWER(r.lockBy)', $literal),
@@ -299,7 +299,7 @@ class RevisionRepository extends EntityRepository
             $qb->andWhere($or);
         }
 
-        if (!empty($contentTypes)) {
+        if ([] !== $contentTypes) {
             $qb->andWhere('c.name in (\''.\implode("','", $contentTypes).'\')');
         }
 
@@ -680,13 +680,13 @@ class RevisionRepository extends EntityRepository
             ->orderBy('t.deadline, t.status')
         ;
 
-        if ($deadlineStart) {
+        if ($deadlineStart instanceof \DateTimeImmutable) {
             $qb
                 ->andWhere($qb->expr()->gte('t.deadline', ':deadline_start'))
                 ->setParameter('deadline_start', $deadlineStart->setTime(0, 0)->format(\DATE_ATOM));
         }
 
-        if ($deadlineEnd) {
+        if ($deadlineEnd instanceof \DateTimeImmutable) {
             $qb
                 ->andWhere($qb->expr()->lte('t.deadline', ':deadline_end'))
                 ->setParameter('deadline_end', $deadlineEnd->setTime(23, 59, 59)->format(\DATE_ATOM));
@@ -857,7 +857,7 @@ class RevisionRepository extends EntityRepository
             ->andWhere($qb->expr()->eq('r.versionUuid', ':version_ouuid'))
             ->setParameter('version_ouuid', $versionOuuid);
 
-        if ($environment) {
+        if ($environment instanceof Environment) {
             $qb
                 ->join('r.environmentRevisions', 'er')
                 ->andWhere($qb->expr()->eq('er.environment', ':environment'))

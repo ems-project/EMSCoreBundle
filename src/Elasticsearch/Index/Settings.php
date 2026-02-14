@@ -17,7 +17,7 @@ class Settings
 
     public function isEmpty(): bool
     {
-        return empty($this->filters) && empty($this->analyzers);
+        return [] === $this->filters && [] === $this->analyzers;
     }
 
     /**

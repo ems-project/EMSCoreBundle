@@ -322,7 +322,8 @@ final readonly class FormSubmissionService implements EntityServiceInterface
             return $rows;
         }
         $titles = $rows[0];
-        for ($i = 1; $i < \count($rows); ++$i) {
+        $counter = \count($rows);
+        for ($i = 1; $i < $counter; ++$i) {
             $rows[$i] = \array_map(fn (string $key) => $rows[$i][$key] ?? null, $titles);
         }
 

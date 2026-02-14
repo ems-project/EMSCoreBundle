@@ -12,6 +12,7 @@ use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\Revision\RevisionTrashDataTableType;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\DataService;
@@ -86,7 +87,7 @@ class TrashController extends AbstractController
 
         $restoredRevision = $this->dataService->trashPutBackAsDraft($contentType, $ouuid);
 
-        if (!$restoredRevision) {
+        if (!$restoredRevision instanceof Revision) {
             throw new \RuntimeException(\sprintf('Put back failed for ouuid "%s"', $ouuid));
         }
 
@@ -112,7 +113,7 @@ class TrashController extends AbstractController
 
         $restoredRevision = $this->dataService->trashPutBackAsDraft($contentType, ...$ouuids);
 
-        if ($restoredRevision) {
+        if ($restoredRevision instanceof Revision) {
             return $this->redirectToRoute(Routes::EDIT_REVISION, ['revisionId' => $restoredRevision->getId()]);
         }
 

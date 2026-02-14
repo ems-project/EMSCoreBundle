@@ -83,7 +83,7 @@ class SearchService
         $commonSearch = new CommonSearch($indexes, $this->elasticaService->filterByContentTypes($boolQuery, $search->getContentTypes()));
 
         $sortBy = $search->getSortBy();
-        if (null !== $sortBy && \strlen($sortBy) > 0) {
+        if (null !== $sortBy && '' !== $sortBy) {
             $commonSearch->setSort([
                 $sortBy => \array_filter([
                     'order' => (empty($search->getSortOrder()) ? 'asc' : $search->getSortOrder()),
@@ -207,7 +207,7 @@ class SearchService
             $search = $searchRepository->findOneBy([
                 'default' => true,
             ]);
-            if ($search instanceof Search and \count($search->getContentTypes()) > 0) {
+            if ($search instanceof Search && \count($search->getContentTypes()) > 0) {
                 $contentTypesNotCovertByTheDefaultSearch = \array_diff($contentTypes, $search->getContentTypes());
                 if (\count($contentTypesNotCovertByTheDefaultSearch) > 0) {
                     $search = null;

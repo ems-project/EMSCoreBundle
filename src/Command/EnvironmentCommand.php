@@ -13,12 +13,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(
-    name: Commands::ENVIRONMENT_LIST,
-    description: 'List the environments defined.',
-    hidden: false,
-    aliases: ['ems:environment:list']
-)]
+#[AsCommand(name: Commands::ENVIRONMENT_LIST, description: 'List the environments defined.', aliases: ['ems:environment:list'], hidden: false)]
 class EnvironmentCommand extends Command
 {
     public function __construct(private readonly EnvironmentService $environmentService)

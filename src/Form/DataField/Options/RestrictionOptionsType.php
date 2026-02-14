@@ -52,24 +52,20 @@ class RestrictionOptionsType extends AbstractType
      */
     private function addJsonMenuNestedRestrictionFields(FormBuilderInterface $builder, FieldType $fieldType): void
     {
-        if ($fieldType->isJsonMenuNestedEditor() || $fieldType->isJsonMenuNestedEditorNode()) {
-            if ($jsonMenuNestedEditor = $fieldType->getJsonMenuNestedEditor()) {
-                $choices = [];
-
-                foreach ($jsonMenuNestedEditor->getChildren() as $child) {
-                    if ($child->getDeleted()) {
-                        continue;
-                    }
-                    $choices[$child->getName()] = $child->getName();
+        if (($fieldType->isJsonMenuNestedEditor() || $fieldType->isJsonMenuNestedEditorNode()) && ($jsonMenuNestedEditor = $fieldType->getJsonMenuNestedEditor()) instanceof FieldType) {
+            $choices = [];
+            foreach ($jsonMenuNestedEditor->getChildren() as $child) {
+                if ($child->getDeleted()) {
+                    continue;
                 }
-
-                $builder->add('json_nested_deny', ChoiceType::class, [
-                    'multiple' => true,
-                    'required' => false,
-                    'choices' => $choices,
-                    'block_prefix' => 'select2',
-                ]);
+                $choices[$child->getName()] = $child->getName();
             }
+            $builder->add('json_nested_deny', ChoiceType::class, [
+                'multiple' => true,
+                'required' => false,
+                'choices' => $choices,
+                'block_prefix' => 'select2',
+            ]);
         }
 
         if ($fieldType->isJsonMenuNestedEditor()) {

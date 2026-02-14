@@ -29,8 +29,8 @@ class CheckboxFieldType extends DataFieldType
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
-        if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
-            $dataField->setBooleanValue($sourceArray ? true : false);
+        if (!$isMigration || [] === $migrationOptions || !$migrationOptions['protected']) {
+            $dataField->setBooleanValue((bool) $sourceArray);
         }
 
         return [$dataField->giveFieldType()->getName()];
@@ -68,7 +68,7 @@ class CheckboxFieldType extends DataFieldType
     {
         $out = parent::viewTransform($dataField);
 
-        return ['value' => ((null !== $out && !empty($out)) ? true : false)];
+        return ['value' => (null !== $out && !empty($out))];
     }
 
     #[\Override]

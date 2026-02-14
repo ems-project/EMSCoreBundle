@@ -146,7 +146,7 @@ $dataField->getRawData()
             throw new NotFoundHttpException('Parent menu not found');
         }
         $parentId = \explode(':', (string) $view->getOptions()['parent']);
-        if (2 != \count($parentId)) {
+        if (2 !== \count($parentId)) {
             throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
         }
 
@@ -159,7 +159,7 @@ $dataField->getRawData()
             throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
         }
 
-        if (empty($parent)) {
+        if ([] === $parent) {
             throw new NotFoundHttpException('Parent menu not found: '.$view->getOptions()['parent']);
         }
 

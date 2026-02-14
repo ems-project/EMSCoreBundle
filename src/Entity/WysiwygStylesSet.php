@@ -156,11 +156,7 @@ class WysiwygStylesSet extends JsonDeserializer implements \JsonSerializable, En
 
     public function hasCSS(): bool
     {
-        if (null === $this->contentCss || '' === $this->contentCss || !\is_string($this->assets[EmsFields::CONTENT_FILE_HASH_FIELD] ?? null)) {
-            return false;
-        }
-
-        return true;
+        return !(null === $this->contentCss || '' === $this->contentCss || !\is_string($this->assets[EmsFields::CONTENT_FILE_HASH_FIELD] ?? null));
     }
 
     public function giveContentCss(): string

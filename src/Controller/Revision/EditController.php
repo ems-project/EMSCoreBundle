@@ -311,7 +311,7 @@ class EditController extends AbstractController
 
     private function reorderCollection(mixed &$input): void
     {
-        if (!\is_array($input) || empty($input)) {
+        if (!\is_array($input) || [] === $input) {
             return;
         }
 

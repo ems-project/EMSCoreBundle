@@ -17,7 +17,7 @@ class ExtractedData
      */
     public function __construct(private array $source, private readonly int $maxContentSize)
     {
-        $this->empty = empty($source);
+        $this->empty = [] === $source;
     }
 
     public static function fromJsonString(string $json, int $maxContentSize): self

@@ -42,10 +42,10 @@ class TimeFieldType extends DataFieldType
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
-        if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
+        if (!$isMigration || [] === $migrationOptions || !$migrationOptions['protected']) {
             $format = DateTime::convertFormat('java', $dataField->giveFieldType()->getMappingOption('format'));
 
-            $timeObject = !\is_array($sourceArray) ? \DateTime::createFromFormat($format, (string) $sourceArray) : false;
+            $timeObject = \is_array($sourceArray) ? false : \DateTime::createFromFormat($format, (string) $sourceArray);
             if ($timeObject) {
                 $dataField->setRawData($timeObject->format(\DateTimeInterface::ATOM));
             } else {
@@ -63,11 +63,7 @@ class TimeFieldType extends DataFieldType
      */
     public static function getFormat(array $options): string
     {
-        if ($options['displayOptions']['showMeridian']) {
-            $format = 'g:i';
-        } else {
-            $format = 'G:i';
-        }
+        $format = $options['displayOptions']['showMeridian'] ? 'g:i' : 'G:i';
 
         if ($options['displayOptions']['showSeconds']) {
             $format .= ':s';
@@ -104,8 +100,8 @@ class TimeFieldType extends DataFieldType
     {
         $format = static::getFormat($fieldType->getOptions());
 
-        $converted = !\is_array($data) ? \DateTime::createFromFormat($format, (string) $data) : false;
-        $convertedFromStoreFormat = !\is_array($data) ? \DateTime::createFromFormat($this::STOREFORMAT, (string) $data) : false;
+        $converted = \is_array($data) ? false : \DateTime::createFromFormat($format, (string) $data);
+        $convertedFromStoreFormat = \is_array($data) ? false : \DateTime::createFromFormat($this::STOREFORMAT, (string) $data);
         if ($converted) {
             $out = $converted->format($this::STOREFORMAT);
         } elseif ($convertedFromStoreFormat) {

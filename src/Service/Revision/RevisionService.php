@@ -93,7 +93,7 @@ class RevisionService implements RevisionServiceInterface
         }
 
         if ($revision->giveContentType() === $compareRevision->giveContentType()
-            && $revision->getOuuid() == $compareRevision->getOuuid()) {
+            && $revision->getOuuid() === $compareRevision->getOuuid()) {
             if ($compareRevision->getCreated() <= $revision->getCreated()) {
                 $this->logger->notice('log.data.revision.compare', $logContext);
             } else {

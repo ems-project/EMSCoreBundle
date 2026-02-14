@@ -22,12 +22,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(
-    name: Commands::CONTENT_TYPE_MIGRATE,
-    description: 'Migrate a content type from an elasticsearch index.',
-    hidden: false,
-    aliases: ['ems:contenttype:migrate']
-)]
+#[AsCommand(name: Commands::CONTENT_TYPE_MIGRATE, description: 'Migrate a content type from an elasticsearch index.', aliases: ['ems:contenttype:migrate'], hidden: false)]
 class MigrateCommand extends AbstractCommand
 {
     private string $elasticsearchIndex;

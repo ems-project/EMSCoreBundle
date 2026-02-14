@@ -81,7 +81,7 @@ class Sequence
      */
     public function inc()
     {
-        $this->value = $this->value + 1;
+        ++$this->value;
 
         return $this->value;
     }

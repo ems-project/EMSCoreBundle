@@ -52,7 +52,7 @@ class ModalController extends AbstractController
             }
         }
         $anchorTargets = $request->query->get('anchorTargets');
-        if (empty($targets) && \is_string($anchorTargets)) {
+        if ([] === $targets && \is_string($anchorTargets)) {
             $targets = Json::decode($anchorTargets);
         }
 

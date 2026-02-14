@@ -18,12 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(
-    name: Commands::CONTENT_TYPE_ACTIVATE,
-    description: 'Activate a content type.',
-    hidden: false,
-    aliases: ['ems:contenttype:activate']
-)]
+#[AsCommand(name: Commands::CONTENT_TYPE_ACTIVATE, description: 'Activate a content type.', aliases: ['ems:contenttype:activate'], hidden: false)]
 class ActivateContentTypeCommand extends Command
 {
     private ?SymfonyStyle $io = null;
@@ -47,25 +42,25 @@ class ActivateContentTypeCommand extends Command
             ->addArgument(
                 self::ARGUMENT_CONTENTTYPES,
                 InputArgument::IS_ARRAY,
-                \sprintf('Optional array of contenttypes to create')
+                'Optional array of contenttypes to create'
             )
             ->addOption(
                 self::OPTION_ALL,
                 null,
                 InputOption::VALUE_NONE,
-                \sprintf('Make all contenttypes')
+                'Make all contenttypes'
             )
             ->addOption(
                 self::DEACTIVATE,
                 null,
                 InputOption::VALUE_NONE,
-                \sprintf('Deactivate contenttypes')
+                'Deactivate contenttypes'
             )
             ->addOption(
                 self::FORCE,
                 null,
                 InputOption::VALUE_NONE,
-                \sprintf('Activate the contenttypes even if the mapping is not up to date (flagged as draft)')
+                'Activate the contenttypes even if the mapping is not up to date (flagged as draft)'
             );
     }
 
@@ -124,7 +119,7 @@ class ActivateContentTypeCommand extends Command
             throw new \RuntimeException('Unexpected content type names');
         }
 
-        if (!$input->getOption(self::OPTION_ALL) && 0 == (\is_countable($types) ? \count($types) : 0)) {
+        if (!$input->getOption(self::OPTION_ALL) && 0 === (\is_countable($types) ? \count($types) : 0)) {
             $this->chooseTypes($input, $output);
         }
 

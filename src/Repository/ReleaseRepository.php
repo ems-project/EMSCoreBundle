@@ -134,7 +134,7 @@ final class ReleaseRepository extends ServiceEntityRepository
 
     private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
     {
-        if (\strlen($searchValue) > 0) {
+        if ('' !== $searchValue) {
             $or = $qb->expr()->orX(
                 $qb->expr()->like('r.name', ':term'),
             );

@@ -8,6 +8,7 @@ use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\EnvironmentService;
@@ -78,7 +79,7 @@ class VersionTagFieldType extends DataFieldType
 
         if ($emsId) {
             $revision = $this->revisionService->getByEmsLink(EMSLink::fromText($emsId));
-            $countEnvironments = $revision ? $this->environmentService->getPublishedForRevision($revision, true)->count() : 0;
+            $countEnvironments = $revision instanceof Revision ? $this->environmentService->getPublishedForRevision($revision, true)->count() : 0;
         }
 
         $notBlankNewVersion = $contentType->getVersioning()->option(VersionOptions::NOT_BLANK_NEW_VERSION);

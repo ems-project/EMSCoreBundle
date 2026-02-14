@@ -69,7 +69,7 @@ final class FlashMessageLogger extends AbstractProcessingHandler
             'error' => [],
         ];
         $levels = ['notice', 'warning', 'error'];
-        if (!empty($this->logs)) {
+        if ([] !== $this->logs) {
             foreach ($this->logs as $log) {
                 $level = \strtolower($log->level->getName());
                 if (!isset($response[$level])) {

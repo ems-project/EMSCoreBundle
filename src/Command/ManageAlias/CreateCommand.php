@@ -13,12 +13,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(
-    name: Commands::MANAGED_ALIAS_CREATE,
-    description: 'Create a managed alias.',
-    hidden: false,
-    aliases: ['ems:managed-alias:create']
-)]
+#[AsCommand(name: Commands::MANAGED_ALIAS_CREATE, description: 'Create a managed alias.', aliases: ['ems:managed-alias:create'], hidden: false)]
 final class CreateCommand extends AbstractCommand
 {
     public const string ARGUMENT_NAME = 'name';

@@ -92,7 +92,7 @@ class LogRepository extends ServiceEntityRepository
 
     private function addSearchFilters(QueryBuilder $qb, LogEntityTableContext $context): void
     {
-        if (\strlen($context->searchValue) > 0) {
+        if ('' !== $context->searchValue) {
             $qb
                 ->andWhere($qb->expr()->orX(
                     $qb->expr()->like('log.message', ':term'),

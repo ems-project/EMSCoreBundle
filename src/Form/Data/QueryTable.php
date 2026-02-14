@@ -103,7 +103,7 @@ class QueryTable extends TableAbstract
             $this->count = $this->service->countQuery($this->getSearchValue(), $this->context);
         }
 
-        return $this->count > 0 ? $this->count : 0;
+        return \max($this->count, 0);
     }
 
     #[\Override]
@@ -136,7 +136,7 @@ class QueryTable extends TableAbstract
     #[\Override]
     public function getRowTemplate(): string
     {
-        return \sprintf("{%%- use '@$this->templateNamespace/datatable/row.json.twig' -%%}{{ block('emsco_datatable_row') }}");
+        return "{%%- use '@$this->templateNamespace/datatable/row.json.twig' -%%}{{ block('emsco_datatable_row') }}";
     }
 
     #[\Override]

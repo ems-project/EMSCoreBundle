@@ -58,7 +58,7 @@ class MediaLibraryPath implements \Countable
         $path = $this->value;
         \array_pop($path);
 
-        return $path ? new self($path) : null;
+        return [] !== $path ? new self($path) : null;
     }
 
     public function renamePrefix(string $from, string $to): self

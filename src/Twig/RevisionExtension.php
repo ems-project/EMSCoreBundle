@@ -37,7 +37,7 @@ readonly class RevisionExtension
     {
         $revision = $this->revisionService->getCurrentRevisionByOuuidAndContentType($ouuid, $contentTypeName);
 
-        return $revision ? $revision->getId() : null;
+        return $revision instanceof Revision ? $revision->getId() : null;
     }
 
     /**

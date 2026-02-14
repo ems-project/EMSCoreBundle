@@ -128,11 +128,7 @@ final readonly class DatatableService
 
     public function getAjaxUrl(string $hashConfig, bool $protected = true): string
     {
-        if ($protected) {
-            $route = 'ems_core_datatable_ajax_elastica';
-        } else {
-            $route = 'ems_core_datatable_ajax_elastica_public';
-        }
+        $route = $protected ? 'ems_core_datatable_ajax_elastica' : 'ems_core_datatable_ajax_elastica_public';
 
         return $this->router->generate($route, ['hashConfig' => $hashConfig]);
     }

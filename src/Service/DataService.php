@@ -147,10 +147,8 @@ class DataService
         if (null === $username && null !== $publishEnv && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !$this->userService->inMyCircles($publishEnv->getCircles())) {
             throw new PrivilegeException($revision, 'You don\'t share any circle with this content');
         }
-        if (null === $username && null === $publishEnv && !empty($revision->giveContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->giveContentType()->getCirclesField()])) {
-            if (!$this->userService->inMyCircles($revision->getRawData()[$revision->giveContentType()->getCirclesField()] ?? [])) {
-                throw new PrivilegeException($revision);
-            }
+        if (null === $username && null === $publishEnv && !empty($revision->giveContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->giveContentType()->getCirclesField()]) && !$this->userService->inMyCircles($revision->getRawData()[$revision->giveContentType()->getCirclesField()] ?? [])) {
+            throw new PrivilegeException($revision);
         }
 
         /** @var Notification[] $revisionNotifications */
@@ -491,11 +489,7 @@ class DataService
      */
     public function sign(Revision $revision, bool $silentPublish = false): array
     {
-        if ($silentPublish && $revision->getAutoSave()) {
-            $objectArray = $revision->getAutoSave();
-        } else {
-            $objectArray = $revision->getRawData();
-        }
+        $objectArray = $silentPublish && $revision->getAutoSave() ? $revision->getAutoSave() : $revision->getRawData();
 
         $objectArray[Mapping::CONTENT_TYPE_FIELD] = $revision->giveContentType()->getName();
 
@@ -948,14 +942,14 @@ class DataService
             'deleted' => false,
         ]);
 
-        if (1 == \count($revisions)) {
+        if (1 === \count($revisions)) {
             $endTime = $revisions[0]->getEndTime();
 
             if (null === $endTime) {
                 return $revisions[0];
             }
             throw new NotFoundHttpException('Revision for ouuid '.$ouuid.' and contenttype '.$contentType->getName().' with end time '.$endTime->format(\DateTimeInterface::ATOM));
-        } elseif (0 == \count($revisions)) {
+        } elseif (0 === \count($revisions)) {
             throw new NotFoundHttpException('Revision not found for ouuid '.$ouuid.' and contenttype '.$contentType->getName());
         } else {
             throw new \Exception('Too much newest revisions available for ouuid '.$ouuid.' and contenttype '.$contentType->getName());
@@ -1043,12 +1037,10 @@ class DataService
                     if (isset($options['multiple']) && $options['multiple']) {
                         $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $currentUser->getCircles()]));
                         $revision->setCircles($currentUser->getCircles());
-                    } else {
+                    } elseif (!empty($currentUser->getCircles())) {
                         // set first of my circles
-                        if (!empty($currentUser->getCircles())) {
-                            $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $currentUser->getCircles()[0]]));
-                            $revision->setCircles([$currentUser->getCircles()[0]]);
-                        }
+                        $revision->setRawData(\array_merge($revision->getRawData(), [$contentType->getCirclesField() => $currentUser->getCircles()[0]]));
+                        $revision->setCircles([$currentUser->getCircles()[0]]);
                     }
                 }
             }
@@ -1069,8 +1061,8 @@ class DataService
         $userCircles = $this->userService->getCurrentUser()->getCircles();
         $environment = $contentType->giveEnvironment();
         $environmentCircles = $environment->getCircles();
-        if (!$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !empty($environmentCircles)) {
-            if (empty($userCircles)) {
+        if (!$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && [] !== $environmentCircles) {
+            if ([] === $userCircles) {
                 throw new HasNotCircleException($environment);
             }
             $found = \array_any($userCircles, fn ($userCircle) => \in_array($userCircle, $environmentCircles));
@@ -1140,7 +1132,7 @@ class DataService
         if (!$revision->getDraft()) {
             $now = new \DateTime();
 
-            if ($fromRev) {
+            if ($fromRev instanceof Revision) {
                 $newDraft = new Revision($fromRev);
             } else {
                 $newDraft = new Revision($revision);
@@ -1204,7 +1196,7 @@ class DataService
 
             $result = $query->getResult();
 
-            if (1 == (\is_countable($result) ? \count($result) : 0)) {
+            if (1 === (\is_countable($result) ? \count($result) : 0)) {
                 /** @var Revision $previous */
                 $previous = $result[0];
                 $this->lockRevision($previous, null, $super, $username);
@@ -1382,24 +1374,23 @@ class DataService
             }
 
             $fieldNames = $dataFieldType->getJsonNames($fieldType);
-            if (0 === \count($fieldNames)) {// Virtual container
+            if (0 === \count($fieldNames)) {
+                // Virtual container
                 /** @var DataField $child */
                 foreach ($dataField->getChildren() as $child) {
                     $this->updateDataValue($child, $elasticIndexDatas, $isMigration);
                 }
+            } elseif ($dataFieldType->isVirtual($dataField->giveFieldType()->getOptions())) {
+                $treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas, $isMigration);
+                foreach ($treatedFields as $fieldName) {
+                    unset($elasticIndexDatas[$fieldName]);
+                }
             } else {
-                if ($dataFieldType->isVirtual($dataField->giveFieldType()->getOptions())) {
-                    $treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas, $isMigration);
-                    foreach ($treatedFields as $fieldName) {
-                        unset($elasticIndexDatas[$fieldName]);
-                    }
-                } else {
-                    foreach ($fieldNames as $fieldName) {
-                        if (\array_key_exists($fieldName, $elasticIndexDatas)) {
-                            $treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas[$fieldName], $isMigration);
-                            foreach ($treatedFields as $treatedFieldName) {
-                                unset($elasticIndexDatas[$treatedFieldName]);
-                            }
+                foreach ($fieldNames as $fieldName) {
+                    if (\array_key_exists($fieldName, $elasticIndexDatas)) {
+                        $treatedFields = $dataFieldType->importData($dataField, $elasticIndexDatas[$fieldName], $isMigration);
+                        foreach ($treatedFields as $treatedFieldName) {
+                            unset($elasticIndexDatas[$treatedFieldName]);
                         }
                     }
                 }
@@ -1456,11 +1447,7 @@ class DataService
 
     public function reloadData(Revision $revision, bool $flush = true): int
     {
-        if ($revision->hasHash()) {
-            $revisionHash = $revision->getHash();
-        } else {
-            $revisionHash = null;
-        }
+        $revisionHash = $revision->hasHash() ? $revision->getHash() : null;
         $reloadRevision = clone $revision;
 
         $finalizedBy = false;
@@ -1519,11 +1506,7 @@ class DataService
     {
         $out = $form->getViewData();
 
-        if ($form instanceof Form) {
-            $iteratedOn = $form->getIterator();
-        } else {
-            $iteratedOn = $form->all();
-        }
+        $iteratedOn = $form instanceof Form ? $form->getIterator() : $form->all();
 
         foreach ($iteratedOn as $subForm) {
             if ($subForm->getConfig()->getCompound()) {
@@ -1650,7 +1633,7 @@ class DataService
             'deleted' => false,
         ]);
 
-        if (1 != \count($contentTypes)) {
+        if (1 !== \count($contentTypes)) {
             throw new NotFoundHttpException('Unknown content type');
         }
         $contentType = $contentTypes[0];
@@ -1664,14 +1647,14 @@ class DataService
             'deleted' => false,
         ]);
 
-        if (1 == \count($revisions)) {
+        if (1 === \count($revisions)) {
             $endTime = $revisions[0]->getEndTime();
 
             if (null === $endTime) {
                 return $revisions[0];
             }
             throw new \Exception('Revision for ouuid '.$id.' and contenttype '.$type.' with end time '.$endTime->format(\DateTimeInterface::ATOM));
-        } elseif (0 == \count($revisions)) {
+        } elseif (0 === \count($revisions)) {
             throw new NotFoundHttpException('Revision not found for id '.$id.' and contenttype '.$type);
         } else {
             throw new \Exception('Too much newest revisions available for ouuid '.$id.' and contenttype '.$type);
@@ -2026,9 +2009,9 @@ class DataService
         $this->em->getConnection()->beginTransaction();
 
         try {
-            $restoredDraft = $currentRevision ? $this->trashPutBackAsDraft($contentType, $currentRevision->giveOuuid()) : null;
+            $restoredDraft = $currentRevision instanceof Revision ? $this->trashPutBackAsDraft($contentType, $currentRevision->giveOuuid()) : null;
 
-            if ($restoredDraft) {
+            if ($restoredDraft instanceof Revision) {
                 $restoredDraft->setDraft(false);
                 $restoredDraft->setEndTime($revision->getStartTime());
                 $this->unlockRevision($restoredDraft);

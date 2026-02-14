@@ -300,12 +300,10 @@ class UserController extends AbstractController
         ];
         $messages = ['email' => 'User email already exist!', 'username' => 'Username already exist!'];
         foreach ($exists as $key => $value) {
-            if ($value instanceof User) {
-                if ('add' === $action || ('edit' === $action && $value->getId() !== $user->getId())) {
-                    $this->addFlash('error', $messages[$key]);
+            if ($value instanceof User && ('add' === $action || 'edit' === $action && $value->getId() !== $user->getId())) {
+                $this->addFlash('error', $messages[$key]);
 
-                    return false;
-                }
+                return false;
             }
         }
 

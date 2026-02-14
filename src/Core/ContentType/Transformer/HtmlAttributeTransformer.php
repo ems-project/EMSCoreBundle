@@ -35,10 +35,10 @@ final class HtmlAttributeTransformer extends BaseHtmlTransformer
         $results = 0;
 
         if ($options['remove_value_prefix']) {
-            $results = $results + $this->removeValue($crawler, $options);
+            $results += $this->removeValue($crawler, $options);
         }
         if ($options['remove']) {
-            $results = $results + $this->removeAttribute($crawler, $options);
+            $results += $this->removeAttribute($crawler, $options);
         }
 
         if ($results > 0) {

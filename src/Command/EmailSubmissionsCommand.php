@@ -16,12 +16,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(
-    name: Commands::SUBMISSIONS_EMAIL,
-    description: 'Send a list of form submissions to the specified email address or addresses.',
-    hidden: false,
-    aliases: ['ems:submissions:email']
-)]
+#[AsCommand(name: Commands::SUBMISSIONS_EMAIL, description: 'Send a list of form submissions to the specified email address or addresses.', aliases: ['ems:submissions:email'], hidden: false)]
 class EmailSubmissionsCommand extends Command implements CommandInterface
 {
     private const string TITLE = 'Form submissions';

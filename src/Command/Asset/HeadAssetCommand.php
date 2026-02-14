@@ -14,12 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(
-    name: Commands::ASSET_HEAD,
-    description: 'Loop over all known uploaded assets and update the seen information if the file is connected.',
-    hidden: false,
-    aliases: ['ems:asset:head']
-)]
+#[AsCommand(name: Commands::ASSET_HEAD, description: 'Loop over all known uploaded assets and update the seen information if the file is connected.', aliases: ['ems:asset:head'], hidden: false)]
 final class HeadAssetCommand extends Command
 {
     private SymfonyStyle $io;

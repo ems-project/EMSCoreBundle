@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\User;
 
 use EMS\CoreBundle\Core\User\UserManager;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\User\ResettingRequestType;
 use EMS\CoreBundle\Form\User\ResettingResetType;
 use EMS\CoreBundle\Routes;
@@ -29,7 +30,7 @@ class ResettingController extends AbstractController
             $usernameOrEmail = $form->get('username_email')->getData();
             $user = $this->userManager->requestResetPassword($usernameOrEmail);
 
-            if ($user) {
+            if ($user instanceof User) {
                 return $this->redirectToRoute('emsco_user_resetting_check_email', [
                     'email' => $user->getEmail(),
                 ]);

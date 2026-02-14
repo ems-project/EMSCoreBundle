@@ -48,7 +48,7 @@ class ObjectChoiceList implements ChoiceListInterface
     public function getStructuredValues(): array
     {
         $values = [];
-        foreach ($this->choices as $key => $choice) {
+        foreach (\array_keys($this->choices) as $key) {
             $values[$key] = $key;
         }
 
@@ -62,7 +62,7 @@ class ObjectChoiceList implements ChoiceListInterface
     public function getOriginalKeys(): array
     {
         $values = [];
-        foreach ($this->choices as $key => $choice) {
+        foreach (\array_keys($this->choices) as $key) {
             $values[$key] = $key;
         }
 

@@ -24,12 +24,12 @@ class JsonMenuNestedRenderContext
         $this->addActiveItem($menu);
 
         $this->activeItem = $activeItemId ? $menu->getItemById($activeItemId) : null;
-        if ($this->activeItem) {
+        if ($this->activeItem instanceof JsonMenuNested) {
             $this->loadPath($this->activeItem);
         }
 
         $loadChildren = $loadChildrenId ? $this->menu->getItemById($loadChildrenId) : null;
-        if ($loadChildren) {
+        if ($loadChildren instanceof JsonMenuNested) {
             $this->loadAllChildren($loadChildren);
         }
     }

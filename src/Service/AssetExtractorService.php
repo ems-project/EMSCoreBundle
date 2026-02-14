@@ -83,7 +83,7 @@ class AssetExtractorService implements CacheWarmerInterface
 
         return [
             'code' => 200,
-            'content' => self::cleanString($this->getTikaWrapper()->getText($tempFile->path)),
+            'content' => $this->cleanString($this->getTikaWrapper()->getText($tempFile->path)),
         ];
     }
 
@@ -166,7 +166,7 @@ class AssetExtractorService implements CacheWarmerInterface
                     $out->setContent($text ?? '');
                 }
                 if (!empty($out->getLocale())) {
-                    $out->setLocale(self::cleanString($this->getTikaWrapper()->getLanguage($file)));
+                    $out->setLocale($this->cleanString($this->getTikaWrapper()->getLanguage($file)));
                 }
             } catch (\Exception $e) {
                 $this->logger->warning('service.asset_extractor.extract_error', [
@@ -193,7 +193,7 @@ class AssetExtractorService implements CacheWarmerInterface
         return $out ?? new ExtractedData([], $this->tikaMaxContent);
     }
 
-    private static function cleanString(string $string): string
+    private function cleanString(string $string): string
     {
         if (!\mb_check_encoding($string)) {
             $string = \mb_convert_encoding($string, \mb_internal_encoding(), 'ASCII');

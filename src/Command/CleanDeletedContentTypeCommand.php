@@ -25,12 +25,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-#[AsCommand(
-    name: Commands::CONTENT_TYPE_CLEAN,
-    description: 'Clean all deleted content types.',
-    hidden: false,
-    aliases: ['ems:contenttype:clean']
-)]
+#[AsCommand(name: Commands::CONTENT_TYPE_CLEAN, description: 'Clean all deleted content types.', aliases: ['ems:contenttype:clean'], hidden: false)]
 class CleanDeletedContentTypeCommand extends Command
 {
     public function __construct(protected Registry $doctrine, protected LoggerInterface $logger, protected Mapping $mapping, protected ContainerInterface $container)

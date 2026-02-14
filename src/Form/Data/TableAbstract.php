@@ -80,7 +80,7 @@ abstract class TableAbstract implements TableInterface
         if ($this->from + $this->size >= $this->count()) {
             return false;
         }
-        $this->from = $this->from + $this->size;
+        $this->from += $this->size;
         $this->size = $pagingSize;
 
         return true;

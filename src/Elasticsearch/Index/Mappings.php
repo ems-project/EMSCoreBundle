@@ -30,7 +30,7 @@ class Mappings
 
     public function isEmpty(): bool
     {
-        return empty($this->mappings);
+        return [] === $this->mappings;
     }
 
     /**

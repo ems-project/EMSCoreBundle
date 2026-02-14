@@ -111,7 +111,7 @@ class EnvironmentController extends AbstractController
                 } elseif (\array_key_exists('alignLeft', $request->request->all('compare_environment_form'))) {
                     foreach ($request->request->all('compare_environment_form')['item_to_align'] as $item) {
                         $exploded = \explode(':', (string) $item);
-                        if (2 == \count($exploded)) {
+                        if (2 === \count($exploded)) {
                             $this->publishService->alignRevision($exploded[0], $exploded[1], Type::string($request->query->get('withEnvironment')), Type::string($request->query->get('environment')));
                         } else {
                             $this->logger->warning('log.environment.wrong_ouuid', [
@@ -122,7 +122,7 @@ class EnvironmentController extends AbstractController
                 } elseif (\array_key_exists('alignRight', $request->request->all('compare_environment_form'))) {
                     foreach ($request->request->all('compare_environment_form')['item_to_align'] as $item) {
                         $exploded = \explode(':', (string) $item);
-                        if (2 == \count($exploded)) {
+                        if (2 === \count($exploded)) {
                             $this->publishService->alignRevision($exploded[0], $exploded[1], Type::string($request->query->get('environment')), Type::string($request->query->get('withEnvironment')));
                         } else {
                             $this->logger->warning('log.environment.wrong_ouuid', [
@@ -147,7 +147,7 @@ class EnvironmentController extends AbstractController
         if (!$form->isSubmitted()) {
             $form->get('contentTypes')->setData($contentTypes);
         }
-        if (empty($contentTypes)) {
+        if ([] === $contentTypes) {
             $contentTypes = $form->get('contentTypes')->getConfig()->getOption('choices', []);
         }
 
@@ -178,7 +178,7 @@ class EnvironmentController extends AbstractController
             $withEnvi = $this->environmentService->giveByName($withEnvironment);
 
             $total = $this->revisionRepository->countDifferencesBetweenEnvironment($env->getId(), $withEnvi->getId(), $contentTypes);
-            if ($total) {
+            if (0 !== $total) {
                 $lastPage = \ceil($total / $paging_size);
                 if ($page > $lastPage) {
                     $page = $lastPage;
@@ -192,7 +192,8 @@ class EnvironmentController extends AbstractController
                     $orderField,
                     $orderDirection
                 );
-                for ($index = 0; $index < \count($results); ++$index) {
+                $counter = \count($results);
+                for ($index = 0; $index < $counter; ++$index) {
                     $results[$index]['contentType'] = $this->contentTypeService->getByName($results[$index]['content_type_name']);
                     //                     $results[$index]['revisionEnvironment'] = $repository->findOneById($results[$index]['rId']);
                     // TODO: is it the better options? to concatenate and split things?

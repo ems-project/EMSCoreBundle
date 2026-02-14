@@ -28,12 +28,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Error\Error;
 
-#[AsCommand(
-    name: Commands::CONTENT_TYPE_EXPORT,
-    description: 'Export a search result of a content type to a specific format.',
-    hidden: false,
-    aliases: ['ems:contenttype:export']
-)]
+#[AsCommand(name: Commands::CONTENT_TYPE_EXPORT, description: 'Export a search result of a content type to a specific format.', aliases: ['ems:contenttype:export'], hidden: false)]
 class ExportDocumentsCommand extends AbstractCommand
 {
     private const string ARGUMENT_QUERY = 'query';
@@ -197,20 +192,18 @@ class ExportDocumentsCommand extends AbstractCommand
                         $errorList[] = 'Error in rendering template for: '.$filename;
                         continue;
                     }
+                } elseif ($accumulateInOneFile) {
+                    $content = Json::encode($document->getSource());
+                } elseif (\str_contains($this->format, (string) TemplateService::JSON_FORMAT)) {
+                    $content = Json::encode($document->getSource(), true);
+                } elseif (\str_contains($this->format, (string) TemplateService::XML_FORMAT)) {
+                    $content = $this->templateService->getXml($contentType, $document->getSource(), false, $document->getOuuid());
                 } else {
-                    if ($accumulateInOneFile) {
-                        $content = Json::encode($document->getSource());
-                    } elseif (\str_contains($this->format, (string) TemplateService::JSON_FORMAT)) {
-                        $content = Json::encode($document->getSource(), true);
-                    } elseif (\str_contains($this->format, (string) TemplateService::XML_FORMAT)) {
-                        $content = $this->templateService->getXml($contentType, $document->getSource(), false, $document->getOuuid());
-                    } else {
-                        $this->logger->error('log.command.export.unknow_format', [
-                            'format' => $this->format,
-                        ]);
-                        $errorList[] = 'Unknow format: '.$this->format;
-                        continue;
-                    }
+                    $this->logger->error('log.command.export.unknow_format', [
+                        'format' => $this->format,
+                    ]);
+                    $errorList[] = 'Unknow format: '.$this->format;
+                    continue;
                 }
 
                 if ($accumulateInOneFile) {

@@ -93,7 +93,7 @@ class JobController extends AbstractController
             'job' => $job,
             'status' => $encoder->encodeUrl($job->getStatus()),
             'output' => $jobOutput ? $encoder->encodeUrl($converter->convert($jobOutput)) : null,
-            'launchJob' => true === $this->triggerJobFromWeb && false === $job->getStarted() && !$job->hasTag(),
+            'launchJob' => $this->triggerJobFromWeb && false === $job->getStarted() && !$job->hasTag(),
             'breadcrumb' => $this->breadcrumb()->add(
                 t('type.title_status', ['type' => 'job', 'job_id' => $job->getId()], 'emsco-core'),
             ),

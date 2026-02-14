@@ -110,7 +110,7 @@ class NotificationService
         $userName = $this->userService->getCurrentUser()->getUserName();
 
         $notification->setStatus($status);
-        if ('acknowledged' != $status) {
+        if ('acknowledged' !== $status) {
             $notification->setResponseBy($userName);
         }
 
@@ -144,7 +144,7 @@ class NotificationService
     {
         $out = false;
         try {
-            if (!\in_array($template->getRenderOption(), [RenderOptionType::NOTIFICATION])) {
+            if (RenderOptionType::NOTIFICATION !== $template->getRenderOption()) {
                 throw new \RuntimeException(\sprintf('Unexpected %s action', $template->getRenderOption()));
             }
             $notification = new Notification();
@@ -434,7 +434,7 @@ class NotificationService
      *
      * @return array<string, Address>
      */
-    private static function usersToEmailAddresses(array $users): array
+    private function usersToEmailAddresses(array $users): array
     {
         $out = [];
 
@@ -456,9 +456,9 @@ class NotificationService
 
         $toCircles = \array_unique(\array_merge($fromCircles, $notification->getTemplate()->getCirclesTo()));
 
-        $fromUser = self::usersToEmailAddresses(\array_filter([$this->userService->getUser($notification->getUsername())]));
-        $toUsers = self::usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleTo(), $toCircles));
-        $ccUsers = self::usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleCc(), $toCircles));
+        $fromUser = $this->usersToEmailAddresses(\array_filter([$this->userService->getUser($notification->getUsername())]));
+        $toUsers = $this->usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleTo(), $toCircles));
+        $ccUsers = $this->usersToEmailAddresses($this->userService->getUsersForRoleAndCircles($notification->getTemplate()->getRoleCc(), $toCircles));
 
         $email = new Email();
         $params = [
@@ -485,7 +485,7 @@ class NotificationService
                 ->to(...\array_values($toUsers));
 
             $cc = [...$ccUsers, ...$fromUser];
-            if ($cc) {
+            if ([] !== $cc) {
                 $email->cc(...\array_values($cc));
             }
 
@@ -503,7 +503,7 @@ class NotificationService
                 ->to(...\array_values($fromUser));
 
             $cc = [...$ccUsers, ...$toUsers];
-            if ($cc) {
+            if ([] !== $cc) {
                 $email->cc(...\array_values($cc));
             }
 

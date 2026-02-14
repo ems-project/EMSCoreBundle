@@ -45,7 +45,7 @@ class MediaLibraryFolderFactory
     {
         $folder = new MediaLibraryFolder($document, $config);
 
-        if ($parentPath = $folder->getPath()->parent()) {
+        if (($parentPath = $folder->getPath()->parent()) instanceof MediaLibraryPath) {
             $parentDocument = $this->searchParent($config, $parentPath);
             $folder->setParent($this->createFromDocument($config, $parentDocument));
         }

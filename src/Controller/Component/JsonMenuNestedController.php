@@ -242,7 +242,7 @@ class JsonMenuNestedController
      */
     private function createFormItem(JsonMenuNestedConfig $config, JsonMenuNestedNode $node, ?JsonMenuNested $item = null): FormInterface
     {
-        $object = $item ? $item->getObject() : [];
+        $object = $item instanceof JsonMenuNested ? $item->getObject() : [];
         $data = RawDataTransformer::transform($node->getFieldType(), $object);
 
         return $this->formFactory->create(RevisionJsonMenuNestedType::class, ['data' => $data], [

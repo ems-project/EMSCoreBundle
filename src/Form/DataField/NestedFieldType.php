@@ -49,7 +49,7 @@ class NestedFieldType extends DataFieldType
     public function importData(DataField $dataField, array|string|int|float|bool|null $sourceArray, bool $isMigration): array
     {
         $migrationOptions = $dataField->giveFieldType()->getMigrationOptions();
-        if (!$isMigration || empty($migrationOptions) || !$migrationOptions['protected']) {
+        if (!$isMigration || [] === $migrationOptions || !$migrationOptions['protected']) {
             foreach ($dataField->getChildren() as $child) {
                 if (\is_array($sourceArray)) {
                     $this->dataService->updateDataValue($child, $sourceArray, $isMigration);

@@ -77,7 +77,7 @@ readonly class WysiwygExtension
         ];
 
         foreach (Dashboard::DASHBOARD_BROWSERS as $definition) {
-            if ($dashboard = $this->dashboardManager->getDefinition($definition)) {
+            if (($dashboard = $this->dashboardManager->getDefinition($definition)) instanceof Dashboard) {
                 $config['emsBrowsers'][$definition] = [
                     'label' => $dashboard->getLabel(),
                     'url' => $this->urlGenerator->generate('emsco_dashboard_browse', [

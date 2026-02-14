@@ -15,12 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(
-    name: Commands::JOB_RUN,
-    description: 'Execute the next pending job if exists. If not execute the oldest due scheduled job if exists.',
-    hidden: false,
-    aliases: ['ems:job:run']
-)]
+#[AsCommand(name: Commands::JOB_RUN, description: 'Execute the next pending job if exists. If not execute the oldest due scheduled job if exists.', aliases: ['ems:job:run'], hidden: false)]
 class JobCommand extends AbstractCommand
 {
     private const string ARGUMENT_JOB_ID = 'job-id';

@@ -284,7 +284,7 @@ final readonly class ReleaseService implements EntityServiceInterface
     {
         $rollbackRevision = $releaseRevision->getRollbackRevision();
 
-        if ($rollbackRevision) {
+        if ($rollbackRevision instanceof Revision) {
             $rollBackRelease->addRevision($rollbackRevision, ReleaseRevisionType::PUBLISH);
         } else {
             $rollBackRelease->addRevision($releaseRevision->getRevision(), ReleaseRevisionType::UNPUBLISH);

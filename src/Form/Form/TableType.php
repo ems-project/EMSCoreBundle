@@ -16,6 +16,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
 
 use function Symfony\Component\Translation\t;
 
@@ -134,7 +135,7 @@ final class TableType extends AbstractType
     {
         $submitOptions = ['icon' => $action->getIcon(), 'label' => $action->getLabelKey()];
 
-        if ($confirmationKey = $action->getConfirmationKey()) {
+        if (($confirmationKey = $action->getConfirmationKey()) instanceof TranslatableMessage) {
             $submitOptions['confirm'] = $confirmationKey;
             $submitOptions['confirm_class'] = $action->getCssClass();
         } else {

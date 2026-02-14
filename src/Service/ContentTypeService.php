@@ -864,7 +864,7 @@ class ContentTypeService implements EntityServiceInterface
     {
         $defaultOverviewView = $contentType->getViewByDefinition(ViewDefinition::DEFAULT_OVERVIEW);
 
-        if ($defaultOverviewView) {
+        if ($defaultOverviewView instanceof View) {
             return [
                 $defaultOverviewView->isPublic() ? Routes::DATA_PUBLIC_VIEW : Routes::DATA_PRIVATE_VIEW,
                 ['viewId' => $defaultOverviewView->getId()],

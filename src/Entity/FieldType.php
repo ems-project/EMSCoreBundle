@@ -431,7 +431,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
 
         /** @var FieldType $fieldType */
         foreach ($this->getChildren() as $fieldType) {
-            if (!$fieldType->getDeleted() && 0 == \strcmp($key, $fieldType->getName())) {
+            if (!$fieldType->getDeleted() && 0 === \strcmp($key, $fieldType->getName())) {
                 return $fieldType;
             }
         }

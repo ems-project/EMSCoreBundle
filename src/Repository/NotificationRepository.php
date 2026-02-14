@@ -284,7 +284,7 @@ class NotificationRepository extends ServiceEntityRepository
                     $templateIds[] = $template->getId();
                 } else {
                     $commonCircle = \array_intersect($circles, $template->getCirclesTo());
-                    if (!empty($commonCircle) || $this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
+                    if ([] !== $commonCircle || $this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT')) {
                         $templateIds[] = $template->getId();
                     }
                 }

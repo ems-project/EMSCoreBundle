@@ -20,12 +20,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(
-    name: Commands::ASSET_SYNCHRONIZE,
-    description: 'Synchronize registered assets on storage services.',
-    hidden: false,
-    aliases: ['ems:asset:synchronize']
-)]
+#[AsCommand(name: Commands::ASSET_SYNCHRONIZE, description: 'Synchronize registered assets on storage services.', aliases: ['ems:asset:synchronize'], hidden: false)]
 class SynchronizeAssetCommand extends AbstractCommand
 {
     /** @var string */

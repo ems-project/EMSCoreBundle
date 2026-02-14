@@ -51,7 +51,7 @@ class CrudController extends AbstractController
         }
 
         $rawdata = Json::decode(Type::string($request->getContent()));
-        if (empty($rawdata)) {
+        if ([] === $rawdata) {
             throw new BadRequestHttpException('Not a valid JSON message');
         }
 
@@ -102,7 +102,7 @@ class CrudController extends AbstractController
         try {
             $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
         } catch (\Exception $e) {
-            if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
+            if ($e instanceof NotFoundHttpException || $e instanceof BadRequestHttpException) {
                 throw $e;
             }
             $this->logger->error('log.crud.read_error', [
@@ -164,7 +164,7 @@ class CrudController extends AbstractController
             $revision = $this->dataService->getRevisionById($id, $contentType);
 
             $content = $request->getContent();
-            $rawData = \strlen($content) > 0 ? Json::decode(Type::string($content)) : [];
+            $rawData = '' !== (string) $content ? Json::decode(Type::string($content)) : [];
             if (\count($rawData) > 0) {
                 $this->revisionService->autoSave($revision, $rawData);
             }
@@ -204,10 +204,10 @@ class CrudController extends AbstractController
         try {
             $revision = $this->dataService->getRevisionById($id, $contentType);
             $this->dataService->discardDraft($revision);
-            $isDiscard = ($revision->getId() != $id) ? true : false;
+            $isDiscard = $revision->getId() !== $id;
         } catch (\Exception $e) {
             $isDiscard = false;
-            if (($e instanceof NotFoundHttpException) or ($e instanceof BadRequestHttpException)) {
+            if ($e instanceof NotFoundHttpException || $e instanceof BadRequestHttpException) {
                 throw $e;
             }
             $this->logger->error('log.crud.discard_error', [
@@ -269,14 +269,14 @@ class CrudController extends AbstractController
         }
 
         $rawdata = Json::decode(Type::string($request->getContent()));
-        if (empty($rawdata)) {
+        if ([] === $rawdata) {
             throw new BadRequestHttpException('Not a valid JSON message');
         }
 
         try {
             $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
             $newDraft = $this->dataService->replaceData($revision, $rawdata);
-            $isReplaced = ($revision->getId() != $newDraft->getId()) ? true : false;
+            $isReplaced = $revision->getId() !== $newDraft->getId();
         } catch (\Exception $e) {
             $isReplaced = false;
             if ($e instanceof NotFoundHttpException) {
@@ -312,14 +312,14 @@ class CrudController extends AbstractController
         }
 
         $rawdata = Json::decode(Type::string($request->getContent()));
-        if (empty($rawdata)) {
+        if ([] === $rawdata) {
             throw new BadRequestHttpException('Not a valid JSON message for revision '.$ouuid.' and contenttype '.$contentType->getName());
         }
 
         try {
             $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
             $newDraft = $this->dataService->replaceData($revision, $rawdata, 'merge');
-            $isMerged = ($revision->getId() != $newDraft->getId()) ? true : false;
+            $isMerged = $revision->getId() !== $newDraft->getId();
         } catch (\Exception $e) {
             if ($e instanceof NotFoundHttpException) {
                 throw $e;

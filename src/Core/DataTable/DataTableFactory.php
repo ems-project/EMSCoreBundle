@@ -204,7 +204,7 @@ class DataTableFactory
             'optionsCacheKey' => $optionsCacheKey,
         ];
 
-        if ($filterForm) {
+        if ($filterForm instanceof FormInterface) {
             $request = $this->requestStack->getCurrentRequest();
             $name = $filterForm->getConfig()->getName();
             $params[$name] = $request?->query->all($name);

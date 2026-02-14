@@ -69,7 +69,7 @@ final readonly class SubmissionExporter
             SpreadsheetGeneratorServiceInterface::WRITER => $extension,
         ], $tempFile->path);
 
-        if (!empty($config->emailsTo)) {
+        if ([] !== $config->emailsTo) {
             $this->sendEmail($tempFile, $config);
         }
 
@@ -89,9 +89,9 @@ final readonly class SubmissionExporter
         if (!empty($column['template'])) {
             $template = $this->templating->load($column['template']);
 
-            return !empty($column['block'])
-                ? $template->renderBlock($column['block'], \compact('data'))
-                : $template->render(\compact('data'));
+            return empty($column['block'])
+                ? $template->render(['data' => $data])
+                : $template->renderBlock($column['block'], ['data' => $data]);
         }
 
         return '';

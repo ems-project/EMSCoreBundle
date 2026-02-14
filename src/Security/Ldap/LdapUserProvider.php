@@ -49,7 +49,7 @@ class LdapUserProvider extends SymfonyLdapUserProvider
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
         if ('' === $this->ldapConfig->baseDn) {
-            throw new UserNotFoundException(\sprintf('Ldap server not configured'));
+            throw new UserNotFoundException('Ldap server not configured');
         }
 
         return parent::loadUserByIdentifier($identifier);

@@ -149,7 +149,7 @@ class ElasticaTable extends TableAbstract
             $this->count = Response::fromResultSet($resultSet)->getTotal();
         }
 
-        return $this->count > 0 ? $this->count : 0;
+        return \max($this->count, 0);
     }
 
     #[\Override]
@@ -184,7 +184,7 @@ class ElasticaTable extends TableAbstract
 
     private function getSearch(string $searchValue): Search
     {
-        if (\strlen($searchValue) > 0) {
+        if ('' !== $searchValue) {
             $search = $this->elasticaService->convertElasticsearchBody($this->aliases, $this->contentTypeNames, ['query' => $this->getQuery($searchValue)]);
         } else {
             $search = $this->elasticaService->convertElasticsearchBody($this->aliases, $this->contentTypeNames, ['query' => $this->emptyQuery]);

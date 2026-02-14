@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Log;
 
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 
@@ -77,7 +78,7 @@ final class LogRevisionContext
             'label' => $revision->getLabel(),
         ];
 
-        if ($contentType = $revision->getContentType()) {
+        if (($contentType = $revision->getContentType()) instanceof ContentType) {
             $context[EmsFields::LOG_CONTENTTYPE_FIELD] = $contentType->getName();
 
             if ($contentTypeEnvironment = $contentType->getEnvironment()) {

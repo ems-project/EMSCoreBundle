@@ -117,7 +117,7 @@ class TemplateRepository extends ServiceEntityRepository
     {
         $qb->where('t.contentType = :contentType')
             ->setParameter(':contentType', $contentType);
-        if (\strlen($searchValue) > 0) {
+        if ('' !== $searchValue) {
             $or = $qb->expr()->orX(
                 $qb->expr()->like('t.name', ':term'),
                 $qb->expr()->like('t.renderOption', ':term')

@@ -222,7 +222,7 @@ class LoadLinkModalType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $data = $options['data'] ?? null;
-        if ($data instanceof LoadLinkModalEntity and null !== $anchor = $data->getAnchor()) {
+        if ($data instanceof LoadLinkModalEntity && null !== $anchor = $data->getAnchor()) {
             $this->anchorLoader->addAnchor($anchor);
         }
         parent::buildView($view, $form, $options);

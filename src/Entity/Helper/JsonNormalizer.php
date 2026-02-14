@@ -78,7 +78,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
 
             $property = \lcfirst(('get' === \strtolower(\substr($reflectionMethod->getName(), 0, 3))) ? \substr($reflectionMethod->getName(), 3) : \substr($reflectionMethod->getName(), 2));
             $value = $reflectionMethod->invoke($data);
-            if ('deleted' == $property && true == $value) {
+            if ('deleted' === $property && true == $value) {
                 break;
             }
             if (null != $value) {
@@ -90,14 +90,14 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                     if ($value instanceof FieldType) {
                         $value = $this->normalize($value, $format, $context);
                     }
-                    if ('views' == $property) {
+                    if ('views' === $property) {
                         $arrayValues = [];
                         foreach ($value as $index => $view) {
                             $arrayValues[$index] = $this->normalize($view, $format, $context); // Recursive
                         }
                         $value = $arrayValues;
                     }
-                    if ('templates' == $property) {
+                    if ('templates' === $property) {
                         $arrayValues = [];
                         foreach ($value as $index => $template) {
                             $arrayValues[$index] = $this->normalize($template, $format, $context); // Recursive
@@ -108,7 +108,7 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
                     if (\in_array($property, $this->toSkip['FieldType'])) {
                         continue;
                     }
-                    if ('validChildren' == $property) {
+                    if ('validChildren' === $property) {
                         $arrayValues = [];
                         foreach ($value as $index => $subElement) {// subElement is always FieldType
                             if (!$subElement->getDeleted()) {

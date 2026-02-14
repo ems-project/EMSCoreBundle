@@ -27,11 +27,7 @@ class EntitiesController
         $names = [];
         for ($from = 0; $from < $count; $from += 10) {
             foreach ($entityService->get($from, 10, null, 'asc', '') as $entity) {
-                if ($entity instanceof EntityInterface) {
-                    $names[] = $entity->getName();
-                } else {
-                    $names[] = (string) $entity->getId();
-                }
+                $names[] = $entity instanceof EntityInterface ? $entity->getName() : (string) $entity->getId();
             }
         }
 

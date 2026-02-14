@@ -59,7 +59,7 @@ class AssetFieldType extends DataFieldType
             }
             $data[$oldField] = $data[$newField];
         }
-        foreach ($data as $id => $content) {
+        foreach (\array_keys($data) as $id) {
             if (!\in_array($id, [EmsFields::CONTENT_FILE_HASH_FIELD_, EmsFields::CONTENT_FILE_NAME_FIELD_, EmsFields::CONTENT_FILE_SIZE_FIELD_, EmsFields::CONTENT_MIME_TYPE_FIELD_,  EmsFields::CONTENT_FILE_HASH_FIELD, EmsFields::CONTENT_FILE_NAME_FIELD, EmsFields::CONTENT_FILE_SIZE_FIELD, EmsFields::CONTENT_MIME_TYPE_FIELD,  EmsFields::CONTENT_IMAGE_RESIZED_HASH_FIELD, EmsFields::CONTENT_FILE_DATE, EmsFields::CONTENT_FILE_AUTHOR, EmsFields::CONTENT_FILE_LANGUAGE, EmsFields::CONTENT_FILE_CONTENT, EmsFields::CONTENT_FILE_TITLE], true)) {
                 unset($data[$id]);
             }
@@ -201,11 +201,7 @@ class AssetFieldType extends DataFieldType
         }
 
         $isMultiple = true === $fieldType->getDisplayOption('multiple', false);
-        if ($isMultiple) {
-            $data = $rawData['files'] ?? [];
-        } else {
-            $data = [$rawData];
-        }
+        $data = $isMultiple ? $rawData['files'] ?? [] : [$rawData];
 
         $mandatory = (bool) $dataField->giveFieldType()->getRestrictionOption('mandatory', false);
 

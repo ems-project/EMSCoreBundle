@@ -40,7 +40,7 @@ class RevisionTaskHandleType extends AbstractType
             $builder
                 ->add('comment', TextareaType::class, [
                     'attr' => ['rows' => 4],
-                    'constraints' => !$task->isRequester($user) ? [new NotBlank()] : [],
+                    'constraints' => $task->isRequester($user) ? [] : [new NotBlank()],
                 ])
                 ->add('send', ButtonType::class);
         }

@@ -74,12 +74,12 @@ class ExportDocumentsCommand extends AbstractCommand
             ->addArgument(self::ARGUMENT_CONTENT_TYPE_NAME, InputArgument::REQUIRED, 'The document\'s content type name to export')
             ->addArgument(self::ARGUMENT_FORMAT, InputArgument::OPTIONAL, \sprintf('The format of the output: %s or the name of the content type\'s action', \implode(', ', TemplateService::EXPORT_FORMATS)), 'json')
             ->addArgument(self::ARGUMENT_QUERY, InputArgument::OPTIONAL, 'The query to run', '{}')
-            ->addArgument(self::ARGUMENT_OUTPUT_FILE, InputArgument::OPTIONAL, 'The zip output file', null)
+            ->addArgument(self::ARGUMENT_OUTPUT_FILE, InputArgument::OPTIONAL, 'The zip output file')
             ->addOption(self::OPTION_ENVIRONMENT, null, InputArgument::OPTIONAL, 'The environment to use for the query, it will use the default environment if not defined')
             ->addOption(self::OPTION_WITH_BUSINESS_ID, null, InputOption::VALUE_NONE, 'Replace internal OUUIDs by business values')
             ->addOption(self::OPTION_SCROLL_SIZE, null, InputArgument::OPTIONAL, 'Size of the elasticsearch scroll request', '100')
             ->addOption(self::OPTION_SCROLL_TIMEOUT, null, InputArgument::OPTIONAL, 'Time to migrate "scrollSize" items i.e. 30s or 2m', '1m')
-            ->addOption(self::OPTION_BASE_URL, null, InputArgument::OPTIONAL, 'Base url of the application (in order to generate a link)', null);
+            ->addOption(self::OPTION_BASE_URL, null, InputArgument::OPTIONAL, 'Base url of the application (in order to generate a link)');
     }
 
     #[\Override]
@@ -140,9 +140,9 @@ class ExportDocumentsCommand extends AbstractCommand
         } else {
             $accumulateInOneFile = \in_array($this->format, [TemplateService::MERGED_JSON_FORMAT, TemplateService::MERGED_XML_FORMAT]);
             $useTemplate = false;
-            if (\str_contains($this->format, (string) TemplateService::JSON_FORMAT)) {
+            if (\str_contains($this->format, TemplateService::JSON_FORMAT)) {
                 $extension = '.json';
-            } elseif (\str_contains($this->format, (string) TemplateService::XML_FORMAT)) {
+            } elseif (\str_contains($this->format, TemplateService::XML_FORMAT)) {
                 $extension = '.xml';
             } else {
                 $output->writeln(\sprintf('WARNING: Format %s not found', $this->format));
@@ -194,9 +194,9 @@ class ExportDocumentsCommand extends AbstractCommand
                     }
                 } elseif ($accumulateInOneFile) {
                     $content = Json::encode($document->getSource());
-                } elseif (\str_contains($this->format, (string) TemplateService::JSON_FORMAT)) {
+                } elseif (\str_contains($this->format, TemplateService::JSON_FORMAT)) {
                     $content = Json::encode($document->getSource(), true);
-                } elseif (\str_contains($this->format, (string) TemplateService::XML_FORMAT)) {
+                } elseif (\str_contains($this->format, TemplateService::XML_FORMAT)) {
                     $content = $this->templateService->getXml($contentType, $document->getSource(), false, $document->getOuuid());
                 } else {
                     $this->logger->error('log.command.export.unknow_format', [
@@ -222,9 +222,9 @@ class ExportDocumentsCommand extends AbstractCommand
         if ($accumulateInOneFile) {
             if ($useTemplate) {
                 $accumulatedContent = \implode('', $accumulatedContent);
-            } elseif (\str_contains($this->format, (string) TemplateService::JSON_FORMAT)) {
+            } elseif (\str_contains($this->format, TemplateService::JSON_FORMAT)) {
                 $accumulatedContent = Json::encode($accumulatedContent);
-            } elseif (\str_contains($this->format, (string) TemplateService::XML_FORMAT)) {
+            } elseif (\str_contains($this->format, TemplateService::XML_FORMAT)) {
                 $accumulatedContent = $this->templateService->getXml($contentType, $accumulatedContent, true);
             } else {
                 $output->writeln(\sprintf('WARNING: Format %s not found', $this->format));

@@ -717,9 +717,8 @@ readonly class CoreExtension
         if (\is_string($rawData[$field])) {
             return $rawData[$field];
         }
-        $encoded = Json::encode($rawData[$field]);
 
-        return $encoded;
+        return Json::encode($rawData[$field]);
     }
 
     /**
@@ -944,13 +943,12 @@ readonly class CoreExtension
             $input
         );
         $path = $this->router->generate(Routes::DATA_LINK, ['key' => '__KEY__'], UrlGeneratorInterface::ABSOLUTE_PATH);
-        $out = \preg_replace_callback(
+
+        return \preg_replace_callback(
             '/ems:\/\/(?P<key>file:([^\n\r"\'\?]*))/i',
             fn ($matches) => \str_replace('__KEY__', $matches['key'], $path),
             Type::string($out)
         );
-
-        return $out;
     }
 
     private function contrastRatio(string $c1, string $c2): float

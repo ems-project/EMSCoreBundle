@@ -82,7 +82,7 @@ class NotificationController extends AbstractController
             throw new NotFoundHttpException('Unknown revision');
         }
 
-        $success = $this->notificationService->addNotification($ct->getActionById((int) $templateId), $revision, $env);
+        $success = $this->notificationService->addNotification($ct->getActionById($templateId), $revision, $env);
 
         return $this->flashMessageLogger->buildJsonResponse([
             'success' => $success,

@@ -69,14 +69,12 @@ final class FlashMessageLogger extends AbstractProcessingHandler
             'error' => [],
         ];
         $levels = ['notice', 'warning', 'error'];
-        if ([] !== $this->logs) {
-            foreach ($this->logs as $log) {
-                $level = \strtolower($log->level->getName());
-                if (!isset($response[$level])) {
-                    continue;
-                }
-                $response[$level][] = $this->translate($log);
+        foreach ($this->logs as $log) {
+            $level = \strtolower($log->level->getName());
+            if (!isset($response[$level])) {
+                continue;
             }
+            $response[$level][] = $this->translate($log);
         }
         $currentRequest = $this->requestStack->getCurrentRequest();
         if (null !== $currentRequest && $currentRequest->hasSession(true)) {

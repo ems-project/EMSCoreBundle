@@ -104,8 +104,8 @@ class GroupController extends AbstractController
             return $this->redirectToRoute(Routes::GROUP_INDEX);
         }
 
-        $userNotInGroupDataTable = $this->usersInGroupDataTable($request, $group, false);
-        $userGroupDataTable = $this->usersInGroupDataTable($request, $group, true);
+        $userNotInGroupDataTable = $this->usersInGroupDataTable($group, false);
+        $userGroupDataTable = $this->usersInGroupDataTable($group, true);
 
         return $this->render("@$this->templateNamespace/group/edit.html.twig", [
             'form' => $form,
@@ -133,7 +133,7 @@ class GroupController extends AbstractController
     /**
      * @return FormInterface<UserDataTableType>
      */
-    private function usersInGroupDataTable(Request $request, Group $group, bool $inGroup): FormInterface
+    private function usersInGroupDataTable(Group $group, bool $inGroup): FormInterface
     {
         $table = $this->dataTableFactory->create(UserDataTableType::class, [
             'light' => true,
@@ -141,8 +141,6 @@ class GroupController extends AbstractController
             'group-id' => $group->getId(),
         ]);
 
-        $form = $this->createForm(TableType::class, $table);
-
-        return $form;
+        return $this->createForm(TableType::class, $table);
     }
 }

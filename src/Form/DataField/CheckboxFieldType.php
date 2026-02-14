@@ -43,9 +43,6 @@ class CheckboxFieldType extends DataFieldType
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var FieldType $fieldType */
-        $fieldType = $builder->getOptions()['metadata'];
-
         $builder->add('value', CheckboxType::class, [
             'label' => ($options['question_label'] ?: $options['label'] ?? false),
             'disabled' => $this->isDisabled($options),

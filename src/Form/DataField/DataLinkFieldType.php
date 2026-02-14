@@ -324,8 +324,6 @@ class DataLinkFieldType extends DataFieldType
             $data = \array_values($data);
         }
 
-        $out = parent::reverseViewTransform($data, $fieldType);
-
-        return $out;
+        return parent::reverseViewTransform($data, $fieldType);
     }
 }

@@ -686,9 +686,8 @@ class DataService
 
         // Get the form from Factory
         $builder = $this->formFactory->createBuilder(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
-        $form = $builder->getForm();
 
-        return $form;
+        return $builder->getForm();
     }
 
     public function refresh(Environment $environment): bool
@@ -1086,7 +1085,7 @@ class DataService
         if (!empty($revision->giveContentType()->getCirclesField()) && isset($objectArray[$revision->giveContentType()->getCirclesField()]) && !empty($objectArray[$revision->giveContentType()->getCirclesField()])) {
             $revision->setCircles(\is_array($objectArray[$revision->giveContentType()->getCirclesField()]) ? $objectArray[$revision->giveContentType()->getCirclesField()] : [$objectArray[$revision->giveContentType()->getCirclesField()]]);
         } else {
-            $revision->setCircles(null);
+            $revision->setCircles();
         }
     }
 

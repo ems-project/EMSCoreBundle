@@ -248,9 +248,8 @@ class NotificationService
         $repository = $em->getRepository(Notification::class);
 
         $count = $repository->countPendingByUserRoleAndCircle($this->userService->getCurrentUser(), $contentTypes, $environments, $templates);
-        $count += $repository->countRejectedForUser($this->userService->getCurrentUser());
 
-        return $count;
+        return $count + $repository->countRejectedForUser($this->userService->getCurrentUser());
     }
 
     public function countPending(): int

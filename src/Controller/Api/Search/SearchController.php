@@ -216,8 +216,7 @@ class SearchController
         if (!\is_string($data)) {
             throw new \RuntimeException('Unexpected: search must be a string');
         }
-        $search = Search::deserialize($data);
 
-        return $search;
+        return Search::deserialize($data);
     }
 }

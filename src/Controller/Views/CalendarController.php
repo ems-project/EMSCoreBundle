@@ -147,7 +147,6 @@ class CalendarController extends AbstractController
 
         $field = $view->getContentType()->getFieldType()->get('ems_'.$view->getOptions()['dateRangeField']);
         $contentType = $view->getContentType();
-        $environment = $view->getContentType()->giveEnvironment();
         $events = [];
         foreach ($this->elasticaService->search($search)->getResponse()->getData()['hits']['hits'] ?? [] as $item) {
             $source = $item['_source'];

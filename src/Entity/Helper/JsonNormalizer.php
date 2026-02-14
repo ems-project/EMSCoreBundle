@@ -152,19 +152,19 @@ class JsonNormalizer implements NormalizerInterface, DenormalizerInterface
             if ('fieldType' == $property && \method_exists($object, 'setFieldType')) {
                 $object->setFieldType($this->denormalize($value, $class, $format, $context));
             } elseif ('validChildren' == $property && \method_exists($object, 'addChild')) {
-                foreach ($value as $index => $subElement) {
+                foreach ($value as $subElement) {
                     if (!empty($subElement)) {
                         $object->addChild($this->denormalize($subElement, $class, $format, $context));
                     }
                 }
             } elseif ('views' == $property && \method_exists($object, 'addView')) {
-                foreach ($value as $index => $view) {
+                foreach ($value as $view) {
                     if (!empty($view)) {
                         $object->addView($this->denormalize($view, View::class, $format, ['contentType' => $object]));
                     }
                 }
             } elseif ('templates' == $property && \method_exists($object, 'addTemplate')) {
-                foreach ($value as $index => $template) {
+                foreach ($value as $template) {
                     if (!empty($template)) {
                         $object->addTemplate($this->denormalize($template, Template::class, $format, ['contentType' => $object]));
                     }

@@ -79,23 +79,6 @@ class NumberFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function buildOptionsForm(FormBuilderInterface $builder, array $options): void
-    {
-        parent::buildOptionsForm($builder, $options);
-        $optionsForm = $builder->get('options');
-
-        //         // String specific display options
-        //         $optionsForm->get ( 'displayOptions' )->add ( 'choices', TextareaType::class, [
-        //                 'required' => false,
-        //         ] )->add ( 'labels', TextareaType::class, [
-        //                 'required' => false,
-        //         ] );
-
-        //         // String specific mapping options
-        //         $optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
-    }
-
-    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'bypassdatafield';

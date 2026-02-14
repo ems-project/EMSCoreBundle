@@ -7,20 +7,12 @@ namespace EMS\CoreBundle\Form\View;
 use EMS\CoreBundle\Core\Document\DataLinks;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Twig\Environment;
 
 class DataLinkViewType extends ViewType
 {
-    public function __construct(FormFactory $formFactory, Environment $twig, LoggerInterface $logger, string $templateNamespace)
-    {
-        parent::__construct($formFactory, $twig, $logger, $templateNamespace);
-    }
-
     #[\Override]
     public function getLabel(): string
     {

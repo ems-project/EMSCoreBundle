@@ -35,8 +35,6 @@ class PasswordFieldType extends DataFieldType
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var FieldType $fieldType */
-        $fieldType = $options['metadata'];
         $builder->add('password_value', PasswordType::class, [
             'label' => false,
             'disabled' => $this->isDisabled($options),

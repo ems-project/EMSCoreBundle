@@ -36,8 +36,6 @@ class IconFieldType extends DataFieldType
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var FieldType $fieldType */
-        $fieldType = $options['metadata'];
         $builder->add('value', IconPickerType::class, [
             'label' => (null != $options['label'] ? $options['label'] : 'Icon field type'),
             'disabled' => $this->isDisabled($options),

@@ -17,10 +17,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 final class FormType extends AbstractType
 {
-    public function __construct()
-    {
-    }
-
     /**
      * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed>        $options

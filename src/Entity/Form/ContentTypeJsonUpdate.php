@@ -14,10 +14,6 @@ class ContentTypeJsonUpdate
 
     private bool $deleteExitingViews = false;
 
-    public function __construct()
-    {
-    }
-
     public function getJson(): ?UploadedFile
     {
         return $this->json;

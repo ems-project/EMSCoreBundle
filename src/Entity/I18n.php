@@ -52,11 +52,9 @@ class I18n extends JsonDeserializer implements \JsonSerializable, EntityInterfac
      */
     public function getContentTextforLocale($locale)
     {
-        if ([] !== $this->content) {
-            foreach ($this->content as $translation) {
-                if ($translation['locale'] === $locale) {
-                    return $translation['text'];
-                }
+        foreach ($this->content as $translation) {
+            if ($translation['locale'] === $locale) {
+                return $translation['text'];
             }
         }
 

@@ -32,7 +32,6 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 #[AsCommand(name: Commands::REVISIONS_INDEX_FILE_FIELDS, description: 'Migrate an ingested file field from an elasticsearch index.', aliases: ['ems:revisions:index-file-fields'], hidden: false)]
 class IndexFileCommand extends AbstractCommand
 {
-    /** @var string */
     private const string SYSTEM_USERNAME = 'SYSTEM_FILE_INDEXER';
     /** @var string */
     protected $databaseName;

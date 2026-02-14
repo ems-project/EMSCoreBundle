@@ -900,8 +900,8 @@ class RevisionRepository extends EntityRepository
     public function getAvailableRevisionsForRelease(int $from, int $size, Release $release, array $contentTypes, ?string $orderField, string $orderDirection, string $searchValue): array
     {
         $qb = $this->getCompareQueryBuilder($release->getEnvironmentSource()->getId(), $release->getEnvironmentTarget()->getId(), $contentTypes, $release->getRevisionsOuuids(), $searchValue);
-        if (null === $orderField) {
-            $qb->orderBy('r.ouuid', $orderDirection);
+        if ($orderField) {
+            $qb->orderBy('r.'.$orderField, $orderDirection);
         } else {
             $qb->orderBy('r.ouuid', $orderDirection);
         }

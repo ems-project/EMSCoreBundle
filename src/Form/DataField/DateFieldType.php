@@ -96,9 +96,8 @@ class DateFieldType extends DataFieldType
                 }
             }
         }
-        $temp = ['value' => \implode(',', $out)];
 
-        return $temp;
+        return ['value' => \implode(',', $out)];
     }
 
     /**
@@ -114,9 +113,8 @@ class DateFieldType extends DataFieldType
                 $dates[] = \DateTime::createFromFormat($format, $date);
             }
         }
-        $dataField = parent::reverseViewTransform($dates, $fieldType);
 
-        return $dataField;
+        return parent::reverseViewTransform($dates, $fieldType);
     }
 
     #[\Override]
@@ -142,7 +140,7 @@ class DateFieldType extends DataFieldType
                 throw new \RuntimeException('Unexpected non-iterable source array');
             }
             $data = [];
-            foreach ($sourceArray as $idx => $child) {
+            foreach ($sourceArray as $child) {
                 $dateObject = \DateTime::createFromFormat($format, $child);
                 if ($dateObject) {
                     $data[] = $dateObject->format(\DateTimeInterface::ATOM);

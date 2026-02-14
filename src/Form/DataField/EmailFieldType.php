@@ -102,8 +102,6 @@ class EmailFieldType extends DataFieldType
     #[\Override]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var FieldType $fieldType */
-        $fieldType = $options['metadata'];
         $builder->add('value', TextType::class, [
             'label' => (null != $options['label'] ? $options['label'] : 'Email field type'),
             'disabled' => $this->isDisabled($options),

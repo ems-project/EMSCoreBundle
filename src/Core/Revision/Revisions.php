@@ -68,8 +68,7 @@ final class Revisions implements \IteratorAggregate
     {
         $qb = clone $this->qb;
         $qb->select('count(r.id)');
-        $count = Type::integer($qb->getQuery()->getSingleScalarResult());
 
-        return $count;
+        return Type::integer($qb->getQuery()->getSingleScalarResult());
     }
 }

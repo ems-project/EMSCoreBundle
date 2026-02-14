@@ -12,11 +12,6 @@ class FieldTypePickerType extends Select2Type
     /** @var array<string, DataFieldType> */
     private array $dataFieldTypes = [];
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function addDataFieldType(DataFieldType $dataField): void
     {
         $this->dataFieldTypes[$dataField::class] = $dataField;

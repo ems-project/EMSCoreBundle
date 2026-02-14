@@ -115,7 +115,7 @@ class FieldTypeType extends AbstractType
         if ($fieldType->getChildren()->count() > 0) {
             $childFound = false;
             /** @var FieldType $field */
-            foreach ($fieldType->getChildren() as $idx => $field) {
+            foreach ($fieldType->getChildren() as $field) {
                 if (!$field->getDeleted() && ($options['editSubfields'] || SubfieldType::class === $field->getType())) {
                     $childFound = true;
                     $builder->add('ems_'.$field->getName(), FieldTypeType::class, [

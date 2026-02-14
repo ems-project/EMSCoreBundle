@@ -16,7 +16,7 @@ class PrivilegeException extends \Exception
         } else {
             throw new \Exception($message);
         }
-        parent::__construct($message, 0, null);
+        parent::__construct($message, 0);
     }
 
     public function getRevision(): Revision

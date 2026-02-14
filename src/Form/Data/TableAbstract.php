@@ -362,9 +362,7 @@ abstract class TableAbstract implements TableInterface
 
         $options['columnDefs'] = $columnOptions;
 
-        $options = \array_merge($options, $this->extraFrontendOption);
-
-        return $options;
+        return \array_merge($options, $this->extraFrontendOption);
     }
 
     #[\Override]

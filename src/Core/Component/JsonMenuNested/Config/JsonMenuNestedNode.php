@@ -36,7 +36,7 @@ class JsonMenuNestedNode
             $fieldType->getName(),
             $fieldType->getDisplayOption('label', $fieldType->getName()),
             $fieldType->getMinimumRole(),
-            $fieldType->getDisplayOption('icon', null),
+            $fieldType->getDisplayOption('icon'),
             $fieldType->getRestrictionOption('json_nested_deny', []),
             $fieldType->getRestrictionOption('json_nested_is_leaf', false)
         );

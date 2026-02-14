@@ -11,7 +11,7 @@ class HasNotCircleException extends ElasticmsException
     public function __construct(private readonly Environment $environment)
     {
         $message = 'The User has no circle to manipulate the object in the environment '.$environment->getName();
-        parent::__construct($message, 0, null);
+        parent::__construct($message, 0);
     }
 
     public function getEnvironment(): Environment

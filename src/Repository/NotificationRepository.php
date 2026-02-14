@@ -255,9 +255,7 @@ class NotificationRepository extends ServiceEntityRepository
             ->setMaxResults($limit);
         $query = $qb->getQuery();
 
-        $results = $query->getResult();
-
-        return $results;
+        return $query->getResult();
     }
 
     /**

@@ -85,8 +85,8 @@ class ReportViewType extends ViewType
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->getEnvironment(),
             ]);
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage(), ['view' => $view->getName(), 'option' => 'body']);
+        } catch (\Exception $exception) {
+            $this->logger->error($exception->getMessage(), ['view' => $view->getName(), 'option' => 'body']);
             $renderQuery = '{}';
         }
 
@@ -110,9 +110,9 @@ class ReportViewType extends ViewType
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $resultSet->getResponse()->getData(),
             ]);
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage(), ['view' => $view->getName(), 'option' => 'template']);
-            $render = 'Something went wrong with the template of the view '.$view->getLabel().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
+        } catch (\Exception $exception) {
+            $this->logger->error($exception->getMessage(), ['view' => $view->getName(), 'option' => 'template']);
+            $render = 'Something went wrong with the template of the view '.$view->getLabel().' for the content type '.$view->getContentType()->getName().' ('.$exception->getMessage().')';
         }
         try {
             $javascript = $this->twig->createTemplate($view->getOptions()['javascript'] ?? '')->render([
@@ -121,8 +121,8 @@ class ReportViewType extends ViewType
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $resultSet->getResponse()->getData(),
             ]);
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage(), ['view' => $view->getName(), 'option' => 'javascript']);
+        } catch (\Exception $exception) {
+            $this->logger->error($exception->getMessage(), ['view' => $view->getName(), 'option' => 'javascript']);
             $javascript = '';
         }
         try {
@@ -132,8 +132,8 @@ class ReportViewType extends ViewType
                 'environment' => $view->getContentType()->getEnvironment(),
                 'result' => $resultSet->getResponse()->getData(),
             ]);
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage(), ['view' => $view->getName(), 'option' => 'header']);
+        } catch (\Exception $exception) {
+            $this->logger->error($exception->getMessage(), ['view' => $view->getName(), 'option' => 'header']);
             $header = '';
         }
 

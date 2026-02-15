@@ -45,7 +45,7 @@ class ReleaseRevisionsUnpublishDataTableType extends AbstractTableType implement
     {
         /** @var array{'release': Release, 'environment': Environment} $context */
         $context = $table->getContext();
-        $template = "@$this->templateNamespace/datatable/template_block_columns.html.twig";
+        $template = \sprintf('@%s/datatable/template_block_columns.html.twig', $this->templateNamespace);
 
         $table->setLabelAttribute('documentEmsId');
         $table->setIdField('documentEmsId');

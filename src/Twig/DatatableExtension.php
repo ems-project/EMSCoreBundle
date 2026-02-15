@@ -26,7 +26,7 @@ readonly class DatatableExtension
     public function generateDatatable(array $environmentNames, array $contentTypeNames, array $options): string
     {
         $datatable = $this->datatableService->generateDatatable($environmentNames, $contentTypeNames, $options);
-        $template = $this->twig->load("@$this->templateNamespace/datatable/dom.html.twig");
+        $template = $this->twig->load(\sprintf('@%s/datatable/dom.html.twig', $this->templateNamespace));
 
         return $this->twig->render($template, [
             'datatable' => $datatable,

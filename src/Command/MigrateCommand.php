@@ -141,7 +141,7 @@ class MigrateCommand extends AbstractCommand
                 self::OPTION_DONT_FINALIZE,
                 null,
                 InputOption::VALUE_NONE,
-                'Don\'t finalize document'
+                "Don't finalize document"
             )
             ->addOption(
                 self::OPTION_CHANGED,

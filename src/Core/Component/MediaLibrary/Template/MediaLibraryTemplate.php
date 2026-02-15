@@ -21,7 +21,7 @@ class MediaLibraryTemplate extends AbstractComponentTemplate
     ) {
         parent::__construct(
             $twig,
-            "@$templateNamespace/components/media_library/template.twig",
+            \sprintf('@%s/components/media_library/template.twig', $templateNamespace),
             $config->template
         );
 

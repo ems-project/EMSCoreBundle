@@ -108,7 +108,7 @@ class LogRepository extends ServiceEntityRepository
                 ->setParameter('ouuid', $revision->giveOuuid());
         }
 
-        if (\count($context->channels) > 0) {
+        if ([] !== $context->channels) {
             $qb
                 ->andWhere($qb->expr()->in('log.channel', ':channels'))
                 ->setParameter('channels', $context->channels, Types::SIMPLE_ARRAY);

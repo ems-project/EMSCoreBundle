@@ -89,7 +89,7 @@ class ContentTypeController extends AbstractController
             ]);
         }
 
-        return $this->render("@$this->templateNamespace/contenttype/json_update.html.twig", [
+        return $this->render(\sprintf('@%s/contenttype/json_update.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
             'title' => t('action.update_content_type_from_json', ['name' => $contentType->getName()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'content_type'], 'emsco-core'),
@@ -221,7 +221,7 @@ class ContentTypeController extends AbstractController
             }
         }
 
-        return $this->render("@$this->templateNamespace/contenttype/add.html.twig", [
+        return $this->render(\sprintf('@%s/contenttype/add.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
             'title' => t('type.title_create', ['type' => 'content_type'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'content_type'], 'emsco-core'),
@@ -323,7 +323,7 @@ class ContentTypeController extends AbstractController
             return $this->treatFieldSubmit($contentType, $field, $action, $subFieldName);
         }
 
-        return $this->render("@$this->templateNamespace/contenttype/field.html.twig", [
+        return $this->render(\sprintf('@%s/contenttype/field.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
             'field' => $field,
             'contentType' => $contentType,
@@ -351,7 +351,7 @@ class ContentTypeController extends AbstractController
             return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_EDIT, ['contentType' => $contentType->getId()]);
         }
 
-        return $this->render("@$this->templateNamespace/contenttype/reorder.html.twig", [
+        return $this->render(\sprintf('@%s/contenttype/reorder.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
             'contentType' => $contentType,
             'title' => t('action.reorder', ['type' => 'content_type'], 'emsco-core'),
@@ -422,7 +422,7 @@ class ContentTypeController extends AbstractController
             ]);
         }
 
-        return $this->render("@$this->templateNamespace/contenttype/edit.html.twig", [
+        return $this->render(\sprintf('@%s/contenttype/edit.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
             'contentType' => $contentType,
             'mapping' => $mapping,
@@ -498,7 +498,7 @@ class ContentTypeController extends AbstractController
             ]);
         }
 
-        return $this->render("@$this->templateNamespace/contenttype/structure.html.twig", [
+        return $this->render(\sprintf('@%s/contenttype/structure.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
             'contentType' => $contentType,
             'title' => t('action.reorder', ['type' => 'content_type'], 'emsco-core'),

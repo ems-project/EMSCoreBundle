@@ -138,7 +138,7 @@ final class LoadLinkModalEntity
             case LoadLinkModalType::LINK_TYPE_URL:
                 return $this->href;
             case LoadLinkModalType::LINK_TYPE_INTERNAL:
-                return "ems://object:$this->dataLink";
+                return 'ems://object:'.$this->dataLink;
             case LoadLinkModalType::LINK_TYPE_MAILTO:
                 $subject = \rawurlencode($this->subject ?? '');
                 $body = \rawurlencode($this->body ?? '');
@@ -146,14 +146,14 @@ final class LoadLinkModalEntity
                     return null;
                 }
 
-                return "mailto:$this->mailto?body=$body&subject=$subject";
+                return \sprintf('mailto:%s?body=%s&subject=%s', $this->mailto, $body, $subject);
             case LoadLinkModalType::LINK_TYPE_FILE:
                 if (null !== $this->file) {
                     $hash = \rawurlencode($this->file[EmsFields::CONTENT_FILE_HASH_FIELD]);
                     $name = \rawurlencode($this->file[EmsFields::CONTENT_FILE_NAME_FIELD] ?? 'file.bin');
                     $type = \rawurlencode($this->file[EmsFields::CONTENT_MIME_TYPE_FIELD] ?? 'application/bin');
 
-                    return "ems://asset:$hash?name=$name&type=$type";
+                    return \sprintf('ems://asset:%s?name=%s&type=%s', $hash, $name, $type);
                 }
 
                 return null;

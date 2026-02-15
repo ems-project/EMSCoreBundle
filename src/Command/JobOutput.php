@@ -36,7 +36,7 @@ class JobOutput extends Output
     }
 
     #[\Override]
-    public function doWrite(string $message, bool $newline): void
+    protected function doWrite(string $message, bool $newline): void
     {
         if (!$newline && !$this->newLine && Json::isJson($message)) {
             $newline = true;

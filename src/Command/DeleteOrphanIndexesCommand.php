@@ -26,8 +26,8 @@ class DeleteOrphanIndexesCommand extends AbstractCommand
             $this->indexService->deleteOrphanIndexes();
 
             return self::EXECUTE_SUCCESS;
-        } catch (\Throwable $e) {
-            $this->io->error($e->getMessage());
+        } catch (\Throwable $throwable) {
+            $this->io->error($throwable->getMessage());
 
             return self::EXECUTE_ERROR;
         }

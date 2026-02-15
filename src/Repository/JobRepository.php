@@ -138,8 +138,8 @@ class JobRepository extends EntityRepository
             ->addSelect('count(id) as count_jobs')
             ->addSelect('count(CASE WHEN started = FALSE AND done = FALSE THEN 1 END) AS count_jobs_pending')
             ->addSelect('count(CASE WHEN started = TRUE AND done = FALSE THEN 1 END) AS count_jobs_started')
-            ->addSelect('count(CASE WHEN done = TRUE and status != \'failed\' THEN 1 END) AS count_jobs_done')
-            ->addSelect('count(CASE WHEN status = \'failed\' THEN 1 END) AS count_jobs_failed')
+            ->addSelect("count(CASE WHEN done = TRUE and status != 'failed' THEN 1 END) AS count_jobs_done")
+            ->addSelect("count(CASE WHEN status = 'failed' THEN 1 END) AS count_jobs_failed")
             ->from('job')
             ->groupBy('tag');
 

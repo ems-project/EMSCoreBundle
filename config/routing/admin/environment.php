@@ -2,30 +2,31 @@
 
 declare(strict_types=1);
 
+use EMS\CoreBundle\Controller\Admin\EnvironmentController;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 return function (RoutingConfigurator $routes): void {
     $routes->add('emsco_admin_environment_remove', '/remove/{environment}')
-        ->controller('EMS\CoreBundle\Controller\Admin\EnvironmentController::remove')
+        ->controller([EnvironmentController::class, 'remove'])
         ->methods(['POST']);
 
     $routes->add('emsco_admin_environment_add', '/add')
-        ->controller('EMS\CoreBundle\Controller\Admin\EnvironmentController::add')
+        ->controller([EnvironmentController::class, 'add'])
         ->methods(['GET', 'POST']);
 
     $routes->add('emsco_admin_environment_edit', '/edit/{environment}')
-        ->controller('EMS\CoreBundle\Controller\Admin\EnvironmentController::edit')
+        ->controller([EnvironmentController::class, 'edit'])
         ->methods(['GET', 'POST']);
 
     $routes->add('emsco_admin_environment_view', '/{environment}')
-        ->controller('EMS\CoreBundle\Controller\Admin\EnvironmentController::view')
+        ->controller([EnvironmentController::class, 'view'])
         ->methods(['GET', 'POST']);
 
     $routes->add('emsco_admin_environment_rebuild', '/rebuild/{environment}')
-        ->controller('EMS\CoreBundle\Controller\Admin\EnvironmentController::rebuild')
+        ->controller([EnvironmentController::class, 'rebuild'])
         ->methods(['GET', 'POST']);
 
     $routes->add('emsco_admin_environment_index', '/')
-        ->controller('EMS\CoreBundle\Controller\Admin\EnvironmentController::index')
+        ->controller([EnvironmentController::class, 'index'])
         ->methods(['GET', 'POST']);
 };

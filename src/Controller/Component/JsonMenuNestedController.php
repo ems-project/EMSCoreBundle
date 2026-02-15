@@ -55,8 +55,8 @@ class JsonMenuNestedController
             $item = $config->jsonMenuNested->giveItemById($itemId);
 
             return new JsonResponse(['item' => $item->toArrayStructure(true)]);
-        } catch (JsonMenuNestedException $e) {
-            return $this->responseWarning($e->getMessage());
+        } catch (JsonMenuNestedException $jsonMenuNestedException) {
+            return $this->responseWarning($jsonMenuNestedException->getMessage());
         }
     }
 
@@ -68,8 +68,8 @@ class JsonMenuNestedController
             $this->clearFlashes($request);
 
             return $this->responseSuccess(['item' => $addedItem?->getData()]);
-        } catch (JsonMenuNestedException $e) {
-            return $this->responseWarning($e->getMessage());
+        } catch (JsonMenuNestedException $jsonMenuNestedException) {
+            return $this->responseWarning($jsonMenuNestedException->getMessage());
         }
     }
 
@@ -142,8 +142,8 @@ class JsonMenuNestedController
             return new JsonResponse($this->jsonMenuNestedService->itemModal($config, $item, $modalName, [
                 'node' => $node,
             ]));
-        } catch (JsonMenuNestedException $e) {
-            return $this->responseWarningModal($e->getMessage());
+        } catch (JsonMenuNestedException $jsonMenuNestedException) {
+            return $this->responseWarningModal($jsonMenuNestedException->getMessage());
         }
     }
 
@@ -175,8 +175,8 @@ class JsonMenuNestedController
                 'dataFields' => $dataFields ?? null,
                 'node' => $node,
             ]));
-        } catch (JsonMenuNestedException $e) {
-            return $this->responseWarningModal($e->getMessage());
+        } catch (JsonMenuNestedException $jsonMenuNestedException) {
+            return $this->responseWarningModal($jsonMenuNestedException->getMessage());
         }
     }
 
@@ -188,8 +188,8 @@ class JsonMenuNestedController
             $this->clearFlashes($request);
 
             return $this->responseSuccess(['item' => $deleteItem->getData()]);
-        } catch (JsonMenuNestedException $e) {
-            return $this->responseWarning($e->getMessage());
+        } catch (JsonMenuNestedException $jsonMenuNestedException) {
+            return $this->responseWarning($jsonMenuNestedException->getMessage());
         }
     }
 
@@ -201,8 +201,8 @@ class JsonMenuNestedController
             $this->clearFlashes($request);
 
             return $this->responseSuccess();
-        } catch (JsonMenuNestedException $e) {
-            return $this->responseWarning($e->getMessage());
+        } catch (JsonMenuNestedException $jsonMenuNestedException) {
+            return $this->responseWarning($jsonMenuNestedException->getMessage());
         }
     }
 
@@ -213,8 +213,8 @@ class JsonMenuNestedController
             $this->jsonMenuNestedService->itemCopy($config, $copyItem);
 
             return $this->responseSuccess(['copyId' => $copyItem->getId()]);
-        } catch (JsonMenuNestedException $e) {
-            return $this->responseWarning($e->getMessage());
+        } catch (JsonMenuNestedException $jsonMenuNestedException) {
+            return $this->responseWarning($jsonMenuNestedException->getMessage());
         }
     }
 
@@ -225,8 +225,8 @@ class JsonMenuNestedController
             $pasteItem = $this->jsonMenuNestedService->itemPaste($config, $item);
 
             return $this->responseSuccess(['pasteId' => $pasteItem->getId()]);
-        } catch (JsonMenuNestedException $e) {
-            return $this->responseWarning($e->getMessage());
+        } catch (JsonMenuNestedException $jsonMenuNestedException) {
+            return $this->responseWarning($jsonMenuNestedException->getMessage());
         }
     }
 

@@ -115,7 +115,7 @@ class JsonMenuNestedNodes
         $paths = $childFieldType->getClearOnCopyPaths();
         $relativePaths = \array_map(static fn (string $path) => u($path)->after($childPath)->toString(), $paths);
 
-        if (\count($relativePaths) > 0) {
+        if ([] !== $relativePaths) {
             $this->clearPathsByType[$childFieldType->getName()] = $relativePaths;
         }
     }

@@ -34,14 +34,14 @@ class DashboardDataTableType extends AbstractEntityTableType
             new TemplateBlockTableColumn(
                 label: t('field.type', [], 'emsco-core'),
                 blockName: 'dashboardType',
-                template: "@$this->templateNamespace/datatable/template_block_columns.html.twig"
+                template: \sprintf('@%s/datatable/template_block_columns.html.twig', $this->templateNamespace)
             )
         );
         $table->addColumnDefinition(
             new TemplateBlockTableColumn(
                 label: t('field.definition', [], 'emsco-core'),
                 blockName: 'dashboardDefinition',
-                template: "@$this->templateNamespace/datatable/template_block_columns.html.twig"
+                template: \sprintf('@%s/datatable/template_block_columns.html.twig', $this->templateNamespace)
             )
         );
 

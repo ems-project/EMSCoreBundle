@@ -49,7 +49,7 @@ abstract class ViewType extends AbstractType
     {
         $response = new Response();
         $parameters = $this->getParameters($view, $this->formFactory, $request);
-        $response->setContent($this->twig->render("@$this->templateNamespace/view/custom/".$this->getBlockPrefix().'.html.twig', $parameters));
+        $response->setContent($this->twig->render(\sprintf('@%s/view/custom/', $this->templateNamespace).$this->getBlockPrefix().'.html.twig', $parameters));
 
         return $response;
     }

@@ -230,7 +230,7 @@ class AssetFieldType extends DataFieldType
 
         if ($isMultiple) {
             $dataField->setRawData($rawData);
-        } elseif (0 === \count($rawData)) {
+        } elseif ([] === $rawData) {
             $dataField->setRawData(null);
         } else {
             $dataField->setRawData(\reset($rawData));

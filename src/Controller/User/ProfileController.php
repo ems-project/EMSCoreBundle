@@ -24,7 +24,7 @@ class ProfileController extends AbstractController
 
     public function show(): Response
     {
-        return $this->render("@$this->templateNamespace/user/profile/show.html.twig", [
+        return $this->render(\sprintf('@%s/user/profile/show.html.twig', $this->templateNamespace), [
             'user' => $this->userManager->getAuthenticatedUser(),
             'title' => t('profile.title', [], 'emsco-core'),
             'subTitle' => t('profile.title_sub', [], 'emsco-core'),
@@ -45,7 +45,7 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute(Routes::USER_PROFILE);
         }
 
-        return $this->render("@$this->templateNamespace/user/profile/edit.html.twig", [
+        return $this->render(\sprintf('@%s/user/profile/edit.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
         ]);
     }
@@ -64,7 +64,7 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute(Routes::USER_PROFILE);
         }
 
-        return $this->render("@$this->templateNamespace/user/profile/change_password.html.twig", [
+        return $this->render(\sprintf('@%s/user/profile/change_password.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
         ]);
     }

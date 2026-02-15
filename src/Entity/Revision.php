@@ -138,7 +138,10 @@ class Revision implements EntityInterface, \Stringable
         ];
     }
 
-    public function __construct()
+    /**
+     * @param ?Revision $a
+     */
+    public function __construct(...$a)
     {
         $this->environmentRevisions = new ArrayCollection();
         $this->notifications = new ArrayCollection();
@@ -146,8 +149,6 @@ class Revision implements EntityInterface, \Stringable
         $this->created = new \DateTime();
         $this->modified = new \DateTime();
         $this->startTime = new \DateTime('now');
-
-        $a = \func_get_args();
         $i = \func_num_args();
         if (1 === $i && $a[0] instanceof Revision) {
             $ancestor = $a[0];
@@ -188,7 +189,7 @@ class Revision implements EntityInterface, \Stringable
         }
 
         if (null !== $this->contentType && $this->contentType->getLabelField() && $this->rawData && isset($this->rawData[$this->contentType->getLabelField()])) {
-            return $this->rawData[$this->contentType->getLabelField()]." ($out)";
+            return $this->rawData[$this->contentType->getLabelField()].\sprintf(' (%s)', $out);
         }
 
         return $out;
@@ -213,6 +214,7 @@ class Revision implements EntityInterface, \Stringable
     {
         $draft = clone $this;
         $draft->environmentRevisions = new ArrayCollection();
+
         $now = new \DateTime('now');
         $draft->addEnvironment($this->giveContentType()->giveEnvironment(), $username);
         $draft->setStartTime($now);
@@ -899,7 +901,7 @@ class Revision implements EntityInterface, \Stringable
             return;
         }
 
-        if (\count($versioning->getTags()) > 0) {
+        if ([] !== $versioning->getTags()) {
             if (null === $this->getVersionTag()) {
                 $this->setVersionTag($this->rawData[Mapping::VERSION_TAG] ?? $this->getVersionTagDefault());
             }

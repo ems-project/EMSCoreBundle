@@ -31,7 +31,7 @@ class StylesetController extends AbstractController
     {
         $emsLink = $request->query->get('emsLink');
 
-        return $this->render("@$this->templateNamespace/wysiwyg_styles_set/iframe.html.twig", [
+        return $this->render(\sprintf('@%s/wysiwyg_styles_set/iframe.html.twig', $this->templateNamespace), [
             'styleSet' => $this->wysiwygStylesSetService->getByName($name),
             'language' => $language,
             'field' => $request->query->get('field'),
@@ -73,7 +73,7 @@ class StylesetController extends AbstractController
             $css = $styleSet->giveContentCss();
             $sha1 = $styleSet->giveAssetsHash();
             $cssContents = $this->storageManager->getStreamFromArchive($sha1, $css)->getStream()->getContents();
-            $source .= $this->compilePrefixedCss($name, $cssContents, "/bundles/$sha1");
+            $source .= $this->compilePrefixedCss($name, $cssContents, '/bundles/'.$sha1);
         }
         $response->setContent($source);
 
@@ -93,17 +93,17 @@ class StylesetController extends AbstractController
         $css = $styleSet->giveContentCss();
         $sha1 = $styleSet->giveAssetsHash();
         $cssContents = $this->storageManager->getStreamFromArchive($sha1, $css)->getStream()->getContents();
-        $response->setContent($this->compilePrefixedCss($name, $cssContents, "/bundles/$sha1"));
+        $response->setContent($this->compilePrefixedCss($name, $cssContents, '/bundles/'.$sha1));
 
         return $response;
     }
 
     private function compilePrefixedCss(string $name, string $css, string $directory): string
     {
-        return $this->getCompiler()->compileString(".ems-styleset-$name {
+        return $this->getCompiler()->compileString(".ems-styleset-{$name} {
             all: initial;
             padding: 10px;
-            $css
+            {$css}
         }", $directory)->getCss();
     }
 

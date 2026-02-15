@@ -145,10 +145,10 @@ class AlignCommand extends AbstractEnvironmentCommand
             $publicationWarnings = $publisher->getAllWarningMessages();
             $publicationErrors = $publisher->getAllErrorMessages();
 
-            if (\count($publicationWarnings) > 0) {
+            if ([] !== $publicationWarnings) {
                 $this->io->warning($publicationWarnings);
             }
-            if (\count($publicationErrors) > 0) {
+            if ([] !== $publicationErrors) {
                 $this->io->error($publicationErrors);
             }
         }

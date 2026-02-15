@@ -179,7 +179,7 @@ class SearchService
             }
         }
 
-        return \count($nestedPath) > 0 ? ['path' => \implode('.', $nestedPath)] : null;
+        return [] !== $nestedPath ? ['path' => \implode('.', $nestedPath)] : null;
     }
 
     /**
@@ -207,9 +207,9 @@ class SearchService
             $search = $searchRepository->findOneBy([
                 'default' => true,
             ]);
-            if ($search instanceof Search && \count($search->getContentTypes()) > 0) {
+            if ($search instanceof Search && [] !== $search->getContentTypes()) {
                 $contentTypesNotCovertByTheDefaultSearch = \array_diff($contentTypes, $search->getContentTypes());
-                if (\count($contentTypesNotCovertByTheDefaultSearch) > 0) {
+                if ([] !== $contentTypesNotCovertByTheDefaultSearch) {
                     $search = null;
                 }
             }
@@ -219,7 +219,7 @@ class SearchService
             $search = new Search();
         }
         $search->setContentTypes($contentTypes);
-        if (0 === \count($search->getEnvironments())) {
+        if ([] === $search->getEnvironments()) {
             $all = [];
             $defaults = [];
             foreach ($this->environmentService->getEnvironments() as $environment) {
@@ -228,7 +228,7 @@ class SearchService
                     $defaults[] = $environment->getName();
                 }
             }
-            $search->setEnvironments(\count($defaults) > 0 ? $defaults : $all);
+            $search->setEnvironments([] !== $defaults ? $defaults : $all);
         }
 
         return $search;

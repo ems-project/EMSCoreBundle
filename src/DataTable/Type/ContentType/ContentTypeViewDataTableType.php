@@ -45,14 +45,14 @@ class ContentTypeViewDataTableType extends AbstractEntityTableType
             new TemplateBlockTableColumn(
                 label: t('field.type', [], 'emsco-core'),
                 blockName: 'contentTypeViewType',
-                template: "@$this->templateNamespace/datatable/template_block_columns.html.twig"
+                template: \sprintf('@%s/datatable/template_block_columns.html.twig', $this->templateNamespace)
             )
         );
         $table->addColumnDefinition(
             new TemplateBlockTableColumn(
                 label: t('field.definition', [], 'emsco-core'),
                 blockName: 'contentTypeViewDefinition',
-                template: "@$this->templateNamespace/datatable/template_block_columns.html.twig"
+                template: \sprintf('@%s/datatable/template_block_columns.html.twig', $this->templateNamespace)
             )
         );
 

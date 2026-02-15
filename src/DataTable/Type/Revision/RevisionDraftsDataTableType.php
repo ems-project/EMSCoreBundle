@@ -60,6 +60,7 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
         $table->addColumnDefinition($lockUntil);
         $lockBy = new UserTableColumn(t('revision.field.locked_by', [], 'emsco-core'), 'lockBy');
         $lockBy->addCondition($condition);
+
         $table->addColumnDefinition($lockBy);
 
         $inMyCircles = new InMyCircles($this->userService);

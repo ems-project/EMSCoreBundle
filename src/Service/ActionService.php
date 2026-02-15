@@ -69,17 +69,17 @@ final readonly class ActionService implements EntityServiceInterface
             ]);
 
             return $job;
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             $this->logger->error('log.data.job.initialize_failed', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $jobAction->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $uuid,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $throwable->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $throwable,
                 'template_name' => $jobAction->getName(),
                 'template_label' => $jobAction->getLabel(),
                 'environment' => $environment?->getLabel(),
             ]);
-            throw $e;
+            throw $throwable;
         }
     }
 

@@ -78,7 +78,7 @@ final class TransformCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $transformerDefinitions = $this->contentTransformer->getTransformerDefinitions($this->contentType);
-        if (0 === \count($transformerDefinitions)) {
+        if ([] === $transformerDefinitions) {
             $this->io->warning('No transformers defined!');
 
             return self::EXECUTE_SUCCESS;

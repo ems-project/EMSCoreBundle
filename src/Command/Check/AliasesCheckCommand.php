@@ -45,23 +45,23 @@ final class AliasesCheckCommand extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->io->section('Start checking environment\'s aliase');
+        $this->io->section("Start checking environment's aliase");
         foreach ($this->environmentService->getEnvironments() as $environment) {
             if (!$environment->getManaged()) {
                 continue;
             }
             if ($this->aliasService->hasAliasInCluster($environment->getAlias())) {
-                $this->io->writeln(\sprintf('Environment\'s alias %s is present', $environment->getName()));
+                $this->io->writeln(\sprintf("Environment's alias %s is present", $environment->getName()));
                 continue;
             }
-            $this->io->warning(\sprintf('The %s environment\'s alias is missing', $environment->getName()));
+            $this->io->warning(\sprintf("The %s environment's alias is missing", $environment->getName()));
 
             if (!$this->repair) {
                 continue;
             }
 
             if ($this->jobService->countPending() > 0) {
-                $this->io->warning('The job\'s queue is not empty');
+                $this->io->warning("The job's queue is not empty");
                 break;
             }
 

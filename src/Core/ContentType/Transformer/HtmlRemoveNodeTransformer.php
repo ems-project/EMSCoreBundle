@@ -32,6 +32,7 @@ final class HtmlRemoveNodeTransformer extends BaseHtmlTransformer
 
         $crawler = new Crawler();
         $crawler->addContent($data);
+
         $options = $this->resolveOptions($context->getOptions());
 
         $results = 0;

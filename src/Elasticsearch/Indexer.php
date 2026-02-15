@@ -50,7 +50,7 @@ class Indexer
     public function update(string $name, array $mappings): void
     {
         $this->mapping->updateMapping($name, $mappings);
-        $this->logger->info('Update index {index}\'s mapping', ['index' => $name]);
+        $this->logger->info("Update index {index}'s mapping", ['index' => $name]);
     }
 
     /**

@@ -164,6 +164,7 @@ final class ExtractCommand extends AbstractCommand
         $search = new Search([$this->sourceEnvironment->getAlias()], $this->searchQuery);
         $search->setSources(EMSSource::REQUIRED_FIELDS);
         $search->setSize($this->bulkSize);
+
         $scroll = $this->elasticaService->scroll($search);
         $total = $this->elasticaService->count($search);
         $this->io->progressStart($total);

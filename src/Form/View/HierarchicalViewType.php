@@ -88,12 +88,12 @@ class HierarchicalViewType extends ViewType
             ],
         ])
         ->add('maxDepth', IntegerType::class, [
-            'label' => 'Limit the menu\'s depth',
+            'label' => "Limit the menu's depth",
             'attr' => [
             ],
         ])
         ->add('maxDepth', IntegerType::class, [
-            'label' => 'Limit the menu\'s depth',
+            'label' => "Limit the menu's depth",
             'attr' => [
             ],
         ])
@@ -189,7 +189,7 @@ $dataField->getRawData()
         }
 
         $response = new Response();
-        $response->setContent($this->twig->render("@$this->templateNamespace/view/custom/".$this->getBlockPrefix().'.html.twig', [
+        $response->setContent($this->twig->render(\sprintf('@%s/view/custom/', $this->templateNamespace).$this->getBlockPrefix().'.html.twig', [
             'parent' => $parent,
             'view' => $view,
             'form' => $form->createView(),
@@ -220,12 +220,12 @@ $dataField->getRawData()
             }
             $revision->setRawData($data);
             $this->dataService->finalizeDraft($revision);
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $this->logger->warning('form.view.hierarchical.error_with_document', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $type,
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $exception,
             ]);
         }
     }

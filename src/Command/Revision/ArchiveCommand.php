@@ -89,7 +89,8 @@ final class ArchiveCommand extends AbstractCommand
         $this->io->comment(\sprintf('Found %s hits', $search->getTotal()));
         $this->io->progressStart($search->getTotal());
 
-        $counterNotModifiedBefore = $counterSuccess = 0;
+        $counterNotModifiedBefore = 0;
+        $counterSuccess = 0;
 
         foreach ($this->revisionSearcher->search($environment, $search) as $revisions) {
             $this->revisionSearcher->lock($revisions, self::USER);

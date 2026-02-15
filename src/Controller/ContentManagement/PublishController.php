@@ -98,6 +98,7 @@ class PublishController extends AbstractController
         $requestBis = clone $request;
 
         $requestBis->setMethod('GET');
+
         $searchForm->handleRequest($requestBis);
 
         if (1 !== \count($search->getEnvironments())) {
@@ -131,8 +132,10 @@ class PublishController extends AbstractController
 
         $form = $builder->getForm();
         $form->handleRequest($request);
+
         $search->setEnvironments([$environment->getName()]);
         $search->setContentTypes([$contentType->getName()]);
+
         $emsSearch = $this->searchService->generateSearch($search);
         $total = $this->elasticaService->count($emsSearch);
         $query = $emsSearch->getQuery();
@@ -160,7 +163,7 @@ class PublishController extends AbstractController
             ]);
         }
 
-        return $this->render("@$this->templateNamespace/publish/publish-search-result.html.twig", [
+        return $this->render(\sprintf('@%s/publish/publish-search-result.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
             'fromEnvironment' => $environment,
             'contentType' => $contentType,

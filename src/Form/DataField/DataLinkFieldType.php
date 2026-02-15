@@ -132,8 +132,8 @@ class DataLinkFieldType extends DataFieldType
             if (!empty($rawData) && \is_array($rawData)) {
                 \usort($rawData, function ($a, $b) use ($event) {
                     if (!empty($event->getData()['value'])) {
-                        $indexA = \array_search($a, $event->getData()['value']);
-                        $indexB = \array_search($b, $event->getData()['value']);
+                        $indexA = \array_search($a, $event->getData()['value'], true);
+                        $indexB = \array_search($b, $event->getData()['value'], true);
                         if (false === $indexA || $indexA > $indexB) {
                             return 1;
                         }
@@ -210,7 +210,7 @@ class DataLinkFieldType extends DataFieldType
 
         $loader = $objectPickerType->getChoiceListFactory()->createLoader($fieldType->getDisplayOptions()['type'], true /* count($choices) == 0 || !$fieldType->getDisplayOptions()['dynamicLoading'] */);
         $all = $loader->loadAll();
-        if (\count($choices) > 0) {
+        if ([] !== $choices) {
             foreach ($all as $key => $data) {
                 if (!\in_array($key, $choices)) {
                     unset($all[$key]);

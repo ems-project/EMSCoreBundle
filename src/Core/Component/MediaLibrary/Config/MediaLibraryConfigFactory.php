@@ -34,7 +34,7 @@ class MediaLibraryConfigFactory extends AbstractConfigFactory
      * } $options
      */
     #[\Override]
-    public function create(string $hash, array $options): MediaLibraryConfig
+    protected function create(string $hash, array $options): MediaLibraryConfig
     {
         $contentType = $this->contentTypeService->giveByName($options['contentTypeName']);
 

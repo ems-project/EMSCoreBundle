@@ -149,7 +149,7 @@ final class DataLinks
 
     public function hasItems(): bool
     {
-        return \count($this->items) > 0;
+        return [] !== $this->items;
     }
 
     public function hasReferrerDocument(): bool

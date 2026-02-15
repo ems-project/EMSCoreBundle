@@ -42,7 +42,7 @@ class ActionImportController
     public function __invoke(Request $request, int $actionId, string $ouuid): Response
     {
         $action = $this->templateRepository->getById($actionId);
-        $modal = $this->ajax->newAjaxModel("@$this->templateNamespace/action/modal_import.html.twig");
+        $modal = $this->ajax->newAjaxModel(\sprintf('@%s/action/modal_import.html.twig', $this->templateNamespace));
 
         if (null === $revision = $this->revisionService->get($ouuid, $action->giveContentType()->getName())) {
             throw new NotFoundHttpException(\sprintf('Revision not found for %s', $ouuid));

@@ -142,10 +142,10 @@ class DataService
     public function lockRevision(Revision $revision, ?Environment $publishEnv = null, bool $super = false, ?string $username = null, ?\DateTime $lockTime = null): string
     {
         if (null === $username && null !== $publishEnv && !$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
-            throw new PrivilegeException($revision, 'You don\'t have publisher role for this content');
+            throw new PrivilegeException($revision, "You don't have publisher role for this content");
         }
         if (null === $username && null !== $publishEnv && !empty($publishEnv->getCircles()) && !$this->authorizationChecker->isGranted('ROLE_USER_MANAGEMENT') && !$this->userService->inMyCircles($publishEnv->getCircles())) {
-            throw new PrivilegeException($revision, 'You don\'t share any circle with this content');
+            throw new PrivilegeException($revision, "You don't share any circle with this content");
         }
         if (null === $username && null === $publishEnv && !empty($revision->giveContentType()->getCirclesField()) && !empty($revision->getRawData()[$revision->giveContentType()->getCirclesField()]) && !$this->userService->inMyCircles($revision->getRawData()[$revision->giveContentType()->getCirclesField()] ?? [])) {
             throw new PrivilegeException($revision);
@@ -327,6 +327,7 @@ class DataService
         $revision = $this->getEmptyRevision($contentType, 'hitToBusinessDocument');
         $revision->setRawData($hit['_source']);
         $revision->setOuuid($hit['_id']);
+
         $revisionType = $this->formFactory->create(RevisionType::class, $revision, ['migration' => false, 'raw_data' => $revision->getRawData()]);
         $result = $this->walkRecursive($revisionType->get('data'), $hit['_source'], function (string $name, $data, DataFieldType $dataFieldType, DataField $dataField) {
             if (null !== $data) {
@@ -445,6 +446,7 @@ class DataService
         $newRevision->setEndTime(null);
         $newRevision->setDeleted(false);
         $newRevision->setDraft(true);
+
         $lockBy = $this->userService->getCurrentUser()->getUserIdentifier();
         $newRevision->setLockBy($lockBy);
 
@@ -470,7 +472,7 @@ class DataService
         $hash = $this->storageManager->computeStringHash($json);
         $objectArray[Mapping::HASH_FIELD] = $hash;
 
-        if ($this->privateKey) {
+        if ($this->privateKey instanceof \OpenSSLAsymmetricKey) {
             $signature = null;
             if (\openssl_sign($json, $signature, $this->privateKey, OPENSSL_ALGO_SHA1)) {
                 $objectArray[Mapping::SIGNATURE_FIELD] = \base64_encode((string) $signature);
@@ -498,7 +500,7 @@ class DataService
         if ($versioning->enabled()) {
             $objectArray[Mapping::VERSION_UUID] = $revision->getVersionUuid();
         }
-        if ($versioning->enabled() && \count($versioning->getTags()) > 0) {
+        if ($versioning->enabled() && [] !== $versioning->getTags()) {
             $objectArray[Mapping::VERSION_TAG] = $revision->getVersionTag();
             $revision->updateVersionNextTag();
         }
@@ -627,7 +629,7 @@ class DataService
                         }
                     } else {
                         $data = Json::encode($indexedItem);
-                        if ($this->privateKey) {
+                        if ($this->privateKey instanceof \OpenSSLAsymmetricKey) {
                             $this->logger->info('service.data.revision_not_signed', [
                                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
@@ -707,7 +709,7 @@ class DataService
             throw new DataStateException('An auto save is pending, it can not be recomputed.');
         }
         if (!$revision->hasOuuid()) {
-            throw new DataStateException('The revision doesn\'t have OUUID, it can not be recomputed.');
+            throw new DataStateException("The revision doesn't have OUUID, it can not be recomputed.");
         }
         if (null == $revision->getDatafield()) {
             $this->loadDataStructure($revision);
@@ -1373,7 +1375,7 @@ class DataService
             }
 
             $fieldNames = $dataFieldType->getJsonNames($fieldType);
-            if (0 === \count($fieldNames)) {
+            if ([] === $fieldNames) {
                 // Virtual container
                 /** @var DataField $child */
                 foreach ($dataField->getChildren() as $child) {
@@ -1410,6 +1412,7 @@ class DataService
         $data->setFieldType($revision->giveContentType()->getFieldType());
         $data->setOrderKey($revision->giveContentType()->getFieldType()->getOrderKey());
         $data->setRawData($revision->getRawData());
+
         $revision->setDataField($data);
 
         if ($revision->isLazyIndex()) {
@@ -1430,7 +1433,7 @@ class DataService
             return;
         }
 
-        if (\count($object) > 0) {
+        if ([] !== $object) {
             $html = self::arrayToHtml($object);
 
             $this->logger->warning('service.data.data_not_consumed', [
@@ -1842,7 +1845,7 @@ class DataService
                 continue;
             }
 
-            if ($contentType->getBusinessIdField() && \count($ouuids) > 0) {
+            if ($contentType->getBusinessIdField() && [] !== $ouuids) {
                 $search = $this->elasticaService->convertElasticsearchSearch([
                     'index' => $contentType->giveEnvironment()->getAlias(),
                     'body' => [
@@ -1895,9 +1898,10 @@ class DataService
         $revision = $this->getEmptyRevision($contentType, 'hitFromBusinessIdToDataLink');
         $revision->setRawData($rawData);
         $revision->setOuuid($ouuid);
+
         $revisionType = $this->formFactory->create(RevisionType::class, $revision, ['migration' => true, 'raw_data' => $revision->getRawData(), 'with_warning' => false]);
         $result = $this->walkRecursive($revisionType->get('data'), $rawData, function (string $name, $data, DataFieldType $dataFieldType, DataField $dataField) {
-            if (null !== $data && (!\is_array($data) || \count($data) > 0)) {
+            if (null !== $data && (!\is_array($data) || [] !== $data)) {
                 if ($dataFieldType->isVirtual()) {
                     return $data;
                 }
@@ -1929,11 +1933,11 @@ class DataService
     {
         try {
             return $this->revRepository->lockAllRevisions($until, $by);
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             $this->logger->error('service.data.lock_revisions_error', [
                 EmsFields::LOG_USERNAME_FIELD => $by,
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $throwable,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $throwable->getMessage(),
             ]);
         }
 
@@ -1944,12 +1948,12 @@ class DataService
     {
         try {
             return $this->revRepository->lockRevisions($contentType, $until, $by, $force, $ouuid);
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             $this->logger->error('service.data.lock_revisions_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_USERNAME_FIELD => $by,
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $throwable,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $throwable->getMessage(),
             ]);
         }
 
@@ -1960,11 +1964,11 @@ class DataService
     {
         try {
             return $this->revRepository->unlockAllRevisions($by);
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             $this->logger->error('service.data.unlock_revisions_error', [
                 EmsFields::LOG_USERNAME_FIELD => $by,
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $throwable,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $throwable->getMessage(),
             ]);
         }
 
@@ -1975,12 +1979,12 @@ class DataService
     {
         try {
             return $this->revRepository->unlockRevisions($contentType, $by);
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             $this->logger->error('service.data.unlock_revisions_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_USERNAME_FIELD => $by,
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $throwable,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $throwable->getMessage(),
             ]);
         }
 
@@ -2019,9 +2023,9 @@ class DataService
             $this->em->persist($revision);
             $this->em->flush();
             $this->em->getConnection()->commit();
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             $this->em->getConnection()->rollBack();
-            throw $e;
+            throw $throwable;
         }
 
         return $revision;

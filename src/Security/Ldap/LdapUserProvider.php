@@ -36,8 +36,8 @@ class LdapUserProvider extends SymfonyLdapUserProvider
         try {
             /** @var LdapUser $ldapUser */
             $ldapUser = parent::loadUser($identifier, $entry);
-        } catch (\Throwable $e) {
-            throw new UserNotFoundException(\sprintf('Ldap user not found (%s)', $e->getMessage()));
+        } catch (\Throwable $throwable) {
+            throw new UserNotFoundException(\sprintf('Ldap user not found (%s)', $throwable->getMessage()));
         }
 
         $user = $this->userRepository->findUserByUsernameOrEmail($ldapUser->getUserIdentifier());

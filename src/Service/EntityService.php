@@ -107,6 +107,7 @@ abstract class EntityService
         $em = $this->doctrine->getManager();
         $em->remove($entity);
         $em->flush();
+
         $this->logger->notice('service.entity.deleted', [
             'entity_type' => $this->getEntityName(),
             'entity_name' => \method_exists($entity, 'getName') ? $entity->getName() : $entity::class,

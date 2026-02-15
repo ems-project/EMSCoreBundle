@@ -76,7 +76,7 @@ final readonly class ChannelRegistrar
             'search_config' => $searchConfig,
         ];
 
-        if (\count($attributes) > 0) {
+        if ([] !== $attributes) {
             $options[Environment::REQUEST_CONFIG] = $attributes;
         }
 

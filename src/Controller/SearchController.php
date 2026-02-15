@@ -60,7 +60,7 @@ class SearchController extends AbstractController
             return $this->redirectToRoute('ems_search_options_index');
         }
 
-        return $this->render("@$this->templateNamespace/search-options/index.html.twig", [
+        return $this->render(\sprintf('@%s/search-options/index.html.twig', $this->templateNamespace), [
             'sortOptions' => $this->sortOptionService->getAll(),
             'aggregateOptions' => $this->aggregateOptionService->getAll(),
             'searchFieldOptions' => $this->searchFieldOptionService->getAll(),
@@ -84,7 +84,7 @@ class SearchController extends AbstractController
             return $this->redirectToRoute('ems_search_options_index');
         }
 
-        return $this->render("@$this->templateNamespace/entity/new.html.twig", [
+        return $this->render(\sprintf('@%s/entity/new.html.twig', $this->templateNamespace), [
             'entity_name' => $this->translator->trans('search.sort_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
             'form' => $form->createView(),
         ]);
@@ -104,7 +104,7 @@ class SearchController extends AbstractController
             return $this->redirectToRoute('ems_search_options_index');
         }
 
-        return $this->render("@$this->templateNamespace/entity/new.html.twig", [
+        return $this->render(\sprintf('@%s/entity/new.html.twig', $this->templateNamespace), [
             'entity_name' => $this->translator->trans('search.search_field_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
             'form' => $form->createView(),
         ]);
@@ -124,7 +124,7 @@ class SearchController extends AbstractController
             return $this->redirectToRoute('ems_search_options_index');
         }
 
-        return $this->render("@$this->templateNamespace/entity/new.html.twig", [
+        return $this->render(\sprintf('@%s/entity/new.html.twig', $this->templateNamespace), [
             'entity_name' => $this->translator->trans('search.aggregate_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
             'form' => $form->createView(),
         ]);
@@ -150,7 +150,7 @@ class SearchController extends AbstractController
             }
         }
 
-        return $this->render("@$this->templateNamespace/entity/edit.html.twig", [
+        return $this->render(\sprintf('@%s/entity/edit.html.twig', $this->templateNamespace), [
             'entity_name' => $this->translator->trans('search.sort_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
             'form' => $form->createView(),
         ]);
@@ -176,7 +176,7 @@ class SearchController extends AbstractController
             }
         }
 
-        return $this->render("@$this->templateNamespace/entity/edit.html.twig", [
+        return $this->render(\sprintf('@%s/entity/edit.html.twig', $this->templateNamespace), [
             'entity_name' => $this->translator->trans('search.search_field_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
             'form' => $form->createView(),
         ]);
@@ -202,7 +202,7 @@ class SearchController extends AbstractController
             }
         }
 
-        return $this->render("@$this->templateNamespace/entity/edit.html.twig", [
+        return $this->render(\sprintf('@%s/entity/edit.html.twig', $this->templateNamespace), [
             'entity_name' => $this->translator->trans('search.aggregate_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
             'form' => $form->createView(),
         ]);

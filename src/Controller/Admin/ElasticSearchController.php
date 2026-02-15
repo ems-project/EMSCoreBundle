@@ -141,16 +141,16 @@ class ElasticSearchController extends AbstractController
     private function deleteOrphanIndexes(string ...$indexes): void
     {
         try {
-            if (0 === \count($indexes)) {
+            if ([] === $indexes) {
                 $this->indexService->deleteOrphanIndexes();
             } else {
                 $this->indexService->deleteIndexes(...$indexes);
             }
 
             $this->logger->messageNotice(t('log.notice.deleted_orphan_indexes', [], 'emsco-core'));
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             $this->logger->messageError(t('log.error.delete_failed', [], 'emsco-core'), [
-                'error' => $e->getMessage(),
+                'error' => $throwable->getMessage(),
             ]);
         }
     }

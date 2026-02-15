@@ -82,7 +82,7 @@ class Mapping
         if ($contentType->getVersioning()->enabled()) {
             $properties[Mapping::VERSION_UUID] = $this->elasticsearchService->getKeywordMapping();
         }
-        if ($contentType->getVersioning()->enabled() && \count($contentType->getVersioning()->getTags()) > 0) {
+        if ($contentType->getVersioning()->enabled() && [] !== $contentType->getVersioning()->getTags()) {
             $properties[Mapping::VERSION_TAG] = $this->elasticsearchService->getKeywordMapping();
         }
 

@@ -41,8 +41,8 @@ class AjaxPasteController
                 ->prettyPrint($pasteConfig['prettyPrint'] ?? []);
 
             return new JsonResponse(['content' => (string) $html]);
-        } catch (\Throwable $e) {
-            $this->logger->error($e->getMessage(), ['noFlash' => true]);
+        } catch (\Throwable $throwable) {
+            $this->logger->error($throwable->getMessage(), ['noFlash' => true]);
 
             return new JsonResponse(['content' => $content]);
         }

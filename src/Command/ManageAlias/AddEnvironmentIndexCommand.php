@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: Commands::MANAGED_ALIAS_ADD_ENVIRONMENT,
-    description: 'Add an environment\'s index to a managed alias.',
+    description: "Add an environment's index to a managed alias.",
     hidden: false
 )]
 final class AddEnvironmentIndexCommand extends AbstractCommand

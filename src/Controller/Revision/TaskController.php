@@ -218,11 +218,11 @@ final class TaskController extends AbstractController
 
     private function getAjaxModal(): AjaxModal
     {
-        return $this->ajax->newAjaxModel("@$this->templateNamespace/revision/task/ajax.twig");
+        return $this->ajax->newAjaxModel(\sprintf('@%s/revision/task/ajax.twig', $this->templateNamespace));
     }
 
     private function getAjaxTemplate(): TemplateWrapper
     {
-        return $this->ajax->getTemplating()->load("@$this->templateNamespace/revision/task/ajax.twig");
+        return $this->ajax->getTemplating()->load(\sprintf('@%s/revision/task/ajax.twig', $this->templateNamespace));
     }
 }

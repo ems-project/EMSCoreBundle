@@ -32,7 +32,7 @@ class HierarchicalController extends AbstractController
             throw new NotFoundHttpException(\sprintf('Document %s not found', $ouuid[1]));
         }
 
-        return $this->render("@$this->templateNamespace/view/custom/hierarchical_add_item.html.twig", [
+        return $this->render(\sprintf('@%s/view/custom/hierarchical_add_item.html.twig', $this->templateNamespace), [
             'data' => $document,
             'view' => $view,
             'contentType' => $contentType,

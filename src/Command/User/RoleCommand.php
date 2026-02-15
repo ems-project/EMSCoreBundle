@@ -43,8 +43,8 @@ abstract class RoleCommand extends AbstractUserCommand
             $this->executeRoleCommand($username, $super, $role);
 
             return self::EXECUTE_SUCCESS;
-        } catch (\Throwable $e) {
-            $this->io->error($e->getMessage());
+        } catch (\Throwable $throwable) {
+            $this->io->error($throwable->getMessage());
 
             return self::EXECUTE_ERROR;
         }

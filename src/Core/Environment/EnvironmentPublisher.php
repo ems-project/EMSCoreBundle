@@ -36,7 +36,7 @@ class EnvironmentPublisher
     {
         $importantMessages = \array_filter($this->messages, fn (array $message) => LogLevel::NOTICE !== $message['level'] && $message['ouuid'] === $this->revision->giveOuuid());
 
-        return \count($importantMessages) > 0;
+        return [] !== $importantMessages;
     }
 
     public function addNotice(string $message): void

@@ -57,7 +57,7 @@ class UserController extends AbstractController
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
 
-        return $this->render("@$this->templateNamespace/user/index.html.twig", [
+        return $this->render(\sprintf('@%s/user/index.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
         ]);
     }
@@ -111,7 +111,7 @@ class UserController extends AbstractController
             Roles::ROLE_USER_READ,
         ];
 
-        return $this->render("@$this->templateNamespace/user/permissions/permissions.html.twig", [
+        return $this->render(\sprintf('@%s/user/permissions/permissions.html.twig', $this->templateNamespace), [
             'contentTypeCounts' => $contentTypeCounts,
             'roles' => $roles,
             'rolesFunctionality' => $rolesFunctionality,
@@ -125,7 +125,7 @@ class UserController extends AbstractController
 
         $fieldTypesWithMinimumRole = $tree->getChildrenRecursive()->filter(fn (FieldTypeTreeItem $item) => $item->getFieldType()->getRestrictionOption('minimum_role', false));
 
-        return $this->render("@$this->templateNamespace/user/permissions/specific-permissions.html.twig", [
+        return $this->render(\sprintf('@%s/user/permissions/specific-permissions.html.twig', $this->templateNamespace), [
             'contentType' => $contentType,
             'tree' => $tree,
             'children' => $fieldTypesWithMinimumRole,
@@ -136,7 +136,7 @@ class UserController extends AbstractController
     {
         $user = new User();
         $result = $this->wysiwygProfileRepository->findBy([], ['orderKey' => 'asc'], 1);
-        if (\count($result) > 0) {
+        if ([] !== $result) {
             $user->setWysiwygProfile($result[0]);
         }
 
@@ -155,7 +155,7 @@ class UserController extends AbstractController
             }
         }
 
-        return $this->render("@$this->templateNamespace/user/add.html.twig", [
+        return $this->render(\sprintf('@%s/user/add.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
         ]);
     }
@@ -181,7 +181,7 @@ class UserController extends AbstractController
             return $this->redirectToRoute(Routes::USER_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/user/edit.html.twig", [
+        return $this->render(\sprintf('@%s/user/edit.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
             'user' => $user,
         ]);
@@ -259,6 +259,7 @@ class UserController extends AbstractController
     {
         $user = $this->userService->giveUser($this->userService->getCurrentUser()->getUsername(), false);
         $user->setSidebarCollapse($collapsed);
+
         $this->userService->updateUser($user);
 
         return $this->flashMessageLogger->buildJsonResponse([

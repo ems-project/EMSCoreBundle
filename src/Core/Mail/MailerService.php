@@ -49,7 +49,7 @@ class MailerService
 
     public function sendMail(Email $email): void
     {
-        if (0 === \count($email->getFrom())) {
+        if ([] === $email->getFrom()) {
             $email->from($this->from);
         }
 
@@ -61,16 +61,16 @@ class MailerService
         $email = new Email()
             ->from($this->from)
             ->subject($template->getSubject());
-        if (\count($template->getTo()) > 0) {
+        if ([] !== $template->getTo()) {
             $email->to(...$template->getTo());
         }
-        if (\count($template->getCC()) > 0) {
+        if ([] !== $template->getCC()) {
             $email->cc(...$template->getCC());
         }
-        if (\count($template->getBCC()) > 0) {
+        if ([] !== $template->getBCC()) {
             $email->bcc(...$template->getBCC());
         }
-        if (\count($template->getReplyTo()) > 0) {
+        if ([] !== $template->getReplyTo()) {
             $email->replyTo(...$template->getReplyTo());
         }
         foreach ($template->getAttachments() as $attachment) {

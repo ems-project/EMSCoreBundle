@@ -28,7 +28,7 @@ class SortOptionType extends AbstractType
         $builder
         ->add('name', IconTextType::class, [
             'icon' => 'fa fa-tag',
-            'label' => 'Sort Option\'s name',
+            'label' => "Sort Option's name",
         ])
         ->add('field', TextType::class, [
         ])

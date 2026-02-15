@@ -164,6 +164,7 @@ class ViewController extends AbstractController
     {
         $newView = clone $view;
         $newView->setDefinition(null);
+
         $this->viewManager->update($newView);
 
         return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_VIEW_EDIT, ['view' => $newView->getId()]);

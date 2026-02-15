@@ -29,7 +29,7 @@ class SearchFieldOptionType extends AbstractType
         $builder
         ->add('name', IconTextType::class, [
             'icon' => 'fa fa-tag',
-            'label' => 'Search Field Option\'s name',
+            'label' => "Search Field Option's name",
         ])
         ->add('field', TextType::class, [
             'label' => 'Search Field',

@@ -39,9 +39,9 @@ class Export implements DashboardInterface
                 $disposition = $response->headers->makeDisposition($disposition, $filename);
                 $response->headers->set('Content-Disposition', $disposition);
             }
-        } catch (\Throwable $e) {
-            $response->setContent($this->twig->render("@$this->templateNamespace/dashboard/services/error.html.twig", [
-                'exception' => $e,
+        } catch (\Throwable $throwable) {
+            $response->setContent($this->twig->render(\sprintf('@%s/dashboard/services/error.html.twig', $this->templateNamespace), [
+                'exception' => $throwable,
                 'dashboard' => $dashboard,
                 'options' => $dashboard->getOptions(),
             ]));

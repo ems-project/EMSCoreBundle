@@ -113,6 +113,7 @@ final class UpdateCommand extends AbstractCommand
         $fileGetter = $this->storageManager->getFile($this->xliffFilename);
         $xliff = Xliff::create();
         $xliff->fromFile($fileGetter->getFilename());
+
         $this->io->progressStart(\count($xliff->getPackage()->getDocuments()));
         foreach ($xliff->getPackage()->getDocuments() as $document) {
             if ($this->dryRun) {

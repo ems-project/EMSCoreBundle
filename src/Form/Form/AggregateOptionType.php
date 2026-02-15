@@ -27,7 +27,7 @@ class AggregateOptionType extends AbstractType
         $builder
         ->add('name', IconTextType::class, [
             'icon' => 'fa fa-tag',
-            'label' => 'Aggregate Option\'s name',
+            'label' => "Aggregate Option's name",
         ])
         ->add('icon', IconPickerType::class, [
             'required' => false,

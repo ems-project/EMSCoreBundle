@@ -71,7 +71,7 @@ final class Commands
     public const string USER_ADD_GROUP = 'emsco:user:add-group';
     public const string USER_REMOVE_GROUP = 'emsco:user:remove-group';
     public const string ASSET_REFRESH_FILE_FIELD = 'emsco:asset:refresh-file-fields';
-    final public const string SUBMISSION_EXPORT = 'emsco:submissions:export';
-    final public const string GENERATE_DUMMY_SUBMISSIONS = 'emsco:submissions:generate-dummy-submissions';
-    final public const string WEBHOOK_DISPATCH = 'emsco:webhook:dispatch';
+    public const string SUBMISSION_EXPORT = 'emsco:submissions:export';
+    public const string GENERATE_DUMMY_SUBMISSIONS = 'emsco:submissions:generate-dummy-submissions';
+    public const string WEBHOOK_DISPATCH = 'emsco:webhook:dispatch';
 }

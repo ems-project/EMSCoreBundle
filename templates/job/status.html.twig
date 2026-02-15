@@ -90,19 +90,19 @@
 					<div class="btn-group">
 						{% if not job.done %}
 							{% include '@EMSCore/elements/get-button.html.twig' with {
-								'url':  path('job.status', {'job': job.id}),
+								'url':  path('emsco_job_status', {'job': job.id}),
 								'label': 'Refresh page',
 								'icon': 'refresh'
 							}%}
 						{% endif %}
 						{% if is_granted('ROLE_ADMIN') %}
 							{% include '@EMSCore/elements/get-button.html.twig' with {
-								'url':  path('job.index'),
+								'url':  path('emsco_job_index'),
 								'label': 'Job\'s list',
 								'icon': 'chevron-circle-right'
 							}%}
 							{% include '@EMSCore/elements/post-button.html.twig' with {
-								'url':  path('job.delete', {'job': job.id}),
+								'url':  path('emsco_job_delete', {'job': job.id}),
 								'message': 'Do you confirm ?',
 								'label': 'Delete',
 								'icon': 'trash'

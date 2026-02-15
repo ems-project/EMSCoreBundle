@@ -36,7 +36,7 @@ class ContentTypeUnreferencedDataTableType extends AbstractTableType implements 
         $table->addColumnDefinition(new TemplateBlockTableColumn(
             label: t('field.environment_external', [], 'emsco-core'),
             blockName: 'environmentName',
-            template: "@$this->templateNamespace/datatable/template_block_columns.html.twig",
+            template: \sprintf('@%s/datatable/template_block_columns.html.twig', $this->templateNamespace),
             orderField: 'environmentLabel'
         ));
 

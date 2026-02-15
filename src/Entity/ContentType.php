@@ -505,7 +505,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function setDirty($dirty)
     {
         if ($dirty && null !== $this->getEnvironment() && !$this->giveEnvironment()->getManaged()) {
-            throw new \RuntimeException(\sprintf('The referenced content type %s can\'t be set as dirty', $this->name));
+            throw new \RuntimeException(\sprintf("The referenced content type %s can't be set as dirty", $this->name));
         }
         $this->dirty = $dirty;
 

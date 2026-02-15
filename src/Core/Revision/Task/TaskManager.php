@@ -235,7 +235,7 @@ final readonly class TaskManager
      */
     public function tasksReorder(Revision $revision, array $orderedTaskIds): void
     {
-        if (0 === \count($orderedTaskIds)) {
+        if ([] === $orderedTaskIds) {
             return;
         }
 
@@ -285,9 +285,9 @@ final readonly class TaskManager
                 $this->dataService->unlockRevision($revision);
 
                 return $result;
-            } catch (\Throwable $e) {
-                $this->logger->error($e->getMessage());
-                throw $e;
+            } catch (\Throwable $throwable) {
+                $this->logger->error($throwable->getMessage());
+                throw $throwable;
             }
         };
     }

@@ -152,12 +152,12 @@ trait RevisionTaskTrait
 
     public function hasTaskPlannedIds(): bool
     {
-        return \count($this->taskPlannedIds ?? []) > 0;
+        return ($this->taskPlannedIds ?? []) !== [];
     }
 
     public function hasTaskApprovedIds(): bool
     {
-        return \count($this->taskApprovedIds ?? []) > 0;
+        return ($this->taskApprovedIds ?? []) !== [];
     }
 
     public function isTaskCurrent(Task $task): bool

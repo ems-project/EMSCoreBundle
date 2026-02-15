@@ -130,6 +130,7 @@ class UploadedAssetRepository extends EntityRepository
         ]));
         $qb->orderBy('ua.modified', 'DESC');
         $qb->setMaxResults(1);
+
         $uploadedAsset = $qb->getQuery()->getOneOrNullResult();
 
         if (null === $uploadedAsset || $uploadedAsset instanceof UploadedAsset) {

@@ -64,6 +64,7 @@ class DateFieldType extends DataFieldType
         $data = parent::reverseModelTransform($dataField);
         $format = $dataField->giveFieldType()->getMappingOption('format', false);
         $format = false !== $format ? DateTime::convertFormat('java', $format) : \DateTimeInterface::ATOM;
+
         $out = [];
         if (\is_iterable($data) && [] !== $data) {
             foreach ($data as $item) {

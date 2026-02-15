@@ -66,10 +66,10 @@ class CalendarController extends AbstractController
             return $this->flashMessageLogger->buildJsonResponse([
                 'success' => true,
             ]);
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $this->logger->error('log.error', [
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $exception,
             ]);
 
             return $this->flashMessageLogger->buildJsonResponse([

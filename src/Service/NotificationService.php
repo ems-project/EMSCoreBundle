@@ -399,6 +399,7 @@ class NotificationService
         $notification->setResponseTimestamp(new \DateTime());
         $notification->setResponseBy($this->userService->getCurrentUser()->getUsername());
         $notification->setStatus($status);
+
         $em = $this->doctrine->getManager();
         $em->persist($notification);
         $em->flush();

@@ -103,6 +103,7 @@ final class RecomputeCommand extends AbstractCommand
         /** @var EntityManager $em */
         $em = $this->doctrine->getManager();
         $this->em = $em;
+
         $this->conn = $em->getConnection();
 
         $contentTypeName = $this->getArgumentString(self::ARGUMENT_CONTENT_TYPE);

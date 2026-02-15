@@ -70,7 +70,7 @@ readonly class CoreDataServiceBridge implements CoreDataBridgeInterface
         return $this->response(function () use ($revisionId, $rawData) {
             $revision = $this->dataService->getRevisionById($revisionId, $this->contentType);
 
-            if (\count($rawData) > 0) {
+            if ([] !== $rawData) {
                 $this->revisionService->autoSave($revision, $rawData);
             }
 

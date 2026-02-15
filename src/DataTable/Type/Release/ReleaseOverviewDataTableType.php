@@ -41,23 +41,23 @@ class ReleaseOverviewDataTableType extends AbstractEntityTableType
             new TemplateBlockTableColumn(
                 label: t('field.status', [], 'emsco-core'),
                 blockName: 'status',
-                template: "@$this->templateNamespace/release/columns/revisions.html.twig"
+                template: \sprintf('@%s/release/columns/revisions.html.twig', $this->templateNamespace)
             )
         );
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', "@$this->templateNamespace/release/columns/revisions.html.twig"))->setCellClass('text-right');
+        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', \sprintf('@%s/release/columns/revisions.html.twig', $this->templateNamespace)))->setCellClass('text-right');
 
         $table->addColumnDefinition(
             new TemplateBlockTableColumn(
                 label: t('field.release_environment_source', [], 'emsco-core'),
                 blockName: 'environmentSource',
-                template: "@$this->templateNamespace/release/columns/revisions.html.twig"
+                template: \sprintf('@%s/release/columns/revisions.html.twig', $this->templateNamespace)
             )
         );
         $table->addColumnDefinition(
             new TemplateBlockTableColumn(
                 label: t('field.release_environment_target', [], 'emsco-core'),
                 blockName: 'environmentTarget',
-                template: "@$this->templateNamespace/release/columns/revisions.html.twig"
+                template: \sprintf('@%s/release/columns/revisions.html.twig', $this->templateNamespace)
             )
         );
         $table->addItemGetAction(Routes::RELEASE_VIEW, 'release.actions.show', 'eye')

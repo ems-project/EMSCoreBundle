@@ -71,7 +71,7 @@ class RebuildCommand extends AbstractCommand
                 self::OPTION_DONT_SIGN,
                 null,
                 InputOption::VALUE_NONE,
-                'Don\'t (re)signed the documents during the rebuilding process'
+                "Don't (re)signed the documents during the rebuilding process"
             )
             ->addOption(
                 self::OPTION_BULK_SIZE,
@@ -84,7 +84,7 @@ class RebuildCommand extends AbstractCommand
                 self::OPTION_IGNORE_REFERRERS,
                 null,
                 InputOption::VALUE_NONE,
-                'Don\'t update other aliases that refers to the previous index'
+                "Don't update other aliases that refers to the previous index"
             )
         ;
     }

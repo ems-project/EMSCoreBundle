@@ -28,7 +28,7 @@ class AggregateOption
         $this->config = '{
     "terms" : { "field" : "'.Mapping::FINALIZED_BY_FIELD.'" }
 }';
-        $this->template = '{% set fieldName = \''.Mapping::FINALIZED_BY_FIELD.'\' %}
+        $this->template = "{% set fieldName = '".Mapping::FINALIZED_BY_FIELD.'\' %}
 {% if aggregation.buckets|length > 1  %}
 
 	{% for index in aggregation.buckets %}

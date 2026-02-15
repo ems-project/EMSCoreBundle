@@ -260,7 +260,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
                 if (\in_array($item->getId(), $assignedUuids, true)) {
                     continue;
                 }
-                if (\count($jmnTypes) > 0 && !\in_array($item->getType(), $jmnTypes, true)) {
+                if ([] !== $jmnTypes && !\in_array($item->getType(), $jmnTypes, true)) {
                     continue;
                 }
                 $items[] = $item;

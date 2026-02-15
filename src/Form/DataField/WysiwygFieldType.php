@@ -158,6 +158,7 @@ class WysiwygFieldType extends DataFieldType
         }
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $path = \substr($path, 0, \strlen($path) - 8);
+
         $collectedAssets = [];
         $out = \preg_replace_callback(
             '/(ems:\/\/asset:)([^\n\r"\'\?]*)(\?[^\n\r"\']*)?/i',

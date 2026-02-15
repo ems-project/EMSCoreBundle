@@ -42,7 +42,7 @@ class TwigElementsController extends AbstractController
         }
 
         return $this->render(
-            "@$this->templateNamespace/elements/side-menu.html.twig",
+            \sprintf('@%s/elements/side-menu.html.twig', $this->templateNamespace),
             [
                 'status' => $status,
                 'menu' => [
@@ -62,7 +62,7 @@ class TwigElementsController extends AbstractController
     public function jobs(string $username): Response
     {
         return $this->render(
-            "@$this->templateNamespace/elements/jobs-list.html.twig",
+            \sprintf('@%s/elements/jobs-list.html.twig', $this->templateNamespace),
             [
                 'jobs' => $this->jobService->findByUser($username),
             ]
@@ -140,10 +140,13 @@ class TwigElementsController extends AbstractController
         $jobMenu->addChild('views.elements.side-menu-html.create-job', 'fa fa-plus', 'job.add')->setTranslation([]);
         $jobMenu->addChild(t('key.job_logs', [], 'emsco-core'), 'fa fa-file-text-o', 'job.index');
         $jobMenu->addChild(t('key.schedule', [], 'emsco-core'), 'fa fa-calendar-o', Routes::SCHEDULE_INDEX);
+
         $menu->addChild(t('key.analyzers', [], 'emsco-core'), 'fa fa-signal', Routes::ANALYZER_INDEX);
         $menu->addChild(t('key.filters', [], 'emsco-core'), 'fa fa-filter', Routes::FILTER_INDEX);
+
         $webhooks = $menu->addChild(t('key.webhooks', [], 'emsco-core'), 'fa fa-chain', Routes::WEBHOOK_SUBSCRIPTION_INDEX);
         $webhooks->addChild(t('key.webhook_subscriptions', [], 'emsco-core'), 'fa fa-solid fa-registered', Routes::WEBHOOK_SUBSCRIPTION_INDEX);
+
         $menu->addChild(t('key.logs', [], 'emsco-core'), 'fa fa-file-text', Routes::LOG_INDEX);
         $menu->addChild(t('key.uploaded_files_logs', [], 'emsco-core'), 'fa fa-upload', Routes::UPLOAD_ASSET_ADMIN_OVERVIEW);
 

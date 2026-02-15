@@ -71,7 +71,7 @@ class RevisionTaskFiltersType extends AbstractType
         }
 
         $versionTags = $this->contentTypeService->getVersionTags();
-        if (\count($versionTags) > 0) {
+        if ([] !== $versionTags) {
             $builder->add('versionNextTag', ChoiceType::class, [
                 'required' => false,
                 'multiple' => true,

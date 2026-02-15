@@ -46,9 +46,11 @@ class FormExtension
         }
         $fakeContentType = new ContentType();
         $fakeContentType->setFieldType($formEntity->getFieldType());
+
         $fakeRevision = new Revision();
         $fakeRevision->setContentType($fakeContentType);
         $fakeRevision->setRawData($rawData);
+
         $form = $this->revisionService->createRevisionForm($fakeRevision, true);
 
         return $form->get('data');

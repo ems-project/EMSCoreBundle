@@ -123,7 +123,7 @@ class EnvironmentController extends AbstractController
             }
         }
 
-        return $this->render("@$this->templateNamespace/environment/add.html.twig", [
+        return $this->render(\sprintf('@%s/environment/add.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
         ]);
     }
@@ -145,7 +145,7 @@ class EnvironmentController extends AbstractController
             return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/environment/edit.html.twig", [
+        return $this->render(\sprintf('@%s/environment/edit.html.twig', $this->templateNamespace), [
             'environment' => $environment,
             'form' => $form->createView(),
         ]);
@@ -155,17 +155,17 @@ class EnvironmentController extends AbstractController
     {
         try {
             $info = $this->mapping->getMapping($environment);
-        } catch (NotFoundException $e) {
+        } catch (NotFoundException $notFoundException) {
             $this->logger->error('log.environment.alias_missing', [
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $notFoundException->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $notFoundException,
                 EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
                 'alias' => $environment->getAlias(),
             ]);
             $info = false;
         }
 
-        return $this->render("@$this->templateNamespace/environment/view.html.twig", [
+        return $this->render(\sprintf('@%s/environment/view.html.twig', $this->templateNamespace), [
             'environment' => $environment,
             'info' => $info,
         ]);
@@ -208,7 +208,7 @@ class EnvironmentController extends AbstractController
             }
         }
 
-        return $this->render("@$this->templateNamespace/environment/rebuild.html.twig", [
+        return $this->render(\sprintf('@%s/environment/rebuild.html.twig', $this->templateNamespace), [
             'environment' => $environment,
             'form' => $form->createView(),
         ]);

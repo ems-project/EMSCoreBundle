@@ -172,6 +172,7 @@ final readonly class QuerySearchService implements EntityServiceInterface
         $commonSearch = $this->buildSearch($querySearch, $encodedPattern);
         $commonSearch->setFrom($dataLinks->getFrom());
         $commonSearch->setSize($dataLinks->getSize());
+
         $resultSet = $this->elasticaService->search($commonSearch);
 
         foreach ($resultSet->getAggregation('types')['buckets'] ?? [] as $bucket) {

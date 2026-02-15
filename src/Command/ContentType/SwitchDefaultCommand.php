@@ -65,7 +65,7 @@ class SwitchDefaultCommand extends AbstractCommand
             return self::EXECUTE_ERROR;
         }
         $sourceEnvironmentName = $this->contentType->giveEnvironment()->getName();
-        $this->io->title(\sprintf('EMSCO - Switch the %s\'s default environment to %s', $this->contentType->getName(), $this->target->getName()));
+        $this->io->title(\sprintf("EMSCO - Switch the %s's default environment to %s", $this->contentType->getName(), $this->target->getName()));
         $this->contentTypeService->switchDefaultEnvironment($this->contentType, $this->target, self::CONTENT_TYPE_SWITCH_DEFAULT_ENV_USERNAME);
         $this->io->warning(\sprintf('If you are done with switching default environment, rebuild both environment now %s and %s', $sourceEnvironmentName, $this->contentType->giveEnvironment()));
 

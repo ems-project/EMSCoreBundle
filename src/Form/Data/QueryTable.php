@@ -136,7 +136,7 @@ class QueryTable extends TableAbstract
     #[\Override]
     public function getRowTemplate(): string
     {
-        return "{%%- use '@$this->templateNamespace/datatable/row.json.twig' -%%}{{ block('emsco_datatable_row') }}";
+        return \sprintf("{%%%%- use '@%s/datatable/row.json.twig' -%%%%}{{ block('emsco_datatable_row') }}", $this->templateNamespace);
     }
 
     #[\Override]

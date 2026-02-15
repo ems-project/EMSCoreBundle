@@ -42,7 +42,7 @@ class ManagedAliasController extends AbstractController
             return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/environment/managed_alias.html.twig", [
+        return $this->render(\sprintf('@%s/environment/managed_alias.html.twig', $this->templateNamespace), [
             'new' => true,
             'form' => $form->createView(),
         ]);
@@ -64,7 +64,7 @@ class ManagedAliasController extends AbstractController
             return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/environment/managed_alias.html.twig", [
+        return $this->render(\sprintf('@%s/environment/managed_alias.html.twig', $this->templateNamespace), [
             'new' => false,
             'form' => $form->createView(),
         ]);

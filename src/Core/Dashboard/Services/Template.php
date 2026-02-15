@@ -22,7 +22,7 @@ class Template implements DashboardInterface
     {
         $response = new Response();
         try {
-            $response->setContent($this->twig->render("@$this->templateNamespace/dashboard/services/template.html.twig", [
+            $response->setContent($this->twig->render(\sprintf('@%s/dashboard/services/template.html.twig', $this->templateNamespace), [
                 'dashboard' => $dashboard,
                 'options' => $dashboard->getOptions(),
                 'subTitle' => t('type.title_sub', ['type' => 'dashboard'], 'emsco-core'),
@@ -31,9 +31,9 @@ class Template implements DashboardInterface
                     icon: $dashboard->getIcon(),
                 ),
             ]));
-        } catch (\Throwable $e) {
-            $response->setContent($this->twig->render("@$this->templateNamespace/dashboard/services/error.html.twig", [
-                'exception' => $e,
+        } catch (\Throwable $throwable) {
+            $response->setContent($this->twig->render(\sprintf('@%s/dashboard/services/error.html.twig', $this->templateNamespace), [
+                'exception' => $throwable,
                 'dashboard' => $dashboard,
                 'options' => $dashboard->getOptions(),
                 'title' => t('core.dashboard.exception.title', [], 'emsco-core'),

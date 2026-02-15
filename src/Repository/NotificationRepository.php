@@ -134,7 +134,7 @@ class NotificationRepository extends ServiceEntityRepository
         $qb = $this->getQueryBuilderForSent($user, $notificationFilter->contentType->toArray());
         $qb->select('n')->setFirstResult($from)->setMaxResults($limit);
 
-        if (\count($notificationFilter->environment) > 0) {
+        if ([] !== $notificationFilter->environment) {
             $qb->andWhere('n.environment IN (:envs)')->setParameter('envs', $notificationFilter->environment);
         }
 
@@ -168,7 +168,7 @@ class NotificationRepository extends ServiceEntityRepository
 
         $templateIds = $this->getTemplatesIdsForUserFrom($user, $contentTypes);
 
-        if (\count($templateIds) > 0) {
+        if ([] !== $templateIds) {
             $qb->andWhere('n.template IN (:ids)')->setParameter('ids', $templateIds);
         }
 
@@ -309,7 +309,7 @@ class NotificationRepository extends ServiceEntityRepository
         $templateIds = [];
         foreach ($results as $template) {
             foreach ($template->getEnvironments() as $environment) {
-                if (empty($environment->getCircles()) || \count(\array_intersect($environment->getCircles(), $user->getCircles())) > 0) {
+                if (empty($environment->getCircles()) || [] !== \array_intersect($environment->getCircles(), $user->getCircles())) {
                     $templateIds[] = $template->getId();
                     break;
                 }

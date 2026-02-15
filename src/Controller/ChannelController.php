@@ -18,7 +18,7 @@ final class ChannelController extends AbstractController
 
     public function menu(): Response
     {
-        return $this->render("@$this->templateNamespace/channel/menu.html.twig", [
+        return $this->render(\sprintf('@%s/channel/menu.html.twig', $this->templateNamespace), [
             'channels' => $this->channelService->getAll(),
         ]);
     }

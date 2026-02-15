@@ -132,7 +132,7 @@ class NotificationController extends AbstractController
                 continue;
             }
 
-            if ($publishIn) {
+            if ($publishIn instanceof Environment) {
                 $this->publishService->publish($notification->getRevision(), $publishIn);
             }
 
@@ -150,7 +150,7 @@ class NotificationController extends AbstractController
 
     public function menuNotification(): Response
     {
-        return $this->render("@$this->templateNamespace/notification/menu.html.twig", [
+        return $this->render(\sprintf('@%s/notification/menu.html.twig', $this->templateNamespace), [
             'counter' => $this->notificationService->menuNotification(),
             'dashboardMenu' => $this->dashboardManager->getNotificationMenu(),
         ]);
@@ -198,7 +198,7 @@ class NotificationController extends AbstractController
             'notifications' => $notifications,
         ]);
 
-        return $this->render("@$this->templateNamespace/notification/list.html.twig", [
+        return $this->render(\sprintf('@%s/notification/list.html.twig', $this->templateNamespace), [
             'counter' => $count,
             'notifications' => $notifications,
             'lastPage' => $lastPage,

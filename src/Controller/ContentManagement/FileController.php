@@ -121,10 +121,10 @@ class FileController extends AbstractController
 
         try {
             $uploadedAsset = $this->fileService->initUploadFile($hash, $size, $name, $type, $user, $algo);
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $this->logger->error('log.error', [
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $exception,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
             ]);
 
             return $this->flashMessageLogger->buildJsonResponse([
@@ -146,10 +146,10 @@ class FileController extends AbstractController
 
         try {
             $uploadedAsset = $this->fileService->addChunk($hash, $chunk, $user);
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $this->logger->error('log.error', [
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $exception,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
             ]);
 
             return $this->flashMessageLogger->buildJsonResponse([
@@ -192,7 +192,7 @@ class FileController extends AbstractController
                 EmsFields::ASSET_CONFIG_WIDTH => $width,
                 EmsFields::ASSET_CONFIG_HEIGHT => $height,
                 EmsFields::ASSET_CONFIG_QUALITY => 0,
-                EmsFields::ASSET_CONFIG_BACKGROUND => $background ?? "ems-$this->themeColor",
+                EmsFields::ASSET_CONFIG_BACKGROUND => $background ?? 'ems-'.$this->themeColor,
                 EmsFields::ASSET_CONFIG_RADIUS => $width / 6,
                 EmsFields::ASSET_CONFIG_BORDER_COLOR => '#000000FF',
             ];
@@ -201,7 +201,7 @@ class FileController extends AbstractController
                 EmsFields::ASSET_CONFIG_WIDTH => $width,
                 EmsFields::ASSET_CONFIG_HEIGHT => $height,
                 EmsFields::ASSET_CONFIG_QUALITY => 0,
-                EmsFields::ASSET_CONFIG_COLOR => "ems-$this->themeColor",
+                EmsFields::ASSET_CONFIG_COLOR => 'ems-'.$this->themeColor,
             ];
         }
         $image = $this->fileService->generateImage('@EMSCommonBundle/public/images/ems-logo.png', $config);

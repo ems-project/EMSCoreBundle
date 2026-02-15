@@ -76,7 +76,7 @@ class GroupController extends AbstractController
             return $this->redirectToRoute(Routes::GROUP_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/group/create.html.twig", [
+        return $this->render(\sprintf('@%s/group/create.html.twig', $this->templateNamespace), [
             'form' => $form,
             'title' => t('type.title_create', ['type' => 'group'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'group'], 'emsco-core'),
@@ -107,7 +107,7 @@ class GroupController extends AbstractController
         $userNotInGroupDataTable = $this->usersInGroupDataTable($group, false);
         $userGroupDataTable = $this->usersInGroupDataTable($group, true);
 
-        return $this->render("@$this->templateNamespace/group/edit.html.twig", [
+        return $this->render(\sprintf('@%s/group/edit.html.twig', $this->templateNamespace), [
             'form' => $form,
             'datatableForm' => $userGroupDataTable->createView(),
             'userNotInGroupDataTable' => $userNotInGroupDataTable->createView(),

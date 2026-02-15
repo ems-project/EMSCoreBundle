@@ -101,7 +101,7 @@ class TaskMailer
     private function getMailTemplate(UserInterface $receiver): MailTemplate
     {
         return $this->mailerService
-            ->makeMailTemplate("@$this->templateNamespace".self::MAIL_TEMPLATE)
+            ->makeMailTemplate('@'.$this->templateNamespace.self::MAIL_TEMPLATE)
             ->addTo($receiver->getEmail());
     }
 

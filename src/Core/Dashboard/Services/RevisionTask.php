@@ -43,7 +43,7 @@ final readonly class RevisionTask implements DashboardInterface
         $form = $this->formFactory->create(TableType::class, $table);
         $form->handleRequest($request);
 
-        return new Response($this->twig->render("@$this->templateNamespace/revision/task/dashboard.html.twig", \array_filter([
+        return new Response($this->twig->render(\sprintf('@%s/revision/task/dashboard.html.twig', $this->templateNamespace), \array_filter([
             'table' => $table,
             'formTable' => $form->createView(),
             'currentTab' => $tab,

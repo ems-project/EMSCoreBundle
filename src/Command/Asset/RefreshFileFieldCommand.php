@@ -55,7 +55,7 @@ class RefreshFileFieldCommand extends AbstractCommand
             $this->io->progressAdvance();
         }
         $this->io->progressFinish();
-        $this->io->note('All revision\'s file fields have been refreshed');
+        $this->io->note("All revision's file fields have been refreshed");
         $this->io->warning('All environments should be rebuilt');
 
         return self::EXECUTE_SUCCESS;

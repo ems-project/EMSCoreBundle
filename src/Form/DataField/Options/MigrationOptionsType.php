@@ -34,7 +34,7 @@ class MigrationOptionsType extends AbstractType
         $fieldType = $options['field_type'];
         $transformers = $this->transformers->getMigrationOptionsChoices($fieldType->getType());
 
-        if (\count($transformers) > 0) {
+        if ([] !== $transformers) {
             $builder->add('transformers', CollectionType::class, [
                 'entry_type' => MigrationOptionsTransformerType::class,
                 'entry_options' => [

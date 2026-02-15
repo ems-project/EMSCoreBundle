@@ -169,7 +169,7 @@ class RevisionRepository extends EntityRepository
         $connection = $this->getEntityManager()->getConnection();
 
         if ($connection->getDatabasePlatform() instanceof PostgreSQLPlatform) {
-            $result = $this->getEntityManager()->getConnection()->fetchAllAssociative("select count(*) as counter FROM public.revision where raw_data::text like '%$hash%'");
+            $result = $this->getEntityManager()->getConnection()->fetchAllAssociative(\sprintf("select count(*) as counter FROM public.revision where raw_data::text like '%%%s%%'", $hash));
 
             return (int) $result[0]['counter'];
         }
@@ -178,7 +178,7 @@ class RevisionRepository extends EntityRepository
             $qb = $this->createQueryBuilder('r')
                 ->select('count(r)')
                 ->where('r.rawData like :hash')
-                ->setParameter('hash', "%$hash%");
+                ->setParameter('hash', \sprintf('%%%s%%', $hash));
             $query = $qb->getQuery();
 
             return (int) $query->getSingleScalarResult();
@@ -249,6 +249,7 @@ class RevisionRepository extends EntityRepository
     {
         $sqb = $this->getCompareQueryBuilder($source, $target, $contentTypes);
         $sqb->select('max(r.id)');
+
         $qb = $this->createQueryBuilder('rev');
         $qb->select('count(rev)');
         $qb->where($qb->expr()->in('rev.id', $sqb->getDQL()));
@@ -268,7 +269,7 @@ class RevisionRepository extends EntityRepository
     private function getCompareQueryBuilder(int $source, int $target, array $contentTypes, array $ouuids = [], string $searchValue = ''): QueryBuilder
     {
         $qb = $this->createQueryBuilder('r');
-        $qb->select('c.id', 'c.color', 'c.name content_type_name', 'c.singularName content_type_singular_name', 'c.icon', 'r.ouuid', "CONCAT(c.name, ':', r.ouuid) AS emsLink", 'max(r.labelField) as item_labelField', 'count(c.id) counter', 'min(concat(e.id, \'/\',r.id, \'/\', r.created, \'/\', r.finalizedBy)) minrevid', 'max(concat(e.id, \'/\',r.id, \'/\', r.created, \'/\', r.finalizedBy)) maxrevid', 'max(r.id) lastRevId')
+        $qb->select('c.id', 'c.color', 'c.name content_type_name', 'c.singularName content_type_singular_name', 'c.icon', 'r.ouuid', "CONCAT(c.name, ':', r.ouuid) AS emsLink", 'max(r.labelField) as item_labelField', 'count(c.id) counter', "min(concat(e.id, '/',r.id, '/', r.created, '/', r.finalizedBy)) minrevid", "max(concat(e.id, '/',r.id, '/', r.created, '/', r.finalizedBy)) maxrevid", 'max(r.id) lastRevId')
         ->join('r.contentType', 'c')
         ->join('r.environmentRevisions', 'er')
         ->join('er.environment', 'e')
@@ -285,7 +286,7 @@ class RevisionRepository extends EntityRepository
             new Parameter('false', false),
         ]));
 
-        if (\count($ouuids) > 0) {
+        if ([] !== $ouuids) {
             $qb->andWhere($qb->expr()->notIn('r.ouuid', $ouuids));
         }
 
@@ -300,7 +301,7 @@ class RevisionRepository extends EntityRepository
         }
 
         if ([] !== $contentTypes) {
-            $qb->andWhere('c.name in (\''.\implode("','", $contentTypes).'\')');
+            $qb->andWhere("c.name in ('".\implode("','", $contentTypes)."')");
         }
 
         return $qb;
@@ -692,7 +693,7 @@ class RevisionRepository extends EntityRepository
                 ->setParameter('deadline_end', $deadlineEnd->setTime(23, 59, 59)->format(\DATE_ATOM));
         }
 
-        if (\count($status) > 0) {
+        if ([] !== $status) {
             $statuses = \array_map(static fn (TaskStatus $s) => $s->value, $status);
             $qb
                 ->andWhere($qb->expr()->in('t.status', ':status'))
@@ -805,7 +806,7 @@ class RevisionRepository extends EntityRepository
     {
         $qb = $this->makeQueryBuilder(isDraft: true)->orderBy('r.id', 'asc');
 
-        if (\count($circles) > 0) {
+        if ([] !== $circles) {
             $inCircles = $qb->expr()->orX();
             foreach ($circles as $counter => $circle) {
                 $inCircles->add($qb->expr()->like('r.circles', ':circle'.$counter));

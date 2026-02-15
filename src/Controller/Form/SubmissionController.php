@@ -31,7 +31,7 @@ use function Symfony\Component\Translation\t;
 
 final class SubmissionController extends AbstractController
 {
-    final public const int BUFFER_SIZE = 8192;
+    public const int BUFFER_SIZE = 8192;
 
     public function __construct(
         private readonly FormSubmissionService $formSubmissionService,

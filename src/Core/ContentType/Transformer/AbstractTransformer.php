@@ -20,8 +20,8 @@ abstract class AbstractTransformer implements ContentTransformerInterface
             $this->resolveOptions(Json::decode($config));
 
             return null;
-        } catch (\Throwable $e) {
-            return $e->getMessage();
+        } catch (\Throwable $throwable) {
+            return $throwable->getMessage();
         }
     }
 

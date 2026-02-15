@@ -49,7 +49,7 @@ class JobDataTableType extends AbstractEntityTableType
         $table->addColumnDefinition(new TemplateBlockTableColumn(
             label: t('field.status', [], 'emsco-core'),
             blockName: 'jobStatus',
-            template: "@$this->templateNamespace/datatable/template_block_columns.html.twig",
+            template: \sprintf('@%s/datatable/template_block_columns.html.twig', $this->templateNamespace),
             orderField: 'progress'
         ));
 

@@ -42,7 +42,7 @@ class EnvironmentPickerType extends ChoiceType
                 false => !$defaultEnvironmentIds->contains($e->getId()),
             });
 
-            if (\count($filterDefaultEnvironments) > 0) {
+            if ([] !== $filterDefaultEnvironments) {
                 $environments = $filterDefaultEnvironments;
             }
         }

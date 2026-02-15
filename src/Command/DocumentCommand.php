@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 
-#[AsCommand(name: Commands::CONTENT_TYPE_IMPORT, description: 'Import json files from a zip file as content type\'s documents.', aliases: ['ems:contenttype:import'], hidden: false)]
+#[AsCommand(name: Commands::CONTENT_TYPE_IMPORT, description: "Import json files from a zip file as content type's documents.", aliases: ['ems:contenttype:import'], hidden: false)]
 class DocumentCommand extends Command
 {
     final public const string COMMAND = 'ems:contenttype:import';
@@ -87,7 +87,7 @@ class DocumentCommand extends Command
                 self::OPTION_DONT_FINALIZE,
                 null,
                 InputOption::VALUE_NONE,
-                'Don\'t finalize document'
+                "Don't finalize document"
             )
             ->addOption(
                 self::OPTION_BUSINESS_KEY,
@@ -184,6 +184,7 @@ class DocumentCommand extends Command
         $finder->files()->in($directory->path)->name('*.json');
         $progress = $this->io->createProgressBar($finder->count());
         $progress->start();
+
         $importerContext = $this->documentService->initDocumentImporterContext($this->contentType, 'SYSTEM_IMPORT', $rawImport, $signData, true, $bulkSize, $finalize, $force);
 
         $loopIndex = 0;

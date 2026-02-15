@@ -52,6 +52,7 @@ class EnvironmentController extends AbstractController
         ]);
 
         $form->handleRequest($request);
+
         $paging_size = $this->pagingSize;
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -221,7 +222,8 @@ class EnvironmentController extends AbstractController
                     }
                 }
             } else {
-                $page = $lastPage = 1;
+                $page = 1;
+                $lastPage = 1;
                 $this->logger->notice('log.environment.aligned', [
                     EmsFields::LOG_ENVIRONMENT_FIELD => $environment,
                     'with_environment' => $withEnvironment,
@@ -238,7 +240,7 @@ class EnvironmentController extends AbstractController
             $lastPage = 0;
         }
 
-        return $this->render("@$this->templateNamespace/environment/align.html.twig", [
+        return $this->render(\sprintf('@%s/environment/align.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
             'results' => $results,
             'lastPage' => $lastPage,

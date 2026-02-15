@@ -111,7 +111,7 @@ class FormController extends AbstractController
         }
 
         if ($create) {
-            return $this->render("@$this->templateNamespace/admin-form/add.html.twig", [
+            return $this->render(\sprintf('@%s/admin-form/add.html.twig', $this->templateNamespace), [
                 'form' => $formType->createView(),
                 'entity' => $form,
                 'title' => t('type.title_create', ['type' => 'form'], 'emsco-core'),
@@ -122,7 +122,7 @@ class FormController extends AbstractController
             ]);
         }
 
-        return $this->render("@$this->templateNamespace/admin-form/edit.html.twig", [
+        return $this->render(\sprintf('@%s/admin-form/edit.html.twig', $this->templateNamespace), [
             'form' => $formType->createView(),
             'entity' => $form,
             'title' => t('type.title_edit', ['type' => 'form', 'label' => $form->getLabel()], 'emsco-core'),
@@ -146,7 +146,7 @@ class FormController extends AbstractController
             return $this->redirectToRoute(Routes::FORM_ADMIN_INDEX);
         }
 
-        return $this->render("@$this->templateNamespace/admin-form/reorder.html.twig", [
+        return $this->render(\sprintf('@%s/admin-form/reorder.html.twig', $this->templateNamespace), [
             'form' => $formType->createView(),
             'entity' => $form,
             'title' => t('form.reorder.title', ['label' => $form->getLabel()], 'emsco-core'),

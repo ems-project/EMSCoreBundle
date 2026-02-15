@@ -470,6 +470,6 @@ class MediaLibraryController
 
     private function getAjaxModal(): AjaxModal
     {
-        return $this->ajax->newAjaxModel("@$this->templateNamespace/components/media_library/modal.html.twig");
+        return $this->ajax->newAjaxModel(\sprintf('@%s/components/media_library/modal.html.twig', $this->templateNamespace));
     }
 }

@@ -83,14 +83,14 @@ class PublishService
                     EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
                 ]);
             }
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $this->logger->warning('service.publish.publish_draft_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_ENVIRONMENT_FIELD => $revision->giveContentType()->giveEnvironment()->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $exception,
             ]);
         }
     }
@@ -389,7 +389,7 @@ class PublishService
         $contentType = $revision->giveContentType();
         $versioning = $contentType->getVersioning();
 
-        if (!$versioning->enabled() || 0 === \count($versioning->getTags())) {
+        if (!$versioning->enabled() || [] === $versioning->getTags()) {
             return;
         }
 

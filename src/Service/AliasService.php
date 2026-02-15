@@ -251,6 +251,7 @@ class AliasService
         $terms = new Terms(self::COUNTER_AGGREGATION);
         $terms->setField('_index');
         $terms->setSize(2000);
+
         $search->addAggregation($terms);
         $search->setSize(0);
 
@@ -286,7 +287,7 @@ class AliasService
         foreach ($data as $index => $info) {
             $aliases = \array_keys($info['aliases']);
 
-            if (0 === \count($aliases)) {
+            if ([] === $aliases) {
                 $this->addOrphanIndex($index);
                 continue;
             }

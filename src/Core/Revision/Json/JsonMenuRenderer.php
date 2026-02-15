@@ -107,7 +107,7 @@ final readonly class JsonMenuRenderer
 
     private function template(): TemplateWrapper
     {
-        return $this->twig->load("@$this->templateNamespace".self::NESTED_TEMPLATE);
+        return $this->twig->load('@'.$this->templateNamespace.self::NESTED_TEMPLATE);
     }
 
     /**

@@ -112,6 +112,7 @@ class AnalyzerController extends AbstractController
     {
         $response = new JsonResponse($analyzer);
         $response->setEncodingOptions(JSON_PRETTY_PRINT);
+
         $disposition = $response->headers->makeDisposition(
             disposition: ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             filename: $analyzer->getName().'.json'

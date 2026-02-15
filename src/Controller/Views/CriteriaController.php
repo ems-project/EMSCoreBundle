@@ -275,7 +275,7 @@ class CriteriaController extends AbstractController
         }
 
         if (!$valid) {
-            return $this->render("@$this->templateNamespace/view/custom/criteria_view.html.twig", [
+            return $this->render(\sprintf('@%s/view/custom/criteria_view.html.twig', $this->templateNamespace), [
                 'view' => $view,
                 'form' => $form->createView(),
                 'contentType' => $contentType,
@@ -316,7 +316,7 @@ class CriteriaController extends AbstractController
 
         $tables = $this->generateCriteriaTableContext($view, $criteriaUpdateConfig);
 
-        return $this->render("@$this->templateNamespace/view/custom/criteria_table.html.twig", [
+        return $this->render(\sprintf('@%s/view/custom/criteria_table.html.twig', $this->templateNamespace), [
             'table' => $tables['table'],
             'rowFieldType' => $rowField,
             'columnFieldType' => $columnField,
@@ -391,7 +391,7 @@ class CriteriaController extends AbstractController
                 continue;
             }
 
-            if (\count($rawData) > 0) {
+            if ([] !== $rawData) {
                 if ($criteriaFieldName) {
                     $criteriaFilters[] = $dataFieldType->getElasticsearchQuery($criteria, ['nested' => $criteriaFieldName]);
                 } else {
@@ -902,7 +902,7 @@ class CriteriaController extends AbstractController
 
             $multipleValueToRemove = $rawData[$multipleField];
             $rawData = $revision->getRawData();
-            if (($key = \array_search($multipleValueToRemove, $rawData[$multipleField])) !== false) {
+            if (($key = \array_search($multipleValueToRemove, $rawData[$multipleField], true)) !== false) {
                 $revision = $this->dataService->initNewDraft($view->getContentType()->getName(), $queryDocument->getId());
                 unset($rawData[$multipleField][$key]);
                 $rawData[$multipleField] = \array_values($rawData[$multipleField]);
@@ -969,7 +969,7 @@ class CriteriaController extends AbstractController
             $found = \array_all($filters, fn ($value, $criterion) => !($criterion != $multipleField && $value != $criteriaSet[$criterion]));
             if ($found) {
                 if ($multipleField) {
-                    $indexKey = \array_search($filters[$multipleField], $criteriaSet[$multipleField]);
+                    $indexKey = \array_search($filters[$multipleField], $criteriaSet[$multipleField], true);
                     if (false === $indexKey) {
                         $this->logger->notice('log.view.criteria.not_found', [
                             'field_name' => $multipleField,
@@ -977,7 +977,7 @@ class CriteriaController extends AbstractController
                     } else {
                         unset($rawData[$criteriaField][$index][$multipleField][$indexKey]);
                         $rawData[$criteriaField][$index][$multipleField] = \array_values($rawData[$criteriaField][$index][$multipleField]);
-                        if (0 === \count($rawData[$criteriaField][$index][$multipleField])) {
+                        if ([] === $rawData[$criteriaField][$index][$multipleField]) {
                             unset($rawData[$criteriaField][$index]);
                             $rawData[$criteriaField] = \array_values($rawData[$criteriaField]);
                         }
@@ -1053,7 +1053,7 @@ class CriteriaController extends AbstractController
         foreach ($criterionList as $value) {
             if (isset($criteriaChoiceLists[$criteriaName][$value])) {
                 $context[$criteriaName] = $value;
-                if (\count($criteriaNames) > 0) {
+                if ([] !== $criteriaNames) {
                     // let see (recursively) if the other criterion applies to find a matching context
                     $this->addToTable($choice, $table, $criterion, $criteriaNames, $criteriaChoiceLists, $config, $context);
                 } else {
@@ -1092,6 +1092,7 @@ class CriteriaController extends AbstractController
         $field = $this->fieldTypeRepository->find($request->query->get('targetField'));
         $choices = $field->getDisplayOptions()['choices'];
         $choices = \explode("\n", \str_replace("\r", '', (string) $choices));
+
         $labels = $field->getDisplayOptions()['labels'];
         $labels = \explode("\n", \str_replace("\r", '', (string) $labels));
 

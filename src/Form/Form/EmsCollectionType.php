@@ -29,8 +29,7 @@ class EmsCollectionType extends CollectionType
         $options['metadata'] = $fieldType;
 
         $disabled = false;
-        $sapiName = \php_sapi_name();
-        if ($sapiName && 0 !== \strcmp('cli', $sapiName)) {
+        if ('cli' === PHP_SAPI) {
             $enable = ($options['migration'] && !$fieldType->getMigrationOption('protected', true)) || $this->authorizationChecker->isGranted($fieldType->getMinimumRole());
             $disabled = !$enable;
         }

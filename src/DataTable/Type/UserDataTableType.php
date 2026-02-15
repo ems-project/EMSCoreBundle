@@ -35,6 +35,7 @@ class UserDataTableType extends AbstractEntityTableType
         $table->addColumn('user.index.column.username', 'username');
         $table->addColumn('user.index.column.displayname', 'displayName');
         $table->addColumn('user.index.column.email', 'email');
+
         $context = $table->getContext();
         if (!$context->inGroup && $context->light && $this->groupFeature) {
             $table->addColumnDefinition(new EntityTableColumn('user.index.column.group', 'group'));

@@ -222,7 +222,7 @@ class UserService implements EntityServiceInterface
     {
         $users = $this->userRepository->findBy(['enabled' => true]);
 
-        if (0 === \count($roles)) {
+        if ([] === $roles) {
             return $users;
         }
 
@@ -315,7 +315,7 @@ class UserService implements EntityServiceInterface
 
     public function isCliSession(): bool
     {
-        return 'cli' === \php_sapi_name();
+        return 'cli' === PHP_SAPI;
     }
 
     public function getEnabledUsers(): UserList
@@ -325,7 +325,7 @@ class UserService implements EntityServiceInterface
 
     public function inMyCircles(mixed $circles): bool
     {
-        if (\is_array($circles) && 0 === \count($circles)) {
+        if (\is_array($circles) && [] === $circles) {
             return true;
         }
 
@@ -336,7 +336,7 @@ class UserService implements EntityServiceInterface
         $user = $this->getCurrentUser(UserService::DONT_DETACH);
 
         if (\is_array($circles)) {
-            return \count(\array_intersect($circles, $user->getCircles())) > 0;
+            return [] !== \array_intersect($circles, $user->getCircles());
         }
 
         return \in_array($circles, $user->getCircles());

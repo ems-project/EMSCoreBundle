@@ -23,12 +23,12 @@ class DashboardBrowserController
         $response = new Response();
 
         try {
-            $response->setContent($this->twig->render("@$this->templateNamespace/dashboard/browser/dashboard-browser-modal.html.twig", [
+            $response->setContent($this->twig->render(\sprintf('@%s/dashboard/browser/dashboard-browser-modal.html.twig', $this->templateNamespace), [
                 'dashboard' => $dashboard,
             ]));
-        } catch (\Throwable $e) {
-            $response->setContent($this->twig->render("@$this->templateNamespace/dashboard/browser/dashboard-browser-modal-error.html.twig", [
-                'exception' => $e,
+        } catch (\Throwable $throwable) {
+            $response->setContent($this->twig->render(\sprintf('@%s/dashboard/browser/dashboard-browser-modal-error.html.twig', $this->templateNamespace), [
+                'exception' => $throwable,
                 'dashboard' => $dashboard,
             ]));
             $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);

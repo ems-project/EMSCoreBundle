@@ -211,6 +211,6 @@ final class JsonMenuNestedController extends AbstractController
 
     private function getAjaxModal(): AjaxModal
     {
-        return $this->ajax->newAjaxModel("@$this->templateNamespace".JsonMenuRenderer::NESTED_TEMPLATE);
+        return $this->ajax->newAjaxModel('@'.$this->templateNamespace.JsonMenuRenderer::NESTED_TEMPLATE);
     }
 }

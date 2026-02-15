@@ -36,7 +36,7 @@ class ChannelDataTableType extends AbstractEntityTableType
             new TemplateBlockTableColumn(
                 label: t('field.alias', [], 'emsco-core'),
                 blockName: 'channel_alias',
-                template: "@$this->templateNamespace/datatable/template_block_columns.html.twig"
+                template: \sprintf('@%s/datatable/template_block_columns.html.twig', $this->templateNamespace)
             )
         );
         $table->addColumnDefinition(new BoolTableColumn(t('field.public_access', [], 'emsco-core'), 'public'));

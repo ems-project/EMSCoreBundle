@@ -68,7 +68,7 @@ class MercureService
     {
         $topic = $this->getBaseUrl().'/'.$type->value;
 
-        if (\count($params) > 0) {
+        if ([] !== $params) {
             $topic = \strtr($topic, \array_combine(
                 \array_map(static fn ($k) => '{'.$k.'}', \array_keys($params)),
                 \array_values($params)
@@ -98,7 +98,7 @@ class MercureService
      */
     public function publish(array $data, string ...$topics): void
     {
-        if (0 === \count($topics)) {
+        if ([] === $topics) {
             throw new \RuntimeException('No publish topics passed.');
         }
 

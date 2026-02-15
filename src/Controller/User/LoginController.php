@@ -19,7 +19,7 @@ class LoginController
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return new Response($this->twig->render("@$this->templateNamespace/user/login.html.twig", [
+        return new Response($this->twig->render(\sprintf('@%s/user/login.html.twig', $this->templateNamespace), [
             'last_username' => $lastUsername,
             'error' => $error,
         ]));

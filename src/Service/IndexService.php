@@ -47,11 +47,11 @@ final readonly class IndexService
             }
 
             $index->delete();
-        } catch (ClientResponseException $e) {
-            if (Response::HTTP_NOT_FOUND === $e->getResponse()->getStatusCode()) {
+        } catch (ClientResponseException $clientResponseException) {
+            if (Response::HTTP_NOT_FOUND === $clientResponseException->getResponse()->getStatusCode()) {
                 throw throw NotFoundException::index($indexName);
             }
-            throw $e;
+            throw $clientResponseException;
         }
     }
 
@@ -107,10 +107,10 @@ final readonly class IndexService
     public function updateAlias(string $aliasName, array $indexesToRemove, array $indexesToAdd): void
     {
         $actions = [];
-        if (\count($indexesToRemove) > 0) {
+        if ([] !== $indexesToRemove) {
             $actions['remove'] = $indexesToRemove;
         }
-        if (\count($indexesToAdd) > 0) {
+        if ([] !== $indexesToAdd) {
             $actions['add'] = $indexesToAdd;
         }
         $this->aliasService->updateAlias($aliasName, $actions);
@@ -201,11 +201,11 @@ final readonly class IndexService
             return $this->client->resolveResponse(
                 $this->client->indices()->getAlias(['index' => $indexName])
             )->getData();
-        } catch (ClientResponseException $e) {
-            if (Response::HTTP_NOT_FOUND === $e->getResponse()->getStatusCode()) {
+        } catch (ClientResponseException $clientResponseException) {
+            if (Response::HTTP_NOT_FOUND === $clientResponseException->getResponse()->getStatusCode()) {
                 return [];
             }
-            throw $e;
+            throw $clientResponseException;
         }
     }
 }

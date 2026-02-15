@@ -112,16 +112,16 @@ class CreateEnvironmentCommand extends AbstractCommand
                 position: $this->getOptionIntNull(self::OPTION_POSITION),
                 rolePublish: $this->getRolePublish(),
             );
-        } catch (\Exception $e) {
-            $this->io->error($e->getMessage());
+        } catch (\Exception $exception) {
+            $this->io->error($exception->getMessage());
 
             return self::FAILURE;
         }
 
         try {
             $this->dataService->createAndMapIndex($environment);
-        } catch (\Exception $e) {
-            $this->io->error($e->getMessage());
+        } catch (\Exception $exception) {
+            $this->io->error($exception->getMessage());
 
             return self::FAILURE;
         }

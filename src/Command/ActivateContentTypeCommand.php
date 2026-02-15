@@ -81,7 +81,7 @@ class ActivateContentTypeCommand extends Command
                     throw new \RuntimeException('Content Type not found');
                 }
                 if ($contentType->getDirty() && !$this->deactivate && !$force) {
-                    $this->io->error(\sprintf('Content type %s is dirty please update it\'s mapping or use the force flag', $contentType->getName()));
+                    $this->io->error(\sprintf("Content type %s is dirty please update it's mapping or use the force flag", $contentType->getName()));
                     continue;
                 }
                 $contentType->setActive(!$this->deactivate);

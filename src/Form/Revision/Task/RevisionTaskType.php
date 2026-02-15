@@ -95,7 +95,7 @@ final class RevisionTaskType extends AbstractType
         $tasksTitles = $contentType->getSettings()->getSettingArrayString(ContentTypeSettings::TASKS_TITLES);
         $tasksHelptexts = $contentType->getSettings()->getSettingArrayString(ContentTypeSettings::TASKS_HELPTEXTS);
 
-        if (0 === \count($tasksTitles)) {
+        if ([] === $tasksTitles) {
             $builder->add('title', TextType::class, ['label' => 'task.field.title']);
 
             return;

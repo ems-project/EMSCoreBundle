@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use Doctrine\ORM\NoResultException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\MimeTypeHelper;
+use EMS\CoreBundle\Controller\ElasticsearchController;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
@@ -89,7 +90,7 @@ class DataController extends AbstractController
             'contentType' => $contentType->getId(),
         ]);
         foreach ($searches as $search) {
-            return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::search', [
+            return $this->forward(ElasticsearchController::class.'::search', [
                 'query' => null,
             ], [
                 'search_form' => $search->jsonSerialize(),
@@ -108,7 +109,7 @@ class DataController extends AbstractController
             $searchForm->setSortOrder($contentType->getSortOrder());
         }
 
-        return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::search', [
+        return $this->forward(ElasticsearchController::class.'::search', [
             'query' => null,
         ], [
             'search_form' => $searchForm->jsonSerialize(),
@@ -158,7 +159,7 @@ class DataController extends AbstractController
 
         $formEncoded = Json::encode($searchForm);
 
-        return $this->forward('EMS\CoreBundle\Controller\ElasticsearchController::search', [
+        return $this->forward(ElasticsearchController::class.'::search', [
             'query' => null,
         ], [
             'search_form' => Json::decode($formEncoded),
@@ -183,7 +184,7 @@ class DataController extends AbstractController
             throw new NotFoundHttpException(\sprintf('Document %s with identifier %s not found in environment %s', $contentType->getSingularName(), $ouuid, $environmentName));
         }
 
-        return $this->render("@$this->templateNamespace/data/view-data.html.twig", [
+        return $this->render(\sprintf('@%s/data/view-data.html.twig', $this->templateNamespace), [
             'document' => $document,
             'object' => $document->getRaw(),
             'environment' => $environment,
@@ -449,10 +450,10 @@ class DataController extends AbstractController
                     }
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             $this->logger->warning('log.data.revision.reindex_failed', \array_merge(LogRevisionContext::update($revision), [
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $throwable->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $throwable,
             ]));
         }
 
@@ -623,14 +624,14 @@ class DataController extends AbstractController
                     'revisionId' => $revision->getId(),
                 ]);
             }
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             $this->logger->error('log.data.revision.can_finalized_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
                 EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $throwable,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $throwable->getMessage(),
             ]);
 
             return $this->redirectToRoute(Routes::EDIT_REVISION, [
@@ -682,12 +683,12 @@ class DataController extends AbstractController
             return $this->redirectToRoute(Routes::EDIT_REVISION, [
                 'revisionId' => $revision->getId(),
             ]);
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             $this->logger->error('log.data.revision.init_document_from_array', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $throwable,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $throwable->getMessage(),
             ]);
 
             return $this->contentTypeService->redirectOverview($contentType);
@@ -737,7 +738,7 @@ class DataController extends AbstractController
             }
         }
 
-        return $this->render("@$this->templateNamespace/data/add.html.twig", [
+        return $this->render(\sprintf('@%s/data/add.html.twig', $this->templateNamespace), [
             'contentType' => $contentType,
             'form' => $form->createView(),
         ]);
@@ -762,7 +763,9 @@ class DataController extends AbstractController
 
     public function linkData(string $key): Response
     {
-        $category = $type = $ouuid = null;
+        $category = null;
+        $type = null;
+        $ouuid = null;
         $split = \explode(':', $key);
 
         if (3 === \count($split)) {

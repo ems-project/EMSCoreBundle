@@ -33,7 +33,7 @@ class EnvironmentUnreferencedAliasDataTableType extends AbstractTableType implem
         $table->addColumnDefinition(new TemplateBlockTableColumn(
             label: t('field.indexes', [], 'emsco-core'),
             blockName: 'environmentIndexesModal',
-            template: "@$this->templateNamespace/datatable/template_block_columns.html.twig",
+            template: \sprintf('@%s/datatable/template_block_columns.html.twig', $this->templateNamespace),
             orderField: 'countIndexes'
         ));
         $table->addColumn(t('field.total', [], 'emsco-core'), 'total');

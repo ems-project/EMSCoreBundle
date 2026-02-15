@@ -31,7 +31,7 @@ final class UploadedFileWysiwygController extends AbstractController
         $form = $this->createForm(TableType::class, $table);
         $form->handleRequest($request);
 
-        return $this->render("@$this->templateNamespace/uploaded-file-wysiwyg/index.html.twig", [
+        return $this->render(\sprintf('@%s/uploaded-file-wysiwyg/index.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
             'CKEditorFuncNum' => $request->query->get('CKEditorFuncNum') ?: 0,
         ]);
@@ -45,7 +45,7 @@ final class UploadedFileWysiwygController extends AbstractController
         ]);
         $form = $this->createForm(TableType::class, $table);
 
-        return $this->ajax->newAjaxModel("@$this->templateNamespace/uploaded-file-wysiwyg/modal.html.twig")
+        return $this->ajax->newAjaxModel(\sprintf('@%s/uploaded-file-wysiwyg/modal.html.twig', $this->templateNamespace))
             ->setBody('modalBody', ['form' => $form->createView()])
             ->getResponse();
     }

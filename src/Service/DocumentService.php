@@ -48,6 +48,7 @@ class DocumentService
         $revisionType->setData($previousRevision);
 
         $revisionType->submit(['data' => $viewData]);
+
         $data = $revisionType->get('data')->getData();
         $revision->setData($data);
         $objectArray = $revision->getRawData();

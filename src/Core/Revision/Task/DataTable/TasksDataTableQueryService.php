@@ -150,7 +150,7 @@ class TasksDataTableQueryService implements QueryServiceInterface
                 $values = \array_filter($values);
             }
 
-            if (\count($values) > 0) {
+            if ([] !== $values) {
                 $expressions[] = $qb->expr()->in($column, ':filter_'.$name);
                 $qb->setParameter('filter_'.$name, $values, ArrayParameterType::STRING);
             }

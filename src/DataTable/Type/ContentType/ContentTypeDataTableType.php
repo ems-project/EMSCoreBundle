@@ -50,7 +50,7 @@ class ContentTypeDataTableType extends AbstractTableType implements QueryService
         $table->addColumnDefinition(new TemplateBlockTableColumn(
             label: t('field.environment_default', [], 'emsco-core'),
             blockName: 'environmentName',
-            template: "@$this->templateNamespace/datatable/template_block_columns.html.twig",
+            template: \sprintf('@%s/datatable/template_block_columns.html.twig', $this->templateNamespace),
             orderField: 'environmentLabel'
         ));
 

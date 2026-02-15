@@ -61,7 +61,7 @@ class LogController extends AbstractController
 
     public function view(Log $log): Response
     {
-        return $this->render("@$this->templateNamespace/log/view.html.twig", [
+        return $this->render(\sprintf('@%s/log/view.html.twig', $this->templateNamespace), [
             'log' => $log,
             'subTitle' => t('type.title_sub', ['type' => 'log'], 'emsco-core'),
             'breadcrumb' => $this->breadcrumb()->add(

@@ -37,7 +37,7 @@ class ResettingController extends AbstractController
             }
         }
 
-        return $this->render("@$this->templateNamespace/user/resetting/request.html.twig", [
+        return $this->render(\sprintf('@%s/user/resetting/request.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
         ]);
     }
@@ -50,7 +50,7 @@ class ResettingController extends AbstractController
             return $this->redirectToRoute('emsco_user_resetting_request');
         }
 
-        return $this->render("@$this->templateNamespace/user/resetting/check_email.html.twig", [
+        return $this->render(\sprintf('@%s/user/resetting/check_email.html.twig', $this->templateNamespace), [
             'tokenLifetime' => UserManager::PASSWORD_RETRY_TTL,
         ]);
     }
@@ -76,7 +76,7 @@ class ResettingController extends AbstractController
             return $this->redirectToRoute(Routes::USER_PROFILE);
         }
 
-        return $this->render("@$this->templateNamespace/user/resetting/reset.html.twig", [
+        return $this->render(\sprintf('@%s/user/resetting/reset.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
         ]);
     }

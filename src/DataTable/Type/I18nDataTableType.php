@@ -36,7 +36,7 @@ class I18nDataTableType extends AbstractEntityTableType
         $table->addColumnDefinition(new TemplateBlockTableColumn(
             label: t('field.translations', [], 'emsco-core'),
             blockName: 'i18nTranslations',
-            template: "@$this->templateNamespace/datatable/template_block_columns.html.twig",
+            template: \sprintf('@%s/datatable/template_block_columns.html.twig', $this->templateNamespace),
             orderField: 'progress'
         ));
 

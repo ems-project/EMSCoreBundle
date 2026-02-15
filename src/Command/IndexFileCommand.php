@@ -272,9 +272,9 @@ class IndexFileCommand extends AbstractCommand
         $platform = $connection->getDatabasePlatform();
 
         if ($platform instanceof PostgreSQLPlatform) {
-            $query = "SELECT pg_size_pretty(pg_database_size('$dbName')) AS size";
+            $query = \sprintf("SELECT pg_size_pretty(pg_database_size('%s')) AS size", $dbName);
         } elseif ($platform instanceof MySQLPlatform) {
-            $query = "SELECT SUM(data_length + index_length)/1024/1024 AS size FROM information_schema.TABLES WHERE table_schema='$dbName' GROUP BY table_schema";
+            $query = \sprintf("SELECT SUM(data_length + index_length)/1024/1024 AS size FROM information_schema.TABLES WHERE table_schema='%s' GROUP BY table_schema", $dbName);
         } else {
             throw new \RuntimeException('Not supported driver');
         }
@@ -282,7 +282,7 @@ class IndexFileCommand extends AbstractCommand
         $result = $stmt->executeQuery();
         $size = $result->fetchAllAssociative();
 
-        $row = \is_array($size) && isset($size[0]['size']) ? "The database size is {$size[0]['size']} MB" : 'Undefined';
+        $row = \is_array($size) && isset($size[0]['size']) ? \sprintf('The database size is %s MB', $size[0]['size']) : 'Undefined';
 
         $output->writeln($row);
     }

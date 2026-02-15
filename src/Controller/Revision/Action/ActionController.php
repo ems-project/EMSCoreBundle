@@ -76,7 +76,7 @@ class ActionController
             };
         }
 
-        return new Response($this->twig->render("@$this->templateNamespace/data/custom-view.html.twig", [
+        return new Response($this->twig->render(\sprintf('@%s/data/custom-view.html.twig', $this->templateNamespace), [
             'template' => $action,
             'environment' => $environment,
             'contentType' => $action->getContentType(),
@@ -151,8 +151,8 @@ class ActionController
                 '_download' => $_download,
             ]);
             $filename = \preg_replace('~[\r\n]+~', '', $filename);
-        } catch (\Throwable $e) {
-            $this->logger->error($e->getMessage());
+        } catch (\Throwable $throwable) {
+            $this->logger->error($throwable->getMessage());
         }
 
         return $filename ?? 'error-in-filename-template';

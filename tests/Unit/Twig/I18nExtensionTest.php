@@ -17,7 +17,7 @@ class I18nExtensionTest extends TestCase
     private I18nExtension $i18nRuntime;
 
     #[\Override]
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->i18nService = $this->createMock(I18nService::class);
         $userManager = $this->createMock(UserManager::class);

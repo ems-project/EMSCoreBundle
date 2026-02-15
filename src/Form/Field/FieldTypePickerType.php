@@ -32,7 +32,7 @@ class FieldTypePickerType extends Select2Type
                 $icon = $dataFieldType->getIcon();
                 $label = $dataFieldType->getLabel();
 
-                return "<i class=\"$icon\"></i>&nbsp;$label";
+                return \sprintf('<i class="%s"></i>&nbsp;%s', $icon, $label);
             },
             'choice_value' => fn ($value) => $value,
         ]);

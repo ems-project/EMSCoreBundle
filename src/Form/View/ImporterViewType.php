@@ -130,7 +130,7 @@ class ImporterViewType extends ViewType
         }
 
         $response = new Response();
-        $response->setContent($this->twig->render("@$this->templateNamespace/view/custom/simple_form_view.html.twig", [
+        $response->setContent($this->twig->render(\sprintf('@%s/view/custom/simple_form_view.html.twig', $this->templateNamespace), [
             'view' => $view,
             'form' => $form->createView(),
             'contentType' => $view->getContentType(),

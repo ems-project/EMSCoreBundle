@@ -63,6 +63,7 @@ class MediaLibraryService
     {
         $query = $this->elasticaService->getBoolQuery();
         $query->addMust(new Prefix([$this->getConfig()->fieldFolder => $folder]));
+
         $search = $this->buildSearch($query);
         $search->setSize(0);
 
@@ -417,6 +418,7 @@ class MediaLibraryService
 
         $filesAgg = new NestedAgg('files', $this->getConfig()->fieldFile);
         $filesAgg->addAggregation(new Sum('size')->setField($fileSizeField));
+
         $search->addAggregation($filesAgg);
 
         if ($searchValue) {

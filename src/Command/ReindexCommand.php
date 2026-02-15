@@ -27,7 +27,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: Commands::ENVIRONMENT_REINDEX, description: 'Reindex an environment in it\'s existing index.', aliases: ['ems:environment:reindex'], hidden: false)]
+#[AsCommand(name: Commands::ENVIRONMENT_REINDEX, description: "Reindex an environment in it's existing index.", aliases: ['ems:environment:reindex'], hidden: false)]
 class ReindexCommand extends AbstractCommand
 {
     private int $count = 0;
@@ -63,7 +63,7 @@ class ReindexCommand extends AbstractCommand
                 'sign-data',
                 null,
                 InputOption::VALUE_NONE,
-                'The content won\'t be (re)signed during the reindexing process'
+                "The content won't be (re)signed during the reindexing process"
             )
             ->addOption(
                 'reload-data',

@@ -87,7 +87,7 @@ class JobController extends AbstractController
             ]);
         }
 
-        return $this->render("@$this->templateNamespace/job/status.html.twig", [
+        return $this->render(\sprintf('@%s/job/status.html.twig', $this->templateNamespace), [
             'title' => t('type.title_status', ['type' => 'job', 'job_id' => $job->getId()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'job'], 'emsco-core'),
             'job' => $job,
@@ -112,7 +112,7 @@ class JobController extends AbstractController
             return $this->redirectToRoute('emsco_job_status', ['job' => $job->getId()]);
         }
 
-        return $this->render("@$this->templateNamespace/job/add.html.twig", [
+        return $this->render(\sprintf('@%s/job/add.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
             'title' => t('type.title_create', ['type' => 'job'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'job'], 'emsco-core'),

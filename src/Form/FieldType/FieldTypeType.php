@@ -51,12 +51,12 @@ class FieldTypeType extends AbstractType
 
         if ($dataFieldType->isContainer()) {
             $builder->add('ems:internal:add:field:class', FieldTypePickerType::class, [
-                'label' => 'Field\'s type',
+                'label' => "Field's type",
                 'mapped' => false,
                 'required' => false,
             ]);
             $builder->add('ems:internal:add:field:name', TextType::class, [
-                'label' => 'Field\'s machine name',
+                'label' => "Field's machine name",
                 'mapped' => false,
                 'required' => false,
             ]);
@@ -69,7 +69,7 @@ class FieldTypeType extends AbstractType
             ]);
         } elseif (0 !== \strcmp(SubfieldType::class, $fieldType->getType())) {
             $builder->add('ems:internal:add:subfield:name', TextType::class, [
-                'label' => 'Subfield\'s name',
+                'label' => "Subfield's name",
                 'mapped' => false,
                 'required' => false,
             ]);
@@ -83,7 +83,7 @@ class FieldTypeType extends AbstractType
             ]);
 
             $builder->add('ems:internal:add:subfield:target_name', TextType::class, [
-                'label' => 'New field\'s machine name',
+                'label' => "New field's machine name",
                 'mapped' => false,
                 'required' => false,
             ]);
@@ -98,7 +98,7 @@ class FieldTypeType extends AbstractType
         }
         if (!$options['editSubfields']) {
             $builder->add('name', TextType::class, [
-                'label' => 'Field\'s name',
+                'label' => "Field's name",
                 //                'mapped' => false,
                 //                'required' => false,
             ]);

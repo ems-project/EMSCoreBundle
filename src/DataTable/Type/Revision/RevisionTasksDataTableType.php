@@ -112,7 +112,7 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
     {
         $taskContentTypes = $this->taskRepository->findTaskContentTypes();
         $countVersionTags = $taskContentTypes
-            ->filter(fn (ContentType $c) => \count($c->getVersioning()->getTags()) > 0)
+            ->filter(fn (ContentType $c) => [] !== $c->getVersioning()->getTags())
             ->count();
 
         return new TasksDataTableContext(
@@ -148,7 +148,7 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
 
     private function buildTable(QueryTable $table, TasksDataTableContext $context): void
     {
-        $columnTemplate = "@$table->templateNamespace/revision/task/columns.twig";
+        $columnTemplate = \sprintf('@%s/revision/task/columns.twig', $table->templateNamespace);
 
         foreach ($this->getColumns($context) as [$name, $field, $label]) {
             $def = new TemplateBlockTableColumn(

@@ -107,6 +107,7 @@ final class TimeMachineCommand extends Command
         $revertedRevision->setRawData($inTimeRaw);
         $revertedRevision->setDraft(false);
         $revertedRevision->setFinalizedBy(self::SYSTEM_TIME_MACHINE);
+
         $this->dataService->sign($revertedRevision);
 
         $currentRevision->close(new \DateTime('now'), self::SYSTEM_TIME_MACHINE);
@@ -147,7 +148,7 @@ final class TimeMachineCommand extends Command
             return $currentRaw;
         }
 
-        if (\is_array($currentProperty) && \count($path) > 0) {
+        if (\is_array($currentProperty) && [] !== $path) {
             if (\count($currentProperty) !== (\is_countable($historyProperty) ? \count($historyProperty) : 0)) {
                 $this->style->warning('Could not go back in time for different sized collections!');
 
@@ -159,7 +160,7 @@ final class TimeMachineCommand extends Command
             }
         }
 
-        if (0 === \count($path)) {
+        if ([] === $path) {
             $currentRaw[$property] = $historyProperty;
         }
 

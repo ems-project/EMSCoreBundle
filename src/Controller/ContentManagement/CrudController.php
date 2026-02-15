@@ -61,15 +61,15 @@ class CrudController extends AbstractController
             if ($request->query->getBoolean('refresh')) {
                 $this->dataService->refresh($newRevision->giveContentType()->giveEnvironment());
             }
-        } catch (\Exception $e) {
-            if ($e instanceof NotFoundHttpException || $e instanceof BadRequestHttpException) {
-                throw $e;
+        } catch (\Exception $exception) {
+            if ($exception instanceof NotFoundHttpException || $exception instanceof BadRequestHttpException) {
+                throw $exception;
             }
 
             $this->logger->error('log.crud.create_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $exception,
             ]);
 
             return $this->flashMessageLogger->buildJsonResponse([
@@ -101,14 +101,14 @@ class CrudController extends AbstractController
         $contentType = $this->giveContentType($name);
         try {
             $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
-        } catch (\Exception $e) {
-            if ($e instanceof NotFoundHttpException || $e instanceof BadRequestHttpException) {
-                throw $e;
+        } catch (\Exception $exception) {
+            if ($exception instanceof NotFoundHttpException || $exception instanceof BadRequestHttpException) {
+                throw $exception;
             }
             $this->logger->error('log.crud.read_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $exception,
             ]);
 
             return $this->flashMessageLogger->buildJsonResponse([
@@ -165,7 +165,7 @@ class CrudController extends AbstractController
 
             $content = $request->getContent();
             $rawData = '' !== (string) $content ? Json::decode(Type::string($content)) : [];
-            if (\count($rawData) > 0) {
+            if ([] !== $rawData) {
                 $this->revisionService->autoSave($revision, $rawData);
             }
 
@@ -179,15 +179,15 @@ class CrudController extends AbstractController
                 'success' => !$newRevision->getDraft(),
                 'ouuid' => $newRevision->getOuuid(),
             ]);
-        } catch (\Exception $e) {
-            if ($e instanceof NotFoundHttpException || $e instanceof DataStateException) {
-                throw $e;
+        } catch (\Exception $exception) {
+            if ($exception instanceof NotFoundHttpException || $exception instanceof DataStateException) {
+                throw $exception;
             }
 
             $this->logger->error('log.crud.finalize_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $exception,
             ]);
 
             return $this->flashMessageLogger->buildJsonResponse(['success' => false]);
@@ -205,15 +205,15 @@ class CrudController extends AbstractController
             $revision = $this->dataService->getRevisionById($id, $contentType);
             $this->dataService->discardDraft($revision);
             $isDiscard = $revision->getId() !== $id;
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $isDiscard = false;
-            if ($e instanceof NotFoundHttpException || $e instanceof BadRequestHttpException) {
-                throw $e;
+            if ($exception instanceof NotFoundHttpException || $exception instanceof BadRequestHttpException) {
+                throw $exception;
             }
             $this->logger->error('log.crud.discard_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $exception,
             ]);
 
             return $this->flashMessageLogger->buildJsonResponse([
@@ -241,16 +241,16 @@ class CrudController extends AbstractController
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
             ]);
             $isDeleted = true;
-        } catch (\Exception $e) {
-            if ($e instanceof NotFoundHttpException || $e instanceof BadRequestHttpException) {
-                throw $e;
+        } catch (\Exception $exception) {
+            if ($exception instanceof NotFoundHttpException || $exception instanceof BadRequestHttpException) {
+                throw $exception;
             }
 
             $this->logger->error('log.crud.delete_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $name,
                 EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $exception,
             ]);
         }
 
@@ -277,15 +277,15 @@ class CrudController extends AbstractController
             $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
             $newDraft = $this->dataService->replaceData($revision, $rawdata);
             $isReplaced = $revision->getId() !== $newDraft->getId();
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $isReplaced = false;
-            if ($e instanceof NotFoundHttpException) {
-                throw $e;
+            if ($exception instanceof NotFoundHttpException) {
+                throw $exception;
             }
             $this->logger->error('log.crud.replace_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $exception,
             ]);
 
             return $this->flashMessageLogger->buildJsonResponse([
@@ -320,14 +320,14 @@ class CrudController extends AbstractController
             $revision = $this->dataService->getNewestRevision($contentType->getName(), $ouuid);
             $newDraft = $this->dataService->replaceData($revision, $rawdata, 'merge');
             $isMerged = $revision->getId() !== $newDraft->getId();
-        } catch (\Exception $e) {
-            if ($e instanceof NotFoundHttpException) {
-                throw $e;
+        } catch (\Exception $exception) {
+            if ($exception instanceof NotFoundHttpException) {
+                throw $exception;
             }
             $this->logger->error('log.crud.merge_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $exception,
             ]);
 
             $isMerged = false;
@@ -466,11 +466,11 @@ class CrudController extends AbstractController
                 'revision_id' => $draftRevision->getId(),
                 'ouuid' => $draftRevision->getOuuid(),
             ]);
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             $this->logger->error('log.crud.create_error', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $name,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+                EmsFields::LOG_ERROR_MESSAGE_FIELD => $throwable->getMessage(),
+                EmsFields::LOG_EXCEPTION_FIELD => $throwable,
             ]);
 
             return $this->flashMessageLogger->buildJsonResponse([

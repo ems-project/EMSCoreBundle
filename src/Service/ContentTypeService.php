@@ -176,11 +176,11 @@ class ContentTypeService implements EntityServiceInterface
             }
 
             $this->contentTypeRepository->save($contentType);
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             $contentType->setDirty(true);
-            $message = $e->getMessage();
-            if (!empty($e->getPrevious())) {
-                $message = $e->getPrevious()->getMessage();
+            $message = $throwable->getMessage();
+            if (!empty($throwable->getPrevious())) {
+                $message = $throwable->getPrevious()->getMessage();
             }
 
             $this->logger->error('service.contenttype.update_mapping_exception', [
@@ -495,6 +495,7 @@ class ContentTypeService implements EntityServiceInterface
         $search = new Search([$environment->getAlias()]);
         $search->setSize(0);
         $search->addTermsAggregation(self::CONTENT_TYPE_AGGREGATION_NAME, EMSSource::FIELD_CONTENT_TYPE, 30);
+
         $resultSet = $this->elasticaService->search($search);
         $aggregationBuckets = $resultSet->getAggregation(self::CONTENT_TYPE_AGGREGATION_NAME)['buckets'] ?? [];
         $unreferencedContentTypes = [];
@@ -742,7 +743,7 @@ class ContentTypeService implements EntityServiceInterface
     public function getVersionDefault(ContentType $contentType): array
     {
         $versionTags = $contentType->getVersioning()->getTags();
-        if (0 === \count($versionTags)) {
+        if ([] === $versionTags) {
             return [];
         }
 
@@ -762,7 +763,7 @@ class ContentTypeService implements EntityServiceInterface
     public function getVersionTagsByContentType(ContentType $contentType, ?bool $notBlankNewVersion = false): array
     {
         $versionTags = $contentType->getVersioning()->getTags();
-        if (0 === \count($versionTags)) {
+        if ([] === $versionTags) {
             return [];
         }
 

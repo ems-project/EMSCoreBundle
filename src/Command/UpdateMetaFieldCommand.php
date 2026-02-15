@@ -86,7 +86,7 @@ class UpdateMetaFieldCommand extends AbstractCommand
                         $em->flush();
                     }
                 } catch (NotLockedException $e) {
-                    $output->writeln("<error>'.$e.'</error>");
+                    $output->writeln(\sprintf("<error>'.%s.'</error>", $e));
                 }
             }
 

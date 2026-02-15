@@ -292,7 +292,8 @@ readonly class CoreExtension
     #[AsTwigFunction(name: 'emsco_diff_choice', isSafe: ['html'])]
     public function diffChoice(mixed $rawData, ?array $labels, ?array $choices, bool $compare, string $fieldName, ?array $compareRawData): string
     {
-        $b = $a = [];
+        $b = [];
+        $a = [];
         $out = '';
         $tag = 'li';
         $insColor = 'green';
@@ -311,7 +312,8 @@ readonly class CoreExtension
         } elseif (\is_scalar($rawData)) {
             $tag = 'span';
             if ([] !== $b) {
-                $insColor = $delColor = 'orange';
+                $insColor = 'orange';
+                $delColor = 'orange';
             }
             $a = [$rawData];
         }
@@ -359,7 +361,8 @@ readonly class CoreExtension
     #[AsTwigFunction(name: 'emsco_diff_color', isSafe: ['html'])]
     public function diffColor(?string $rawData, bool $compare, string $fieldName, ?array $compareRawData): string
     {
-        $b = $a = null;
+        $b = null;
+        $a = null;
         if (null !== $rawData) {
             $color = new Color($rawData);
             $a = \sprintf('<span style="background-color: %s; color: %s;">%s</span> ', $rawData, $color->bestContrast(...Color::EMS_COLORS)->getRGB(), $rawData);
@@ -380,7 +383,8 @@ readonly class CoreExtension
     #[AsTwigFunction(name: 'emsco_diff_data_link', isSafe: ['html'])]
     public function diffDataLink(mixed $rawData, bool $compare, string $fieldName, ?array $compareRawData): string
     {
-        $b = $a = [];
+        $b = [];
+        $a = [];
         $out = '';
 
         if (\is_array($rawData)) {
@@ -422,7 +426,8 @@ readonly class CoreExtension
     #[AsTwigFunction(name: 'emsco_diff_date', isSafe: ['html'])]
     public function diffDate(mixed $rawData, bool $compare, string $fieldName, ?array $compareRawData, string $format1, ?string $format2 = null, ?string $internalFormat = null): string
     {
-        $b = $a = [];
+        $b = [];
+        $a = [];
         $out = '';
         $tag = 'li';
         $insColor = 'green';
@@ -441,7 +446,8 @@ readonly class CoreExtension
         } elseif (\is_scalar($rawData)) {
             $tag = 'span';
             if ([] !== $b) {
-                $insColor = $delColor = 'orange';
+                $insColor = 'orange';
+                $delColor = 'orange';
             }
             $a = [$rawData];
         }
@@ -549,7 +555,8 @@ readonly class CoreExtension
     #[AsTwigFunction(name: 'emsco_diff_icon', isSafe: ['html'])]
     public function diffIcon(?string $rawData, bool $compare, string $fieldName, ?array $compareRawData): string
     {
-        $b = $a = null;
+        $b = null;
+        $a = null;
         if (null !== $rawData) {
             $a = \sprintf('<i class="%s"></i> %s', $rawData, $rawData);
         }
@@ -634,8 +641,8 @@ readonly class CoreExtension
         }
         try {
             $out = $this->twig->createTemplate($template)->render($params);
-        } catch (\Exception $e) {
-            $out = 'Error in template: '.$e->getMessage();
+        } catch (\Exception $exception) {
+            $out = 'Error in template: '.$exception->getMessage();
         }
 
         return $out;

@@ -75,8 +75,8 @@ class AddGroupToUserCommand extends AbstractUserCommand
             }
 
             return self::EXECUTE_ERROR;
-        } catch (\Throwable $e) {
-            $this->io->error($e->getMessage());
+        } catch (\Throwable $throwable) {
+            $this->io->error($throwable->getMessage());
 
             return self::EXECUTE_ERROR;
         }

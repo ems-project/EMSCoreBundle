@@ -53,7 +53,7 @@ final readonly class SubmissionExporter
             $sheet[] = $line;
         }
 
-        if (0 === \count($sheet)) {
+        if ([] === $sheet) {
             return new ExportResult($unprocessedSubmissionsCount, 0);
         }
 
@@ -102,7 +102,7 @@ final readonly class SubmissionExporter
         $fileExtension = $config->filename ? \pathinfo($config->filename, PATHINFO_EXTENSION) : null;
 
         if ($fileExtension && !\in_array($fileExtension, SpreadsheetGeneratorServiceInterface::FORMAT_WRITERS, true)) {
-            throw new \InvalidArgumentException("Unsupported file extension: $fileExtension");
+            throw new \InvalidArgumentException('Unsupported file extension: '.$fileExtension);
         }
 
         return $config->format ?? $fileExtension ?? SpreadsheetGeneratorServiceInterface::XLSX_WRITER;

@@ -161,7 +161,7 @@ class ExportViewType extends ViewType
                 'contentType' => $view->getContentType(),
                 'environment' => $view->getContentType()->giveEnvironment(),
             ]);
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             $renderQuery = '{}';
         }
 
@@ -185,8 +185,8 @@ class ExportViewType extends ViewType
                 'environment' => $view->getContentType()->giveEnvironment(),
                 'result' => $resultSet->getResponse()->getData(),
             ]);
-        } catch (\Throwable $e) {
-            $render = 'Something went wrong with the template of the view '.$view->getLabel().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
+        } catch (\Throwable $throwable) {
+            $render = 'Something went wrong with the template of the view '.$view->getLabel().' for the content type '.$view->getContentType()->getName().' ('.$throwable->getMessage().')';
         }
 
         try {
@@ -196,8 +196,8 @@ class ExportViewType extends ViewType
                 'environment' => $view->getContentType()->giveEnvironment(),
                 'result' => $resultSet->getResponse()->getData(),
             ]);
-        } catch (\Throwable $e) {
-            $filename = 'Something went wrong with the template of the view '.$view->getLabel().' for the content type '.$view->getContentType()->getName().' ('.$e->getMessage().')';
+        } catch (\Throwable $throwable) {
+            $filename = 'Something went wrong with the template of the view '.$view->getLabel().' for the content type '.$view->getContentType()->getName().' ('.$throwable->getMessage().')';
         }
 
         return [

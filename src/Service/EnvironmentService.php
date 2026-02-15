@@ -213,7 +213,7 @@ class EnvironmentService implements EntityServiceInterface
     /** @return Environment[] */
     public function getByNames(string ...$names): array
     {
-        return \count($names) > 0 ? $this->environmentRepository->findBy(['name' => $names]) : [];
+        return [] !== $names ? $this->environmentRepository->findBy(['name' => $names]) : [];
     }
 
     /** @return array<int|string, mixed> */
@@ -394,6 +394,7 @@ class EnvironmentService implements EntityServiceInterface
         $position = $environment->getOrderKey();
         $this->environmentRepository->delete($environment);
         $this->environmentRepository->shiftOrderKeyFrom($position + 1, -1);
+
         $this->logger->notice('log.environment.deleted', [
             EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
         ]);

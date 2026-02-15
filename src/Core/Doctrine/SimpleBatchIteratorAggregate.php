@@ -66,10 +66,10 @@ final readonly class SimpleBatchIteratorAggregate implements \IteratorAggregate
 
                 $this->flushAndClearBatch($iteration);
             }
-        } catch (\Throwable $exception) {
+        } catch (\Throwable $throwable) {
             $this->entityManager->rollback();
 
-            throw $exception;
+            throw $throwable;
         }
 
         $this->flushAndClearEntityManager();

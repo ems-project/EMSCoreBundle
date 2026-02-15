@@ -38,7 +38,7 @@ class FormModelTransformer implements DataTransformerInterface
     {
         $data = $this->nestedTransformer->reverseTransform($value);
         if (!\is_array($data)) {
-            throw new \RuntimeException('Unexpected non-array form\'s data');
+            throw new \RuntimeException("Unexpected non-array form's data");
         }
 
         return RawDataTransformer::reverseTransform($this->fieldType, $data);

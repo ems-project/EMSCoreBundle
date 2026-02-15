@@ -21,7 +21,7 @@ class JsonMenuNestedTemplate extends AbstractComponentTemplate
     ) {
         parent::__construct(
             $twig,
-            "@$templateNamespace/components/json_menu_nested/template.twig",
+            \sprintf('@%s/components/json_menu_nested/template.twig', $templateNamespace),
             $config->template
         );
 

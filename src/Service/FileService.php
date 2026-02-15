@@ -175,7 +175,7 @@ class FileService implements EntityServiceInterface
         $hash = $this->storageManager->computeFileHash($filename);
         $size = \filesize($filename);
         if (false === $size) {
-            throw new \RuntimeException(\sprintf('Can\'t get file size of %s', $filename));
+            throw new \RuntimeException(\sprintf("Can't get file size of %s", $filename));
         }
         $uploadedAsset = $this->initUploadFile($hash, $size, $name, $type, $user, $this->storageManager->getHashAlgo());
         if (!$uploadedAsset->getAvailable()) {
@@ -257,13 +257,14 @@ class FileService implements EntityServiceInterface
     public function headIn(UploadedAsset $uploadedAsset): array
     {
         $headIn = $this->storageManager->headIn($uploadedAsset->getSha1());
-        if (0 === \count($headIn)) {
+        if ([] === $headIn) {
             return $headIn;
         }
 
         $uploadedAsset->setHeadIn(\array_unique(\array_merge($headIn, $uploadedAsset->getHeadIn() ?? [])));
         $uploadedAsset->setHeadLast(new \DateTime());
         $uploadedAsset->setAvailable(true);
+
         $this->uploadedAssetRepository->update($uploadedAsset);
 
         return $headIn;

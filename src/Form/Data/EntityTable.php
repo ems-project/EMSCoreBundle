@@ -120,6 +120,6 @@ final class EntityTable extends TableAbstract
     #[\Override]
     public function getRowTemplate(): string
     {
-        return \sprintf("{%%%%- use '@%s/datatable/row.json.twig' -%%%%}{{ block('emsco_datatable_row') }}", $this->templateNamespace);
+        return \sprintf("{%%- use '@%s/datatable/row.json.twig' -%%}{{ block('emsco_datatable_row') }}", $this->templateNamespace);
     }
 }

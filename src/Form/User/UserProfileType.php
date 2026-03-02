@@ -51,7 +51,7 @@ class UserProfileType extends AbstractType
                 'mapped' => false,
                 'constraints' => [
                     new NotBlank(),
-                    new UserPassword(['message' => 'user.current_password.invalid']),
+                    new UserPassword(message: 'user.current_password.invalid'),
                 ],
                 'attr' => [
                     'autocomplete' => 'current-password',

@@ -118,7 +118,7 @@ class EntitiesController
         try {
             $entityService = $this->entitiesHelper->getEntityService($entity);
         } catch (EntityServiceNotFoundException $entityServiceNotFoundException) {
-            throw new NotFoundHttpException($entityServiceNotFoundException->getMessage());
+            throw new NotFoundHttpException($entityServiceNotFoundException->getMessage(), $entityServiceNotFoundException);
         }
 
         return $entityService;

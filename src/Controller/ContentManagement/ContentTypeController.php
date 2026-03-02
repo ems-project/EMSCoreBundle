@@ -557,7 +557,7 @@ class ContentTypeController extends AbstractController
                                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
                             ]);
                         } catch (OptimisticLockException|ORMException $e) {
-                            throw new ElasticmsException($e->getMessage());
+                            throw new ElasticmsException($e->getMessage(), $e->getCode(), $e);
                         }
                     } else {
                         $this->logger->error('log.contenttype.field.name_not_valid', [

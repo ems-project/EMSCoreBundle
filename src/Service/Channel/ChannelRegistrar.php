@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Service\Channel;
 
 use EMS\ClientHelperBundle\Contracts\Environment\EnvironmentHelperInterface;
 use EMS\ClientHelperBundle\Helper\Environment\Environment;
+use EMS\ClientHelperBundle\Twig\InlineEditExtension;
 use EMS\CoreBundle\Repository\ChannelRepository;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\Helpers\Standard\Json;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 final readonly class ChannelRegistrar
 {
+    public const string ATTRIBUTE_CHANNEL_NAME = '_channel';
     public const string EMSCO_CHANNEL_PATH_REGEX = '/^(\\/index\\.php)?\\/channel\\/(?P<channel>([a-z\\-0-9_]+))(\\/)?/';
 
     public function __construct(
@@ -49,7 +51,7 @@ final readonly class ChannelRegistrar
         $baseUrl = \vsprintf('%s://%s%s', [$request->getScheme(), $request->getHttpHost(), $request->getBasePath()]);
 
         $options = $channel->getOptions();
-
+        $inlineEditor = $options['inline_editor'] ?? false;
         $prefixInstanceId = $options['prefix_instance_id'] ?? false;
         if (true === $prefixInstanceId) {
             $alias = $this->instanceId.$alias;
@@ -59,6 +61,11 @@ final readonly class ChannelRegistrar
         $searchConfig = Json::decode((string) $defaultSearchConfigOption);
         $defaultAttributesOption = (isset($options['attributes']) && '' !== $options['attributes']) ? $options['attributes'] : '{}';
         $attributes = Json::decode((string) $defaultAttributesOption);
+        $attributes[self::ATTRIBUTE_CHANNEL_NAME] = $channelName;
+
+        if ($inlineEditor) {
+            $attributes[InlineEditExtension::REQUEST_INLINE_EDIT] = true;
+        }
 
         if (!$this->indexService->hasIndex($alias)) {
             $this->logger->warning('log.channel.alias_not_found', [
@@ -74,11 +81,8 @@ final readonly class ChannelRegistrar
             Environment::REGEX_CONFIG => \sprintf('/^%s.*/', \preg_quote($baseUrl, '/')),
             Environment::DEFAULT => false,
             'search_config' => $searchConfig,
+            Environment::REQUEST_CONFIG => $attributes,
         ];
-
-        if ([] !== $attributes) {
-            $options[Environment::REQUEST_CONFIG] = $attributes;
-        }
 
         $this->environmentHelper->addEnvironment($channelName, $options);
     }

@@ -23,6 +23,7 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
 
         return [
             'prefix_instance_id' => $value['prefix_instance_id'] ?? false,
+            'inline_editor' => $value['inline_editor'] ?? false,
             'searchConfig' => $searchConfig,
             'entryPath' => $value['entryPath'] ?? null,
             'attributes' => $attributes,
@@ -37,6 +38,7 @@ final class ChannelOptionsTransformer implements DataTransformerInterface
     {
         return [
             'prefix_instance_id' => $value['prefix_instance_id'] ?? '',
+            'inline_editor' => $value['inline_editor'] ?? '',
             'searchConfig' => $value['searchConfig'] ?? '',
             'entryPath' => $value['entryPath'] ?? '',
             'attributes' => $value['attributes'] ?? '',

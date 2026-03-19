@@ -104,6 +104,19 @@ class Revision implements EntityInterface, \Stringable
         return RawDataTransformer::transform($this->giveContentType()->getFieldType(), $this->rawData ?? []);
     }
 
+    public function isDraftForUser(string $username): bool
+    {
+        if (!$this->isDraft()) {
+            return false;
+        }
+
+        if ($this->isLockedFor($username)) {
+            return true;
+        }
+
+        return $this->autoSaveBy === $username;
+    }
+
     public function setLazyIndex(bool $lazyIndex): void
     {
         $this->lazyIndex = $lazyIndex;

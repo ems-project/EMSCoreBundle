@@ -64,6 +64,7 @@ use EMS\CoreBundle\Event\RevisionUnpublishEvent;
 use EMS\CoreBundle\Event\UpdateRevisionReferersEvent;
 use EMS\CoreBundle\EventListener\AccessDeniedListener;
 use EMS\CoreBundle\EventListener\EventsToWebhookSubscribers;
+use EMS\CoreBundle\EventListener\InlineEditListener;
 use EMS\CoreBundle\EventListener\LoginListener;
 use EMS\CoreBundle\EventListener\PageListener;
 use EMS\CoreBundle\EventListener\RequestListener;
@@ -130,6 +131,10 @@ return static function (ContainerConfigurator $container) {
             service('router'),
             '%ems_core.security.firewall.core%',
         ])
+        ->tag('kernel.event_subscriber');
+
+    $services->set('emsco.event_listener.inline_editor', InlineEditListener::class)
+        ->args([service('emsco.core.inline_editor')])
         ->tag('kernel.event_subscriber');
 
     $services->set('ems_core.event_listener.login_listener', LoginListener::class)

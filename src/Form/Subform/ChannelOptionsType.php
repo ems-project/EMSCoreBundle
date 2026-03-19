@@ -31,6 +31,13 @@ final class ChannelOptionsType extends AbstractType
                     'class' => 'col-md-12',
                 ],
             ])
+            ->add('inline_editor', CheckboxType::class, [
+                'label' => t('key.inline_editor', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => [
+                    'class' => 'col-md-12',
+                ],
+            ])
             ->add('entryPath', null, [
                 'label' => t('field.entry_path', [], 'emsco-core'),
                 'required' => false,

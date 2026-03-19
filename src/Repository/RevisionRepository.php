@@ -745,7 +745,7 @@ class RevisionRepository extends EntityRepository
     /**
      * @return array<string, Revision[]>
      */
-    public function findAllPublishedRevision(EMSLink ...$emsIds): array
+    public function findAllCurrentRevisions(EMSLink ...$emsIds): array
     {
         $ouuids = \array_map(static fn (EMSLink $link) => $link->getOuuid(), $emsIds);
 
@@ -755,14 +755,17 @@ class RevisionRepository extends EntityRepository
             ->addSelect('er')
             ->addSelect('e')
             ->join('r.contentType', 'c')
-            ->join('r.environmentRevisions', 'er')
-            ->join('er.environment', 'e')
+            ->leftJoin('r.environmentRevisions', 'er')
+            ->leftJoin('er.environment', 'e')
             ->andWhere($qb->expr()->eq('c.active', $qb->expr()->literal(true)))
             ->andWhere($qb->expr()->eq('c.deleted', $qb->expr()->literal(false)))
             ->andWhere($qb->expr()->eq('r.deleted', $qb->expr()->literal(false)))
-            ->andWhere($qb->expr()->isNotNull('e.id'))
             ->andWhere($qb->expr()->isNull('er.deleted'))
             ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
+            ->andWhere($qb->expr()->orX(
+                $qb->expr()->isNotNull('e.id'),
+                $qb->expr()->eq('r.draft', $qb->expr()->literal(true))
+            ))
             ->setParameter('ouuids', $ouuids, ArrayParameterType::STRING);
 
         /** @var Revision[] $revisions */

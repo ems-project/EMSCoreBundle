@@ -22,6 +22,11 @@ final readonly class DocumentInfo
         return $this->id;
     }
 
+    public function getCurrentRevision(): ?Revision
+    {
+        return \array_find($this->revisions, fn ($revision) => null === $revision->getEndTime());
+    }
+
     public function getRevision(string $environmentName): ?Revision
     {
         foreach ($this->revisions as $revision) {
@@ -76,6 +81,19 @@ final readonly class DocumentInfo
         }
 
         return false;
+    }
+
+    public function getPublishedStatus(string $environmentName): string
+    {
+        if (!$this->isPublished($environmentName)) {
+            return 'not_published';
+        }
+
+        if (!$this->isAligned($environmentName)) {
+            return 'outdated';
+        }
+
+        return 'published';
     }
 
     public function hasDraft(): bool

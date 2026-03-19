@@ -19,12 +19,14 @@ use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryService;
 use EMS\CoreBundle\Core\Component\MediaLibrary\Template\MediaLibraryTemplateFactory;
 use EMS\CoreBundle\Core\Config\AbstractConfigFactory;
 use EMS\CoreBundle\Core\Config\ConfigValueResolver;
+use EMS\CoreBundle\Core\InlineEditor\InlineEditor;
 use EMS\CoreBundle\Core\Metric\JobMetricCollector;
 use EMS\CoreBundle\Repository\JobRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Validator\Constraints\MediaLibrary\DocumentValidator;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services();
@@ -123,4 +125,14 @@ return static function (ContainerConfigurator $container) {
     $services->set('emsco.metric.job_metric_collector', JobMetricCollector::class)
         ->args([service(JobRepository::class)])
         ->tag('ems.metric_collector');
+
+    $services->set('emsco.core.inline_editor', InlineEditor::class)
+        ->args([
+            service('twig'),
+            service(UrlGeneratorInterface::class),
+            service('ems.service.revision'),
+            service('ems.service.data'),
+            service('ems.service.environment'),
+            service('ems.service.user'),
+        ]);
 };

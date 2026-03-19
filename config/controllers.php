@@ -42,6 +42,7 @@ use EMS\CoreBundle\Controller\DefaultController;
 use EMS\CoreBundle\Controller\ElasticsearchController;
 use EMS\CoreBundle\Controller\Form\FormController;
 use EMS\CoreBundle\Controller\Form\SubmissionController;
+use EMS\CoreBundle\Controller\InlineEditorController;
 use EMS\CoreBundle\Controller\Log\LogController;
 use EMS\CoreBundle\Controller\MercureController;
 use EMS\CoreBundle\Controller\NotificationController;
@@ -804,6 +805,10 @@ return static function (ContainerConfigurator $container) {
         ->call('setContainer')
         ->tag('container.service_subscriber')
         ->tag('controller.service_arguments');
+
+    $services->set(InlineEditorController::class)
+        ->public()
+        ->args([service('emsco.core.inline_editor')]);
 
     $services->set(MercureController::class)
         ->public()

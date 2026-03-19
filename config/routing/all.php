@@ -58,4 +58,5 @@ return function (RoutingConfigurator $routes): void {
     $routes->import('@EMSCoreBundle/config/routing/images.php')->prefix('/images');
     $routes->import('@EMSCoreBundle/config/routing/icons.php');
     $routes->import('@EMSCoreBundle/config/routing/mercure.php');
+    $routes->import('@EMSCoreBundle/config/routing/inline-editor.php');
 };

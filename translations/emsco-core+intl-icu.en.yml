@@ -272,6 +272,7 @@ key:
     groups: Groups
     i18n: I18N
     inline: Inline
+    inline_editor: 'Inline editor'
     job_logs: 'Jobs logs'
     jobs: Jobs
     landscape: Landscape

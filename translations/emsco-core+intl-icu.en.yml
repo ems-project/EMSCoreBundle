@@ -257,7 +257,6 @@ key:
     attachment: Attachment
     channels: Channels
     ckeditor4: 'CK Editor 4'
-    ckeditor5: 'CK Editor 5'
     content_types: 'Content Types'
     dashboards: Dashboards
     details: Details

@@ -103,7 +103,7 @@ class WysiwygFieldType extends DataFieldType
         $attr['data-format-tags'] = $formatTags;
         $attr['data-styles-set'] = $styleSetName;
         $attr['data-content-css'] = $contentCss;
-        $attr['class'] .= ' ckeditor_ems';
+        $attr['class'] .= ' ems-wysiwyg-revision';
         $view->vars['attr'] = $attr;
     }
 

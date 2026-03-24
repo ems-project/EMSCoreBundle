@@ -37,7 +37,7 @@ class TreatNotificationsType extends AbstractType
                 'required' => false,
             ])
             ->add('response', TextareaType::class, [
-                'attr' => ['class' => 'ckeditor'],
+                'attr' => ['class' => 'core-wysiwyg'],
             ])
             ->add('accept', SubmitEmsType::class, [
                 'attr' => ['class' => 'btn btn-success btn-md'],

@@ -42,6 +42,7 @@ export default class EmsListeners {
         this.addA2LixLibSfCollection();
         this.addDisabledButtonTreatListeners();
         this.addDateRangeListeners();
+        this.addCkeditor4();
         tooltipDataLinks(this.target);
     }
 
@@ -809,6 +810,16 @@ export default class EmsListeners {
             } else {
                 $(this).daterangepicker(options);
             }
+        });
+    }
+
+    addCkeditor4() {
+        const wysiwygInfo = JSON.parse(document.querySelector('body').dataset.wysiwygInfo);
+        if (wysiwygInfo.editor !== 'ckeditor4') return;
+
+        const textareas = document.querySelectorAll('textarea.ems-wysiwyg');
+        textareas.forEach((element) => {
+            CKEDITOR.replace(element);
         });
     }
 }

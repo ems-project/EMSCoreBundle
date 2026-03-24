@@ -81,7 +81,7 @@ class ContentTypeType extends AbstractType
         $builder->add('description', TextareaType::class, [
             'required' => false,
             'attr' => [
-                'class' => 'ckeditor',
+                'class' => 'ems-wysiwyg',
             ],
         ]);
 
@@ -89,7 +89,7 @@ class ContentTypeType extends AbstractType
             $builder->add('indexTwig', TextareaType::class, [
                 'required' => false,
                 'attr' => [
-                    'class' => 'ckeditor',
+                    'class' => 'ems-wysiwyg',
                     'rows' => 10,
                 ],
             ]);

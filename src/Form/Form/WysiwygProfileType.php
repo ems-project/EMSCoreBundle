@@ -36,6 +36,7 @@ class WysiwygProfileType extends AbstractType
                 'required' => true,
                 'choices' => [
                     t('key.ckeditor4', [], 'emsco-core')->getMessage() => WysiwygProfile::CKEDITOR4,
+                    t('key.tiptap', [], 'emsco-core')->getMessage() => WysiwygProfile::TIPTAP,
                 ],
                 'label' => t('field.editor', [], 'emsco-core'),
                 'choice_translation_domain' => 'emsco-core',

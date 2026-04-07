@@ -814,6 +814,9 @@ export default class EmsListeners {
     }
 
     addCkeditor4() {
+        const info = document.body.dataset.wysiwygInfo;
+        if (!info) return
+
         const wysiwygInfo = JSON.parse(document.querySelector('body').dataset.wysiwygInfo);
         if (wysiwygInfo.editor !== 'ckeditor4') return;
 

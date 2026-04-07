@@ -15,6 +15,7 @@ class WysiwygProfile extends JsonDeserializer implements \JsonSerializable, Enti
     use IdentifierIntegerTrait;
 
     public const string CKEDITOR4 = 'ckeditor4';
+    public const string TIPTAP = 'tiptap';
     protected string $name = '';
     protected string $editor = self::CKEDITOR4;
     protected ?string $config = null;

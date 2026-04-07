@@ -347,6 +347,8 @@
     {% embed '@EMSCore/core/modal.html.twig' with {'id': 'ajax-modal'} %}{% endembed %}
     {% embed '@EMSCore/core/modal.html.twig' with {'id': 'pick-file-server-modal'} %}{% endembed %}
 
+    <script src="{{ asset('src/core-bundle.ts', 'emsadminui') }}" type="module"></script>
+
     <!-- centralized webpack javascript -->
     {% block frontend_application_js %}{#ok#}
         <script src="{{ asset('app.js', 'emscore') }}"></script>

@@ -325,7 +325,7 @@
                 {% endif %}
                 <div class="box-body with-border">
                     <div class="table-responsive">
-                        <table class="table table-condensed table-striped" data-datatable="{{ table.frontendOptions|json_encode|e('html_attr') }}">
+                        <table class="table table-condensed table-striped" style="width:100%" data-datatable="{{ table.frontendOptions|json_encode|e('html_attr') }}">
                             <thead>
                             <tr role="row">
                                 {% if table.supportsTableActions %}

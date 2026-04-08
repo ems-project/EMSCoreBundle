@@ -32,7 +32,7 @@ class RevisionAuditDataTableType extends AbstractEntityTableType
             ->setCellClass('col-sm');
         $table
             ->addColumnDefinition(new TableColumn('log.index.column.level_name', 'levelName'))
-            ->setCellClass('text-center col-xs');
+            ->setCellClass('col-xs');
         $table
             ->addColumnDefinition(new TableColumn('log.index.column.message', 'message'));
         $table

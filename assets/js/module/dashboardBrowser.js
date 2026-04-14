@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
     let dashboardType = browserDiv.dataset.type
 
     document.addEventListener('click', (event) => {
-        if(event.target.tagName.toLowerCase() !== 'a') return
+        if(event.target.tagName.toLowerCase() !== 'a' || event.target.hasAttribute('data-skip-click-event')) return
 
         event.preventDefault();
 

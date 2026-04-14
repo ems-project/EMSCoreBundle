@@ -10,6 +10,7 @@ use EMS\CommonBundle\Json\JsonMenuNested;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\CantBeFinalizedException;
@@ -25,12 +26,12 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
-use Twig\Environment;
+use Twig\Environment as Twig;
 use Twig\Error\SyntaxError;
 
 final readonly class PostProcessingService
 {
-    public function __construct(private Environment $twig, private FormFactoryInterface $formFactory, private LoggerInterface $logger)
+    public function __construct(private Twig $twig, private FormFactoryInterface $formFactory, private LoggerInterface $logger)
     {
     }
 
@@ -64,6 +65,7 @@ final readonly class PostProcessingService
             'path' => $path,
             'form' => $form,
             'revisionId' => $revision?->getId(),
+            'revisionEnvironments' => $revision?->getEnvironments()->map(fn (Environment $e) => $e->getName())->toArray() ?? [],
         ]);
 
         $found = false;

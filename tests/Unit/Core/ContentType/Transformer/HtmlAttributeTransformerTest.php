@@ -119,7 +119,6 @@ class HtmlAttributeTransformerTest extends AbstractTransformerTestCase
         $output = <<<HTML
             <div class="test">
                 <h1>Test</h1>
-                <span></span>
             </div>
             HTML;
 
@@ -201,6 +200,50 @@ class HtmlAttributeTransformerTest extends AbstractTransformerTestCase
             'attribute' => 'style',
             'element' => 'h1',
             'remove' => true,
+        ]);
+    }
+
+    public function testRemoveLastAttributeClass(): void
+    {
+        $input = '<p>Test <ins class="newWord">new word</ins></p>';
+        $output = '<p>Test new word</p>';
+
+        $this->assertEqualsInputOutPut($input, $output, [
+            'attribute' => 'class',
+            'remove_value_prefix' => 'newWord',
+        ]);
+    }
+
+    public function testRemoveLastAttributeStyle(): void
+    {
+        $input = '<p>Test <span style="color:red">new word</span></p>';
+        $output = '<p>Test new word</p>';
+
+        $this->assertEqualsInputOutPut($input, $output, [
+            'attribute' => 'style',
+            'remove_value_prefix' => 'color',
+        ]);
+    }
+
+    public function testRemoveAttributeUnwraps(): void
+    {
+        $input = '<p>Test <span data-foo="bar">new word</span></p>';
+        $output = '<p>Test new word</p>';
+
+        $this->assertEqualsInputOutPut($input, $output, [
+            'attribute' => 'data-foo',
+            'remove' => true,
+        ]);
+    }
+
+    public function testRemoveClassKeepsElementWithOtherAttributes(): void
+    {
+        $input = '<p>Test <ins class="newWord" id="x">new word</ins></p>';
+        $output = '<p>Test <ins id="x">new word</ins></p>';
+
+        $this->assertEqualsInputOutPut($input, $output, [
+            'attribute' => 'class',
+            'remove_value_prefix' => 'newWord',
         ]);
     }
 }

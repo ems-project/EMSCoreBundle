@@ -10,6 +10,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class HtmlAttributeTransformer extends BaseHtmlTransformer
 {
+    /** @var list<string> */
+    private const array UNWRAP_BLACKLIST = [
+        'table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th',
+        'ul', 'ol', 'li', 'dl', 'dt', 'dd',
+        'p', 'section', 'article', 'header', 'footer', 'nav', 'aside',
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'figure', 'figcaption', 'blockquote', 'pre',
+    ];
+
     #[\Override]
     public function getName(): string
     {
@@ -17,15 +26,15 @@ final class HtmlAttributeTransformer extends BaseHtmlTransformer
     }
 
     #[\Override]
-    public function supports(string $class): bool
+    public function supports(string $fieldTypeClass): bool
     {
-        return WysiwygFieldType::class === $class;
+        return WysiwygFieldType::class === $fieldTypeClass;
     }
 
     #[\Override]
     public function transform(TransformContext $context): void
     {
-        if (null == $data = $context->getData()) {
+        if (null === $context->getData()) {
             return;
         }
 
@@ -71,6 +80,9 @@ final class HtmlAttributeTransformer extends BaseHtmlTransformer
 
         foreach ($this->crawl($crawler, $xpath) as $element) {
             $element->removeAttribute($attribute);
+            if (0 === $element->attributes->length) {
+                $this->unwrap($element);
+            }
             ++$result;
         }
 
@@ -121,6 +133,9 @@ final class HtmlAttributeTransformer extends BaseHtmlTransformer
 
             if ([] === $filter) {
                 $element->removeAttribute('class');
+                if (0 === $element->attributes->length) {
+                    $this->unwrap($element);
+                }
                 continue;
             }
 
@@ -155,6 +170,9 @@ final class HtmlAttributeTransformer extends BaseHtmlTransformer
 
             if ([] === $filter) {
                 $element->removeAttribute('style');
+                if (0 === $element->attributes->length) {
+                    $this->unwrap($element);
+                }
                 continue;
             }
 
@@ -163,5 +181,39 @@ final class HtmlAttributeTransformer extends BaseHtmlTransformer
         }
 
         return $result;
+    }
+
+    private function unwrap(\DOMElement $element): void
+    {
+        if (\in_array(\strtolower($element->nodeName), self::UNWRAP_BLACKLIST, true)) {
+            return;
+        }
+
+        $parent = $element->parentNode;
+        if (null === $parent) {
+            return;
+        }
+
+        $hasContent = null !== $element->firstChild;
+
+        if (!$hasContent) {
+            $prev = $element->previousSibling;
+            $next = $element->nextSibling;
+            $parent->removeChild($element);
+
+            if ($next instanceof \DOMText) {
+                $next->nodeValue = \preg_replace('/^[ \t]*\n/', '', $next->nodeValue ?? '');
+            }
+            if ($prev instanceof \DOMText) {
+                $prev->nodeValue = \rtrim($prev->nodeValue ?? '', " \t");
+            }
+
+            return;
+        }
+
+        while (null !== $element->firstChild) {
+            $parent->insertBefore($element->firstChild, $element);
+        }
+        $parent->removeChild($element);
     }
 }

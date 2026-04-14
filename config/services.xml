@@ -475,6 +475,7 @@
             <argument type="service" id="ems.service.environment"/>
             <argument type="service" id="ems.service.contenttype"/>
             <argument type="service" id="ems.repository.search"/>
+            <argument type="service" id="EMS\CoreBundle\Repository\RevisionRepository"/>
         </service>
         <service id="ems.service.file" class="EMS\CoreBundle\Service\FileService">
             <argument type="service" id="doctrine"/>

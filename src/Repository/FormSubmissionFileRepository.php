@@ -39,20 +39,43 @@ class FormSubmissionFileRepository extends ServiceEntityRepository
         return $qb->getQuery()->getOneOrNullResult();
     }
 
-    public function removeExpiredSubmissionAttachments(): int
+    public function removeExpiredSubmissionAttachments(int $batchSize = 1000): int
     {
         $now = new \DateTimeImmutable();
-        $qb = $this->createQueryBuilder('f')
-            ->delete()
-            ->where(\sprintf(
-                'EXISTS (
+        $totalDeleted = 0;
+
+        do {
+            $ids = $this->createQueryBuilder('f')
+                ->select('f.id')
+                ->where(\sprintf(
+                    'EXISTS (
                     SELECT 1 FROM %s s
                     WHERE s = f.formSubmission AND s.expireDate < :now
                 )',
-                FormSubmission::class
-            ))
-            ->setParameter('now', $now);
+                    FormSubmission::class
+                ))
+                ->setParameter('now', $now)
+                ->setMaxResults($batchSize)
+                ->orderBy('f.created', 'ASC')
+                ->getQuery()
+                ->getSingleColumnResult();
 
-        return $qb->getQuery()->execute();
+            if ([] === $ids) {
+                break;
+            }
+
+            $deleted = $this->createQueryBuilder('f')
+                ->delete()
+                ->where('f.id IN (:ids)')
+                ->setParameter('ids', $ids)
+                ->getQuery()
+                ->execute();
+
+            $totalDeleted += $deleted;
+
+            $this->getEntityManager()->clear();
+        } while (\count($ids) === $batchSize);
+
+        return $totalDeleted;
     }
 }

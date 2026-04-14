@@ -15,9 +15,9 @@ final class HtmlEmptyTransformer extends AbstractTransformer
     }
 
     #[\Override]
-    public function supports(string $class): bool
+    public function supports(string $fieldTypeClass): bool
     {
-        return WysiwygFieldType::class === $class;
+        return WysiwygFieldType::class === $fieldTypeClass;
     }
 
     #[\Override]

@@ -695,6 +695,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.environment'),
             service('ems.service.contenttype'),
             service('ems.repository.search'),
+            service(RevisionRepository::class),
         ]);
 
     $services->set('ems.service.file', FileService::class)

@@ -9,12 +9,14 @@ use Elastica\Query\BoolQuery;
 use Elastica\Query\Term;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
+use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Search\Search as CommonSearch;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\ContentType\Version\VersionFields;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
+use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\SearchRepository;
 
 class SearchService
@@ -25,7 +27,8 @@ class SearchService
         private readonly ElasticaService $elasticaService,
         private readonly EnvironmentService $environmentService,
         private readonly ContentTypeService $contentTypeService,
-        private readonly SearchRepository $searchRepository
+        private readonly SearchRepository $searchRepository,
+        private readonly RevisionRepository $revisionRepository
     ) {
     }
 
@@ -95,6 +98,23 @@ class SearchService
         }
 
         return $commonSearch;
+    }
+
+    /**
+     * Not found in default environment, try revision environment for archived revision.
+     */
+    public function findDocument(ContentType $contentType, string $ouuid): Document
+    {
+        try {
+            return $this->getDocument($contentType, $ouuid);
+        } catch (NotFoundException $e) {
+            $revision = $this->revisionRepository->findRevision($ouuid, $contentType->getName());
+            $environment = $revision?->getEnvironments()->first();
+            if ($environment instanceof Environment) {
+                return $this->getDocument($contentType, $ouuid, $environment);
+            }
+            throw $e;
+        }
     }
 
     public function getDocument(ContentType $contentType, string $ouuid, ?Environment $environment = null): Document

@@ -162,7 +162,7 @@ readonly class CoreExtension
         $label = \sprintf('<i class="%s"></i>', $contentType->getIcon() ?? 'fa fa-book');
 
         try {
-            $document = $this->searchService->getDocument($contentType, $emsLink->getOuuid());
+            $document = $this->searchService->findDocument($contentType, $emsLink->getOuuid());
             $emsLink = $document->getEmsLink(); // versioned documents
             $emsSource = $document->getEMSSource();
             $label .= \sprintf('<span>%s</span>', \htmlentities($this->revisionService->display($document)));

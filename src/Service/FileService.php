@@ -66,6 +66,29 @@ class FileService implements EntityServiceInterface
         }
     }
 
+    /**
+     * @return array{sha1: string, _hash: string, filesize: int, _size: int, filename: string, _name: string, mimetype: string, _type: string, _algo: string}
+     */
+    public function getFileObject(string $hash, ?string $filename = null, ?string $type = null): array
+    {
+        $lastUploaded = $this->uploadedAssetRepository->getLastUploadedByHash($hash);
+        if (null === $lastUploaded) {
+            return $this->storageManager->getFileObject($hash, $filename, $type);
+        }
+
+        return [
+            EmsFields::CONTENT_FILE_HASH_FIELD => $hash,
+            EmsFields::CONTENT_FILE_HASH_FIELD_ => $hash,
+            EmsFields::CONTENT_FILE_SIZE_FIELD => $lastUploaded->getSize(),
+            EmsFields::CONTENT_FILE_SIZE_FIELD_ => $lastUploaded->getSize(),
+            EmsFields::CONTENT_FILE_NAME_FIELD => $filename ?? $lastUploaded->getName(),
+            EmsFields::CONTENT_FILE_NAME_FIELD_ => $filename ?? $lastUploaded->getName(),
+            EmsFields::CONTENT_MIME_TYPE_FIELD => $type ?? $lastUploaded->getType(),
+            EmsFields::CONTENT_MIME_TYPE_FIELD_ => $type ?? $lastUploaded->getType(),
+            EmsFields::CONTENT_FILE_ALGO_FIELD_ => $lastUploaded->getHashAlgo(),
+        ];
+    }
+
     public function getStreamResponse(string $hash, string $disposition, Request $request): Response
     {
         if ($request->query->has('type') && $request->query->has('name')) {

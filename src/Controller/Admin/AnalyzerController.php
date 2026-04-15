@@ -144,7 +144,7 @@ class AnalyzerController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'analyzers'],
             'icon' => 'fa fa-signal',
             'title' => t('type.title_overview', ['type' => 'analyzer'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'analyzer'], 'emsco-core'),

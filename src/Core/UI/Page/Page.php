@@ -15,8 +15,8 @@ readonly class Page
      *     subTitle?: TranslatableMessage,
      *     icon?: string,
      *     breadcrumb?: Navigation,
-     *     datatable?: array{ form: FormView, icon?: string, title?: TranslatableMessage },
-     *     datatables?: array<int, array{ form: FormView, icon?: string, title?: TranslatableMessage }>,
+     *     datatable?: array{ form: FormView, icon?: string, title?: TranslatableMessage, table_id?: string },
+     *     datatables?: array<int, array{ form: FormView, icon?: string, title?: TranslatableMessage, table_id?: string }>,
      *     form?: FormView,
      *     notice?: TranslatableMessage
      * } $context

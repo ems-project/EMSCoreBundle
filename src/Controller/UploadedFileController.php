@@ -57,7 +57,7 @@ class UploadedFileController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'uploaded-files-logs'],
             'icon' => 'fa fa-upload',
             'title' => t('key.uploaded_files_logs', [], 'emsco-core'),
             'breadcrumb' => Navigation::admin()->add(
@@ -108,7 +108,7 @@ class UploadedFileController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'uploaded-files'],
             'icon' => 'fa fa-upload',
             'title' => t('key.uploaded_files', [], 'emsco-core'),
             'breadcrumb' => Navigation::publishers()->add(

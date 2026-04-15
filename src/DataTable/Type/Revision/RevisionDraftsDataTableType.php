@@ -69,7 +69,8 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
             route: Routes::EDIT_REVISION,
             labelKey: t('revision.draft.edit', [], 'emsco-core'),
             icon: 'pencil',
-            routeParameters: ['revisionId' => 'id']
+            routeParameters: ['revisionId' => 'id'],
+            attributes: ['data-testid' => 'revision-draft-id'],
         )->addCondition($inMyCircles)->setButtonType('primary');
 
         $table->addDynamicItemGetAction(
@@ -77,7 +78,8 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
             labelKey: t('revision.draft.view', [], 'emsco-core'),
             icon: '',
             routeParameters: ['type' => 'contentType.name', 'ouuid' => 'ouuid',
-            ]
+            ],
+            attributes: ['data-testid' => 'revision-draft-view'],
         )->addCondition(new NotEmpty('ouuid'));
 
         $table->addDynamicItemPostAction(
@@ -85,7 +87,8 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
             labelKey: t('revision.draft.delete', [], 'emsco-core'),
             icon: 'trash',
             messageKey: t('type.delete_confirm', ['type' => 'draft'], 'emsco-core'),
-            routeParameters: ['revisionId' => 'id']
+            routeParameters: ['revisionId' => 'id'],
+            attributes: ['data-testid' => 'revision-draft-delete'],
         )->addCondition($inMyCircles)->setButtonType('outline-danger');
 
         if (null !== $contentType && (null === $contentType->getCirclesField() || '' === $contentType->getCirclesField())) {

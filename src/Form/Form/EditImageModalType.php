@@ -38,6 +38,7 @@ class EditImageModalType extends AbstractType
             'attr' => [
                 'class' => 'btn btn-primary',
                 'data-ajax-save-url' => $this->router->generate(Routes::WYSIWYG_MODAL_EDIT_IMAGE),
+                'data-testid' => 'btn-action-submit',
             ],
         ]);
     }

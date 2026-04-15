@@ -164,6 +164,7 @@ class ContentTypeController extends AbstractController
             'label' => 'Create',
             'attr' => [
                 'class' => 'btn btn-primary pull-right',
+                'data-testid' => 'btn-action-save',
             ],
         ])->getForm();
 
@@ -257,7 +258,7 @@ class ContentTypeController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'content-type'],
             'icon' => 'fa fa-sitemap',
             'title' => t('type.title_overview', ['type' => 'content_type'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'content_type'], 'emsco-core'),
@@ -271,7 +272,7 @@ class ContentTypeController extends AbstractController
         $form = $this->createForm(TableType::class, $table);
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'content-type-referenced'],
             'title' => t('action.add_referenced_content_type', ['type' => 'content_type'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'content_type'], 'emsco-core'),
             'breadcrumb' => Navigation::admin()->contentTypes()->add(

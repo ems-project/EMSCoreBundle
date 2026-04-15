@@ -261,19 +261,21 @@ class ActionType extends AbstractType
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm',
                     'data-ajax-save-url' => $options['ajax-save-url'],
+                    'data-testid' => 'btn-action-save',
                 ],
                 'icon' => 'fa fa-save',
             ])->add('save_close', SubmitEmsType::class, [
                 'label' => t('action.save_close', [], 'emsco-core'),
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm',
+                    'data-testid' => 'btn-action-save-close',
                 ],
                 'icon' => 'fa fa-save',
             ]);
         } else {
             $builder->add('save', SubmitEmsType::class, [
                 'label' => t('action.save', [], 'emsco-core'),
-                'attr' => ['class' => 'btn btn-primary btn-sm'],
+                'attr' => ['class' => 'btn btn-primary btn-sm', 'data-testid' => 'btn-action-save'],
                 'icon' => 'fa fa-save',
             ]);
         }

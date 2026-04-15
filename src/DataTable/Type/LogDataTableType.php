@@ -63,7 +63,8 @@ class LogDataTableType extends AbstractEntityTableType
         $table->addItemGetAction(
             route: Routes::LOG_VIEW,
             labelKey: t('action.details', [], 'emsco-core'),
-            icon: 'eye'
+            icon: 'eye',
+            attributes: ['data-testid' => 'btn-action-details'],
         );
 
         $this

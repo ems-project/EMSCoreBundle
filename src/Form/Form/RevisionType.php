@@ -63,7 +63,7 @@ class RevisionType extends AbstractType
                 if (!$simplifiedUI) {
                     $builder->add('save', SubmitEmsType::class, [
                         'label' => 'form.form.revision-type.save-draft-label',
-                        'attr' => ['class' => 'btn btn-default btn-sm'],
+                        'attr' => ['class' => 'btn btn-default btn-sm', 'data-testid' => 'revision-action-save-draft'],
                         'icon' => 'fa fa-save',
                     ]);
                 }
@@ -75,13 +75,13 @@ class RevisionType extends AbstractType
                         'label_translation_parameters' => [
                             '%environment%' => \implode(', ', $publishedEnvironmentLabels->toArray()),
                         ],
-                        'attr' => ['class' => 'btn btn-primary btn-sm'],
+                        'attr' => ['class' => 'btn btn-primary btn-sm', 'data-testid' => 'revision-action-publish'],
                         'icon' => 'fa fa-upload',
                     ]);
                 } else {
                     $builder->add('save', SubmitEmsType::class, [
                         'label' => 'form.form.revision-type.save-label',
-                        'attr' => ['class' => 'btn btn-primary btn-sm'],
+                        'attr' => ['class' => 'btn btn-primary btn-sm', 'data-testid' => 'revision-action-save'],
                         'icon' => 'fa fa-save',
                     ]);
                 }
@@ -98,6 +98,7 @@ class RevisionType extends AbstractType
                     'label' => 'form.form.revision-type.paste-label',
                     'attr' => [
                         'class' => '',
+                        'data-testid' => 'revision-action-paste',
                     ],
                     'icon' => 'fa fa-paste',
                 ]);
@@ -108,6 +109,7 @@ class RevisionType extends AbstractType
                     'label' => 'form.form.revision-type.copy-label',
                     'attr' => [
                         'class' => '',
+                        'data-testid' => 'revision-action-copy',
                     ],
                     'icon' => 'fa fa-copy',
                 ]);
@@ -127,6 +129,7 @@ class RevisionType extends AbstractType
                     ],
                     'attr' => [
                         'class' => 'btn btn-primary btn-sm ',
+                        'data-testid' => 'revision-action-publish',
                     ],
                     'icon' => 'fa fa-upload',
                 ]);

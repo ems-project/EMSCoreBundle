@@ -89,6 +89,9 @@ class ReleaseRevisionsUnpublishDataTableType extends AbstractTableType implement
                 'release' => (string) $context['release']->getId(),
                 'type' => 'unpublish',
                 'emsLinkToAdd' => 'documentEmsId',
+            ],
+            attributes: [
+                'data-testid' => 'release-action-add-for-unpublish',
             ]
         );
     }

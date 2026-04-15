@@ -56,7 +56,7 @@ class ElasticSearchController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'orphan-indexes'],
             'icon' => 'fa fa-chain-broken',
             'title' => t('key.orphan_indexes', [], 'emsco-core'),
             'breadcrumb' => Navigation::admin()->environments()->add(
@@ -73,7 +73,7 @@ class ElasticSearchController extends AbstractController
         $form = $this->createForm(TableType::class, $table);
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'unreferenced-aliases'],
             'icon' => 'fa fa-chain',
             'title' => t('key.unreferenced_aliases', [], 'emsco-core'),
             'breadcrumb' => Navigation::admin()->environments()->add(

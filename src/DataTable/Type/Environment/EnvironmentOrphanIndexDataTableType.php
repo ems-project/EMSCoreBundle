@@ -45,7 +45,8 @@ class EnvironmentOrphanIndexDataTableType extends AbstractTableType implements Q
             route: 'elasticsearch.alias.add',
             labelKey: t('action.add_alias', [], 'emsco-core'),
             icon: 'plus',
-            routeParameters: ['name' => 'name']
+            routeParameters: ['name' => 'name'],
+            attributes: ['data-testid' => 'btn-action-add-alias'],
         )->setButtonType('primary');
 
         $table->addDynamicItemPostAction(
@@ -53,7 +54,8 @@ class EnvironmentOrphanIndexDataTableType extends AbstractTableType implements Q
             labelKey: t('action.delete', [], 'emsco-core'),
             icon: 'trash',
             messageKey: t('type.delete_confirm', ['type' => 'orphan_index'], 'emsco-core'),
-            routeParameters: ['name' => 'name']
+            routeParameters: ['name' => 'name'],
+            attributes: ['data-testid' => 'btn-action-delete'],
         )->setButtonType('outline-danger');
 
         $this->addTableActionDelete($table, 'orphan_index');
@@ -61,7 +63,8 @@ class EnvironmentOrphanIndexDataTableType extends AbstractTableType implements Q
             name: self::ACTION_DELETE_ALL,
             label: t('action.delete_all', [], 'emsco-core'),
             icon: 'fa fa-eraser',
-            confirmationKey: t('type.confirm', ['type' => 'delete_all_orphan_index'], 'emsco-core')
+            confirmationKey: t('type.confirm', ['type' => 'delete_all_orphan_index'], 'emsco-core'),
+            attributes: ['data-testid' => 'btn-action-delete-all'],
         );
     }
 

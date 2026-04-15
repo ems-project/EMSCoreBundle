@@ -2,14 +2,14 @@
 
 {% if channels|default([])|length > 0 %}
 <li class="dropdown channels-menu">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-testid="channel-menu">
         <i class="fa fa-eye"></i>
     </a>
     <ul class="dropdown-menu">
         {% set homepage = path('homepage') %}
         {% for channel in channels %}
         <li>
-            <a href="{{ channel.getEntryPath(homepage) }}" target="_blank">
+            <a href="{{ channel.getEntryPath(homepage) }}" target="_blank" data-testid="channel-menu-{{ channel.name }}">
                 <i class="fa fa-{{ channel.public|default ? 'unlock-alt' : 'lock' }}" aria-hidden="true"></i>
                 {{ channel.label }}
             </a>

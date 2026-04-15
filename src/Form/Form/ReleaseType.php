@@ -69,18 +69,19 @@ final class ReleaseType extends AbstractType
             $builder->add('create', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm',
+                    'data-testid' => 'release-create',
                 ],
                 'icon' => 'fa fa-plus',
                 'label' => t('action.create', [], 'emsco-core'),
             ]);
         } else {
             $builder->add(self::BTN_SAVE, SubmitEmsType::class, [
-                'attr' => ['class' => 'btn btn-default btn-sm'],
+                'attr' => ['class' => 'btn btn-default btn-sm', 'data-testid' => 'release-save'],
                 'icon' => 'fa fa-save',
                 'label' => t('action.save', [], 'emsco-core'),
             ])
             ->add(self::BTN_SAVE_CLOSE, SubmitEmsType::class, [
-                'attr' => ['class' => 'btn btn-default btn-sm'],
+                'attr' => ['class' => 'btn btn-default btn-sm', 'data-testid' => 'release-save-close'],
                 'icon' => 'fa fa-save',
                 'label' => t('action.save_close', [], 'emsco-core'),
             ]);

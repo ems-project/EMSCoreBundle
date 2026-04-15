@@ -56,7 +56,7 @@ class GroupController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'group'],
             'title' => t('type.title_overview', ['type' => 'group'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'group'], 'emsco-core'),
             'breadcrumb' => $this->breadcrumb(),

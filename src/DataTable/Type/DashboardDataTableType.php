@@ -47,19 +47,21 @@ class DashboardDataTableType extends AbstractEntityTableType
 
         $this->addItemEdit($table, Routes::DASHBOARD_ADMIN_EDIT);
 
-        $defineAction = $table->addItemActionCollection(t('action.define', [], 'emsco-core'), 'gear');
+        $defineAction = $table->addItemActionCollection(t('action.define', [], 'emsco-core'), 'gear', ['data-testid' => 'btn-action-define-undefine']);
         foreach (DashboardDefinition::cases() as $dashboardDefinition) {
             $defineAction->addItemPostAction(
                 route: Routes::DASHBOARD_ADMIN_DEFINE,
                 labelKey: t('core.dashboard.define', ['define' => $dashboardDefinition->value], 'emsco-core'),
                 icon: $dashboardDefinition->getIcon(),
-                routeParameters: ['definition' => $dashboardDefinition->value]
+                routeParameters: ['definition' => $dashboardDefinition->value],
+                attributes: ['data-testid' => 'btn-action-define-'.$dashboardDefinition->value],
             );
         }
         $defineAction->addItemPostAction(
             route: Routes::DASHBOARD_ADMIN_UNDEFINE,
             labelKey: t('core.dashboard.define', ['define' => null], 'emsco-core'),
-            icon: 'eraser'
+            icon: 'eraser',
+            attributes: ['data-testid' => 'btn-action-undefine'],
         );
 
         $this

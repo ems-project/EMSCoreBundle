@@ -32,7 +32,8 @@ class FilterDataTableType extends AbstractEntityTableType
         $table->addItemGetAction(
             route: Routes::FILTER_EXPORT,
             labelKey: t('action.export', [], 'emsco-core'),
-            icon: 'sign-out'
+            icon: 'sign-out',
+            attributes: ['data-testid' => 'btn-action-export']
         );
 
         $this

@@ -68,7 +68,7 @@ final class ActionController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'content-type-actions'],
             'icon' => 'fa fa-gear',
             'title' => t(
                 message: 'type.title_overview',

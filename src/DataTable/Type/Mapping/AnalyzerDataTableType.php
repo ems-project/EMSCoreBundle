@@ -32,7 +32,8 @@ class AnalyzerDataTableType extends AbstractEntityTableType
         $table->addItemGetAction(
             route: Routes::ANALYZER_EXPORT,
             labelKey: t('action.export', [], 'emsco-core'),
-            icon: 'sign-out'
+            icon: 'sign-out',
+            attributes: ['data-testid' => 'btn-action-export']
         );
 
         $this

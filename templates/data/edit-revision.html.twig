@@ -33,7 +33,7 @@
 				<div class="btn-group">
 					{{ form_widget(form.save) }}
 					<div class="btn-group">
-						<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+						<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" data-testid="revision-other-actions">
 							<span class="fa fa-ellipsis-h"></span>
 						</button>
 						<ul class="dropdown-menu">
@@ -48,7 +48,10 @@
 									'url': path('emsco_data_cancel_modifications', {'revision': revision.id}),
 									'btnClass': '',
 									'label': 'views.data.edit-revision-html.cancel-label'|trans,
-									'icon': 'remove'
+									'icon': 'remove',
+                                    'attributes': {
+                                        'data-testid': 'revision-action-cancel'
+                                    }
 								}%}
 							</li>
 						</ul>
@@ -64,7 +67,10 @@
 					'label': 'views.data.edit-revision-html.discard-draft-label'|trans,
 					'icon': 'trash',
 					'group_class': 'pull-right',
-				}%}
+                    'attributes': {
+                        'data-testid': 'revision-action-discard-draft'
+                    }
+                }%}
 			{% endif %}
 		</div>
 		{{ form_end(form) }}

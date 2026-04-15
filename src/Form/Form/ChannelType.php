@@ -63,6 +63,7 @@ final class ChannelType extends AbstractType
                 'label' => t('action.save', [], 'emsco-core'),
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm ',
+                    'data-testid' => 'btn-action-save',
                 ],
                 'icon' => 'fa fa-save',
             ]);

@@ -52,6 +52,9 @@ class ReleaseRevisionsPublishDataTableType extends AbstractQueryTableType
                 'release' => (string) $release->getId(),
                 'type' => 'publish',
                 'emsLinkToAdd' => 'emsLink',
+            ],
+            attributes: [
+                'data-testid' => 'release-action-add-for-publish',
             ]
         );
     }

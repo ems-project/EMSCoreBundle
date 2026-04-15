@@ -56,7 +56,7 @@ class DashboardController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'dashboards'],
             'icon' => 'fa fa-dashboard',
             'title' => t('type.title_overview', ['type' => 'dashboard'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'dashboard'], 'emsco-core'),

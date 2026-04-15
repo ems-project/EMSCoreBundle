@@ -58,7 +58,7 @@ final class ScheduleController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'schedules'],
             'icon' => 'fa fa-calendar-o',
             'title' => t('type.title_overview', ['type' => 'job_schedule'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'job_schedule'], 'emsco-core'),

@@ -68,6 +68,7 @@ class WysiwygStylesSetType extends AbstractType
             ->add('save', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm ',
+                    'data-testid' => 'btn-action-save',
                 ],
                 'label' => t('action.save', [], 'emsco-core'),
                 'icon' => 'fa fa-save',

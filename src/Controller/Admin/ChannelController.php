@@ -55,7 +55,7 @@ final class ChannelController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'channels'],
             'icon' => 'fa fa-eye',
             'title' => t('type.title_overview', ['type' => 'channel'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'channel'], 'emsco-core'),

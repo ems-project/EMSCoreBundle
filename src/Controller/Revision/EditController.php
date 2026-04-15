@@ -275,7 +275,7 @@ class EditController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'draft-in-progress'],
             'icon' => 'fa fa-fire',
             'title' => t('revision.draft.title', ['pluralName' => $contentTypeId->getPluralName()], 'emsco-core'),
             'breadcrumb' => Navigation::data($contentTypeId)->add(

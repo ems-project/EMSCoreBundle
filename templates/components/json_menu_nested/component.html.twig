@@ -3,12 +3,12 @@
 {# @var template \EMS\CoreBundle\Core\Component\JsonMenuNested\Template\JsonMenuNestedTemplate #}
 {# @var config   \EMS\CoreBundle\Core\Component\JsonMenuNested\Config\JsonMenuNestedConfig #}
 
-<div class="json-menu-nested-component" id="{{ id }}" data-hash="{{ hash }}" {% if config.activeItemId %}data-active-item-id="{{ config.activeItemId }}"{% endif %}>
-    <div class="jmn-node-loading"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
-    <div class="jmn-top"></div>
-    <div class="jmn-wrapper">
+<div class="json-menu-nested-component" id="{{ id }}" data-hash="{{ hash }}" {% if config.activeItemId %}data-active-item-id="{{ config.activeItemId }}"{% endif %} data-testid="json-menu-nested-component-{{ context.structureTitle|ems_slug }}">
+    <div class="jmn-node-loading" data-testid="jmn-loading"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>
+    <div class="jmn-top" data-testid="jmn-top"></div>
+    <div class="jmn-wrapper" data-testid="jmn-wrapper">
         <div class="jmn-header">{{ template.block('jmn_columns', _context)|raw }}</div>
-        <div id="{{- "tree-#{id}" -}}" class="jmn-tree jmn-node jmn-sortable" data-id="{{ config.jsonMenuNested.id }}"  data-types="{{ config.nodes.types('_root')|json_encode|e('html_attr') }}"></div>
+        <div id="{{- "tree-#{id}" -}}" class="jmn-tree jmn-node jmn-sortable" data-id="{{ config.jsonMenuNested.id }}"  data-types="{{ config.nodes.types('_root')|json_encode|e('html_attr') }}" data-testid="menu-tree-{{ context.structureTitle|ems_slug }}"></div>
     </div>
-    <div class="jmn-footer"></div>
+    <div class="jmn-footer" data-testid="jmn-footer"></div>
 </div>

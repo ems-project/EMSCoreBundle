@@ -40,7 +40,8 @@
                 'btnClass': action.cssClass,
                 'attributes': {
                     'data-datatable-event': "action.#{action.name}",
-                    'data-datatable-target': datatable.id
+                    'data-datatable-target': datatable.id,
+                    'data-testid': "table-mass-action-#{action.name}"
                 },
                 'icon': action.icon,
             } %}

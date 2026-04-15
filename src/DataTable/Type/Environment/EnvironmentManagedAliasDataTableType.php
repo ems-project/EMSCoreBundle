@@ -58,7 +58,8 @@ class EnvironmentManagedAliasDataTableType extends AbstractTableType implements 
             labelKey: t('action.attach', [], 'emsco-core'),
             icon: 'plus',
             messageKey: t('type.confirm', ['type' => 'attach_alias'], 'emsco-core'),
-            routeParameters: ['name' => 'name']
+            routeParameters: ['name' => 'name'],
+            attributes: ['data-testid' => 'btn-action-attach-alias'],
         )->setButtonType('primary');
 
         $this->addItemDelete($table, 'managed_alias', Routes::ADMIN_MANAGED_ALIAS_DELETE);

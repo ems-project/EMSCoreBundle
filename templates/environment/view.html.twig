@@ -33,12 +33,18 @@
                     {% include '@EMSCore/elements/get-button.html.twig' with {
 						'url': path('emsco_admin_environment_index'),
 						'label': 'Close',
-						'icon': 'close'
+						'icon': 'close',
+                        'attributes': {
+                            'data-testid': 'btn-close'
+                        }
 					}%}
                     {% include '@EMSCore/elements/get-button.html.twig' with {
-							'url': path('emsco_admin_environment_edit', {'environment': environment.id}),
-							'label': 'Edit',
-							'icon': 'pencil'
+                        'url': path('emsco_admin_environment_edit', {'environment': environment.id}),
+                        'label': 'Edit',
+                        'icon': 'pencil',
+                        'attributes': {
+                            'data-testid': 'btn-edit'
+                        }
 						}%}
 				</div>
               </div>

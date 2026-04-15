@@ -47,7 +47,7 @@ class ReleaseRevisionDataTableType extends AbstractEntityTableType
             case Release::APPLIED_STATUS:
                 $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.still_in_target', 'stil_in_target', "@$this->templateNamespace/release/columns/release-revisions.html.twig"))->setLabelTransOption(['%target%' => $release->getEnvironmentTarget()->getLabel()]);
                 $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.previous', 'previous', "@$this->templateNamespace/release/columns/release-revisions.html.twig"));
-                $table->addDynamicItemGetAction(Routes::VIEW_REVISIONS, 'release.revision.index.column.compare', 'compress', ['type' => 'contentType', 'ouuid' => 'revisionOuuid', 'revisionId' => 'revision.id', 'compareId' => 'rollbackRevision.id'])->addCondition(new NotEmpty('rollbackRevision', 'revision'));
+                $table->addDynamicItemGetAction(Routes::VIEW_REVISIONS, 'release.revision.index.column.compare', 'compress', ['type' => 'contentType', 'ouuid' => 'revisionOuuid', 'revisionId' => 'revision.id', 'compareId' => 'rollbackRevision.id'], ['data-testid' => 'release-revision-compare'])->addCondition(new NotEmpty('rollbackRevision', 'revision'));
                 $table->addTableAction(self::ACTION_ROLLBACK, 'fa fa-rotate-left', 'release.revision.table.rollback.action', 'release.revision.table.rollback.confirm');
                 break;
         }

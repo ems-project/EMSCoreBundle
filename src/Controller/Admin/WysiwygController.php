@@ -61,10 +61,12 @@ class WysiwygController extends AbstractController
                     [
                         'title' => t('type.title_overview', ['type' => 'wysiwyg_profile'], 'emsco-core'),
                         'form' => $datatableProfiles->createView(),
+                        'table_id' => 'wysiwyg-profiles',
                     ],
                     [
                         'title' => t('type.title_overview', ['type' => 'wysiwyg_style_set'], 'emsco-core'),
                         'form' => $datatableStyleSets->createView(),
+                        'table_id' => 'wysiwyg-style-sets',
                     ],
                 ],
                 'title' => t('type.title_overview', ['type' => 'wysiwyg'], 'emsco-core'),

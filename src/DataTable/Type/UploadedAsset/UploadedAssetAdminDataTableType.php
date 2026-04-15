@@ -88,7 +88,8 @@ class UploadedAssetAdminDataTableType extends AbstractEntityTableType
             route: Routes::UPLOAD_ASSET_ADMIN_TOGGLE_VISIBILITY,
             labelKey: t('action.toggle_visibility', [], 'emsco-core'),
             icon: 'eye',
-            routeParameters: ['assetId' => 'id']
+            routeParameters: ['assetId' => 'id'],
+            attributes: ['data-testid' => 'btn-action-toggle-visibility'],
         );
 
         $this->addItemDelete($table, 'uploaded_file', Routes::UPLOAD_ASSET_ADMIN_DELETE);

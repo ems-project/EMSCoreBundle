@@ -29,7 +29,7 @@
     <div class="login-box-body">
         <p class="login-box-msg">{{ 'user.login.title'|trans }}</p>
         {% if error %}
-            <div class="callout callout-warning">
+            <div class="callout callout-warning" data-testid="login-error">
                 <p>{{ error.messageKey|trans(error.messageData) }}</p>
             </div>
         {% endif %}

@@ -3,17 +3,17 @@
 {# @var config \EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig #}
 
 <div class="media-lib" id="{{ config.id }}" data-hash="{{ hash }}" data-search-type="{{ config.searchType }}">
-    <input type="file" id="media-lib-upload-{{- id -}}" class="file-uploader-input" multiple="multiple">
+    <input type="file" id="media-lib-upload-{{- id -}}" class="file-uploader-input" multiple="multiple" data-testid="media-lib-input-file">
     <div class="media-nav-bar"></div>
     <div class="media-lib-breadcrumb"></div>
     <div class="media-lib-content">
         <div class="media-lib-left-column">
-            <div class="media-lib-folders">
+            <div class="media-lib-folders" data-testid="media-lib-folders">
                 <ul class="media-lib-list-folders"></ul>
             </div>
         </div>
         <div class="media-lib-right-column">
-            <div class="media-lib-files">
+            <div class="media-lib-files" data-testid="media-lib-files">
                 <ul class="media-lib-list-uploads"></ul>
                 <ul class="media-lib-list-files"></ul>
                 <div class="media-lib-load-more">

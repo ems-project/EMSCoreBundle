@@ -74,30 +74,35 @@ class ContentTypeDataTableType extends AbstractTableType implements QueryService
         $table->addItemGetAction(
             route: Routes::ADMIN_CONTENT_TYPE_REORDER,
             labelKey: t('key.structure', [], 'emsco-core'),
-            icon: 'sitemap'
+            icon: 'sitemap',
+            attributes: ['data-testid' => 'btn-action-structure']
         );
         $table->addItemGetAction(
             route: Routes::ADMIN_CONTENT_TYPE_ACTION_INDEX,
             labelKey: t('key.actions', [], 'emsco-core'),
-            icon: 'gear'
+            icon: 'gear',
+            attributes: ['data-testid' => 'btn-action-actions']
         );
         $table->addItemGetAction(
             route: Routes::ADMIN_CONTENT_TYPE_VIEW_INDEX,
             labelKey: t('key.views', [], 'emsco-core'),
-            icon: 'tv'
+            icon: 'tv',
+            attributes: ['data-testid' => 'btn-action-views']
         );
 
         $table->addItemGetAction(
             route: Routes::ADMIN_CONTENT_TYPE_EXPORT,
             labelKey: t('action.export', [], 'emsco-core'),
-            icon: 'sign-out'
+            icon: 'sign-out',
+            attributes: ['data-testid' => 'btn-action-export']
         );
 
         $updateMapping = $table->addItemPostAction(
             route: Routes::ADMIN_CONTENT_TYPE_REFRESH_MAPPING,
             labelKey: t('action.update_mapping', [], 'emsco-core'),
             icon: 'refresh',
-            messageKey: t('type.confirm', ['type' => 'content_type_mapping'], 'emsco-core')
+            messageKey: t('type.confirm', ['type' => 'content_type_mapping'], 'emsco-core'),
+            attributes: ['data-testid' => 'btn-action-update-mapping']
         );
         $updateMapping->setButtonType('primary');
         $updateMapping->addCondition(new Equals('[dirty]', true));
@@ -106,7 +111,8 @@ class ContentTypeDataTableType extends AbstractTableType implements QueryService
             route: Routes::ADMIN_CONTENT_TYPE_ACTIVATE,
             labelKey: t('action.activate', [], 'emsco-core'),
             icon: 'check',
-            messageKey: t('type.confirm', ['type' => 'content_type_activate'], 'emsco-core')
+            messageKey: t('type.confirm', ['type' => 'content_type_activate'], 'emsco-core'),
+            attributes: ['data-testid' => 'btn-action-activate']
         );
         $activateAction->setButtonType('primary');
         $activateAction->addCondition(new Equals('[active]', false));
@@ -115,7 +121,8 @@ class ContentTypeDataTableType extends AbstractTableType implements QueryService
             route: Routes::ADMIN_CONTENT_TYPE_DEACTIVATE,
             labelKey: t('action.deactivate', [], 'emsco-core'),
             icon: 'warning',
-            messageKey: t('type.confirm', ['type' => 'content_type_deactivate'], 'emsco-core')
+            messageKey: t('type.confirm', ['type' => 'content_type_deactivate'], 'emsco-core'),
+            attributes: ['data-testid' => 'btn-action-deactivate']
         );
         $deactivateAction->setButtonType('primary');
         $deactivateAction->addCondition(new Equals('[active]', true));
@@ -128,6 +135,7 @@ class ContentTypeDataTableType extends AbstractTableType implements QueryService
             label: t('action.add_referenced', [], 'emsco-core'),
             icon: 'fa fa-plus',
             routeName: Routes::ADMIN_CONTENT_TYPE_ADD_REFERENCED_INDEX,
+            attributes: ['data-testid' => 'btn-action-add-referenced']
         )->setCssClass('btn btn-sm btn-primary');
 
         if ($this->contentTypeService->hasSearch(isActive: false)) {
@@ -135,7 +143,8 @@ class ContentTypeDataTableType extends AbstractTableType implements QueryService
                 name: self::ACTION_ACTIVATE,
                 icon: 'fa fa-check',
                 labelKey: t('type.selection', ['type' => 'content_type_activate'], 'emsco-core'),
-                confirmationKey: t('type.confirm', ['type' => 'content_type_activate_all'], 'emsco-core')
+                confirmationKey: t('type.confirm', ['type' => 'content_type_activate_all'], 'emsco-core'),
+                attributes: ['data-testid' => 'btn-action-activate-all']
             )->setCssClass('btn btn-sm btn-primary');
         }
 
@@ -144,7 +153,8 @@ class ContentTypeDataTableType extends AbstractTableType implements QueryService
                 name: self::ACTION_DEACTIVATE,
                 icon: 'fa fa-warning',
                 labelKey: t('type.selection', ['type' => 'content_type_deactivate'], 'emsco-core'),
-                confirmationKey: t('type.confirm', ['type' => 'content_type_deactivate_all'], 'emsco-core')
+                confirmationKey: t('type.confirm', ['type' => 'content_type_deactivate_all'], 'emsco-core'),
+                attributes: ['data-testid' => 'btn-action-deactivate-all']
             )->setCssClass('btn btn-sm btn-primary');
         }
 
@@ -153,7 +163,8 @@ class ContentTypeDataTableType extends AbstractTableType implements QueryService
                 name: self::ACTION_UPDATE_MAPPING,
                 icon: 'fa fa-refresh',
                 labelKey: t('type.selection', ['type' => 'content_type_mapping'], 'emsco-core'),
-                confirmationKey: t('type.confirm', ['type' => 'content_type_mapping_all'], 'emsco-core')
+                confirmationKey: t('type.confirm', ['type' => 'content_type_mapping_all'], 'emsco-core'),
+                attributes: ['data-testid' => 'btn-action-update-mapping-all']
             )->setCssClass('btn btn-sm btn-primary');
         }
 

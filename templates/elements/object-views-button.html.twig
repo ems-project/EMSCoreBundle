@@ -118,7 +118,7 @@
 
     <div class="btn-group">
         {% if contentTypeActions|default([])|length > 0 %}
-            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-testid="revision-actions-in-{{ environment.label|lower }}">
                 <i class="{{ 'views.elements.object-views-button.action-dropdown-icon-class'|trans }}"></i>
                 {{ 'views.elements.object-views-button.action-dropdown-label'|trans({'%environment%': environment.label}) }}
                 <span class="caret"></span>
@@ -134,10 +134,11 @@
                                 'url': a.link,
                                 'label': a.label,
                                 'icon': a.icon,
-                                'btnClass': ''
+                                'btnClass': '',
+                                'attributes': { 'data-testid': "revision-actions-in-#{environment.label|lower}-#{a.label|ems_slug}"}
                             }%}
                         {% else %}
-                            <a href="{{ a.link|default('#') }}" {% for attribute in a.link_attributes|default([]) %}{{ attribute.name }}="{{ attribute.value }}" {% endfor %}>
+                            <a href="{{ a.link|default('#') }}" {% for attribute in a.link_attributes|default([]) %}{{ attribute.name }}="{{ attribute.value }}" {% endfor %} data-testid="revision-actions-in-{{ environment.label|lower }}-{{ a.label|ems_slug }}">
                             {% if a.icon|default %}<i class="{{ a.icon|raw }}"></i>{% endif %}
                             {% if a.label|default %}{{ a.label|raw }}{% endif %}
                             {% if a.suffix_icon|default %}<i class="{{ a.suffix_icon }}"></i>{% endif %}
@@ -154,9 +155,8 @@
         {% endif %}
     </div>
 {% else %}
-    <a class="btn btn-sm btn-default " href="{{ path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': object.ouuid} ) }}">
+    <a class="btn btn-sm btn-default " href="{{ path('data.view', {'environmentName': environment.name, 'type': contentType.name, 'ouuid': object.ouuid} ) }}" data-testid="revision-actions-view-current">
         <i class="{{ 'views.elements.object-views-button.raw-view-icon-class'|trans }}"></i>
         {{ 'views.elements.object-views-button.raw-view'|trans }}
     </a>
 {% endif %}
-

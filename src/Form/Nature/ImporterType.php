@@ -30,6 +30,7 @@ class ImporterType extends AbstractType
            ->add('import', SubmitEmsType::class, [
                'attr' => [
                    'class' => 'btn-primary',
+                   'data-testid' => 'btn-action-import',
                ],
                'icon' => 'glyphicon glyphicon-import',
            ]);

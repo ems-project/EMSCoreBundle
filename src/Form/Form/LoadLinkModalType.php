@@ -198,6 +198,7 @@ class LoadLinkModalType extends AbstractType
                 'data-ajax-save-url' => $this->router->generate(Routes::WYSIWYG_MODAL_LOAD_LINK, [
                     'anchorTargets' => Json::encode($options[self::ANCHOR_TARGETS]),
                 ]),
+                'data-testid' => 'btn-action-submit',
             ],
         ]);
     }

@@ -2,14 +2,14 @@
 
 {%  for dashboard in dashboardMenu.children %}
     <li class="notifications-menu">
-        <a href="{{ path(dashboard.route, dashboard.routeParameters) }}"{% if dashboard.color %} class="text-{{ dashboard.color }}"{% endif %}>
+        <a href="{{ path(dashboard.route, dashboard.routeParameters) }}"{% if dashboard.color %} class="text-{{ dashboard.color }}"{% endif %} data-testid="notification-menu-{{ dashboard.name }}">
             <i class="{{ dashboard.icon }}"></i>
         </a>
     </li>
 {% endfor %}
 
  <li class="notifications-menu">
-   <a href="{{ path('notifications.inbox') }}">
+   <a href="{{ path('notifications.inbox') }}" data-testid="notification-menu">
      <i class="fa fa-envelope-o"></i>
      {% if counter > 0 %}
      	<span class="label label-warning">{{ counter }}</span>

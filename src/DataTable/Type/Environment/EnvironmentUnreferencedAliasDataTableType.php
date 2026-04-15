@@ -43,7 +43,8 @@ class EnvironmentUnreferencedAliasDataTableType extends AbstractTableType implem
             labelKey: t('action.attach', [], 'emsco-core'),
             icon: 'plus',
             messageKey: t('type.confirm', ['type' => 'attach_alias'], 'emsco-core'),
-            routeParameters: ['name' => 'name']
+            routeParameters: ['name' => 'name'],
+            attributes: ['data-testid' => 'btn-action-attach-alias'],
         )->setButtonType('primary');
 
         $table->addDynamicItemPostAction(
@@ -51,7 +52,8 @@ class EnvironmentUnreferencedAliasDataTableType extends AbstractTableType implem
             labelKey: t('action.delete', [], 'emsco-core'),
             icon: 'trash',
             messageKey: t('type.delete_confirm', ['type' => 'alias'], 'emsco-core'),
-            routeParameters: ['name' => 'name']
+            routeParameters: ['name' => 'name'],
+            attributes: ['data-testid' => 'btn-action-delete'],
         )->setButtonType('outline-danger');
     }
 

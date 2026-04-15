@@ -229,8 +229,9 @@
     <div class="btn-group {{ table.rowActionsClass }}">
         {% for action in table.itemActions %}
             {% if action is iterable and action|length > 0 %}
+               {% set attr = action.attributes|default([])|map((v,k) => "#{k}=#{v}")|join(' ') %}
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" {{ attr }} >
                         {% if action.icon|default(false) %}
                             <span class="{{ action.icon starts with 'glyphicon-' ? "glyphicon #{action.icon}" : "fa fa-#{action.icon}" }}"></span>&nbsp;
                         {% endif %}
@@ -277,7 +278,8 @@
                     'label': action.labelKey(itemLabel),
                     'btnType': action.buttonType,
                     'icon': action.icon,
-                    'group_class': loop.last ? 'pull-right' : ''
+                    'group_class': loop.last ? 'pull-right' : '',
+                    'attributes': action.attributes
                 } %}
             {% endif %}
         {% else %}
@@ -286,6 +288,7 @@
                 'label': action.labelKey(itemLabel),
                 'btnType': action.buttonType,
                 'icon': action.icon,
+                'attributes': action.attributes
             }%}
         {% endif %}
     {% endif %}
@@ -311,12 +314,13 @@
                                 {{ toolbar }}
                             {% endif %}
                             {% for toolbarAction in table.toolbarActions %}
-                                <a class="{{ toolbarAction.cssClass }}" href="{{ path(toolbarAction.routeName, toolbarAction.routeParams) }}">
+                               {% set attr = toolbarAction.attributes|default([])|map((v,k) => "#{k}=#{v}")|join(' ') %}
+                                <a class="{{ toolbarAction.cssClass }}" href="{{ path(toolbarAction.routeName, toolbarAction.routeParams) }}" {{ attr }}>
                                     <i class="{{ toolbarAction.icon }}"></i>&nbsp;{{ toolbarAction.labelKey|trans }}
                                 </a>
                             {% endfor %}
                             {%  if attribute(form, 'reorderAction') is defined %}
-                                <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder">
+                                <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#{{ table.attributeName|e('html_attr') }}_modal_reorder" data-testid="btn-{{ form.vars.name }}-reorder">
                                     <i class="fa fa-reorder"></i>&nbsp;{{ form.reorderAction.vars.label|trans }}
                                 </button>
                             {% endif %}
@@ -325,7 +329,7 @@
                 {% endif %}
                 <div class="box-body with-border">
                     <div class="table-responsive">
-                        <table class="table table-condensed table-striped" style="width:100%" data-datatable="{{ table.frontendOptions|json_encode|e('html_attr') }}">
+                        <table class="table table-condensed table-striped" style="width:100%" data-datatable="{{ table.frontendOptions|json_encode|e('html_attr') }}"{% if table_id|default(false) %} data-testid="table-id-{{ table_id }}"{% endif %}>
                             <thead>
                             <tr role="row">
                                 {% if table.supportsTableActions %}
@@ -407,7 +411,7 @@
                             <div class="modal-body">
                                 <ul class="list-group sortable" id="{{ table.attributeName|e('html_attr') }}_modal_reorder_list">
                                     {% for child in form.reordered %}
-                                        <li class="list-group-item">
+                                        <li class="list-group-item" data-testid="reorder-item">
                                             <i class="glyphicon glyphicon-move"></i>
 
                                             {% for line in table|filter(line => child.vars.value == line.data.id) %}
@@ -420,8 +424,8 @@
                             </div>
                             <div class="modal-footer">
                                 <div class="btn-group">
-                                    {{ form_widget(form.reorderAction, { 'attr': { 'class': 'btn btn-sm btn-primary' } }) }}
-                                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal"><i class="fa fa-close"></i> {{ t('action.close', [], 'emsco-core')|trans }}</button>
+                                    {{ form_widget(form.reorderAction, { 'attr': { 'class': 'btn btn-sm btn-primary', 'data-testid': 'btn-reorder' } }) }}
+                                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" data-testid="btn-close"><i class="fa fa-close"></i> {{ t('action.close', [], 'emsco-core')|trans }}</button>
                                 </div>
                             </div>
                         </div>

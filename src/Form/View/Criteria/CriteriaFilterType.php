@@ -82,6 +82,7 @@ class CriteriaFilterType extends AbstractType
                 'icon' => 'fa fa-table',
                 'attr' => [
                     'class' => 'btn-primary',
+                    'data-testid' => 'btn-action-manage',
                 ],
             ]);
 

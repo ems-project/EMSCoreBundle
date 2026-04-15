@@ -32,6 +32,7 @@ class ReorderType extends AbstractType
         $builder->add('reorder', SubmitEmsType::class, [
             'attr' => [
                 'class' => 'btn btn-primary reorder-button',
+                'data-testid' => 'btn-action-reorder',
             ],
             'icon' => 'fa fa-reorder',
         ]);

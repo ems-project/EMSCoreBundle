@@ -110,7 +110,7 @@ class I18nController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'i18n'],
             'icon' => 'fa fa-language',
             'title' => t('type.title_overview', ['type' => 'i18n'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'i18n'], 'emsco-core'),

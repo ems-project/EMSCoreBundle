@@ -88,7 +88,7 @@
 	<div class="panel-body row">
 
     {% if showB %}
-		<div class="{% if showA and showB %} col-md-6{% endif %} asset-preview-tab" >
+		<div class="{% if showA and showB %} col-md-6{% endif %} asset-preview-tab" data-testid="asset-preview-{{ dataField.fieldType.name }}">
 
             {% if attribute(compareRawData, dataField.fieldType.name).mimetype starts with 'image/' %}
                 {% set path = path('ems.file.view', {'sha1':attribute(compareRawData, dataField.fieldType.name).sha1, 'type':attribute(compareRawData, dataField.fieldType.name).mimetype, 'name':attribute(compareRawData, dataField.fieldType.name).filename }) %}
@@ -110,7 +110,7 @@
 		</div>
     {% endif %}
 	{% if showA %}
-		<div class="{% if showA and showB %} col-md-6{% endif %} asset-preview-tab" >
+		<div class="{% if showA and showB %} col-md-6{% endif %} asset-preview-tab" data-testid="asset-preview-{{ dataField.fieldType.name }}">
 			{% if dataField.rawData and dataField.rawData.sha1 is defined %}
 				{% if dataField.rawData.sha1 and dataField.rawData.mimetype|default('missing') starts with 'image/' %}
 					{% set path = emsco_asset_path(dataField.rawData, 'preview') %}
@@ -159,11 +159,11 @@
 
 				{% set tempId = dataField.fieldType.name~'_'~random() %}
 				<div class="btn-group">
-					<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#indexed-details-revision_{{ tempId }}">
+					<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#indexed-details-revision_{{ tempId }}" data-testid="asset-info-{{ dataField.fieldType.name }}">
 						<i class="fa fa-info"></i>
 						{{ 'Info'|trans }}
 					</button>
-					<a href="{{ ems_asset_path(dataField.rawData, {'_disposition':'attachment'}) }}" class="btn btn-small btn-default"><i class="fa fa-download"></i>&nbsp;{{'Download'|trans}}</a>
+					<a href="{{ ems_asset_path(dataField.rawData, {'_disposition':'attachment'}) }}" class="btn btn-small btn-default" data-testid="asset-download-{{ dataField.fieldType.name }}"><i class="fa fa-download"></i>&nbsp;{{'Download'|trans}}</a>
 					{#<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-default"><i class="fa fa-eye"></i>&nbsp;{{'View'|trans}}</a>#}
 				</div>
 				<div class="modal" tabindex="-1" role="dialog" id="indexed-details-revision_{{ tempId }}">
@@ -413,7 +413,7 @@
 		<ul class="nav nav-tabs">
             {% for key, item in  dataField.getChildren %}
                 <li class="{% if loop.index == 1%}active{% endif %}">
-                    <a href="#item_{{ path|join('_')~'_'~loop.index0 }}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{% else %}false{% endif %}">
+                    <a href="#item_{{ path|join('_')~'_'~loop.index0 }}__tab" data-toggle="tab" aria-expanded="{% if loop.index == 1%}true{% else %}false{% endif %}" data-testid="tab-{{ dataField.fieldType.name }}-{{ key }}-a">
                         {{ item.formLabel ?? key }}
                     </a>
                 </li>
@@ -421,7 +421,7 @@
 		</ul>
 		<div class="tab-content">
             {% for key, item in  dataField.getChildren %}
-                <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~loop.index0 }}__tab">
+                <div class="tab-pane{% if loop.index == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~loop.index0 }}__tab" data-testid="tab-{{ dataField.fieldType.name }}-{{ key }}-div">
                     {% set childData = source[key]|default([]) %}
                     {% set childCompareData = compareRawData[key]|default([]) %}
                     <div class="row">
@@ -442,7 +442,7 @@
 
 {% block tabsfieldtype_widget_tab_label_per_item %}
 	<li class="{% if counter == 1%}active{% endif %}{% if child.fieldType.displayOptions.class is defined and child.fieldType.displayOptions.class != 'col-md-12' %} {{child.fieldType.displayOptions.class}}{% endif %}">
-		<a href="#item_{{ path|join('_') }}__tab" data-toggle="tab" aria-expanded="false">
+		<a href="#item_{{ path|join('_') }}__tab" data-toggle="tab" aria-expanded="false" data-testid="tab-{{ child.fieldType.name }}-{{ key|default(_key) }}-a">
 			{% if child.fieldType.displayOptions.icon is defined and child.fieldType.displayOptions.icon%}
 				<i class="{{ child.fieldType.displayOptions.icon }}"></i>
 			{% endif %}
@@ -501,7 +501,7 @@
 							'counter': counter,
 							}
 						%}
-							<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~counter }}__tab">
+							<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~counter }}__tab" data-testid="tab-{{ child.fieldType.name }}-{{ key }}-div">
 								{% set childData = source[key]|default([]) %}
 								{% set childCompareData = compareRawData[key]|default([]) %}
 								<div class="row">
@@ -519,7 +519,7 @@
 						{% set counter = counter + 1 %}
 					{% endfor %}
 				{% elseif 'EMS\\CoreBundle\\Form\\DataField\\ContainerFieldType' == child.fieldType.type|default(null) %}
-					<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~counter }}__tab">
+					<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~counter }}__tab" data-testid="tab-{{ child.fieldType.name }}-{{ _key }}-div">
 						{{ _self.renderDataFieldBlock(child, source, compare, compareRawData, '', [], locale) }}
 					</div>
 					{% set counter = counter + 1 %}
@@ -529,7 +529,7 @@
 						'counter': counter,
 						}
 					%}
-						<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~counter }}__tab">
+						<div class="tab-pane{% if counter == 1%} active{% endif %}" id="item_{{ path|join('_')~'_'~counter }}__tab" data-testid="tab-{{ child.fieldType.name }}-{{ _key }}-div">
 							{{ _self.renderDataFieldBlock(child, source, compare, compareRawData, '', path|merge([counter]), locale) }}
 						</div>
 					{% endwith %}
@@ -550,7 +550,7 @@
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_data_link(dataField.rawData, compare, dataField.fieldType.name, compareRawData) }}
 		</dd>
 	</dl>
@@ -564,7 +564,7 @@
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
-		<dd>{{ emsco_diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">{{ emsco_diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
 {% endblock %}
@@ -578,7 +578,7 @@
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {% if dataField.fieldType.displayOptions.displayTemplate is defined and dataField.fieldType.displayOptions.displayTemplate %}
             	{% if doCompare  %}
 					<div class="panel-body {{ color }}">
@@ -612,7 +612,7 @@
 		{% else %}
 			<dt>{{ dataField.fieldType.name }}</dt>
 		{% endif %}
-		<dd>{{ emsco_diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">{{ emsco_diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
 {% endblock %}
@@ -626,7 +626,7 @@
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<div class="panel panel-default">
 				<div class="panel-body">
                     {{ emsco_diff(dataField.rawData, attribute(compareRawData, dataField.fieldType.name)|default(null), compare, true, false)|nl2br }}
@@ -648,7 +648,7 @@
                 {{ dataField.fieldType.name }}
             {% endif %}
         </dt>
-        <dd>
+        <dd data-testid="field-value-{{ dataField.fieldType.name }}">
             <div class="panel panel-default">
                 <div class="panel-body {{ color }}">
                     {% if doCompare  %}
@@ -681,7 +681,7 @@
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<div class="panel panel-default">
 				{% set panelBody = emsco_diff_html(dataField.rawData, compare, dataField.fieldType.name, compareRawData) %}
 				{% if dataField.rawData and dataField.fieldType.displayOptions.styles_set_preview|default(false) %}
@@ -716,7 +716,7 @@
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<div class="panel panel-default">
 				<div class="panel-body {{ color }}">
 					{% if doCompare  %}
@@ -771,7 +771,7 @@
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<div class="panel panel-default">
 				<div class="panel-body {{ color }}">
 					{% if doCompare  %}
@@ -809,7 +809,7 @@
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<div class="panel panel-default">
 				<div class="panel-body {{ color }}">
 					{% if doCompare  %}
@@ -838,7 +838,7 @@
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {% set hasChanged = compare and dataField.rawData is not same as ( attribute(compareRawData, dataField.fieldType.name) is defined ? attribute(compareRawData, dataField.fieldType.name) : null ) %}
             {% if dataField.rawData %}
                 {% if hasChanged %}
@@ -873,7 +873,7 @@
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
@@ -889,7 +889,7 @@
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_icon(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
@@ -905,7 +905,7 @@
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_color(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
@@ -921,7 +921,7 @@
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<ul>
 			    {% set labels = dataField.fieldType.displayOptions.labels|replace({"\r":''})|split('\n') %}
 			    {% set choices = dataField.fieldType.displayOptions.choices|replace({"\r":''})|split('\n') %}
@@ -958,7 +958,7 @@
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<ul>
 				{% set contentType = dataField.fieldType.displayOptions.json_menu_content_type|default('')|emsco_get_content_type %}
 				{% set choices = {} %}
@@ -1052,7 +1052,7 @@
 				{{- dataField.fieldType.name-}}
 			{%- endif -%}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			{%- if displayOptions.display_template|default(false) -%}
 				{%- set rawData = dataField.rawData -%}
 				{%- set data = choices|default([])|filter( (id, label) => rawData is iterable ? id in rawData : id == rawData) -%}
@@ -1099,7 +1099,7 @@
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_boolean(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 			{% if dataField.fieldType.displayOptions.question_label is defined and dataField.fieldType.displayOptions.question_label %}
 				{{ dataField.fieldType.displayOptions.question_label }}
@@ -1118,7 +1118,7 @@
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_raw(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
@@ -1134,7 +1134,7 @@
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_raw(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
 		</dd>
 	</dl>
@@ -1150,7 +1150,7 @@
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<ul>
 				{{ emsco_diff_date(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.displayOptions.displayFormat|emsco_convert_javascript_date_format, false, dataField.fieldType.mappingOptions.format|default('yyyy/MM/dd')|emsco_convert_java_date_format) }}
 			</ul>
@@ -1168,7 +1168,7 @@
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<ul>
 				{{ emsco_diff_date(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.displayOption('parseFormat', 'd/m/Y H:i:s')) }}
 			</ul>
@@ -1196,7 +1196,7 @@
 		{% endif %}
 
 
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<ul>
 				{% set child = compareRawData %}
 				{% if dataField.fieldType.mappingOptions.nested %}
@@ -1250,7 +1250,7 @@
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			{% if dataField.fieldType.displayOptions.multiple|default(false) %}
 				{% set choices = dataField.fieldType.rawData|default([]) %}
 				<ul>
@@ -1273,7 +1273,7 @@
 				{{ dataField.fieldType.name|raw }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_time(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.options|emsco_time_field_time_format, dataField.fieldType.mappingOptions.format|emsco_convert_java_date_format) }}
 		</dd>
 	</dl>
@@ -1289,7 +1289,7 @@
 				{{ dataField.fieldType.name }}
 			{% endif %}
 		</dt>
-		<dd>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			{% if dataField.rawData is null or dataField.rawData == 'silent' %}
 				{% set translateRaw = 'field.revision_version_tag_empty'|trans({}, 'emsco-core') %}
 			{% else %}

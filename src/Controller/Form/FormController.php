@@ -62,7 +62,7 @@ class FormController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'forms'],
             'icon' => 'fa fa-keyboard-o',
             'title' => t('type.title_overview', ['type' => 'form'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'form'], 'emsco-core'),

@@ -8,7 +8,7 @@
 {% block body %}
 
 <div class="row">
-	<div id="search-page" class="col-md-12">
+	<div id="search-page-form" class="col-md-12">
         {% include "@EMSCore/elasticsearch/search-form-filter.html.twig" with {
 			form: form,
 		} %}
@@ -34,7 +34,7 @@
 			<div class="box-body">
 			{% for result in response.documents %}
 			<div class="panel panel-default">
-			  <div class="panel-heading">
+			  <div class="panel-heading" data-testid="search-page-item">
 			  	{% if attribute(types, result.contentType) is defined %}
 			  		<span class="text-{{ attribute(types, result.contentType).color }}">
 					  	<i class="{{ attribute(types, result.contentType).icon }}"></i>
@@ -99,7 +99,7 @@
 			{% endif %}
 		</div>
 	</div>
-	<div id="search-facets" class="col-md-3">
+	<div id="search-facets" class="col-md-3" data-testid="search-facets">
 		{% if sortOptions|length %}
     		<div class="box">
     			<div class="box-header">

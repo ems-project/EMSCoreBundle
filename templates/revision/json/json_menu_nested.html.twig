@@ -86,7 +86,7 @@
         'delete': block('buttonDelete'),
     } -%}
     {% set blockRenderContext = { 'item': item, 'node': node, 'buttons': buttons } %}
-    <div class="json-menu-nested-item">
+    <div class="json-menu-nested-item" data-testid="json-menu-nested-item-{{ item.type }}">
         <button class="btn btn-default btn-sm btn-collapse" role="button" aria-expanded="false"></button>
         {%- if node.icon is defined -%}<i class="json-menu-nested-item-icon {{ node.icon }}"></i>{%- endif -%}
         <div class="json-menu-nested-item-label">{{ item.label }}</div>
@@ -119,6 +119,7 @@
                     data-item-id="{{ item.id }}"
                     data-node-id="{{ node.id }}"
                     data-level="{{ level }}"
+                    data-testid="btn-json-menu-nested-edit"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-pencil"></i>&nbsp;<span>{{ 'field_type.json_menu_editor.edit'|trans }}</span>
             </button>
@@ -130,7 +131,8 @@
     {% if 'preview' in node.actions %}
         <button type="button" class="btn btn-sm btn-json-menu-nested-preview btn-default"
                 data-title="{{ item.label }}"
-                data-item-id="{{ item.id }}">
+                data-item-id="{{ item.id }}"
+                data-testid="btn-json-menu-nested-preview">
             <span class="fa fa-eye"></span>
             {{ 'view.macros.data-field-type.menu-option-button'|trans }}
         </button>
@@ -140,6 +142,7 @@
 {% block buttonMove %}
     {% if 'move' in node.actions %}
         <a type="button" class="btn btn-sm btn-default btn-json-menu-nested-move"
+           data-testid="btn-json-menu-nested-move"
            title="{{- 'field_type.json_menu_editor.move_item'|trans -}}">
             <i class="fa fa-arrows"></i>
             {{ 'field_type.json_menu_editor.move_item'|trans }}
@@ -151,7 +154,8 @@
     {% if 'delete' in node.actions %}
         <button type="button" class="btn btn-sm btn-outline-danger btn-json-menu-nested-delete"
                 title="{{- 'field_type.json_menu_editor.delete_item'|trans -}}"
-                data-item-id="{{ item.id }}">
+                data-item-id="{{ item.id }}"
+                data-testid="btn-json-menu-nested-delete-item">
             <i class="fa fa-trash"></i>&nbsp;<span class="sr-only">{{- 'field_type.json_menu_editor.delete_item'|trans -}}</span>
         </button>
     {% endif %}
@@ -162,7 +166,7 @@
     {%- if 'add' in node.actions and node.addNodes|length > 0 and (def.maxDepth == 0 or level < def.maxDepth)  -%}
         <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-sm btn-default dropdown-toggle json-menu-nested-add-button"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-testid="json-menu-nested-{{ def.defName }}-add-button">
                 <span class="fa fa-plus"></span>
                 {{ 'field_type.json_menu_editor.add'|trans }}
                 <span class="caret"></span>
@@ -175,7 +179,8 @@
                                 title="{{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': addNode.label}) }}"
                                 data-item-id="{{ item.id }}"
                                 data-node-id="{{ addNode.id }}"
-                                data-level="{{ level }}">
+                                data-level="{{ level }}"
+                                data-testid="json-menu-nested-add-{{ addNode.name }}">
                             {%- if addNode.icon|default(false) -%}<i class="{{ addNode.icon }}"></i>{%- endif -%}
                             {{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': addNode.label}) }}
                         </button>
@@ -190,14 +195,14 @@
     {%- set position = position|default('item') -%}
     {% if 'copy' in node.actions or 'paste' in node.actions %}
         <div class="btn-group">
-            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true" data-testid="json-menu-nested-more">
                 <span class="fa fa-ellipsis-h"></span>
             </button>
             <ul class="dropdown-menu {{ 'item' == position ? 'pull-right' }}">
                 {%- if 'copy' in node.actions -%}
                     <li>
                         <button class="{{ 'root' == position ? 'btn-json-menu-nested-copy-all' : 'btn-json-menu-nested-copy' }}"
-                            {%- if 'item' == position %}data-item-id="{{ item.id }}"{% endif -%}>
+                            {%- if 'item' == position %}data-item-id="{{ item.id }}"{% endif -%} data-testid="json-menu-nested-{{ 'root' == position ? 'copy-all' : 'copy'}}">
                             <span class="fa fa-copy"></span>&nbsp;
                             {{ 'root' == position ? 'field_type.json_menu_editor.copy_all'|trans : 'field_type.json_menu_editor.copy'|trans }}
                         </button>
@@ -208,7 +213,8 @@
                         <button class="btn-json-menu-nested-paste"
                                 data-item-id="{{ item.id }}"
                                 data-node-id="{{ node.id }}"
-                                {%- if 'root' == position %}data-allow="_root"{% endif -%}>
+                                {%- if 'root' == position %}data-allow="_root"{% endif -%}
+                                data-testid="json-menu-nested-paste">
                             <span class="fa fa-paste"></span>&nbsp;{{ 'field_type.json_menu_editor.paste'|trans }}
                         </button>
                     </li>
@@ -242,14 +248,14 @@
 
 {% block modalSaveFooter %}
     <div class="pull-right">
-        <button id="ajax-modal-submit" class="btn btn-sm btn-primary"><i class="fa fa-save"></i>&nbsp;Save</button>
-        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cancel</button>
+        <button id="ajax-modal-submit" class="btn btn-sm btn-primary" data-testid="modal-submit"><i class="fa fa-save"></i>&nbsp;Save</button>
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" data-testid="modal-cancel">Cancel</button>
     </div>
 {% endblock %}
 
 {% block modalFooterClose %}
     <div class="pull-left">
-        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-sm btn-default" data-dismiss="modal" data-testid="modal-close">Close</button>
     </div>
 {% endblock %}
 

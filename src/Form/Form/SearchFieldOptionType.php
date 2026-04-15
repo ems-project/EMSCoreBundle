@@ -55,6 +55,7 @@ class SearchFieldOptionType extends AbstractType
         ])->add('save', SubmitEmsType::class, [
             'attr' => [
                 'class' => 'btn btn-primary btn-sm ',
+                'data-testid' => 'btn-action-save',
             ],
             'icon' => 'fa fa-save',
         ]);
@@ -63,6 +64,7 @@ class SearchFieldOptionType extends AbstractType
             $builder->add('remove', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm ',
+                    'data-testid' => 'btn-action-remove',
                 ],
                 'icon' => 'fa fa-trash',
             ]);

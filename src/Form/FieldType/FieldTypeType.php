@@ -64,6 +64,7 @@ class FieldTypeType extends AbstractType
             $builder->add('add', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary ',
+                    'data-testid' => 'btn-action-add',
                 ],
                 'icon' => 'fa fa-plus',
             ]);
@@ -78,6 +79,7 @@ class FieldTypeType extends AbstractType
                 'label' => 'Add',
                 'attr' => [
                     'class' => 'btn btn-primary ',
+                    'data-testid' => 'btn-action-subfield',
                 ],
                 'icon' => 'fa fa-plus',
             ]);
@@ -92,6 +94,7 @@ class FieldTypeType extends AbstractType
                 'label' => 'Duplicate',
                 'attr' => [
                     'class' => 'btn btn-primary ',
+                    'data-testid' => 'btn-action-duplicate',
                 ],
                 'icon' => 'fa fa-paste',
             ]);
@@ -107,6 +110,7 @@ class FieldTypeType extends AbstractType
             $builder->add('remove', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn btn-danger btn-xs',
+                    'data-testid' => 'btn-action-remove',
                 ],
                 'icon' => 'fa fa-trash',
             ]);
@@ -130,6 +134,7 @@ class FieldTypeType extends AbstractType
                 $builder->add('reorder', SubmitEmsType::class, [
                     'attr' => [
                         'class' => 'btn btn-primary ',
+                        'data-testid' => 'btn-action-reorder',
                     ],
                     'icon' => 'fa fa-reorder',
                 ]);

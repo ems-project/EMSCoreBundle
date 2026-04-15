@@ -13,6 +13,8 @@ final class TableAction
     private ?string $routeName = null;
     /** @var array<mixed> */
     private array $routeParams = [];
+    /** @var array <string, string> */
+    private array $attributes = [];
 
     public function __construct(
         private readonly string $name,
@@ -81,6 +83,12 @@ final class TableAction
         return $this->routeParams;
     }
 
+    /** @return array <string, string> */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
     /**
      * @param array<string, string> $routeParams
      */
@@ -88,5 +96,13 @@ final class TableAction
     {
         $this->routeName = $routeName;
         $this->routeParams = $routeParams;
+    }
+
+    /**
+     * @param array<string, string> $attributes
+     */
+    public function setAttributes(array $attributes = []): void
+    {
+        $this->attributes = $attributes;
     }
 }

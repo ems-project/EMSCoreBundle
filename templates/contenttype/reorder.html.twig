@@ -1,7 +1,7 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %} {{ 'Reorder the content type "%content_type%"'|trans({'%content_type%': contentType.singularName }) }}{% endblock %}
-{% block pagetitle %}{{ 'Reorder the content type "%content_type%"'|trans({'%content_type%': contentType.singularName }) }}{% endblock %} 
+{% block pagetitle %}{{ 'Reorder the content type "%content_type%"'|trans({'%content_type%': contentType.singularName }) }}{% endblock %}
 
 {% block breadcrumb %}
 	<ol class="breadcrumb">
@@ -23,7 +23,7 @@
 				</h2>
 
 				<div class="btn-group  pull-right">
-					<a class="btn btn-xs btn-primary" href="{{ path('emsco_admin_content_type_edit_field', { contentType: contentType.id, field: contentType.fieldType.id }) }}">
+					<a class="btn btn-xs btn-primary" href="{{ path('emsco_admin_content_type_edit_field', { contentType: contentType.id, field: contentType.fieldType.id }) }}" data-testid="btn-edit-main-container">
 						<i class="fa fa-edit"></i>
                         {{ 'view.contenttype.reorder_item.edit_main_container_button'|trans() }}
 					</a>

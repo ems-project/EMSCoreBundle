@@ -43,7 +43,7 @@ class AnalyzerType extends AbstractType
                 'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add('save', SubmitEmsType::class, [
-                'attr' => ['class' => 'btn btn-primary'],
+                'attr' => ['class' => 'btn btn-primary', 'data-testid' => 'btn-action-save'],
                 'label' => t('action.save', [], 'emsco-core'),
                 'icon' => 'fa fa-save',
             ]);

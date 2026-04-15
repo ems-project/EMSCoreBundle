@@ -60,7 +60,7 @@ class TrashController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'trash'],
             'icon' => 'fa fa-trash',
             'title' => t('revision.trash.title', ['pluralName' => $contentType->getPluralName()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'trash'], 'emsco-core'),

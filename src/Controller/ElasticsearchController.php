@@ -95,6 +95,7 @@ class ElasticsearchController extends AbstractController
             'icon' => 'fa fa-plus',
             'attr' => [
                 'class' => 'btn btn-primary pull-right',
+                'data-testid' => 'btn-action-save',
             ],
         ])->getForm();
 
@@ -533,6 +534,7 @@ class ElasticsearchController extends AbstractController
                         'label' => 'Save',
                         'attr' => [
                             'class' => 'btn btn-primary pull-right',
+                            'data-testid' => 'btn-action-save-search',
                         ],
                         'icon' => 'fa fa-save',
                     ])

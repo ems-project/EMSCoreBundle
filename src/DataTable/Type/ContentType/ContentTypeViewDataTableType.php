@@ -63,20 +63,23 @@ class ContentTypeViewDataTableType extends AbstractEntityTableType
             route: Routes::ADMIN_CONTENT_TYPE_VIEW_DUPLICATE,
             labelKey: t('action.duplicate', [], 'emsco-core'),
             icon: 'pencil',
-            messageKey: t('action.confirmation', [], 'emsco-core')
+            messageKey: t('action.confirmation', [], 'emsco-core'),
+            attributes: ['data-testid' => 'btn-action-duplicate'],
         );
 
-        $defineAction = $table->addItemActionCollection(t('action.define', [], 'emsco-core'), 'gear');
+        $defineAction = $table->addItemActionCollection(t('action.define', [], 'emsco-core'), 'gear', ['data-testid' => 'btn-action-define-undefine']);
         $defineAction->addItemPostAction(
             route: Routes::ADMIN_CONTENT_TYPE_VIEW_DEFINE,
             labelKey: t('core.content_type.view_define', ['define' => ViewDefinition::DEFAULT_OVERVIEW->value], 'emsco-core'),
             icon: ViewDefinition::DEFAULT_OVERVIEW->getIcon(),
-            routeParameters: ['definition' => ViewDefinition::DEFAULT_OVERVIEW->value]
+            routeParameters: ['definition' => ViewDefinition::DEFAULT_OVERVIEW->value],
+            attributes: ['data-testid' => 'btn-action-define'],
         );
         $defineAction->addItemPostAction(
             route: Routes::ADMIN_CONTENT_TYPE_VIEW_UNDEFINE,
             labelKey: t('core.dashboard.define', ['define' => null], 'emsco-core'),
-            icon: 'eraser'
+            icon: 'eraser',
+            attributes: ['data-testid' => 'btn-action-undefine'],
         );
 
         $this

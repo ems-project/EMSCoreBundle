@@ -51,7 +51,7 @@ class LogController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'logs'],
             'icon' => 'fa fa-file-text',
             'title' => t('type.title_overview', ['type' => 'log'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'log'], 'emsco-core'),

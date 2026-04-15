@@ -126,6 +126,7 @@ class PublishController extends AbstractController
         ])->add('publish', SubmitEmsType::class, [
             'attr' => [
                 'class' => 'btn btn-primary btn-md',
+                'data-testid' => 'btn-action-publish',
             ],
             'icon' => 'glyphicon glyphicon-open',
         ]);

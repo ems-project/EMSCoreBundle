@@ -1,9 +1,13 @@
 {% trans_default_domain 'EMSCoreBundle' %}
+{% set attributes = attributes|default([])|map((v,k) => "#{k}=#{v}")|join(' ') %}
 
 <a  class="{% if btnClass is defined %}{{ btnClass }}{% else %}btn btn-sm btn-{{ btnType|default('default') }}{% endif %} {%  if disabled is defined and disabled %}disabled{% endif %}" href="{{ url }}"
 	{% if target is defined %}
 		target="{{ target }}"
 	{% endif %}
+    {%- if attributes is defined %}
+       {{ attributes }}
+    {% endif %}
 >
 	{% if icon is defined %}
 		{% if icon|default('')|slice(0,9) == 'glyphicon'  %}
@@ -16,4 +20,3 @@
 		{{ label|trans }}
 	{% endif %}
 </a>
-

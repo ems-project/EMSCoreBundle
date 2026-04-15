@@ -39,6 +39,7 @@ class ContentTypeUpdateType extends AbstractType
             'label_format' => 'form.contenttype.json_update.%name%',
             'attr' => [
                 'class' => 'btn btn-primary',
+                'data-testid' => 'btn-action-update',
             ],
             'icon' => 'fa fa-save',
         ]);

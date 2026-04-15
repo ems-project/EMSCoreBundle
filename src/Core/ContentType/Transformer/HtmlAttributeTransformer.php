@@ -10,15 +10,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class HtmlAttributeTransformer extends BaseHtmlTransformer
 {
-    /** @var list<string> */
-    private const array UNWRAP_BLACKLIST = [
-        'table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th',
-        'ul', 'ol', 'li', 'dl', 'dt', 'dd',
-        'p', 'section', 'article', 'header', 'footer', 'nav', 'aside',
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'figure', 'figcaption', 'blockquote', 'pre',
-    ];
-
     #[\Override]
     public function getName(): string
     {
@@ -181,39 +172,5 @@ final class HtmlAttributeTransformer extends BaseHtmlTransformer
         }
 
         return $result;
-    }
-
-    private function unwrap(\DOMElement $element): void
-    {
-        if (\in_array(\strtolower($element->nodeName), self::UNWRAP_BLACKLIST, true)) {
-            return;
-        }
-
-        $parent = $element->parentNode;
-        if (null === $parent) {
-            return;
-        }
-
-        $hasContent = null !== $element->firstChild;
-
-        if (!$hasContent) {
-            $prev = $element->previousSibling;
-            $next = $element->nextSibling;
-            $parent->removeChild($element);
-
-            if ($next instanceof \DOMText) {
-                $next->nodeValue = \preg_replace('/^[ \t]*\n/', '', $next->nodeValue ?? '');
-            }
-            if ($prev instanceof \DOMText) {
-                $prev->nodeValue = \rtrim($prev->nodeValue ?? '', " \t");
-            }
-
-            return;
-        }
-
-        while (null !== $element->firstChild) {
-            $parent->insertBefore($element->firstChild, $element);
-        }
-        $parent->removeChild($element);
     }
 }

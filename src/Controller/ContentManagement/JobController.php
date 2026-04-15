@@ -61,7 +61,7 @@ class JobController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'jobs'],
             'icon' => 'fa fa-file-text-o',
             'title' => t('type.title_overview', ['type' => 'job'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'job'], 'emsco-core'),

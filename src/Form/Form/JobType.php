@@ -26,7 +26,7 @@ class JobType extends AbstractType
         $builder
             ->add('command', TextType::class, ['required' => false])
             ->add('tag', TextType::class, ['required' => false])
-            ->add('launch', SubmitEmsType::class);
+            ->add('launch', SubmitEmsType::class, ['attr' => ['data-testid' => 'btn-action-launch']]);
     }
 
     #[\Override]

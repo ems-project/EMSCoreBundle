@@ -48,7 +48,8 @@ class JobScheduleDataTableType extends AbstractEntityTableType
             route: Routes::SCHEDULE_DUPLICATE,
             labelKey: t('action.duplicate', [], 'emsco-core'),
             icon: 'files-o',
-            messageKey: t('action.confirmation', [], 'emsco-core')
+            messageKey: t('action.confirmation', [], 'emsco-core'),
+            attributes: ['data-testid' => 'btn-action-duplicate']
         );
 
         $this

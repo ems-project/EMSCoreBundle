@@ -16,6 +16,7 @@ use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformers;
 use EMS\CoreBundle\Core\ContentType\Transformer\HtmlAttributeTransformer;
 use EMS\CoreBundle\Core\ContentType\Transformer\HtmlEmptyTransformer;
 use EMS\CoreBundle\Core\ContentType\Transformer\HtmlRemoveNodeTransformer;
+use EMS\CoreBundle\Core\ContentType\Transformer\HtmlUnwrapTransformer;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\DataTable\TableExporter;
@@ -274,6 +275,9 @@ return static function (ContainerConfigurator $container) {
         ->tag('ems_core.content_type.transformer');
 
     $services->set('ems_core.core_content_type_transformer.html_remove_node_transformer', HtmlRemoveNodeTransformer::class)
+        ->tag('ems_core.content_type.transformer');
+
+    $services->set('ems_core.core_content_type_transformer.html_unwrap_transformer', HtmlUnwrapTransformer::class)
         ->tag('ems_core.content_type.transformer');
 
     $services->set('emsco.core_mercure.mercure_service', MercureService::class)

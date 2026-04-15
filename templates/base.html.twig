@@ -80,7 +80,7 @@
     <!-- Header Navbar -->
     <nav class="navbar navbar-static-top" role="navigation">
       <!-- Sidebar toggle button-->
-      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button" id="sidebar-toggle-button">
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button" id="sidebar-toggle-button" data-testid="sidebar-menu-collapse">
         <span class="sr-only">Toggle navigation</span>
       </a>
       <!-- Navbar Right Menu -->
@@ -131,7 +131,7 @@
           <!-- Tasks Menu -->
           <li class="dropdown tasks-menu" id="system-messages">
             <!-- Menu Toggle Button -->
-            <a href="#" class="dropdown-toggle" data-toggle="control-sidebar">
+            <a href="#" class="dropdown-toggle" data-toggle="control-sidebar" data-testid="tasks-menu">
               <i id="ajax-activity" class="fa fa-refresh"></i>
               <span class="label label-danger"></span>
             </a>
@@ -182,10 +182,10 @@
 {#               </li>#}
               <!-- Menu Footer-->
               <li class="user-footer">
-                <div class="pull-left">
+                <div class="pull-left" data-testid="user-footer-edit-profile">
                   <a href="{{ path(routes.USER_PROFILE) }}" class="btn btn-default btn-flat">{{ 'user.profile.title'|trans({}, 'emsco-user') }}</a>
                 </div>
-                <div class="pull-right">
+                <div class="pull-right" data-testid="user-footer-logout">
                		{% if is_granted('IS_IMPERSONATOR') %}
                			<a href="{{ path('emsco_user_index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat" data-testid="logout">{{ 'user.logout.exit'|trans({}, 'emsco-user') }}</a>
                		{% else %}

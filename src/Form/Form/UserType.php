@@ -162,7 +162,7 @@ final class UserType extends AbstractType
 
         if (self::MODE_CREATE === $mode) {
             $builder->add('create', SubmitEmsType::class, [
-                'attr' => ['class' => 'btn btn-primary btn-sm'],
+                'attr' => ['class' => 'btn btn-primary btn-sm', 'data-testid' => 'user-create'],
                 'icon' => 'fa fa-plus',
             ]);
         }
@@ -170,6 +170,7 @@ final class UserType extends AbstractType
             $builder->add('update', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm ',
+                    'data-testid' => 'user-update',
                 ],
                 'icon' => 'fa fa-save',
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,

@@ -1,6 +1,6 @@
 {% trans_default_domain 'emsco-twigs' %}
 <aside class="main-sidebar">
-    <section class="sidebar">
+    <section class="sidebar" data-testid="sidebar">
         <div class="user-panel">
             <div class="pull-left image">
                 {% include '@EMSCore/elements/user-image.html.twig' with { 'class': 'img-circle' } %}
@@ -12,7 +12,7 @@
                     <p>{{ 'views.elements.side-menu-html.anonymous-user'|trans }}</p>
                 {% endif %}
                 {%- if status is defined -%}
-                    <a href="{{ path('elasticsearch.status') }}" id="status-overview">
+                    <a href="{{ path('elasticsearch.status') }}" id="status-overview" data-testid="status-overview">
                         {%- with {
                             title: 'cluster.status'|trans({color: status}, 'emsco-core'),
                             status: status,
@@ -27,9 +27,9 @@
             <form action="{{ path('ems_quick_search') }}" method="get" class="sidebar-form">
                 <div class="input-group">
                     <label for="q" class="sr-only">{{ 'views.elements.side-menu-html.quick-search-label'|trans }}</label>
-                    <input id="q" type="text" name="q" class="form-control" placeholder="{{ 'views.elements.side-menu-html.quick-search-placeholder'|trans }}">
+                    <input id="q" type="text" name="q" class="form-control" placeholder="{{ 'views.elements.side-menu-html.quick-search-placeholder'|trans }}" data-testid="search-general-query">
                     <span class="input-group-btn">
-                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                        <button type="submit" name="search" id="search-btn" class="btn btn-flat" data-testid="search-general-submit"><i class="fa fa-search"></i>
                         </button>
                     </span>
                 </div>
@@ -38,7 +38,7 @@
 
         {% for item in menu|default([]) %}
             {% if item.hasChildren %}
-                <ul class="sidebar-menu" data-widget="tree">
+                <ul class="sidebar-menu" data-widget="tree" data-testid="sidebar-menu-tree">
                     <li class="header">{{ item.title|trans(item.transParameters) }}</li>
                     {% for menu in item.children %}
                         {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}

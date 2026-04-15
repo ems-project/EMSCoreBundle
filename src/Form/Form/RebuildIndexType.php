@@ -33,6 +33,7 @@ class RebuildIndexType extends AbstractType
          ->add('rebuild', SubmitEmsType::class, [
              'attr' => [
                  'class' => 'btn btn-primary btn-sm ',
+                 'data-testid' => 'btn-action-rebuild',
              ],
              'icon' => 'fa fa-recycle',
          ]);

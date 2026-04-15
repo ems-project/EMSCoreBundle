@@ -1,8 +1,8 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Status of the job #{{ job.id }}{% endblock %}
-{% block pagetitle %}Status of the job #{{ job.id }}{% endblock %} 
-{% block subtitle %}<small>Asynchronous process</small>{% endblock %} 
+{% block pagetitle %}Status of the job #{{ job.id }}{% endblock %}
+{% block subtitle %}<small>Asynchronous process</small>{% endblock %}
 
 
 {% block body %}
@@ -16,30 +16,30 @@
 			<!-- /.box-header -->
 			<div class="box-body">
 				<strong><i class="fa fa-clock-o margin-r-5"></i> Started</strong>
-				<p class="text-muted">
+				<p class="text-muted" data-testid="job-started">
 					{{ job.created|date(date_time_format) }}
 				</p>
 
 				<hr>
 				<strong><i class="fa fa-user margin-r-5"></i> By</strong>
-				<p class="text-muted">
+				<p class="text-muted" data-testid="job-by-user">
 					{{ job.user|emsco_display_name }}
 				</p>
 				<hr>
 				<strong><i class="fa fa-terminal margin-r-5"></i> Comand</strong>
-				<p class="text-muted">
+				<p class="text-muted" data-testid="job-command">
 					{{ job.command }}
 				</p>
 				<hr>
 				{% if job.tag %}
 					<strong><i class="fa fa-tag margin-r-5"></i> Tag</strong>
-					<p class="text-muted">
+					<p class="text-muted" data-testid="job-tag">
 						{{ job.tag }}
 					</p>
 					<hr>
 				{% endif %}
 				<strong><i class="fa fa-clock-o margin-r-5"></i> Last update</strong>
-				<p class="text-muted">
+				<p class="text-muted" data-testid="job-last-update">
 					{{ job.modified|date(date_time_format) }}
 				</p>
 
@@ -54,15 +54,15 @@
 				<h3 class="box-title">Job's Status</h3>
 			</div>
 			<!-- /.box-header -->
-				
+
 				<div class="box-body">
 					<div class="info-box bg-green">
 			            <span class="info-box-icon"><i class="fa fa-gear {% if not job.done %}fa-spin{% endif %}"></i></span>
-			
+
 			            <div class="info-box-content">
 			              <span class="info-box-text">Started on {{ job.created|date(date_time_format) }}</span>
 			              <span class="info-box-number">{{ status|raw }}</span>
-			
+
 			              <div class="progress">
 			                <div class="progress-bar" style="width: {{ job.progress }}%"></div>
 			              </div>
@@ -81,10 +81,10 @@
 			            		{{ output|raw|nl2br }}
 							</div>
 			            </div>
-			            
+
 			          </div>
 				</div>
-                 
+
 				<!-- /.box-body -->
 				<div class="box-footer">
 					<div class="btn-group">
@@ -92,21 +92,29 @@
 							{% include '@EMSCore/elements/get-button.html.twig' with {
 								'url':  path('emsco_job_status', {'job': job.id}),
 								'label': 'Refresh page',
-								'icon': 'refresh'
-							}%}
+								'icon': 'refresh',
+                                'attributes':{
+                                    'data-testid': 'btn-action-refresh'
+                                } }%}
 						{% endif %}
 						{% if is_granted('ROLE_ADMIN') %}
 							{% include '@EMSCore/elements/get-button.html.twig' with {
 								'url':  path('emsco_job_index'),
 								'label': 'Job\'s list',
-								'icon': 'chevron-circle-right'
+								'icon': 'chevron-circle-right',
+                                'attributes': {
+                                    'data-testid': 'btn-action-job-list'
+                                }
 							}%}
 							{% include '@EMSCore/elements/post-button.html.twig' with {
 								'url':  path('emsco_job_delete', {'job': job.id}),
 								'message': 'Do you confirm ?',
 								'label': 'Delete',
-								'icon': 'trash'
-							}%}
+								'icon': 'trash',
+                                'attributes': {
+                                    'data-testid': 'btn-action-delete'
+                                }
+                            }%}
 						{% endif %}
 					</div>
 				</div>

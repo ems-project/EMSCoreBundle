@@ -1,7 +1,7 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
 
 {% block title %}Rebuild the environment {{environment.name}}{% endblock %}
-{% block pagetitle %}Rebuild the environment {{environment.name}}{% endblock %} 
+{% block pagetitle %}Rebuild the environment {{environment.name}}{% endblock %}
 {% block breadcrumb %}
 	<ol class="breadcrumb">
 		<li><i class="fa fa-database"></i> Environments</li>
@@ -45,12 +45,12 @@
 					</div>
 				</div>
 				<!-- /.box-footer -->
-			
+
 			{{ form_end(form) }}
 		</div>
 	</div>
 </div>
 {% include '@EMSCore/app/menu.html.twig' with {
-	'item':  'environment-list'
+	'item':  'environment-list',
 }%}
-{% endblock %}	
+{% endblock %}

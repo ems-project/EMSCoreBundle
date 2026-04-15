@@ -28,6 +28,7 @@ class RevisionJsonType extends AbstractType
             ->add('save', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm ',
+                    'data-testid' => 'btn-action-save',
                 ],
                 'icon' => 'fa fa-save',
             ]);

@@ -25,6 +25,7 @@ class I18nFormType extends AbstractType
             ->add('filter', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm',
+                    'data-testid' => 'btn-action-filter',
                 ],
                 'icon' => 'fa fa-columns',
             ]);

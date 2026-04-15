@@ -45,6 +45,7 @@ class CompareEnvironmentFormType extends AbstractType
             ->add('compare', SubmitEmsType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary btn-md',
+                    'data-testid' => 'compare-action-compare',
                 ],
                 'icon' => 'fa fa-columns',
             ]);

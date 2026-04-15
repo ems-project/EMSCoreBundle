@@ -70,7 +70,7 @@ final class SubmissionController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'form-submissions'],
             'icon' => 'fa fa-list-alt',
             'title' => t('type.title_overview', ['type' => 'form_submission'], 'emsco-core'),
             'breadcrumb' => Navigation::formSubmissions(),

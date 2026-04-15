@@ -85,7 +85,7 @@ final class TableType extends AbstractType
                 'entry_options' => [],
                 'data' => $choices,
             ])->add(self::REORDER_ACTION, SubmitEmsType::class, [
-                'attr' => ['class' => 'btn btn-sm btn-default'],
+                'attr' => ['class' => 'btn btn-sm btn-default', 'data-testid' => 'btn-action-reorder'],
                 'icon' => 'fa fa-reorder',
                 'label' => t('action.reorder', [], 'emsco-core'),
             ]);
@@ -140,6 +140,10 @@ final class TableType extends AbstractType
             $submitOptions['confirm_class'] = $action->getCssClass();
         } else {
             $submitOptions['attr'] = ['class' => $action->getCssClass()];
+        }
+
+        if (\count($action->getAttributes())) {
+            $submitOptions['attr'] = \array_merge($submitOptions['attr'] ?? [], $action->getAttributes());
         }
 
         $builder->add($action->getName(), SubmitEmsType::class, $submitOptions);

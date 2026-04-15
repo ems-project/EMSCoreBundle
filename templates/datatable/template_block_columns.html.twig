@@ -11,14 +11,14 @@
 
 {% block environmentIndexesModal %}
     {% set modalId = "modal-environment-#{table.attributeName}-#{data.id|default(data.name)}" %}
-    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#{{ modalId }}">
+    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#{{ modalId }}" data-testid="{{ "modal-environment-#{table.attributeName}" }}">
         {{ 'core.environment.index_count'|trans({'indexes': data.indexes|length }, 'emsco-core') }}
     </button>
     <div class="modal fade" id="{{ modalId }}">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'emsco-core') }}">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'emsco-core') }}" data-testid="modal-environment-close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title">{{ 'field.indexes'|trans({}, 'emsco-core') }}</h4>
@@ -81,7 +81,7 @@
 
 {% block i18nTranslations %}
     {% set modalId = "modal-i18n-#{data.id}" %}
-    <a data-toggle="modal" data-target="#{{ modalId }}" class="btn btn-sm btn-default">
+    <a data-toggle="modal" data-target="#{{ modalId }}" class="btn btn-sm btn-default" data-testid="modal-i18n-open">
         <i class="fa fa-eye"></i>&nbsp;
         {{ data.content|length }}
     </a>
@@ -89,7 +89,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'emsco-core') }}">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'emsco-core') }}" data-testid="modal-i18n-close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title" id="{{ modalId }}-title">

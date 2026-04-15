@@ -78,7 +78,7 @@ class NotificationFormType extends AbstractType
 
         ->add('filter', SubmitEmsType::class, [
             'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-            'attr' => ['class' => 'btn btn-primary btn-sm'],
+            'attr' => ['class' => 'btn btn-primary btn-sm', 'data-testid' => 'btn-action-filter'],
             'icon' => 'fa fa-columns',
         ]);
     }

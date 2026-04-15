@@ -54,7 +54,7 @@ final class QuerySearchController extends AbstractController
         }
 
         return new Page([
-            'datatable' => ['form' => $form->createView()],
+            'datatable' => ['form' => $form->createView(), 'table_id' => 'query-searches'],
             'icon' => 'fa fa-list-alt',
             'title' => t('type.title_overview', ['type' => 'query_search'], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'query_search'], 'emsco-core'),

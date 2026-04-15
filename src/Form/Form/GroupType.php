@@ -58,7 +58,7 @@ final class GroupType extends AbstractType
         if (self::MODE_CREATE === $mode) {
             $builder->add(self::CREATE_BUTTON, SubmitEmsType::class, [
                 'label' => t('action.add', [], 'emsco-core'),
-                'attr' => ['class' => 'btn btn-primary btn-sm'],
+                'attr' => ['class' => 'btn btn-primary btn-sm', 'data-testid' => 'btn-action-create'],
                 'icon' => 'fa fa-plus',
             ]);
         } elseif (self::MODE_UPDATE === $mode) {
@@ -66,6 +66,7 @@ final class GroupType extends AbstractType
                 'label' => t('action.save', [], 'emsco-core'),
                 'attr' => [
                     'class' => 'btn btn-primary btn-sm ',
+                    'data-testid' => 'btn-action-update',
                 ],
                 'icon' => 'fa fa-save',
                 'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,

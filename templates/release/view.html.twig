@@ -23,7 +23,8 @@
     {% if form is not null %}
         {% form_theme form '@EMSCore/form/forms.html.twig' %}
         {{ form(form, {
-            toolbar: toolbar
+            toolbar: toolbar,
+            table_id: 'release-view'
         }) }}
     {% endif %}
 {% endblock %}

@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-md-5 col-md-offset-4">
             <div class="box box-primary">
-                <div class="box-body box-profile">
+                <div class="box-body box-profile" data-testid="profile">
                     <a href="https://www.gravatar.com/emails" target="_blank">
                         <img class="profile-user-img img-responsive img-circle" src="https://www.gravatar.com/avatar/{{ app.user.email|lower|ems_md5 }}?d={{ "https://www.gravatar.com/avatar"|url_encode }}" alt="{{ 'view.profile.show.alt.user_profile_picture'|trans }}">
                     </a>
@@ -34,11 +34,11 @@
                         <li class="list-group-item">
                             <b>{{ 'view.profile.show.locale'|trans }}</b> <i class="pull-right">{{ user.locale|language_name  }}</i>
                         </li>
-                        <li class="list-group-item">
+                        <li class="list-group-item" data-testid="profile-locale-preferred">
                             <b>{{ 'view.profile.show.locale_preferred'|trans }}</b> <i class="pull-right">{{ user.localePreferred|locale_name }}</i>
                         </li>
                         {% if circles_object and circles_object|emsco_get_content_type %}
-                            <li class="list-group-item">
+                            <li class="list-group-item" data-testid="profile-circles">
                                 <b>{{ circles_object|emsco_get_content_type.pluralName }} : </b>
                                 <i class="">
                                     {% for circle in user.circles  -%}
@@ -47,7 +47,7 @@
                                 </i>
                             </li>
                         {% endif %}
-                        <li class="list-group-item">
+                        <li class="list-group-item" data-testid="profile-roles">
                             <b>Roles : </b>
                             <i class="">
                                 {% for role in user.roles  -%}
@@ -56,17 +56,17 @@
                             </i>
                         </li>
                         {%- if user.group -%}
-                            <li class="list-group-item">
+                            <li class="list-group-item" data-testid="profile-group">
                                 <b>{{ 'field.group'|trans }}</b> <i class="pull-right">{{ user.group.label }}</i>
                             </li>
                         {%- endif -%}
-                        <li class="list-group-item">
+                        <li class="list-group-item" data-testid="profile-wysiwyg">
                             <b>{{ 'view.profile.show.wysiwyg'|trans }}</b> <i class="pull-right">{% if user.wysiwygProfile %}{{ user.wysiwygProfile.name }}{% endif %}</i>
                         </li>
                     </ul>
                     <div class="btn-group">
-                        <a href="{{ path(routes.USER_PROFILE_EDIT) }}" class="btn btn-primary"><i class="fa fa-pencil"></i> <b>{{ 'view.profile.show.action.edit'|trans }}</b></a>
-                        <a href="{{ path(routes.USER_CHANGE_PASSWORD) }}" class="btn btn-primary"><i class="fa fa-lock"></i> <b>{{ 'user.change_password.title'|trans({}, 'emsco-user') }}</b></a>
+                        <a href="{{ path(routes.USER_PROFILE_EDIT) }}" class="btn btn-primary" data-testid="profile-edit"><i class="fa fa-pencil"></i> <b>{{ 'view.profile.show.action.edit'|trans }}</b></a>
+                        <a href="{{ path(routes.USER_CHANGE_PASSWORD) }}" class="btn btn-primary" data-testid="profile-change-password"><i class="fa fa-lock"></i> <b>{{ 'user.change_password.title'|trans({}, 'emsco-user') }}</b></a>
                     </div>
                 </div>
             </div>

@@ -124,7 +124,8 @@ class UploadedAssetDataTableType extends AbstractTableType implements QueryServi
                 labelKey: t('action.delete', [], 'emsco-core'),
                 icon: 'trash',
                 messageKey: t('type.delete_confirm', ['type' => 'uploaded_file'], 'emsco-core'),
-                routeParameters: ['hash' => 'id']
+                routeParameters: ['hash' => 'id'],
+                attributes: ['data-testid' => 'file-action-delete']
             )->setButtonType('outline-danger');
 
             $table->addTableAction(

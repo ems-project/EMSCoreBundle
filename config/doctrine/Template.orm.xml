@@ -67,9 +67,6 @@
     <lifecycle-callbacks>
       <lifecycle-callback type="prePersist" method="updateModified" />
       <lifecycle-callback type="preUpdate" method="updateModified" />
-
-      <lifecycle-callback type="prePersist" method="updateOrder" />
-      <lifecycle-callback type="preUpdate" method="updateOrder" />
     </lifecycle-callbacks>
   </entity>
 </doctrine-mapping>

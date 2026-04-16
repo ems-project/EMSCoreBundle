@@ -59,13 +59,6 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         $this->modified = new \DateTime();
     }
 
-    public function updateOrder(): void
-    {
-        if (!isset($this->orderKey)) {
-            $this->orderKey = 0;
-        }
-    }
-
     public function setName(?string $name): self
     {
         $this->name = $name ?? '';

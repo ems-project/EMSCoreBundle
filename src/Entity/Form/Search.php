@@ -179,7 +179,7 @@ class Search implements \JsonSerializable
      */
     public function getEnvironments(): array
     {
-        return $this->environments ?? [];
+        return $this->environments;
     }
 
     /**

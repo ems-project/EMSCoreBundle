@@ -90,7 +90,7 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
 
     public function getOptions(): DashboardOptions
     {
-        return new DashboardOptions($this->options ?? []);
+        return new DashboardOptions($this->options);
     }
 
     public function setOptions(DashboardOptions $options): void

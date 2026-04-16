@@ -948,7 +948,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 
     public function getRoles(): ContentTypeRoles
     {
-        return new ContentTypeRoles($this->roles ?? []);
+        return new ContentTypeRoles($this->roles);
     }
 
     public function setRoles(ContentTypeRoles $roles): void
@@ -963,7 +963,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
 
     public function getFields(): ContentTypeFields
     {
-        return new ContentTypeFields($this->fields ?? []);
+        return new ContentTypeFields($this->fields);
     }
 
     public function setFields(ContentTypeFields $fields): void

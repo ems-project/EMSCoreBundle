@@ -31,6 +31,7 @@ final class HtmlUnwrapTransformer extends BaseHtmlTransformer
 
         $crawler = new Crawler();
         $crawler->addContent($context->getData());
+
         $options = $this->resolveOptions($context->getOptions());
 
         $xpath = \implode('|', \array_map(

@@ -107,13 +107,13 @@ class SearchService
     {
         try {
             return $this->getDocument($contentType, $ouuid);
-        } catch (NotFoundException $e) {
+        } catch (NotFoundException $notFoundException) {
             $revision = $this->revisionRepository->findRevision($ouuid, $contentType->getName());
             $environment = $revision?->getEnvironments()->first();
             if ($environment instanceof Environment) {
                 return $this->getDocument($contentType, $ouuid, $environment);
             }
-            throw $e;
+            throw $notFoundException;
         }
     }
 

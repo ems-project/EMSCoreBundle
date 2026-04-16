@@ -119,7 +119,7 @@ class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityI
      */
     public function getOptions(): array
     {
-        return $this->options ?? [];
+        return $this->options;
     }
 
     /**
@@ -132,7 +132,7 @@ class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityI
 
     public function getOrderKey(): int
     {
-        return $this->orderKey ?? 9999;
+        return $this->orderKey;
     }
 
     public function setOrderKey(int $orderKey): void

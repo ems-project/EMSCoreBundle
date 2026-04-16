@@ -180,7 +180,7 @@ class AssetExtractorService implements CacheWarmerInterface
             }
         }
 
-        if ($canBePersisted && isset($out)) {
+        if ($canBePersisted) {
             $cacheData = new CacheAssetExtractor();
             $cacheData->setHash($hash);
             $cacheData->setData($out->getSource());

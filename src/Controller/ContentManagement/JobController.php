@@ -129,6 +129,16 @@ class JobController extends AbstractController
         return $this->redirectToRoute('job.index');
     }
 
+    public function relaunch(Job $job, UserInterface $user): RedirectResponse
+    {
+        $newJob = $this->jobService->newJob($user);
+        $newJob->setCommand($job->getCommand());
+        $newJob->setTag($job->getTag());
+        $this->jobService->save($newJob);
+
+        return $this->redirectToRoute('emsco_job_status', ['job' => $newJob->getId()]);
+    }
+
     public function startJob(Job $job, Request $request, UserInterface $user): Response
     {
         if ($job->getUser() !== $user->getUserIdentifier()) {

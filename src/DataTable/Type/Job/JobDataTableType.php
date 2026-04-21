@@ -59,6 +59,13 @@ class JobDataTableType extends AbstractEntityTableType
             icon: 'eye',
             attributes: ['data-testid' => 'btn-action-status'],
         );
+        $table->addItemPostAction(
+            route: 'emsco_job_relaunch',
+            labelKey: t('action.relaunch', [], 'emsco-core'),
+            icon: 'recycle',
+            messageKey: t('type.confirm', ['type' => 'relaunch_job'], 'emsco-core'),
+            attributes: ['data-testid' => 'btn-action-relaunch'],
+        );
 
         $this
             ->addItemDelete($table, 'job', 'job.delete')

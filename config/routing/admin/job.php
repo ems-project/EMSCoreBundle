@@ -22,6 +22,11 @@ return function (RoutingConfigurator $routes) {
         ->defaults(['_format' => 'html'])
         ->methods(['POST']);
 
+    $routes->add('emsco_job_relaunch', '/relaunch/{job}')
+        ->controller([JobController::class, 'relaunch'])
+        ->defaults(['_format' => 'html'])
+        ->methods(['POST']);
+
     $routes->add('emsco_job_admin_start', '/start/{job}')
         ->controller([JobController::class, 'startJob'])
         ->defaults(['_format' => 'html'])

@@ -19,6 +19,7 @@ action:
     edit: Edit
     export: Export
     rebuild: Rebuild
+    relaunch: Relaunch
     reorder: Reorder
     save: Save
     save_close: 'Save and Close'

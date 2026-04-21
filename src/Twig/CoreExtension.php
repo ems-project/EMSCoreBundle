@@ -958,6 +958,15 @@ readonly class CoreExtension
         );
     }
 
+    /**
+     * @return array{sha1: string, _hash: string, filesize: int, _size: int, filename: string, _name: string, mimetype: string, _type: string, _algo: string}
+     */
+    #[AsTwigFilter(name: 'emsco_get_file_object')]
+    public function getFileObject(string $hash, ?string $filename = null, ?string $type = null): array
+    {
+        return $this->fileService->getFileObject($hash, $filename, $type);
+    }
+
     private function contrastRatio(string $c1, string $c2): float
     {
         $color1 = new Color($c1);

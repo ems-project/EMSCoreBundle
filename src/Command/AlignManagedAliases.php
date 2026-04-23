@@ -8,13 +8,12 @@ use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\AliasService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: Commands::MANAGED_ALIAS_ALIGN, description: 'Align a managed alias to another.', aliases: ['ems:managedalias:align'], hidden: false)]
-class AlignManagedAliases extends Command
+class AlignManagedAliases extends AbstractCoreCommand
 {
     public function __construct(protected LoggerInterface $logger, protected AliasService $aliasService)
     {
@@ -68,12 +67,12 @@ class AlignManagedAliases extends Command
         }
 
         if (empty($actions['add']) && empty($actions['remove'])) {
-            $output->writeln(\sprintf('The alias %s was already aligned to the alias %s', $targetName, $sourceName));
+            $this->io->text(\sprintf('The alias %s was already aligned to the alias %s', $targetName, $sourceName));
 
             return 0;
         }
         $this->aliasService->updateAlias($target->getAlias(), $actions);
-        $output->writeln(\sprintf('The alias %s has been aligned to the alias %s', $targetName, $sourceName));
+        $this->io->success(\sprintf('The alias %s has been aligned to the alias %s', $targetName, $sourceName));
 
         return 0;
     }

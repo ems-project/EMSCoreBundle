@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Environment;
 
 use EMS\CoreBundle\Commands;
+use EMS\CoreBundle\Core\Revision\Search\RevisionSearcher;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\PublishService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,6 +33,14 @@ class AlignCommand extends AbstractEnvironmentCommand
 
     private const string LOCK_USER = 'SYSTEM_ALIGN';
 
+    public function __construct(
+        RevisionSearcher $revisionSearcher,
+        EnvironmentService $environmentService,
+        PublishService $publishService,
+    ) {
+        parent::__construct($revisionSearcher, $environmentService, $publishService, self::LOCK_USER);
+    }
+
     /** @var array<string, int> */
     private array $counters = [
         'published' => 0,
@@ -48,6 +59,7 @@ class AlignCommand extends AbstractEnvironmentCommand
     #[\Override]
     protected function configure(): void
     {
+        parent::configure();
         $this
             ->addArgument(self::ARGUMENT_SOURCE, InputArgument::REQUIRED, 'Environment source name')
             ->addArgument(self::ARGUMENT_TARGET, InputArgument::REQUIRED, 'Environment target name')
@@ -65,7 +77,7 @@ class AlignCommand extends AbstractEnvironmentCommand
         parent::initialize($input, $output);
         $this->io->title('EMS - Environment - Align');
 
-        $this->initializeRevisionSearcher(self::LOCK_USER);
+        $this->initializeRevisionSearcher();
         $this->publicationTemplate = $this->getOptionBool(self::OPTION_PUBLICATION_TEMPLATE);
         $this->publishService->bulkStart($this->revisionSearcher->getSize(), $this->logger);
     }
@@ -98,7 +110,7 @@ class AlignCommand extends AbstractEnvironmentCommand
 
         $this->io->progressStart($search->getTotal());
         foreach ($this->revisionSearcher->search($this->source, $search) as $revisions) {
-            $this->revisionSearcher->lock($revisions, $this->lockUser);
+            $this->revisionSearcher->lock($revisions, $this->getUsername());
 
             foreach ($revisions->transaction() as $revision) {
                 $contentType = $revision->giveContentType();
@@ -112,7 +124,7 @@ class AlignCommand extends AbstractEnvironmentCommand
                     }
                     ++$targetIsPreviewEnvironment[$contentType->getName()];
                 } else {
-                    $bulkResult = $this->publishService->bulkPublish($revision, $this->target, $this->lockUser, $this->publicationTemplate);
+                    $bulkResult = $this->publishService->bulkPublish($revision, $this->target, $this->getUsername(), $this->publicationTemplate);
                     ++$this->counters[$this->bulkResultCounter[$bulkResult]];
                 }
 
@@ -183,7 +195,7 @@ class AlignCommand extends AbstractEnvironmentCommand
         $this->io->progressStart($targetSearch->getTotal());
 
         foreach ($this->revisionSearcher->search($this->target, $targetSearch) as $revisions) {
-            $this->revisionSearcher->lock($revisions, $this->lockUser);
+            $this->revisionSearcher->lock($revisions, $this->getUsername());
 
             foreach ($revisions->transaction() as $revision) {
                 $this->io->progressAdvance();
@@ -197,7 +209,7 @@ class AlignCommand extends AbstractEnvironmentCommand
                     continue;
                 }
 
-                $this->publishService->bulkUnpublish($revision, $this->target, self::LOCK_USER);
+                $this->publishService->bulkUnpublish($revision, $this->target, $this->getUsername());
                 ++$countUnpublished;
             }
 

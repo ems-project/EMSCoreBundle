@@ -14,18 +14,17 @@ use EMS\CoreBundle\Service\DocumentService;
 use EMS\Helpers\File\TempDirectory;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 
 #[AsCommand(name: Commands::CONTENT_TYPE_IMPORT, description: "Import json files from a zip file as content type's documents.", aliases: ['ems:contenttype:import'], hidden: false)]
-class DocumentCommand extends Command
+class DocumentCommand extends AbstractCoreCommand
 {
     final public const string COMMAND = 'ems:contenttype:import';
+    private const string DEFAULT_USERNAME = 'SYSTEM_IMPORT';
 
     private const string ARGUMENT_CONTENT_TYPE = 'content-type-name';
     private const string ARGUMENT_ARCHIVE = 'archive';
@@ -35,7 +34,6 @@ class DocumentCommand extends Command
     private const string OPTION_FORCE = 'force';
     private const string OPTION_DONT_FINALIZE = 'dont-finalize';
     private const string OPTION_BUSINESS_KEY = 'business-key';
-    private ?SymfonyStyle $io = null;
     private ?ContentType $contentType = null;
     private ?string $archiveFilename = null;
 
@@ -47,6 +45,7 @@ class DocumentCommand extends Command
     #[\Override]
     protected function configure(): void
     {
+        parent::configure();
         $this
             ->addArgument(
                 self::ARGUMENT_CONTENT_TYPE,
@@ -95,20 +94,18 @@ class DocumentCommand extends Command
                 InputOption::VALUE_NONE,
                 'Try to identify documents by their business keys'
             );
+        $this->addUsernameOption(self::DEFAULT_USERNAME);
     }
 
     #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->io = new SymfonyStyle($input, $output);
+        parent::initialize($input, $output);
     }
 
     #[\Override]
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        if (null === $this->io) {
-            throw new \RuntimeException('Unexpected null SymfonyStyle');
-        }
         $contentTypeName = $input->getArgument(self::ARGUMENT_CONTENT_TYPE);
         $archiveFilename = $input->getArgument(self::ARGUMENT_ARCHIVE);
         if (!\is_string($contentTypeName)) {
@@ -140,9 +137,6 @@ class DocumentCommand extends Command
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (null === $this->io) {
-            throw new \RuntimeException('Unexpected null SymfonyStyle');
-        }
         if (null === $this->contentType) {
             throw new \RuntimeException('Unexpected null contentType');
         }
@@ -185,7 +179,7 @@ class DocumentCommand extends Command
         $progress = $this->io->createProgressBar($finder->count());
         $progress->start();
 
-        $importerContext = $this->documentService->initDocumentImporterContext($this->contentType, 'SYSTEM_IMPORT', $rawImport, $signData, true, $bulkSize, $finalize, $force);
+        $importerContext = $this->documentService->initDocumentImporterContext($this->contentType, $this->getUsername(), $rawImport, $signData, true, $bulkSize, $finalize, $force);
 
         $loopIndex = 0;
         foreach ($finder as $file) {

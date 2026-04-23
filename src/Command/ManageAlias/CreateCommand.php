@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\ManageAlias;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\ManagedAlias\ManagedAliasManager;
 use EMS\CoreBundle\Entity\ManagedAlias;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: Commands::MANAGED_ALIAS_CREATE, description: 'Create a managed alias.', aliases: ['ems:managed-alias:create'], hidden: false)]
-final class CreateCommand extends AbstractCommand
+final class CreateCommand extends AbstractCoreCommand
 {
     public const string ARGUMENT_NAME = 'name';
     public const string ARGUMENT_LABEL = 'label';

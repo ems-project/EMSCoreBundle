@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Revision\Task;
 
 use Elastica\Document;
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Revision\Search\RevisionSearcher;
 use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
@@ -26,7 +26,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     name: Commands::REVISION_TASK_CREATE,
     hidden: false
 )]
-final class TaskCreateCommand extends AbstractCommand
+final class TaskCreateCommand extends AbstractCoreCommand
 {
     private Environment $environment;
     /** @var array<mixed> */

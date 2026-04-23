@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Submission;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Common\Config\ConfigResolver;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Submission\ExportConfig;
 use EMS\CoreBundle\Core\Submission\SubmissionExporter;
@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Extract form submissions',
     hidden: false
 )]
-class ExportCommand extends AbstractCommand
+class ExportCommand extends AbstractCoreCommand
 {
     public const string MAIL_TEMPLATE = '@EMSCore/email/submissions-export.html.twig';
     public const string ARGUMENT_CONFIG = 'config-file';

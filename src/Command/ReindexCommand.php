@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Elasticsearch\Bulker;
@@ -28,7 +27,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: Commands::ENVIRONMENT_REINDEX, description: "Reindex an environment in it's existing index.", aliases: ['ems:environment:reindex'], hidden: false)]
-class ReindexCommand extends AbstractCommand
+class ReindexCommand extends AbstractCoreCommand
 {
     private int $count = 0;
     private int $deleted = 0;
@@ -150,8 +149,8 @@ class ReindexCommand extends AbstractCommand
             $this->bulker->setSize($bulkSize);
             $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page, $bulkSize);
 
-            $output->writeln('');
-            $output->writeln('Start reindex '.$contentType->getName());
+            $this->io->newLine();
+            $this->io->text('Start reindex '.$contentType->getName());
             $progress = new ProgressBar($output, $paginator->count());
             $progress->start();
             do {
@@ -192,12 +191,12 @@ class ReindexCommand extends AbstractCommand
             $this->bulker->send(true);
 
             $progress->finish();
-            $output->writeln('');
+            $this->io->newLine();
 
-            $output->writeln(' '.$this->count.' objects are re-indexed in '.$index.' ('.$this->deleted.' not indexed as deleted, '.$this->error.' with indexing error)');
+            $this->io->text(' '.$this->count.' objects are re-indexed in '.$index.' ('.$this->deleted.' not indexed as deleted, '.$this->error.' with indexing error)');
 
             if ($this->reloaded > 0) {
-                $output->writeln(\sprintf('%d documents are reloaded', $this->reloaded));
+                $this->io->text(\sprintf('%d documents are reloaded', $this->reloaded));
             }
 
             $this->logger->notice('command.reindex.end', [
@@ -215,7 +214,7 @@ class ReindexCommand extends AbstractCommand
                 EmsFields::LOG_ENVIRONMENT_FIELD => $name,
             ]);
 
-            $output->writeln('WARNING: Environment named '.$name.' not found');
+            $this->io->warning('Environment named '.$name.' not found');
         }
     }
 }

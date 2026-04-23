@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Revision;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     aliases: ['ems:revisions:unlock'],
     hidden: false
 )]
-final class UnlockCommand extends AbstractCommand
+final class UnlockCommand extends AbstractCoreCommand
 {
     private const string ARGUMENT_USERNAME = 'username';
     private const string ARGUMENT_CONTENT_TYPE = 'content-type';

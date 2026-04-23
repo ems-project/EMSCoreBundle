@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Service\JobService;
@@ -16,7 +15,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: Commands::JOB_RUN, description: 'Execute the next pending job if exists. If not execute the oldest due scheduled job if exists.', aliases: ['ems:job:run'], hidden: false)]
-class JobCommand extends AbstractCommand
+class JobCommand extends AbstractCoreCommand
 {
     private const string ARGUMENT_JOB_ID = 'job-id';
     private const string OPTION_DUMP = 'dump';

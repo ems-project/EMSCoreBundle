@@ -11,7 +11,6 @@ use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryDocument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
@@ -23,18 +22,16 @@ class MediaLibraryFolderRenameCommand extends AbstractMediaLibraryCommand
 {
     private MediaLibraryFolder $folder;
     private string $folderName;
-    private string $username;
 
     public const ARGUMENT_FOLDER_ID = 'folder-id';
     public const ARGUMENT_FOLDER_NAME = 'folder-name';
-    public const OPTION_USERNAME = 'username';
 
     public function rename(MediaLibraryDocument $document, string $from, string $to): void
     {
         $renamedPath = $document->getPath()->renamePrefix($from, $to);
         $document->setPath($renamedPath);
 
-        $this->mediaLibraryService->updateDocument($document, $this->username);
+        $this->mediaLibraryService->updateDocument($document, $this->getUsername());
     }
 
     #[\Override]
@@ -43,8 +40,7 @@ class MediaLibraryFolderRenameCommand extends AbstractMediaLibraryCommand
         parent::configure();
         $this
             ->addArgument(self::ARGUMENT_FOLDER_ID, InputArgument::REQUIRED)
-            ->addArgument(self::ARGUMENT_FOLDER_NAME, InputArgument::REQUIRED)
-            ->addOption(self::OPTION_USERNAME, null, InputOption::VALUE_REQUIRED, 'media config hash');
+            ->addArgument(self::ARGUMENT_FOLDER_NAME, InputArgument::REQUIRED);
     }
 
     #[\Override]
@@ -56,7 +52,6 @@ class MediaLibraryFolderRenameCommand extends AbstractMediaLibraryCommand
         $folderId = $this->getArgumentString(self::ARGUMENT_FOLDER_ID);
 
         $this->folder = $this->mediaLibraryService->getFolder($folderId);
-        $this->username = $this->getOptionString(self::OPTION_USERNAME);
         $this->folderName = $this->getArgumentString(self::ARGUMENT_FOLDER_NAME);
     }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Submission;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 use EMS\Helpers\Html\MimeTypes;
@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Generates dummy submissions',
     hidden: false
 )]
-class GenerateDummySubmissionsCommand extends AbstractCommand
+class GenerateDummySubmissionsCommand extends AbstractCoreCommand
 {
     public const string ARGUMENT_COUNT = 'count';
     private int $count;

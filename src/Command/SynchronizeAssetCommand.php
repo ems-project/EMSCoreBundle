@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\UploadedAsset;
@@ -21,7 +20,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: Commands::ASSET_SYNCHRONIZE, description: 'Synchronize registered assets on storage services.', aliases: ['ems:asset:synchronize'], hidden: false)]
-class SynchronizeAssetCommand extends AbstractCommand
+class SynchronizeAssetCommand extends AbstractCoreCommand
 {
     /** @var string */
     protected $databaseName;
@@ -49,7 +48,7 @@ class SynchronizeAssetCommand extends AbstractCommand
         }
 
         if (\count($storagesList) < 2) {
-            $output->writeln('<error>There is nothing to synchronize as there is less than 2 healthy storage services</error>');
+            $this->io->error('There is nothing to synchronize as there is less than 2 healthy storage services');
 
             return 1;
         }
@@ -71,14 +70,14 @@ class SynchronizeAssetCommand extends AbstractCommand
                     $this->fileService->synchroniseAsset($hash['hash']);
                 } catch (NotFoundException) {
                     $message = \sprintf('File not found %s', $hash['hash']);
-                    $output->writeln('');
-                    $output->writeln(\sprintf('<comment>%s</comment>', $message));
+                    $this->io->newLine();
+                    $this->io->note($message);
                     ++$filesInError;
                 } catch (\Throwable $e) {
                     ++$filesInError;
                     $message = \sprintf('Error with file identified by %s : %s', $hash['hash'], $e->getMessage());
-                    $output->writeln('');
-                    $output->writeln(\sprintf('<error>%s</error>', $message));
+                    $this->io->newLine();
+                    $this->io->error($message);
                     $this->logger->warning($message);
                 }
                 $progress->advance();
@@ -86,9 +85,9 @@ class SynchronizeAssetCommand extends AbstractCommand
         }
 
         $progress->finish();
-        $output->writeln('');
+        $this->io->newLine();
         if ($filesInError > 0) {
-            $output->writeln(\sprintf('<comment>%d files not found or in error</comment>', $filesInError));
+            $this->io->note(\sprintf('%d files not found or in error', $filesInError));
         }
 
         return 0;

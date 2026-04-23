@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Webhook;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\WebhookService;
 use EMS\Helpers\Standard\Json;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Dispatch custom webhook notifications',
     hidden: false
 )]
-class DispatchWebhookCommand extends AbstractCommand
+class DispatchWebhookCommand extends AbstractCoreCommand
 {
     public const ARGUMENT_EVENT_NAME = 'event-name';
     public const ARGUMENT_DATA = 'data';

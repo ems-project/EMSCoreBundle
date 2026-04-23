@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Service\DataService;
@@ -22,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     aliases: ['ems:environment:create'],
     hidden: false
 )]
-class CreateEnvironmentCommand extends AbstractCommand
+class CreateEnvironmentCommand extends AbstractCoreCommand
 {
     final public const string ARGUMENT_ENV_NAME = 'name';
     final public const string OPTION_STRICT = 'strict';

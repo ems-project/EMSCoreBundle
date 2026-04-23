@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\UploadedAsset;
@@ -20,7 +19,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: Commands::ASSET_CLEAN, description: 'Unreference useless assets (no files are deleted from storages).', aliases: ['ems:asset:clean'], hidden: false)]
-class CleanAssetCommand extends AbstractCommand
+class CleanAssetCommand extends AbstractCoreCommand
 {
     public function __construct(protected LoggerInterface $logger, protected Registry $doctrine, protected FileService $fileService)
     {
@@ -65,12 +64,12 @@ class CleanAssetCommand extends AbstractCommand
         }
 
         $progress->finish();
-        $output->writeln('');
+        $this->io->newLine();
         if (0 !== $filesDereference) {
-            $output->writeln(\sprintf('<comment>%d files have been dereferenced</comment>', $filesDereference));
+            $this->io->note(\sprintf('%d files have been dereferenced', $filesDereference));
         }
         if (0 !== $filesInUsed) {
-            $output->writeln(\sprintf('<comment>%d files are referenced %d times</comment>', $filesInUsed, $totalCounter));
+            $this->io->note(\sprintf('%d files are referenced %d times', $filesInUsed, $totalCounter));
         }
 
         return 0;

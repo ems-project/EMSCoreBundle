@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Revision;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Discard drafts for content types.',
     hidden: false
 )]
-class DiscardDraftCommand extends AbstractCommand
+class DiscardDraftCommand extends AbstractCoreCommand
 {
     private const string ARGUMENT_CONTENT_TYPES = 'content-types';
     private const string OPTION_FORCE = 'force';

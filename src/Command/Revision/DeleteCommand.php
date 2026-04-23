@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Revision;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\PublishService;
@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Delete all/oldest revisions for content type(s).',
     hidden: false
 )]
-class DeleteCommand extends AbstractCommand
+class DeleteCommand extends AbstractCoreCommand
 {
     private const string ARGUMENT_CONTENT_TYPES = 'content-types';
     private const string OPTION_MODE = 'mode';

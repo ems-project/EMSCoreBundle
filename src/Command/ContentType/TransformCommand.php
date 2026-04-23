@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\ContentType;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformer;
 use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformerInterface;
@@ -21,11 +21,11 @@ use Symfony\Component\Console\Output\OutputInterface;
     name: Commands::CONTENT_TYPE_TRANSFORM,
     hidden: false
 )]
-final class TransformCommand extends AbstractCommand
+final class TransformCommand extends AbstractCoreCommand
 {
     private ContentType $contentType;
     private string $searchQuery;
-    private string $user = 'SYSTEM_CONTENT_TRANSFORM';
+    private const string DEFAULT_USERNAME = 'SYSTEM_CONTENT_TRANSFORM';
 
     public const string ARGUMENT_CONTENT_TYPE = 'content-type';
     public const string OPTION_SCROLL_SIZE = 'scroll-size';
@@ -45,20 +45,24 @@ final class TransformCommand extends AbstractCommand
     #[\Override]
     protected function configure(): void
     {
+        parent::configure();
         $this
             ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'ContentType name')
             ->addOption(self::OPTION_SCROLL_SIZE, null, InputOption::VALUE_REQUIRED, 'Size of the elasticsearch scroll request')
             ->addOption(self::OPTION_SCROLL_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Time to migrate "scrollSize" items i.e. 30s or 2m')
             ->addOption(self::OPTION_SEARCH_QUERY, null, InputOption::VALUE_OPTIONAL, 'Query used to find elasticsearch records to transform', '{}')
             ->addOption(self::OPTION_DRY_RUN, '', InputOption::VALUE_NONE, 'Dry run')
-            ->addOption(self::OPTION_USER, null, InputOption::VALUE_REQUIRED, 'Lock user', $this->user)
         ;
+        $this->addUsernameOption(self::DEFAULT_USERNAME);
+
+        $this->addDeprecatedUsernameOption(self::OPTION_USER, null, self::DEFAULT_USERNAME);
     }
 
     #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         parent::initialize($input, $output);
+        $this->handleDeprecatedUsernameOption($input, self::OPTION_USER);
 
         $this->io->title('EMS - Content Type - Transform');
 
@@ -69,7 +73,6 @@ final class TransformCommand extends AbstractCommand
             $this->revisionSearcher->setTimeout($scrollTimeout);
         }
 
-        $this->user = $this->getOptionString(self::OPTION_USER, $this->user);
         $this->searchQuery = $this->getOptionString(self::OPTION_SEARCH_QUERY);
         $this->contentType = $this->contentTypeService->giveByName($this->getArgumentString(self::ARGUMENT_CONTENT_TYPE));
     }
@@ -102,7 +105,7 @@ final class TransformCommand extends AbstractCommand
 
         foreach ($this->revisionSearcher->search($environment, $search) as $revisions) {
             foreach ($revisions->transaction() as $revision) {
-                $result = $this->contentTransformer->transform($revision, $transformerDefinitions, $this->user, $dryRun);
+                $result = $this->contentTransformer->transform($revision, $transformerDefinitions, $this->getUsername(), $dryRun);
                 if ($result) {
                     ++$transformed;
                 }

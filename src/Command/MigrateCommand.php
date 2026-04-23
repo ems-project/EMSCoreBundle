@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Command\Revision\ArchiveCommand;
 use EMS\CoreBundle\Commands;
@@ -23,8 +22,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: Commands::CONTENT_TYPE_MIGRATE, description: 'Migrate a content type from an elasticsearch index.', aliases: ['ems:contenttype:migrate'], hidden: false)]
-class MigrateCommand extends AbstractCommand
+class MigrateCommand extends AbstractCoreCommand
 {
+    private const string DEFAULT_USERNAME = 'SYSTEM_MIGRATE';
     private string $elasticsearchIndex;
     private string $contentTypeNameFrom;
     private string $contentTypeNameTo;
@@ -77,6 +77,7 @@ class MigrateCommand extends AbstractCommand
     #[\Override]
     protected function configure(): void
     {
+        parent::configure();
         $this
             ->addArgument(
                 self::ARGUMENT_ELASTICSEARCH_INDEX,
@@ -156,6 +157,7 @@ class MigrateCommand extends AbstractCommand
                 'Will archive revisions that were not modified (see changed option)'
             )
         ;
+        $this->addUsernameOption(self::DEFAULT_USERNAME);
     }
 
     #[\Override]
@@ -254,7 +256,7 @@ class MigrateCommand extends AbstractCommand
         $total = $this->elasticaService->count($search);
 
         $progress = $this->io->createProgressBar($total);
-        $importerContext = $this->documentService->initDocumentImporterContext($this->contentTypeTo, 'SYSTEM_MIGRATE', $this->rawImport, $this->signData, $this->indexInDefaultEnv, $this->bulkSize, !$this->dontFinalize, $this->forceImport);
+        $importerContext = $this->documentService->initDocumentImporterContext($this->contentTypeTo, $this->getUsername(), $this->rawImport, $this->signData, $this->indexInDefaultEnv, $this->bulkSize, !$this->dontFinalize, $this->forceImport);
         $importerContext->setShouldOnlyChanged($this->onlyChanged);
 
         foreach ($scroll as $resultSet) {
@@ -286,6 +288,7 @@ class MigrateCommand extends AbstractCommand
         $options = [
             ArchiveCommand::OPTION_FORCE => true,
             ArchiveCommand::OPTION_MODIFIED_BEFORE => $archiveModifiedBefore->format(\DateTimeInterface::ATOM),
+            AbstractCoreCommand::OPTION_USERNAME => $this->getUsername(),
         ];
 
         $this->runCommand(Commands::REVISION_ARCHIVE, $arguments, $options);

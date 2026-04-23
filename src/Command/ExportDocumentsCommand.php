@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -29,7 +28,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Error\Error;
 
 #[AsCommand(name: Commands::CONTENT_TYPE_EXPORT, description: 'Export a search result of a content type to a specific format.', aliases: ['ems:contenttype:export'], hidden: false)]
-class ExportDocumentsCommand extends AbstractCommand
+class ExportDocumentsCommand extends AbstractCoreCommand
 {
     private const string ARGUMENT_QUERY = 'query';
     private const string OPTION_ENVIRONMENT = 'environment';
@@ -146,7 +145,7 @@ class ExportDocumentsCommand extends AbstractCommand
             } elseif (\str_contains($this->format, TemplateService::XML_FORMAT)) {
                 $extension = '.xml';
             } else {
-                $output->writeln(\sprintf('WARNING: Format %s not found', $this->format));
+                $this->io->warning(\sprintf('Format %s not found', $this->format));
 
                 return -1;
             }
@@ -228,7 +227,7 @@ class ExportDocumentsCommand extends AbstractCommand
             } elseif (\str_contains($this->format, TemplateService::XML_FORMAT)) {
                 $accumulatedContent = $this->templateService->getXml($contentType, $accumulatedContent, true);
             } else {
-                $output->writeln(\sprintf('WARNING: Format %s not found', $this->format));
+                $this->io->warning(\sprintf('Format %s not found', $this->format));
 
                 return -1;
             }
@@ -241,10 +240,9 @@ class ExportDocumentsCommand extends AbstractCommand
 
         $zip->close();
         $this->io->progressFinish();
-
-        $output->writeln('');
+        $this->io->newLine();
         if (null !== $this->zipFilename) {
-            $output->writeln('Export: '.$outZipPath);
+            $this->io->success('Export: '.$outZipPath);
 
             return self::EXECUTE_SUCCESS;
         }
@@ -263,7 +261,7 @@ class ExportDocumentsCommand extends AbstractCommand
             EmsFields::CONTENT_MIME_TYPE_FIELD,
             UrlGeneratorInterface::ABSOLUTE_PATH
         );
-        $output->writeln('Export is available at: '.$url);
+        $this->io->success('Export is available at: '.$url);
 
         return self::EXECUTE_SUCCESS;
     }

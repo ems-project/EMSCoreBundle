@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Revision\Task;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Revision\Task\TaskMailer;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Send notification mail for tasks',
     hidden: false
 )]
-final class TaskNotificationMailCommand extends AbstractCommand
+final class TaskNotificationMailCommand extends AbstractCoreCommand
 {
     private string $subject;
     private bool $includeTasksManagers;

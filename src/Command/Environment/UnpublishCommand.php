@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command\Environment;
 
 use EMS\CoreBundle\Commands;
+use EMS\CoreBundle\Core\Revision\Search\RevisionSearcher;
 use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Service\EnvironmentService;
+use EMS\CoreBundle\Service\PublishService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,9 +30,18 @@ final class UnpublishCommand extends AbstractEnvironmentCommand
 
     private const string LOCK_USER = 'SYSTEM_UNPUBLISH';
 
+    public function __construct(
+        RevisionSearcher $revisionSearcher,
+        EnvironmentService $environmentService,
+        PublishService $publishService,
+    ) {
+        parent::__construct($revisionSearcher, $environmentService, $publishService, self::LOCK_USER);
+    }
+
     #[\Override]
     protected function configure(): void
     {
+        parent::configure();
         $this
             ->addArgument(self::ARGUMENT_ENVIRONMENT, InputArgument::REQUIRED, 'Environment name')
         ;
@@ -44,7 +56,7 @@ final class UnpublishCommand extends AbstractEnvironmentCommand
         parent::initialize($input, $output);
         $this->io->title('EMS - Environment - Unpublish');
 
-        $this->initializeRevisionSearcher(self::LOCK_USER);
+        $this->initializeRevisionSearcher();
     }
 
     #[\Override]
@@ -73,14 +85,14 @@ final class UnpublishCommand extends AbstractEnvironmentCommand
 
         $this->io->progressStart($search->getTotal());
         foreach ($this->revisionSearcher->search($this->environment, $search) as $revisions) {
-            $this->revisionSearcher->lock($revisions, $this->lockUser);
+            $this->revisionSearcher->lock($revisions, $$this->getUsername());
             $this->publishService->bulkStart($bulkSize, $this->logger);
 
             foreach ($revisions->transaction() as $revision) {
                 $this->io->progressAdvance();
 
                 try {
-                    $this->publishService->bulkUnpublish($revision, $this->environment, self::LOCK_USER);
+                    $this->publishService->bulkUnpublish($revision, $this->environment, $this->getUsername());
                     ++$this->counter;
                 } catch (\LogicException $e) {
                     $this->warnings[$e->getMessage()] = ($this->warnings[$e->getMessage()] ?? 0) + 1;

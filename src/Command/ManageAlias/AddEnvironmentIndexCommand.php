@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\ManageAlias;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\ManagedAlias\ManagedAliasManager;
 use EMS\CoreBundle\Service\EnvironmentService;
@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: "Add an environment's index to a managed alias.",
     hidden: false
 )]
-final class AddEnvironmentIndexCommand extends AbstractCommand
+final class AddEnvironmentIndexCommand extends AbstractCoreCommand
 {
     public const string ARGUMENT_MANAGED_ALIAS_NAME = 'managed-alias-name';
     public const string ARGUMENT_ENVIRONMENT_NAME = 'environment-name';

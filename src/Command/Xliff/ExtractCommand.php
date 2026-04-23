@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Xliff;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Helper\EmsFields;
@@ -13,6 +12,7 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CommonBundle\Twig\AssetExtension;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Entity\Environment;
@@ -36,7 +36,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
     name: Commands::XLIFF_EXTRACT,
     hidden: false
 )]
-final class ExtractCommand extends AbstractCommand
+final class ExtractCommand extends AbstractCoreCommand
 {
     private string $sourceLocale;
     private Environment $sourceEnvironment;
@@ -204,8 +204,8 @@ final class ExtractCommand extends AbstractCommand
             EmsFields::CONTENT_MIME_TYPE_FIELD,
             UrlGeneratorInterface::ABSOLUTE_PATH
         );
-        $output->writeln('');
-        $output->writeln(\sprintf('The XLIFF export is available at %s', $url));
+        $this->io->newLine();
+        $this->io->success(\sprintf('The XLIFF export is available at %s', $url));
 
         return self::EXECUTE_SUCCESS;
     }

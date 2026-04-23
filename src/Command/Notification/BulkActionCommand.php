@@ -8,6 +8,7 @@ use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
@@ -15,18 +16,16 @@ use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: Commands::NOTIFICATION_BULK_ACTION, description: 'Bulk all notifications actions for the passed query.', aliases: ['ems:notification:bulk-action'], hidden: false)]
-final class BulkActionCommand extends Command
+final class BulkActionCommand extends AbstractCoreCommand
 {
     private const string CONTENT_TYPE_NAME = 'contentTypeName';
-    private SymfonyStyle $io;
+    private const string DEFAULT_USERNAME = 'ems';
 
     public function __construct(
         private readonly NotificationService $notificationService,
@@ -41,19 +40,20 @@ final class BulkActionCommand extends Command
     #[\Override]
     protected function configure(): void
     {
+        parent::configure();
         $this
             ->addArgument(self::CONTENT_TYPE_NAME, InputArgument::REQUIRED, 'Content type name')
             ->addArgument('actionName', InputArgument::REQUIRED, 'Notification action name')
             ->addArgument('query', InputArgument::REQUIRED, 'ES query')
-            ->addOption('username', null, InputOption::VALUE_REQUIRED, 'notification user', 'ems')
             ->addOption('environment', null, InputOption::VALUE_REQUIRED, 'EMS environment')
             ->addOption('force', null, InputOption::VALUE_NONE, 'Do the bulk');
+        $this->addUsernameOption(self::DEFAULT_USERNAME);
     }
 
     #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        $this->io = new SymfonyStyle($input, $output);
+        parent::initialize($input, $output);
         $this->io->title('Bulk action notifications');
     }
 
@@ -103,7 +103,7 @@ final class BulkActionCommand extends Command
             return 0;
         }
 
-        $username = (string) $input->getOption('username');
+        $username = $this->getUsername();
         $countSend = 0;
         $progress = $this->io->createProgressBar($countDocuments);
         $progress->start();

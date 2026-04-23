@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Storage\Service\StorageInterface;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CoreBundle\Commands;
@@ -26,7 +25,7 @@ use Symfony\Component\Finder\Finder;
     aliases: ['ems:asset:extract'],
     hidden: false
 )]
-class ExtractAssetCommand extends AbstractCommand
+class ExtractAssetCommand extends AbstractCoreCommand
 {
     private const string ARG_PATH = 'path';
     private const string ARG_NAME = 'name';

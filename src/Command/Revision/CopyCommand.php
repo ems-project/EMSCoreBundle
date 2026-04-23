@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Revision;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Core\Revision\Search\RevisionSearcher;
 use EMS\CoreBundle\Entity\Environment;
@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Copy revisions from search query.',
     hidden: false
 )]
-final class CopyCommand extends AbstractCommand
+final class CopyCommand extends AbstractCoreCommand
 {
     private Environment $environment;
     private string $searchQuery;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Revision;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\DataService;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     name: Commands::REVISIONS_LOCK_ALL,
     description: 'Lock all revisions'
 )]
-class LockAllCommand extends AbstractCommand
+class LockAllCommand extends AbstractCoreCommand
 {
     private const string ARG_USER = 'user';
     private const string OPTION_TIME = 'time';

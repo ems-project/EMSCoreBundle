@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\ContentType;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Switch the default environment for a given content type.',
     hidden: false
 )]
-class SwitchDefaultCommand extends AbstractCommand
+class SwitchDefaultCommand extends AbstractCoreCommand
 {
     final public const string CONTENT_TYPE_SWITCH_DEFAULT_ENV_USERNAME = 'CONTENT_TYPE_SWITCH_DEFAULT_ENV_USERNAME';
 

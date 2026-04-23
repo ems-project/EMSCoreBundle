@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\Revision;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -21,9 +21,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: Commands::CONTENT_TYPE_LOCK, description: 'Lock a content type.', aliases: ['ems:contenttype:lock'], hidden: false)]
-final class LockCommand extends AbstractCommand
+final class LockCommand extends AbstractCoreCommand
 {
-    private string $by;
+    private const string DEFAULT_USERNAME = 'EMS_COMMAND';
     private ContentType $contentType;
     private bool $force;
     private string $query;
@@ -50,15 +50,18 @@ final class LockCommand extends AbstractCommand
     #[\Override]
     protected function configure(): void
     {
+        parent::configure();
         $this
             ->addArgument(self::ARGUMENT_CONTENT_TYPE, InputArgument::REQUIRED, 'Content type to lock')
             ->addArgument(self::ARGUMENT_TIME, InputArgument::REQUIRED, 'Lock until (+1day, +5min, now)')
             ->addOption(self::OPTION_QUERY, null, InputOption::VALUE_OPTIONAL, 'ES query', '{}')
-            ->addOption(self::OPTION_USER, null, InputOption::VALUE_REQUIRED, 'Lock username', 'EMS_COMMAND')
             ->addOption(self::OPTION_FORCE, null, InputOption::VALUE_NONE, 'Do not check for already locked revisions')
             ->addOption(self::OPTION_IF_EMPTY, null, InputOption::VALUE_NONE, 'Lock if there are no pending locks for the same user')
             ->addOption(self::OPTION_OUUID, null, InputOption::VALUE_OPTIONAL, 'Lock a specific ouuid')
         ;
+        $this->addUsernameOption(self::DEFAULT_USERNAME);
+
+        $this->addDeprecatedUsernameOption(self::OPTION_USER, null, self::DEFAULT_USERNAME);
     }
 
     #[\Override]
@@ -66,11 +69,11 @@ final class LockCommand extends AbstractCommand
     {
         parent::initialize($input, $output);
         $this->io->title('Content-type lock command');
+        $this->handleDeprecatedUsernameOption($input, self::OPTION_USER);
 
         $this->until = $this->getArgumentDateTime(self::ARGUMENT_TIME);
         $contentTypeName = $this->getArgumentString(self::ARGUMENT_CONTENT_TYPE);
         $this->contentType = $this->contentTypeService->giveByName($contentTypeName);
-        $this->by = $this->getOptionString(self::OPTION_USER);
         $this->query = $this->getOptionString(self::OPTION_QUERY);
         $this->force = $this->getOptionBool(self::OPTION_FORCE);
         $this->ifEmpty = $this->getOptionBool(self::OPTION_IF_EMPTY);
@@ -81,7 +84,7 @@ final class LockCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($this->ifEmpty
-            && 0 !== $this->dataService->countLockRevisions($this->contentType, $this->by)) {
+            && 0 !== $this->dataService->countLockRevisions($this->contentType, $this->getUsername())) {
             return 0;
         }
 
@@ -105,10 +108,10 @@ final class LockCommand extends AbstractCommand
 
             $revisionCount = 0;
             foreach ($this->searchDocuments($search) as $document) {
-                $revisionCount += $this->dataService->lockRevisions($this->contentType, $this->until, $this->by, $this->force, $document->getId());
+                $revisionCount += $this->dataService->lockRevisions($this->contentType, $this->until, $this->getUsername(), $this->force, $document->getId());
             }
         } else {
-            $revisionCount = $this->dataService->lockRevisions($this->contentType, $this->until, $this->by, $this->force, $this->ouuid);
+            $revisionCount = $this->dataService->lockRevisions($this->contentType, $this->until, $this->getUsername(), $this->force, $this->ouuid);
         }
 
         if (0 === $revisionCount) {
@@ -122,7 +125,7 @@ final class LockCommand extends AbstractCommand
             $revisionCount,
             $this->contentType->getName(),
             $this->until->format('Y-m-d H:i:s'),
-            $this->by,
+            $this->getUsername(),
         ]));
 
         return self::SUCCESS;

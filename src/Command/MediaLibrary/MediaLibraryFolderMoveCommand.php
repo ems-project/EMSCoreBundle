@@ -11,7 +11,6 @@ use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryDocument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
@@ -23,18 +22,16 @@ class MediaLibraryFolderMoveCommand extends AbstractMediaLibraryCommand
 {
     private MediaLibraryFolder $folder;
     private string $target;
-    private string $username;
 
     public const ARGUMENT_FOLDER_ID = 'folder-id';
     public const ARGUMENT_TARGET_ID = 'target-id';
-    public const OPTION_USERNAME = 'username';
 
     public function move(MediaLibraryDocument $document, string $to, ?string $from = null): void
     {
         $movedPath = $from ? $document->getPath()->renamePrefix($from, $to) : $document->getPath()->move($to);
         $document->setPath($movedPath);
 
-        $this->mediaLibraryService->updateDocument($document, $this->username);
+        $this->mediaLibraryService->updateDocument($document, $this->getUsername());
     }
 
     #[\Override]
@@ -43,8 +40,7 @@ class MediaLibraryFolderMoveCommand extends AbstractMediaLibraryCommand
         parent::configure();
         $this
             ->addArgument(self::ARGUMENT_FOLDER_ID, InputArgument::REQUIRED)
-            ->addArgument(self::ARGUMENT_TARGET_ID, InputArgument::REQUIRED)
-            ->addOption(self::OPTION_USERNAME, null, InputOption::VALUE_REQUIRED, 'media config hash');
+            ->addArgument(self::ARGUMENT_TARGET_ID, InputArgument::REQUIRED);
     }
 
     #[\Override]
@@ -58,8 +54,6 @@ class MediaLibraryFolderMoveCommand extends AbstractMediaLibraryCommand
 
         $targetId = $this->getArgumentString(self::ARGUMENT_TARGET_ID);
         $this->target = 'home' !== $targetId ? $this->mediaLibraryService->getFolder($targetId)->getPath()->getValue() : '/';
-
-        $this->username = $this->getOptionString(self::OPTION_USERNAME);
     }
 
     #[\Override]

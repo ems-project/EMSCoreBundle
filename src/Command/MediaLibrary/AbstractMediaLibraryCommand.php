@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Command\MediaLibrary;
 
-use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CoreBundle\Command\AbstractCoreCommand;
 use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig;
 use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfigFactory;
 use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryService;
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class AbstractMediaLibraryCommand extends AbstractCommand
+abstract class AbstractMediaLibraryCommand extends AbstractCoreCommand
 {
     public const OPTION_HASH = 'hash';
 
@@ -26,8 +26,10 @@ abstract class AbstractMediaLibraryCommand extends AbstractCommand
     #[\Override]
     protected function configure(): void
     {
+        parent::configure();
         $this
             ->addOption(self::OPTION_HASH, null, InputOption::VALUE_REQUIRED, 'media config hash');
+        $this->addUsernameOption(mode: InputOption::VALUE_REQUIRED);
     }
 
     #[\Override]

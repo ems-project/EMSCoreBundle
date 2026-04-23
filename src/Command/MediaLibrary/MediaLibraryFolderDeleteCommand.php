@@ -10,7 +10,6 @@ use EMS\CoreBundle\Core\Component\MediaLibrary\Folder\MediaLibraryFolder;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
@@ -21,18 +20,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MediaLibraryFolderDeleteCommand extends AbstractMediaLibraryCommand
 {
     private MediaLibraryFolder $folder;
-    private string $username;
 
     public const ARGUMENT_FOLDER_ID = 'folder-id';
-    public const OPTION_USERNAME = 'username';
 
     #[\Override]
     protected function configure(): void
     {
         parent::configure();
         $this
-            ->addArgument(self::ARGUMENT_FOLDER_ID, InputArgument::REQUIRED)
-            ->addOption(self::OPTION_USERNAME, null, InputOption::VALUE_REQUIRED, 'media config hash');
+            ->addArgument(self::ARGUMENT_FOLDER_ID, InputArgument::REQUIRED);
     }
 
     #[\Override]
@@ -43,7 +39,6 @@ class MediaLibraryFolderDeleteCommand extends AbstractMediaLibraryCommand
 
         $folderId = $this->getArgumentString(self::ARGUMENT_FOLDER_ID);
         $this->folder = $this->mediaLibraryService->getFolder($folderId);
-        $this->username = $this->getOptionString(self::OPTION_USERNAME);
     }
 
     #[\Override]
@@ -62,7 +57,7 @@ class MediaLibraryFolderDeleteCommand extends AbstractMediaLibraryCommand
         $progressBar = $this->io->createProgressBar($total);
 
         foreach ($children as $child) {
-            $this->mediaLibraryService->deleteDocument($child, $this->username);
+            $this->mediaLibraryService->deleteDocument($child, $this->getUsername());
 
             ++$processed;
             $percentage = (int) (($processed / $total) * 100);
@@ -72,7 +67,7 @@ class MediaLibraryFolderDeleteCommand extends AbstractMediaLibraryCommand
         }
 
         $this->io->info('Deleting folder');
-        $this->mediaLibraryService->deleteDocument($this->folder, $this->username);
+        $this->mediaLibraryService->deleteDocument($this->folder, $this->getUsername());
 
         $jobOutput?->progress(100);
         $progressBar->finish();

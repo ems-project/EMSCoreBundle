@@ -44,7 +44,7 @@ abstract class AbstractEnvironmentCommand extends AbstractCoreCommand
         $this->addUsernameOption($this->defaultUsernameOption);
     }
 
-    protected function configureRevisionSearcher(): void
+    protected function configureRevisionSearcher(string $defaultUser): void
     {
         $this
             ->addOption(self::OPTION_SCROLL_SIZE, null, InputOption::VALUE_REQUIRED, 'Size of the elasticsearch scroll request')
@@ -53,7 +53,7 @@ abstract class AbstractEnvironmentCommand extends AbstractCoreCommand
             ->addOption(self::OPTION_DRY_RUN, '', InputOption::VALUE_NONE, 'Dry run')
         ;
 
-        $this->addDeprecatedUsernameOption(self::OPTION_USER, null, $this->getUsername());
+        $this->addDeprecatedUsernameOption(self::OPTION_USER, null, $defaultUser);
     }
 
     #[\Override]

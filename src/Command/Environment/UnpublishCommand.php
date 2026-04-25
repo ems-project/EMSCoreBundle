@@ -47,7 +47,7 @@ final class UnpublishCommand extends AbstractEnvironmentCommand
         ;
 
         $this->configureForceProtection();
-        $this->configureRevisionSearcher();
+        $this->configureRevisionSearcher(self::LOCK_USER);
     }
 
     #[\Override]

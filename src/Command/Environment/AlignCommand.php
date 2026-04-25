@@ -68,7 +68,7 @@ class AlignCommand extends AbstractEnvironmentCommand
         ;
 
         $this->configureForceProtection();
-        $this->configureRevisionSearcher();
+        $this->configureRevisionSearcher(self::LOCK_USER);
     }
 
     #[\Override]

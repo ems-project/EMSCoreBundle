@@ -149,8 +149,8 @@ class ReindexCommand extends AbstractCoreCommand
             $this->bulker->setSize($bulkSize);
             $paginator = $revRepo->getRevisionsPaginatorPerEnvironmentAndContentType($environment, $contentType, $page, $bulkSize);
 
-            $this->io->newLine();
-            $this->io->text('Start reindex '.$contentType->getName());
+            $output->writeln('');
+            $output->writeln('Start reindex '.$contentType->getName());
             $progress = new ProgressBar($output, $paginator->count());
             $progress->start();
             do {
@@ -191,12 +191,11 @@ class ReindexCommand extends AbstractCoreCommand
             $this->bulker->send(true);
 
             $progress->finish();
-            $this->io->newLine();
-
-            $this->io->text(' '.$this->count.' objects are re-indexed in '.$index.' ('.$this->deleted.' not indexed as deleted, '.$this->error.' with indexing error)');
+            $output->writeln('');
+            $output->writeln(' '.$this->count.' objects are re-indexed in '.$index.' ('.$this->deleted.' not indexed as deleted, '.$this->error.' with indexing error)');
 
             if ($this->reloaded > 0) {
-                $this->io->text(\sprintf('%d documents are reloaded', $this->reloaded));
+                $output->writeln(\sprintf('%d documents are reloaded', $this->reloaded));
             }
 
             $this->logger->notice('command.reindex.end', [
@@ -214,7 +213,7 @@ class ReindexCommand extends AbstractCoreCommand
                 EmsFields::LOG_ENVIRONMENT_FIELD => $name,
             ]);
 
-            $this->io->warning('Environment named '.$name.' not found');
+            $output->writeln('WARNING: Environment named '.$name.' not found');
         }
     }
 }

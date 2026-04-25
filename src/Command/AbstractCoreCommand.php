@@ -46,7 +46,10 @@ abstract class AbstractCoreCommand extends AbstractCommand
     {
         $this->initialized = true;
         parent::initialize($input, $output);
-        $this->username = $this->getOptionStringNull(self::OPTION_USERNAME);
+
+        if ($input->hasOption(self::OPTION_USERNAME)) {
+            $this->username = $this->getOptionStringNull(self::OPTION_USERNAME);
+        }
     }
 
     public function getUsername(): string

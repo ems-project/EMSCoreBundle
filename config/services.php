@@ -591,7 +591,6 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems.service.user', UserService::class)
         ->args([
-            service('doctrine'),
             service('security.token_storage'),
             service('security.helper'),
             service('ems.repository.user'),

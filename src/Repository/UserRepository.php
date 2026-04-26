@@ -185,4 +185,10 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
 
         return $qb->getQuery();
     }
+
+    public function remove(UserInterface $user): void
+    {
+        $this->getEntityManager()->remove($user);
+        $this->getEntityManager()->flush();
+    }
 }

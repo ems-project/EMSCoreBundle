@@ -21,6 +21,11 @@ return function (RoutingConfigurator $routes) {
         ->methods(['GET', 'HEAD'])
         ->options(['openapi' => true]);
 
+    $routes->add('emsco_api_file_info', '/info/{hash}')
+        ->controller([FileController::class, 'info'])
+        ->methods(['GET', 'HEAD'])
+        ->options(['openapi' => true]);
+
     $routes->add('file.api.download', '/{sha1}')
         ->controller([FileController::class, 'downloadFile'])
         ->methods(['GET', 'HEAD'])

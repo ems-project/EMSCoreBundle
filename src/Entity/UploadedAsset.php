@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Entity;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CommonBundle\Helper\EmsFields;
+use EMS\Helpers\Standard\Type;
 
 class UploadedAsset implements EntityInterface
 {
@@ -272,5 +273,23 @@ class UploadedAsset implements EntityInterface
         $this->headIn = $headIn;
 
         return $this;
+    }
+
+    /**
+     * @return array{sha1: string, _hash: string, filesize: int, _size: int, filename: string, _name: string, mimetype: string, _type: string, _algo: string}
+     */
+    public function getFileObject(?string $filename = null, ?string $type = null): array
+    {
+        return [
+            EmsFields::CONTENT_FILE_HASH_FIELD => $this->sha1,
+            EmsFields::CONTENT_FILE_HASH_FIELD_ => $this->sha1,
+            EmsFields::CONTENT_FILE_SIZE_FIELD => $this->getSize(),
+            EmsFields::CONTENT_FILE_SIZE_FIELD_ => $this->getSize(),
+            EmsFields::CONTENT_FILE_NAME_FIELD => $filename ?? $this->name,
+            EmsFields::CONTENT_FILE_NAME_FIELD_ => $filename ?? $this->name,
+            EmsFields::CONTENT_MIME_TYPE_FIELD => $type ?? $this->type,
+            EmsFields::CONTENT_MIME_TYPE_FIELD_ => $type ?? $this->type,
+            EmsFields::CONTENT_FILE_ALGO_FIELD_ => $this->getHashAlgo(),
+        ];
     }
 }

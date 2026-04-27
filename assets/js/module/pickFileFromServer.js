@@ -1,7 +1,6 @@
-import ajaxModal, {pickFileModal} from "../helper/ajaxModal";
+import {pickFileModal} from "../helper/ajaxModal";
 import {observeDom} from '../helper/observeDom';
 import {resizeImage} from "../helper/resizeImage";
-import ProgressBar from "../helper/progressBar";
 
 export default class PickFileFromServer {
     constructor(target) {
@@ -16,45 +15,6 @@ export default class PickFileFromServer {
     }
 
     onClick(button) {
-        const wysiwygInfo = JSON.parse(document.querySelector('body').dataset.wysiwygInfo);
-        if (wysiwygInfo && wysiwygInfo.config && wysiwygInfo.config.emsBrowsers && wysiwygInfo.config.emsBrowsers.browser_file && wysiwygInfo.config.emsBrowsers.browser_file.url) {
-          const query = new URLSearchParams({ 'format': 'json' });
-          ajaxModal.load({ url: wysiwygInfo.config.emsBrowsers.browser_file.url + '?' + query.toString(), size: 'lg' }, (json) => {
-              console.log(json);
-              ajaxModal.getBodyElement().append(progressBar.element());
-              // if (!json.hasOwnProperty('success') || json.success === false) return;
-              //
-              // let processed = 0;
-              // const progressBar = new ProgressBar('progress-delete-files', {
-              //   label: 'Deleting files',
-              //   value: 100,
-              //   showPercentage: true,
-              // });
-              //
-              // ajaxModal.getBodyElement().append(progressBar.element());
-              // this.loading(true);
-              //
-              // Promise
-              //   .allSettled(Array.from(selection).map(fileRow => {
-              //     return this._post(`/file/${fileRow.dataset.id}/delete`).then(() => {
-              //       if (!json.hasOwnProperty('success') || json.success === false) return;
-              //
-              //       fileRow.closest('li').remove();
-              //       progressBar
-              //         .progress(Math.round((++processed / selection.length) * 100))
-              //         .style('success');
-              //     });
-              //   }))
-              //   .then(() => this._getFiles())
-              //   .then(() => this.loading(false))
-              //   .then(() => new Promise(resolve => setTimeout(resolve, 2000)))
-              //   .then(() => ajaxModal.close())
-              // ;
-            });
-
-            return;
-        }
-
         pickFileModal.load({ url: button.dataset.href, title: button.textContent, size: 'lg' },
             (json, modal) => {
 

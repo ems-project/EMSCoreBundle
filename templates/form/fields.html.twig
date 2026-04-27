@@ -1131,7 +1131,7 @@
 				<input type="file" id="file-upload-{{ form.vars.id }}" class="file-uploader-input" {% if form.vars.disabled %}disabled="disabled"{% endif %} data-testid="file-btn-upload-file-{{ form.vars.name }}">
 				<label class="btn btn-default" for="file-upload-{{ form.vars.id }}"><i class="fa fa-upload"></i> {{ 'view.form.fields.asset.upload-file'|trans|e('html_attr') }}</label>
 			</div>
-			ICI<button type="button" data-href="{{ path('ems_core_uploaded_file_wysiwyg_modal') }}"  class="btn btn-small btn-default file-browse-server" data-testid="file-btn-browser-serer-{{ form.vars.name }}"><i class="fa fa-folder-open-o"></i><span class="sr-only">{{ 'view.form.fields.asset.browse-server'|trans }}</span></button>
+			<button type="button" data-href="{{ path('ems_core_uploaded_file_wysiwyg_modal') }}"  class="btn btn-small btn-default file-browse-server" data-testid="file-btn-browser-serer-{{ form.vars.name }}"><i class="fa fa-folder-open-o"></i><span class="sr-only">{{ 'view.form.fields.asset.browse-server'|trans }}</span></button>
 			<div class="btn-group">
 				<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}" data-testid="file-btn-info-{{ form.vars.name }}">
 				  	<i class="fa fa-info"></i>
@@ -1215,7 +1215,7 @@
 			<input type="file" id="upload-{{ form.vars.id }}" class="file-uploader-input" data-testid="file-btn-upload-file-{{ form.vars.name }}">
 			<label class="btn btn-default" for="upload-{{ form.vars.id }}"><i class="fa fa-upload"></i> Upload file</label>
 		</div>
-		LA<button type="button" data-href="{{ path('ems_core_uploaded_file_wysiwyg_modal') }}" class="btn btn-small btn-default file-browse-server" data-testid="file-btn-browser-serer-{{ form.vars.name }}"><i class="fa fa-folder-open-o"></i><span class="sr-only">{{ 'view.form.fields.asset.browse-server'|trans }}</span></button>
+		<button type="button" data-href="{{ path('ems_core_uploaded_file_wysiwyg_modal') }}" class="btn btn-small btn-default file-browse-server" data-testid="file-btn-browser-serer-{{ form.vars.name }}"><i class="fa fa-folder-open-o"></i><span class="sr-only">{{ 'view.form.fields.asset.browse-server'|trans }}</span></button>
 		<div class="btn-group">
 			<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}" data-testid="file-btn-info-{{ form.vars.name }}">
               <i class="fa fa-info"></i>

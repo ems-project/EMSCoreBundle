@@ -13,13 +13,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class AbstractCoreCommand extends AbstractCommand
 {
     public const string OPTION_USERNAME = 'username';
-    private ?string $username;
+    private ?string $username = null;
     private bool $initialized = false;
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     #[\Override]
     protected function configure(): void
@@ -36,7 +31,7 @@ abstract class AbstractCoreCommand extends AbstractCommand
             self::OPTION_USERNAME,
             'u',
             $mode,
-            'elasticMS\'s username',
+            "elasticMS's username",
             $defaultValue
         );
     }

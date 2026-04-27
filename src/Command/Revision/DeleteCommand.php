@@ -63,7 +63,7 @@ class DeleteCommand extends AbstractCoreCommand
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $this->mode = $this->getOptionString(self::OPTION_MODE);
-        if (\in_array($this->mode, [self::MODE_ALL, self::MODE_OLDEST])) {
+        if (\in_array($this->mode, [self::MODE_ALL, self::MODE_OLDEST], true)) {
             $this->choiceArgumentArray(
                 self::ARGUMENT_CONTENT_TYPES,
                 'Select one or more contentType(s)',
@@ -73,7 +73,7 @@ class DeleteCommand extends AbstractCoreCommand
 
         $this->contentTypeNames = $this->getArgumentOptionalStringArray(self::ARGUMENT_CONTENT_TYPES);
 
-        if (!\in_array($this->mode, self::MODES)) {
+        if (!\in_array($this->mode, self::MODES, true)) {
             throw new \RuntimeException(\sprintf('Invalid option "%s"', $this->mode));
         }
     }

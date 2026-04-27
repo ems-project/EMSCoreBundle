@@ -795,7 +795,7 @@ class DataController extends AbstractController
                 throw new NotFoundHttpException('Impossible to find this item : '.$ouuid);
             }
 
-            if (\in_array($category, ['asset', 'file'])) {
+            if (\in_array($category, ['asset', 'file'], true)) {
                 $rawData = $revision->getRawData();
                 $assetField = $contentType->getAssetField();
 

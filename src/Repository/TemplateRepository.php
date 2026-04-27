@@ -104,7 +104,7 @@ class TemplateRepository extends ServiceEntityRepository
             ->setMaxResults($size);
         $this->addSearchFilters($qb, $contentType, $searchValue);
 
-        if (\in_array($orderField, ['name', 'render_option', 'public'])) {
+        if (\in_array($orderField, ['name', 'render_option', 'public'], true)) {
             $qb->orderBy(\sprintf('t.%s', $orderField), $orderDirection);
         } else {
             $qb->orderBy('t.orderKey', $orderDirection);

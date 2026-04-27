@@ -105,7 +105,7 @@ class TableColumn
 
     public function setCellType(string $cellType): TableColumn
     {
-        if (!\in_array($cellType, ['td', 'tr'])) {
+        if (!\in_array($cellType, ['td', 'tr'], true)) {
             throw new \RuntimeException(\sprintf('Unexpected cellType option %s, only td and tr are accepted', $cellType));
         }
         $this->cellType = $cellType;

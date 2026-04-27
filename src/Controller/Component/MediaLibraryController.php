@@ -183,7 +183,7 @@ class MediaLibraryController
         $folder = $folderId ? $this->mediaLibraryService->getFolder($folderId) : null;
 
         $sortOrder = $query->get('sortOrder');
-        if ($sortOrder && !\in_array($sortOrder, ['asc', 'desc'])) {
+        if ($sortOrder && !\in_array($sortOrder, ['asc', 'desc'], true)) {
             $sortOrder = 'asc';
         }
         $searchType = $query->getString('searchType', MediaLibraryConfig::TERM_SEARCH_TYPE);

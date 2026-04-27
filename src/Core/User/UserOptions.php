@@ -29,7 +29,7 @@ class UserOptions implements \ArrayAccess
 
     public function isEnabled(string $option): bool
     {
-        if (!\in_array($option, [self::SIMPLIFIED_UI, self::ALLOWED_CONFIGURE_WYSIWYG])) {
+        if (!\in_array($option, [self::SIMPLIFIED_UI, self::ALLOWED_CONFIGURE_WYSIWYG], true)) {
             throw new \RuntimeException(\sprintf('The field %s is not a boolean field', $option));
         }
 

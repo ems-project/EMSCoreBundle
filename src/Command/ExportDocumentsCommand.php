@@ -130,7 +130,7 @@ class ExportDocumentsCommand extends AbstractCoreCommand
         $zip->open($outZipPath, \ZipArchive::CREATE);
 
         $extension = '';
-        if (!\in_array($this->format, TemplateService::EXPORT_FORMATS)) {
+        if (!\in_array($this->format, TemplateService::EXPORT_FORMATS, true)) {
             $this->templateService->init($this->format, $contentType);
             $useTemplate = true;
             $accumulateInOneFile = $this->templateService->getTemplate()->getAccumulateInOneFile();
@@ -138,7 +138,7 @@ class ExportDocumentsCommand extends AbstractCoreCommand
                 $extension = '.'.$this->templateService->getTemplate()->getExtension();
             }
         } else {
-            $accumulateInOneFile = \in_array($this->format, [TemplateService::MERGED_JSON_FORMAT, TemplateService::MERGED_XML_FORMAT]);
+            $accumulateInOneFile = \in_array($this->format, [TemplateService::MERGED_JSON_FORMAT, TemplateService::MERGED_XML_FORMAT], true);
             $useTemplate = false;
             if (\str_contains($this->format, TemplateService::JSON_FORMAT)) {
                 $extension = '.json';

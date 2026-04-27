@@ -251,7 +251,7 @@ class Search implements \JsonSerializable
     public function setSearchPattern(string $pattern, bool $liveSearch = false): void
     {
         $queryString = $pattern;
-        if ($liveSearch && '' !== $pattern && !\in_array(\substr($pattern, -1), [' ', '?', '*', '.', '/'])) {
+        if ($liveSearch && '' !== $pattern && !\in_array(\substr($pattern, -1), [' ', '?', '*', '.', '/'], true)) {
             $queryString .= '*';
         }
 

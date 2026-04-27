@@ -154,7 +154,7 @@ class DashboardManager implements EntityServiceInterface
 
     public function define(Dashboard $dashboard, string $definition): void
     {
-        if (!\in_array($definition, Dashboard::DEFINITIONS)) {
+        if (!\in_array($definition, Dashboard::DEFINITIONS, true)) {
             throw new \Exception(\sprintf('Invalid definition passed "%s"', $definition));
         }
 

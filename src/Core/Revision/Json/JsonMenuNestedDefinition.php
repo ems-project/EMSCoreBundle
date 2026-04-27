@@ -288,7 +288,7 @@ final class JsonMenuNestedDefinition
             if ((\is_countable($settings['allow']) ? \count($settings['allow']) : 0) > 0 && !\in_array($nodeType, $settings['allow'])) {
                 continue;
             }
-            if (!\in_array($actionName, ['copy', 'preview']) && null === $this->revision) {
+            if (!\in_array($actionName, ['copy', 'preview'], true) && null === $this->revision) {
                 continue;
             }
 

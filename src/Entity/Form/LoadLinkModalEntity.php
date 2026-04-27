@@ -116,7 +116,7 @@ final class LoadLinkModalEntity
 
     public function hasTargetBlank(): bool
     {
-        return \in_array($this->target, [null, self::TARGET_BLANK]);
+        return \in_array($this->target, [null, self::TARGET_BLANK], true);
     }
 
     public function getTargetBlank(): bool

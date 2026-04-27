@@ -86,7 +86,7 @@ final class FormRepository extends ServiceEntityRepository
             ->setMaxResults($size);
         $this->addSearchFilters($qb, $searchValue);
 
-        if (\in_array($orderField, ['label', 'name'])) {
+        if (\in_array($orderField, ['label', 'name'], true)) {
             $qb->orderBy(\sprintf('c.%s', $orderField), $orderDirection);
         } else {
             $qb->orderBy('c.orderKey', $orderDirection);

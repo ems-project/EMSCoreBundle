@@ -107,7 +107,7 @@ final class ChannelRepository extends ServiceEntityRepository
             ->setMaxResults($size);
         $this->addSearchFilters($qb, $searchValue);
 
-        if (\in_array($orderField, ['label', 'name', 'alias', 'public'])) {
+        if (\in_array($orderField, ['label', 'name', 'alias', 'public'], true)) {
             $qb->orderBy(\sprintf('c.%s', $orderField), $orderDirection);
         } else {
             $qb->orderBy('c.orderKey', $orderDirection);

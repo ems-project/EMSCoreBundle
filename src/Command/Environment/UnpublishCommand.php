@@ -85,7 +85,7 @@ final class UnpublishCommand extends AbstractEnvironmentCommand
 
         $this->io->progressStart($search->getTotal());
         foreach ($this->revisionSearcher->search($this->environment, $search) as $revisions) {
-            $this->revisionSearcher->lock($revisions, $$this->getUsername());
+            $this->revisionSearcher->lock($revisions, ${$this}->getUsername());
             $this->publishService->bulkStart($bulkSize, $this->logger);
 
             foreach ($revisions->transaction() as $revision) {

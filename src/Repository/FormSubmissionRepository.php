@@ -38,7 +38,7 @@ class FormSubmissionRepository extends ServiceEntityRepository
             ->setMaxResults($size);
         $this->addSearchFilters($qb, $searchValue);
 
-        if (\in_array($orderField, ['id', 'instance', 'name', 'locale', 'created', 'expireDate'])) {
+        if (\in_array($orderField, ['id', 'instance', 'name', 'locale', 'created', 'expireDate'], true)) {
             $qb->orderBy(\sprintf('fs.%s', $orderField), $orderDirection);
         } else {
             $qb->orderBy('fs.created', $orderDirection);

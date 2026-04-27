@@ -163,7 +163,7 @@ class ContentTypeRepository extends EntityRepository
             ->setMaxResults($size);
         $this->addSearchFilters($qb, $searchValue);
 
-        if (\in_array($orderField, ['name', 'pluralName', 'singularName', 'active'])) {
+        if (\in_array($orderField, ['name', 'pluralName', 'singularName', 'active'], true)) {
             $qb->orderBy(\sprintf('c.%s', $orderField), $orderDirection);
         } else {
             $qb->orderBy('c.orderKey', $orderDirection);

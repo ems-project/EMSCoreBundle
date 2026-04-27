@@ -134,6 +134,7 @@ class JobController extends AbstractController
         $newJob = $this->jobService->newJob($user);
         $newJob->setCommand($job->getCommand());
         $newJob->setTag($job->getTag());
+
         $this->jobService->save($newJob);
 
         return $this->redirectToRoute('emsco_job_status', ['job' => $newJob->getId()]);

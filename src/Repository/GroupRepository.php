@@ -52,7 +52,7 @@ class GroupRepository extends ServiceEntityRepository
             ->setMaxResults($size);
         $this->addSearchFilters($qb, $searchValue);
 
-        if (\in_array($orderField, ['name', 'label'])) {
+        if (\in_array($orderField, ['name', 'label'], true)) {
             $qb->orderBy(\sprintf('g.%s', $orderField), $orderDirection);
         } else {
             $qb->orderBy('g.name', $orderDirection);

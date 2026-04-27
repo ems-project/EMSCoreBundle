@@ -28,6 +28,7 @@ class LockAllCommand extends AbstractCoreCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this

@@ -143,7 +143,7 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
             ->setMaxResults($size);
         $this->addSearchFilters($qb, $searchValue);
 
-        if (\in_array($orderField, ['username', 'displayName', 'emailNotification', 'email', 'enabled', 'lastLogin'])) {
+        if (\in_array($orderField, ['username', 'displayName', 'emailNotification', 'email', 'enabled', 'lastLogin'], true)) {
             $qb->orderBy(\sprintf('user.%s', $orderField), $orderDirection);
         }
 

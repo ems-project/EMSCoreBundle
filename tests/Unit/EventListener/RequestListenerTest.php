@@ -24,7 +24,7 @@ final class RequestListenerTest extends TestCase
     public function testItAllowsInternalRedirectTargets(): void
     {
         $listener = $this->createListener();
-        $request = Request::create('/login', 'GET', ['redirectToUrl' => '/dashboard?tab=welcome#intro']);
+        $request = Request::create('/login', Request::METHOD_GET, ['redirectToUrl' => '/dashboard?tab=welcome#intro']);
         $response = new RedirectResponse('/default');
         $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::MAIN_REQUEST, $response);
 
@@ -44,7 +44,7 @@ final class RequestListenerTest extends TestCase
             "/safe\r\nLocation:https://evil.example.com",
             'dashboard',
         ] as $redirectToUrl) {
-            $request = Request::create('/login', 'GET', ['redirectToUrl' => $redirectToUrl]);
+            $request = Request::create('/login', Request::METHOD_GET, ['redirectToUrl' => $redirectToUrl]);
             $response = new RedirectResponse('/default');
             $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::MAIN_REQUEST, $response);
 
@@ -57,7 +57,7 @@ final class RequestListenerTest extends TestCase
     public function testItDoesNotChangeNonRedirectResponses(): void
     {
         $listener = $this->createListener();
-        $request = Request::create('/login', 'GET', ['redirectToUrl' => '/dashboard']);
+        $request = Request::create('/login', Request::METHOD_GET, ['redirectToUrl' => '/dashboard']);
         $response = new Response();
         $event = new ResponseEvent($this->kernel, $request, HttpKernelInterface::MAIN_REQUEST, $response);
 

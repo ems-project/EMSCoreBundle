@@ -26,6 +26,7 @@ class UnLockAllCommand extends AbstractCoreCommand
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this

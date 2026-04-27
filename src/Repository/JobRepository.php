@@ -107,7 +107,7 @@ class JobRepository extends EntityRepository
             ->setMaxResults($size);
         $this->addSearchFilters($qb, $searchValue);
 
-        if (\in_array($orderField, ['username', 'command', 'created', 'modified'])) {
+        if (\in_array($orderField, ['username', 'command', 'created', 'modified'], true)) {
             $qb->orderBy(\sprintf('job.%s', $orderField), $orderDirection);
         } else {
             $qb->orderBy('job.created', $orderDirection);

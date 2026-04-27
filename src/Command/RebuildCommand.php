@@ -108,7 +108,7 @@ class RebuildCommand extends AbstractCoreCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->aliasService->build();
-        $this->waitFor($this->yellowOk, $output);
+        $this->waitFor($this->yellowOk);
 
         $this->em = $this->doctrine->getManager();
         $envRepo = $this->em->getRepository(Environment::class);
@@ -142,7 +142,7 @@ class RebuildCommand extends AbstractCoreCommand
         return 0;
     }
 
-    private function waitFor(bool $yellowOk, OutputInterface $output): void
+    private function waitFor(bool $yellowOk): void
     {
         if ($yellowOk) {
             $this->io->text('Waiting for yellow...');
@@ -174,7 +174,7 @@ class RebuildCommand extends AbstractCoreCommand
         $this->mapping->createIndex($newIndexName, $body);
 
         $this->io->text('A new index '.$newIndexName.' has been created');
-        $this->waitFor($this->yellowOk, $output);
+        $this->waitFor($this->yellowOk);
         $this->io->text(\count($contentTypes).' content types will be re-indexed');
 
         $countContentType = 1;
@@ -201,7 +201,7 @@ class RebuildCommand extends AbstractCoreCommand
             }
         }
 
-        $this->waitFor($this->yellowOk, $output);
+        $this->waitFor($this->yellowOk);
 
         $atomicSwitch = $this->aliasService->atomicSwitch($environment, $newIndexName, $this->ignoreReferrers);
 

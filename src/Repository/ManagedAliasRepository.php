@@ -50,7 +50,7 @@ class ManagedAliasRepository extends EntityRepository
             ->setMaxResults($size);
         $this->addSearchFilters($qb, $searchValue);
 
-        if (\in_array($orderField, ['name', 'label'])) {
+        if (\in_array($orderField, ['name', 'label'], true)) {
             $qb->orderBy(\sprintf('ma.%s', $orderField), $orderDirection);
         }
 

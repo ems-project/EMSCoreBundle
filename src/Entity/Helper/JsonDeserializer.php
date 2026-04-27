@@ -22,7 +22,7 @@ abstract class JsonDeserializer
     {
         $dateFields = ['created', 'modified', 'lockUntil'];
 
-        if (null !== $value && \in_array($name, $dateFields)) {
+        if (null !== $value && \in_array($name, $dateFields, true)) {
             $value = $this->convertToDateTime($value);
         }
 

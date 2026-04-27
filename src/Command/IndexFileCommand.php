@@ -94,7 +94,7 @@ class IndexFileCommand extends AbstractCoreCommand
         }
 
         $this->io->write('DB size before the migration : ');
-        $this->dbSize($output);
+        $this->dbSize();
 
         $contentType = $this->contentTypeService->getByName($contentTypeName);
         if (!$contentType) {
@@ -162,7 +162,7 @@ class IndexFileCommand extends AbstractCoreCommand
         $this->io->text('Please rebuild your environments and update your field type');
 
         $this->io->write('DB size after the migration : ');
-        $this->dbSize($output);
+        $this->dbSize();
 
         return 0;
     }
@@ -179,7 +179,7 @@ class IndexFileCommand extends AbstractCoreCommand
                 } elseif ($onlyWithIngestedContent && !isset($rawData[$key]['content'])) {
                     // do nothing in this case as a there is no ingested (binary) content
                 } else {
-                    return $this->migrate($rawData[$key], $output);
+                    return $this->migrate($rawData[$key]);
                 }
 
                 return false;
@@ -196,7 +196,7 @@ class IndexFileCommand extends AbstractCoreCommand
     /**
      * @param array<mixed> $rawData
      */
-    private function migrate(array &$rawData, OutputInterface $output): bool
+    private function migrate(array &$rawData): bool
     {
         $updated = false;
         if ([] !== $rawData && isset($rawData['sha1'])) {
@@ -257,21 +257,18 @@ class IndexFileCommand extends AbstractCoreCommand
         return $updated;
     }
 
-    private function dbSize(OutputInterface $output): void
+    private function dbSize(): void
     {
         /**
          * @var EntityManager $em
          */
         $em = $this->doctrine->getManager();
-
         $connection = $this->doctrine->getConnection();
         if (!$connection instanceof Connection) {
             throw new \RuntimeException('Unexpected doctrine connection');
         }
         $dbName = $connection->getDatabase();
-
         $platform = $connection->getDatabasePlatform();
-
         if ($platform instanceof PostgreSQLPlatform) {
             $query = \sprintf("SELECT pg_size_pretty(pg_database_size('%s')) AS size", $dbName);
         } elseif ($platform instanceof MySQLPlatform) {
@@ -282,9 +279,7 @@ class IndexFileCommand extends AbstractCoreCommand
         $stmt = $em->getConnection()->prepare($query);
         $result = $stmt->executeQuery();
         $size = $result->fetchAllAssociative();
-
         $row = \is_array($size) && isset($size[0]['size']) ? \sprintf('The database size is %s MB', $size[0]['size']) : 'Undefined';
-
         $this->io->text($row);
     }
 }

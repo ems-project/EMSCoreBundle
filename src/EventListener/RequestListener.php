@@ -40,11 +40,35 @@ class RequestListener
     public function onKernelResponse(ResponseEvent $event): void
     {
         $response = $event->getResponse();
-        $redirectUrl = $event->getRequest()->query->get('redirectToUrl');
+        $redirectUrl = $this->getSafeRedirectTarget($event->getRequest()->query->get('redirectToUrl'));
 
-        if ($response instanceof RedirectResponse && \is_string($redirectUrl)) {
+        if ($response instanceof RedirectResponse && null !== $redirectUrl) {
             $response->setTargetUrl($redirectUrl);
         }
+    }
+
+    private function getSafeRedirectTarget(mixed $redirectUrl): ?string
+    {
+        if (!\is_string($redirectUrl) || '' === $redirectUrl) {
+            return null;
+        }
+
+        if (1 !== \preg_match('/^\/(?!\/)/', $redirectUrl) || \str_contains($redirectUrl, '\\') || 1 === \preg_match('/[\x00-\x1F\x7F]/', $redirectUrl)) {
+            return null;
+        }
+
+        $parts = \parse_url($redirectUrl);
+        if (false === $parts) {
+            return null;
+        }
+
+        foreach (['scheme', 'host', 'port', 'user', 'pass'] as $component) {
+            if (isset($parts[$component])) {
+                return null;
+            }
+        }
+
+        return $redirectUrl;
     }
 
     public function onKernelException(ExceptionEvent $event): void

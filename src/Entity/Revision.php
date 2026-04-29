@@ -594,8 +594,8 @@ class Revision implements EntityInterface, \Stringable
 
     public function isPublished(string $environmentName): bool
     {
-        foreach ($this->environmentRevisions as $environmentRevision) {
-            if ($environmentRevision->getEnvironment()->getName() === $environmentName) {
+        foreach ($this->getEnvironments() as $environment) {
+            if ($environment->getName() === $environmentName) {
                 return true;
             }
         }

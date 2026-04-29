@@ -16,27 +16,37 @@ document.addEventListener('DOMContentLoaded', function (e) {
         let url = new URL(event.target.href)
         let text = event.target.innerText;
         let emsId = event.target.dataset.emsId;
+        let json = event.target.dataset.json ?? null;
 
-        window.opener.CKEDITOR.tools.callFunction(params.get('CKEditorFuncNum'), url, function () {
-            let dialog = this.getDialog();
+        if (json && window.opener && !window.opener.closed) {
+            window.opener.postMessage({
+                type: 'ems:browser-file:selected',
+                json: JSON.parse(json),
+            }, window.location.origin);
+        }
 
-            switch (dashboardType) {
-                case 'browser_image':
-                    dialog.getContentElement('info', 'src').setValue(url.pathname + url.search);
-                    break
-                case 'browser_object':
-                    dialog.getContentElement('info', 'localPage').setValue({
-                        'id': emsId ? emsId.replace('ems://object:', '') : url.toString(),
-                        'text': text
-                    })
-                    break
-                case 'browser_file':
-                    let fileLink = dialog.getContentElement( 'info', 'fileLink' )
-                    fileLink.setValue(text)
-                    fileLink.getInputElement().$.setAttribute('data-link', emsId ?? url.toString())
-                    break
-            }
-        })
+        if (window.opener && window.opener.CKEDITOR) {
+            window.opener.CKEDITOR.tools.callFunction(params.get('CKEditorFuncNum'), url, function () {
+                let dialog = this.getDialog();
+
+                switch (dashboardType) {
+                    case 'browser_image':
+                        dialog.getContentElement('info', 'src').setValue(url.pathname + url.search);
+                        break
+                    case 'browser_object':
+                        dialog.getContentElement('info', 'localPage').setValue({
+                            'id': emsId ? emsId.replace('ems://object:', '') : url.toString(),
+                            'text': text
+                        })
+                        break
+                    case 'browser_file':
+                        let fileLink = dialog.getContentElement( 'info', 'fileLink' )
+                        fileLink.setValue(text)
+                        fileLink.getInputElement().$.setAttribute('data-link', emsId ?? url.toString())
+                        break
+                }
+            })
+        }
 
         window.close()
     })

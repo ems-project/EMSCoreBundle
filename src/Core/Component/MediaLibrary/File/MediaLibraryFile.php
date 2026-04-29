@@ -8,6 +8,7 @@ use EMS\CommonBundle\Elasticsearch\Document\DocumentInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig;
 use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryDocument;
+use EMS\Helpers\Standard\Json;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class MediaLibraryFile extends MediaLibraryDocument
@@ -111,6 +112,28 @@ class MediaLibraryFile extends MediaLibraryDocument
             'sha1' => $this->getFileHash(),
             'type' => $this->getFileMimetype(),
             'name' => $this->giveName(),
+        ]);
+    }
+
+    public function urlPreview(): string
+    {
+        return $this->urlGenerator->generate('ems_asset_processor', [
+            'hash' => $this->getFileHash(),
+            'processor' => 'preview',
+            'type' => $this->getFileMimetype(),
+            'name' => $this->giveName(),
+        ]);
+    }
+
+    public function getDataJson(): string
+    {
+        return Json::encode([
+            'filename' => $this->giveName(),
+            'filesize' => $this->getFilesize(),
+            'mimetype' => $this->getFileMimetype(),
+            'sha1' => $this->getFileHash(),
+            'preview_url' => $this->urlPreview(),
+            'view_url' => $this->urlView(),
         ]);
     }
 

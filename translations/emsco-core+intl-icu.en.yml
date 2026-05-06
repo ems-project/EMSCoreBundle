@@ -230,7 +230,7 @@ field:
     singular: Singular
     spreadsheet: Spreadsheet
     status: Status
-    table_default_css: 'Default Table class attribute (deprecated)'
+    table_default_css: 'Default Table class attribute'
     tag: Tag
     template_body: 'Template body'
     template_footer: 'Template footer'

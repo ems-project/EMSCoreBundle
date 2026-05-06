@@ -295,6 +295,7 @@ key:
     schedule_tag: 'Used to indentify workers (e.g. CLI) which would remotely execute the job'
     search: Search
     structure: Structure
+    tiptap: Tiptap
     trash: Trash
     unreferenced_aliases: 'Unreferenced aliases'
     uploaded_files: 'Uploaded Files'
@@ -306,7 +307,6 @@ key:
     wysiwyg: WYSIWYG
     wysiwyg_profiles: Profiles
     wysiwyg_style_sets: 'Style Sets'
-    tiptap: 'Tiptap'
 log:
     error:
         content_type_add_unreferenced: 'Unexpected error while getting unreferenced content type(s) from external environment {environment}: {error}'

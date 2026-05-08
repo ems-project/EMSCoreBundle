@@ -213,10 +213,12 @@ class SearchController
     private function getSearch(array $json): Search
     {
         $data = $json['search'] ?? null;
-        if (!\is_string($data)) {
-            throw new \RuntimeException('Unexpected: search must be a string');
+        if (\is_array($data)) {
+            return Search::fromPayload($data);
         }
-
-        return Search::deserialize($data);
+        if (\is_string($data)) {
+            return Search::deserialize($data);
+        }
+        throw new \RuntimeException('Unexpected: search must be an array or a string');
     }
 }

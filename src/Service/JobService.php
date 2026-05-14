@@ -74,15 +74,24 @@ class JobService implements EntityServiceInterface
         );
     }
 
-    public function nextJobScheduled(string $username, ?string $tag): ?Job
+    public function nextJobScheduled(string $username, ?string $tag, bool $init = true): ?Job
     {
         $nextScheduled = $this->scheduleManager->findNext($tag);
 
         if (null === $nextScheduled) {
             return null;
         }
+        if ($init) {
+            return $this->initJob($username, $nextScheduled->getCommand(), $nextScheduled->givePreviousRun(), $tag);
+        }
 
-        return $this->initJob($username, $nextScheduled->getCommand(), $nextScheduled->givePreviousRun(), $tag);
+        $job = new Job();
+        $job->setUser($username);
+        $job->setCommand($nextScheduled->getCommand());
+        $job->setTag($tag);
+        $this->save($job);
+
+        return $job;
     }
 
     public function clean(): void
@@ -134,7 +143,7 @@ class JobService implements EntityServiceInterface
     {
         $job = new Job();
         $job->setUser($user->getUserIdentifier());
-        $job->setStatus('Job intialized');
+        $job->setStatus('Job initialized');
 
         return $job;
     }

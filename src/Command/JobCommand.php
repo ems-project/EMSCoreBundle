@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Command;
 
 use EMS\CommonBundle\Common\Command\AbstractCommand;
+use EMS\CommonBundle\Runner\RunnerManager;
 use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Service\JobService;
@@ -30,6 +31,7 @@ class JobCommand extends AbstractCommand
     public function __construct(
         private readonly JobService $jobService,
         private readonly ReleaseService $releaseService,
+        private readonly RunnerManager $runnerManager,
         private readonly string $dateFormat,
         private readonly string $cleanJobsTimeString,
     ) {
@@ -60,7 +62,7 @@ class JobCommand extends AbstractCommand
     {
         $this->io->title('EMSCO - Job - Run');
 
-        if ($this->processReleases() || $this->processNextJob() || $this->processNextScheduledJob()) {
+        if ($this->processReleases() || $this->processNextJob() || $this->processNextScheduledJob() || $this->processNextScheduledRunner()) {
             return self::EXECUTE_SUCCESS;
         }
 
@@ -104,13 +106,30 @@ class JobCommand extends AbstractCommand
             $nextJob = $this->jobService->nextJob($this->tag);
         }
 
-        if (null === $nextJob) {
-            $this->io->comment('No jobs pending to treat');
+        if (null !== $nextJob) {
+            return $this->executeJob($nextJob);
+        }
+
+        if (null !== $this->tag) {
+            $this->io->comment(\sprintf('No jobs pending to treat for tag %s', $this->tag));
 
             return false;
         }
+        foreach ($this->runnerManager->getTags() as $tag) {
+            $nextJob = $this->jobService->nextJob($tag);
+            if (null === $nextJob) {
+                continue;
+            }
+            $runnerId = $this->runnerManager->delegateJob($tag, (string) $nextJob->getId(), $nextJob->getCommand());
+            $this->io->title(\sprintf('Runner with ID: %d has been initialized', $runnerId));
+            $this->getListing($nextJob);
 
-        return $this->executeJob($nextJob);
+            return true;
+        }
+
+        $this->io->comment('No jobs pending to treat');
+
+        return false;
     }
 
     private function processNextScheduledJob(): bool
@@ -128,12 +147,7 @@ class JobCommand extends AbstractCommand
     private function executeJob(Job $job): bool
     {
         $this->io->title('Preparing the job');
-        $this->io->listing([
-            \sprintf('ID: %d', $job->getId()),
-            \sprintf('Command: %s', $job->getCommand()),
-            \sprintf('User: %s', $job->getUser()),
-            \sprintf('Created: %s', $job->getCreated()->format($this->dateFormat)),
-        ]);
+        $this->getListing($job);
 
         $start = new \DateTime();
         try {
@@ -168,5 +182,34 @@ class JobCommand extends AbstractCommand
             $this->io->write($jobLog);
             $this->io->section("End of job's output");
         }
+    }
+
+    private function processNextScheduledRunner(): bool
+    {
+        foreach ($this->runnerManager->getTags() as $tag) {
+            $job = $this->jobService->nextJobScheduled(self::USER_JOB_COMMAND, $tag, false);
+            if (null === $job) {
+                continue;
+            }
+
+            $runnerId = $this->runnerManager->delegateJob($tag, (string) $job->getId(), $job->getCommand());
+            $this->io->title(\sprintf('Runner with ID: %d has been initialized', $runnerId));
+            $this->getListing($job);
+
+            return true;
+        }
+        $this->io->comment('No runner scheduled to start');
+
+        return false;
+    }
+
+    private function getListing(Job $job): void
+    {
+        $this->io->listing([
+            \sprintf('ID: %d', $job->getId()),
+            \sprintf('Command: %s', $job->getCommand()),
+            \sprintf('User: %s', $job->getUser()),
+            \sprintf('Created: %s', $job->getCreated()->format($this->dateFormat)),
+        ]);
     }
 }

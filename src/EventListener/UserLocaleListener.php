@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\EventListener;
 
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Service\Channel\ChannelRegistrar;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -31,6 +32,10 @@ final readonly class UserLocaleListener implements EventSubscriberInterface
     public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMainRequest()) {
+            return;
+        }
+
+        if (\preg_match(ChannelRegistrar::EMSCO_CHANNEL_PATH_REGEX, $event->getRequest()->getPathInfo())) {
             return;
         }
 

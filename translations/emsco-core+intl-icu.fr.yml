@@ -1,0 +1,600 @@
+action:
+    activate: Activer
+    add: Ajouter
+    add_alias: 'Ajouter un alias'
+    add_referenced: 'Ajouter une référence'
+    add_referenced_content_type: 'Ajouter un type de contenu référencé'
+    attach: Attacher
+    close: Fermer
+    confirmation: 'Confirmez-vous ?'
+    create: Créer
+    deactivate: Désactiver
+    define: Définir
+    delete: Supprimer
+    delete_all: 'Tout supprimer'
+    delete_selected: 'Supprimer la sélection'
+    details: Détails
+    download_selected: 'Télécharger la sélection'
+    duplicate: Dupliquer
+    edit: Modifier
+    export: Exporter
+    rebuild: Reconstruire
+    relaunch: Relancer
+    reorder: Réordonner
+    save: Enregistrer
+    save_close: 'Enregistrer et fermer'
+    select_all: 'Tout sélectionner'
+    status: Statut
+    toggle_visibility: 'Basculer la visibilité'
+    toggle_visibility_selected: 'Basculer la visibilité de la sélection'
+    update_content_type_from_json: 'Mettre à jour {name} depuis un fichier JSON'
+    update_mapping: 'Mettre à jour le mapping'
+    view: Voir
+asset_extractor:
+    status: |-
+        {color, select,
+            green   {Vert : l’extracteur d’assets est opérationnel}
+            red     {Rouge : l’extracteur d’assets n’est pas complètement opérationnel. Contactez votre administrateur système}
+            other   {Étrange... Contactez votre administrateur système}
+        }
+certificate:
+    status: |-
+        {color, select,
+            green   {Vert : un certificat valide est en place}
+            yellow  {Jaune : certificat manquant ou non configuré}
+            red     {Rouge : clé privée introuvable}
+            other   {Étrange... Contactez votre administrateur système}
+        }
+cluster:
+    status: |-
+        {color, select,
+            green   {Vert : le cluster de recherche fonctionne comme prévu}
+            yellow  {Jaune : des documents sont en cours d’indexation. Ce statut ne devrait pas durer}
+            red     {Rouge : problèmes système détectés. Veuillez contacter votre administrateur}
+            other   {Étrange... Contactez votre administrateur système}
+        }
+color:
+    aqua: Aqua
+    black: Noir
+    blue: Bleu
+    fuchsia: Fuchsia
+    gray: Gris
+    green: Vert
+    light-blue: 'Bleu clair'
+    lime: 'Citron vert'
+    maroon: Marron
+    navy: 'Bleu marine'
+    olive: Olive
+    orange: Orange
+    purple: Violet
+    red: Rouge
+    teal: Sarcelle
+    yellow: Jaune
+content-type:
+    field:
+        hide_revision_sidebar:
+            label: 'Masquer la barre latérale de révision'
+        recompute_on_publish:
+            label: 'Recalculer les documents lors de la publication'
+        tasks_enabled:
+            label: Activé
+        tasks_helptexts:
+            label: 'Textes d’aide'
+        tasks_titles:
+            label: Titres
+core:
+    action:
+        render-option:
+            embed: Intégration
+            event: Événement
+            export: Export
+            external-link: 'Lien externe'
+            import: Import
+            job: Job
+            notification: Notification
+            pdf: PDF
+            raw-html: 'HTML brut'
+    content_type:
+        view_define: |-
+            {define, select,
+                default_overview {Comme vue d’ensemble par défaut}
+                other            {Retirer la définition}
+            }
+        view_definition: |-
+            {value, select,
+                default_overview {Vue d’ensemble par défaut}
+                other            {Non défini}
+            }
+        view_type: |-
+            {value, select,
+                data_link    {Lien de données personnalisé}
+                keywords     {Vue par mots-clés}
+                criteria     {Vue par critères}
+                export       {Vue d’export}
+                sorter       {Vue de tri}
+                hierarchical {Vue hiérarchique}
+                report       {Vue de rapport}
+                calendar     {Vue calendrier}
+                gallery      {Vue galerie}
+                importer     {Vue d’import}
+                other        {Type inconnu}
+            }
+    dashboard:
+        define: |-
+            {define, select,
+                quick_search    {Comme recherche rapide}
+                landing_page    {Comme page d’accueil}
+                browser_image   {Comme navigateur d’images}
+                browser_object  {Comme navigateur d’objets}
+                browser_file    {Comme navigateur de fichiers}
+                other           {Non défini}
+            }
+        definition: |-
+            {value, select,
+                quick_search    {Recherche rapide}
+                landing_page    {Page d’accueil}
+                browser_image   {Navigateur d’images}
+                browser_object  {Navigateur d’objets}
+                browser_file    {Navigateur de fichiers}
+                other           {Inconnu}
+            }
+        exception:
+            title: 'Une exception a été levée'
+    environment:
+        index_count: |-
+            {indexes, plural,
+                =0      {Il n’y a aucun index}
+                =1      {Il y a un index}
+                other   {Il y a # index}
+            }
+    version: 'Version {core} avec Symfony {symfony}'
+field:
+    accumulate_file: 'Accumuler dans un seul fichier'
+    alias: Alias
+    allowed_remote_hosts: 'Hôtes distants autorisés'
+    attributes: 'Attributs supplémentaires de la requête'
+    available: Disponible
+    channel: Canal
+    circles_to: 'Cercles destinataires'
+    color: Couleur
+    command: Commande
+    config: Configuration
+    content_css: 'CSS du contenu'
+    content_js: 'JS du contenu'
+    context: Contexte
+    count: Nombre
+    cron: Cron
+    date_build: 'Date de build'
+    date_created: 'Date de création'
+    date_execution: 'Date d’exécution'
+    date_modified: 'Date de modification'
+    date_run_next: 'Date de prochaine exécution'
+    date_run_previous: 'Date d’exécution précédente'
+    date_upload: 'Date d’upload'
+    definition: Définition
+    editor: Éditeur
+    email_content_type: 'Type de contenu (ex. : text/html)'
+    enabled: Activé
+    endpoint_url: Endpoint
+    entry_path: 'Chemin d’entrée par défaut'
+    environment_default: 'Environnement par défaut'
+    environment_external: 'Environnement externe'
+    environments: Environnements
+    error: 'Message d’erreur'
+    events: Événements
+    extra: Extra
+    file:
+        disposition: Disposition
+        extension: Extension
+        mimetype: 'Type MIME'
+        name: 'Nom du fichier'
+        orientation: Orientation
+        paper_size: 'Format du papier'
+        size: Taille
+        type: Type
+    format_tags: 'Tags de format'
+    hash: 'Signature du hash'
+    header: En-tête
+    header_allow_origin: 'L’en-tête Access-Control-Allow-Origin'
+    hidden: Masqué
+    icon: Icône
+    index: Index
+    indexes: Indexes
+    is_active: Actif
+    is_dirty: Modifié
+    is_edit_wysiwyg: 'Modifier avec WYSIWYG'
+    is_menu_notification: 'Visible dans le menu des notifications'
+    is_menu_sidebar: 'Visible dans le menu latéral'
+    is_preview: Prévisualisation
+    is_public: Public
+    key: Clé
+    label: Libellé
+    last_seen: 'Vu pour la dernière fois'
+    locale: Locale
+    message: Message
+    name: Nom
+    plural: Pluriel
+    public_access: 'Accès public'
+    query: Requête
+    release_environment_source: 'Environnement source pour la publication'
+    release_environment_target: 'Environnement pour la (dé)publication'
+    render_option: 'Option de rendu'
+    revision_version_tag: 'Oui comme {version_tag}'
+    revision_version_tag_empty: 'Non (publication silencieuse)'
+    role: Rôle
+    role_cc: 'Rôle cc'
+    role_to: 'Rôle destinataire'
+    roles: Rôles
+    search_config: 'Configuration de recherche'
+    severity: Sévérité
+    singular: Singulier
+    spreadsheet: 'Feuille de calcul'
+    status: Statut
+    table_default_css: 'Attribut class par défaut du tableau'
+    tag: Tag
+    template_body: 'Corps du template'
+    template_footer: 'Pied du template'
+    template_header: 'En-tête du template'
+    template_response: 'Réponse du template'
+    text: Texte
+    total: Total
+    total_deleted: 'Total supprimé'
+    total_elastic: 'Total dans ES'
+    total_ems: 'Total dans EMS'
+    translations: Traductions
+    type: Type
+    user: Utilisateur
+    user_deleted: 'Supprimé par'
+    user_impersonator: Impersonnateur
+    user_modified: 'Modifié par'
+    user_uploaded: 'Uploadé par'
+form:
+    data:
+        add:
+            ouuid:
+                constraint_message: "L’OUUID contient un caractère non autorisé : A-Z, a-z, 0-9, tiret : '-', underscore : '_' ou point : '.'."
+                label: OUUID
+                placeholder: 'Généré automatiquement si laissé vide'
+            save: 'Créer un brouillon {content_type}'
+    reorder:
+        title: 'Réordonner les champs du formulaire : {label}'
+form_submissions:
+    overview: Aperçu
+    title: 'Soumissions de formulaires'
+key:
+    actions: Actions
+    admin: Admin
+    analyzers: Analyseurs
+    attachment: 'Pièce jointe'
+    channels: Canaux
+    ckeditor4: 'CK Editor 4'
+    content_types: 'Types de contenu'
+    dashboards: Dashboards
+    details: Détails
+    documentation: Documentation
+    environments: Environnements
+    environments_external: 'Environnements externes'
+    environments_local: 'Environnements locaux'
+    export_documents: 'Exporter les documents'
+    filters: Filtres
+    form_submissions: 'Soumissions de formulaire'
+    forms: Formulaires
+    groups: Groupes
+    i18n: I18N
+    inline: Inline
+    inline_editor: 'Éditeur inline'
+    job_logs: 'Logs des jobs'
+    jobs: Jobs
+    landscape: Paysage
+    logs: Logs
+    loop_count: '#'
+    managed_aliases: 'Alias gérés'
+    none: Aucun
+    notice: Notice
+    orphan_indexes: 'Indexes orphelins'
+    overview: "Vue d'ensemble"
+    portrait: Portrait
+    prefix_instance_id: 'Préfixer l’alias avec l’ID de l’instance'
+    public_channel: 'Rendre le canal disponible aux utilisateurs non authentifiés ?'
+    public_view: 'Disponible publiquement (sans authentification)'
+    publishers: Publieurs
+    query_search: 'Recherche par requête'
+    query_searches: QuerySearch
+    schedule: Planification
+    schedule_cron: '<Minute> <Heure> <Jour_du_mois> <Mois_de_l’année> <Jour_de_la_semaine>. Ex. toutes les 15 minutes : */15 * * * *'
+    schedule_tag: 'Utilisé pour identifier les workers (ex. CLI) qui exécuteraient le job à distance'
+    search: Recherche
+    structure: Structure
+    tiptap: Tiptap
+    trash: Corbeille
+    unreferenced_aliases: 'Alias non référencés'
+    uploaded_files: 'Fichiers uploadés'
+    uploaded_files_logs: 'Logs des fichiers uploadés'
+    users: Utilisateurs
+    views: Vues
+    webhook_subscriptions: Abonnements
+    webhooks: Webhooks
+    wysiwyg: WYSIWYG
+    wysiwyg_profiles: Profils
+    wysiwyg_style_sets: 'Jeux de styles'
+log:
+    error:
+        content_type_add_unreferenced: 'Erreur inattendue lors de la récupération des types de contenu non référencés depuis l’environnement externe {environment} : {error}'
+        delete_failed: 'Échec de la suppression'
+        invalid_table_action: 'Action de tableau inconnue'
+    notice:
+        alias_attached: 'L’alias « {alias} » a été attaché'
+        content_type_deleted: 'Le type de contenu « {contentType} » a été supprimé'
+        content_type_referenced: 'Type de contenu référencé « {contentType} » depuis l’environnement « {environment} »'
+        content_type_view_deleted: 'La vue « {view} » a été supprimée'
+        deleted_orphan_index: 'L’index « {index} » a été supprimé'
+        deleted_orphan_indexes: 'Les indexes orphelins ont été supprimés'
+        draft_deleted: 'Le brouillon « {revision} » a été supprimé'
+    warning:
+        draft_not_found: 'Brouillon introuvable avec l’id « {revisionId} »'
+        duplicate_environment: 'L’environnement « {name} » existe déjà !'
+        index_not_found: 'Index « {index} » introuvable'
+notification-menu:
+    dashboards: 'Tableaux de bord'
+profile:
+    title: 'Votre profil'
+    title_sub: 'Tout à propos de vous'
+revision:
+    draft:
+        delete: 'Supprimer ce brouillon'
+        edit: 'Modifier le brouillon'
+        label: 'Brouillon en cours'
+        title: 'Brouillons en cours de {pluralName}'
+        view: 'Voir le brouillon en cours'
+    field:
+        locked: 'Verrouillé jusqu’à'
+        locked_by: 'Verrouillé par'
+        ouuid: Ouuid
+    new: 'Nouveau {contentType}'
+    trash:
+        put_back: Restaurer
+        put_back_confirm: 'Restaurer « {label} » ?'
+        put_back_selected: 'Restaurer la sélection'
+        title: '{pluralName} dans la corbeille'
+search:
+    title: |-
+        {count, plural,
+            =-1   {Le résultat de recherche est manquant}
+            =0    {Aucun résultat trouvé}
+            =1    {1 document trouvé}
+            other {# documents trouvés}
+        }
+sidebar-menu:
+    admin: Admin
+    compare-environments: 'Comparer les environnements'
+    content-types: 'Types de contenu'
+    content_type:
+        create: 'Nouveau {name}'
+        draft_in_progress: 'Brouillon en cours'
+        search: 'Rechercher dans {plural}'
+        search_in_my_circle: 'Dans mon {name}'
+        trash: Corbeille
+    create-job: 'Nouveau job'
+    dashboards: Dashboards
+    documentation: Documentation
+    other: Autre
+    publishers: Publieurs
+    release-admin:
+        index-link: Releases
+    search: Recherche
+    uploaded-files: 'Fichiers uploadés'
+    user-management: 'Gestion des utilisateurs'
+    user:
+        name: '{name}'
+        searches: Recherches
+status:
+    title: 'Statut des systèmes'
+    title_sub: 'Est-ce que tout fonctionne comme prévu ?'
+type:
+    confirm: |-
+        {type, select,
+            attach_alias                {Attacher l’alias « {label} » ?}
+            content_type_mapping        {Essayer de mettre à jour le mapping « {label} » ?}
+            content_type_mapping_all    {Mettre à jour le mapping de tous les types de contenu sélectionnés ?}
+            content_type_activate       {Activer le type de contenu « {label} » ?}
+            content_type_activate_all   {Activer tous les types de contenu sélectionnés ?}
+            content_type_deactivate     {Désactiver le type de contenu « {label} » ?}
+            content_type_deactivate_all {Désactiver tous les types de contenu sélectionnés ?}
+            content_type_referenced_add {Ajouter le type de contenu référencé « {label} » ?}
+            delete_all_job              {Supprimer tous les jobs ?}
+            delete_all_orphan_index     {Supprimer tous les indexes orphelins ?}
+            other                       {Êtes-vous sûr ?}
+        }
+    delete_confirm: |-
+        {type, select,
+            analyzer             {Supprimer l’analyseur « {label} » ?}
+            alias                {Voulez-vous supprimer l’alias « {label} » ?}
+            channel              {Supprimer le canal « {label} » ?}
+            content_type         {Supprimer le type de contenu « {label} » ?}
+            content_type_action  {Supprimer l’action « {label} » ?}
+            content_type_view    {Supprimer la vue « {label} » ?}
+            dashboard            {Supprimer le dashboard « {label} » ?}
+            draft                {Les modifications apportées à ce brouillon seront perdues}
+            environment          {Supprimer l’environnement « {label} » ?}
+            environment_external {Supprimer l’environnement externe « {label} » ?}
+            filter               {Supprimer le filtre « {label} » ?}
+            form                 {Supprimer le formulaire « {label} » ?}
+            group                {Supprimer le groupe « {label} » ?}
+            i18n                 {Supprimer la clé i18n « {label} » ?}
+            orphan_index         {Supprimer l’index orphelin « {label} » ?}
+            job                  {Supprimer le job ?}
+            job_schedule         {Supprimer le job planifié « {label} » ?}
+            log                  {Supprimer le log ?}
+            managed_alias        {Supprimer l’alias géré « {label} » ?}
+            trash                {Supprimer l’élément de corbeille « {label} » ?}
+            uploaded_file        {Supprimer « {label} » ?}
+            query_search         {Supprimer le QuerySearch « {label} » ?}
+            wysiwyg_profile      {Supprimer le profil WYSIWYG « {label} » ?}
+            wysiwyg_style_set    {Supprimer le jeu de styles WYSIWYG « {label} » ?}
+            other                {Êtes-vous sûr ?}
+        }
+    delete_selected_confirm: |-
+        {type, select,
+            analyzer            {Supprimer tous les analyseurs sélectionnés ?}
+            channel             {Supprimer tous les canaux sélectionnés ?}
+            content_type        {Supprimer tous les types de contenu sélectionnés ?}
+            content_type_action {Supprimer toutes les actions sélectionnées ?}
+            content_type_view   {Supprimer toutes les vues sélectionnées ?}
+            dashboard           {Supprimer tous les dashboards sélectionnés ?}
+            draft               {Toutes les modifications apportées aux brouillons sélectionnés seront perdues ?}
+            environment         {Supprimer tous les environnements sélectionnés ?}
+            filter              {Supprimer tous les filtres sélectionnés ?}
+            form                {Supprimer tous les formulaires sélectionnés ?}
+            group               {Supprimer tous les groupes sélectionnés ?}
+            i18n                {Supprimer toutes les clés i18n sélectionnées ?}
+            orphan_index        {Supprimer tous les indexes orphelins sélectionnés ?}
+            job                 {Supprimer tous les jobs sélectionnés ?}
+            job_schedule        {Supprimer tous les jobs planifiés sélectionnés ?}
+            log                 {Supprimer tous les logs sélectionnés ?}
+            trash               {Supprimer tous les éléments de corbeille sélectionnés ?}
+            uploaded_file       {Supprimer tous les fichiers uploadés sélectionnés ?}
+            query_search        {Supprimer tous les QuerySearch sélectionnés ?}
+            wysiwyg_profile     {Supprimer tous les profils WYSIWYG sélectionnés ?}
+            wysiwyg_style_set   {Supprimer tous les jeux de styles WYSIWYG sélectionnés ?}
+            other               {Supprimer toute la sélection ?}
+        }
+    export: |-
+        {type, select,
+            documents {{count, plural,
+                    =1    {Exporter un {singular}}
+                    other {Exporter # {plural}}
+            }}
+            other     {Exporter}
+        }
+    notice_message: |-
+        {type, select,
+            analyzer      {Tous les environnements doivent être reconstruits chaque fois qu’une configuration d’analyseur est créée ou mise à jour.}
+            filter        {Tous les environnements doivent être reconstruits chaque fois qu’une configuration de filtre est créée ou mise à jour.}
+            content_type  {Le type de contenu ne sera pas directement disponible pour les auteurs. Vous devrez l’activer plus tard, une fois les mappings mis à jour. Prenez le temps de vérifier le type de contenu.}
+            alias         {Cette opération créera un nouvel alias vers un index existant.}
+            other         {}
+        }
+    reorder: |-
+        {type, select,
+            analyzer            {Réordonner les analyseurs}
+            channel             {Réordonner les canaux}
+            content_type        {Réordonner les types de contenu}
+            content_type_action {Réordonner les actions des types de contenu}
+            content_type_view   {Réordonner les vues des types de contenu}
+            dashboard           {Réordonner les dashboards}
+            environment         {Réordonner les environnements}
+            filter              {Réordonner les filtres}
+            form                {Réordonner les formulaires}
+            job_schedule        {Réordonner les jobs planifiés}
+            query_search        {Réordonner les QuerySearch}
+            wysiwyg_profile     {Réordonner les profils WYSIWYG}
+            wysiwyg_style_set   {Réordonner les jeux de styles WYSIWYG}
+            other               {Réordonner}
+        }
+    selection: |-
+        {type, select,
+            content_type_mapping    {Mettre à jour le mapping sélectionné}
+            content_type_activate   {Activer la sélection}
+            content_type_deactivate {Désactiver la sélection}
+            other                   {action sur la sélection}
+        }
+    title_create: |-
+        {type, select,
+            alias           {Ajouter un alias à {label}}
+            action          {Créer une action}
+            analyzer        {Créer un analyseur}
+            channel         {Créer un canal}
+            dashboard       {Créer un dashboard}
+            content_type    {Créer un type de contenu}
+            filter          {Créer un filtre}
+            form            {Créer un formulaire}
+            job             {Lancer un nouveau job}
+            group           {Créer un groupe}
+            i18n            {Créer une I18N}
+            job_schedule    {Créer une planification}
+            query_search    {Créer une recherche par requête}
+            search          {Créer une recherche}
+            view            {Créer une vue}
+            wysiwyg_profile {Créer un profil}
+            other           {Créer}
+        }
+    title_edit: |-
+        {type, select,
+            action            {Modifier l’action : {label}}
+            analyzer          {Modifier l’analyseur : {label}}
+            channel           {Modifier le canal : {label}}
+            dashboard         {Modifier le dashboard : {label}}
+            content_type      {Modifier le type de contenu : {label}}
+            filter            {Modifier le filtre : {label}}
+            form              {Modifier le formulaire : {label}}
+            group             {Modifier le groupe : {label}}
+            i18n              {Modifier l’I18N : {label}}
+            job_schedule      {Modifier la planification : {label}}
+            query_search      {Modifier la recherche par requête : {label}}
+            view              {Modifier la vue : {label}}
+            wysiwyg_profile   {Modifier le profil : {label}}
+            wysiwyg_style_set {Modifier le jeu de styles : {label}}
+            other             {Modifier}
+        }
+    title_overview: |-
+        {type, select,
+            analyzer            {Liste des analyseurs}
+            channel             {Liste des canaux}
+            content_type        {Liste de tous les types de contenu}
+            content_type_action {Actions de {contentType}}
+            content_type_view   {Vues de {contentType}}
+            dashboard           {Liste des dashboards}
+            environment         {Vue d’ensemble}
+            filter              {Liste des filtres}
+            form                {Liste des formulaires}
+            form_submission     {Liste des soumissions de formulaire}
+            group               {Liste des groupes}
+            i18n                {Liste I18n}
+            i18n_translations   {Traductions pour la clé « {key} »}
+            job                 {Liste des jobs}
+            job_schedule        {Planification}
+            log                 {Logs}
+            query_search        {Liste des QuerySearches}
+            wysiwyg_profile     {Profils WYSIWYG}
+            wysiwyg_style_set   {Jeux de styles WYSIWYG}
+            other               {Vue d’ensemble}
+        }
+    title_status: |-
+        {type, select,
+            job           {Statut du job #{job_id}}
+            other         {Statut}
+        }
+    title_sub: |-
+        {type, select,
+            analyzer      {Mode expert}
+            channel       {Prêt pour le web mondial ?}
+            content_type  {Définir les formulaires d’encodage}
+            dashboard     {Personnaliser le hall}
+            filter        {Mode expert}
+            form          {Composants réutilisables}
+            job           {Processus en cours}
+            job_schedule  {Quand vous n’êtes pas au travail}
+            log           {Qui a fait quoi}
+            view          {Personnaliser le menu}
+            other         {}
+        }
+user:
+    option:
+        allowed_configure_wysiwyg: "Autorise l'utilisateur à changer de profile WYSIWYG"
+        simplified_ui: 'Interfaces simplifiées'
+        title: Options
+    profile:
+        change_password:
+            breadcrumb_title: 'Changer votre mot de passe'
+        edit:
+            breadcrumb_title: Modifier
+view:
+    title: '{name} de {plural}'
+webhook:
+    enable:
+        action: Activer
+        disabled: 'L’abonnement {id} a été désactivé'
+        re-enabled: 'L’abonnement {id} a été réactivé'
+    test:
+        action: Tester
+        dispatched: 'Un événement webhook_test a été envoyé à l’abonnement {id}'

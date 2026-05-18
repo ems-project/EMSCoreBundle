@@ -249,8 +249,18 @@ field:
     user_modified: 'Modified by'
     user_uploaded: 'Uploaded by'
 form:
+    data:
+        add:
+            ouuid:
+                constraint_message: "OUUID has an unauthorized character: A-Z, a-z, 0-9, caret: '-', underscore: '_' or dot: '.'."
+                label: OUUID
+                placeholder: 'Auto-generated if left empty'
+            save: 'Create {content_type} draft'
     reorder:
         title: 'Reorder fields of form: {label}'
+form_submissions:
+    overview: Overview
+    title: 'Form Submissions'
 key:
     actions: Actions
     admin: Admin
@@ -324,6 +334,8 @@ log:
         draft_not_found: 'Draft not found with id "{revisionId}"'
         duplicate_environment: 'Environment "{name}" already exists!'
         index_not_found: 'Index "{index}" not found'
+notification-menu:
+    dashboards: Dashboards
 profile:
     title: 'Your profile'
     title_sub: 'All about you'
@@ -352,6 +364,29 @@ search:
             =1    {1 document found}
             other {# documents found}
         }
+sidebar-menu:
+    admin: Admin
+    compare-environments: 'Compare environments'
+    content-types: 'Content types'
+    content_type:
+        create: 'New {name}'
+        draft_in_progress: 'Draft in progress'
+        search: 'Search in {plural}'
+        search_in_my_circle: 'In my {name}'
+        trash: Trash
+    create-job: 'New job'
+    dashboards: Dashboards
+    documentation: Documentation
+    other: Other
+    publishers: Publishers
+    release-admin:
+        index-link: Releases
+    search: Search
+    uploaded-files: 'Uploaded files'
+    user-management: 'User management'
+    user:
+        name: '{name}'
+        searches: Searches
 status:
     title: "Systems' status"
     title_sub: 'Is everything working as expected?'
@@ -543,6 +578,16 @@ type:
             view          {Customize the menu}
             other         {}
         }
+user:
+    option:
+        allowed_configure_wysiwyg: "Allow user to switch WYSIWYG's profile"
+        simplified_ui: 'Simplified UI'
+        title: Options
+    profile:
+        change_password:
+            breadcrumb_title: 'Change your password'
+        edit:
+            breadcrumb_title: Edit
 view:
     title: '{name} of {plural}'
 webhook:

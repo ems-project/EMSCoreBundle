@@ -1,0 +1,600 @@
+action:
+    activate: Activeren
+    add: Toevoegen
+    add_alias: 'Alias toevoegen'
+    add_referenced: 'Gerefereerde toevoegen'
+    add_referenced_content_type: 'Een gerefereerd contenttype toevoegen'
+    attach: Koppelen
+    close: Sluiten
+    confirmation: 'Bevestigt u dit?'
+    create: Aanmaken
+    deactivate: Deactiveren
+    define: Definiëren
+    delete: Verwijderen
+    delete_all: 'Alles verwijderen'
+    delete_selected: 'Selectie verwijderen'
+    details: Details
+    download_selected: 'Selectie downloaden'
+    duplicate: Dupliceren
+    edit: Bewerken
+    export: Exporteren
+    rebuild: Heropbouwen
+    relaunch: Herstarten
+    reorder: Hersorteren
+    save: Opslaan
+    save_close: 'Opslaan en sluiten'
+    select_all: 'Alles selecteren'
+    status: Status
+    toggle_visibility: 'Zichtbaarheid omschakelen'
+    toggle_visibility_selected: 'Zichtbaarheid van selectie omschakelen'
+    update_content_type_from_json: '{name} bijwerken vanuit een JSON-bestand'
+    update_mapping: 'Mapping bijwerken'
+    view: Bekijken
+asset_extractor:
+    status: |-
+        {color, select,
+            green   {Groen: asset extractor is operationeel}
+            red     {Rood: asset extractor is niet volledig operationeel. Neem contact op met uw systeembeheerder}
+            other   {Dat is vreemd... Neem contact op met uw systeembeheerder}
+        }
+certificate:
+    status: |-
+        {color, select,
+            green   {Groen: er is een geldig certificaat aanwezig}
+            yellow  {Geel: certificaat ontbreekt of is niet geconfigureerd}
+            red     {Rood: privésleutel niet gevonden}
+            other   {Dat is vreemd... Neem contact op met uw systeembeheerder}
+        }
+cluster:
+    status: |-
+        {color, select,
+            green   {Groen: zoekcluster werkt zoals verwacht}
+            yellow  {Geel: documenten worden geïndexeerd. Deze status zou niet blijvend mogen zijn}
+            red     {Rood: systeemproblemen gedetecteerd. Neem contact op met uw beheerder}
+            other   {Dat is vreemd... Neem contact op met uw systeembeheerder}
+        }
+color:
+    aqua: Aqua
+    black: Zwart
+    blue: Blauw
+    fuchsia: Fuchsia
+    gray: Grijs
+    green: Groen
+    light-blue: Lichtblauw
+    lime: Lime
+    maroon: Kastanjebruin
+    navy: Marineblauw
+    olive: Olijfgroen
+    orange: Oranje
+    purple: Paars
+    red: Rood
+    teal: Blauwgroen
+    yellow: Geel
+content-type:
+    field:
+        hide_revision_sidebar:
+            label: 'Revisiezijbalk verbergen'
+        recompute_on_publish:
+            label: 'Documenten herberekenen bij publicatie'
+        tasks_enabled:
+            label: Ingeschakeld
+        tasks_helptexts:
+            label: Helpteksten
+        tasks_titles:
+            label: Titels
+core:
+    action:
+        render-option:
+            embed: Insluiten
+            event: Event
+            export: Export
+            external-link: 'Externe link'
+            import: Import
+            job: Job
+            notification: Notificatie
+            pdf: PDF
+            raw-html: 'Ruwe HTML'
+    content_type:
+        view_define: |-
+            {define, select,
+                default_overview {Als standaardoverzicht}
+                other            {Definitie verwijderen}
+            }
+        view_definition: |-
+            {value, select,
+                default_overview {Standaardoverzicht}
+                other            {Niet gedefinieerd}
+            }
+        view_type: |-
+            {value, select,
+                data_link    {Aangepaste datalink}
+                keywords     {Trefwoordenweergave}
+                criteria     {Criteriaweergave}
+                export       {Exportweergave}
+                sorter       {Sorteerweergave}
+                hierarchical {Hiërarchische weergave}
+                report       {Rapportweergave}
+                calendar     {Kalenderweergave}
+                gallery      {Galerijweergave}
+                importer     {Importweergave}
+                other        {Onbekend type}
+            }
+    dashboard:
+        define: |-
+            {define, select,
+                quick_search    {Als snel zoeken}
+                landing_page    {Als landingspagina}
+                browser_image   {Als afbeeldingsbrowser}
+                browser_object  {Als objectbrowser}
+                browser_file    {Als bestandsbrowser}
+                other           {Niet gedefinieerd}
+            }
+        definition: |-
+            {value, select,
+                quick_search    {Snel zoeken}
+                landing_page    {Landingspagina}
+                browser_image   {Afbeeldingsbrowser}
+                browser_object  {Objectbrowser}
+                browser_file    {Bestandsbrowser}
+                other           {Onbekend}
+            }
+        exception:
+            title: 'Er is een uitzondering opgetreden'
+    environment:
+        index_count: |-
+            {indexes, plural,
+                =0      {Er is geen index}
+                =1      {Er is één index}
+                other   {Er zijn # indexen}
+            }
+    version: 'Versie {core} met Symfony {symfony}'
+field:
+    accumulate_file: 'In één bestand verzamelen'
+    alias: Alias
+    allowed_remote_hosts: 'Toegestane externe hosts'
+    attributes: 'Extra request-attributen'
+    available: Beschikbaar
+    channel: Kanaal
+    circles_to: 'Kringen naar'
+    color: Kleur
+    command: Commando
+    config: Configuratie
+    content_css: Content-CSS
+    content_js: Content-JS
+    context: Context
+    count: Aantal
+    cron: Cron
+    date_build: Builddatum
+    date_created: Aanmaakdatum
+    date_execution: Uitvoeringsdatum
+    date_modified: Wijzigingsdatum
+    date_run_next: 'Volgende uitvoeringsdatum'
+    date_run_previous: 'Vorige uitvoeringsdatum'
+    date_upload: Uploaddatum
+    definition: Definitie
+    editor: Editor
+    email_content_type: 'Contenttype (bv. text/html)'
+    enabled: Ingeschakeld
+    endpoint_url: Endpoint
+    entry_path: 'Standaard toegangspad'
+    environment_default: Standaardomgeving
+    environment_external: 'Externe omgeving'
+    environments: Omgevingen
+    error: Foutmelding
+    events: Events
+    extra: Extra
+    file:
+        disposition: Dispositie
+        extension: Extensie
+        mimetype: MIME-type
+        name: Bestandsnaam
+        orientation: Oriëntatie
+        paper_size: Papierformaat
+        size: Grootte
+        type: Type
+    format_tags: Formaat-tags
+    hash: Hash-handtekening
+    header: Header
+    header_allow_origin: 'De Access-Control-Allow-Origin-header'
+    hidden: Verborgen
+    icon: Icoon
+    index: Index
+    indexes: Indexen
+    is_active: Actief
+    is_dirty: Gewijzigd
+    is_edit_wysiwyg: 'Bewerken met WYSIWYG'
+    is_menu_notification: 'Zichtbaar in het notificatiemenu'
+    is_menu_sidebar: 'Zichtbaar in het zijmenu'
+    is_preview: Voorbeeld
+    is_public: Publiek
+    key: Sleutel
+    label: Label
+    last_seen: 'Laatst gezien'
+    locale: Locale
+    message: Bericht
+    name: Naam
+    plural: Meervoud
+    public_access: 'Publieke toegang'
+    query: Query
+    release_environment_source: 'Bronomgeving voor publicatie'
+    release_environment_target: 'Omgeving voor (de)publicatie'
+    render_option: Renderoptie
+    revision_version_tag: 'Ja als {version_tag}'
+    revision_version_tag_empty: 'Nee (stille publicatie)'
+    role: Rol
+    role_cc: 'Rol cc'
+    role_to: 'Rol aan'
+    roles: Rollen
+    search_config: Zoekconfiguratie
+    severity: Ernst
+    singular: Enkelvoud
+    spreadsheet: Spreadsheet
+    status: Status
+    table_default_css: 'Standaard class-attribuut van tabel'
+    tag: Tag
+    template_body: 'Template body'
+    template_footer: 'Template footer'
+    template_header: 'Template header'
+    template_response: 'Template response'
+    text: Tekst
+    total: Totaal
+    total_deleted: 'Totaal verwijderd'
+    total_elastic: 'Totaal in ES'
+    total_ems: 'Totaal in EMS'
+    translations: Vertalingen
+    type: Type
+    user: Gebruiker
+    user_deleted: 'Verwijderd door'
+    user_impersonator: Impersonator
+    user_modified: 'Gewijzigd door'
+    user_uploaded: 'Geüpload door'
+form:
+    data:
+        add:
+            ouuid:
+                constraint_message: "OUUID bevat een niet-toegestaan teken: A-Z, a-z, 0-9, koppelteken: '-', underscore: '_' of punt: '.'."
+                label: OUUID
+                placeholder: 'Automatisch gegenereerd indien leeg gelaten'
+            save: 'Concept voor {content_type} aanmaken'
+    reorder:
+        title: 'Velden van formulier hersorteren: {label}'
+form_submissions:
+    overview: Overzicht
+    title: Formulierinzendingen
+key:
+    actions: Acties
+    admin: Admin
+    analyzers: Analysatoren
+    attachment: Bijlage
+    channels: Kanalen
+    ckeditor4: 'CK Editor 4'
+    content_types: Contenttypes
+    dashboards: Dashboards
+    details: Details
+    documentation: Documentatie
+    environments: Omgevingen
+    environments_external: 'Externe omgevingen'
+    environments_local: 'Lokale omgevingen'
+    export_documents: 'Documenten exporteren'
+    filters: Filters
+    form_submissions: Formulierinzendingen
+    forms: Formulieren
+    groups: Groepen
+    i18n: I18N
+    inline: Inline
+    inline_editor: 'Inline editor'
+    job_logs: Joblogs
+    jobs: Jobs
+    landscape: Landschap
+    logs: Logs
+    loop_count: '#'
+    managed_aliases: 'Beheerde aliassen'
+    none: Geen
+    notice: Melding
+    orphan_indexes: 'Verweesde indexen'
+    overview: Overzicht
+    portrait: Portret
+    prefix_instance_id: 'Alias voorafgaan met instance-ID'
+    public_channel: 'Kanaal beschikbaar maken voor niet-geauthenticeerde gebruikers?'
+    public_view: 'Publiek beschikbaar (zonder authenticatie)'
+    publishers: Publishers
+    query_search: 'Query search'
+    query_searches: QuerySearch
+    schedule: Planning
+    schedule_cron: '<Minuut> <Uur> <Dag_van_de_maand> <Maand_van_het_jaar> <Dag_van_de_week>. Bv. elke 15 minuten: */15 * * * *'
+    schedule_tag: 'Gebruikt om workers (bv. CLI) te identificeren die de job op afstand zouden uitvoeren'
+    search: Zoeken
+    structure: Structuur
+    tiptap: Tiptap
+    trash: Prullenbak
+    unreferenced_aliases: 'Niet-gerefereerde aliassen'
+    uploaded_files: 'Geüploade bestanden'
+    uploaded_files_logs: 'Logs van geüploade bestanden'
+    users: Gebruikers
+    views: Weergaven
+    webhook_subscriptions: Abonnementen
+    webhooks: Webhooks
+    wysiwyg: WYSIWYG
+    wysiwyg_profiles: Profielen
+    wysiwyg_style_sets: Stijlsets
+log:
+    error:
+        content_type_add_unreferenced: 'Onverwachte fout bij het ophalen van niet-gerefereerde contenttype(s) uit externe omgeving {environment}: {error}'
+        delete_failed: 'Verwijderen mislukt'
+        invalid_table_action: 'Onbekende tabelactie'
+    notice:
+        alias_attached: 'De alias "{alias}" is gekoppeld'
+        content_type_deleted: 'Contenttype "{contentType}" is verwijderd'
+        content_type_referenced: 'Gerefereerd contenttype "{contentType}" uit omgeving "{environment}"'
+        content_type_view_deleted: 'Weergave "{view}" is verwijderd'
+        deleted_orphan_index: 'De index "{index}" is verwijderd'
+        deleted_orphan_indexes: 'Verweesde indexen zijn verwijderd'
+        draft_deleted: 'Concept "{revision}" is verwijderd'
+    warning:
+        draft_not_found: 'Concept niet gevonden met id "{revisionId}"'
+        duplicate_environment: 'Omgeving "{name}" bestaat al!'
+        index_not_found: 'Index "{index}" niet gevonden'
+notification-menu:
+    dashboards: Dashboards
+profile:
+    title: 'Uw profiel'
+    title_sub: 'Alles over u'
+revision:
+    draft:
+        delete: 'Dit concept verwijderen'
+        edit: 'Concept bewerken'
+        label: 'Concept in uitvoering'
+        title: '{pluralName} concepten in uitvoering'
+        view: 'Concept in uitvoering bekijken'
+    field:
+        locked: 'Vergrendeld tot'
+        locked_by: 'Vergrendeld door'
+        ouuid: Ouuid
+    new: 'Nieuw {contentType}'
+    trash:
+        put_back: Terugplaatsen
+        put_back_confirm: '"{label}" terugplaatsen?'
+        put_back_selected: 'Selectie terugplaatsen'
+        title: '{pluralName} in prullenbak'
+search:
+    title: |-
+        {count, plural,
+            =-1   {Zoekresultaat ontbreekt}
+            =0    {Geen resultaten gevonden}
+            =1    {1 document gevonden}
+            other {# documenten gevonden}
+        }
+sidebar-menu:
+    admin: Admin
+    compare-environments: 'Omgevingen vergelijken'
+    content-types: Contenttypes
+    content_type:
+        create: 'Nieuwe {name}'
+        draft_in_progress: 'Concept in uitvoering'
+        search: 'Zoeken in {plural}'
+        search_in_my_circle: 'In mijn {name}'
+        trash: Prullenbak
+    create-job: 'Nieuwe job'
+    dashboards: Dashboards
+    documentation: Documentatie
+    other: Overige
+    publishers: Publishers
+    release-admin:
+        index-link: Releases
+    search: Zoeken
+    uploaded-files: 'Geüploade bestanden'
+    user-management: Gebruikersbeheer
+    user:
+        name: '{name}'
+        searches: Zoekopdrachten
+status:
+    title: Systeemstatus
+    title_sub: 'Werkt alles zoals verwacht?'
+type:
+    confirm: |-
+        {type, select,
+            attach_alias                {Alias "{label}" koppelen?}
+            content_type_mapping        {Proberen de mapping van "{label}" bij te werken?}
+            content_type_mapping_all    {Mapping voor alle geselecteerde contenttypes bijwerken?}
+            content_type_activate       {Contenttype "{label}" activeren?}
+            content_type_activate_all   {Alle geselecteerde contenttypes activeren?}
+            content_type_deactivate     {Contenttype "{label}" deactiveren?}
+            content_type_deactivate_all {Alle geselecteerde contenttypes deactiveren?}
+            content_type_referenced_add {Gerefereerd contenttype "{label}" toevoegen?}
+            delete_all_job              {Alle jobs verwijderen?}
+            delete_all_orphan_index     {Alle verweesde indexen verwijderen?}
+            other                       {Bent u zeker?}
+        }
+    delete_confirm: |-
+        {type, select,
+            analyzer             {Analysator "{label}" verwijderen?}
+            alias                {Wilt u de alias "{label}" verwijderen?}
+            channel              {Kanaal "{label}" verwijderen?}
+            content_type         {Contenttype "{label}" verwijderen?}
+            content_type_action  {Actie "{label}" verwijderen?}
+            content_type_view    {Weergave "{label}" verwijderen?}
+            dashboard            {Dashboard "{label}" verwijderen?}
+            draft                {Wijzigingen in dit concept gaan verloren}
+            environment          {Omgeving "{label}" verwijderen?}
+            environment_external {Externe omgeving "{label}" verwijderen?}
+            filter               {Filter "{label}" verwijderen?}
+            form                 {Formulier "{label}" verwijderen?}
+            group                {Groep "{label}" verwijderen?}
+            i18n                 {I18n-sleutel "{label}" verwijderen?}
+            orphan_index         {Verweesde index "{label}" verwijderen?}
+            job                  {Job verwijderen?}
+            job_schedule         {Geplande job "{label}" verwijderen?}
+            log                  {Log verwijderen?}
+            managed_alias        {Beheerde alias "{label}" verwijderen?}
+            trash                {Prullenbakitem "{label}" verwijderen?}
+            uploaded_file        {"{label}" verwijderen?}
+            query_search         {QuerySearch "{label}" verwijderen?}
+            wysiwyg_profile      {WYSIWYG-profiel "{label}" verwijderen?}
+            wysiwyg_style_set    {WYSIWYG-stijlset "{label}" verwijderen?}
+            other                {Bent u zeker?}
+        }
+    delete_selected_confirm: |-
+        {type, select,
+            analyzer            {Alle geselecteerde analysatoren verwijderen?}
+            channel             {Alle geselecteerde kanalen verwijderen?}
+            content_type        {Alle geselecteerde contenttypes verwijderen?}
+            content_type_action {Alle geselecteerde acties verwijderen?}
+            content_type_view   {Alle geselecteerde weergaven verwijderen?}
+            dashboard           {Alle geselecteerde dashboards verwijderen?}
+            draft               {Alle wijzigingen aan geselecteerde concepten gaan verloren?}
+            environment         {Alle geselecteerde omgevingen verwijderen?}
+            filter              {Alle geselecteerde filters verwijderen?}
+            form                {Alle geselecteerde formulieren verwijderen?}
+            group               {Alle geselecteerde groepen verwijderen?}
+            i18n                {Alle geselecteerde i18n-sleutels verwijderen?}
+            orphan_index        {Alle geselecteerde verweesde indexen verwijderen?}
+            job                 {Alle geselecteerde jobs verwijderen?}
+            job_schedule        {Alle geselecteerde geplande jobs verwijderen?}
+            log                 {Alle geselecteerde logs verwijderen?}
+            trash               {Alle geselecteerde prullenbakitems verwijderen?}
+            uploaded_file       {Alle geselecteerde geüploade bestanden verwijderen?}
+            query_search        {Alle geselecteerde QuerySearches verwijderen?}
+            wysiwyg_profile     {Alle geselecteerde WYSIWYG-profielen verwijderen?}
+            wysiwyg_style_set   {Alle geselecteerde WYSIWYG-stijlsets verwijderen?}
+            other               {Alle geselecteerde items verwijderen?}
+        }
+    export: |-
+        {type, select,
+            documents {{count, plural,
+                    =1    {Eén {singular} exporteren}
+                    other {# {plural} exporteren}
+            }}
+            other     {Exporteren}
+        }
+    notice_message: |-
+        {type, select,
+            analyzer      {Alle omgevingen moeten telkens opnieuw worden opgebouwd wanneer een analysatorconfiguratie wordt aangemaakt of bijgewerkt.}
+            filter        {Alle omgevingen moeten telkens opnieuw worden opgebouwd wanneer een filterconfiguratie wordt aangemaakt of bijgewerkt.}
+            content_type  {Het contenttype zal niet direct beschikbaar zijn voor auteurs. U moet het later activeren, zodra de mappings zijn bijgewerkt. Neem de tijd om het contenttype te controleren.}
+            alias         {Deze bewerking maakt een nieuwe alias aan naar een bestaande index.}
+            other         {}
+        }
+    reorder: |-
+        {type, select,
+            analyzer            {Analysatoren hersorteren}
+            channel             {Kanalen hersorteren}
+            content_type        {Contenttypes hersorteren}
+            content_type_action {Acties van contenttypes hersorteren}
+            content_type_view   {Weergaven van contenttypes hersorteren}
+            dashboard           {Dashboards hersorteren}
+            environment         {Omgevingen hersorteren}
+            filter              {Filters hersorteren}
+            form                {Formulieren hersorteren}
+            job_schedule        {Geplande jobs hersorteren}
+            query_search        {QuerySearch hersorteren}
+            wysiwyg_profile     {WYSIWYG-profielen hersorteren}
+            wysiwyg_style_set   {WYSIWYG-stijlsets hersorteren}
+            other               {Hersorteren}
+        }
+    selection: |-
+        {type, select,
+            content_type_mapping    {Geselecteerde mapping bijwerken}
+            content_type_activate   {Selectie activeren}
+            content_type_deactivate {Selectie deactiveren}
+            other                   {actie op selectie}
+        }
+    title_create: |-
+        {type, select,
+            alias           {Alias toevoegen aan {label}}
+            action          {Actie aanmaken}
+            analyzer        {Analysator aanmaken}
+            channel         {Kanaal aanmaken}
+            dashboard       {Dashboard aanmaken}
+            content_type    {Contenttype aanmaken}
+            filter          {Filter aanmaken}
+            form            {Formulier aanmaken}
+            job             {Nieuwe job starten}
+            group           {Groep aanmaken}
+            i18n            {I18N aanmaken}
+            job_schedule    {Planning aanmaken}
+            query_search    {Query search aanmaken}
+            search          {Zoekopdracht aanmaken}
+            view            {Weergave aanmaken}
+            wysiwyg_profile {Profiel aanmaken}
+            other           {Aanmaken}
+        }
+    title_edit: |-
+        {type, select,
+            action            {Actie bewerken: {label}}
+            analyzer          {Analysator bewerken: {label}}
+            channel           {Kanaal bewerken: {label}}
+            dashboard         {Dashboard bewerken: {label}}
+            content_type      {Contenttype bewerken: {label}}
+            filter            {Filter bewerken: {label}}
+            form              {Formulier bewerken: {label}}
+            group             {Groep bewerken: {label}}
+            i18n              {I18N bewerken: {label}}
+            job_schedule      {Planning bewerken: {label}}
+            query_search      {Query search bewerken: {label}}
+            view              {Weergave bewerken: {label}}
+            wysiwyg_profile   {Profiel bewerken: {label}}
+            wysiwyg_style_set {Stijlset bewerken: {label}}
+            other             {Bewerken}
+        }
+    title_overview: |-
+        {type, select,
+            analyzer            {Lijst van analysatoren}
+            channel             {Lijst van kanalen}
+            content_type        {Alle contenttypes weergeven}
+            content_type_action {Acties van {contentType}}
+            content_type_view   {Weergaven van {contentType}}
+            dashboard           {Lijst van dashboards}
+            environment         {Overzicht}
+            filter              {Lijst van filters}
+            form                {Lijst van formulieren}
+            form_submission     {Lijst van formulierinzendingen}
+            group               {Lijst van groepen}
+            i18n                {I18n-lijst}
+            i18n_translations   {Vertalingen voor sleutel "{key}"}
+            job                 {Joblijst}
+            job_schedule        {Planning}
+            log                 {Logs}
+            query_search        {Lijst van QuerySearches}
+            wysiwyg_profile     {WYSIWYG-profielen}
+            wysiwyg_style_set   {WYSIWYG-stijlsets}
+            other               {Overzicht}
+        }
+    title_status: |-
+        {type, select,
+            job           {Status van job #{job_id}}
+            other         {Status}
+        }
+    title_sub: |-
+        {type, select,
+            analyzer      {Expertmodus}
+            channel       {Klaar voor het wereldwijde web?}
+            content_type  {Invoerformulieren definiëren}
+            dashboard     {De lobby aanpassen}
+            filter        {Expertmodus}
+            form          {Herbruikbare componenten}
+            job           {Lopend proces}
+            job_schedule  {Wanneer u niet aan het werk bent}
+            log           {Wie deed wat}
+            view          {Het menu aanpassen}
+            other         {}
+        }
+user:
+    option:
+        allowed_configure_wysiwyg: 'Gebruiker toestaan om van WYSIWYG-profiel te wisselen'
+        simplified_ui: 'Vereenvoudigde UI'
+        title: Opties
+    profile:
+        change_password:
+            breadcrumb_title: 'Uw wachtwoord wijzigen'
+        edit:
+            breadcrumb_title: Bewerken
+view:
+    title: '{name} van {plural}'
+webhook:
+    enable:
+        action: Inschakelen
+        disabled: 'Het abonnement {id} is uitgeschakeld'
+        re-enabled: 'Het abonnement {id} is opnieuw ingeschakeld'
+    test:
+        action: Testen
+        dispatched: 'Een webhook_test-event is verzonden naar abonnement {id}'

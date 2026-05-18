@@ -50,8 +50,11 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
-use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+
+use function Symfony\Component\Translation\t;
 
 class DataController extends AbstractController
 {
@@ -706,16 +709,27 @@ class DataController extends AbstractController
         $revision = new Revision();
         $form = $this->createFormBuilder($revision)
             ->add('ouuid', IconTextType::class, [
-                'constraints' => [new Regex(pattern: '/^[A-Za-z0-9_\.\-~]*$/', message: 'Ouuid has an unauthorized character.', match: true),
+                'constraints' => [
+                    new Callback(static function (mixed $value, ExecutionContextInterface $context): void {
+                        if (null === $value || '' === $value || \preg_match('/^[A-Za-z0-9_.\-~]*$/', (string) $value)) {
+                            return;
+                        }
+
+                        $context
+                            ->buildViolation(t('form.data.add.ouuid.constraint_message', [], 'emsco-core')->getMessage())
+                            ->setTranslationDomain('emsco-core')
+                            ->addViolation();
+                    }),
                 ],
+                'label' => t('form.data.add.ouuid.label', [], 'emsco-core'),
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Auto-generated if left empty',
+                    'placeholder' => t('form.data.add.ouuid.placeholder', [], 'emsco-core'),
                 ],
                 'required' => false,
             ])
             ->add('save', SubmitType::class, [
-                'label' => 'Create '.$contentType->getName().' draft',
+                'label' => t('form.data.add.save', ['%content_type%' => $contentType->getSingularName()], 'emsco-core'),
                 'attr' => [
                     'class' => 'btn btn-primary pull-right',
                 ],

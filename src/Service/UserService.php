@@ -16,6 +16,8 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
+use function Symfony\Component\Translation\t;
+
 class UserService implements EntityServiceInterface
 {
     private ?UserInterface $currentUser = null;
@@ -235,11 +237,11 @@ class UserService implements EntityServiceInterface
     public function getSidebarMenu(): Menu
     {
         $user = $this->getCurrentUser();
-        $menu = new Menu('view.elements.side-menu.user.name', ['%name%' => $user->getDisplayName()]);
+        $menu = new Menu(t('sidebar-menu.user.name', [], 'emsco-core'), ['%name%' => $user->getDisplayName()]);
 
         $searches = $this->searchRepository->getByUsername($user->getUsername());
         if ([] !== $searches) {
-            $link = $menu->addChild('view.elements.side-menu.user.searches', 'fa fa-search', 'elasticsearch.search');
+            $link = $menu->addChild(t('sidebar-menu.user.searches', [], 'emsco-core'), 'fa fa-search', 'elasticsearch.search');
             $link->setTranslation([]);
             foreach ($searches as $search) {
                 $link->addChild($search->getName(), '', 'elasticsearch.search', ['searchId' => $search->getId()]);

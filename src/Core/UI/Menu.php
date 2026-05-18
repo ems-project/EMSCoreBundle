@@ -14,7 +14,7 @@ class Menu
     /**
      * @param array<string, mixed> $transParameters
      */
-    public function __construct(private readonly string $title, private readonly array $transParameters = [])
+    public function __construct(private readonly TranslatableMessage $title, private readonly array $transParameters = [])
     {
     }
 
@@ -50,7 +50,7 @@ class Menu
         return [] !== $this->children;
     }
 
-    public function getTitle(): string
+    public function getTitle(): TranslatableMessage
     {
         return $this->title;
     }

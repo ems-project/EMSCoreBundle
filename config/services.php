@@ -70,6 +70,7 @@ use EMS\CoreBundle\EventListener\LoginListener;
 use EMS\CoreBundle\EventListener\PageListener;
 use EMS\CoreBundle\EventListener\RequestListener;
 use EMS\CoreBundle\EventListener\RevisionDoctrineListener;
+use EMS\CoreBundle\EventListener\UserLocaleListener;
 use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskHandleType;
@@ -140,6 +141,13 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems_core.event_listener.login_listener', LoginListener::class)
         ->args([service('emsco.manager.user')])
+        ->tag('kernel.event_subscriber');
+
+    $services->set('ems_core.event_listener.user_locale_listener', UserLocaleListener::class)
+        ->args([
+            service('security.token_storage'),
+            service('translation.locale_switcher'),
+        ])
         ->tag('kernel.event_subscriber');
 
     $services->set('ems_core.event_listener.page_listener', PageListener::class)

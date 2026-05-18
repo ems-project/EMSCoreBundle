@@ -90,15 +90,15 @@ class TwigElementsController extends AbstractController
 
     private function getOtherMenu(): Menu
     {
-        $menu = new Menu('views.elements.side-menu-html.other');
-        $menu->addChild('views.elements.side-menu-html.documentation', 'fa fa-book', 'documentation')->setTranslation([]);
+        $menu = new Menu(t('sidebar-menu.other', [], 'emsco-core'));
+        $menu->addChild(t('sidebar-menu.documentation', [], 'emsco-core'), 'fa fa-book', 'documentation')->setTranslation([]);
 
         return $menu;
     }
 
     private function getUserAdminMenu(): Menu
     {
-        $menu = new Menu('views.elements.side-menu-html.user-management');
+        $menu = new Menu(t('sidebar-menu.user-management', [], 'emsco-core'));
         if (!$this->isGranted('ROLE_USER_MANAGEMENT')) {
             return $menu;
         }
@@ -113,7 +113,7 @@ class TwigElementsController extends AbstractController
 
     private function getAdminMenu(): Menu
     {
-        $menu = new Menu('views.elements.side-menu-html.admin');
+        $menu = new Menu(t('sidebar-menu.admin', [], 'emsco-core'));
         if (!$this->isGranted('ROLE_ADMIN')) {
             return $menu;
         }
@@ -133,11 +133,11 @@ class TwigElementsController extends AbstractController
         $menu->addChild(t('key.dashboards', [], 'emsco-core'), 'fa fa-dashboard', Routes::DASHBOARD_ADMIN_INDEX);
         $menu->addChild(t('key.query_searches', [], 'emsco-core'), 'fa fa-list-alt', 'ems_core_query_search_index');
         $menu->addChild(t('key.wysiwyg', [], 'emsco-core'), 'fa fa-edit', Routes::WYSIWYG_INDEX);
-        $menu->addChild('views.elements.side-menu-html.search', 'fa fa-search', 'ems_search_options_index')->setTranslation([]);
+        $menu->addChild(t('sidebar-menu.search', [], 'emsco-core'), 'fa fa-search', 'ems_search_options_index')->setTranslation([]);
         $menu->addChild(t('key.i18n', [], 'emsco-core'), 'fa fa-language', Routes::I18N_INDEX);
         $jobMenu = $menu->addChild(t('key.jobs', [], 'emsco-core'), 'fa fa-terminal', 'job.index');
         $jobMenu->setTranslation([]);
-        $jobMenu->addChild('views.elements.side-menu-html.create-job', 'fa fa-plus', 'job.add')->setTranslation([]);
+        $jobMenu->addChild(t('sidebar-menu.create-job', [], 'emsco-core'), 'fa fa-plus', 'job.add')->setTranslation([]);
         $jobMenu->addChild(t('key.job_logs', [], 'emsco-core'), 'fa fa-file-text-o', 'job.index');
         $jobMenu->addChild(t('key.schedule', [], 'emsco-core'), 'fa fa-calendar-o', Routes::SCHEDULE_INDEX);
 
@@ -155,24 +155,24 @@ class TwigElementsController extends AbstractController
 
     private function getCrmMenu(): Menu
     {
-        $menu = new Menu('form_submissions.title');
+        $menu = new Menu(t('form_submissions.title', [], 'emsco-core'));
         if (!$this->isGranted('ROLE_FORM_CRM')) {
             return $menu;
         }
-        $menu->addChild('form_submissions.overview', 'fa fa-list-alt', 'form.submissions')->setTranslation([]);
+        $menu->addChild(t('form_submissions.overview', [], 'emsco-core'), 'fa fa-list-alt', 'form.submissions')->setTranslation([]);
 
         return $menu;
     }
 
     private function getPublisherMenu(): Menu
     {
-        $menu = new Menu('views.elements.side-menu-html.publishers');
+        $menu = new Menu(t('sidebar-menu.publishers', [], 'emsco-core'));
         if (!$this->isGranted('ROLE_PUBLISHER')) {
             return $menu;
         }
-        $menu->addChild('view.elements.side-menu.release-admin.index-link', 'fa fa-cube', 'emsco_release_index')->setTranslation([]);
-        $menu->addChild('views.elements.side-menu-html.compare-environments', 'fa fa-align-center', 'environment.align')->setTranslation([]);
-        $menu->addChild('views.elements.side-menu-html.uploaded-files', 'fa fa-upload', Routes::UPLOAD_ASSET_PUBLISHER_OVERVIEW)->setTranslation([]);
+        $menu->addChild(t('sidebar-menu.release-admin.index-link', [], 'emsco-core'), 'fa fa-cube', 'emsco_release_index')->setTranslation([]);
+        $menu->addChild(t('sidebar-menu.compare-environments', [], 'emsco-core'), 'fa fa-align-center', 'environment.align')->setTranslation([]);
+        $menu->addChild(t('sidebar-menu.uploaded-files', [], 'emsco-core'), 'fa fa-upload', Routes::UPLOAD_ASSET_PUBLISHER_OVERVIEW)->setTranslation([]);
 
         return $menu;
     }

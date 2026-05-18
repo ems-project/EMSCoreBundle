@@ -20,6 +20,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -50,11 +52,11 @@ class UserOptionsType extends AbstractType
             $builder
                 ->add(UserOptions::ALLOWED_CONFIGURE_WYSIWYG, CheckboxType::class, [
                     'required' => false,
-                    'label' => 'user.option.allowed_configure_wysiwyg',
+                    'label' => t('user.option.allowed_configure_wysiwyg', [], 'emsco-core'),
                 ])
                 ->add(UserOptions::SIMPLIFIED_UI, CheckboxType::class, [
                     'required' => false,
-                    'label' => 'user.option.simplified_ui',
+                    'label' => t('user.option.simplified_ui', [], 'emsco-core'),
                 ]);
         }
 
@@ -84,7 +86,6 @@ class UserOptionsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver
-            ->setDefaults(['translation_domain' => 'emsco-user'])
             ->setRequired(['context'])
             ->setAllowedValues('context', [self::CONTEXT_PROFILE, self::CONTEXT_USER_MANAGEMENT]);
     }

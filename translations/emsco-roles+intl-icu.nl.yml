@@ -1,0 +1,23 @@
+ROLE_ADMIN: Beheerder
+ROLE_ALLOW_ALIGN: 'Omgevingen uitlijnen'
+ROLE_API: API
+ROLE_AUTHOR: Auteur
+ROLE_COPY_PASTE: Kopiëren/Plakken
+ROLE_DEFAULT_SEARCH: 'Standaardzoekopdracht'
+ROLE_FORM_CRM: 'CRM-formulier'
+ROLE_PUBLISHER: Publisher
+ROLE_REVIEWER: Reviewer
+ROLE_AUDITOR: Auditor
+ROLE_SUPER: 'Supergebruiker'
+ROLE_SUPER_ADMIN: 'Superbeheerder'
+ROLE_SUPER_AUTHOR: 'Superauteur'
+ROLE_SUPER_PUBLISHER: 'Super publisher'
+ROLE_SUPER_USER: 'Supergebruiker'
+ROLE_SUPER_WEBMASTER: 'Super webmaster'
+ROLE_TASK_MANAGER: 'Taakbeheerder'
+ROLE_COPYWRITER: Copywriter
+ROLE_TRADUCTOR: Vertaler
+ROLE_USER: Gebruiker
+ROLE_USER_MANAGEMENT: 'Gebruikersbeheer'
+ROLE_USER_READ: 'Gebruiker lezen'
+ROLE_WEBMASTER: Webmaster

@@ -540,7 +540,7 @@ class ContentTypeService implements EntityServiceInterface
 
     public function getContentTypeMenu(): Menu
     {
-        $menu = new Menu('views.elements.sidebar-menu-html.content-types');
+        $menu = new Menu(t('sidebar-menu.content-types', [], 'emsco-core'));
         $token = $this->tokenStorage->getToken();
         if (null === $token) {
             throw new \RuntimeException('Unexpected null token');
@@ -584,13 +584,13 @@ class ContentTypeService implements EntityServiceInterface
 
             if ($this->authorizationChecker->isGranted($roles[ContentTypeRoles::SHOW_LINK_CREATE])
                 && $this->authorizationChecker->isGranted($roles[ContentTypeRoles::CREATE])) {
-                $createLink = $menuEntry->addChild('sidebar_menu.content_type.create', 'fa fa-plus', Routes::DATA_ADD, ['contentType' => $contentType->getId()]);
+                $createLink = $menuEntry->addChild(t('sidebar-menu.content_type.create', [], 'emsco-core'), 'fa fa-plus', Routes::DATA_ADD, ['contentType' => $contentType->getId()]);
                 $createLink->setTranslation([
                     '%name%' => $contentType->getSingularName(),
                 ]);
             }
             if ($this->authorizationChecker->isGranted($roles[ContentTypeRoles::TRASH])) {
-                $trashLink = $menuEntry->addChild('sidebar_menu.content_type.trash', 'fa fa-trash', Routes::DATA_TRASH, ['contentType' => $contentType->getId()]);
+                $trashLink = $menuEntry->addChild(t('sidebar-menu.content_type.trash', [], 'emsco-core'), 'fa fa-trash', Routes::DATA_TRASH, ['contentType' => $contentType->getId()]);
                 $trashLink->setTranslation([]);
             }
             if ($menuEntry->hasChildren()) {
@@ -609,14 +609,14 @@ class ContentTypeService implements EntityServiceInterface
             return;
         }
 
-        $search = $menuEntry->addChild('sidebar_menu.content_type.search', 'fa fa-search', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()]);
+        $search = $menuEntry->addChild(t('sidebar-menu.content_type.search', [], 'emsco-core'), 'fa fa-search', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()]);
         $search->setTranslation(['%plural%' => $contentType->getPluralName()]);
 
         if (null === $circleContentType || null === $contentType->getCirclesField() || '' === $contentType->getCirclesField() || empty($user->getCircles())) {
             return;
         }
 
-        $inMyCircle = $menuEntry->addChild('sidebar_menu.content_type.search_in_my_circle', $circleContentType->getIcon() ?? '', Routes::DATA_IN_MY_CIRCLE_VIEW, ['name' => $contentType->getName()]);
+        $inMyCircle = $menuEntry->addChild(t('sidebar-menu.content_type.search_in_my_circle', [], 'emsco-core'), $circleContentType->getIcon() ?? '', Routes::DATA_IN_MY_CIRCLE_VIEW, ['name' => $contentType->getName()]);
         $inMyCircle->setTranslation([
             '%name%' => \count($user->getCircles()) > 1 ? $circleContentType->getPluralName() : $circleContentType->getSingularName(),
         ]);
@@ -641,7 +641,7 @@ class ContentTypeService implements EntityServiceInterface
             return;
         }
 
-        $draftInProgress = $menuEntry->addChild('sidebar_menu.content_type.draft_in_progress', 'fa fa-fire', Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentType->getId()]);
+        $draftInProgress = $menuEntry->addChild(t('sidebar-menu.content_type.draft_in_progress', [], 'emsco-core'), 'fa fa-fire', Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentType->getId()]);
         $draftInProgress->setTranslation([]);
         $draftInProgress->setBadge($menuEntry->getBadge(), $contentType->getColor());
     }

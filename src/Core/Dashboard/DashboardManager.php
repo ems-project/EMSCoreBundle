@@ -16,6 +16,8 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
+use function Symfony\Component\Translation\t;
+
 class DashboardManager implements EntityServiceInterface
 {
     /** @var ?Collection<string, Dashboard> */
@@ -113,7 +115,7 @@ class DashboardManager implements EntityServiceInterface
 
     public function getSidebarMenu(): Menu
     {
-        $menu = new Menu('views.elements.sidebar-menu-html.dashboards');
+        $menu = new Menu(t('sidebar-menu.dashboards', [], 'emsco-core'));
         foreach ($this->dashboardRepository->getSidebarMenu() as $dashboard) {
             if (!$this->authorizationChecker->isGranted($dashboard->getRole())) {
                 continue;
@@ -136,7 +138,7 @@ class DashboardManager implements EntityServiceInterface
 
     public function getNotificationMenu(): Menu
     {
-        $menu = new Menu('views.elements.notification-menu-html.dashboards');
+        $menu = new Menu(t('notification-menu.dashboards', [], 'emsco-core'));
         foreach ($this->dashboardRepository->getNotificationMenu() as $dashboard) {
             if (!$this->authorizationChecker->isGranted($dashboard->getRole())) {
                 continue;

@@ -1,0 +1,23 @@
+ROLE_ADMIN: Administrateur
+ROLE_ALLOW_ALIGN: 'Aligner les environnements'
+ROLE_API: API
+ROLE_AUTHOR: Auteur
+ROLE_COPY_PASTE: Copier/Coller
+ROLE_DEFAULT_SEARCH: 'Recherche par défaut'
+ROLE_FORM_CRM: 'Formulaire CRM'
+ROLE_PUBLISHER: Publieur
+ROLE_REVIEWER: Relecteur
+ROLE_AUDITOR: Auditeur
+ROLE_SUPER: 'Super utilisateur'
+ROLE_SUPER_ADMIN: 'Super administrateur'
+ROLE_SUPER_AUTHOR: 'Super auteur'
+ROLE_SUPER_PUBLISHER: 'Super publieur'
+ROLE_SUPER_USER: 'Super utilisateur'
+ROLE_SUPER_WEBMASTER: 'Super webmaster'
+ROLE_TASK_MANAGER: 'Administrateur des tâches'
+ROLE_COPYWRITER: Rédacteur
+ROLE_TRADUCTOR: Traducteur
+ROLE_USER: Utilisateur
+ROLE_USER_MANAGEMENT: 'Gestion des utilisateurs'
+ROLE_USER_READ: 'Lecture utilisateur'
+ROLE_WEBMASTER: Webmaster

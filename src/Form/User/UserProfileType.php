@@ -22,6 +22,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -61,14 +63,18 @@ class UserProfileType extends AbstractType
             ->add('sidebarMini', null, ['label' => 'user.sidebar_mini'])
             ->add('sidebarCollapse', null, ['label' => 'user.sidebar_collapse'])
             ->add('userOptions', UserOptionsType::class, [
-                'label' => 'user.option.title',
+                'label' => t('user.option.title', [], 'emsco-core'),
                 'context' => UserOptionsType::CONTEXT_PROFILE,
             ])
             ->add('locale', ChoiceType::class, [
                 'label' => 'user.locale',
                 'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
                 'required' => true,
-                'choices' => [Locales::getName('en') => 'en'],
+                'choices' => [
+                    Locales::getName('en') => 'en',
+                    Locales::getName('fr') => 'fr',
+                    Locales::getName('nl') => 'nl',
+                ],
                 'choice_translation_domain' => false,
             ])
             ->add('localePreferred', ChoiceType::class, [

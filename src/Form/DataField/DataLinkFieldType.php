@@ -177,7 +177,6 @@ class DataLinkFieldType extends DataFieldType
         $resolver->setDefault('type', null);
         $resolver->setDefault('searchId', null);
         $resolver->setDefault('environment', null);
-        $resolver->setDefault('defaultValue', null);
         $resolver->setDefault('required', false);
         $resolver->setDefault('sortable', false);
         $resolver->setDefault('dynamicLoading', true);
@@ -240,8 +239,6 @@ class DataLinkFieldType extends DataFieldType
         ])->add('type', TextType::class, [
             'required' => false,
         ])->add('searchId', TextType::class, [
-            'required' => false,
-        ])->add('defaultValue', TextType::class, [
             'required' => false,
         ]);
 

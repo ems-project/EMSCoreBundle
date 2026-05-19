@@ -584,10 +584,7 @@ class ContentTypeService implements EntityServiceInterface
 
             if ($this->authorizationChecker->isGranted($roles[ContentTypeRoles::SHOW_LINK_CREATE])
                 && $this->authorizationChecker->isGranted($roles[ContentTypeRoles::CREATE])) {
-                $createLink = $menuEntry->addChild(t('sidebar-menu.content_type.create', [], 'emsco-core'), 'fa fa-plus', Routes::DATA_ADD, ['contentType' => $contentType->getId()]);
-                $createLink->setTranslation([
-                    '%name%' => $contentType->getSingularName(),
-                ]);
+                $menuEntry->addChild(t('sidebar-menu.content_type.create', ['{name}' => $contentType->getSingularName()], 'emsco-core'), 'fa fa-plus', Routes::DATA_ADD, ['contentType' => $contentType->getId()]);
             }
             if ($this->authorizationChecker->isGranted($roles[ContentTypeRoles::TRASH])) {
                 $trashLink = $menuEntry->addChild(t('sidebar-menu.content_type.trash', [], 'emsco-core'), 'fa fa-trash', Routes::DATA_TRASH, ['contentType' => $contentType->getId()]);

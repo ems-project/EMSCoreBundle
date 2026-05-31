@@ -4,7 +4,7 @@ import collapse from "../helper/collapse";
 
 require('./../nestedSortable');
 
-const uuidv4 = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 
 export default class JsonMenuNested {
     copyName = 'json_menu_nested_copy';

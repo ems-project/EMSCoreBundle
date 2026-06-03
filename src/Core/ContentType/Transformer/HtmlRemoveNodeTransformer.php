@@ -41,6 +41,8 @@ final class HtmlRemoveNodeTransformer extends BaseHtmlTransformer
             }
 
             $parentNode->removeChild($element);
+            $this->removeEmptyParents($parentNode);
+
             ++$results;
         }
 
@@ -77,5 +79,37 @@ final class HtmlRemoveNodeTransformer extends BaseHtmlTransformer
                 return \sprintf('//%s', $element);
             })
         ;
+    }
+
+    private function removeEmptyParents(\DOMNode $node): void
+    {
+        $document = $node->ownerDocument;
+        if (null === $document) {
+            return;
+        }
+
+        while ($node instanceof \DOMElement
+            && null !== $node->parentNode
+            && $node !== $document->documentElement
+            && $this->isEmptyNode($node)) {
+            $parent = $node->parentNode;
+            $this->unwrapEmpty($node, $parent);
+            $node = $parent;
+        }
+    }
+
+    private function isEmptyNode(\DOMNode $node): bool
+    {
+        foreach ($node->childNodes as $child) {
+            if (\XML_ELEMENT_NODE === $child->nodeType) {
+                return false;
+            }
+            if (\XML_TEXT_NODE === $child->nodeType
+                && '' !== \trim((string) $child->nodeValue, " \t\n\r\0\x0B\xC2\xA0")) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

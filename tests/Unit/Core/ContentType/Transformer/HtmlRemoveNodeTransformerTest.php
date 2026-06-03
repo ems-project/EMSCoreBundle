@@ -57,17 +57,59 @@ final class HtmlRemoveNodeTransformerTest extends AbstractTransformerTestCase
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                     
                     <p>Donec scelerisque vulputate congue. Ut tortor libero, pellentesque at porttitor sollicitudin, aliquam vel tortor.</p>
-                    <div class="test-wrapper">
-                        
-                    </div>
-                
-            </body></html>
+                </body>
+            </html>
             HTML;
 
         $this->assertEqualsInputOutPut($input, $output, [
             'element' => 'div',
             'attribute' => 'class',
             'attribute_contains' => 'deletedContent',
+        ]);
+    }
+
+    public function testRemoveClassContainingWord(): void
+    {
+        $input = <<<HTML
+            <p class="deletedWord">Remove me</p>
+            <p class="word deletedWord extra">Also remove</p>
+            <p class="other">Keep me</p>
+            HTML;
+
+        $output = <<<HTML
+            
+
+            <p class="other">Keep me</p>
+            HTML;
+
+        $this->assertEqualsInputOutPut($input, $output, [
+            'element' => 'p',
+            'attribute' => 'class',
+            'attribute_contains' => 'deletedWord',
+        ]);
+    }
+
+    public function testRemoveDelAndEmptyListItem(): void
+    {
+        $input = <<<HTML
+            <ul>
+                <li><del class="deletedWord">Remove me</del>Keep me</li>
+                <li>Keep me too</li>
+                <li><del class="deletedWord">Remove full</del></li>
+            </ul>
+            HTML;
+
+        $output = <<<HTML
+            <ul>
+                <li>Keep me</li>
+                <li>Keep me too</li>
+            </ul>
+            HTML;
+
+        $this->assertEqualsInputOutPut($input, $output, [
+            'element' => 'del',
+            'attribute' => 'class',
+            'attribute_contains' => 'deletedWord',
         ]);
     }
 }

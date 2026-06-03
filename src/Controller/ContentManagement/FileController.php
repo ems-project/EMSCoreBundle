@@ -109,8 +109,8 @@ class FileController extends AbstractController
         $params = Json::decode($requestContent);
         $name = $params['name'] ?? 'upload.bin';
         $type = $params['type'] ?? 'application/bin';
-        $hash = $params['hash'] ?? $sha1;
-        $size = (int) ($params['size'] ?? $size);
+        $hash = $params['hash'] ?? null;
+        $size = (int) ($params['size'] ?? null);
         $algo = $params['algo'] ?? 'sha1';
 
         $user = $this->getUsername();

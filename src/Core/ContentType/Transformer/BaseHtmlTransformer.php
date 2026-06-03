@@ -79,7 +79,7 @@ abstract class BaseHtmlTransformer extends AbstractTransformer
         $parent->removeChild($element);
     }
 
-    private function unwrapEmpty(\DOMElement $element, \DOMNode $parent): void
+    protected function unwrapEmpty(\DOMElement $element, \DOMNode $parent): void
     {
         $prev = $element->previousSibling;
         $next = $element->nextSibling;

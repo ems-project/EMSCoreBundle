@@ -214,7 +214,7 @@ class SearchController
     {
         $data = $json['search'] ?? null;
         if (\is_array($data)) {
-            return Search::fromPayload($data);
+            $data = Json::encode($data);
         }
         if (\is_string($data)) {
             return Search::deserialize($data);

@@ -102,7 +102,6 @@ class FileController extends AbstractController
     /**
      * @param int $size
      */
-    #[\Deprecated]
     public function initUploadFile(?string $sha1, $size, bool $apiRoute, Request $request): Response
     {
         if ($sha1 || $size) {
@@ -118,12 +117,12 @@ class FileController extends AbstractController
         $name = $params['name'] ?? 'upload.bin';
         $type = $params['type'] ?? 'application/bin';
         $hash = $params['hash'] ?? $sha1;
-        $size = $params['size'] ?? $size;
+        $size = (int) ($params['size'] ?? $size);
         $algo = $params['algo'] ?? 'sha1';
 
         $user = $this->getUsername();
 
-        if (empty($hash) || empty($algo) || (empty($size) && 0 !== $size)) {
+        if (empty($hash) || empty($algo) || $size < 0) {
             throw new BadRequestHttpException('Bad Request, invalid json parameters');
         }
 

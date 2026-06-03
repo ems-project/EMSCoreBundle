@@ -57,8 +57,8 @@ final class HtmlRemoveNodeTransformerTest extends AbstractTransformerTestCase
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                     
                     <p>Donec scelerisque vulputate congue. Ut tortor libero, pellentesque at porttitor sollicitudin, aliquam vel tortor.</p>
-                </body>
-            </html>
+                
+            </body></html>
             HTML;
 
         $this->assertEqualsInputOutPut($input, $output, [

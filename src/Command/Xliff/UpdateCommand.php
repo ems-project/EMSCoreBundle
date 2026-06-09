@@ -42,6 +42,7 @@ final class UpdateCommand extends AbstractCommand
     public const string OPTION_DRY_RUN = 'dry-run';
     public const string OPTION_CURRENT_REVISION_ONLY = 'current-revision-only';
     public const string OPTION_BASE_URL = 'base-url';
+    public const string OPTION_TRANSLATION_MUST = 'translation-must';
 
     private string $xliffFilename;
     private ?Environment $publishTo = null;
@@ -74,7 +75,9 @@ final class UpdateCommand extends AbstractCommand
             ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field')
             ->addOption(self::OPTION_DRY_RUN, null, InputOption::VALUE_NONE, 'If set nothing is saved in the database')
             ->addOption(self::OPTION_CURRENT_REVISION_ONLY, null, InputOption::VALUE_NONE, 'Translations will be updated only is the source revision is still a current revision')
-            ->addOption(self::OPTION_BASE_URL, null, InputOption::VALUE_OPTIONAL, 'Base url, in order to generate a download link to the error report');
+            ->addOption(self::OPTION_BASE_URL, null, InputOption::VALUE_OPTIONAL, 'Base url, in order to generate a download link to the error report')
+            ->addOption(self::OPTION_TRANSLATION_MUST, null, InputOption::VALUE_OPTIONAL, 'Add must in query for searching translations', null)
+        ;
     }
 
     #[\Override]
@@ -100,6 +103,11 @@ final class UpdateCommand extends AbstractCommand
 
         if (null === $this->translationField && $this->translationField !== $this->localeField) {
             throw new \RuntimeException(\sprintf('Both %s and %s options must be defined or not defined at all (fields defined with %%locale%% placeholder)', self::OPTION_TRANSLATION_FIELD, self::OPTION_LOCALE_FIELD));
+        }
+
+        $translationMust = $this->getOptionStringNull(self::OPTION_TRANSLATION_MUST);
+        if (null !== $translationMust) {
+            $this->xliffService->setTranslationMust($translationMust);
         }
     }
 

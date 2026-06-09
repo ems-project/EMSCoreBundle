@@ -12,6 +12,8 @@ use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\ContentType\Version\VersionFields;
 use EMS\CoreBundle\Entity\ContentType;
+use EMS\CoreBundle\Entity\Environment;
+use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
 use EMS\CoreBundle\Service\Revision\RevisionService;
@@ -132,7 +134,7 @@ class ObjectChoiceCacheService
      *
      * @return ObjectChoiceListItem[]
      */
-    public function load(array $objectIds, bool $circleOnly = false, bool $withWarning = true): array
+    public function load(array $objectIds, ?string $querySearchName, bool $circleOnly = false, bool $withWarning = true): array
     {
         $choices = [];
         $missingOuuidsPerIndexAndType = [];
@@ -147,7 +149,7 @@ class ObjectChoiceCacheService
                 } elseif (!isset($this->fullyLoaded[$objectType])) {
                     $contentType = $this->contentTypeService->getByName($objectType);
                     if ($contentType) {
-                        $index = $this->contentTypeService->getIndex($contentType);
+                        $index = $querySearchName ?? $this->contentTypeService->getIndex($contentType);
                         if ('' !== $index && '0' !== $index) {
                             $missingOuuidsPerIndexAndType[$index][$objectType][] = $objectOuuid;
                         } elseif ($withWarning) {
@@ -195,7 +197,16 @@ class ObjectChoiceCacheService
             }
             $boolQuery->setMinimumShouldMatch(1);
 
-            $search = new Search([$indexName], $boolQuery);
+            if (null !== $querySearchName) {
+                $querySearch = $this->querySearchName->getByItemName($querySearchName);
+                if (!$querySearch instanceof QuerySearch) {
+                    throw new \RuntimeException('Unexpected query search object');
+                }
+                $searchAliases = \array_map(fn (Environment $env) => $env->getAlias(), $querySearch->getEnvironments());
+                $search = new Search($searchAliases, $boolQuery);
+            } else {
+                $search = new Search([$indexName], $boolQuery);
+            }
             $search->setSources($sourceField);
 
             $scroll = $this->elasticaService->scroll($search);

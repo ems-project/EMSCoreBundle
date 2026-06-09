@@ -15,6 +15,7 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Exception\XliffException;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Html\HtmlHelper;
+use EMS\Helpers\Standard\Json;
 use EMS\Helpers\PropertyAccess\PropertyAccessor;
 use EMS\Helpers\Standard\Type;
 use EMS\Xliff\Model\Document as XliffDocument;
@@ -24,6 +25,9 @@ use Psr\Log\LoggerInterface;
 
 class XliffService
 {
+    /** @var array<mixed>|null */
+    private ?array $translationMust = null;
+
     public function __construct(private readonly LoggerInterface $logger, private readonly RevisionService $revisionService, private readonly ElasticaService $elasticaService)
     {
     }
@@ -127,6 +131,11 @@ class XliffService
         return $this->revisionService->updateRawData($currentRevision, $data, $username);
     }
 
+    public function setTranslationMust(string $translationMust): void
+    {
+        $this->translationMust = Json::decode($translationMust);
+    }
+
     public function testInsert(Package $package, XliffDocument $document, ?string $localeField): void
     {
         [$contentType, $ouuid, $revisionId] = \explode(':', $document->id);
@@ -171,6 +180,10 @@ class XliffService
         $boolQuery = $this->elasticaService->getBoolQuery();
         $boolQuery->addMust($this->elasticaService->getTermsQuery($translationField, [$translationId]));
         $boolQuery->addMust($this->elasticaService->getTermsQuery($localeField, [$targetLocale]));
+
+        if (null !== $this->translationMust) {
+            $boolQuery->addMust($this->translationMust);
+        }
 
         $search = new Search([$targetEnvironment->getAlias()], $boolQuery);
         try {

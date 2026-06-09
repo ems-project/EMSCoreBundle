@@ -66,6 +66,7 @@ final class ExtractCommand extends AbstractCommand
     public const string OPTION_MAIL_TO = 'mail-to';
     public const string OPTION_MAIL_CC = 'mail-cc';
     public const string OPTION_MAIL_REPLY_TO = 'mail-reply-to';
+    public const string OPTION_TRANSLATION_MUST = 'translation-must';
     private const string MAIL_TEMPLATE = '@EMSCore/email/xliff/extract.email.html.twig';
     private string $xliffBasename;
     private ?string $baseUrl = null;
@@ -114,6 +115,7 @@ final class ExtractCommand extends AbstractCommand
             ->addOption(self::OPTION_MAIL_TO, null, InputOption::VALUE_OPTIONAL, 'A comma seperated list of emails where to send the XLIFF')
             ->addOption(self::OPTION_MAIL_CC, null, InputOption::VALUE_OPTIONAL, 'A comma seperated list of emails where to send, in carbon copy, the XLIFF')
             ->addOption(self::OPTION_MAIL_REPLY_TO, null, InputOption::VALUE_OPTIONAL, 'A comma seperated list of emails where to reply')
+            ->addOption(self::OPTION_TRANSLATION_MUST, null, InputOption::VALUE_OPTIONAL, 'Add must in query for searching translations', null)
         ;
     }
 
@@ -145,6 +147,11 @@ final class ExtractCommand extends AbstractCommand
 
         if (null === $this->translationField && $this->translationField !== $this->localeField) {
             throw new \RuntimeException(\sprintf('Both %s and %s options must be defined or not defined at all (fields defined with %%locale%% placeholder)', self::OPTION_TRANSLATION_FIELD, self::OPTION_LOCALE_FIELD));
+        }
+
+        $translationMust = $this->getOptionStringNull(self::OPTION_TRANSLATION_MUST);
+        if (null !== $translationMust) {
+            $this->xliffService->setTranslationMust($translationMust);
         }
     }
 

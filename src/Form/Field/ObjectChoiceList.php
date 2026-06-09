@@ -77,7 +77,7 @@ class ObjectChoiceList implements ChoiceListInterface
     #[\Override]
     public function getChoicesForValues(array $choices): array
     {
-        $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly, $this->withWarning);
+        $this->choices = $this->objectChoiceCacheService->load($choices, $this->querySearchName, $this->circleOnly, $this->withWarning);
 
         return \array_keys($this->choices);
     }
@@ -90,7 +90,7 @@ class ObjectChoiceList implements ChoiceListInterface
     #[\Override]
     public function getValuesForChoices(array $choices): array
     {
-        $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly, $this->withWarning);
+        $this->choices = $this->objectChoiceCacheService->load($choices, $this->querySearchName, $this->circleOnly, $this->withWarning);
 
         return \array_keys($this->choices);
     }
@@ -116,7 +116,7 @@ class ObjectChoiceList implements ChoiceListInterface
      */
     public function loadChoices(array $choices): array
     {
-        $this->choices = $this->objectChoiceCacheService->load($choices, $this->circleOnly, $this->withWarning);
+        $this->choices = $this->objectChoiceCacheService->load($choices, $this->querySearchName, $this->circleOnly, $this->withWarning);
 
         return $this->choices;
     }

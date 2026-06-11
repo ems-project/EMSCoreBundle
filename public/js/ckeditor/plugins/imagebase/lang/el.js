@@ -1,1 +1,0 @@
-CKEDITOR.plugins.setLang("imagebase","el",{captionPlaceholder:"Εισαγωγή λεζάντας εικόνας"});

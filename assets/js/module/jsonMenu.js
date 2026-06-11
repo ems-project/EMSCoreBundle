@@ -2,7 +2,7 @@ import jquery from 'jquery';
 import EmsListeners from './../EmsListeners';
 require('./../nestedSortable');
 
-const { v4: uuidv4 } = require('uuid');
+const uuidv4 = require('uuid/v4');
 
 export default class JsonMenu {
     constructor(target) {

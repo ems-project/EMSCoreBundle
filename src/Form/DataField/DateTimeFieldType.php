@@ -114,12 +114,12 @@ class DateTimeFieldType extends DataFieldType
 
         if (\is_string($data) && '' !== $data) {
             $dateTime = \DateTimeImmutable::createFromFormat(\DateTimeImmutable::ATOM, $data);
-            $fieldType = $dataField->getFieldType();
-            $parseFormat = (null !== $fieldType) ? $fieldType->getDisplayOption('parseFormat') : null;
             if ($dateTime instanceof \DateTimeInterface) {
+                $fieldType = $dataField->getFieldType();
+                $parseFormat = (null !== $fieldType) ? $fieldType->getDisplayOption('parseFormat') : null;
                 $value = $dateTime->format($parseFormat ?? self::DEFAULT_PARSE_FORMAT);
             } else {
-                $dataField->addMessage(\sprintf('Invalid parse format %s for date string: %s', $parseFormat ?? self::DEFAULT_PARSE_FORMAT, $data));
+                $dataField->addMessage(\sprintf('Invalid date format. Expected format: ISO 8601. Received value: %s', $data));
                 $value = $data;
             }
         }
@@ -150,7 +150,7 @@ class DateTimeFieldType extends DataFieldType
 
         if (false === $dateTime) {
             $dataField = parent::reverseViewTransform($value, $fieldType);
-            $dataField->addMessage(\sprintf('Invalid parse format %s for date string: %s', $parseFormat, $value));
+            $dataField->addMessage(\sprintf('Invalid date format. Expected format: %s or ISO 8601. Received value: %s', $parseFormat, $value));
 
             return $dataField;
         }

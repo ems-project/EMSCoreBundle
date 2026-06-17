@@ -88,7 +88,7 @@ class XliffService
         }
     }
 
-    public function insert(InsertReport $insertReport, InsertionRevision $insertionRevision, ?string $localeField, ?string $translationField, ?Environment $publishAndArchive, ?string $username = null, bool $currentRevisionOnly = false): Revision
+    public function insert(InsertReport $insertReport, InsertionRevision $insertionRevision, ?string $localeField, ?string $translationField, ?Environment $publishAndArchive, ?string $username = null, bool $currentRevisionOnly = false, bool $currentRevisionForce = false): Revision
     {
         $propertyAccessor = PropertyAccessor::createPropertyAccessor();
         $revision = $this->revisionService->getByRevisionId($insertionRevision->getRevisionId());
@@ -98,6 +98,9 @@ class XliffService
                 'ouuid' => $revision->giveOuuid(),
             ]);
             throw new XliffException($insertionRevision, 'The source revision is not more the current revision of the document');
+        }
+        if ($currentRevisionForce && !$revision->isCurrent()) {
+            $revision = $this->revisionService->give($revision->giveOuuid(), $revision->giveContentType()->getName());
         }
         $targetLocale = $insertionRevision->getTargetLocale();
         if (null !== $translationField && null !== $localeField) {

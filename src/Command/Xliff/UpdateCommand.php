@@ -135,8 +135,8 @@ final class UpdateCommand extends AbstractCommand
             }
             try {
                 $revision = $this->xliffService->insert(
-                    insertReport: $xliff->getPackage(),
-                    insertionRevision: $document,
+                    package: $xliff->getPackage(),
+                    document: $document,
                     localeField: $this->localeField,
                     translationField: $this->translationField,
                     publishAndArchive: $this->publishTo,

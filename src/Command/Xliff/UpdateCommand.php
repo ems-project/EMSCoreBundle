@@ -41,6 +41,7 @@ final class UpdateCommand extends AbstractCoreCommand
     public const string OPTION_LOCALE_FIELD = 'locale-field';
     public const string OPTION_DRY_RUN = 'dry-run';
     public const string OPTION_CURRENT_REVISION_ONLY = 'current-revision-only';
+    public const string OPTION_CURRENT_REVISION_FORCE = 'current-revision-force';
     public const string OPTION_BASE_URL = 'base-url';
     public const string OPTION_TRANSLATION_MUST = 'translation-must';
 
@@ -51,6 +52,7 @@ final class UpdateCommand extends AbstractCoreCommand
     private ?string $localeField = null;
     private bool $dryRun = false;
     private bool $currentRevisionOnly = false;
+    private bool $currentRevisionForce = false;
     private ?string $baseUrl = null;
 
     public function __construct(
@@ -75,6 +77,7 @@ final class UpdateCommand extends AbstractCoreCommand
             ->addOption(self::OPTION_TRANSLATION_FIELD, null, InputOption::VALUE_OPTIONAL, 'Field containing the translation field')
             ->addOption(self::OPTION_DRY_RUN, null, InputOption::VALUE_NONE, 'If set nothing is saved in the database')
             ->addOption(self::OPTION_CURRENT_REVISION_ONLY, null, InputOption::VALUE_NONE, 'Translations will be updated only is the source revision is still a current revision')
+            ->addOption(self::OPTION_CURRENT_REVISION_FORCE, null, InputOption::VALUE_NONE, 'Force importing current revision always')
             ->addOption(self::OPTION_BASE_URL, null, InputOption::VALUE_OPTIONAL, 'Base url, in order to generate a download link to the error report')
             ->addOption(self::OPTION_TRANSLATION_MUST, null, InputOption::VALUE_OPTIONAL, 'Add must in query for searching translations', null)
         ;
@@ -95,6 +98,7 @@ final class UpdateCommand extends AbstractCoreCommand
         $this->localeField = $this->getOptionStringNull(self::OPTION_LOCALE_FIELD);
         $this->dryRun = $this->getOptionBool(self::OPTION_DRY_RUN);
         $this->currentRevisionOnly = $this->getOptionBool(self::OPTION_CURRENT_REVISION_ONLY);
+        $this->currentRevisionForce = $this->getOptionBool(self::OPTION_CURRENT_REVISION_FORCE);
         $this->baseUrl = $this->getOptionStringNull(self::OPTION_BASE_URL);
 
         if ($this->archive && null === $this->publishTo) {
@@ -130,7 +134,16 @@ final class UpdateCommand extends AbstractCoreCommand
                 continue;
             }
             try {
-                $revision = $this->xliffService->insert($xliff->getPackage(), $document, $this->localeField, $this->translationField, $this->publishTo, self::XLIFF_UPLOAD_COMMAND, $this->currentRevisionOnly);
+                $revision = $this->xliffService->insert(
+                    package: $xliff->getPackage(),
+                    document: $document,
+                    localeField: $this->localeField,
+                    translationField: $this->translationField,
+                    publishAndArchive: $this->publishTo,
+                    username: self::XLIFF_UPLOAD_COMMAND,
+                    currentRevisionOnly: $this->currentRevisionOnly,
+                    currentRevisionForce: $this->currentRevisionForce
+                );
             } catch (XliffException $e) {
                 $this->io->warning(\sprintf('Update for %s failed : %s', $document->id, $e->getMessage()));
                 continue;

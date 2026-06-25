@@ -22,6 +22,29 @@ class ChoiceFieldType extends DataFieldType
     private ?int $fakeIndex = null;
 
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        $choices = \array_values(\array_filter(\array_map(
+            static fn (string $choice): string => \trim($choice),
+            \preg_split('/\r\n|\r|\n/', (string) $fieldType->getDisplayOption('choices', ''), -1, \PREG_SPLIT_NO_EMPTY) ?: []
+        ), static fn (string $choice): bool => '' !== $choice));
+
+        $valueSchema = ['type' => 'string'];
+        if ([] !== $choices) {
+            $valueSchema['enum'] = $choices;
+        }
+
+        if ((bool) $fieldType->getDisplayOption('multiple', false)) {
+            return [
+                'type' => 'array',
+                'items' => $valueSchema,
+            ];
+        }
+
+        return $valueSchema;
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'Choice field';
@@ -37,7 +60,7 @@ class ChoiceFieldType extends DataFieldType
     public function buildObjectArray(DataField $data, array &$out): void
     {
         if (!$data->giveFieldType()->getDeleted()) {
-            if ($data->giveFieldType()->getDisplayOptions()['multiple']) {
+            if ((bool) $data->giveFieldType()->getDisplayOption('multiple', false)) {
                 $out[$data->giveFieldType()->getName()] = $data->getArrayTextValue();
             } else {
                 parent::buildObjectArray($data, $out);
@@ -185,7 +208,7 @@ class ChoiceFieldType extends DataFieldType
     {
         $temp = parent::viewTransform($dataField);
         $out = [];
-        if ($dataField->giveFieldType()->getDisplayOptions()['multiple']) {
+        if ((bool) $dataField->giveFieldType()->getDisplayOption('multiple', false)) {
             if (empty($temp)) {
                 $out = [];
             } elseif (\is_string($temp)) {
@@ -226,8 +249,8 @@ class ChoiceFieldType extends DataFieldType
     private function buildChoices(array $options): array
     {
         $choices = [];
-        $values = \explode("\n", \str_replace("\r", '', (string) $options['choices']));
-        $labels = \explode("\n", \str_replace("\r", '', (string) $options['labels']));
+        $values = $this->normalizeChoiceLines($options['choices'] ?? '');
+        $labels = $this->normalizeChoiceLines($options['labels'] ?? '');
 
         foreach ($values as $id => $value) {
             if ('' !== $value) {
@@ -256,5 +279,17 @@ class ChoiceFieldType extends DataFieldType
         }
 
         return $choices;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function normalizeChoiceLines(mixed $value): array
+    {
+        if (\is_array($value)) {
+            return \array_map(static fn (mixed $item): string => (string) $item, $value);
+        }
+
+        return \explode("\n", \str_replace("\r", '', (string) $value));
     }
 }

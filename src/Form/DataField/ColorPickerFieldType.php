@@ -18,6 +18,12 @@ use EMS\Helpers\Standard\Json;
 class ColorPickerFieldType extends DataFieldType
 {
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return ['type' => 'string'];
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'Color picker field';

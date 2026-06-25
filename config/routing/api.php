@@ -43,6 +43,9 @@ return function (RoutingConfigurator $routes): void {
     $routes->import('@EMSCoreBundle/config/routing/api/data.php')
         ->prefix('/api/data');
 
+    $routes->import('@EMSCoreBundle/config/routing/api/mcp.php')
+        ->prefix('/api');
+
     $routes->import('@EMSCoreBundle/config/routing/api/webhook.php')
         ->prefix('/api');
 

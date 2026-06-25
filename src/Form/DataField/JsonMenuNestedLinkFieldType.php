@@ -43,6 +43,12 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     }
 
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return $this->generateUnsupportedJsonSchema();
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'JSON menu nested link field';

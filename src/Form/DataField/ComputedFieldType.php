@@ -17,6 +17,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ComputedFieldType extends DataFieldType
 {
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return $this->generateUnsupportedJsonSchema();
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'Computed from the raw-data';

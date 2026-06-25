@@ -60,6 +60,7 @@ ems_client_helper:
 ems_common:
     metric:
         enabled: true
+    storages: [{"type":"fs", "path":"/tmp/test_data"}]
 
 ems_core:
     private_key: ''

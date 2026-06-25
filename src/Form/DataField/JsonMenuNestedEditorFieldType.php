@@ -17,6 +17,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class JsonMenuNestedEditorFieldType extends DataFieldType
 {
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return $buildObjectSchema($fieldType->getValidChildren());
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'JSON menu nested editor field';

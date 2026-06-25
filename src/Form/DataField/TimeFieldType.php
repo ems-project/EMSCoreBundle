@@ -27,6 +27,12 @@ class TimeFieldType extends DataFieldType
     final public const string INDEXFORMAT = 'HH:mm:ss';
 
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return ['type' => 'string'];
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'Time field';

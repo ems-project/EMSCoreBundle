@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
@@ -20,6 +21,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TextStringFieldType extends DataFieldType
 {
+    #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return ['type' => 'string'];
+    }
+
     #[\Override]
     public function getLabel(): string
     {

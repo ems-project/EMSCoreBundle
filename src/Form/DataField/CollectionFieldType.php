@@ -40,6 +40,15 @@ class CollectionFieldType extends DataFieldType
     }
 
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return [
+            'type' => 'array',
+            'items' => $buildObjectSchema($fieldType->getValidChildren()),
+        ];
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'Collection (manage array of children types)';

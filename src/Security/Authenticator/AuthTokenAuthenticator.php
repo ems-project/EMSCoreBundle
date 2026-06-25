@@ -20,13 +20,13 @@ final class AuthTokenAuthenticator extends AbstractAuthenticator
     #[\Override]
     public function supports(Request $request): bool
     {
-        return $request->headers->has('X-Auth-Token');
+        return null !== $this->getApiToken($request);
     }
 
     #[\Override]
     public function authenticate(Request $request): Passport
     {
-        $apiToken = $request->headers->get('X-Auth-Token');
+        $apiToken = $this->getApiToken($request);
         if (null === $apiToken) {
             throw new CustomUserMessageAuthenticationException('No API token provided');
         }
@@ -48,5 +48,24 @@ final class AuthTokenAuthenticator extends AbstractAuthenticator
             'acknowledged' => true,
             'error' => 'Authentication failed',
         ], Response::HTTP_UNAUTHORIZED);
+    }
+
+    private function getApiToken(Request $request): ?string
+    {
+        $legacyApiToken = $request->headers->get('X-Auth-Token');
+        if (\is_string($legacyApiToken) && '' !== $legacyApiToken) {
+            return $legacyApiToken;
+        }
+
+        $authorization = $request->headers->get('Authorization');
+        if (!\is_string($authorization)) {
+            return null;
+        }
+
+        if (1 !== \preg_match('/^\s*Bearer\s+(.+)\s*$/i', $authorization, $matches)) {
+            return null;
+        }
+
+        return $matches[1];
     }
 }

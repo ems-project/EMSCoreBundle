@@ -184,6 +184,13 @@ abstract class DataFieldType extends AbstractType
     abstract public function getLabel(): string;
 
     /**
+     * @param callable(array<FieldType>): array<string, mixed> $buildObjectSchema
+     *
+     * @return array<string, mixed>
+     */
+    abstract public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array;
+
+    /**
      * @param array<string, mixed> $options
      */
     public function isDisabled(array $options): bool
@@ -226,6 +233,16 @@ abstract class DataFieldType extends AbstractType
     public function getChoiceList(FieldType $fieldType, array $choices): array
     {
         return [];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function generateUnsupportedJsonSchema(): array
+    {
+        return [
+            'description' => \sprintf('ElasticMS field type "%s".', static::class),
+        ];
     }
 
     public static function getIcon(): string

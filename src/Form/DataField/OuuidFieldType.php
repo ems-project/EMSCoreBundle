@@ -4,8 +4,16 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CoreBundle\Entity\FieldType;
+
 class OuuidFieldType extends DataFieldType
 {
+    #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return ['type' => 'string'];
+    }
+
     #[\Override]
     public function getLabel(): string
     {

@@ -42,6 +42,23 @@ class MultiplexedTabContainerFieldType extends DataFieldType
     }
 
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        $schema = [
+            'type' => 'object',
+            'properties' => [],
+            'additionalProperties' => false,
+        ];
+        $childSchema = $buildObjectSchema($fieldType->getValidChildren());
+
+        foreach ($this->buildSchemaChoices($fieldType) as $label => $value) {
+            $schema['properties'][$value] = [...$childSchema, 'title' => $label];
+        }
+
+        return $schema;
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'Multiplexed Tab Container';
@@ -116,6 +133,31 @@ class MultiplexedTabContainerFieldType extends DataFieldType
         }
 
         return [];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function buildSchemaChoices(FieldType $fieldType): array
+    {
+        $choices = [];
+
+        if (true === $fieldType->getDisplayOption(self::WITH_LOCALES_VARIABLE_DISPLAY_OPTION, false)) {
+            foreach ($this->locales as $locale) {
+                $choices[$locale] = Locales::getName($locale);
+            }
+        }
+
+        $values = self::textAreaToArray($fieldType->getDisplayOption(self::VALUES_DISPLAY_OPTION));
+        $labels = self::textAreaToArray($fieldType->getDisplayOption(self::LABELS_DISPLAY_OPTION));
+
+        foreach ($values as $index => $value) {
+            if ('' !== $value) {
+                $choices[$value] = $labels[$index] ?? $value;
+            }
+        }
+
+        return \array_flip($choices);
     }
 
     #[\Override]

@@ -21,6 +21,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class PasswordFieldType extends DataFieldType
 {
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return ['type' => 'string'];
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'Password field';

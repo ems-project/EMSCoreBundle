@@ -20,6 +20,12 @@ use Symfony\Component\Form\FormBuilderInterface;
 class CollectionItemFieldType extends DataFieldType
 {
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return $buildObjectSchema($fieldType->getValidChildren());
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'Collection item object (this message should neve seen anywhere)';

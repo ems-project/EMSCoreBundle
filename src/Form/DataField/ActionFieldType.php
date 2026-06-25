@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\Helpers\Standard\Json;
@@ -78,6 +79,12 @@ class ActionFieldType extends DataFieldType
     public static function getIcon(): string
     {
         return 'fa fa-cog';
+    }
+
+    #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return $this->generateUnsupportedJsonSchema();
     }
 
     #[\Override]

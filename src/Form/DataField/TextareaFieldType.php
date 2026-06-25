@@ -24,6 +24,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class TextareaFieldType extends DataFieldType
 {
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return ['type' => 'string'];
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'Textarea field';

@@ -10,6 +10,7 @@ use EMS\CoreBundle\Form\Field\CodeEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -53,6 +54,7 @@ class ExtraOptionsType extends AbstractType
     private function addDefaultExtraOptions(FormBuilderInterface $builder): void
     {
         $builder
+            ->add('description', TextType::class, ['required' => false])
             ->add('extra', TextareaType::class, ['attr' => ['rows' => 8], 'required' => false])
             ->add('clear_on_copy', CheckboxType::class, ['required' => false])
             ->add('postProcessing', CodeEditorType::class, ['required' => false])

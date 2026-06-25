@@ -12,6 +12,12 @@ use Symfony\Component\Form\FormBuilderInterface;
 class NumberFieldType extends DataFieldType
 {
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return ['type' => 'number'];
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'Number field';

@@ -10,6 +10,7 @@ use EMS\CommonBundle\Contracts\ExpressionServiceInterface;
 use EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\ContentType\FieldType\FieldTypeService;
 use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformer;
 use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformers;
@@ -74,6 +75,10 @@ use EMS\CoreBundle\EventListener\UserLocaleListener;
 use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskHandleType;
+use EMS\CoreBundle\Mcp\ElasticmsMcpServerFactory;
+use EMS\CoreBundle\Mcp\ElasticmsMcpToolAssetService;
+use EMS\CoreBundle\Mcp\ElasticmsMcpToolDataService;
+use EMS\CoreBundle\Mcp\ElasticmsMcpToolUserService;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\JobRepository;
@@ -117,6 +122,9 @@ use EMS\CoreBundle\Service\WebhookService;
 use EMS\CoreBundle\Service\WebhookSubscriptionService;
 use EMS\CoreBundle\Service\WysiwygProfileService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
+use Mcp\Server;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -127,6 +135,16 @@ return static function (ContainerConfigurator $container) {
 
     $services->defaults()
         ->private();
+
+    $services->set(Psr17Factory::class, Psr17Factory::class);
+
+    $services->set(ServerRequestCreator::class)
+        ->args([
+            service(Psr17Factory::class),
+            service(Psr17Factory::class),
+            service(Psr17Factory::class),
+            service(Psr17Factory::class),
+        ]);
 
     $services->set('emsco.event_listener.access_denied_listener', AccessDeniedListener::class)
         ->args([
@@ -683,6 +701,49 @@ return static function (ContainerConfigurator $container) {
         ->tag('kernel.event_listener', ['event' => RevisionFinalizeDraftEvent::class, 'method' => 'finalizeDraftEvent', 'priority' => 0])
         ->tag('kernel.event_listener', ['event' => RevisionPublishEvent::class, 'method' => 'publishEvent', 'priority' => 0])
         ->tag('kernel.event_listener', ['event' => RevisionUnpublishEvent::class, 'method' => 'unpublishEvent', 'priority' => 0]);
+
+    $services->set(ElasticmsMcpToolUserService::class)
+        ->args([
+            service('ems.service.user'),
+            service('logger'),
+            service('emsco.logger.audit'),
+        ]);
+
+    $services->set(ElasticmsMcpToolAssetService::class)
+        ->args([
+            service('ems.service.user'),
+            service('ems.service.file'),
+            service('logger'),
+            service('emsco.logger.audit'),
+        ]);
+
+    $services->set(ElasticmsMcpToolDataService::class)
+        ->args([
+            service('ems.service.user'),
+            service(ContentTypeService::class),
+            service('ems.service.revision'),
+            service('ems.service.data'),
+            service('form.registry'),
+            service('security.authorization_checker'),
+            service(ElasticaService::class),
+            service('logger'),
+            service('emsco.logger.audit'),
+        ]);
+
+    $services->set(ElasticmsMcpServerFactory::class)
+        ->args([
+            service('service_container'),
+            '%kernel.cache_dir%',
+            service('logger'),
+            service(ElasticmsMcpToolUserService::class),
+            service(ElasticmsMcpToolDataService::class),
+            service(ElasticmsMcpToolAssetService::class),
+        ]);
+
+    $services->set('emsco.mcp.server', Server::class)
+        ->factory([service(ElasticmsMcpServerFactory::class), 'create']);
+
+    $services->alias(Server::class, 'emsco.mcp.server');
 
     $services->set(I18nService::class, I18nService::class)
         ->args([service('ems.repository.i18n')])

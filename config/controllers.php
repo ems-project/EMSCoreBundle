@@ -21,6 +21,7 @@ use EMS\CoreBundle\Controller\Api\AuthTokenLoginController;
 use EMS\CoreBundle\Controller\Api\File\ExtractDataController;
 use EMS\CoreBundle\Controller\Api\Form\VerificationController;
 use EMS\CoreBundle\Controller\Api\JobApiController;
+use EMS\CoreBundle\Controller\Api\McpController;
 use EMS\CoreBundle\Controller\Api\WebhookSubscriptionController;
 use EMS\CoreBundle\Controller\ChannelController;
 use EMS\CoreBundle\Controller\Component\JsonMenuNestedController;
@@ -77,6 +78,9 @@ use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\EnvironmentService;
+use Mcp\Server;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7Server\ServerRequestCreator;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services();
@@ -233,6 +237,17 @@ return static function (ContainerConfigurator $container) {
         ])
         ->call('setContainer')
         ->tag('container.service_subscriber')
+        ->tag('controller.service_arguments');
+
+    $services->set(McpController::class)
+        ->args([
+            service(Server::class),
+            service(ServerRequestCreator::class),
+            service(Psr17Factory::class),
+            service('logger'),
+            service('emsco.logger.audit'),
+            service('ems.service.user'),
+        ])
         ->tag('controller.service_arguments');
 
     $services->set(ExtractDataController::class)

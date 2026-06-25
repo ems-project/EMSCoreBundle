@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\DataField;
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,6 +18,12 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class CopyToFieldType extends DataFieldType
 {
+    #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return $this->generateUnsupportedJsonSchema();
+    }
+
     #[\Override]
     public function getLabel(): string
     {

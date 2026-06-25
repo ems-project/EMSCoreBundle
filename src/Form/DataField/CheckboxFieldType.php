@@ -14,6 +14,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CheckboxFieldType extends DataFieldType
 {
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return ['type' => 'boolean'];
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'Checkbox field';

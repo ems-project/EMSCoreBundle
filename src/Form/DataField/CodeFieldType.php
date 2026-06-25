@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -16,6 +17,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CodeFieldType extends DataFieldType
 {
+    #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return $this->generateUnsupportedJsonSchema();
+    }
+
     #[\Override]
     public function getLabel(): string
     {

@@ -32,6 +32,12 @@ class EmailFieldType extends DataFieldType
     }
 
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return ['type' => 'string', 'format' => 'email'];
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'Email field';

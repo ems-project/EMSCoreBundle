@@ -19,6 +19,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class DateRangeFieldType extends DataFieldType
 {
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return $this->generateUnsupportedJsonSchema();
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'Date range field';

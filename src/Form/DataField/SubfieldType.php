@@ -14,6 +14,12 @@ use Symfony\Component\Form\FormBuilderInterface;
 class SubfieldType extends DataFieldType
 {
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return $this->generateUnsupportedJsonSchema();
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         return 'Virtual subfield (used to define alternatives analyzers)';
@@ -37,6 +43,7 @@ class SubfieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
         $optionsForm->remove('displayOptions')->remove('migrationOptions')->remove('restrictionOptions');
+        $optionsForm->get('extraOptions')->remove('description');
 
         if ($optionsForm->has('mappingOptions')) {
             $optionsForm->get('mappingOptions')

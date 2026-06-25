@@ -21,6 +21,12 @@ class HiddenFieldType extends DataFieldType
     // TODO: deorecated class?
 
     #[\Override]
+    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    {
+        return $this->generateUnsupportedJsonSchema();
+    }
+
+    #[\Override]
     public function getLabel(): string
     {
         throw new \Exception('This Field Type should not be used as field (as service)');

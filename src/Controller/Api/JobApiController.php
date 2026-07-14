@@ -24,12 +24,13 @@ class JobApiController
     {
         $content = Json::decode($request->getContent());
         $command = $content['command'] ?? null;
+        $tag = $content['tag'] ?? null;
 
         if (null === $command) {
             throw new BadRequestHttpException('Command not found');
         }
 
-        $job = $this->jobService->createCommand($user, $command);
+        $job = $this->jobService->createCommand($user, $command, $tag);
 
         return new JsonResponse([
             'success' => true,

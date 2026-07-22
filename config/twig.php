@@ -122,6 +122,7 @@ return static function (ContainerConfigurator $container) {
             service('emsco.manager.user'),
             service('router'),
             service('ems.dashboard.manager'),
+            service(ContentTypeService::class),
         ])
         ->tag('twig.attribute_extension')
         ->tag('twig.runtime');

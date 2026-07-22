@@ -264,6 +264,7 @@ form_submissions:
 key:
     actions: Acties
     admin: Admin
+    all_content_types: 'Alle contenttypes'
     analyzers: Analysatoren
     attachment: Bijlage
     channels: Kanalen

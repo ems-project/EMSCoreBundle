@@ -264,6 +264,7 @@ form_submissions:
 key:
     actions: Actions
     admin: Admin
+    all_content_types: 'All Content Types'
     analyzers: Analyzers
     attachment: Attachment
     channels: Channels

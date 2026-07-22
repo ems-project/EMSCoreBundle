@@ -65,6 +65,31 @@ class ContentTypeService implements EntityServiceInterface
     ) {
     }
 
+    /**
+     * @return array<int, string[]>
+     */
+    public function getLinkTypes(): array
+    {
+        $all = [];
+        $types = [];
+
+        foreach ($this->getAll() as $contentType) {
+            if (!$contentType->getWebContent()) {
+                continue;
+            }
+            $all[] = $contentType->getName();
+            $types[] = [$contentType->getSingularName(), $contentType->getName()];
+        }
+
+        return [
+            [
+                $this->translator->trans('key.all_content_types', [], 'emsco-core'),
+                \implode(',', $all),
+            ],
+            ...$types,
+        ];
+    }
+
     public function getChildByPath(FieldType $fieldType, string $path, bool $skipVirtualFields = false): FieldType|false
     {
         $elem = \explode('.', $path);

@@ -38,27 +38,12 @@
     {%- block extraheader %}{% endblock %}
 </head>
 
-
-{%- set type_filters = [] -%}
-{%- set all_types = false %}
-{%- if emsco_get_content_types()|length > 0 -%}
-    {%- for contentType in emsco_get_content_types()|filter(contentType => contentType.webContent) -%}
-        {%- if all_types  -%}
-            {% set all_types = all_types~','~contentType.name -%}
-        {%- else %}
-            {% set all_types = contentType.name -%}
-        {%- endif -%}
-        {%- set type_filters = type_filters|merge([[contentType.singularName, contentType.name ]]) -%}
-    {%- endfor -%}
-{%- endif -%}
-
-{%- set type_filters = [['All content types'|trans, all_types ]]|merge(type_filters) -%}
-
+{%- set wysiwygInfo = emsco_wysiwyg_info() -%}
 <body class="hold-transition skin-{{ theme_color }} {% if app.user %}{% if app.user.layoutBoxed %}layout-boxed{% endif %}{% if app.user.sidebarCollapse %} sidebar-collapse{% endif %}{% if app.user.sidebarMini %} sidebar-mini{% endif %}{% endif %}"
       data-hash-algo="{{ ems_hash_algo|e('html_attr') }}"
       data-status-url="{{ path('elasticsearch.status', {_format: 'json'})|e('html_attr') }}"
-      data-wysiwyg-type-filters="{{ type_filters|json_encode|e('html_attr') }}"
-      data-wysiwyg-info="{{ emsco_wysiwyg_info()|e('html_attr') }}"
+      data-wysiwyg-type-filters="{{ wysiwygInfo.linkTypes|json_encode|e('html_attr') }}"
+      data-wysiwyg-info="{{ wysiwygInfo|json_encode|e('html_attr') }}"
       data-search-api="{{ path('elasticsearch.api.search')|e('html_attr') }}"
       data-asset-path="{{ asset('')|e('html_attr') }}"
       data-init-upload="{{ path('emsco_file_data_init_upload')|e('html_attr') }}"

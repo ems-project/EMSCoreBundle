@@ -6,6 +6,12 @@ let ckconfig = false;
 function editRevisionEventListeners(target, onChangeCallback = null){
     new EmsListeners(target.get(0), onChangeCallback);
 
+    target.get(0).addEventListener('emsChangeEvent', () => {
+        if (onChangeCallback) {
+            onChangeCallback();
+        }
+    })
+
     if (false === ckconfig) {
         ckconfig = new CKEditorConfig().getConfig()
     }

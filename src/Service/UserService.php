@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
+use EMS\CoreBundle\Core\Security\Canonicalizer;
 use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
@@ -66,8 +67,11 @@ class UserService implements EntityServiceInterface
         return $this->userRepository->findOneBy(['email' => $email]);
     }
 
-    public function updateUser(UserInterface $user): UserInterface
+    public function updateUser(User $user): UserInterface
     {
+        $user->setUsernameCanonical(Canonicalizer::canonicalize($user->getUsername()));
+        $user->setEmailCanonical(Canonicalizer::canonicalize($user->getEmail()));
+
         $em = $this->doctrine->getManager();
         $em->persist($user);
         $em->flush();

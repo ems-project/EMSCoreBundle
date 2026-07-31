@@ -257,6 +257,7 @@ class UserController extends AbstractController
 
     public function sidebarCollapse(bool $collapsed): Response
     {
+        /** @var User $user */
         $user = $this->userService->giveUser($this->userService->getCurrentUser()->getUsername(), false);
         $user->setSidebarCollapse($collapsed);
         $this->userService->updateUser($user);

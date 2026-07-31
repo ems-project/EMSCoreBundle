@@ -8,6 +8,7 @@ use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Entity\WysiwygProfile;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use EMS\Helpers\Standard\Json;
@@ -86,6 +87,9 @@ readonly class WysiwygExtension
             'imageBrowser_listUrl' => $this->urlGenerator->generate('ems_images_index'),
             'ems_filesUrl' => $this->urlGenerator->generate('ems_core_uploaded_file_wysiwyg_index'),
             'searchUrl' => $this->urlGenerator->generate('elasticsearch.api.search'),
+            'url' => [
+                'browseUploadedFiles' => $this->urlGenerator->generate(Routes::BROWSE_UPLOADED_FILES),
+            ],
         ];
 
         foreach (Dashboard::DASHBOARD_BROWSERS as $definition) {
@@ -93,6 +97,9 @@ readonly class WysiwygExtension
                 $config['emsBrowsers'][$definition] = [
                     'label' => $dashboard->getLabel(),
                     'url' => $this->urlGenerator->generate('emsco_dashboard_browse', [
+                        'dashboardName' => $dashboard->getName(),
+                    ]),
+                    'urlModal' => $this->urlGenerator->generate(Routes::BROWSE_DASHBOARD, [
                         'dashboardName' => $dashboard->getName(),
                     ]),
                 ];

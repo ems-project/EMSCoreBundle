@@ -265,19 +265,6 @@ import JsonMenuNestedComponent from "./component/jsonMenuNestedComponent";
         window.jsonMenuNestedComponents = jsonMenuNestedComponents
     }
 
-    function initMediaLibrary() {
-        let elements = document.getElementsByClassName('media-lib');
-        let bodyData = document.querySelector('body').dataset;
-
-        [].forEach.call(elements, function (el) {
-            new MediaLibrary(el, {
-                urlMediaLib: '/component/media-lib',
-                urlInitUpload: bodyData.initUpload,
-                hashAlgo: bodyData.hashAlgo,
-            });
-        });
-    }
-
     function intAjaxModalLinks() {
         let ajaxModalLinks = document.querySelectorAll('a[data-ajax-modal-url]');
         [].forEach.call(ajaxModalLinks, function (link) {
@@ -364,7 +351,6 @@ import JsonMenuNestedComponent from "./component/jsonMenuNestedComponent";
         startPendingJob();
         initAjaxFormSave();
         initJsonMenu();
-        initMediaLibrary();
         initJsonMenuNestedComponent()
         intAjaxModalLinks();
         initPostButtons();

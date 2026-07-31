@@ -6,6 +6,7 @@ use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 return function (RoutingConfigurator $routes): void {
     $routes->import('@EMSCoreBundle/config/routing/action.php');
+    $routes->import('@EMSCoreBundle/config/routing/browse.php')->prefix('/browse');
     $routes->import('@EMSCoreBundle/config/routing/data.php')->prefix('/data');
     $routes->import('@EMSCoreBundle/config/routing/api.php');
     $routes->import('@EMSCoreBundle/config/routing/public.php');

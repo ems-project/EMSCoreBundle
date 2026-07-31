@@ -1,0 +1,20 @@
+{%- block modalUploadedFiles -%}
+    {% form_theme form '@EMSCore/form/forms.html.twig' %}
+    {{ form(form) }}
+{%- endblock modalUploadedFiles -%}
+
+{%- block modalDashboard -%}
+    {%- if dashboard.option('header') is not null -%}
+        {{- include(template_from_string(dashboard.option('header'), "Header template for Dashboard " ~ dashboard.name)) -}}
+    {%- endif -%}
+
+    <div id="dashboard-browser" data-type="{{ dashboard.definition }}">
+        {%- if dashboard.option('body') is not null -%}
+            {{- include(template_from_string(dashboard.option('body'), "Body template for Dashboard " ~ dashboard.name)) -}}
+        {%- endif -%}
+    </div>
+
+    {%- if dashboard.option('footer') is not null -%}
+        {{- include(template_from_string(dashboard.option('footer'), "Footer template for Dashboard " ~ dashboard.name)) -}}
+    {%- endif -%}
+{%- endblock modalDashboard -%}

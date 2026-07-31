@@ -47,6 +47,8 @@ class Routes
     final public const string ADMIN_MANAGED_ALIAS_EDIT = 'emsco_admin_managed_alias_edit';
 
     final public const string AUTH_TOKEN_LOGIN = 'emsco_auth_token_login';
+    final public const string BROWSE_UPLOADED_FILES = 'emsco_browse_uploaded_files';
+    final public const string BROWSE_DASHBOARD = 'emsco_browse_dashboard';
     final public const string EDIT_REVISION = 'emsco_edit_revision';
     final public const string VIEW_REVISIONS = 'emsco_view_revisions';
     final public const string VIEW_REVISIONS_AUDIT = 'emsco_view_revisions_table_audit';

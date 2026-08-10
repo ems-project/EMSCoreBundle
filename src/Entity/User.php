@@ -392,7 +392,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
             $roles = \array_merge($roles, $group->getRoles());
         }
 
-        return \array_unique($roles);
+        return \array_values(\array_unique($roles));
     }
 
     #[\Override]

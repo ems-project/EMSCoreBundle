@@ -139,5 +139,5 @@ return static function (ContainerConfigurator $container) {
             service('emsco.core.media_library.config_factory'),
             service('emsco.core.media_library.template_factory'),
         ])
-        ->tag('twig.component', ['key' => 'media_library', 'template' => '@%ems_core.template_namespace%/components/media_library/component.html.twig']);
+        ->tag('twig.component', ['key' => 'media_library', 'template' => '@EMSCore/components/media_library/component.html.twig']);
 };

@@ -7,7 +7,6 @@ import FileUploader from "@elasticms/file-uploader";
 import Datatables from "./module/datatables";
 import {tooltipDataLinks} from "./helper/tooltip";
 import {resizeImage} from "./helper/resizeImage";
-import MediaLibrary from "./component/mediaLibrary";
 
 
 export default class EmsListeners {
@@ -44,21 +43,7 @@ export default class EmsListeners {
         this.addDisabledButtonTreatListeners();
         this.addDateRangeListeners();
         this.addCkeditor4();
-        this.addMediaLibrary();
         tooltipDataLinks(this.target);
-    }
-
-    addMediaLibrary() {
-        let elements = this.target.getElementsByClassName('media-lib');
-        let bodyData = document.querySelector('body').dataset;
-
-        [].forEach.call(elements, function (el) {
-            new MediaLibrary(el, {
-                urlMediaLib: '/component/media-lib',
-                urlInitUpload: bodyData.initUpload,
-                hashAlgo: bodyData.hashAlgo,
-            });
-        });
     }
 
     addFieldsToDisplayByValue() {
@@ -735,14 +720,23 @@ export default class EmsListeners {
             return text
         }
 
-        jquery(this.target).find(".select2").select2({
+        const dialog = jquery(this.target).closest('.ems-dialog')
+
+        const elements = jquery(this.target).find('.select2').select2({
             allowClear: true,
-            placeholder: "",
+            placeholder: '',
             width: '100%',
-            escapeMarkup: function (markup) { return markup; },
+            escapeMarkup: function (markup) { return markup },
             templateSelection: formatFn,
             templateResult: formatFn,
-        });
+            dropdownParent: dialog.length ? dialog : undefined
+        })
+
+        if (dialog.length) {
+            elements
+                .on('select2:opening', () => dialog.css('overflow', 'visible'))
+                .on('select2:closing', () => dialog.css('overflow', ''))
+        }
     }
 
     addRemoveButtonListeners() {

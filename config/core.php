@@ -115,7 +115,6 @@ return static function (ContainerConfigurator $container) {
     $services->set('emsco.core.media_library.template_factory', MediaLibraryTemplateFactory::class)
         ->args([
             service('twig'),
-            '%ems_core.template_namespace%',
         ]);
 
     $services->set('emsco.core.media_library.validator.document', DocumentValidator::class)

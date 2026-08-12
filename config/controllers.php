@@ -314,11 +314,9 @@ return static function (ContainerConfigurator $container) {
         ->public()
         ->args([
             service('emsco.core.media_library'),
-            service('ems_core.core_ui.ajax_service'),
             service('ems_core.core_ui.flash_message_logger'),
             service('translator'),
             service('form.factory'),
-            '%ems_core.template_namespace%',
             '%ems_core.async.enabled%',
         ])
         ->tag('controller.service_arguments');

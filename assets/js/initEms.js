@@ -5,7 +5,6 @@
  *
  */
 import EmsListeners from "./EmsListeners";
-import MediaLibrary from "./component/mediaLibrary";
 import JsonMenu from "./module/jsonMenu";
 import JsonMenuNested from "./module/jsonMenuNested";
 import ajaxModal from "./helper/ajaxModal";

@@ -30,7 +30,6 @@ $ionicons-font-path: $node-modules-path + "ionicons/dist/fonts/";
 @import "~bootstrap-datepicker/dist/css/bootstrap-datepicker.css";
 
 @import "ems";
-@import "./component/media_library";
 @import "./component/json_menu_nested";
 @import "./modules/tasks";
 @import "./modules/spacer";

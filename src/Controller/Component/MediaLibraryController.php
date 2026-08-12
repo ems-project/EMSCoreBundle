@@ -7,8 +7,6 @@ namespace EMS\CoreBundle\Controller\Component;
 use EMS\CoreBundle\Core\Component\MediaLibrary\Config\MediaLibraryConfig;
 use EMS\CoreBundle\Core\Component\MediaLibrary\Folder\MediaLibraryFolder;
 use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryService;
-use EMS\CoreBundle\Core\UI\AjaxModal;
-use EMS\CoreBundle\Core\UI\AjaxService;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Form\Form\MediaLibrary\MediaLibraryDocumentFormType;
@@ -31,11 +29,9 @@ class MediaLibraryController
 {
     public function __construct(
         private readonly MediaLibraryService $mediaLibraryService,
-        private readonly AjaxService $ajax,
         private readonly FlashMessageLogger $flashMessageLogger,
         private readonly TranslatorInterface $translator,
         private readonly FormFactory $formFactory,
-        private readonly string $templateNamespace,
         private readonly bool $asyncEnabled,
     ) {
     }
@@ -68,10 +64,14 @@ class MediaLibraryController
     public function addFolder(Request $request, ?string $folderId): JsonResponse
     {
         $parentFolder = $folderId ? $this->mediaLibraryService->getFolder($folderId) : null;
-
         $newFolder = $this->mediaLibraryService->newFolder($parentFolder);
-        $form = $this->formFactory->create(MediaLibraryDocumentFormType::class, $newFolder);
 
+        $componentModal = $this->mediaLibraryService->modal([
+            'type' => 'add_folder',
+            'title' => $this->translator->trans('media_library.folder.add.title', [], EMSCoreBundle::TRANS_COMPONENT),
+        ]);
+
+        $form = $this->formFactory->create(MediaLibraryDocumentFormType::class, $newFolder);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -80,16 +80,18 @@ class MediaLibraryController
             if ($folder instanceof MediaLibraryFolder) {
                 $this->flashBag($request)->clear();
 
-                return $this->getAjaxModal()->getSuccessResponse(['path' => $folder->getPath()->getValue()]);
+                $componentModal->modal->data['success'] = true;
+                $componentModal->modal->data['path'] = $folder->getPath()->getValue();
+
+                return new JsonResponse($componentModal->render());
             }
         }
 
-        return $this
-            ->getAjaxModal()
-            ->setTitle($this->translator->trans('media_library.folder.add.title', [], EMSCoreBundle::TRANS_COMPONENT))
-            ->setBody('bodyAddFolder', ['form' => $form->createView()])
-            ->setFooter('footerAddFolder')
-            ->getResponse();
+        $componentModal->template->context->append([
+            'form' => $form->createView(),
+        ]);
+
+        return new JsonResponse($componentModal->render());
     }
 
     public function deleteFile(Request $request, string $fileId): JsonResponse
@@ -129,9 +131,6 @@ class MediaLibraryController
         $componentModal->template->context->append([
             'confirmMessage' => $this->translator->trans('media_library.files.delete.warning', ['%count%' => $selectionFiles], EMSCoreBundle::TRANS_COMPONENT),
             'form' => $form->createView(),
-            'submitIcon' => 'fa-remove',
-            'submitClass' => 'btn-outline-danger',
-            'submitLabel' => $this->translator->trans('media_library.files.delete.submit', [], EMSCoreBundle::TRANS_COMPONENT),
         ]);
 
         return new JsonResponse($componentModal->render());
@@ -169,9 +168,6 @@ class MediaLibraryController
         $componentModal->template->context->append([
             'confirmMessage' => $this->translator->trans('media_library.folder.delete.warning', [], EMSCoreBundle::TRANS_COMPONENT),
             'form' => $form->createView(),
-            'submitIcon' => 'fa-remove',
-            'submitClass' => 'btn-outline-danger',
-            'submitLabel' => $this->translator->trans('media_library.folder.delete.submit', [], EMSCoreBundle::TRANS_COMPONENT),
         ]);
 
         return new JsonResponse($componentModal->render());
@@ -296,8 +292,6 @@ class MediaLibraryController
         $componentModal->template->context->append([
             'infoMessage' => $this->translator->trans('media_library.files.move.info', ['%path%' => $currentPath], EMSCoreBundle::TRANS_COMPONENT),
             'form' => $form->createView(),
-            'submitIcon' => 'fa-location-arrow',
-            'submitLabel' => $this->translator->trans('media_library.files.move.submit', [], EMSCoreBundle::TRANS_COMPONENT),
         ]);
 
         return new JsonResponse($componentModal->render());
@@ -370,8 +364,6 @@ class MediaLibraryController
         $modal->template->context->append([
             'infoMessage' => $this->translator->trans('media_library.folder.move.info', ['%path%' => $currentPath], EMSCoreBundle::TRANS_COMPONENT),
             'form' => $form->createView(),
-            'submitIcon' => 'fa-location-arrow',
-            'submitLabel' => $this->translator->trans('media_library.folder.move.submit', [], EMSCoreBundle::TRANS_COMPONENT),
         ]);
 
         return new JsonResponse($modal->render());
@@ -395,7 +387,7 @@ class MediaLibraryController
         }
 
         $modal = $this->mediaLibraryService->modal([
-            'type' => 'rename',
+            'type' => 'rename_file',
             'title' => $this->translator->trans('media_library.file.rename.title', [], EMSCoreBundle::TRANS_COMPONENT),
             'form' => $form->createView(),
         ]);
@@ -433,11 +425,9 @@ class MediaLibraryController
         }
 
         $modal = $this->mediaLibraryService->modal([
-            'type' => 'rename',
+            'type' => 'rename_folder',
             'title' => $this->translator->trans('media_library.folder.rename.title', [], EMSCoreBundle::TRANS_COMPONENT),
             'form' => $form->createView(),
-            'submitIcon' => 'fa-pencil',
-            'submitLabel' => $this->translator->trans('media_library.folder.rename.submit', [], EMSCoreBundle::TRANS_COMPONENT),
         ]);
 
         return new JsonResponse($modal->render());
@@ -466,10 +456,5 @@ class MediaLibraryController
         $session = $request->getSession();
 
         return $session->getFlashBag();
-    }
-
-    private function getAjaxModal(): AjaxModal
-    {
-        return $this->ajax->newAjaxModel(\sprintf('@%s/components/media_library/modal.html.twig', $this->templateNamespace));
     }
 }

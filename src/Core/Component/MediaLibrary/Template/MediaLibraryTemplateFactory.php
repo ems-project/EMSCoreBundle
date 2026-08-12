@@ -11,7 +11,6 @@ class MediaLibraryTemplateFactory
 {
     public function __construct(
         private readonly Environment $twig,
-        private readonly string $templateNamespace,
     ) {
     }
 
@@ -20,6 +19,6 @@ class MediaLibraryTemplateFactory
      */
     public function create(MediaLibraryConfig $config, array $context = []): MediaLibraryTemplate
     {
-        return new MediaLibraryTemplate($this->twig, $config, $this->templateNamespace, $context);
+        return new MediaLibraryTemplate($this->twig, $config, $context);
     }
 }

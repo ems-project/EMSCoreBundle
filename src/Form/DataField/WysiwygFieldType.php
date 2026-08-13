@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\DataField;
 
-use EMS\CommonBundle\Twig\AssetExtension;
+use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
@@ -13,6 +14,7 @@ use EMS\CoreBundle\Form\Field\WysiwygStylesSetPickerType;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
+use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Locale;
 use EMS\Helpers\Standard\Type;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -38,7 +40,7 @@ class WysiwygFieldType extends DataFieldType
         ElasticsearchService $elasticsearchService,
         private readonly RouterInterface $router,
         private readonly WysiwygStylesSetService $wysiwygStylesSetService,
-        private readonly AssetExtension $assetExtension
+        private readonly StorageManager $storageManager,
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
@@ -135,11 +137,31 @@ class WysiwygFieldType extends DataFieldType
     #[\Override]
     public function reverseViewTransform($data, FieldType $fieldType): DataField
     {
+        $assetPath = $this->router->generate('ems_asset', [
+            'hash_config' => '__hash_config__',
+            'hash' => '__hash__',
+            'filename' => '__filename__',
+        ]);
+
+        $out = \preg_replace_callback(
+            '#src="('.\substr($assetPath, 0, \strlen($assetPath) - 37).'(?<config>[a-f0-9]+)/(?<hash>[a-f0-9]+)/(?<filename>[^"]+))"#i',
+            function ($matches) {
+                $assetConfig = Json::decode($this->storageManager->getContents($matches['config']));
+                $query = \http_build_query([
+                    'name' => $matches['filename'],
+                    'type' => $assetConfig[EmsFields::ASSET_CONFIG_MIME_TYPE] ?? 'application/bin',
+                ]);
+
+                return \sprintf('src="ems://asset:%s?%s"', $matches['hash'], $query);
+            },
+            $data
+        );
+
         $path = $this->router->generate('ems_file_view', ['sha1' => '__SHA1__'], UrlGeneratorInterface::ABSOLUTE_PATH);
         $out = \preg_replace_callback(
             '/('.\preg_quote(\substr($path, 0, \strlen($path) - 8), '/').')([^\n\r"\'\?]*)/i',
             fn ($matches) => 'ems://asset:'.$matches[2],
-            $data
+            $out
         );
 
         $path = $this->router->generate(Routes::DATA_LINK, ['key' => '__KEY__'], UrlGeneratorInterface::ABSOLUTE_PATH);
@@ -185,7 +207,7 @@ class WysiwygFieldType extends DataFieldType
             Type::string($out)
         );
 
-        foreach ($this->assetExtension->heads(...\array_keys($collectedAssets)) as $hash) {
+        foreach ($this->storageManager->heads(...\array_keys($collectedAssets)) as $hash) {
             if (true === $hash) {
                 continue;
             }

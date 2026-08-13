@@ -57,6 +57,7 @@ readonly class WysiwygExtension
         }
 
         $config = Json::decode($profileConfig);
+        $config['ems']['mediaContentType'] ??= 'media_file';
 
         if (isset($config['ems']['paste'])) {
             $config['emsAjaxPaste'] = $this->urlGenerator->generate('emsco_wysiwyg_ajax_paste', [

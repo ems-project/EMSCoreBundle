@@ -60,7 +60,7 @@ class UploadedAssetDataTableType extends AbstractTableType implements QueryServi
         ]);
 
         if (self::LOCATION_WYSIWYG_BROWSER === $location || self::LOCATION_FILE_MODAL === $location) {
-            $columnName->addHtmlAttribute('data-url', fn (array $data) => \vsprintf('%s%s?name=%s&type=%s', [
+            $columnName->addHtmlAttribute('data-url', fn (array $data) => \vsprintf('%s%s?type=%s&name=%s', [
                 EMSLink::EMSLINK_ASSET_PREFIX,
                 $data['id'],
                 $data['name'],

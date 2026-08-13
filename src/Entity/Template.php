@@ -418,28 +418,12 @@ class Template extends JsonDeserializer implements \JsonSerializable, EntityInte
         $json = new JsonClass(\get_object_vars($this), self::class);
         $json->removeProperty('id');
         $json->removeProperty('contentType');
-        $json->removeProperty('environments');
         $json->removeProperty('created');
         $json->removeProperty('modified');
 
-        return $json;
-    }
+        $json->replaceCollectionByEntityNames('environments');
 
-    /**
-     * @param mixed $value
-     */
-    #[\Override]
-    protected function deserializeProperty(string $name, $value): void
-    {
-        switch ($name) {
-            case 'environments':
-                foreach ($this->deserializeArray($value) as $environment) {
-                    $this->addEnvironment($environment);
-                }
-                break;
-            default:
-                parent::deserializeProperty($name, $value);
-        }
+        return $json;
     }
 
     public function getLabel(): string

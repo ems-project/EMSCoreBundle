@@ -27,7 +27,7 @@
         "elasticms/xliff": "7.3.*",
         "guzzlehttp/guzzle": "^7.8",
         "maennchen/zipstream-php": "^3.0",
-        "mcp/sdk": "^0.6.0",
+        "mcp/sdk": "^0.7.0",
         "nyholm/psr7": "^1.8",
         "nyholm/psr7-server": "^1.1",
         "scssphp/scssphp": "^2.0",

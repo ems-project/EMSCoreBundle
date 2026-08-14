@@ -70,7 +70,7 @@ abstract class AbstractCoreCommand extends AbstractCommand
 
     protected function handleDeprecatedUsernameOption(InputInterface $input, string $optionName = 'user', ?string $shortcut = null): void
     {
-        if (!$input->hasParameterOption('--'.$optionName, true) && !($shortcut && $input->hasParameterOption('-'.$shortcut, true))) {
+        if (!$input->hasParameterOption('--'.$optionName, true) && (!$shortcut || !$input->hasParameterOption('-'.$shortcut, true))) {
             return;
         }
 

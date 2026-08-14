@@ -63,9 +63,6 @@ class StylesetController extends AbstractController
 
         $source = '';
         foreach ($this->wysiwygStylesSetService->get(0, $size, 'orderKey', 'asc', '') as $styleSet) {
-            if (!$styleSet instanceof WysiwygStylesSet) {
-                throw new \RuntimeException('Unexpected non WysiwygStylesSet entity');
-            }
             if (!$styleSet->hasCSS()) {
                 continue;
             }

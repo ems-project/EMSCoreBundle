@@ -16,6 +16,7 @@ use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -100,7 +101,7 @@ final class BulkActionCommand extends AbstractCoreCommand
         if (true !== $input->getOption('force')) {
             $this->io->caution('For executing the bulk please rerun with --force');
 
-            return 0;
+            return Command::SUCCESS;
         }
 
         $username = $this->getUsername();
@@ -129,7 +130,7 @@ final class BulkActionCommand extends AbstractCoreCommand
         $this->io->newLine(2);
         $this->io->success(\sprintf('Created %d new notification with username "%s"', $countSend, $username));
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**

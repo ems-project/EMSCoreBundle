@@ -9,6 +9,7 @@ use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Service\AliasService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,7 +25,7 @@ class ManagedAliases extends AbstractCoreCommand
     #[\Override]
     protected function configure(): void
     {
-        $this->setDescription('')
+        $this
             ->addOption('detailed', null, InputOption::VALUE_NONE, 'List all indexes in each managed alias');
     }
 
@@ -43,6 +44,6 @@ class ManagedAliases extends AbstractCoreCommand
             }
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

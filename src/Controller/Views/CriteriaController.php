@@ -604,16 +604,14 @@ class CriteriaController extends AbstractController
 
         $search = new Search([$view->getContentType()->giveEnvironment()->getAlias()], $query);
         $response = EmsResponse::fromResultSet($this->elasticaService->search($search));
-
         if (0 === $response->getTotal()) {
             $revision = false;
             foreach ($loadedRevision as $item) {
-                $found = \array_all($rawData, fn ($key, $name) => !($multipleField != $name && $item->getRawData()[$name] != $key));
+                $found = \array_all($rawData, fn ($key, $name) => $multipleField == $name || $item->getRawData()[$name] == $key);
                 if ($found) {
                     $revision = $item;
                 }
             }
-
             $multipleValueToAdd = $rawData[$multipleField];
             if (!$revision) {
                 $revision = new Revision();
@@ -625,16 +623,13 @@ class CriteriaController extends AbstractController
             $rawData = $revision->getRawData();
             $rawData[$multipleField][] = $multipleValueToAdd;
             $revision->setRawData($rawData);
-
             $message = $multipleValueToAdd;
             foreach ($rawData as $key => $value) {
                 if ($key != $multipleField && $key != $targetFieldName) {
                     $message .= ', '.$value;
                 }
             }
-
             $revision = $this->dataService->finalizeDraft($revision);
-
             $this->logger->notice('log.view.criteria.new_criteria', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
                 EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
@@ -645,7 +640,9 @@ class CriteriaController extends AbstractController
             ]);
 
             return $revision;
-        } elseif (1 === $response->getTotal()) {
+        }
+
+        if (1 === $response->getTotal()) {
             $revision = null;
             /** @var Document $document */
             foreach ($response->getDocuments() as $document) {
@@ -655,7 +652,6 @@ class CriteriaController extends AbstractController
                     $revision = $this->dataService->initNewDraft($view->getContentType()->getName(), $document->getId());
                 }
             }
-
             $multipleValueToAdd = $rawData[$multipleField];
             $rawData = $revision->getRawData();
             if (\in_array($multipleValueToAdd, $rawData[$multipleField] ?? [])) {
@@ -720,7 +716,7 @@ class CriteriaController extends AbstractController
 
         $found = false;
         foreach ($rawData[$criteriaField] as &$criteriaSet) {
-            $found = \array_all($filters, fn ($value, $criterion) => !($criterion != $multipleField && $value != $criteriaSet[$criterion]));
+            $found = \array_all($filters, fn ($value, $criterion) => $criterion == $multipleField || $value == $criteriaSet[$criterion]);
             if ($found) {
                 if ($multipleField && !\in_array($filters[$multipleField], $criteriaSet[$multipleField])) {
                     $criteriaSet[$multipleField][] = $filters[$multipleField];
@@ -966,7 +962,7 @@ class CriteriaController extends AbstractController
 
         $found = false;
         foreach ($rawData[$criteriaField] as $index => $criteriaSet) {
-            $found = \array_all($filters, fn ($value, $criterion) => !($criterion != $multipleField && $value != $criteriaSet[$criterion]));
+            $found = \array_all($filters, fn ($value, $criterion) => $criterion == $multipleField || $value == $criteriaSet[$criterion]);
             if ($found) {
                 if ($multipleField) {
                     $indexKey = \array_search($filters[$multipleField], $criteriaSet[$multipleField], true);

@@ -321,7 +321,7 @@ class MediaLibraryController
             $targetPath = $targetPathRaw ? '/'.\str_replace(' ', '', $targetPathRaw) : null;
             $currentPath = \str_replace(' ', '', $folder->getPath()->getValue());
 
-            return !($targetPath && \str_starts_with($targetPath, $currentPath));
+            return !$targetPath || !\str_starts_with($targetPath, $currentPath);
         });
 
         $formData = ['target' => $request->query->get('targetId') ?: 'home'];

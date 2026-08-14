@@ -18,6 +18,7 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\Mapping;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -139,7 +140,7 @@ class RebuildCommand extends AbstractCoreCommand
             throw new \RuntimeException('A content type name argument or the flag --all must be defined');
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function waitFor(bool $yellowOk): void

@@ -14,6 +14,7 @@ use EMS\CoreBundle\Service\DocumentService;
 use EMS\Helpers\File\TempDirectory;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -219,6 +220,6 @@ class DocumentCommand extends AbstractCoreCommand
         $this->io->writeln('');
         $this->io->writeln('Import done');
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

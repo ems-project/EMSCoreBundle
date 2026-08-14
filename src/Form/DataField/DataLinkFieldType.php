@@ -83,22 +83,19 @@ class DataLinkFieldType extends DataFieldType
         }
 
         $data = $dataField->getRawData();
-        $out = [];
         if (\is_array($data)) {
-            $out = [
+            return [
                 'terms' => [
-                    $opt['nested'].$dataField->giveFieldType()->getName() => $data,
-                ],
-            ];
-        } else {
-            $out = [
-                'term' => [
                     $opt['nested'].$dataField->giveFieldType()->getName() => $data,
                 ],
             ];
         }
 
-        return $out;
+        return [
+            'term' => [
+                $opt['nested'].$dataField->giveFieldType()->getName() => $data,
+            ],
+        ];
     }
 
     #[\Override]

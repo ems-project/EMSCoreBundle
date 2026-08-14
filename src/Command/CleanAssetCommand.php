@@ -14,6 +14,7 @@ use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\FileService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -72,6 +73,6 @@ class CleanAssetCommand extends AbstractCoreCommand
             $this->io->note(\sprintf('%d files are referenced %d times', $filesInUsed, $totalCounter));
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

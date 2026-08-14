@@ -43,7 +43,7 @@ final class LdapCoreUserFactory
         $extraFieldValue = $field ? $extraFields[$field] : null;
 
         if (\is_array($extraFieldValue) && 1 === \count($extraFieldValue)) {
-            $extraFieldValue = \array_first($extraFieldValue);
+            return \array_first($extraFieldValue);
         }
 
         return $extraFieldValue;

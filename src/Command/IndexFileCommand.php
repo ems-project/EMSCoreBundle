@@ -20,6 +20,7 @@ use EMS\Helpers\File\File;
 use EMS\Helpers\File\TempFile;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -164,7 +165,7 @@ class IndexFileCommand extends AbstractCoreCommand
         $this->io->write('DB size after the migration : ');
         $this->dbSize();
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**

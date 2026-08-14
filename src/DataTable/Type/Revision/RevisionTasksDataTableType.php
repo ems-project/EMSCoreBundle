@@ -138,7 +138,7 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
         $table->setExportFileName('tasks');
 
         foreach ($this->getColumns($context) as [$name, $field, $label]) {
-            if (\in_array($name, ['deadline', 'modified'])) {
+            if (\in_array($name, ['deadline', 'modified'], true)) {
                 $table->addColumnDefinition(new DateTableColumn($label, $field));
             } else {
                 $table->addColumn($label, $field);
@@ -155,9 +155,9 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
                 label: $label,
                 blockName: $name,
                 template: $columnTemplate,
-                orderField: \in_array($name, ['label', 'actions']) ? null : $field
+                orderField: \in_array($name, ['label', 'actions'], true) ? null : $field
             );
-            $def->setCellRender(!\in_array($name, ['deadline', 'modified']));
+            $def->setCellRender(!\in_array($name, ['deadline', 'modified'], true));
             $table->addColumnDefinition($def)->setCellClass('col-'.$name);
         }
     }

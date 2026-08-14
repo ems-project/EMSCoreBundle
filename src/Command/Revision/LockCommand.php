@@ -15,6 +15,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -85,7 +86,7 @@ final class LockCommand extends AbstractCoreCommand
     {
         if ($this->ifEmpty
             && 0 !== $this->dataService->countLockRevisions($this->contentType, $this->getUsername())) {
-            return 0;
+            return Command::SUCCESS;
         }
 
         $query = Json::decode($this->query);

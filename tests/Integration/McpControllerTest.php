@@ -21,6 +21,7 @@ use EMS\CoreBundle\Form\DataField\TextStringFieldType;
 use EMS\CoreBundle\Tests\Integration\App\Kernel;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Request;
 
 final class McpControllerTest extends WebTestCase
 {
@@ -32,9 +33,9 @@ final class McpControllerTest extends WebTestCase
     protected function setUp(): void
     {
         self::ensureKernelShutdown();
-        $this->client = static::createClient();
+        $this->client = self::createClient();
 
-        $container = static::getContainer();
+        $container = self::getContainer();
         $this->entityManager = $container->get('doctrine')->getManager();
 
         $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
@@ -46,7 +47,7 @@ final class McpControllerTest extends WebTestCase
     public function testInitializeRequiresValidBearerToken(): void
     {
         $this->client->request(
-            'POST',
+            Request::METHOD_POST,
             '/api/mcp',
             server: [
                 'CONTENT_TYPE' => 'application/json',
@@ -72,7 +73,7 @@ final class McpControllerTest extends WebTestCase
         ];
 
         $this->client->request(
-            'POST',
+            Request::METHOD_POST,
             '/api/mcp',
             server: $this->mcpHeaders($sessionId),
             content: $this->jsonEncode($payload)
@@ -94,13 +95,13 @@ final class McpControllerTest extends WebTestCase
         self::assertContains('get_document_secret', $toolNames);
         self::assertNotContains('create_document_secret', $toolNames);
 
-        $currentUserTool = \array_values(\array_filter($tools, static fn (array $tool): bool => 'get_current_user' === ($tool['name'] ?? null)))[0] ?? null;
+        $currentUserTool = \array_first(\array_filter($tools, static fn (array $tool): bool => 'get_current_user' === ($tool['name'] ?? null))) ?? null;
         self::assertIsArray($currentUserTool);
         self::assertSame('object', $currentUserTool['outputSchema']['type'] ?? null);
         self::assertSame('object', $currentUserTool['outputSchema']['properties']['user']['type'] ?? null);
         self::assertSame('string', $currentUserTool['outputSchema']['properties']['user']['properties']['username']['type'] ?? null);
 
-        $createNewsTool = \array_values(\array_filter($tools, static fn (array $tool): bool => 'create_document_news' === ($tool['name'] ?? null)))[0] ?? null;
+        $createNewsTool = \array_first(\array_filter($tools, static fn (array $tool): bool => 'create_document_news' === ($tool['name'] ?? null))) ?? null;
 
         self::assertIsArray($createNewsTool);
         self::assertSame(['title'], $createNewsTool['inputSchema']['properties']['rawData']['required'] ?? null);
@@ -134,7 +135,7 @@ final class McpControllerTest extends WebTestCase
         ];
 
         $this->client->request(
-            'POST',
+            Request::METHOD_POST,
             '/api/mcp',
             server: $this->mcpHeaders($sessionId),
             content: $this->jsonEncode($currentUserPayload)
@@ -158,7 +159,7 @@ final class McpControllerTest extends WebTestCase
         ];
 
         $this->client->request(
-            'POST',
+            Request::METHOD_POST,
             '/api/mcp',
             server: $this->mcpHeaders($sessionId),
             content: $this->jsonEncode($currentStorageAlgorithmPayload)
@@ -166,7 +167,7 @@ final class McpControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         $currentStorageAlgorithmResponse = $this->decodeResponse($this->client);
-        self::assertSame(static::getContainer()->get('ems.service.file')->getAlgo(), $currentStorageAlgorithmResponse['result']['structuredContent']['algorithm'] ?? null);
+        self::assertSame(self::getContainer()->get('ems.service.file')->getAlgo(), $currentStorageAlgorithmResponse['result']['structuredContent']['algorithm'] ?? null);
 
         $createDraftPayload = [
             'jsonrpc' => '2.0',
@@ -183,7 +184,7 @@ final class McpControllerTest extends WebTestCase
         ];
 
         $this->client->request(
-            'POST',
+            Request::METHOD_POST,
             '/api/mcp',
             server: $this->mcpHeaders($sessionId),
             content: $this->jsonEncode($createDraftPayload)
@@ -231,7 +232,7 @@ final class McpControllerTest extends WebTestCase
         ];
 
         $this->client->request(
-            'POST',
+            Request::METHOD_POST,
             '/api/mcp',
             server: $this->mcpHeaders($sessionId),
             content: $this->jsonEncode($createFinalizedPayload)
@@ -288,7 +289,7 @@ final class McpControllerTest extends WebTestCase
         ];
 
         $this->client->request(
-            'POST',
+            Request::METHOD_POST,
             '/api/mcp',
             server: $this->mcpHeaders($sessionId),
             content: $this->jsonEncode($initPayload)
@@ -316,7 +317,7 @@ final class McpControllerTest extends WebTestCase
             ];
 
             $this->client->request(
-                'POST',
+                Request::METHOD_POST,
                 '/api/mcp',
                 server: $this->mcpHeaders($sessionId),
                 content: $this->jsonEncode($uploadPayload)
@@ -344,7 +345,7 @@ final class McpControllerTest extends WebTestCase
         ];
 
         $this->client->request(
-            'POST',
+            Request::METHOD_POST,
             '/api/mcp',
             server: $this->mcpHeaders($sessionId),
             content: $this->jsonEncode($infoPayload)
@@ -372,7 +373,7 @@ final class McpControllerTest extends WebTestCase
         ];
 
         $this->client->request(
-            'POST',
+            Request::METHOD_POST,
             '/api/mcp',
             server: $this->mcpHeaders($sessionId),
             content: $this->jsonEncode($downloadPayload)
@@ -406,7 +407,7 @@ final class McpControllerTest extends WebTestCase
         ];
 
         $this->client->request(
-            'POST',
+            Request::METHOD_POST,
             '/api/mcp',
             server: $this->mcpHeaders($sessionId),
             content: $this->jsonEncode($payload)
@@ -624,7 +625,7 @@ final class McpControllerTest extends WebTestCase
     private function initializeSession(KernelBrowser $client): string
     {
         $client->request(
-            'POST',
+            Request::METHOD_POST,
             '/api/mcp',
             server: $this->mcpHeaders(),
             content: $this->jsonEncode($this->initializePayload())

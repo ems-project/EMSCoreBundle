@@ -21,12 +21,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 class DemoteUserCommand extends RoleCommand
 {
     #[\Override]
-    protected function configure(): void
-    {
-        parent::configure();
-    }
-
-    #[\Override]
     protected function executeRoleCommand(string $username, bool $super, string $role): void
     {
         if ($super) {

@@ -525,7 +525,6 @@ class ElasticsearchController extends AbstractController
             if ($searchButton instanceof ClickableInterface) {
                 $openSearchForm = $searchButton->isClicked();
             }
-
             // Form treatment after the "Save" button has been pressed (= ask for a name to save the search preset)
             if ($form->isSubmitted() && $form->isValid() && \array_key_exists('save', $request->query->all('search_form'))) {
                 $form = $this->createFormBuilder($search)
@@ -548,9 +547,10 @@ class ElasticsearchController extends AbstractController
                         t('type.title_create', ['type' => 'search'], 'emsco-core')
                     ),
                 ]);
-            } elseif ($form->isSubmitted() && $form->isValid() && \array_key_exists('delete', $request->query->all('search_form'))) {
-                // Form treatment after the "Delete" button has been pressed (to delete a previous saved search preset)
+            }
 
+            if ($form->isSubmitted() && $form->isValid() && \array_key_exists('delete', $request->query->all('search_form'))) {
+                // Form treatment after the "Delete" button has been pressed (to delete a previous saved search preset)
                 $this->logger->notice('log.elasticsearch.search_deleted', [
                 ]);
             }

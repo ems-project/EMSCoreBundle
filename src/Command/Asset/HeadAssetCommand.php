@@ -10,6 +10,7 @@ use EMS\CoreBundle\Entity\UploadedAsset;
 use EMS\CoreBundle\Service\FileService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -49,6 +50,6 @@ final class HeadAssetCommand extends AbstractCoreCommand
             $this->io->success(\sprintf('%d assets have been found', $counter));
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

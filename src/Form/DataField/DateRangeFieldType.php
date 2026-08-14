@@ -246,7 +246,7 @@ class DateRangeFieldType extends DataFieldType
         ];
 
         if ($current->getMappingOptions()['nested']) {
-            $out = [
+            return [
                 $current->getName() => [
                     'type' => 'nested',
                     'properties' => $out,

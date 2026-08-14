@@ -7,7 +7,6 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
-use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\CompareEnvironmentFormType;
 use EMS\CoreBundle\Repository\RevisionRepository;

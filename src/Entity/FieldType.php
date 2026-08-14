@@ -532,7 +532,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         $path = [$this];
 
         if (null !== $this->parent) {
-            $path = \array_merge($this->parent->getPathTypes(), $path);
+            return \array_merge($this->parent->getPathTypes(), $path);
         }
 
         return $path;

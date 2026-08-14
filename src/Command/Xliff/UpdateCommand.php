@@ -79,7 +79,7 @@ final class UpdateCommand extends AbstractCoreCommand
             ->addOption(self::OPTION_CURRENT_REVISION_ONLY, null, InputOption::VALUE_NONE, 'Translations will be updated only is the source revision is still a current revision')
             ->addOption(self::OPTION_CURRENT_REVISION_FORCE, null, InputOption::VALUE_NONE, 'Force importing current revision always')
             ->addOption(self::OPTION_BASE_URL, null, InputOption::VALUE_OPTIONAL, 'Base url, in order to generate a download link to the error report')
-            ->addOption(self::OPTION_TRANSLATION_MUST, null, InputOption::VALUE_OPTIONAL, 'Add must in query for searching translations', null)
+            ->addOption(self::OPTION_TRANSLATION_MUST, null, InputOption::VALUE_OPTIONAL, 'Add must in query for searching translations')
         ;
     }
 

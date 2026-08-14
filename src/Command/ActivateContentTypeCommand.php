@@ -9,6 +9,7 @@ use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Service\ContentTypeService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -89,7 +90,7 @@ class ActivateContentTypeCommand extends AbstractCoreCommand
             }
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     #[\Override]

@@ -28,11 +28,14 @@ class FieldTypeManager
     {
         if ($out = $this->addNewField($inputFieldType, $fieldType)) {
             return true === $out ? null : $out;
-        } elseif ($out = $this->addNewSubfield($inputFieldType, $fieldType)) {
+        }
+        if ($out = $this->addNewSubfield($inputFieldType, $fieldType)) {
             return true === $out ? null : $out;
-        } elseif ($out = $this->duplicateField($inputFieldType, $fieldType)) {
+        }
+        if ($out = $this->duplicateField($inputFieldType, $fieldType)) {
             return true === $out ? null : $out;
-        } elseif ($this->removeField($inputFieldType, $fieldType)) {
+        }
+        if ($this->removeField($inputFieldType, $fieldType)) {
             return null;
         }
         $this->reorderFields($inputFieldType, $fieldType);

@@ -15,6 +15,7 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\DataService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -102,6 +103,6 @@ class UpdateMetaFieldCommand extends AbstractCoreCommand
         $progress->finish();
         $this->dataService->unlockAllRevisions($this->getUsername());
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

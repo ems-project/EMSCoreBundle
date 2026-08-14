@@ -25,7 +25,7 @@ class ChoiceFieldType extends DataFieldType
     public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
     {
         $choices = \array_values(\array_filter(\array_map(
-            static fn (string $choice): string => \trim($choice),
+            \trim(...),
             \preg_split('/\r\n|\r|\n/', (string) $fieldType->getDisplayOption('choices', ''), -1, \PREG_SPLIT_NO_EMPTY) ?: []
         ), static fn (string $choice): bool => '' !== $choice));
 

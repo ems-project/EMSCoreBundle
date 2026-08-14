@@ -11,6 +11,7 @@ use EMS\CoreBundle\Entity\Notification;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Service\NotificationService;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -101,6 +102,6 @@ final class SendAllCommand extends AbstractCoreCommand
             $this->sendEmails($notifications, $output);
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

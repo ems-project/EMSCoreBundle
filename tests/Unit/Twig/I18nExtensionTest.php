@@ -20,8 +20,7 @@ class I18nExtensionTest extends TestCase
     protected function setUp(): void
     {
         $this->i18nService = $this->createMock(I18nService::class);
-        $userManager = $this->createMock(UserManager::class);
-        $this->i18nRuntime = new I18nExtension($this->i18nService, $userManager);
+        $this->i18nRuntime = new I18nExtension($this->i18nService, $this->createStub(UserManager::class));
     }
 
     #[AllowMockObjectsWithoutExpectations]

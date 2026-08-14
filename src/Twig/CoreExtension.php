@@ -349,7 +349,7 @@ readonly class CoreExtension
         }
 
         if (empty($out)) {
-            $out = '<span class="text-gray">[empty]</span>';
+            return '<span class="text-gray">[empty]</span>';
         }
 
         return $out;

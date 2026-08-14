@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Field;
 
-use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Service\AliasService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 

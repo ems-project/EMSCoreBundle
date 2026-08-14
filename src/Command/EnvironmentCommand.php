@@ -8,6 +8,7 @@ use EMS\CoreBundle\Commands;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Service\EnvironmentService;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -47,6 +48,6 @@ class EnvironmentCommand extends AbstractCoreCommand
             $this->io->text($environment->getName());
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

@@ -106,7 +106,7 @@ class FieldTypeTreeItem implements \IteratorAggregate, \Stringable
         $path = [$this];
 
         if ($this->parent instanceof FieldTypeTreeItem) {
-            $path = [...$this->parent->getPath(), ...$path];
+            return [...$this->parent->getPath(), ...$path];
         }
 
         return $path;

@@ -36,6 +36,7 @@ final class UserLocaleListenerTest extends TestCase
     {
         $user = new User();
         $user->setLocale('fr');
+
         $localeSwitcher = $this->createMock(LocaleSwitcher::class);
         $localeSwitcher->expects($this->once())->method('setLocale')->with('fr');
         $listener = new UserLocaleListener($this->createTokenStorage($user), $localeSwitcher);

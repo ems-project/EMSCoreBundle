@@ -88,7 +88,7 @@ final readonly class ElasticmsMcpToolDataService extends AbstractElasticmsMcpToo
         return $this->wrapToolCall($toolName, [
             'content_type' => $contentType,
             'ouuid' => $ouuid,
-            'raw_data_keys' => \array_map('strval', \array_keys($rawData)),
+            'raw_data_keys' => \array_map(strval(...), \array_keys($rawData)),
         ], function () use ($rawData, $ouuid, $contentType, $finalize): array {
             $resolvedContentType = $this->contentTypeService->getByName($contentType);
             if (false === $resolvedContentType) {
@@ -97,8 +97,8 @@ final readonly class ElasticmsMcpToolDataService extends AbstractElasticmsMcpToo
 
             try {
                 $resolvedContentType->validate();
-            } catch (\RuntimeException $exception) {
-                throw new ToolCallException($exception->getMessage(), 0, $exception);
+            } catch (\RuntimeException $runtimeException) {
+                throw new ToolCallException($runtimeException->getMessage(), 0, $runtimeException);
             }
 
             if (!$this->authorizationChecker->isGranted($resolvedContentType->role(ContentTypeRoles::CREATE))) {
@@ -113,8 +113,8 @@ final readonly class ElasticmsMcpToolDataService extends AbstractElasticmsMcpToo
                     $revision->autoSaveToRawData();
                     $revision = $this->dataService->finalizeDraft($revision);
                 }
-            } catch (\Throwable $exception) {
-                throw new ToolCallException($exception->getMessage(), 0, $exception);
+            } catch (\Throwable $throwable) {
+                throw new ToolCallException($throwable->getMessage(), 0, $throwable);
             }
 
             return [

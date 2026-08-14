@@ -94,7 +94,7 @@ final readonly class IndexService
 
         $ouuid = null;
         if (\is_array($result) && (int) ($result['_shards']['successful'] ?? 0) > 0) {
-            $ouuid = $result['_id'];
+            return $result['_id'];
         }
 
         return $ouuid;

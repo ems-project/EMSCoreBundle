@@ -15,6 +15,7 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\FileService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -50,7 +51,7 @@ class SynchronizeAssetCommand extends AbstractCoreCommand
         if (\count($storagesList) < 2) {
             $this->io->error('There is nothing to synchronize as there is less than 2 healthy storage services');
 
-            return 1;
+            return Command::FAILURE;
         }
 
         $progress = new ProgressBar($output, $repository->countHashes());
@@ -90,6 +91,6 @@ class SynchronizeAssetCommand extends AbstractCoreCommand
             $this->io->note(\sprintf('%d files not found or in error', $filesInError));
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

@@ -16,6 +16,7 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Service\DocumentService;
 use EMS\Helpers\Standard\DateTime;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -279,7 +280,7 @@ class MigrateCommand extends AbstractCoreCommand
         $this->io->writeln('');
         $this->io->writeln('Migration done');
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function archive(\DateTimeInterface $archiveModifiedBefore): void

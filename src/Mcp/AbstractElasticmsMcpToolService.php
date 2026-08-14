@@ -43,17 +43,17 @@ abstract readonly class AbstractElasticmsMcpToolService
             $this->auditLogger->info('mcp.tool.succeeded', $logContext);
 
             return $result;
-        } catch (\Throwable $exception) {
-            $errorContext = [...$logContext, 'error_message' => $exception->getMessage()];
+        } catch (\Throwable $throwable) {
+            $errorContext = [...$logContext, 'error_message' => $throwable->getMessage()];
 
-            $this->logger->error('mcp.tool.failed', [...$errorContext, 'exception' => $exception]);
+            $this->logger->error('mcp.tool.failed', [...$errorContext, 'exception' => $throwable]);
             $this->auditLogger->error('mcp.tool.failed', $errorContext);
 
-            if ($exception instanceof ToolCallException) {
-                throw $exception;
+            if ($throwable instanceof ToolCallException) {
+                throw $throwable;
             }
 
-            throw new ToolCallException($exception->getMessage(), 0, $exception);
+            throw new ToolCallException($throwable->getMessage(), 0, $throwable);
         }
     }
 }

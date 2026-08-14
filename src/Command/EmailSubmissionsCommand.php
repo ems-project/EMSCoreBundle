@@ -9,6 +9,7 @@ use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -56,6 +57,6 @@ class EmailSubmissionsCommand extends AbstractCoreCommand
         $this->logger->notice('Submission list was sent');
         $this->io->success('Submission list was sent');
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

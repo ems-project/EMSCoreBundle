@@ -401,11 +401,13 @@ class ContentTypeController extends AbstractController
                 }
                 if (\array_key_exists('saveAndClose', $inputContentType)) {
                     return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
-                } elseif (\array_key_exists('saveAndEditStructure', $inputContentType)) {
+                }
+                if (\array_key_exists('saveAndEditStructure', $inputContentType)) {
                     return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_STRUCTURE, [
                         'id' => $contentType->getId(),
                     ]);
-                } elseif (\array_key_exists('saveAndReorder', $inputContentType)) {
+                }
+                if (\array_key_exists('saveAndReorder', $inputContentType)) {
                     return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_REORDER, [
                         'contentType' => $contentType->getId(),
                     ]);

@@ -415,10 +415,11 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
 
             return \is_countable($this->rawData) ? \count($this->rawData) : 0; // empty array means null/empty
         }
-
         if (null === $this->rawData || \is_int($this->rawData)) {
             return $this->rawData;
-        } elseif ((int) $this->rawData || '0' === $this->rawData) {
+        }
+
+        if ((int) $this->rawData || '0' === $this->rawData) {
             return (int) $this->rawData;
             //             return $this->rawData;
             //             throw new DataFormatException('Integer expected: '.print_r($this->rawData, true));

@@ -19,15 +19,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-final class McpController
+final readonly class McpController
 {
     public function __construct(
-        private readonly Server $server,
-        private readonly ServerRequestCreator $serverRequestCreator,
-        private readonly Psr17Factory $psr17Factory,
-        private readonly LoggerInterface $logger,
-        private readonly LoggerInterface $auditLogger,
-        private readonly UserService $userService,
+        private Server $server,
+        private ServerRequestCreator $serverRequestCreator,
+        private Psr17Factory $psr17Factory,
+        private LoggerInterface $logger,
+        private LoggerInterface $auditLogger,
+        private UserService $userService,
     ) {
     }
 

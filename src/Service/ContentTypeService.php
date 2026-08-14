@@ -664,7 +664,7 @@ class ContentTypeService implements EntityServiceInterface
             return;
         }
 
-        $inMyCircle = $menuEntry->addChild(t('sidebar-menu.content_type.search_in_my_circle', ['%name%' => \count($user->getCircles()) > 1 ? $circleContentType->getPluralName() : $circleContentType->getSingularName()], 'emsco-core'), $circleContentType->getIcon() ?? '', Routes::DATA_IN_MY_CIRCLE_VIEW, ['name' => $contentType->getName()]);
+        $menuEntry->addChild(t('sidebar-menu.content_type.search_in_my_circle', ['%name%' => \count($user->getCircles()) > 1 ? $circleContentType->getPluralName() : $circleContentType->getSingularName()], 'emsco-core'), $circleContentType->getIcon() ?? '', Routes::DATA_IN_MY_CIRCLE_VIEW, ['name' => $contentType->getName()]);
     }
 
     private function addMenuViewLinks(ContentType $contentType, MenuEntry $menuEntry): void

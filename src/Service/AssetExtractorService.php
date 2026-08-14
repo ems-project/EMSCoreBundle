@@ -231,13 +231,12 @@ class AssetExtractorService implements CacheWarmerInterface
                     'Accept' => 'application/json',
                 ],
             ]);
-            $meta = ExtractedData::fromJsonString($result->getBody()->__toString(), $this->tikaMaxContent);
-        } else {
-            $tempFile = TempFile::create();
-            File::putContents($tempFile->path, $text);
-            $meta = ExtractedData::fromMetaString($this->getTikaWrapper()->getMetadata($tempFile->path), $this->tikaMaxContent);
-        }
 
-        return $meta;
+            return ExtractedData::fromJsonString($result->getBody()->__toString(), $this->tikaMaxContent);
+        }
+        $tempFile = TempFile::create();
+        File::putContents($tempFile->path, $text);
+
+        return ExtractedData::fromMetaString($this->getTikaWrapper()->getMetadata($tempFile->path), $this->tikaMaxContent);
     }
 }

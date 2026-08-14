@@ -20,6 +20,7 @@ use EMS\CoreBundle\Service\Mapping;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -117,7 +118,7 @@ class ReindexCommand extends AbstractCoreCommand
             $this->reindex($name, $contentType, $index, $output, $signData, $bulkSize, $reloadData);
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     public function reindex(string $name, ContentType $contentType, ?string $index, OutputInterface $output, bool $signData = true, int $bulkSize = 1000, bool $reloadData = false): void

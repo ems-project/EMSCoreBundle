@@ -117,7 +117,7 @@ final class ExtractCommand extends AbstractCoreCommand
             ->addOption(self::OPTION_MAIL_TO, null, InputOption::VALUE_OPTIONAL, 'A comma seperated list of emails where to send the XLIFF')
             ->addOption(self::OPTION_MAIL_CC, null, InputOption::VALUE_OPTIONAL, 'A comma seperated list of emails where to send, in carbon copy, the XLIFF')
             ->addOption(self::OPTION_MAIL_REPLY_TO, null, InputOption::VALUE_OPTIONAL, 'A comma seperated list of emails where to reply')
-            ->addOption(self::OPTION_TRANSLATION_MUST, null, InputOption::VALUE_OPTIONAL, 'Add must in query for searching translations', null)
+            ->addOption(self::OPTION_TRANSLATION_MUST, null, InputOption::VALUE_OPTIONAL, 'Add must in query for searching translations')
         ;
     }
 

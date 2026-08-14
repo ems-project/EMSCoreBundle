@@ -201,12 +201,10 @@ final class JsonMenuNestedController extends AbstractController
             $requestContent = $request->getContent();
             $decoded = \is_string($requestContent) && '' !== $requestContent ? Json::decode($requestContent) : [];
 
-            $data = $decoded['_data'] ?? [];
-        } else {
-            $data = Json::decode($request->request->getString('_data', '{}'));
+            return $decoded['_data'] ?? [];
         }
 
-        return $data;
+        return Json::decode($request->request->getString('_data', '{}'));
     }
 
     private function getAjaxModal(): AjaxModal

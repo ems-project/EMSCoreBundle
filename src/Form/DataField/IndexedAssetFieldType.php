@@ -168,7 +168,7 @@ class IndexedAssetFieldType extends DataFieldType
         $out = parent::viewTransform($dataField);
 
         if (\is_array($out) && empty($out['sha1'])) {
-            $out = null;
+            return null;
         }
 
         return $out;

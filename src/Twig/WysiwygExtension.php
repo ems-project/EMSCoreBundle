@@ -37,11 +37,15 @@ readonly class WysiwygExtension
     #[AsTwigFunction(name: 'emsco_wysiwyg_info')]
     public function getInfo(): array
     {
+        $config = \array_merge_recursive($this->getDefaultConfig(), $this->getConfig());
+
         return [
-            'config' => \array_merge_recursive($this->getDefaultConfig(), $this->getConfig()),
+            'config' => $config,
             'styles' => $this->getStyles(),
             'editor' => $this->getEditor(),
-            'linkTypes' => $this->contentTypeService->getLinkTypes(),
+            'linkTypes' => $this->contentTypeService->getLinkTypes(
+                allContentTypes: $config['ems']['urlAllContentTypes'] ?? false
+            ),
         ];
     }
 

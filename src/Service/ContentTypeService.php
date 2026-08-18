@@ -68,24 +68,25 @@ class ContentTypeService implements EntityServiceInterface
     /**
      * @return array<int, string[]>
      */
-    public function getLinkTypes(): array
+    public function getLinkTypes(bool $allContentTypes): array
     {
-        $all = [];
         $types = [];
+        $names = [];
 
         foreach ($this->getAll() as $contentType) {
             if (!$contentType->getWebContent()) {
                 continue;
             }
-            $all[] = $contentType->getName();
+            $names[] = $contentType->getName();
             $types[] = [$contentType->getSingularName(), $contentType->getName()];
         }
 
+        if (!$allContentTypes) {
+            return $types;
+        }
+
         return [
-            [
-                $this->translator->trans('key.all_content_types', [], 'emsco-core'),
-                \implode(',', $all),
-            ],
+            [$this->translator->trans('key.all_content_types', [], 'emsco-core'), \implode(',', $names)],
             ...$types,
         ];
     }

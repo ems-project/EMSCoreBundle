@@ -144,15 +144,15 @@ class WysiwygFieldType extends DataFieldType
         ]);
 
         $out = \preg_replace_callback(
-            '#src="('.\substr($assetPath, 0, \strlen($assetPath) - 37).'(?<config>[a-f0-9]+)/(?<hash>[a-f0-9]+)/(?<filename>[^"]+))"#i',
+            '#(?<target>src|href)="('.\substr($assetPath, 0, \strlen($assetPath) - 37).'(?<config>[a-f0-9]+)/(?<hash>[a-f0-9]+)/(?<filename>[^"]+))"#i',
             function ($matches) {
                 $assetConfig = Json::decode($this->storageManager->getContents($matches['config']));
                 $query = \http_build_query([
-                    'name' => $matches['filename'],
                     'type' => $assetConfig[EmsFields::ASSET_CONFIG_MIME_TYPE] ?? 'application/bin',
+                    'name' => $matches['filename'],
                 ]);
 
-                return \sprintf('src="ems://asset:%s?%s"', $matches['hash'], $query);
+                return \sprintf('%s="ems://asset:%s?%s"', $matches['target'], $matches['hash'], $query);
             },
             $data
         );

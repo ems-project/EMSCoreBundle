@@ -269,7 +269,10 @@ return static function (ContainerConfigurator $container) {
         ->tag('controller.service_arguments');
 
     $services->set(\EMS\CoreBundle\Controller\Api\UserController::class)
-        ->args([service('emsco.manager.user')])
+        ->args([
+            service('emsco.manager.user'),
+            service('ems.group.manager')
+        ])
         ->tag('controller.service_arguments');
 
     $services->set(JsonMenuNestedController::class)
@@ -889,7 +892,6 @@ return static function (ContainerConfigurator $container) {
             service(SpreadsheetGeneratorServiceInterface::class),
             service('emsco.data_table.factory'),
             service('ems.repository.auth_token'),
-            service('ems.repository.wysiwyg_profile'),
             service('ems_core.core_ui.flash_message_logger'),
             '%ems_core.template_namespace%',
             service('emsco.core.content_type.field_type.service'),

@@ -441,6 +441,7 @@ return static function (ContainerConfigurator $container) {
             service('security.user_password_hasher'),
             service('security.authorization_checker'),
             service('ems.repository.auth_token'),
+            service('ems.service.wysiwyg_profile'),
             '%ems_core.template_namespace%',
         ]);
 

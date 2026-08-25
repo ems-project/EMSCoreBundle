@@ -104,6 +104,11 @@ class WysiwygProfileService implements EntityServiceInterface
         return $this->wysiwygProfileRepository->getByName($name);
     }
 
+    public function getDefault(): ?WysiwygProfile
+    {
+        return $this->wysiwygProfileRepository->findOneBy([], ['orderKey' => 'asc']);
+    }
+
     #[\Override]
     public function getEntityName(): string
     {

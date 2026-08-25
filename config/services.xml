@@ -265,6 +265,7 @@
             <argument type="service" id="security.user_password_hasher" />
             <argument type="service" id="security.authorization_checker" />
             <argument type="service" id="ems.repository.auth_token" />
+            <argument type="service" id="ems.service.wysiwyg_profile" />
             <argument>%ems_core.template_namespace%</argument>
         </service>
 

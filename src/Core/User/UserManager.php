@@ -8,9 +8,8 @@ use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Core\Security\Canonicalizer;
 use EMS\CoreBundle\Core\Security\Token;
 use EMS\CoreBundle\EMSCoreBundle;
+use EMS\CoreBundle\Entity\Group;
 use EMS\CoreBundle\Entity\User;
-use EMS\CoreBundle\Entity\UserInterface;
-use EMS\CoreBundle\Exception\NotFoundException;
 use EMS\CoreBundle\Repository\AuthTokenRepository;
 use EMS\CoreBundle\Repository\UserRepository;
 use EMS\CoreBundle\Roles;
@@ -21,6 +20,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\AccountExpiredException;
 use Symfony\Component\Security\Core\Exception\DisabledException;
+use Symfony\Component\String\ByteString;
 
 class UserManager
 {
@@ -74,6 +74,11 @@ class UserManager
         return $this->userRepository->countFindAll($email);
     }
 
+    private function findUser(string $username, string $email): ?User
+    {
+        return $this->getUserByUsername($username) ?? $this->getUserByEmail($email);
+    }
+
     public function getAuthenticatedUser(): User
     {
         $token = $this->getToken();
@@ -101,25 +106,32 @@ class UserManager
         return $this->userRepository->findOneBy(['confirmationToken' => $token]);
     }
 
-    public function proxyAuthenticate(string $username, ?string $email): string
+    public function proxyAuthenticate(string $username, string $email, ?Group $group = null): string
     {
         if (!$this->authorizationChecker->isGranted(Roles::ROLE_USER_MANAGEMENT)) {
             throw new AccessDeniedException();
         }
 
-        $user = $email
-            ? $this->getUserByEmail($email) ?? $this->getUserByUsername($username)
-            : $this->getUserByUsername($username);
+        $user = $this->findUser($username, $email);
 
-        if (!$user instanceof UserInterface) {
-            throw new NotFoundException('User not found');
+        if (null === $user && null === $group) {
+            throw new AccessDeniedException('User not found');
         }
+
+        $user ??= $this->create($username, ByteString::fromRandom(32)->toString(), $email, true, false);
 
         if ($user->isExpired()) {
             throw new AccountExpiredException(\sprintf('The account "%s" is expired', $user->getUserIdentifier()));
         }
         if (!$user->isEnabled()) {
             throw new DisabledException(\sprintf('The account "%s" is disabled', $user->getUserIdentifier()));
+        }
+
+        $user->setEmail($email);
+
+        if (null !== $group) {
+            $user->setRoles([]);
+            $user->setGroup($group);
         }
 
         $this->loginUser($user);

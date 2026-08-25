@@ -285,9 +285,6 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     public function addRole(string $role): void
     {
         $role = \strtoupper($role);
-        if (Roles::ROLE_USER === $role) {
-            return;
-        }
 
         if (!\in_array($role, $this->roles, true)) {
             $this->roles[] = $role;

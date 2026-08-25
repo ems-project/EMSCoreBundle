@@ -159,6 +159,7 @@
 
         <service id="EMS\CoreBundle\Controller\Api\UserController">
             <argument type="service" id="emsco.manager.user"/>
+            <argument type="service" id="ems.group.manager"/>
             <tag name="controller.service_arguments"/>
         </service>
 

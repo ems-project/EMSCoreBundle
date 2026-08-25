@@ -271,7 +271,7 @@ return static function (ContainerConfigurator $container) {
     $services->set(\EMS\CoreBundle\Controller\Api\UserController::class)
         ->args([
             service('emsco.manager.user'),
-            service('ems.group.manager')
+            service('ems.group.manager'),
         ])
         ->tag('controller.service_arguments');
 

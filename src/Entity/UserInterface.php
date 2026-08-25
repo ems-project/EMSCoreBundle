@@ -22,6 +22,8 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
 
     public function getDisplayName(): string;
 
+    public function hasWysiwygProfile(): bool;
+
     public function setWysiwygProfile(?WysiwygProfile $wysiwygProfile): self;
 
     public function getWysiwygProfile(): ?WysiwygProfile;

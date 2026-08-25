@@ -166,6 +166,12 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     }
 
     #[\Override]
+    public function hasWysiwygProfile(): bool
+    {
+        return null !== $this->wysiwygProfile;
+    }
+
+    #[\Override]
     public function setWysiwygProfile(?WysiwygProfile $wysiwygProfile): self
     {
         $this->wysiwygProfile = $wysiwygProfile;

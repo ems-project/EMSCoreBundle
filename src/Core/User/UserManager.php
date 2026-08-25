@@ -13,6 +13,7 @@ use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\AuthTokenRepository;
 use EMS\CoreBundle\Repository\UserRepository;
 use EMS\CoreBundle\Roles;
+use EMS\CoreBundle\Service\WysiwygProfileService;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -24,8 +25,7 @@ use Symfony\Component\String\ByteString;
 
 class UserManager
 {
-    public const PASSWORD_RETRY_TTL = 7200;
-    public const CONFIRMATION_TOKEN_TTL = 86400;
+    public const int PASSWORD_RETRY_TTL = 7200;
     private const string MAIL_TEMPLATE = '/user/mail.twig';
 
     public function __construct(
@@ -35,8 +35,18 @@ class UserManager
         private readonly UserPasswordHasherInterface $userPasswordHasher,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly AuthTokenRepository $authTokenRepository,
+        private readonly WysiwygProfileService $wysiwygProfileService,
         private readonly string $templateNamespace,
     ) {
+    }
+
+    public function add(User $user): void
+    {
+        if (!$user->hasWysiwygProfile() && null !== $defaultProfile = $this->wysiwygProfileService->getDefault()) {
+            $user->setWysiwygProfile($defaultProfile);
+        }
+
+        $this->update($user);
     }
 
     public function create(string $username, string $password, string $email, bool $active, bool $superAdmin): User
@@ -47,7 +57,7 @@ class UserManager
         $user->setPlainPassword($password);
         $user->setEnabled($active);
         $user->setSuperAdmin($superAdmin);
-        $this->update($user);
+        $this->add($user);
 
         return $user;
     }

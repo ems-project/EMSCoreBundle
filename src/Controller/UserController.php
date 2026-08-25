@@ -22,7 +22,6 @@ use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Form\Form\UserType;
 use EMS\CoreBundle\Repository\AuthTokenRepository;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
-use EMS\CoreBundle\Repository\WysiwygProfileRepository;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\UserService;
@@ -42,7 +41,6 @@ class UserController extends AbstractController
         private readonly SpreadsheetGeneratorServiceInterface $spreadsheetGenerator,
         private readonly DataTableFactory $dataTableFactory,
         private readonly AuthTokenRepository $authTokenRepository,
-        private readonly WysiwygProfileRepository $wysiwygProfileRepository,
         private readonly FlashMessageLogger $flashMessageLogger,
         private readonly string $templateNamespace,
         private readonly FieldTypeService $fieldTypeService,
@@ -135,11 +133,6 @@ class UserController extends AbstractController
     public function addUser(Request $request): Response
     {
         $user = new User();
-        $result = $this->wysiwygProfileRepository->findBy([], ['orderKey' => 'asc'], 1);
-        if (\count($result) > 0) {
-            $user->setWysiwygProfile($result[0]);
-        }
-
         $form = $this->createForm(UserType::class, $user, ['mode' => UserType::MODE_CREATE]);
         $form->handleRequest($request);
 
@@ -148,7 +141,7 @@ class UserController extends AbstractController
 
             if ($continue) {
                 $user->setEnabled(true);
-                $this->userManager->update($user);
+                $this->userManager->add($user);
                 $this->addFlash('notice', 'User created!');
 
                 return $this->redirectToRoute(Routes::USER_INDEX);

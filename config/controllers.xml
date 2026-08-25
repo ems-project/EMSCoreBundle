@@ -666,7 +666,6 @@
             <argument type="service" id="EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface"/>
             <argument type="service" id="emsco.data_table.factory"/>
             <argument type="service" id="ems.repository.auth_token" />
-            <argument type="service" id="ems.repository.wysiwyg_profile" />
             <argument type="service" id="ems_core.core_ui.flash_message_logger" />
             <argument>%ems_core.template_namespace%</argument>
             <argument type="service" id="emsco.core.content_type.field_type.service"/>

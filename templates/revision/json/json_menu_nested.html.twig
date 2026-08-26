@@ -51,6 +51,19 @@
     {%- endif -%}
 {% endblock %}
 
+{% block itemPreview -%}
+    {%- if def is defined and def.fieldType is defined and def.fieldType.getDisplayOption('blocks_template') -%}
+        {%- set blocksTemplate = def.fieldType.getDisplayOption('blocks_template') -%}
+        {%- if block(item.type, blocksTemplate) is defined -%}
+            <div id="json-menu-nested-{{ def.id }}-preview" class="json-menu-nested-preview">
+                {{- block(item.type, blocksTemplate) -}}
+            </div>
+        {%- else -%}
+            <!-- Block {{ item.type }} not defined in template {{ blocksTemplate }} -->
+        {%- endif -%}
+    {%- endif -%}
+{%- endblock %}
+
 {% block renderItem %}
     {%- set node = def.getNodeByName(item.type) -%}
     {% if node.id is defined %}
@@ -60,6 +73,7 @@
             data-item-id="{{ item.id }}"
             data-item="{{ itemJson|json_encode|e('html_attr') }}">
             {{ block('itemDisplay') }}
+            {{- block('itemPreview') -}}
             {% if item is defined and item.children|default([])|length > 0 %}
                 <ol class="json-menu-nested-list collapse" data-list="{{ item.id }}">
                     {%- for childItem in item.children|default([]) -%}

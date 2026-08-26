@@ -156,6 +156,11 @@ final class JsonMenuNestedDefinition
         return $results;
     }
 
+    public function getFieldType(): FieldType
+    {
+        return $this->fieldType;
+    }
+
     /**
      * @return iterable<array{'html'?: mixed, 'type': string, 'item_type': ?string}>
      */

@@ -8,6 +8,7 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
+use EMS\CoreBundle\Form\Field\IconTextType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -54,6 +55,7 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
         $resolver
             ->setDefaults([
                 'icon' => null,
+                'blocks_template' => null,
                 'json_menu_nested_modal' => true,
             ]);
     }
@@ -77,6 +79,9 @@ class JsonMenuNestedEditorFieldType extends DataFieldType
 
         $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
             'required' => false,
+        ])->add('blocks_template', IconTextType::class, [
+            'required' => false,
+            'icon' => 'fa fa-html5',
         ]);
     }
 

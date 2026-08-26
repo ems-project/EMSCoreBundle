@@ -66,6 +66,12 @@ div.json-menu-nested {
           justify-self: flex-start;
         }
       }
+
+      div.json-menu-nested-preview, {
+        border: 1px solid #cccccc;
+        padding: 8px;
+        margin: 8px;
+      }
     }
   }
 }

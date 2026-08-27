@@ -492,6 +492,7 @@
             <argument type="service" id="security.token_storage"/>
             <argument type="service" id="messenger.default_bus"/>
             <argument>%ems_core.async.enabled%</argument>
+            <argument>%ems_core.job_clean_time%</argument>
             <tag name="emsco.entity.service" priority="10" />
         </service>
         <service id="ems.service.document" class="EMS\CoreBundle\Service\DocumentService">

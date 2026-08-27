@@ -371,7 +371,6 @@
             <argument type="service" id="ems.service.release"/>
             <argument type="service" id="ems_common.runner.manager"/>
             <argument>%ems_core.date_time_format%</argument>
-            <argument>%ems_core.clean_jobs_time_string%</argument>
             <tag name="console.command"/>
         </service>
         <service id="ems.manage_alias.create" class="EMS\CoreBundle\Command\ManageAlias\CreateCommand">

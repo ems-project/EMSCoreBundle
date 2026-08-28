@@ -1,24 +1,3 @@
-edit_image_modal:
-    field:
-        submit: 'Save'
-link_modal:
-    field:
-        anchor: 'Anchor'
-        file: 'File'
-        link_type: 'Link type'
-        data_link: 'Internal document'
-        mailto: 'To'
-        subject: 'Subject'
-        body: 'Body'
-        href: 'URL'
-        submit: 'Set link'
-        target_blank: 'Open links in a new tab (_blank)'
-    link_type:
-        anchor: 'Anchor'
-        url: 'URL'
-        internal: 'Internal Link'
-        file: 'File'
-        mailto: 'Mailto'
 analyzer.type.standard: Standard
 analyzer.type.simple: Simple
 analyzer.type.whitespace: Whitespace

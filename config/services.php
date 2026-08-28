@@ -801,6 +801,7 @@ return static function (ContainerConfigurator $container) {
             service('security.token_storage'),
             service('messenger.default_bus'),
             '%ems_core.async.enabled%',
+            '%ems_core.job_clean_time%',
         ])
         ->tag('emsco.entity.service', ['priority' => 10]);
 

@@ -35,7 +35,7 @@ class Configuration implements ConfigurationInterface
     final public const int TIKA_MAX_CONTENT = 5120;
     final public const bool SAVE_ASSETS_IN_DB = false;
     final public const int DEFAULT_BULK_SIZE = 500;
-    final public const string CLEAN_JOBS_TIME_STRING = '-7 days';
+    final public const string DEFAULT_JOB_CLEAN_TIME = '-7 days';
     final public const string TEMPLATE_NAMESPACE = 'EMSCore';
     final public const string DYNAMIC_MAPPING = 'false';
     final public const int IMAGE_MAX_SIZE = 2048;
@@ -83,7 +83,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('tika_download_url')->defaultValue(null)->end()
                 ->scalarNode('default_bulk_size')->defaultValue(self::DEFAULT_BULK_SIZE)->end()
                 ->scalarNode('url_user')->defaultValue(null)->end()
-                ->scalarNode('clean_jobs_time_string')->defaultValue(self::CLEAN_JOBS_TIME_STRING)->end()
+                ->scalarNode('job_clean_time')->defaultValue(self::DEFAULT_JOB_CLEAN_TIME)->end()
                 ->scalarNode('custom_user_options_form')->defaultValue(null)->end()
                 ->scalarNode('template_namespace')->defaultValue(self::TEMPLATE_NAMESPACE)->end()
                 ->scalarNode('dynamic_mapping')->defaultValue(self::DYNAMIC_MAPPING)->end()

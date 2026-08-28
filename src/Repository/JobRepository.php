@@ -82,17 +82,20 @@ class JobRepository extends EntityRepository
         $this->getEntityManager()->flush();
     }
 
-    public function clean(string $username, \DateTimeInterface $olderDate): int
+    public function clean(bool $skipFailed = true, ?\DateTimeInterface $modifiedBefore = null): int
     {
         $qb = $this->createQueryBuilder('job')->delete();
-        $qb->where($qb->expr()->eq('job.done', ':true'));
-        $qb->andWhere($qb->expr()->eq('job.user', ':username'));
-        $qb->andWhere($qb->expr()->lt('job.modified', ':olderDate'));
-        $qb->setParameters(new ArrayCollection([
-            new Parameter('true', true),
-            new Parameter('olderDate', $olderDate),
-            new Parameter('username', $username),
-        ]));
+        $qb->andWhere($qb->expr()->eq('job.done', $qb->expr()->literal(true)));
+
+        if ($skipFailed) {
+            $qb->andWhere($qb->expr()->neq('job.status', $qb->expr()->literal('failed')));
+        }
+
+        if ($modifiedBefore) {
+            $qb
+                ->andWhere($qb->expr()->lt('job.modified', ':modified_before'))
+                ->setParameter('modified_before', $modifiedBefore);
+        }
 
         return (int) $qb->getQuery()->execute();
     }

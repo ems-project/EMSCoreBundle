@@ -17,7 +17,7 @@ use function Symfony\Component\Translation\t;
 class JobDataTableType extends AbstractEntityTableType
 {
     use DataTableTypeTrait;
-    public const ACTION_DELETE_ALL = 'delete_all';
+    public const string ACTION_DELETE_ALL = 'delete_all';
 
     public function __construct(
         JobService $jobService,

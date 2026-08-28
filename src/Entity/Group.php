@@ -68,7 +68,7 @@ class Group extends JsonDeserializer implements EntityInterface, \JsonSerializab
      */
     public function getRoles(): array
     {
-        return $this->roles;
+        return \array_values(\array_unique($this->roles));
     }
 
     /**
@@ -76,7 +76,7 @@ class Group extends JsonDeserializer implements EntityInterface, \JsonSerializab
      */
     public function setRoles(array $roles): void
     {
-        $this->roles = $roles;
+        $this->roles = \array_values(\array_unique($roles));
     }
 
     public static function fromJson(string $json, ?EntityInterface $group = null): Group

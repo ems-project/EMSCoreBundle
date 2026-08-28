@@ -16,7 +16,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: Commands::JOB_RUN, description: 'Execute the next pending job if exists. If not execute the oldest due scheduled job if exists.', aliases: ['ems:job:run'], hidden: false)]
+#[AsCommand(name: Commands::JOB_RUN, description: 'Execute the next pending job if exists. If not execute the oldest due scheduled job if exists.', aliases: ['ems:job:run'], hidden: false
+)]
 class JobCommand extends AbstractCommand
 {
     private const string ARGUMENT_JOB_ID = 'job-id';
@@ -33,7 +34,6 @@ class JobCommand extends AbstractCommand
         private readonly ReleaseService $releaseService,
         private readonly RunnerManager $runnerManager,
         private readonly string $dateFormat,
-        private readonly string $cleanJobsTimeString,
     ) {
         parent::__construct();
     }
@@ -67,7 +67,10 @@ class JobCommand extends AbstractCommand
         }
 
         $this->io->comment('Nothing to run. Cleaning jobs.');
-        $this->jobService->cleanJob(self::USER_JOB_COMMAND, $this->cleanJobsTimeString);
+        $this->jobService->clean(
+            skipFailed: true,
+            includeJobTime: true
+        );
 
         return self::EXECUTE_SUCCESS;
     }

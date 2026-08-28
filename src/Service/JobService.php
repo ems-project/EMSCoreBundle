@@ -42,6 +42,7 @@ class JobService implements EntityServiceInterface
         private readonly TokenStorageInterface $tokenStorage,
         private readonly MessageBusInterface $bus,
         private readonly bool $asyncEnabled,
+        private readonly string $cleanJobTime,
     ) {
         $this->em = $doctrine->getManager();
     }
@@ -92,16 +93,6 @@ class JobService implements EntityServiceInterface
         $this->save($job);
 
         return $job;
-    }
-
-    public function clean(): void
-    {
-        $doneJobs = $this->repository->findBy(['done' => true]);
-        foreach ($doneJobs as $doneJob) {
-            $this->em->remove($doneJob);
-        }
-
-        $this->em->flush();
     }
 
     /**
@@ -251,17 +242,22 @@ class JobService implements EntityServiceInterface
         return $job;
     }
 
-    public function cleanJob(string $username, string $stringTime): int
+    public function clean(bool $skipFailed, bool $includeJobTime = false): int
     {
-        try {
-            $olderDate = DateTime::create($stringTime);
-        } catch (\Throwable $throwable) {
-            $this->logger->warning(\sprintf('Invalid string to time format: %s (%s)', $stringTime, $throwable->getMessage()));
+        $modifiedBefore = null;
 
-            return 0;
+        if ($includeJobTime) {
+            try {
+                $modifiedBefore = DateTime::create($this->cleanJobTime);
+            } catch (\Throwable $throwable) {
+                $this->logger->warning(\sprintf('Invalid string to time format: %s (%s)', $this->cleanJobTime, $throwable->getMessage()));
+
+                return 0;
+            }
         }
+
         try {
-            $jobsCleaned = $this->repository->clean($username, $olderDate);
+            $jobsCleaned = $this->repository->clean($skipFailed, $modifiedBefore);
         } catch (\Throwable $throwable) {
             $this->logger->warning(\sprintf('Error during cleaning jobs: %s', $throwable->getMessage()));
 
@@ -269,7 +265,7 @@ class JobService implements EntityServiceInterface
         }
 
         if ($jobsCleaned > 0) {
-            $this->logger->notice(\sprintf('%d scheduled jobs have been cleaned', $jobsCleaned));
+            $this->logger->notice(\sprintf('%d jobs have been cleaned', $jobsCleaned));
         }
 
         return $jobsCleaned;

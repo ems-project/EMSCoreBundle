@@ -523,8 +523,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.job'),
             service('ems.service.release'),
             service('ems_common.runner.manager'),
-            '%ems_core.date_time_format%',
-            '%ems_core.clean_jobs_time_string%',
+            '%ems_core.date_time_format%'
         ])
         ->tag('console.command');
 

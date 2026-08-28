@@ -5,7 +5,10 @@ action:
     add_referenced: 'Ajouter une référence'
     add_referenced_content_type: 'Ajouter un type de contenu référencé'
     attach: Attacher
+    cancel: Annuler
     close: Fermer
+    collapse: Réduire
+    collapse_all: 'Tout réduire'
     confirmation: 'Confirmez-vous ?'
     create: Créer
     deactivate: Désactiver
@@ -19,15 +22,19 @@ action:
     edit: Modifier
     export: Exporter
     rebuild: Reconstruire
+    refresh: Actualiser
     relaunch: Relancer
+    remove: Supprimer
     reorder: Réordonner
     save: Enregistrer
     save_close: 'Enregistrer et fermer'
     select_all: 'Tout sélectionner'
     status: Statut
+    toggle_sidebar: 'Basculer la barre latérale'
     toggle_visibility: 'Basculer la visibilité'
     toggle_visibility_selected: 'Basculer la visibilité de la sélection'
     update_content_type_from_json: 'Mettre à jour {name} depuis un fichier JSON'
+    update_from_json: 'Mettre à jour depuis JSON'
     update_mapping: 'Mettre à jour le mapping'
     view: Voir
 asset_extractor:
@@ -37,6 +44,10 @@ asset_extractor:
             red     {Rouge : l’extracteur d’assets n’est pas complètement opérationnel. Contactez votre administrateur système}
             other   {Étrange... Contactez votre administrateur système}
         }
+button:
+    confirm: 'Confirmez-vous ?'
+    delete: Supprimer
+    reload_page: 'Recharger la page'
 certificate:
     status: |-
         {color, select,
@@ -82,6 +93,14 @@ content-type:
             label: 'Textes d’aide'
         tasks_titles:
             label: Titres
+content_type:
+    field: Champ
+    mapping: Mapping
+    permission: Permission
+    role: Rôle
+    settings: Paramètres
+    tasks: Tâches
+    versioning: Versioning
 core:
     action:
         render-option:
@@ -147,11 +166,110 @@ core:
                 =1      {Il y a un index}
                 other   {Il y a # index}
             }
+    modal:
+        close: Fermer
+        loading: Chargement...
     version: 'Version {core} avec Symfony {symfony}'
+data:
+    add:
+        new_title: 'Nouveau {content_type}'
+        notice:
+            draft_not_indexed: 'Cette opération n’indexera pas immédiatement un nouvel objet « <em>{content_type}</em> ». Elle créera un nouveau brouillon sans révision précédente. <strong>Ce brouillon ne sera visible</strong> dans aucun environnement <strong>tant qu’il n’aura pas été finalisé une première fois</strong>. Cela signifie que vous ne pourrez pas le voir dans une vue de liste (comme l’index, la carte, le calendrier...), mais tous les brouillons en cours sont disponibles dans la section « Brouillon en cours ».'
+            ouuid: 'À propos de l’<strong>identifiant unique de l’objet</strong> : vous pouvez en spécifier un librement (à condition qu’il ne soit pas déjà utilisé, bien sûr). Si vous le laissez <strong>vide</strong>, un identifiant unique de l’objet <strong>sera généré</strong> lors de l’enregistrement. Il n’est pas possible de modifier l’identifiant unique de l’objet par la suite.'
+        subtitle: 'Cette opération n’indexera pas le {object_name}, mais initialisera uniquement un brouillon avec un OUUID spécifique'
+        title: 'Ajouter un nouveau {content_type}'
+    custom-view:
+        pagetitle: 'Vue {name} de {contentType} « {label} » telle qu’indexée dans {environment}'
+    view:
+        recursive:
+            as_indexed_in: 'Tel qu’indexé dans {environment}'
+            card_title: 'Vue récursive'
+            title: 'Voir {content_type}:{id}'
+documentation:
+    api:
+        title: Documentation
+edit_image:
+    flip:
+        group: Retournement
+        horizontal: 'Retourner horizontalement'
+        vertical: 'Retourner verticalement'
+    rotate:
+        group: Rotation
+        left: 'Tourner à gauche'
+        right: 'Tourner à droite'
+    zoom:
+        group: Zoom
+        minus: Zoomer
+        plus: Dézoomer
+        reset: 'Réinitialiser la vue'
+entity:
+    edit:
+        title: 'Modifier {entity_name}'
+    new:
+        title: 'Nouveau {entity_name}'
+environment:
+    add:
+        notice: 'Cette opération créera un nouvel index Elasticsearch avec un alias pointant vers celui-ci.'
+        short_title: 'Nouvel environnement'
+        title: 'Ajouter un nouvel environnement'
+    align:
+        align_with: 'Aligner avec'
+        checkbox-all: 'Tout sélectionner'
+        circles: Cercles
+        compare: Comparer
+        compare_title: 'Comparer {environment} avec {with_environment}'
+        difference_count: '{0} Aucune différence|{1} Une différence|]1,Inf[ {count} différences'
+        select_environments: 'Sélectionner les environnements à comparer'
+        selected: Sélectionné
+        subtitle: 'il est temps d’aligner les environnements ?'
+        title: 'Aligner les environnements'
+    edit:
+        short_title: 'Modifier l’environnement'
+        title: 'Modifier l’environnement « {name} »'
+    index:
+        title: 'Liste des environnements'
+    managed_alias:
+        add:
+            title: 'Ajouter un alias géré'
+        edit:
+            title: 'Modifier l’alias géré'
+        index: Index
+        indexes: Indexes
+        total: Total
+    plural: Environnements
+    rebuild:
+        notice: 'Soyez prudent, selon l’option sélectionnée, certains contenus de l’index de recherche peuvent être perdus.'
+        options:
+            title: 'Sélectionnez vos options'
+        short_title: 'Reconstruire l’index'
+        title: 'Reconstruire l’environnement {name}'
+    view:
+        elasticsearch_index_missing: 'L’index Elasticsearch est manquant !'
+        elasticsearch_information: 'Informations Elasticsearch'
+        short_title: 'Voir l’environnement'
+        title: 'Voir l’environnement {name}'
+exception:
+    error:
+        message: 'Avec le message « {status_text} ».'
+        page_title: 'Oups ! Une erreur est survenue'
+        server_returned: 'Le serveur a retourné un {status_code}'
+        title: 'Une erreur est survenue'
 field:
     accumulate_file: 'Accumuler dans un seul fichier'
     alias: Alias
     allowed_remote_hosts: 'Hôtes distants autorisés'
+    asset:
+        author: 'Auteur :'
+        content: 'Contenu :'
+        date: 'Date :'
+        details: 'Détails du fichier'
+        download: Télécharger
+        hash_signature: 'Signature du hash'
+        info: Info
+        language: 'Langue :'
+        mime_type: 'Type MIME :'
+        size: 'Taille :'
+        title: 'Titre :'
     attributes: 'Attributs supplémentaires de la requête'
     available: Disponible
     channel: Canal
@@ -168,6 +286,10 @@ field:
     date_created: 'Date de création'
     date_execution: 'Date d’exécution'
     date_modified: 'Date de modification'
+    date_range:
+        duration: Durée
+        from: De
+        to: À
     date_run_next: 'Date de prochaine exécution'
     date_run_previous: 'Date d’exécution précédente'
     date_upload: 'Date d’upload'
@@ -248,6 +370,63 @@ field:
     user_impersonator: Impersonnateur
     user_modified: 'Modifié par'
     user_uploaded: 'Uploadé par'
+field_type:
+    json_menu_editor:
+        add: Ajouter
+        add_item: 'Ajouter un élément'
+        add_node: 'Ajouter un nœud'
+        collapse_all_button: 'Tout replier'
+        collapse_button: Replier
+        copy: Copier
+        copy_all: 'Tout copier'
+        delete_item: 'Supprimer l’élément'
+        edit: Modifier
+        item_label_placeholder: 'Libellé de l’élément'
+        move_item: 'Déplacer l’élément'
+        paste: Coller
+    reorder: Réordonner
+    textarea:
+        counter: '%count% caractères'
+fields:
+    asset:
+        browse-server: 'Parcourir le serveur'
+        clear-button: Effacer
+        close-modal: Fermer
+        drag-n-drop-file: 'Glissez-déposez votre fichier ici'
+        drag-n-drop-files: 'Glissez-déposez vos fichiers ici'
+        file-hash: 'Hash du fichier'
+        file-info: 'Informations du fichier'
+        info-modal-button: Info
+        init-upload: 'Initialiser l’upload'
+        move-button: Déplacer
+        remove-button: Retirer
+        upload-file: 'Uploader le fichier'
+        upload-files: 'Uploader les fichiers'
+        view-button: Voir
+    field: Champ
+    file:
+        asset_options: 'Options de l’asset'
+        clear: Effacer
+        drag_and_drop: 'Glissez-déposez votre fichier ici'
+        extract_content: 'Extraire le contenu'
+        hash_signature: 'Signature du hash'
+        info: Info
+        preview_alt: 'Aperçu du champ {field}'
+        upload: 'Uploader le fichier'
+        view: Voir
+    modal:
+        add_field_to: 'Ajouter un champ à <strong>{name}</strong>'
+        add_subfield_to: 'Ajouter un sous-champ à <strong>{name}</strong>'
+        duplicate: 'Dupliquer <strong>{name}</strong>'
+    options:
+        display: Affichage
+        extra: Extra
+        mapping: Mapping
+        migration: Migration
+        restriction: Restriction
+    subfield: Sous-champ
+    template:
+        more_info: 'plus d’informations'
 form:
     data:
         add:
@@ -256,63 +435,146 @@ form:
                 label: OUUID
                 placeholder: 'Généré automatiquement si laissé vide'
             save: 'Créer un brouillon {content_type}'
+        bool_table_column:
+            false_value: Décocher
+            true_value: Cocher
+    field-type-type:
+        root: Structure
     reorder:
         title: 'Réordonner les champs du formulaire : {label}'
 form_submissions:
     overview: Aperçu
     title: 'Soumissions de formulaires'
+inline_editor:
+    action:
+        discard: Abandonner
+        exit: Quitter
+        publish: Publier
+        save: Enregistrer
+    elements: Éléments
+    status:
+        draft_by: 'En brouillon par "{user}"'
+    title: 'Éditeur en ligne'
+job:
+    command: Commande
+    completed: Terminé
+    info: 'À propos de ce job'
+    list: 'Liste des jobs'
+    modified: 'Dernière mise à jour'
+    output: 'Sortie du job'
+    progress: Progression
+    started: 'Heure de début'
+    tag: Tag
+    user: Utilisateur
+json_menu_nested:
+    action:
+        add: Ajouter
+        cancel: Annuler
+        copy: Copier
+        copy_all: 'Tout copier'
+        delete: Supprimer
+        edit: Modifier
+        move: Déplacer
+        new: 'Nouveau {label}'
+        paste: Coller
+        save: Enregistrer
+        view: Voir
+    column:
+        structure: Structure
+        title: Titre
 key:
     actions: Actions
+    active_primary_shards: 'Shards primaires actifs'
+    active_shards: 'Shards actifs'
+    active_shards_percent_as_number: 'Shards actifs'
     admin: Admin
     all_content_types: 'Tous les types de contenu'
     analyzers: Analyseurs
+    anonymous_user: 'Utilisateur anonyme'
     attachment: 'Pièce jointe'
+    bits: Bits
+    build_date: 'Date de build'
+    channel: Canal
     channels: Canaux
     ckeditor4: 'CK Editor 4'
+    client: Client
+    cluster_uuid: 'UUID du cluster'
+    content: Contenu
+    content_type: 'Type de contenu'
     content_types: 'Types de contenu'
+    context: Contexte
+    control_sidebar: 'Barre latérale de contrôle'
+    created: Créé
     dashboards: Dashboards
+    delayed_unassigned_shards: 'Shards non assignés retardés'
     details: Détails
     documentation: Documentation
     environments: Environnements
     environments_external: 'Environnements externes'
     environments_local: 'Environnements locaux'
+    error: Erreur
     export_documents: 'Exporter les documents'
+    extra: Extra
     filters: Filtres
     form_submissions: 'Soumissions de formulaire'
     forms: Formulaires
     groups: Groupes
     i18n: I18N
+    impersonator: Impersonnateur
+    initializing_shards: 'Shards en initialisation'
     inline: Inline
     inline_editor: 'Éditeur inline'
     job_logs: 'Logs des jobs'
     jobs: Jobs
+    label: Libellé
     landscape: Paysage
+    last_commands: 'Dernières commandes'
     logs: Logs
     loop_count: '#'
+    lucene_version: 'Version de Lucene'
     managed_aliases: 'Alias gérés'
+    message: Message
+    name: Nom
     none: Aucun
+    not-applicable: N/A
     notice: Notice
+    number_of_data_nodes: 'Nombre de nœuds de données'
+    number_of_nodes: 'Nombre de nœuds'
+    number_of_pending_tasks: 'Nombre de tâches en attente'
     orphan_indexes: 'Indexes orphelins'
     overview: "Vue d'ensemble"
     portrait: Portrait
     prefix_instance_id: 'Préfixer l’alias avec l’ID de l’instance'
     public_channel: 'Rendre le canal disponible aux utilisateurs non authentifiés ?'
+    public_key: 'Clé publique'
     public_view: 'Disponible publiquement (sans authentification)'
     publishers: Publieurs
+    push_menu: 'Menu principal'
     query_search: 'Recherche par requête'
     query_searches: QuerySearch
+    recent_activities: 'Activités récentes'
     schedule: Planification
     schedule_cron: '<Minute> <Heure> <Jour_du_mois> <Mois_de_l’année> <Jour_de_la_semaine>. Ex. toutes les 15 minutes : */15 * * * *'
     schedule_tag: 'Utilisé pour identifier les workers (ex. CLI) qui exécuteraient le job à distance'
     search: Recherche
+    severity: Sévérité
+    show_search_form: 'Afficher le formulaire de recherche'
+    sort_by: 'Trier par'
+    status: Statut
     structure: Structure
+    tagline: Slogan
+    task_max_waiting_in_queue_millis: 'Attente maximale d’une tâche dans la file'
     tiptap: Tiptap
     trash: Corbeille
+    unassigned_shards: 'Shards non assignés'
     unreferenced_aliases: 'Alias non référencés'
     uploaded_files: 'Fichiers uploadés'
     uploaded_files_logs: 'Logs des fichiers uploadés'
+    username: 'Nom d’utilisateur'
     users: Utilisateurs
+    version: Version
     views: Vues
+    warning: Avertissement
     webhook_subscriptions: Abonnements
     webhooks: Webhooks
     wysiwyg: WYSIWYG
@@ -331,15 +593,107 @@ log:
         deleted_orphan_index: 'L’index « {index} » a été supprimé'
         deleted_orphan_indexes: 'Les indexes orphelins ont été supprimés'
         draft_deleted: 'Le brouillon « {revision} » a été supprimé'
+    title: 'Log du {created}'
     warning:
         draft_not_found: 'Brouillon introuvable avec l’id « {revisionId} »'
         duplicate_environment: 'L’environnement « {name} » existe déjà !'
         index_not_found: 'Index « {index} » introuvable'
+modal:
+    loading_information: 'Chargement des informations...'
+navigation:
+    toggle: 'Basculer la navigation'
+notice_card:
+    title: Notice
 notification-menu:
     dashboards: 'Tableaux de bord'
+notification:
+    acknowledge: Acquitter
+    actions: Actions
+    all_treated: 'Toutes les notifications sont traitées'
+    created_by: 'Créée par'
+    dashboard:
+        title: Notifications
+    date: Date
+    empty:
+        title: Vide
+    environment: Environnement
+    filter:
+        title: Filtres
+    folder:
+        inbox: 'Boîte de réception'
+        outbox: 'Boîte d’envoi'
+        title: Dossiers
+    label: Notification
+    menu:
+        link_title: Notifications
+    message: Message
+    no_pending: 'Aucune notification en attente'
+    no_result: 'Aucun résultat à afficher'
+    no_result_for_filters: 'Aucun résultat pour cette combinaison de filtres'
+    nothing_to_treat: 'Aucune notification en attente'
+    'on': Le
+    plural: Notifications
+    rejected: Rejetée
+    rejected_by: 'Rejetée par'
+    rejected_message: 'Message de rejet'
+    reset_filters: 'réinitialiser les filtres'
+    revision: Révision
+    sent:
+        title: Envoyées
+    to_be_treated: 'À traiter'
+    treat: Traiter
+    treat_selected: 'Traiter la sélection'
+    treat_selection: 'Traiter la sélection'
+    up_to_date: 'Tout est à jour.'
+    warning:
+        duplicate: 'Au moins une autre notification existe pour cet objet'
+        revision_not_published: 'Cette révision n’est plus publiée dans {environment}'
+        revision_not_published_and_duplicate: 'Cette révision n’est plus publiée dans {environment} et une autre notification existe'
+    warnings: Avertissements
+out-of-sync:
+    modal:
+        please-reload: 'Veuillez recharger la page.'
+        reload-page: 'Recharger la page'
+        something-wrong: 'Un problème est survenu avec cette application.'
+        title: Désynchronisé
+pagination:
+    next: Suivant
+    previous: Précédent
+pick-a-release:
+    title: 'Choisir une release pour « {label} »'
 profile:
     title: 'Votre profil'
     title_sub: 'Tout à propos de vous'
+publish:
+    search_result:
+        title: 'Publier {count} {content_type} depuis {environment}'
+release:
+    actions:
+        add_publish: 'Ajouter des documents à publier'
+        add_unpublish: 'Ajouter des documents à dépublier'
+        set_status_ready: 'Valider la release'
+    add:
+        title: 'Ajouter une release'
+    edit:
+        title: 'Modifier une release'
+    index:
+        title: 'Liste des releases'
+    menu: Releases
+    release-revision:
+        missing-revision: 'Le document « {label} » n’est plus disponible dans {environment}'
+        no_more_in_target: 'Cette révision a été dépubliée de {target}'
+        not-applicable: 'non applicable'
+        revision: '{date} finalisée par {user}'
+        revision-not-applicable: 'Non applicable'
+        still_in_target: 'Toujours publiée dans {target}'
+    revision:
+        index:
+            publish: 'Liste des documents disponibles pour publication'
+            unpublish: 'Liste des documents disponibles pour dépublication'
+        menu: 'Ajouter des documents'
+        view:
+            title: 'Documents de la release'
+    unpublish_in: 'Dépublier dans {env}'
 revision:
     draft:
         delete: 'Supprimer ce brouillon'
@@ -351,13 +705,31 @@ revision:
         locked: 'Verrouillé jusqu’à'
         locked_by: 'Verrouillé par'
         ouuid: Ouuid
+    finalized_by: '{date} Finalisé par {user}'
+    missing: 'aucune révision dans {env}'
     new: 'Nouveau {contentType}'
+    replace_by_revision: 'remplacée par la révision {date}'
     trash:
         put_back: Restaurer
         put_back_confirm: 'Restaurer « {label} » ?'
         put_back_selected: 'Restaurer la sélection'
         title: '{pluralName} dans la corbeille'
 search:
+    filter:
+        add: Ajouter
+        boolean_clause: 'Clause booléenne'
+        boost: Boost
+        field: Champ
+        operator: Opérateur
+        pattern: Motif
+    form: Formulaire
+    query: Requête
+    set_default:
+        confirm: 'Confirmez-vous ?'
+        label: 'Définir comme recherche par défaut'
+    set_default_content_type:
+        confirm: 'Confirmez-vous ?'
+        label: 'Recherche par défaut pour {content_type}'
     title: |-
         {count, plural,
             =-1   {Le résultat de recherche est manquant}
@@ -365,6 +737,20 @@ search:
             =1    {1 document trouvé}
             other {# documents trouvés}
         }
+search_options:
+    aggregate:
+        add: 'Ajouter une option d’agrégation'
+        missing: 'Cliquez sur « Ajouter une option d’agrégation » pour créer une première option d’agrégation'
+        title: 'Options d’agrégation'
+    field:
+        add: 'Ajouter une option de champ de recherche'
+        missing: 'Cliquez sur « Ajouter une option de champ de recherche » pour créer une première option de champ de recherche'
+        title: 'Options de champ de recherche'
+    sort:
+        add: 'Ajouter une option de tri'
+        missing: 'Cliquez sur « Ajouter une option de tri » pour créer une première option de tri'
+        title: 'Options de tri'
+    title: 'Options de recherche'
 sidebar-menu:
     admin: Admin
     compare-environments: 'Comparer les environnements'
@@ -389,8 +775,85 @@ sidebar-menu:
         name: '{name}'
         searches: Recherches
 status:
+    bus:
+        failed: 'Messages en erreur'
+        queue: 'Messages dans la file'
+        title: 'Messages dans le bus'
+    jobs:
+        failed: 'Jobs échoués'
+        pending: 'Jobs en attente'
+        title: Jobs
     title: 'Statut des systèmes'
     title_sub: 'Est-ce que tout fonctionne comme prévu ?'
+subtitle:
+    user-in-group: 'Utilisateurs dans le groupe'
+    user-not-in-group: 'Utilisateur hors du groupe'
+task:
+    action:
+        cancel: Annuler
+        save: Enregistrer
+    assigned_to: 'Assignée à '
+    close: Fermer
+    create:
+        button: 'Ajouter une tâche'
+        submit: 'Créer la tâche'
+        title: 'Ajouter une nouvelle tâche'
+    dashboard:
+        action:
+            edit_revision: 'Modifier la révision'
+            go_revision: Révision
+        search_warning: 'Plus de {count} tâches, la recherche sur le titre du document est impossible.'
+    delay_days: '{number} jours'
+    delete:
+        submit: 'Supprimer la tâche'
+    field:
+        assignee: Assigné
+        deadline: Échéance
+        description: Description
+        requester: Demandeur
+        title: Titre
+    filter:
+        assignee: Assignés
+        is_overdue: 'En retard uniquement'
+        requester: Demandeurs
+        reset: Effacer
+        status: Statuts
+        version_next_tag: 'Nouvelles versions'
+    filters: 'Filtrage des tâches'
+    finished:
+        hide: 'Masquer les tâches terminées ({number})'
+        show: 'Afficher les tâches terminées ({number})'
+    info:
+        change_order: 'Changer l’ordre'
+        empty: 'Aucune tâche pour ce document'
+        locked: 'Révision verrouillée par {user} jusqu’à {time}'
+    mail:
+        assignee: Assigné
+        by_role: 'par rôle {role}'
+        comment: Commentaire
+        creator: Créateur
+        deadline: Échéance
+        description: Description
+        from: 'De {sender}'
+        greetings: 'Bonjour {receiver},'
+        kind_regards: 'Cordialement,'
+        link_to_document: 'Lien vers le document'
+        overdue_or_active_list: 'Voici la liste des tâches en retard ou actives.'
+        process_urgently: 'Veuillez les traiter rapidement.'
+        task_has_been: 'Une tâche a été {action} {role}.'
+        title: Titre
+    modal:
+        title: 'Tâche : {title}'
+    planned:
+        title: 'Tâches planifiées'
+    tab_tasks: Tâches
+    title: Tâches
+    update:
+        submit: 'Enregistrer la tâche'
+        tab:
+            history: Historique
+            info: Information
+        title: 'Modifier la tâche : {title}'
 type:
     confirm: |-
         {type, select,
@@ -580,6 +1043,40 @@ type:
             other         {}
         }
 user:
+    add:
+        button: 'Ajouter un utilisateur'
+        card_title: 'Nouvel utilisateur'
+        page_title: 'Ajouter un utilisateur'
+        subtitle: 'Administration des utilisateurs'
+        title: 'Ajouter un utilisateur'
+    administration: 'Administration des utilisateurs'
+    edit:
+        card_title: 'Modifier {username}'
+        title: 'Modifier {display_name}'
+    export:
+        csv: 'Export CSV'
+        excel: 'Export Excel'
+    logged_in:
+        member_since: 'Membre depuis le {date}'
+        title: 'Connecté en tant que {username}'
+    login:
+        alt_logo: 'Logo d’elasticMS'
+        continue: 'Connectez-vous à votre compte pour continuer'
+        forgot: 'J’ai oublié mon mot de passe'
+        message: 'Connectez-vous pour démarrer votre session'
+        password1_aria_label: 'Mot de passe'
+        password_placeholder: 'Mot de passe'
+        remember_me: 'Se souvenir de moi'
+        submit: 'Se connecter'
+        title: Bienvenue
+        user_aria_label: 'E-mail ou nom d’utilisateur'
+        user_placeholder: 'E-mail ou nom d’utilisateur'
+        welcome_back: 'Bon retour !'
+    logout:
+        exit: Quitter
+        submit: 'Se déconnecter'
+    management:
+        title: 'Gestion des utilisateurs'
     option:
         allowed_configure_wysiwyg: "Autorise l'utilisateur à changer de profile WYSIWYG"
         simplified_ui: 'Interfaces simplifiées'
@@ -587,10 +1084,141 @@ user:
     profile:
         change_password:
             breadcrumb_title: 'Changer votre mot de passe'
+            cancel: Annuler
+            submit: 'Changer le mot de passe'
+            title: 'Changer le mot de passe'
         edit:
             breadcrumb_title: Modifier
+            submit: 'Mettre à jour'
+            title: 'Modifier votre profil'
+        show:
+            action:
+                cancel: Annuler
+                edit: Modifier
+            email: e-mail
+            email_notification: 'notification par e-mail'
+            extra_roles: 'Rôles supplémentaires'
+            locale: "Langue de l'interface"
+            locale_preferred: 'Langue préférée'
+            username: 'Nom d’utilisateur'
+            wysiwyg: 'Profil WYSIWYG'
+        title: 'Votre profil'
+    resetting:
+        check_email: |
+            Un e-mail a été envoyé. Il contient un lien sur lequel vous devez cliquer pour réinitialiser votre mot de passe.
+            Remarque : vous ne pouvez demander un nouveau mot de passe qu’une seule fois toutes les {tokenLifetime} heures.
+
+            Si vous ne recevez pas d’e-mail, vérifiez votre dossier de spam ou réessayez.
+        title: 'Réinitialiser le mot de passe'
 view:
+    contenttype:
+        reorder_item:
+            edit_field_button: 'Modifier {name}'
+    custom:
+        hierarchical:
+            reorganise: 'Réorganiser :'
+    data:
+        json-menu-nested-json-preview:
+            field-type-not-found: 'La définition de type associée à cet élément est manquante (probablement supprimée).'
+        json-menu-nested:
+            out_of_sync: 'Désynchronisé, veuillez rafraîchir et réessayer !'
+    form:
+        fields:
+            asset:
+                preview: Aperçu
+    icon:
+        class:
+            release: 'fa fa-cube'
+    macros:
+        data-field-type:
+            collection_added_items: '{0} Aucun élément n’a été ajouté.|{1} Un élément a été ajouté.|]1,Inf[ {count} éléments ont été ajoutés.'
+            collection_removed_items: '{0} Aucun élément n’a été supprimé.|{1} Un élément a été supprimé.|]1,Inf[ {count} éléments ont été supprimés.'
+            menu-option-button: Voir
     title: '{name} de {plural}'
+    user:
+        index:
+            title: 'Liste des utilisateurs'
+views:
+    data:
+        edit-revision-html:
+            cancel-label: 'Abandonner les modifications non enregistrées'
+            discard-draft-label: 'Supprimer ce brouillon'
+            discard-draft-message: 'Les modifications apportées à ce brouillon seront perdues'
+            new-draft-title: '{contentType} : nouveau brouillon'
+            subtitle: 'Espace de travail'
+            title: 'Modifier {contentType} : {revision} '
+        revisions-data-html:
+            all-linked-documents: 'Tous les documents liés'
+            audit: Audit
+            by: Par
+            current-revision: 'Révision actuelle'
+            current-version: 'Version actuelle'
+            draft-in-progress: 'Brouillon en cours'
+            finalized-by: 'Finalisée par'
+            finalized-on: 'Finalisée le'
+            last-update: 'Dernière mise à jour'
+            linked-documents-in: 'Documents liés dans {environment} ({length}/{total})'
+            modified-by: 'Modifiée par'
+            new-version: 'Nouvelle version'
+            no-linked-document: 'Ce document n’a aucun document lié'
+            nothing: Rien
+            'on': le
+            pending: 'En attente'
+            previous-revision: 'Révision précédente'
+            revision: Révision
+            revision-current: 'Vous consultez la dernière révision'
+            revision-draft-in-progress: 'Ceci est un brouillon en cours'
+            revision-previous: 'Ceci est une révision passée'
+            revisions: Révisions
+            revisions.th.actions: Actions
+            revisions.th.autosave: 'Sauvegarde automatique'
+            revisions.th.date: Date
+            revisions.th.environments: Environnements
+            revisions.th.finalize: Finaliser
+            revisions.th.id: '#'
+            revisions.th.locked: Verrouillé
+            revisions.th.pendings: 'En attente'
+            status: Statut
+            title: 'Révisions de {contentType} : {title}'
+            until: Jusqu’à
+            version: Version
+    elements:
+        object-toolbar-html:
+            edit-draft: 'Modifier le brouillon'
+            new-draft: Modifier
+            view-current-revision: 'Voir la révision actuelle'
+            view-draft-in-progress: 'Voir le brouillon en cours'
+        object-views-button:
+            action-dropdown-icon-class: 'fa fa-eye'
+            action-dropdown-label: 'Actions dans {environment}'
+            action-dropdown-sr-only: 'Basculer le menu déroulant des actions de {environment}'
+            copy-data: 'Copier les données'
+            copy-data-icon-class: 'fa fa-copy'
+            published-label: 'Publié dans {environment}'
+            raw-view: 'Vue brute'
+            raw-view-icon-class: 'fa fa-th'
+        revision-toolbar-html:
+            add-to-release: 'Ajouter à la release'
+            cancel-label: Annuler
+            cancel-last-updates-label: 'Annuler les modifications non enregistrées'
+            cancel-last-updates-message: 'Annuler les modifications non enregistrées'
+            cancel-message: 'Annuler les dernières modifications ?'
+            compare-label: 'Comparer cette révision avec la révision actuelle'
+            discard-draft-label: 'Supprimer ce brouillon'
+            discard-draft-message: 'Les modifications apportées à ce brouillon seront perdues'
+            edit-draft-label: 'Modifier le brouillon'
+            edit-revision-json: 'Édition JSON brute'
+            edit-revision-label: 'Modifier la révision'
+            finalize-draft-label: 'Enregistrer et publier dans {environment}'
+            finalize-draft-message: 'Confirmer l’enregistrement et la publication ?'
+            new-draft-label: Modifier
+            other-environment-actions: 'Autres actions d’environnement'
+            other-revision-actions: 'Autres actions sur cette révision'
+            publish-to-label: 'Publier vers'
+            re-index-label: Réindexer
+            revert-revision-label: 'Revenir à cette révision'
+            unpublish-from-label: 'Dépublier de'
+            view-label: 'Voir cette révision'
 webhook:
     enable:
         action: Activer

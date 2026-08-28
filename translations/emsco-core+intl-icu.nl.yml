@@ -5,7 +5,10 @@ action:
     add_referenced: 'Gerefereerde toevoegen'
     add_referenced_content_type: 'Een gerefereerd contenttype toevoegen'
     attach: Koppelen
+    cancel: Annuleren
     close: Sluiten
+    collapse: Inklappen
+    collapse_all: 'Alles inklappen'
     confirmation: 'Bevestigt u dit?'
     create: Aanmaken
     deactivate: Deactiveren
@@ -19,15 +22,19 @@ action:
     edit: Bewerken
     export: Exporteren
     rebuild: Heropbouwen
+    refresh: Vernieuwen
     relaunch: Herstarten
+    remove: Verwijderen
     reorder: Hersorteren
     save: Opslaan
     save_close: 'Opslaan en sluiten'
     select_all: 'Alles selecteren'
     status: Status
+    toggle_sidebar: 'Zijbalk omschakelen'
     toggle_visibility: 'Zichtbaarheid omschakelen'
     toggle_visibility_selected: 'Zichtbaarheid van selectie omschakelen'
     update_content_type_from_json: '{name} bijwerken vanuit een JSON-bestand'
+    update_from_json: 'Bijwerken vanuit JSON'
     update_mapping: 'Mapping bijwerken'
     view: Bekijken
 asset_extractor:
@@ -37,6 +44,10 @@ asset_extractor:
             red     {Rood: asset extractor is niet volledig operationeel. Neem contact op met uw systeembeheerder}
             other   {Dat is vreemd... Neem contact op met uw systeembeheerder}
         }
+button:
+    confirm: 'Bevestigt u dit?'
+    delete: Verwijderen
+    reload_page: 'Pagina herladen'
 certificate:
     status: |-
         {color, select,
@@ -82,6 +93,14 @@ content-type:
             label: Helpteksten
         tasks_titles:
             label: Titels
+content_type:
+    field: Veld
+    mapping: Mapping
+    permission: Toestemming
+    role: Rol
+    settings: Instellingen
+    tasks: Taken
+    versioning: Versionering
 core:
     action:
         render-option:
@@ -147,11 +166,110 @@ core:
                 =1      {Er is één index}
                 other   {Er zijn # indexen}
             }
+    modal:
+        close: Sluiten
+        loading: Laden...
     version: 'Versie {core} met Symfony {symfony}'
+data:
+    add:
+        new_title: 'Nieuwe {content_type}'
+        notice:
+            draft_not_indexed: 'Deze bewerking zal niet onmiddellijk een nieuw object ‘<em>{content_type}</em>’ indexeren. Ze start een nieuw concept zonder eerdere revisie. <strong>Dit concept zal niet zichtbaar zijn</strong> in een omgeving <strong>tot het voor de eerste keer is gefinaliseerd</strong>. Dit betekent dat u het niet zult zien in een lijstweergave (zoals index, kaart, kalender...), maar alle lopende concepten zijn te vinden in de sectie ‘Concept in uitvoering’.'
+            ouuid: 'Over de <strong>unieke objectidentificatie</strong>: u mag er zelf een opgeven (op voorwaarde dat die nog niet gebruikt is). Als u dit <strong>leeg</strong> laat, wordt tijdens het opslaan een unieke objectidentificatie <strong>gegenereerd</strong>. Het is niet mogelijk om de unieke objectidentificatie later te wijzigen.'
+        subtitle: 'Deze bewerking indexeert {object_name} niet, maar start enkel een concept met een specifieke OUUID'
+        title: 'Een nieuwe {content_type} toevoegen'
+    custom-view:
+        pagetitle: 'Weergave {name} van {contentType} "{label}" zoals geïndexeerd in {environment}'
+    view:
+        recursive:
+            as_indexed_in: 'Zoals geïndexeerd in {environment}'
+            card_title: 'Recursieve weergave'
+            title: '{content_type}:{id} bekijken'
+documentation:
+    api:
+        title: Documentatie
+edit_image:
+    flip:
+        group: Spiegelen
+        horizontal: 'Horizontaal spiegelen'
+        vertical: 'Verticaal spiegelen'
+    rotate:
+        group: Roteren
+        left: 'Linksom draaien'
+        right: 'Rechtsom draaien'
+    zoom:
+        group: Zoom
+        minus: Inzoomen
+        plus: Uitzoomen
+        reset: 'Weergave resetten'
+entity:
+    edit:
+        title: '{entity_name} bewerken'
+    new:
+        title: 'Nieuwe {entity_name}'
+environment:
+    add:
+        notice: 'Deze bewerking maakt een nieuwe Elasticsearch-index aan met een alias die ernaar verwijst.'
+        short_title: 'Nieuwe omgeving'
+        title: 'Een nieuwe omgeving toevoegen'
+    align:
+        align_with: 'Uitlijnen met'
+        checkbox-all: 'Alles selecteren'
+        circles: Kringen
+        compare: Vergelijken
+        compare_title: '{environment} vergelijken met {with_environment}'
+        difference_count: '{0} Geen verschil|{1} Eén verschil|]1,Inf[ {count} verschillen'
+        select_environments: 'Omgevingen selecteren om te vergelijken'
+        selected: Geselecteerd
+        subtitle: 'tijd om omgevingen uit te lijnen?'
+        title: 'Omgevingen uitlijnen'
+    edit:
+        short_title: 'Omgeving bewerken'
+        title: 'Omgeving "{name}" bewerken'
+    index:
+        title: 'Omgevingen weergeven'
+    managed_alias:
+        add:
+            title: 'Beheerde alias toevoegen'
+        edit:
+            title: 'Beheerde alias bewerken'
+        index: Index
+        indexes: Indexen
+        total: Totaal
+    plural: Omgevingen
+    rebuild:
+        notice: 'Wees voorzichtig: afhankelijk van de geselecteerde optie kan bepaalde inhoud in de zoekindex verloren gaan.'
+        options:
+            title: 'Selecteer uw opties'
+        short_title: 'Index heropbouwen'
+        title: 'Omgeving {name} heropbouwen'
+    view:
+        elasticsearch_index_missing: 'Elasticsearch-index ontbreekt!'
+        elasticsearch_information: Elasticsearch-informatie
+        short_title: 'Omgeving bekijken'
+        title: 'Omgeving {name} bekijken'
+exception:
+    error:
+        message: 'Met bericht "{status_text}".'
+        page_title: 'Oeps! Er is een fout opgetreden'
+        server_returned: 'De server gaf {status_code} terug'
+        title: 'Er is een fout opgetreden'
 field:
     accumulate_file: 'In één bestand verzamelen'
     alias: Alias
     allowed_remote_hosts: 'Toegestane externe hosts'
+    asset:
+        author: 'Auteur:'
+        content: 'Inhoud:'
+        date: 'Datum:'
+        details: Bestandsdetails
+        download: Downloaden
+        hash_signature: Hash-handtekening
+        info: Info
+        language: 'Taal:'
+        mime_type: 'MIME-type:'
+        size: 'Grootte:'
+        title: 'Titel:'
     attributes: 'Extra request-attributen'
     available: Beschikbaar
     channel: Kanaal
@@ -168,6 +286,10 @@ field:
     date_created: Aanmaakdatum
     date_execution: Uitvoeringsdatum
     date_modified: Wijzigingsdatum
+    date_range:
+        duration: Duur
+        from: Van
+        to: Tot
     date_run_next: 'Volgende uitvoeringsdatum'
     date_run_previous: 'Vorige uitvoeringsdatum'
     date_upload: Uploaddatum
@@ -248,6 +370,63 @@ field:
     user_impersonator: Impersonator
     user_modified: 'Gewijzigd door'
     user_uploaded: 'Geüpload door'
+field_type:
+    json_menu_editor:
+        add: Toevoegen
+        add_item: 'Item toevoegen'
+        add_node: 'Node toevoegen'
+        collapse_all_button: 'Alles inklappen'
+        collapse_button: Inklappen
+        copy: Kopiëren
+        copy_all: 'Alles kopiëren'
+        delete_item: 'Item verwijderen'
+        edit: Bewerken
+        item_label_placeholder: Itemlabel
+        move_item: 'Item verplaatsen'
+        paste: Plakken
+    reorder: Hersorteren
+    textarea:
+        counter: '%count% tekens'
+fields:
+    asset:
+        browse-server: 'Server doorzoeken'
+        clear-button: Wissen
+        close-modal: Sluiten
+        drag-n-drop-file: 'Sleep uw bestand hierheen'
+        drag-n-drop-files: 'Sleep uw bestanden hierheen'
+        file-hash: Bestandshash
+        file-info: Bestandsinformatie
+        info-modal-button: Info
+        init-upload: 'Upload initialiseren'
+        move-button: Verplaatsen
+        remove-button: Verwijderen
+        upload-file: 'Bestand uploaden'
+        upload-files: 'Bestanden uploaden'
+        view-button: Bekijken
+    field: Veld
+    file:
+        asset_options: Assetopties
+        clear: Wissen
+        drag_and_drop: 'Sleep uw bestand hierheen'
+        extract_content: 'Inhoud extraheren'
+        hash_signature: Hash-handtekening
+        info: Info
+        preview_alt: 'Voorbeeld van veld {field}'
+        upload: 'Bestand uploaden'
+        view: Bekijken
+    modal:
+        add_field_to: 'Een veld toevoegen aan <strong>{name}</strong>'
+        add_subfield_to: 'Een subveld toevoegen aan <strong>{name}</strong>'
+        duplicate: 'Dupliceren <strong>{name}</strong>'
+    options:
+        display: Weergave
+        extra: Extra
+        mapping: Mapping
+        migration: Migratie
+        restriction: Beperking
+    subfield: Subveld
+    template:
+        more_info: 'meer info'
 form:
     data:
         add:
@@ -256,63 +435,146 @@ form:
                 label: OUUID
                 placeholder: 'Automatisch gegenereerd indien leeg gelaten'
             save: 'Concept voor {content_type} aanmaken'
+        bool_table_column:
+            false_value: Uitvinken
+            true_value: Aanvinken
+    field-type-type:
+        root: Structuur
     reorder:
         title: 'Velden van formulier hersorteren: {label}'
 form_submissions:
     overview: Overzicht
     title: Formulierinzendingen
+inline_editor:
+    action:
+        discard: Annuleren
+        exit: Afsluiten
+        publish: Publiceren
+        save: Opslaan
+    elements: Elementen
+    status:
+        draft_by: 'In concept door "{user}"'
+    title: Inline-editor
+job:
+    command: Commando
+    completed: Voltooid
+    info: 'Over deze job'
+    list: Joblijst
+    modified: 'Laatst bijgewerkt'
+    output: Jobuitvoer
+    progress: Voortgang
+    started: Starttijd
+    tag: Tag
+    user: Gebruiker
+json_menu_nested:
+    action:
+        add: Toevoegen
+        cancel: Annuleren
+        copy: Kopiëren
+        copy_all: 'Alles kopiëren'
+        delete: Verwijderen
+        edit: Bewerken
+        move: Verplaatsen
+        new: 'Nieuwe {label}'
+        paste: Plakken
+        save: Opslaan
+        view: Bekijken
+    column:
+        structure: Structuur
+        title: Titel
 key:
     actions: Acties
+    active_primary_shards: 'Actieve primaire shards'
+    active_shards: 'Actieve shards'
+    active_shards_percent_as_number: 'Actieve shards'
     admin: Admin
     all_content_types: 'Alle contenttypes'
     analyzers: Analysatoren
+    anonymous_user: 'Anonieme gebruiker'
     attachment: Bijlage
+    bits: Bits
+    build_date: Builddatum
+    channel: Kanaal
     channels: Kanalen
     ckeditor4: 'CK Editor 4'
+    client: Client
+    cluster_uuid: Cluster-UUID
+    content: Inhoud
+    content_type: Contenttype
     content_types: Contenttypes
+    context: Context
+    control_sidebar: Controlezijbalk
+    created: Aangemaakt
     dashboards: Dashboards
+    delayed_unassigned_shards: 'Vertraagde niet-toegewezen shards'
     details: Details
     documentation: Documentatie
     environments: Omgevingen
     environments_external: 'Externe omgevingen'
     environments_local: 'Lokale omgevingen'
+    error: Fout
     export_documents: 'Documenten exporteren'
+    extra: Extra
     filters: Filters
     form_submissions: Formulierinzendingen
     forms: Formulieren
     groups: Groepen
     i18n: I18N
+    impersonator: Impersonator
+    initializing_shards: 'Initialiserende shards'
     inline: Inline
     inline_editor: 'Inline editor'
     job_logs: Joblogs
     jobs: Jobs
+    label: Label
     landscape: Landschap
+    last_commands: 'Laatste commando’s'
     logs: Logs
     loop_count: '#'
+    lucene_version: Lucene-versie
     managed_aliases: 'Beheerde aliassen'
+    message: Bericht
+    name: Naam
     none: Geen
+    not-applicable: N.v.t.
     notice: Melding
+    number_of_data_nodes: 'Aantal datanodes'
+    number_of_nodes: 'Aantal nodes'
+    number_of_pending_tasks: 'Aantal wachtende taken'
     orphan_indexes: 'Verweesde indexen'
     overview: Overzicht
     portrait: Portret
     prefix_instance_id: 'Alias voorafgaan met instance-ID'
     public_channel: 'Kanaal beschikbaar maken voor niet-geauthenticeerde gebruikers?'
+    public_key: 'Publieke sleutel'
     public_view: 'Publiek beschikbaar (zonder authenticatie)'
     publishers: Publishers
+    push_menu: Hoofdmenu
     query_search: 'Query search'
     query_searches: QuerySearch
+    recent_activities: 'Recente activiteiten'
     schedule: Planning
     schedule_cron: '<Minuut> <Uur> <Dag_van_de_maand> <Maand_van_het_jaar> <Dag_van_de_week>. Bv. elke 15 minuten: */15 * * * *'
     schedule_tag: 'Gebruikt om workers (bv. CLI) te identificeren die de job op afstand zouden uitvoeren'
     search: Zoeken
+    severity: Ernst
+    show_search_form: 'Zoekformulier tonen'
+    sort_by: 'Sorteren op'
+    status: Status
     structure: Structuur
+    tagline: Tagline
+    task_max_waiting_in_queue_millis: 'Maximale wachttijd van taak in wachtrij'
     tiptap: Tiptap
     trash: Prullenbak
+    unassigned_shards: 'Niet-toegewezen shards'
     unreferenced_aliases: 'Niet-gerefereerde aliassen'
     uploaded_files: 'Geüploade bestanden'
     uploaded_files_logs: 'Logs van geüploade bestanden'
+    username: Gebruikersnaam
     users: Gebruikers
+    version: Versie
     views: Weergaven
+    warning: Waarschuwing
     webhook_subscriptions: Abonnementen
     webhooks: Webhooks
     wysiwyg: WYSIWYG
@@ -331,15 +593,107 @@ log:
         deleted_orphan_index: 'De index "{index}" is verwijderd'
         deleted_orphan_indexes: 'Verweesde indexen zijn verwijderd'
         draft_deleted: 'Concept "{revision}" is verwijderd'
+    title: 'Log van {created}'
     warning:
         draft_not_found: 'Concept niet gevonden met id "{revisionId}"'
         duplicate_environment: 'Omgeving "{name}" bestaat al!'
         index_not_found: 'Index "{index}" niet gevonden'
+modal:
+    loading_information: 'Informatie laden...'
+navigation:
+    toggle: 'Navigatie omschakelen'
+notice_card:
+    title: Melding
 notification-menu:
     dashboards: Dashboards
+notification:
+    acknowledge: Bevestigen
+    actions: Acties
+    all_treated: 'Alle notificaties zijn behandeld'
+    created_by: 'Aangemaakt door'
+    dashboard:
+        title: Notificaties
+    date: Datum
+    empty:
+        title: Leeg
+    environment: Omgeving
+    filter:
+        title: Filters
+    folder:
+        inbox: Inbox
+        outbox: Outbox
+        title: Mappen
+    label: Notificatie
+    menu:
+        link_title: Notificaties
+    message: Bericht
+    no_pending: 'Geen wachtende notificaties'
+    no_result: 'Geen resultaat om weer te geven'
+    no_result_for_filters: 'Geen resultaat voor deze filtercombinatie'
+    nothing_to_treat: 'Geen wachtende notificaties'
+    'on': Op
+    plural: Notificaties
+    rejected: Geweigerd
+    rejected_by: 'Geweigerd door'
+    rejected_message: Weigeringsbericht
+    reset_filters: 'filters resetten'
+    revision: Revisie
+    sent:
+        title: Verzonden
+    to_be_treated: 'Te behandelen'
+    treat: Behandelen
+    treat_selected: 'Selectie behandelen'
+    treat_selection: 'Selectie behandelen'
+    up_to_date: 'Alles is up-to-date.'
+    warning:
+        duplicate: 'Er bestaat minstens één andere notificatie voor dit object'
+        revision_not_published: 'Deze revisie is niet meer gepubliceerd in {environment}'
+        revision_not_published_and_duplicate: 'Deze revisie is niet meer gepubliceerd in {environment} en er bestaat een andere notificatie'
+    warnings: Waarschuwingen
+out-of-sync:
+    modal:
+        please-reload: 'Herlaad de pagina.'
+        reload-page: 'Pagina herladen'
+        something-wrong: 'Er is iets mis met deze applicatie.'
+        title: 'Niet gesynchroniseerd'
+pagination:
+    next: Volgende
+    previous: Vorige
+pick-a-release:
+    title: 'Kies een release voor "{label}"'
 profile:
     title: 'Uw profiel'
     title_sub: 'Alles over u'
+publish:
+    search_result:
+        title: '{count} {content_type} publiceren vanuit {environment}'
+release:
+    actions:
+        add_publish: 'Documenten toevoegen voor publicatie'
+        add_unpublish: 'Documenten toevoegen voor depublicatie'
+        set_status_ready: 'Release valideren'
+    add:
+        title: 'Release toevoegen'
+    edit:
+        title: 'Release bewerken'
+    index:
+        title: 'Lijst van releases'
+    menu: Releases
+    release-revision:
+        missing-revision: 'Het document "{label}" is niet meer beschikbaar in {environment}'
+        no_more_in_target: 'Deze revisie is gedepubliceerd uit {target}'
+        not-applicable: 'niet van toepassing'
+        revision: '{date} gefinaliseerd door {user}'
+        revision-not-applicable: 'Niet van toepassing'
+        still_in_target: 'Nog steeds gepubliceerd in {target}'
+    revision:
+        index:
+            publish: 'Lijst van documenten beschikbaar voor publicatie'
+            unpublish: 'Lijst van documenten beschikbaar voor depublicatie'
+        menu: 'Documenten toevoegen'
+        view:
+            title: 'Documenten van release'
+    unpublish_in: 'Depubliceren in {env}'
 revision:
     draft:
         delete: 'Dit concept verwijderen'
@@ -351,13 +705,31 @@ revision:
         locked: 'Vergrendeld tot'
         locked_by: 'Vergrendeld door'
         ouuid: Ouuid
+    finalized_by: '{date} Gefinaliseerd door {user}'
+    missing: 'geen revisie in {env}'
     new: 'Nieuw {contentType}'
+    replace_by_revision: 'vervangen door revisie {date}'
     trash:
         put_back: Terugplaatsen
         put_back_confirm: '"{label}" terugplaatsen?'
         put_back_selected: 'Selectie terugplaatsen'
         title: '{pluralName} in prullenbak'
 search:
+    filter:
+        add: Toevoegen
+        boolean_clause: 'Booleaanse clausule'
+        boost: Boost
+        field: Veld
+        operator: Operator
+        pattern: Patroon
+    form: Formulier
+    query: Query
+    set_default:
+        confirm: 'Bevestigt u dit?'
+        label: 'Instellen als standaardzoekopdracht'
+    set_default_content_type:
+        confirm: 'Bevestigt u dit?'
+        label: 'Standaardzoekopdracht voor {content_type}'
     title: |-
         {count, plural,
             =-1   {Zoekresultaat ontbreekt}
@@ -365,6 +737,20 @@ search:
             =1    {1 document gevonden}
             other {# documenten gevonden}
         }
+search_options:
+    aggregate:
+        add: 'Aggregatieoptie toevoegen'
+        missing: "Klik op 'Aggregatieoptie toevoegen' om een eerste aggregatieoptie te maken"
+        title: Aggregatieopties
+    field:
+        add: 'Zoekveldoptie toevoegen'
+        missing: "Klik op 'Zoekveldoptie toevoegen' om een eerste zoekveldoptie te maken"
+        title: Zoekveldopties
+    sort:
+        add: 'Sorteeroptie toevoegen'
+        missing: "Klik op 'Sorteeroptie toevoegen' om een eerste sorteeroptie te maken"
+        title: Sorteeropties
+    title: Zoekopties
 sidebar-menu:
     admin: Admin
     compare-environments: 'Omgevingen vergelijken'
@@ -389,8 +775,85 @@ sidebar-menu:
         name: '{name}'
         searches: Zoekopdrachten
 status:
+    bus:
+        failed: 'Berichten met fout'
+        queue: 'Berichten in de wachtrij'
+        title: 'Berichten in de bus'
+    jobs:
+        failed: 'Mislukte jobs'
+        pending: 'Wachtende jobs'
+        title: Jobs
     title: Systeemstatus
     title_sub: 'Werkt alles zoals verwacht?'
+subtitle:
+    user-in-group: 'Gebruikers in groep'
+    user-not-in-group: 'Gebruiker niet in groep'
+task:
+    action:
+        cancel: Annuleren
+        save: Opslaan
+    assigned_to: 'Toegewezen aan '
+    close: Sluiten
+    create:
+        button: 'Taak toevoegen'
+        submit: 'Taak aanmaken'
+        title: 'Nieuwe taak toevoegen'
+    dashboard:
+        action:
+            edit_revision: 'Revisie bewerken'
+            go_revision: Revisie
+        search_warning: 'Meer dan {count} taken, zoeken op documenttitel is onmogelijk.'
+    delay_days: '{number} dagen'
+    delete:
+        submit: 'Taak verwijderen'
+    field:
+        assignee: Toegewezene
+        deadline: Deadline
+        description: Beschrijving
+        requester: Aanvrager
+        title: Titel
+    filter:
+        assignee: Toegewezenen
+        is_overdue: 'Alleen te laat'
+        requester: Aanvragers
+        reset: Wissen
+        status: Statussen
+        version_next_tag: 'Nieuwe versies'
+    filters: 'Taken filteren'
+    finished:
+        hide: 'Afgewerkte taken verbergen ({number})'
+        show: 'Afgewerkte taken tonen ({number})'
+    info:
+        change_order: 'Volgorde wijzigen'
+        empty: 'Geen taken voor dit document'
+        locked: 'Revisie vergrendeld door {user} tot {time}'
+    mail:
+        assignee: Toegewezene
+        by_role: 'per rol {role}'
+        comment: Commentaar
+        creator: Maker
+        deadline: Deadline
+        description: Beschrijving
+        from: 'Van {sender}'
+        greetings: 'Hallo {receiver},'
+        kind_regards: 'Met vriendelijke groeten,'
+        link_to_document: 'Link naar document'
+        overdue_or_active_list: 'Hier is de lijst met achterstallige of actieve taken.'
+        process_urgently: 'Behandel ze dringend.'
+        task_has_been: 'Een taak is {action} {role}.'
+        title: Titel
+    modal:
+        title: 'Taak: {title}'
+    planned:
+        title: 'Geplande taken'
+    tab_tasks: Taken
+    title: Taken
+    update:
+        submit: 'Taak opslaan'
+        tab:
+            history: Geschiedenis
+            info: Informatie
+        title: 'Taak bewerken: {title}'
 type:
     confirm: |-
         {type, select,
@@ -580,6 +1043,40 @@ type:
             other         {}
         }
 user:
+    add:
+        button: 'Gebruiker toevoegen'
+        card_title: 'Nieuwe gebruiker'
+        page_title: 'Gebruiker toevoegen'
+        subtitle: Gebruikersbeheer
+        title: 'Gebruiker toevoegen'
+    administration: Gebruikersbeheer
+    edit:
+        card_title: '{username} bewerken'
+        title: '{display_name} bewerken'
+    export:
+        csv: CSV-export
+        excel: Excel-export
+    logged_in:
+        member_since: 'Lid sinds {date}'
+        title: 'Ingelogd als {username}'
+    login:
+        alt_logo: 'Logo van elasticMS'
+        continue: 'Meld u aan bij uw account om verder te gaan'
+        forgot: 'Ik ben mijn wachtwoord vergeten'
+        message: 'Meld u aan om uw sessie te starten'
+        password1_aria_label: Wachtwoord
+        password_placeholder: Wachtwoord
+        remember_me: 'Onthoud mij'
+        submit: Aanmelden
+        title: Welkom
+        user_aria_label: 'E-mail of gebruikersnaam'
+        user_placeholder: 'E-mail of gebruikersnaam'
+        welcome_back: 'Welkom terug!'
+    logout:
+        exit: Afsluiten
+        submit: Afmelden
+    management:
+        title: Gebruikersbeheer
     option:
         allowed_configure_wysiwyg: 'Gebruiker toestaan om van WYSIWYG-profiel te wisselen'
         simplified_ui: 'Vereenvoudigde UI'
@@ -587,10 +1084,141 @@ user:
     profile:
         change_password:
             breadcrumb_title: 'Uw wachtwoord wijzigen'
+            cancel: Annuleren
+            submit: 'Wachtwoord wijzigen'
+            title: 'Wachtwoord wijzigen'
         edit:
             breadcrumb_title: Bewerken
+            submit: Bijwerken
+            title: 'Uw profiel bewerken'
+        show:
+            action:
+                cancel: Annuleren
+                edit: Bewerken
+            email: e-mail
+            email_notification: e-mailnotificatie
+            extra_roles: 'Extra rollen'
+            locale: UI-locale
+            locale_preferred: Voorkeurslocale
+            username: Gebruikersnaam
+            wysiwyg: WYSIWYG-profiel
+        title: 'Uw profiel'
+    resetting:
+        check_email: |
+            Er is een e-mail verzonden. Deze bevat een link waarop u moet klikken om uw wachtwoord opnieuw in te stellen.
+            Opmerking: u kunt slechts één keer per {tokenLifetime} uur een nieuw wachtwoord aanvragen.
+
+            Als u geen e-mail ontvangt, controleer dan uw spammap of probeer opnieuw.
+        title: 'Wachtwoord resetten'
 view:
+    contenttype:
+        reorder_item:
+            edit_field_button: '{name} bewerken'
+    custom:
+        hierarchical:
+            reorganise: 'Reorganiseren:'
+    data:
+        json-menu-nested-json-preview:
+            field-type-not-found: 'De typedefinitie gekoppeld aan dit item ontbreekt (waarschijnlijk verwijderd).'
+        json-menu-nested:
+            out_of_sync: 'Niet gesynchroniseerd, vernieuw en probeer opnieuw!'
+    form:
+        fields:
+            asset:
+                preview: Voorbeeld
+    icon:
+        class:
+            release: 'fa fa-cube'
+    macros:
+        data-field-type:
+            collection_added_items: '{0} Er is niets toegevoegd.|{1} Er is één item toegevoegd.|]1,Inf[ Er zijn {count} items toegevoegd.'
+            collection_removed_items: '{0} Er is niets verwijderd.|{1} Er is één item verwijderd.|]1,Inf[ Er zijn {count} items verwijderd.'
+            menu-option-button: Bekijken
     title: '{name} van {plural}'
+    user:
+        index:
+            title: Gebruikerslijst
+views:
+    data:
+        edit-revision-html:
+            cancel-label: 'Niet-opgeslagen wijzigingen verwerpen'
+            discard-draft-label: 'Dit concept verwijderen'
+            discard-draft-message: 'Wijzigingen in dit concept gaan verloren'
+            new-draft-title: '{contentType}: nieuw concept'
+            subtitle: Werkruimte
+            title: '{contentType} bewerken: {revision} '
+        revisions-data-html:
+            all-linked-documents: 'Alle gekoppelde documenten'
+            audit: Audit
+            by: Door
+            current-revision: 'Huidige revisie'
+            current-version: 'Huidige versie'
+            draft-in-progress: 'Concept in uitvoering'
+            finalized-by: 'Gefinaliseerd door'
+            finalized-on: 'Gefinaliseerd op'
+            last-update: 'Laatste update'
+            linked-documents-in: 'Gekoppelde documenten in {environment} ({length}/{total})'
+            modified-by: 'Gewijzigd door'
+            new-version: 'Nieuwe versie'
+            no-linked-document: 'Dit document heeft geen gekoppelde documenten'
+            nothing: Niets
+            'on': op
+            pending: Wachtend
+            previous-revision: 'Vorige revisie'
+            revision: Revisie
+            revision-current: 'U bekijkt de laatste revisie'
+            revision-draft-in-progress: 'Dit is een concept in uitvoering'
+            revision-previous: 'Dit is een revisie uit het verleden'
+            revisions: Revisies
+            revisions.th.actions: Acties
+            revisions.th.autosave: 'Automatisch opslaan'
+            revisions.th.date: Datum
+            revisions.th.environments: Omgevingen
+            revisions.th.finalize: Finaliseren
+            revisions.th.id: '#'
+            revisions.th.locked: Vergrendeld
+            revisions.th.pendings: Wachtenden
+            status: Status
+            title: 'Revisies van {contentType}: {title}'
+            until: Tot
+            version: Versie
+    elements:
+        object-toolbar-html:
+            edit-draft: 'Concept bewerken'
+            new-draft: Bewerken
+            view-current-revision: 'Huidige revisie bekijken'
+            view-draft-in-progress: 'Concept in uitvoering bekijken'
+        object-views-button:
+            action-dropdown-icon-class: 'fa fa-eye'
+            action-dropdown-label: 'Acties in {environment}'
+            action-dropdown-sr-only: 'Dropdown met acties van {environment} omschakelen'
+            copy-data: 'Gegevens kopiëren'
+            copy-data-icon-class: 'fa fa-copy'
+            published-label: 'Gepubliceerd in {environment}'
+            raw-view: 'Ruwe weergave'
+            raw-view-icon-class: 'fa fa-th'
+        revision-toolbar-html:
+            add-to-release: 'Toevoegen aan release'
+            cancel-label: Annuleren
+            cancel-last-updates-label: 'Niet-opgeslagen wijzigingen annuleren'
+            cancel-last-updates-message: 'Niet-opgeslagen wijzigingen annuleren'
+            cancel-message: 'Laatste wijzigingen annuleren?'
+            compare-label: 'Deze revisie vergelijken met de huidige'
+            discard-draft-label: 'Dit concept verwijderen'
+            discard-draft-message: 'Wijzigingen in dit concept gaan verloren'
+            edit-draft-label: 'Concept bewerken'
+            edit-revision-json: 'Ruwe JSON-bewerking'
+            edit-revision-label: 'Revisie bewerken'
+            finalize-draft-label: 'Opslaan en publiceren in {environment}'
+            finalize-draft-message: 'Opslaan en publiceren bevestigen?'
+            new-draft-label: Bewerken
+            other-environment-actions: 'Andere omgevingsacties'
+            other-revision-actions: 'Andere acties op deze revisie'
+            publish-to-label: 'Publiceren naar'
+            re-index-label: Herindexeren
+            revert-revision-label: 'Terugkeren naar deze revisie'
+            unpublish-from-label: 'Depubliceren van'
+            view-label: 'Deze revisie bekijken'
 webhook:
     enable:
         action: Inschakelen

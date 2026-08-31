@@ -38,8 +38,8 @@ class UserController
                     group: $group
                 ),
             ]);
-        } catch (\Throwable $e) {
-            return new JsonResponse(['success' => false, 'error' => [$e->getMessage()]]);
+        } catch (\Throwable $throwable) {
+            return new JsonResponse(['success' => false, 'error' => [$throwable->getMessage()]]);
         }
     }
 }

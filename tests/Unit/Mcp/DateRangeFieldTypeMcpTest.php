@@ -144,6 +144,7 @@ final class DateRangeFieldTypeMcpTest extends TestCase
         $dataService->method('loadDataStructure')->willReturnCallback(function (Revision $revision) use ($dateRangeField): void {
             $rootDataField = new DataField();
             $rootDataField->addChild(new DataField()->setFieldType($dateRangeField));
+
             $revision->setDataField($rootDataField);
         });
 

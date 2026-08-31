@@ -46,6 +46,7 @@ final class RawDataToMcpOutputTest extends TestCase
 
         $contentTypeRoot = new FieldType()->setName('source')->setType(NestedFieldType::class);
         $contentTypeRoot->addChild($localesField);
+
         $contentType = new ContentType()->setName('page')->setFieldType($contentTypeRoot);
 
         $revision = new Revision()
@@ -71,6 +72,7 @@ final class RawDataToMcpOutputTest extends TestCase
         $dataService->method('loadDataStructure')->willReturnCallback(function (Revision $revision) use ($localesField): void {
             $rootDataField = new DataField();
             $rootDataField->addChild(new DataField()->setFieldType($localesField));
+
             $revision->setDataField($rootDataField);
         });
 
@@ -178,6 +180,7 @@ final class RawDataToMcpOutputTest extends TestCase
 
         $contentTypeRoot = new FieldType()->setName('source')->setType(NestedFieldType::class);
         $contentTypeRoot->addChild($localesField);
+
         $contentType = new ContentType()->setName('page')->setFieldType($contentTypeRoot);
 
         $rootDataField = new DataField();
@@ -270,6 +273,7 @@ nl']]);
 
         $contentTypeRoot = new FieldType()->setName('source')->setType(NestedFieldType::class);
         $contentTypeRoot->addChild($localesField);
+
         $contentType = new ContentType()->setName('page')->setFieldType($contentTypeRoot);
 
         $revision = new Revision()

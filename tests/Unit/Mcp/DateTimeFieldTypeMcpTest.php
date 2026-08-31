@@ -47,6 +47,7 @@ final class DateTimeFieldTypeMcpTest extends TestCase
         $dataService->method('loadDataStructure')->willReturnCallback(function (Revision $revision) use ($fieldType): void {
             $rootDataField = new DataField();
             $rootDataField->addChild(new DataField()->setFieldType($fieldType));
+
             $revision->setDataField($rootDataField);
         });
 

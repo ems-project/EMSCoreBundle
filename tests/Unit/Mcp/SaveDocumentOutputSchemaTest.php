@@ -33,8 +33,9 @@ final class SaveDocumentOutputSchemaTest extends TestCase
             'additionalProperties' => true,
         ];
 
+        $service = $this->createService();
         $method = new \ReflectionMethod(ElasticmsMcpToolDataService::class, 'finalizeSaveDocumentOutputSchema');
-        $schema = $method->invoke(null, $rawDataSchema);
+        $schema = $method->invoke($service, $rawDataSchema);
 
         self::assertSame('boolean', $schema['properties']['archived']['type']);
         self::assertSame($rawDataSchema, $schema['properties']['rawData']);
@@ -49,6 +50,18 @@ final class SaveDocumentOutputSchemaTest extends TestCase
         $rootField = new FieldType()->setName('source');
         $rootField->addChild($titleField)->addChild($copyToField)->addChild($subfield);
 
+        $service = $this->createService();
+
+        $method = new \ReflectionMethod(ElasticmsMcpToolDataService::class, 'buildRawDataSchema');
+        $schema = $method->invoke($service, $rootField, true, true);
+
+        self::assertArrayHasKey('title', $schema['properties']);
+        self::assertArrayNotHasKey('live_search', $schema['properties']);
+        self::assertArrayNotHasKey('sortable', $schema['properties']);
+    }
+
+    private function createService(): ElasticmsMcpToolDataService
+    {
         $authorizationChecker = $this->createStub(AuthorizationCheckerInterface::class);
         $authorizationChecker->method('isGranted')->willReturn(true);
 
@@ -79,7 +92,7 @@ final class SaveDocumentOutputSchemaTest extends TestCase
             return $resolvedType;
         });
 
-        $service = new ElasticmsMcpToolDataService(
+        return new ElasticmsMcpToolDataService(
             $this->createStub(UserService::class),
             $this->createStub(ContentTypeService::class),
             $this->createStub(RevisionService::class),
@@ -90,12 +103,5 @@ final class SaveDocumentOutputSchemaTest extends TestCase
             $this->createStub(LoggerInterface::class),
             $this->createStub(RouterInterface::class),
         );
-
-        $method = new \ReflectionMethod(ElasticmsMcpToolDataService::class, 'buildRawDataSchema');
-        $schema = $method->invoke($service, $rootField, true, true);
-
-        self::assertArrayHasKey('title', $schema['properties']);
-        self::assertArrayNotHasKey('live_search', $schema['properties']);
-        self::assertArrayNotHasKey('sortable', $schema['properties']);
     }
 }

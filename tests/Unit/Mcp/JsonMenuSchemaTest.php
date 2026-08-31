@@ -20,7 +20,7 @@ final class JsonMenuSchemaTest extends TestCase
         $field->addChild($this->createComponentFieldType('paragraph', 'body'));
         $field->addChild($this->createComponentFieldType('grid', 'columns'));
 
-        $schema = $this->createJsonMenuEditorFieldType()->generateMcpSchema($field, [$this, 'buildObjectSchema']);
+        $schema = $this->createJsonMenuEditorFieldType()->generateMcpSchema($field, $this->buildObjectSchema(...));
 
         self::assertSame('array', $schema['type']);
         self::assertSame(['$ref' => '#/$defs/jsonMenuNode'], $schema['items']);
@@ -44,7 +44,7 @@ final class JsonMenuSchemaTest extends TestCase
         $field->addChild($this->createComponentFieldType('paragraph', 'body'));
         $field->addChild($this->createComponentFieldType('grid', 'columns'));
 
-        $schema = $this->createJsonMenuNestedEditorFieldType()->generateMcpSchema($field, [$this, 'buildObjectSchema']);
+        $schema = $this->createJsonMenuNestedEditorFieldType()->generateMcpSchema($field, $this->buildObjectSchema(...));
 
         self::assertSame('array', $schema['type']);
         self::assertSame(['$ref' => '#/$defs/jsonMenuNestedNode'], $schema['items']);

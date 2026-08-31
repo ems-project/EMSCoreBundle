@@ -275,7 +275,7 @@ final readonly class ElasticmsMcpToolDataService
         $rawDataSchema = $this->buildRawDataSchema($contentType->getFieldType(), filterEditableFields: false, includeRequired: false, isOutputSchema: true);
         $rawDataSchema['additionalProperties'] = true;
 
-        return ElasticmsMcpJsonSchema::normalize(self::finalizeSaveDocumentOutputSchema($rawDataSchema));
+        return ElasticmsMcpJsonSchema::normalize($this->finalizeSaveDocumentOutputSchema($rawDataSchema));
     }
 
     /**
@@ -283,7 +283,7 @@ final readonly class ElasticmsMcpToolDataService
      *
      * @return array<string, mixed>
      */
-    private static function finalizeSaveDocumentOutputSchema(array $rawDataSchema): array
+    private function finalizeSaveDocumentOutputSchema(array $rawDataSchema): array
     {
         return [
             'type' => 'object',

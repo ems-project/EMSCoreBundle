@@ -1014,6 +1014,8 @@ class DataService
         $revision->setDraft(true);
         if (null !== $ouuid) {
             $revision->setOuuid($ouuid);
+        } elseif ($this->preGeneratedOuuids) {
+            $revision->setOuuid(Uuid::uuid4()->toString());
         }
         $revision->setDeleted(false);
         $revision->setStartTime($now);

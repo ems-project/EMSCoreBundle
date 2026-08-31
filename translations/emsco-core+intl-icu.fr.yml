@@ -166,9 +166,6 @@ core:
                 =1      {Il y a un index}
                 other   {Il y a # index}
             }
-    modal:
-        close: Fermer
-        loading: Chargement...
     version: 'Version {core} avec Symfony {symfony}'
 data:
     add:
@@ -188,20 +185,6 @@ data:
 documentation:
     api:
         title: Documentation
-edit_image:
-    flip:
-        group: Retournement
-        horizontal: 'Retourner horizontalement'
-        vertical: 'Retourner verticalement'
-    rotate:
-        group: Rotation
-        left: 'Tourner à gauche'
-        right: 'Tourner à droite'
-    zoom:
-        group: Zoom
-        minus: Zoomer
-        plus: Dézoomer
-        reset: 'Réinitialiser la vue'
 entity:
     edit:
         title: 'Modifier {entity_name}'
@@ -294,6 +277,7 @@ field:
     date_run_previous: 'Date d’exécution précédente'
     date_upload: 'Date d’upload'
     definition: Définition
+    description: Description
     editor: Éditeur
     email_content_type: 'Type de contenu (ex. : text/html)'
     enabled: Activé
@@ -333,6 +317,9 @@ field:
     label: Libellé
     last_seen: 'Vu pour la dernière fois'
     locale: Locale
+    mcp_input_schema: "Template du schéma d'entrée MCP (JSON)"
+    mcp_output_schema: 'Modèle du schéma de sortie MCP (JSON)'
+    mcp_response: 'Template de réponse MCP (JSON)'
     message: Message
     name: Nom
     plural: Pluriel
@@ -533,6 +520,8 @@ key:
     loop_count: '#'
     lucene_version: 'Version de Lucene'
     managed_aliases: 'Alias gérés'
+    mcp: MCP
+    mcp_tools: 'Outils MCP'
     message: Message
     name: Nom
     none: Aucun
@@ -562,6 +551,7 @@ key:
     sort_by: 'Trier par'
     status: Statut
     structure: Structure
+    system_logs: 'Journaux système'
     tagline: Slogan
     task_max_waiting_in_queue_millis: 'Attente maximale d’une tâche dans la file'
     tiptap: Tiptap

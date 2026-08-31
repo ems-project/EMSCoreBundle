@@ -21,6 +21,7 @@ return function (RoutingConfigurator $routes): void {
     $routes->import('@EMSCoreBundle/config/routing/asset.php')->prefix('/bundles');
     $routes->import('@EMSCoreBundle/config/routing/release.php')->prefix('/publisher/release-admin');
     $routes->import('@EMSCoreBundle/config/routing/query-search.php')->prefix('/query-search');
+    $routes->import('@EMSCoreBundle/config/routing/mcp-tool.php')->prefix('/admin/mcp-tool');
     $routes->import('@EMSCoreBundle/config/routing/datatable.php')->prefix('/datatable');
     $routes->import('@EMSCoreBundle/config/routing/data/file.php')->prefix('/data/file');
     $routes->import('@EMSCoreBundle/config/routing/data/revision.php')->prefix('/data');

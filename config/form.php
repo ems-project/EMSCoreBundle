@@ -70,6 +70,7 @@ use EMS\CoreBundle\Form\Form\FieldHolderType;
 use EMS\CoreBundle\Form\Form\FormType;
 use EMS\CoreBundle\Form\Form\GroupType;
 use EMS\CoreBundle\Form\Form\ManagedAliasType;
+use EMS\CoreBundle\Form\Form\McpToolType;
 use EMS\CoreBundle\Form\Form\NotificationFormType;
 use EMS\CoreBundle\Form\Form\QuerySearchType;
 use EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType;
@@ -168,6 +169,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('twig'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'computed'])
         ->tag('form.type');
@@ -643,6 +645,11 @@ return static function (ContainerConfigurator $container) {
         ->tag('form.type');
     $services->set(ReorganizeType::class)
         ->args([service(ContentTypeService::class)])
+        ->tag('form.type');
+    $services->set(McpToolType::class)
+        ->args([
+            service('ems.service.user'),
+        ])
         ->tag('form.type');
 
     $services->set('emsco.form_extension.locale_form_extension', LocaleFormExtension::class)

@@ -147,8 +147,16 @@ class TwigElementsController extends AbstractController
         $webhooks = $menu->addChild(t('key.webhooks', [], 'emsco-core'), 'fa fa-chain', Routes::WEBHOOK_SUBSCRIPTION_INDEX);
         $webhooks->addChild(t('key.webhook_subscriptions', [], 'emsco-core'), 'fa fa-solid fa-registered', Routes::WEBHOOK_SUBSCRIPTION_INDEX);
 
-        $menu->addChild(t('key.logs', [], 'emsco-core'), 'fa fa-file-text', Routes::LOG_INDEX);
-        $menu->addChild(t('key.uploaded_files_logs', [], 'emsco-core'), 'fa fa-upload', Routes::UPLOAD_ASSET_ADMIN_OVERVIEW);
+        $mcpMenu = $menu->addChild(
+            label: t('key.mcp', [], 'emsco-core'),
+            icon: 'fa fa-medium',
+            route: Routes::MCP_TOOL_INDEX
+        );
+        $mcpMenu->addChild(t('key.mcp_tools', [], 'emsco-core'), 'fa fa-wrench', Routes::MCP_TOOL_INDEX);
+
+        $logsMenu = $menu->addChild(t('key.logs', [], 'emsco-core'), 'fa fa-file-text', Routes::LOG_INDEX);
+        $logsMenu->addChild(t('key.system_logs', [], 'emsco-core'), 'fa fa-file-text', Routes::LOG_INDEX);
+        $logsMenu->addChild(t('key.uploaded_files_logs', [], 'emsco-core'), 'fa fa-upload', Routes::UPLOAD_ASSET_ADMIN_OVERVIEW);
 
         return $menu;
     }

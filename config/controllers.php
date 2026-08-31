@@ -10,6 +10,7 @@ use EMS\CoreBundle\Controller\Admin\AnalyzerController;
 use EMS\CoreBundle\Controller\Admin\EnvironmentController;
 use EMS\CoreBundle\Controller\Admin\FilterController;
 use EMS\CoreBundle\Controller\Admin\I18nController;
+use EMS\CoreBundle\Controller\Admin\McpToolController;
 use EMS\CoreBundle\Controller\Admin\QuerySearchController;
 use EMS\CoreBundle\Controller\Admin\ScheduleController;
 use EMS\CoreBundle\Controller\Admin\WysiwygController;
@@ -190,6 +191,17 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('emsco.logger'),
             service('ems.service.query_search'),
+            service('emsco.data_table.factory'),
+        ])
+        ->call('setContainer')
+        ->tag('container.service_subscriber')
+        ->tag('controller.service_arguments');
+
+    $services->set(McpToolController::class)
+        ->public()
+        ->args([
+            service('emsco.logger'),
+            service('ems.service.mcp_tool'),
             service('emsco.data_table.factory'),
         ])
         ->call('setContainer')

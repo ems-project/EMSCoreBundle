@@ -31,6 +31,7 @@ use EMS\CoreBundle\Repository\I18nRepository;
 use EMS\CoreBundle\Repository\JobRepository;
 use EMS\CoreBundle\Repository\LogRepository;
 use EMS\CoreBundle\Repository\ManagedAliasRepository;
+use EMS\CoreBundle\Repository\McpToolRepository;
 use EMS\CoreBundle\Repository\MessengerMessagesRepository;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Repository\QuerySearchRepository;
@@ -184,4 +185,7 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems.repository.messenger_messages_repository', MessengerMessagesRepository::class)
         ->args([service('doctrine.dbal.default_connection')]);
+
+    $services->set('ems.repository.mcp_tool', McpToolRepository::class)
+        ->args([service('doctrine')]);
 };

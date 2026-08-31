@@ -85,25 +85,36 @@ final class McpControllerTest extends WebTestCase
         $toolNames = \array_map(static fn (array $tool): string => (string) $tool['name'], $tools);
 
         self::assertContains('get_current_user', $toolNames);
-        self::assertContains('current_storage_algorithm', $toolNames);
         self::assertContains('init_asset_upload', $toolNames);
         self::assertContains('upload_asset_chunk', $toolNames);
         self::assertContains('download_asset_chunk', $toolNames);
         self::assertContains('get_asset_info', $toolNames);
-        self::assertContains('get_document_news', $toolNames);
-        self::assertContains('create_document_news', $toolNames);
-        self::assertContains('get_document_secret', $toolNames);
-        self::assertNotContains('create_document_secret', $toolNames);
+        self::assertContains('get_news', $toolNames);
+        self::assertContains('save_news', $toolNames);
+        self::assertContains('get_secret', $toolNames);
+        self::assertNotContains('save_secret', $toolNames);
 
         $currentUserTool = \array_first(\array_filter($tools, static fn (array $tool): bool => 'get_current_user' === ($tool['name'] ?? null))) ?? null;
         self::assertIsArray($currentUserTool);
+        self::assertStringContainsString('elasticMS user profile', (string) ($currentUserTool['description'] ?? ''));
         self::assertSame('object', $currentUserTool['outputSchema']['type'] ?? null);
         self::assertSame('object', $currentUserTool['outputSchema']['properties']['user']['type'] ?? null);
         self::assertSame('string', $currentUserTool['outputSchema']['properties']['user']['properties']['username']['type'] ?? null);
 
-        $createNewsTool = \array_first(\array_filter($tools, static fn (array $tool): bool => 'create_document_news' === ($tool['name'] ?? null))) ?? null;
+        $initAssetTool = \array_first(\array_filter($tools, static fn (array $tool): bool => 'init_asset_upload' === ($tool['name'] ?? null))) ?? null;
+        self::assertIsArray($initAssetTool);
+        self::assertSame(['sha1'], $initAssetTool['inputSchema']['properties']['algo']['enum'] ?? null);
+        self::assertSame('sha1', $initAssetTool['inputSchema']['properties']['algo']['default'] ?? null);
+
+        $downloadAssetTool = \array_first(\array_filter($tools, static fn (array $tool): bool => 'download_asset_chunk' === ($tool['name'] ?? null))) ?? null;
+        self::assertIsArray($downloadAssetTool);
+        self::assertSame(0, $downloadAssetTool['inputSchema']['properties']['offset']['default'] ?? null);
+        self::assertSame(5_242_880, $downloadAssetTool['inputSchema']['properties']['length']['default'] ?? null);
+
+        $createNewsTool = \array_first(\array_filter($tools, static fn (array $tool): bool => 'save_news' === ($tool['name'] ?? null))) ?? null;
 
         self::assertIsArray($createNewsTool);
+        self::assertStringContainsString('`news` in the `preview` environment', (string) ($createNewsTool['description'] ?? ''));
         self::assertSame(['title'], $createNewsTool['inputSchema']['properties']['rawData']['required'] ?? null);
         self::assertSame('string', $createNewsTool['inputSchema']['properties']['rawData']['properties']['title']['type'] ?? null);
         self::assertSame('object', $createNewsTool['inputSchema']['properties']['rawData']['properties']['body']['type'] ?? null);
@@ -148,33 +159,12 @@ final class McpControllerTest extends WebTestCase
         self::assertIsArray($structuredUser);
         self::assertSame('mcp-user', $structuredUser['username'] ?? null);
 
-        $currentStorageAlgorithmPayload = [
-            'jsonrpc' => '2.0',
-            'id' => 31,
-            'method' => 'tools/call',
-            'params' => [
-                'name' => 'current_storage_algorithm',
-                'arguments' => new \stdClass(),
-            ],
-        ];
-
-        $this->client->request(
-            Request::METHOD_POST,
-            '/api/mcp',
-            server: $this->mcpHeaders($sessionId),
-            content: $this->jsonEncode($currentStorageAlgorithmPayload)
-        );
-
-        self::assertResponseIsSuccessful();
-        $currentStorageAlgorithmResponse = $this->decodeResponse($this->client);
-        self::assertSame(self::getContainer()->get('ems.service.file')->getAlgo(), $currentStorageAlgorithmResponse['result']['structuredContent']['algorithm'] ?? null);
-
         $createDraftPayload = [
             'jsonrpc' => '2.0',
             'id' => 4,
             'method' => 'tools/call',
             'params' => [
-                'name' => 'create_document_news',
+                'name' => 'save_news',
                 'arguments' => [
                     'rawData' => [
                         'title' => 'MCP News Draft',
@@ -211,7 +201,7 @@ final class McpControllerTest extends WebTestCase
             'id' => 41,
             'method' => 'tools/call',
             'params' => [
-                'name' => 'create_document_news',
+                'name' => 'save_news',
                 'arguments' => [
                     'rawData' => [
                         'title' => 'MCP Finalized News',
@@ -399,7 +389,7 @@ final class McpControllerTest extends WebTestCase
             'id' => 5,
             'method' => 'tools/call',
             'params' => [
-                'name' => 'get_document_news',
+                'name' => 'get_news',
                 'arguments' => [
                     'ouuid' => $fixtures['revision']->getOuuid(),
                 ],
@@ -588,6 +578,7 @@ final class McpControllerTest extends WebTestCase
             ->setEnvironment($environment);
         $restrictedContentType->setRoles(new ContentTypeRoles([
             ContentTypeRoles::VIEW => 'ROLE_AUTHOR',
+            ContentTypeRoles::EDIT => 'ROLE_ADMIN',
             ContentTypeRoles::CREATE => 'ROLE_ADMIN',
         ]));
 

@@ -166,9 +166,6 @@ core:
                 =1      {There is one index}
                 other   {There are # indexes}
             }
-    modal:
-        close: Close
-        loading: Loading...
     version: 'Version {core} with Symfony {symfony}'
 data:
     add:
@@ -188,20 +185,6 @@ data:
 documentation:
     api:
         title: Documentation
-edit_image:
-    flip:
-        group: Flip
-        horizontal: 'Flip horizontal'
-        vertical: 'Flip vertical'
-    rotate:
-        group: Rotate
-        left: 'Rotate left'
-        right: 'Rotate right'
-    zoom:
-        group: Zoom
-        minus: 'Zoom in'
-        plus: 'Zoom out'
-        reset: 'Reset view'
 entity:
     edit:
         title: 'Edit {entity_name}'
@@ -294,6 +277,7 @@ field:
     date_run_previous: 'Date previous run'
     date_upload: 'Date upload'
     definition: Definition
+    description: Description
     editor: Editor
     email_content_type: 'Content type (ie: text/html)'
     enabled: Enabled
@@ -333,6 +317,9 @@ field:
     label: Label
     last_seen: 'Last seen'
     locale: Locale
+    mcp_input_schema: 'MCP input schema template (JSON)'
+    mcp_output_schema: 'MCP output schema template (JSON)'
+    mcp_response: 'MCP response template (JSON)'
     message: Message
     name: Name
     plural: Plural
@@ -533,6 +520,8 @@ key:
     loop_count: '#'
     lucene_version: 'Lucene version'
     managed_aliases: 'Managed aliases'
+    mcp: MCP
+    mcp_tools: 'MCP tools'
     message: Message
     name: Name
     none: None
@@ -562,6 +551,7 @@ key:
     sort_by: 'Sort by'
     status: Status
     structure: Structure
+    system_logs: 'System logs'
     tagline: Tagline
     task_max_waiting_in_queue_millis: 'Task max waiting in queue'
     tiptap: Tiptap

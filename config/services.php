@@ -10,7 +10,6 @@ use EMS\CommonBundle\Contracts\ExpressionServiceInterface;
 use EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Helper\Text\Encoder;
-use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\ContentType\FieldType\FieldTypeService;
 use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformer;
 use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformers;
@@ -77,6 +76,7 @@ use EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskHandleType;
 use EMS\CoreBundle\Mcp\ElasticmsMcpServerFactory;
 use EMS\CoreBundle\Mcp\ElasticmsMcpToolAssetService;
+use EMS\CoreBundle\Mcp\ElasticmsMcpToolCustomService;
 use EMS\CoreBundle\Mcp\ElasticmsMcpToolDataService;
 use EMS\CoreBundle\Mcp\ElasticmsMcpToolUserService;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -104,6 +104,7 @@ use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\Internationalization\XliffService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\Mapping;
+use EMS\CoreBundle\Service\Mcp\McpToolService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\ObjectChoiceCacheService;
 use EMS\CoreBundle\Service\PublishService;
@@ -249,6 +250,15 @@ return static function (ContainerConfigurator $container) {
             '%ems_core.security.firewall.core%',
             '%ems_core.instance_id%',
         ]);
+
+    $services->alias('ems.service.mcp_tool', McpToolService::class);
+
+    $services->set(McpToolService::class)
+        ->args([
+            service('ems.repository.mcp_tool'),
+            service('logger'),
+        ])
+        ->tag('emsco.entity.service', ['priority' => 40]);
 
     $services->set('emsco.data_table.type.collection', DataTableTypeCollection::class)
         ->args([tagged_iterator('emsco.datatable')]);
@@ -726,7 +736,16 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.data'),
             service('form.registry'),
             service('security.authorization_checker'),
-            service(ElasticaService::class),
+            service('logger'),
+            service('emsco.logger.audit'),
+            service('router'),
+        ]);
+
+    $services->set(ElasticmsMcpToolCustomService::class)
+        ->args([
+            service('ems.service.user'),
+            service('ems.service.mcp_tool'),
+            service('twig'),
             service('logger'),
             service('emsco.logger.audit'),
         ]);
@@ -739,6 +758,7 @@ return static function (ContainerConfigurator $container) {
             service(ElasticmsMcpToolUserService::class),
             service(ElasticmsMcpToolDataService::class),
             service(ElasticmsMcpToolAssetService::class),
+            service(ElasticmsMcpToolCustomService::class),
         ]);
 
     $services->set('emsco.mcp.server', Server::class)

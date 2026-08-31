@@ -18,6 +18,7 @@ final readonly class ElasticmsMcpServerFactory
         private ElasticmsMcpToolUserService $toolUserService,
         private ElasticmsMcpToolDataService $toolDataService,
         private ElasticmsMcpToolAssetService $toolAssetService,
+        private ElasticmsMcpToolCustomService $toolCustomService,
     ) {
     }
 
@@ -27,62 +28,20 @@ final readonly class ElasticmsMcpServerFactory
             ->setServerInfo(
                 name: 'elasticMS MCP',
                 version: '1.0.0',
-                description: 'Minimal elasticMS MCP server over HTTP using elasticMS API bearer tokens.',
+                description: 'elasticMS MCP server over HTTP using elasticMS API bearer tokens.',
             )
-            ->setInstructions('Authenticate with an elasticMS API bearer token. The server exposes a minimal set of content tools and preserves the authenticated user permissions.')
+            ->setInstructions('Authenticate with an elasticMS API bearer token. The server exposes content, search, user and asset tools while preserving the authenticated user permissions.')
             ->setContainer($this->container)
             ->setLogger($this->logger)
-            ->setSession(new FileSessionStore($this->cacheDir.'/mcp-sessions'))
-            ->addTool(
-                handler: $this->toolUserService->getCurrentUser(...),
-                name: 'get_current_user',
-                description: 'Return the authenticated elasticMS user profile.',
-                inputSchema: [
-                    'type' => 'object',
-                    'properties' => new \stdClass(),
-                    'required' => [],
-                    'additionalProperties' => false,
-                ],
-                outputSchema: [
-                    'type' => 'object',
-                    'properties' => [
-                        'user' => [
-                            'type' => 'object',
-                            'properties' => [
-                                'id' => ['type' => ['integer', 'null']],
-                                'username' => ['type' => 'string'],
-                                'displayName' => ['type' => 'string'],
-                                'roles' => [
-                                    'type' => 'array',
-                                    'items' => ['type' => 'string'],
-                                ],
-                                'email' => ['type' => 'string'],
-                                'circles' => [
-                                    'type' => 'array',
-                                    'items' => ['type' => 'string'],
-                                ],
-                                'lastLogin' => ['type' => ['string', 'null']],
-                                'expirationDate' => ['type' => ['string', 'null']],
-                                'language' => ['type' => 'string'],
-                                'locale' => ['type' => 'string'],
-                                'localePreferred' => ['type' => ['string', 'null']],
-                                'userOptions' => [
-                                    'type' => 'object',
-                                    'additionalProperties' => true,
-                                ],
-                            ],
-                            'required' => ['id', 'username', 'displayName', 'roles', 'email', 'circles', 'lastLogin', 'expirationDate', 'language', 'locale', 'localePreferred', 'userOptions'],
-                            'additionalProperties' => false,
-                        ],
-                    ],
-                    'required' => ['user'],
-                    'additionalProperties' => false,
-                ],
-            );
+            ->setSession(new FileSessionStore($this->cacheDir.'/mcp-sessions'));
+        $this->toolCustomService->addCustomTools($builder);
+        $this->toolUserService->addUserTools($builder);
         $this->toolAssetService->addAssetTools($builder);
-        // $this->toolDataService->addSearchTool($builder);
+        $this->toolDataService->addDataTools($builder);
         $this->toolDataService->addGetDocumentTools($builder);
-        $this->toolDataService->addCreateDocumentTools($builder);
+        $this->toolDataService->addSaveDocumentTools($builder);
+
+        $this->toolCustomService->addCustomTools($builder);
 
         return $builder->build();
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\DataFieldFormOptions;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
@@ -188,7 +189,7 @@ abstract class DataFieldType extends AbstractType
      *
      * @return array<string, mixed>
      */
-    abstract public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array;
+    abstract public function generateMcpSchema(FieldType $fieldType, callable $buildObjectSchema, bool $isOutputSchema = false): array;
 
     /**
      * @param array<string, mixed> $options
@@ -233,16 +234,6 @@ abstract class DataFieldType extends AbstractType
     public function getChoiceList(FieldType $fieldType, array $choices): array
     {
         return [];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function generateUnsupportedJsonSchema(): array
-    {
-        return [
-            'description' => \sprintf('ElasticMS field type "%s".', static::class),
-        ];
     }
 
     public static function getIcon(): string
@@ -330,10 +321,37 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * Test if the field may contain sub field.
+     * Build a field-specific value for MCP rawData output.
      *
-     * I.e. container, nested, array, ...
+     * @param callable(FieldType, mixed): mixed $buildChildValue
      */
+    public function buildMcpRawDataValue(FieldType $fieldType, mixed $rawData, callable $buildChildValue): mixed
+    {
+        return $rawData;
+    }
+
+    public function mcpInputToRawValue(FieldType $fieldType, mixed $rawData): mixed
+    {
+        return $rawData;
+    }
+
+    protected function normalizeMcpDateTimeValue(mixed $value, string $outputFormat = \DateTimeInterface::ATOM): mixed
+    {
+        if ($value instanceof \DateTimeInterface) {
+            return $value->format($outputFormat);
+        }
+
+        if (!\is_string($value) || '' === \trim($value)) {
+            return $value;
+        }
+
+        try {
+            return new \DateTimeImmutable($value)->format($outputFormat);
+        } catch (\Throwable) {
+            return $value;
+        }
+    }
+
     public static function isContainer(): bool
     {
         return false;
@@ -524,5 +542,47 @@ abstract class DataFieldType extends AbstractType
     public function setFormOptions(?DataFieldFormOptions $formOptions): void
     {
         $this->formOptions = $formOptions;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function generateAssetMcpSchema(FieldType $fieldType): array
+    {
+        $assetSchema = [
+            'type' => 'object',
+            'properties' => [
+                EmsFields::CONTENT_FILE_HASH_FIELD => [
+                    'type' => 'string',
+                    'description' => 'File hash.',
+                ],
+                EmsFields::CONTENT_FILE_NAME_FIELD => [
+                    'type' => 'string',
+                    'description' => 'Original file name.',
+                ],
+                EmsFields::CONTENT_FILE_SIZE_FIELD => [
+                    'type' => 'integer',
+                    'description' => 'File size in bytes.',
+                ],
+                EmsFields::CONTENT_MIME_TYPE_FIELD => [
+                    'type' => 'string',
+                    'description' => 'File MIME type.',
+                ],
+                EmsFields::CONTENT_FILE_ALGO_FIELD_ => [
+                    'type' => 'string',
+                    'description' => 'Hash algorithm used to identify the file.',
+                ],
+            ],
+            'additionalProperties' => true,
+        ];
+
+        if ((bool) $fieldType->getDisplayOption('multiple', false)) {
+            return [
+                'type' => 'array',
+                'items' => $assetSchema,
+            ];
+        }
+
+        return $assetSchema;
     }
 }

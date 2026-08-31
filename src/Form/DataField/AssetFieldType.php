@@ -91,43 +91,9 @@ class AssetFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    public function generateMcpSchema(FieldType $fieldType, callable $buildObjectSchema, bool $isOutputSchema = false): array
     {
-        $assetSchema = [
-            'type' => 'object',
-            'properties' => [
-                EmsFields::CONTENT_FILE_HASH_FIELD_ => [
-                    'type' => 'string',
-                    'description' => 'File hash.',
-                ],
-                EmsFields::CONTENT_FILE_NAME_FIELD_ => [
-                    'type' => 'string',
-                    'description' => 'Original file name.',
-                ],
-                EmsFields::CONTENT_FILE_SIZE_FIELD_ => [
-                    'type' => 'integer',
-                    'description' => 'File size in bytes.',
-                ],
-                EmsFields::CONTENT_MIME_TYPE_FIELD_ => [
-                    'type' => 'string',
-                    'description' => 'File MIME type.',
-                ],
-                EmsFields::CONTENT_FILE_ALGO_FIELD_ => [
-                    'type' => 'string',
-                    'description' => 'Hash algorithm used to identify the file.',
-                ],
-            ],
-            'additionalProperties' => true,
-        ];
-
-        if ((bool) $fieldType->getDisplayOption('multiple', false)) {
-            return [
-                'type' => 'array',
-                'items' => $assetSchema,
-            ];
-        }
-
-        return $assetSchema;
+        return $this->generateAssetMcpSchema($fieldType);
     }
 
     #[\Override]

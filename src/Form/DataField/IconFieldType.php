@@ -24,9 +24,9 @@ class IconFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    public function generateMcpSchema(FieldType $fieldType, callable $buildObjectSchema, bool $isOutputSchema = false): array
     {
-        return $this->generateUnsupportedJsonSchema();
+        return ['type' => 'string'];
     }
 
     #[\Override]

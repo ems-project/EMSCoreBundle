@@ -22,7 +22,7 @@ class ChoiceFieldType extends DataFieldType
     private ?int $fakeIndex = null;
 
     #[\Override]
-    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    public function generateMcpSchema(FieldType $fieldType, callable $buildObjectSchema, bool $isOutputSchema = false): array
     {
         $choices = \array_values(\array_filter(\array_map(
             \trim(...),

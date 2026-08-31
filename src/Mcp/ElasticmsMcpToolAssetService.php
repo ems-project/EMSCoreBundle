@@ -13,27 +13,16 @@ use Mcp\Server\Builder;
 use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
 
-final readonly class ElasticmsMcpToolAssetService extends AbstractElasticmsMcpToolService
+final readonly class ElasticmsMcpToolAssetService
 {
+    use ElasticmsMcpToolCallTrait;
+
     public function __construct(
-        UserService $userService,
+        private UserService $userService,
         private FileService $fileService,
-        LoggerInterface $logger,
-        LoggerInterface $auditLogger,
+        private LoggerInterface $logger,
+        private LoggerInterface $auditLogger,
     ) {
-        parent::__construct($userService, $logger, $auditLogger);
-    }
-
-    /**
-     * @return array{algorithm:string}
-     */
-    public function currentStorageAlgorithm(): array
-    {
-        $toolName = 'current_storage_algorithm';
-
-        return $this->wrapToolCall($toolName, [], fn (): array => [
-            'algorithm' => $this->fileService->getAlgo(),
-        ]);
     }
 
     /**
@@ -170,29 +159,34 @@ final readonly class ElasticmsMcpToolAssetService extends AbstractElasticmsMcpTo
     {
         $builder
             ->addTool(
-                handler: $this->currentStorageAlgorithm(...),
-                name: 'current_storage_algorithm',
-                description: 'Return the currently configured storage hash algorithm for assets.',
-                inputSchema: [
-                    'type' => 'object',
-                    'properties' => new \stdClass(),
-                    'required' => [],
-                    'additionalProperties' => false,
-                ],
-                outputSchema: $this->buildCurrentStorageAlgorithmSchema(),
-            )
-            ->addTool(
                 handler: $this->initAssetUpload(...),
                 name: 'init_asset_upload',
-                description: \sprintf('Initialize or resume a chunked asset upload. Chunks must not exceed %d bytes and the hash must use the current storage algorithm.', File::DEFAULT_CHUNK_SIZE),
+                description: \sprintf('Initialize or resume a chunked elasticMS asset upload. Compute the file hash with the %s algorithm before calling this tool. Omit algo to use %s. Then upload chunks with upload_asset_chunk until available is true; each decoded chunk must not exceed %d bytes. Recoverable errors include invalid arguments, unsupported hash algorithms and permission failures.', $this->fileService->getAlgo(), $this->fileService->getAlgo(), File::DEFAULT_CHUNK_SIZE),
                 inputSchema: [
                     'type' => 'object',
                     'properties' => [
-                        'hash' => ['type' => 'string'],
-                        'size' => ['type' => 'integer'],
-                        'name' => ['type' => 'string'],
-                        'type' => ['type' => 'string'],
-                        'algo' => ['type' => 'string'],
+                        'hash' => [
+                            'type' => 'string',
+                            'description' => \sprintf('Full-file %s hash.', $this->fileService->getAlgo()),
+                        ],
+                        'size' => [
+                            'type' => 'integer',
+                            'description' => 'Full file size in bytes.',
+                        ],
+                        'name' => [
+                            'type' => 'string',
+                            'description' => 'Original file name to store with the asset.',
+                        ],
+                        'type' => [
+                            'type' => 'string',
+                            'description' => 'MIME type of the uploaded file, for example text/markdown or image/png.',
+                        ],
+                        'algo' => [
+                            'type' => 'string',
+                            'enum' => [$this->fileService->getAlgo()],
+                            'default' => $this->fileService->getAlgo(),
+                            'description' => \sprintf('Hash algorithm. Only %s is supported; omit this argument to use it.', $this->fileService->getAlgo()),
+                        ],
                     ],
                     'required' => ['hash', 'size', 'name', 'type'],
                     'additionalProperties' => false,
@@ -202,12 +196,18 @@ final readonly class ElasticmsMcpToolAssetService extends AbstractElasticmsMcpTo
             ->addTool(
                 handler: $this->uploadAssetChunk(...),
                 name: 'upload_asset_chunk',
-                description: \sprintf('Upload one asset chunk encoded as base64. The decoded chunk size must not exceed %d bytes.', File::DEFAULT_CHUNK_SIZE),
+                description: \sprintf('Upload the next base64-encoded chunk for an asset initialized with init_asset_upload. Chunks are appended at the current uploaded offset returned by init_asset_upload or the previous upload_asset_chunk response; there is no explicit offset argument. Continue until the response has available=true and uploaded=size. The decoded chunk size must not exceed %d bytes. Recoverable errors include invalid base64, unknown upload hash, oversized chunks and permission failures.', File::DEFAULT_CHUNK_SIZE),
                 inputSchema: [
                     'type' => 'object',
                     'properties' => [
-                        'hash' => ['type' => 'string'],
-                        'chunkBase64' => ['type' => 'string'],
+                        'hash' => [
+                            'type' => 'string',
+                            'description' => 'Hash returned by init_asset_upload for the file being uploaded.',
+                        ],
+                        'chunkBase64' => [
+                            'type' => 'string',
+                            'description' => \sprintf('Base64-encoded bytes for the next chunk. The decoded payload must be at most %d bytes.', File::DEFAULT_CHUNK_SIZE),
+                        ],
                     ],
                     'required' => ['hash', 'chunkBase64'],
                     'additionalProperties' => false,
@@ -217,13 +217,24 @@ final readonly class ElasticmsMcpToolAssetService extends AbstractElasticmsMcpTo
             ->addTool(
                 handler: $this->downloadAssetChunk(...),
                 name: 'download_asset_chunk',
-                description: \sprintf('Download one asset chunk encoded as base64. The requested chunk length defaults to and must not exceed %d bytes.', File::DEFAULT_CHUNK_SIZE),
+                description: \sprintf('Download one asset chunk encoded as base64 for a given hash. The offset defaults to 0 and length defaults to %d bytes; length must be between 1 and %d bytes. Use nextOffset from the response for the next call until eof=true. Recoverable errors include empty or unknown hashes, invalid offset or length and permission failures.', File::DEFAULT_CHUNK_SIZE, File::DEFAULT_CHUNK_SIZE),
                 inputSchema: [
                     'type' => 'object',
                     'properties' => [
-                        'hash' => ['type' => 'string'],
-                        'offset' => ['type' => 'integer'],
-                        'length' => ['type' => 'integer'],
+                        'hash' => [
+                            'type' => 'string',
+                            'description' => 'Hash of the uploaded asset to download.',
+                        ],
+                        'offset' => [
+                            'type' => 'integer',
+                            'default' => 0,
+                            'description' => 'Zero-based byte offset to start reading from.',
+                        ],
+                        'length' => [
+                            'type' => 'integer',
+                            'default' => File::DEFAULT_CHUNK_SIZE,
+                            'description' => \sprintf('Maximum number of bytes to read. Must be between 1 and %d.', File::DEFAULT_CHUNK_SIZE),
+                        ],
                     ],
                     'required' => ['hash'],
                     'additionalProperties' => false,
@@ -233,11 +244,14 @@ final readonly class ElasticmsMcpToolAssetService extends AbstractElasticmsMcpTo
             ->addTool(
                 handler: $this->getAssetInfo(...),
                 name: 'get_asset_info',
-                description: 'Return the metadata and file object of an uploaded asset.',
+                description: \sprintf('Return the elasticMS metadata and file object for an uploaded asset identified by its %s hash. Use this after upload_asset_chunk to verify the asset is available and to retrieve the file object that can be stored in document rawData. Recoverable errors include empty or unknown hashes and permission failures.', $this->fileService->getAlgo()),
                 inputSchema: [
                     'type' => 'object',
                     'properties' => [
-                        'hash' => ['type' => 'string'],
+                        'hash' => [
+                            'type' => 'string',
+                            'description' => \sprintf('%s hash of the uploaded asset.', $this->fileService->getAlgo()),
+                        ],
                     ],
                     'required' => ['hash'],
                     'additionalProperties' => false,
@@ -284,26 +298,17 @@ final readonly class ElasticmsMcpToolAssetService extends AbstractElasticmsMcpTo
                 'algo' => ['type' => 'string'],
                 'available' => ['type' => 'boolean'],
                 'uploaded' => ['type' => 'integer'],
-                'status' => ['type' => ['string', 'null']],
+                'status' => ['type' => [
+                    'anyOf' => [[
+                        'type' => 'string',
+                    ], [
+                        'type' => 'null',
+                    ]],
+                ]],
                 'user' => ['type' => 'string'],
                 'chunkSize' => ['type' => 'integer'],
             ],
             'required' => ['hash', 'name', 'type', 'size', 'algo', 'available', 'uploaded', 'status', 'user', 'chunkSize'],
-            'additionalProperties' => false,
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function buildCurrentStorageAlgorithmSchema(): array
-    {
-        return [
-            'type' => 'object',
-            'properties' => [
-                'algorithm' => ['type' => 'string'],
-            ],
-            'required' => ['algorithm'],
             'additionalProperties' => false,
         ];
     }

@@ -42,7 +42,7 @@ class MultiplexedTabContainerFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function generateJsonSchema(FieldType $fieldType, callable $buildObjectSchema): array
+    public function generateMcpSchema(FieldType $fieldType, callable $buildObjectSchema, bool $isOutputSchema = false): array
     {
         $schema = [
             'type' => 'object',
@@ -53,6 +53,10 @@ class MultiplexedTabContainerFieldType extends DataFieldType
 
         foreach ($this->buildSchemaChoices($fieldType) as $label => $value) {
             $schema['properties'][$value] = [...$childSchema, 'title' => $label];
+        }
+
+        if ([] === $schema['properties']) {
+            $schema['properties'] = new \stdClass();
         }
 
         return $schema;

@@ -4,19 +4,10 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Mcp;
 
-use EMS\CoreBundle\Service\UserService;
 use Mcp\Exception\ToolCallException;
-use Psr\Log\LoggerInterface;
 
-abstract readonly class AbstractElasticmsMcpToolService
+trait ElasticmsMcpToolCallTrait
 {
-    public function __construct(
-        protected UserService $userService,
-        protected LoggerInterface $logger,
-        protected LoggerInterface $auditLogger,
-    ) {
-    }
-
     /**
      * @template TResult
      *

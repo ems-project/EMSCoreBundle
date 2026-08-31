@@ -137,15 +137,11 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $continue = $this->userExist($user, 'add');
+            $user->setEnabled(true);
+            $this->userManager->add($user);
+            $this->addFlash('notice', 'User created!');
 
-            if ($continue) {
-                $user->setEnabled(true);
-                $this->userManager->add($user);
-                $this->addFlash('notice', 'User created!');
-
-                return $this->redirectToRoute(Routes::USER_INDEX);
-            }
+            return $this->redirectToRoute(Routes::USER_INDEX);
         }
 
         return $this->render(\sprintf('@%s/user/add.html.twig', $this->templateNamespace), [
@@ -287,24 +283,6 @@ class UserController extends AbstractController
             SpreadsheetGeneratorServiceInterface::CONTENT_FILENAME => 'users',
             SpreadsheetGeneratorServiceInterface::WRITER => $_format,
         ]);
-    }
-
-    private function userExist(User $user, string $action): bool
-    {
-        $exists = [
-            'email' => $this->userManager->getUserByEmail($user->getEmail()),
-            'username' => $this->userManager->getUserByUsername($user->getUsername()),
-        ];
-        $messages = ['email' => 'User email already exist!', 'username' => 'Username already exist!'];
-        foreach ($exists as $key => $value) {
-            if ($value instanceof User && ('add' === $action || 'edit' === $action && $value->getId() !== $user->getId())) {
-                $this->addFlash('error', $messages[$key]);
-
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public function removeFromGroup(User $user, string $groupName): Response

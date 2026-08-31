@@ -492,6 +492,7 @@ key:
     context: Context
     control_sidebar: 'Control sidebar'
     created: Created
+    current_password: 'Current password'
     dashboards: Dashboards
     delayed_unassigned_shards: 'Delayed unassigned shards'
     details: Details
@@ -524,6 +525,8 @@ key:
     mcp_tools: 'MCP tools'
     message: Message
     name: Name
+    new_password: 'New password'
+    new_password_confirmation: 'Repeat new password'
     none: None
     not-applicable: N/A
     notice: Notice

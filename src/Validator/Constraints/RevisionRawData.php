@@ -13,9 +13,6 @@ class RevisionRawData extends Constraint
     #[HasNamedArguments]
     public function __construct(
         public ContentType $contentType,
-        public string $versionFromRequired = 'revision.raw_data.version_from_required',
-        public string $versionToGreater = 'revision.raw_data.version_to_greater',
-        public string $versionToGreaterOneDay = 'revision.raw_data.version_to_greater_one_day',
         ?array $groups = null,
         mixed $payload = null,
     ) {

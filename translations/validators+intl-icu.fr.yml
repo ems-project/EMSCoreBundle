@@ -1,0 +1,22 @@
+environment:
+    target_diff_source: "L'environnement cible doit être différent de l'environnement source"
+invalid_format: 'Format invalide'
+revision:
+    version_from_required: "Ce champ n'est pas valide ! Champ vide"
+    version_to_greater: 'Doit être supérieur à "{fromField}"'
+    version_to_greater_one_day: 'Doit être supérieur d''au moins 1 jour à "{fromField}"'
+user:
+    current_password_invalid: 'Le mot de passe saisi est invalide.'
+    email:
+        already_used: "L'adresse e-mail est déjà utilisée."
+        invalid: "Cette valeur n'est pas une adresse e-mail valide."
+        long: "L'adresse e-mail est trop longue."
+        short: "L'adresse e-mail est trop courte."
+    password:
+        long: 'Le mot de passe est trop long.'
+        mismatch: 'Les mots de passe saisis ne correspondent pas.'
+        short: 'Le mot de passe est trop court.'
+    username:
+        already_used: "Le nom d'utilisateur est déjà utilisé."
+        long: "Le nom d'utilisateur est trop long."
+        short: "Le nom d'utilisateur est trop court."

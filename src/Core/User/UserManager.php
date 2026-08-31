@@ -198,9 +198,6 @@ class UserManager
 
     public function update(User $user): void
     {
-        $user->setUsernameCanonical(Canonicalizer::canonicalize($user->getUsername()));
-        $user->setEmailCanonical(Canonicalizer::canonicalize($user->getEmail()));
-
         $this->hashPassword($user);
 
         $this->userRepository->save($user);

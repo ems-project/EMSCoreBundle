@@ -12,7 +12,6 @@ class Cron extends Constraint
 {
     #[HasNamedArguments]
     public function __construct(
-        public string $invalid = 'cron.invalid-format',
         ?array $groups = null,
         mixed $payload = null,
     ) {

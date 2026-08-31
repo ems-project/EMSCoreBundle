@@ -8,12 +8,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
+use EMS\CoreBundle\Core\Security\Canonicalizer;
 use EMS\CoreBundle\Core\User\UserOptions;
 use EMS\CoreBundle\Roles;
 use EMS\Helpers\Standard\Locale;
 use EMS\Helpers\Standard\Text;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
+#[UniqueEntity(fields: 'emailCanonical', message: 'user.email.already_used', errorPath: 'email')]
+#[UniqueEntity(fields: 'usernameCanonical', message: 'user.username.already_used', errorPath: 'username')]
 class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserInterface, \Stringable
 {
     use CreatedModifiedTrait;
@@ -32,13 +37,17 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     private Collection $authTokens;
     private string $locale = self::DEFAULT_LOCALE;
     private ?string $localePreferred = null;
+    #[Assert\Length(min: 4, max: 180, minMessage: 'user.username.short', maxMessage: 'user.username.long')]
     private ?string $username = null;
     private ?string $usernameCanonical = null;
+    #[Assert\Email(message: 'user.email.invalid')]
+    #[Assert\Length(min: 2, max: 254, minMessage: 'user.email.short', maxMessage: 'user.email.long')]
     private ?string $email = null;
     private ?string $emailCanonical = null;
     private bool $enabled = false;
     private ?string $salt = null;
     private ?string $password = null;
+    #[Assert\Length(min: 8, max: 4096, minMessage: 'user.password.short', maxMessage: 'user.password.long')]
     private ?string $plainPassword = null;
     private ?\DateTime $lastLogin = null;
     private ?\DateTime $expirationDate = null;
@@ -420,11 +429,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     public function setUsername(?string $username): void
     {
         $this->username = $username;
-    }
-
-    public function setUsernameCanonical(?string $usernameCanonical): void
-    {
-        $this->usernameCanonical = $usernameCanonical;
+        $this->usernameCanonical = null !== $username ? Canonicalizer::canonicalize($username) : null;
     }
 
     public function setSalt(string $salt): void
@@ -435,11 +440,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     public function setEmail(?string $email): void
     {
         $this->email = $email;
-    }
-
-    public function setEmailCanonical(?string $emailCanonical): void
-    {
-        $this->emailCanonical = $emailCanonical;
+        $this->emailCanonical = null !== $email ? Canonicalizer::canonicalize($email) : null;
     }
 
     public function setEnabled(bool $enabled): void

@@ -492,6 +492,7 @@ key:
     context: Context
     control_sidebar: Controlezijbalk
     created: Aangemaakt
+    current_password: 'Huidig wachtwoord'
     dashboards: Dashboards
     delayed_unassigned_shards: 'Vertraagde niet-toegewezen shards'
     details: Details
@@ -524,6 +525,8 @@ key:
     mcp_tools: MCP-tools
     message: Bericht
     name: Naam
+    new_password: 'Nieuw wachtwoord'
+    new_password_confirmation: 'Herhaal nieuw wachtwoord'
     none: Geen
     not-applicable: N.v.t.
     notice: Melding

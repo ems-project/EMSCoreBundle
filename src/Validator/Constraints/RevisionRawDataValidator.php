@@ -6,10 +6,11 @@ namespace EMS\CoreBundle\Validator\Constraints;
 
 use EMS\CoreBundle\Core\ContentType\Version\VersionFields;
 use EMS\CoreBundle\Core\ContentType\Version\VersionOptions;
-use EMS\CoreBundle\Entity\ContentType;
 use EMS\Helpers\ArrayHelper\ArrayHelper;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+
+use function Symfony\Component\Translation\t;
 
 class RevisionRawDataValidator extends ConstraintValidator
 {
@@ -45,48 +46,48 @@ class RevisionRawDataValidator extends ConstraintValidator
         $versionFromDate = ArrayHelper::findDateTime($fromField, $rawData, $format);
         $versionToDate = ArrayHelper::findDateTime($toField, $rawData, $format);
 
+        $formFieldType = $contentType->getFieldType()->getChildByName($fromField);
+        $toFieldType = $contentType->getFieldType()->getChildByName($toField);
+
+        if (null === $formFieldType || null === $toFieldType) {
+            throw new \RuntimeException('Missing fields');
+        }
+
+        $formFieldLabel = $formFieldType->getDisplayOption('label', $fromField);
+
         if (null === $versionFromDate) {
-            $this->addViolation($contentType, $constraint->versionFromRequired, $fromField);
+            $this->context
+                ->buildViolation(t('revision.version_from_required', [], 'validators'))
+                ->atPath($formFieldType->getPath())
+                ->addViolation()
+            ;
 
             return;
         }
+
         if (null === $versionToDate) {
             return;
         }
 
-        $formFieldType = $constraint->contentType->getFieldType()->findChildByName($fromField);
-        $formFieldLabel = $formFieldType ? $formFieldType->getDisplayOption('label', $fromField) : $fromField;
-
         if ($versionToDate <= $versionFromDate) {
-            $this->addViolation($contentType, $constraint->versionToGreater, $toField, [
-                '%fromField%' => $formFieldLabel,
-            ]);
+            $this->context
+                ->buildViolation(t('revision.version_to_greater', [], 'validators'))
+                ->setParameters(['fromField' => $formFieldLabel])
+                ->atPath($toFieldType->getPath())
+                ->addViolation()
+            ;
         }
 
         $intervalOneDay = $constraint->contentType->getVersioning()->option(VersionOptions::DATES_INTERVAL_ONE_DAY);
         $diffDays = $versionFromDate->diff($versionToDate)->days;
 
         if ($versionToDate > $versionFromDate && $intervalOneDay && 0 === $diffDays) {
-            $this->addViolation($contentType, $constraint->versionToGreaterOneDay, $toField, [
-                '%fromField%' => $formFieldLabel,
-            ]);
+            $this->context
+                ->buildViolation(t('revision.version_to_greater_one_day', [], 'validators'))
+                ->setParameters(['fromField' => $formFieldLabel])
+                ->atPath($toFieldType->getPath())
+                ->addViolation()
+            ;
         }
-    }
-
-    /**
-     * @param array<string, string> $parameters
-     */
-    private function addViolation(ContentType $contentType, string $message, string $field, array $parameters = []): void
-    {
-        if (null === $fieldType = $contentType->getFieldType()->findChildByName($field)) {
-            return;
-        }
-
-        $this->context
-            ->buildViolation($message)
-            ->setParameters($parameters)
-            ->atPath($fieldType->getPath())
-            ->addViolation()
-        ;
     }
 }

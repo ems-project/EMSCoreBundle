@@ -427,9 +427,7 @@ final class McpControllerTest extends WebTestCase
     {
         $user = new User();
         $user->setUsername('mcp-user');
-        $user->setUsernameCanonical('mcp-user');
         $user->setEmail('mcp@example.test');
-        $user->setEmailCanonical('mcp@example.test');
         $user->setEnabled(true);
         $user->setPassword('not-used');
         $user->setRoles(['ROLE_API', 'ROLE_AUTHOR']);

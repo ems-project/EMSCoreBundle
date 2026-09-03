@@ -23,7 +23,10 @@ readonly class I18nExtension
     public function i18n(string $key, ?string $locale = null): string
     {
         $i18n = $this->i18nService->getAsList($key);
-        $locale ??= $this->userManager->getUserLanguage();
+        if (null !== $locale) {
+            return $i18n[$locale] ?? $key;
+        }
+        $locale = $this->userManager->getUserLanguage();
 
         return $i18n[$locale] ?? $i18n[User::DEFAULT_LOCALE] ?? $key;
     }

@@ -27,6 +27,7 @@ final class Version20260827125926 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX UNIQ_2444886D5E237E06 ON mcp_tool (name)');
     }
 
+    #[\Override]
     public function down(Schema $schema): void
     {
         $this->abortIf(

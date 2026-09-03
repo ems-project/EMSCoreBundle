@@ -6,13 +6,17 @@ namespace EMS\CoreBundle\Tests\Integration;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\Persistence\ManagerRegistry;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Entity\AuthToken;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\McpPrompt;
+use EMS\CoreBundle\Entity\McpResource;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Entity\WysiwygStylesSet;
 use EMS\CoreBundle\Form\DataField\ChoiceFieldType;
 use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 use EMS\CoreBundle\Form\DataField\MultiplexedTabContainerFieldType;
@@ -36,7 +40,11 @@ final class McpControllerTest extends WebTestCase
         $this->client = self::createClient();
 
         $container = self::getContainer();
-        $this->entityManager = $container->get('doctrine')->getManager();
+        $doctrine = $container->get('doctrine');
+        self::assertInstanceOf(ManagerRegistry::class, $doctrine);
+        $entityManager = $doctrine->getManager();
+        self::assertInstanceOf(EntityManagerInterface::class, $entityManager);
+        $this->entityManager = $entityManager;
 
         $metadata = $this->entityManager->getMetadataFactory()->getAllMetadata();
         $schemaTool = new SchemaTool($this->entityManager);
@@ -379,6 +387,426 @@ final class McpControllerTest extends WebTestCase
         self::assertSame($content, \base64_decode((string) ($downloadStructuredContent['chunkBase64'] ?? ''), true));
     }
 
+    public function testResourcesExposeWysiwygStyleSetCssClasses(): void
+    {
+        $this->createAuthenticatedUserWithNewsContent();
+        $sessionId = $this->initializeSession($this->client);
+
+        $resourcesPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 10,
+            'method' => 'resources/list',
+            'params' => new \stdClass(),
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($resourcesPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $resourcesResponse = $this->decodeResponse($this->client);
+        $resources = $resourcesResponse['result']['resources'] ?? [];
+        $wysiwygResource = \array_first(\array_filter($resources, static fn (array $resource): bool => 'wysiwyg_style_sets_css_classes' === ($resource['name'] ?? null))) ?? null;
+        self::assertIsArray($wysiwygResource);
+        self::assertSame('elasticms://wysiwyg-style-sets/css-classes', $wysiwygResource['uri'] ?? null);
+        self::assertSame('application/json', $wysiwygResource['mimeType'] ?? null);
+
+        $templatesPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 11,
+            'method' => 'resources/templates/list',
+            'params' => new \stdClass(),
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($templatesPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $templatesResponse = $this->decodeResponse($this->client);
+        $templates = $templatesResponse['result']['resourceTemplates'] ?? [];
+        $wysiwygTemplate = \array_first(\array_filter($templates, static fn (array $template): bool => 'wysiwyg_style_set_css_classes' === ($template['name'] ?? null))) ?? null;
+        self::assertIsArray($wysiwygTemplate);
+        self::assertSame('elasticms://wysiwyg-style-sets/{name}/css-classes', $wysiwygTemplate['uriTemplate'] ?? null);
+
+        $readPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 12,
+            'method' => 'resources/read',
+            'params' => [
+                'uri' => 'elasticms://wysiwyg-style-sets/css-classes',
+            ],
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($readPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $readResponse = $this->decodeResponse($this->client);
+        $resourceText = $readResponse['result']['contents'][0]['text'] ?? null;
+        self::assertIsString($resourceText);
+        $resourceData = \json_decode($resourceText, true, flags: \JSON_THROW_ON_ERROR);
+        self::assertSame('bootstrap', $resourceData['styleSets'][0]['name'] ?? null);
+        self::assertContains([
+            'class' => 'btn-primary',
+            'element' => 'a',
+            'styleName' => 'Call-To-Action',
+            'source' => 'config',
+        ], $resourceData['styleSets'][0]['classes'] ?? []);
+        self::assertContains([
+            'class' => 'table-bordered',
+            'element' => 'table',
+            'styleName' => 'Table default',
+            'source' => 'tableDefaultCss',
+        ], $resourceData['styleSets'][0]['classes'] ?? []);
+
+        $readStyleSetPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 13,
+            'method' => 'resources/read',
+            'params' => [
+                'uri' => 'elasticms://wysiwyg-style-sets/bootstrap/css-classes',
+            ],
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($readStyleSetPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $readStyleSetResponse = $this->decodeResponse($this->client);
+        $styleSetText = $readStyleSetResponse['result']['contents'][0]['text'] ?? null;
+        self::assertIsString($styleSetText);
+        $styleSetData = \json_decode($styleSetText, true, flags: \JSON_THROW_ON_ERROR);
+        self::assertSame('bootstrap', $styleSetData['name'] ?? null);
+        self::assertContains([
+            'class' => 'attention',
+            'element' => 'div',
+            'styleName' => 'Attention',
+            'source' => 'config',
+        ], $styleSetData['classes'] ?? []);
+    }
+
+    public function testResourcesExposeContentTypeDescriptionsWithoutHtml(): void
+    {
+        $this->createAuthenticatedUserWithNewsContent();
+        $sessionId = $this->initializeSession($this->client);
+
+        $resourcesPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 14,
+            'method' => 'resources/list',
+            'params' => new \stdClass(),
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($resourcesPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $resourcesResponse = $this->decodeResponse($this->client);
+        $resources = $resourcesResponse['result']['resources'] ?? [];
+        $contentTypeResource = \array_first(\array_filter($resources, static fn (array $resource): bool => 'content_types_descriptions' === ($resource['name'] ?? null))) ?? null;
+        self::assertIsArray($contentTypeResource);
+        self::assertSame('elasticms://content-types/descriptions', $contentTypeResource['uri'] ?? null);
+        self::assertSame('application/json', $contentTypeResource['mimeType'] ?? null);
+
+        $templatesPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 15,
+            'method' => 'resources/templates/list',
+            'params' => new \stdClass(),
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($templatesPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $templatesResponse = $this->decodeResponse($this->client);
+        $templates = $templatesResponse['result']['resourceTemplates'] ?? [];
+        $contentTypeTemplate = \array_first(\array_filter($templates, static fn (array $template): bool => 'content_type_description' === ($template['name'] ?? null))) ?? null;
+        self::assertIsArray($contentTypeTemplate);
+        self::assertSame('elasticms://content-types/{name}/description', $contentTypeTemplate['uriTemplate'] ?? null);
+
+        $readPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 16,
+            'method' => 'resources/read',
+            'params' => [
+                'uri' => 'elasticms://content-types/descriptions',
+            ],
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($readPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $readResponse = $this->decodeResponse($this->client);
+        $resourceText = $readResponse['result']['contents'][0]['text'] ?? null;
+        self::assertIsString($resourceText);
+        $resourceData = \json_decode($resourceText, true, flags: \JSON_THROW_ON_ERROR);
+        $newsContentType = \array_first(\array_filter($resourceData['contentTypes'] ?? [], static fn (array $contentType): bool => 'news' === ($contentType['name'] ?? null))) ?? null;
+        self::assertIsArray($newsContentType);
+        self::assertSame('News description & details', $newsContentType['description'] ?? null);
+        self::assertSame('preview', $newsContentType['defaultEnvironment'] ?? null);
+
+        $readContentTypePayload = [
+            'jsonrpc' => '2.0',
+            'id' => 17,
+            'method' => 'resources/read',
+            'params' => [
+                'uri' => 'elasticms://content-types/news/description',
+            ],
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($readContentTypePayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $readContentTypeResponse = $this->decodeResponse($this->client);
+        $contentTypeText = $readContentTypeResponse['result']['contents'][0]['text'] ?? null;
+        self::assertIsString($contentTypeText);
+        $contentTypeData = \json_decode($contentTypeText, true, flags: \JSON_THROW_ON_ERROR);
+        self::assertSame('news', $contentTypeData['name'] ?? null);
+        self::assertSame('News description & details', $contentTypeData['description'] ?? null);
+    }
+
+    public function testResourcesExposeEnvironmentDescriptionsWithoutHtml(): void
+    {
+        $this->createAuthenticatedUserWithNewsContent();
+        $sessionId = $this->initializeSession($this->client);
+
+        $resourcesPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 18,
+            'method' => 'resources/list',
+            'params' => new \stdClass(),
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($resourcesPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $resourcesResponse = $this->decodeResponse($this->client);
+        $resources = $resourcesResponse['result']['resources'] ?? [];
+        $environmentResource = \array_first(\array_filter($resources, static fn (array $resource): bool => 'environments_descriptions' === ($resource['name'] ?? null))) ?? null;
+        self::assertIsArray($environmentResource);
+        self::assertSame('elasticms://environments/descriptions', $environmentResource['uri'] ?? null);
+        self::assertSame('application/json', $environmentResource['mimeType'] ?? null);
+
+        $templatesPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 19,
+            'method' => 'resources/templates/list',
+            'params' => new \stdClass(),
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($templatesPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $templatesResponse = $this->decodeResponse($this->client);
+        $templates = $templatesResponse['result']['resourceTemplates'] ?? [];
+        $environmentTemplate = \array_first(\array_filter($templates, static fn (array $template): bool => 'environment_description' === ($template['name'] ?? null))) ?? null;
+        self::assertIsArray($environmentTemplate);
+        self::assertSame('elasticms://environments/{name}/description', $environmentTemplate['uriTemplate'] ?? null);
+
+        $readPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 20,
+            'method' => 'resources/read',
+            'params' => [
+                'uri' => 'elasticms://environments/descriptions',
+            ],
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($readPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $readResponse = $this->decodeResponse($this->client);
+        $resourceText = $readResponse['result']['contents'][0]['text'] ?? null;
+        self::assertIsString($resourceText);
+        $resourceData = \json_decode($resourceText, true, flags: \JSON_THROW_ON_ERROR);
+        self::assertSame('preview', $resourceData['environments'][0]['name'] ?? null);
+        self::assertSame('Preview', $resourceData['environments'][0]['label'] ?? null);
+        self::assertSame('Preview description & details', $resourceData['environments'][0]['description'] ?? null);
+
+        $readEnvironmentPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 21,
+            'method' => 'resources/read',
+            'params' => [
+                'uri' => 'elasticms://environments/preview/description',
+            ],
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($readEnvironmentPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $readEnvironmentResponse = $this->decodeResponse($this->client);
+        $environmentText = $readEnvironmentResponse['result']['contents'][0]['text'] ?? null;
+        self::assertIsString($environmentText);
+        $environmentData = \json_decode($environmentText, true, flags: \JSON_THROW_ON_ERROR);
+        self::assertSame('preview', $environmentData['name'] ?? null);
+        self::assertSame('Preview description & details', $environmentData['description'] ?? null);
+    }
+
+    public function testResourcesExposeCustomMcpResources(): void
+    {
+        $this->createAuthenticatedUserWithNewsContent();
+        $sessionId = $this->initializeSession($this->client);
+
+        $resourcesPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 22,
+            'method' => 'resources/list',
+            'params' => new \stdClass(),
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($resourcesPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $resourcesResponse = $this->decodeResponse($this->client);
+        $resources = $resourcesResponse['result']['resources'] ?? [];
+        $customResource = \array_first(\array_filter($resources, static fn (array $resource): bool => 'custom_site_info' === ($resource['name'] ?? null))) ?? null;
+        self::assertIsArray($customResource);
+        self::assertSame('elasticms://custom/site-info', $customResource['uri'] ?? null);
+        self::assertSame('application/json', $customResource['mimeType'] ?? null);
+        self::assertSame('Custom site info', $customResource['title'] ?? null);
+
+        $readPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 23,
+            'method' => 'resources/read',
+            'params' => [
+                'uri' => 'elasticms://custom/site-info',
+            ],
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($readPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $readResponse = $this->decodeResponse($this->client);
+        $resourceText = $readResponse['result']['contents'][0]['text'] ?? null;
+        self::assertIsString($resourceText);
+        $resourceData = \json_decode($resourceText, true, flags: \JSON_THROW_ON_ERROR);
+        self::assertSame('custom_site_info', $resourceData['resourceName'] ?? null);
+        self::assertSame('Custom site info', $resourceData['label'] ?? null);
+    }
+
+    public function testPromptsExposeCustomMcpPrompts(): void
+    {
+        $this->createAuthenticatedUserWithNewsContent();
+        $sessionId = $this->initializeSession($this->client);
+
+        $promptsPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 24,
+            'method' => 'prompts/list',
+            'params' => new \stdClass(),
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($promptsPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $promptsResponse = $this->decodeResponse($this->client);
+        $prompts = $promptsResponse['result']['prompts'] ?? [];
+        $customPrompt = \array_first(\array_filter($prompts, static fn (array $prompt): bool => 'custom_summary' === ($prompt['name'] ?? null))) ?? null;
+        self::assertIsArray($customPrompt);
+        self::assertSame('Custom summary', $customPrompt['title'] ?? null);
+        self::assertSame('Build a custom summary', $customPrompt['description'] ?? null);
+        self::assertSame('subject', $customPrompt['arguments'][0]['name'] ?? null);
+        self::assertTrue($customPrompt['arguments'][0]['required'] ?? false);
+
+        $getPayload = [
+            'jsonrpc' => '2.0',
+            'id' => 25,
+            'method' => 'prompts/get',
+            'params' => [
+                'name' => 'custom_summary',
+                'arguments' => [
+                    'subject' => 'ElasticMS',
+                ],
+            ],
+        ];
+
+        $this->client->request(
+            Request::METHOD_POST,
+            '/api/mcp',
+            server: $this->mcpHeaders($sessionId),
+            content: $this->jsonEncode($getPayload)
+        );
+
+        self::assertResponseIsSuccessful();
+        $getResponse = $this->decodeResponse($this->client);
+        $message = $getResponse['result']['messages'][0] ?? null;
+        self::assertIsArray($message);
+        self::assertSame('user', $message['role'] ?? null);
+        self::assertSame('text', $message['content']['type'] ?? null);
+        self::assertSame('Summarize ElasticMS with custom_summary.', $message['content']['text'] ?? null);
+    }
+
     public function testGetDocumentUsesAuthenticatedUserPermissions(): void
     {
         $fixtures = $this->createAuthenticatedUserWithNewsContent();
@@ -436,6 +864,8 @@ final class McpControllerTest extends WebTestCase
 
         $environment = new Environment();
         $environment->setName('preview');
+        $environment->setLabel('Preview');
+        $environment->setDescription('<p>Preview</p><p><strong>description</strong> &amp; details</p>');
         $environment->setAlias('preview_alias');
         $environment->setManaged(true);
         $environment->setOrderKey(1);
@@ -444,6 +874,7 @@ final class McpControllerTest extends WebTestCase
             ->setName('news')
             ->setSingularName('News')
             ->setPluralName('News')
+            ->setDescription('<p>News</p><p><strong>description</strong> &amp; details</p>')
             ->setActive(true)
             ->setOrderKey(1)
             ->setEnvironment($environment);
@@ -593,12 +1024,52 @@ final class McpControllerTest extends WebTestCase
             ->setLockBy('mcp-user')
             ->setLockUntil(new \DateTime('+1 hour'));
 
+        $stylesSet = new WysiwygStylesSet()
+            ->setName('bootstrap')
+            ->setConfig($this->jsonEncode([
+                [
+                    'name' => 'Call-To-Action',
+                    'element' => 'a',
+                    'attributes' => [
+                        'class' => 'btn btn-primary',
+                    ],
+                ],
+                [
+                    'name' => 'Attention',
+                    'element' => 'div',
+                    'attributes' => [
+                        'class' => 'attention',
+                    ],
+                ],
+            ]))
+            ->setOrderKey(1)
+            ->setTableDefaultCss('table table-bordered');
+
+        $mcpResource = new McpResource();
+        $mcpResource->setName('custom_site_info');
+        $mcpResource->setLabel('Custom site info');
+        $mcpResource->setUri('elasticms://custom/site-info');
+        $mcpResource->setRole('ROLE_AUTHOR');
+        $mcpResource->setDescription('Custom site information');
+        $mcpResource->setResponse('{"resourceName":"{{ resource.name }}","label":"{{ resource.label }}"}');
+
+        $mcpPrompt = new McpPrompt();
+        $mcpPrompt->setName('custom_summary');
+        $mcpPrompt->setLabel('Custom summary');
+        $mcpPrompt->setRole('ROLE_AUTHOR');
+        $mcpPrompt->setDescription('Build a custom summary');
+        $mcpPrompt->setArguments('[{"name":"subject","description":"Subject to summarize","required":true}]');
+        $mcpPrompt->setResponse('[{"role":"user","content":"Summarize {{ subject }} with {{ prompt.name }}."}]');
+
         $this->entityManager->persist($user);
         $this->entityManager->persist($environment);
         $this->entityManager->persist($contentType);
         $this->entityManager->persist($restrictedContentType);
         $this->entityManager->persist($revision);
         $this->entityManager->persist($authToken);
+        $this->entityManager->persist($stylesSet);
+        $this->entityManager->persist($mcpResource);
+        $this->entityManager->persist($mcpPrompt);
         $this->entityManager->flush();
 
         $this->entityManager->clear();

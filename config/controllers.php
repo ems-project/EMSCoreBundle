@@ -10,6 +10,8 @@ use EMS\CoreBundle\Controller\Admin\AnalyzerController;
 use EMS\CoreBundle\Controller\Admin\EnvironmentController;
 use EMS\CoreBundle\Controller\Admin\FilterController;
 use EMS\CoreBundle\Controller\Admin\I18nController;
+use EMS\CoreBundle\Controller\Admin\McpPromptController;
+use EMS\CoreBundle\Controller\Admin\McpResourceController;
 use EMS\CoreBundle\Controller\Admin\McpToolController;
 use EMS\CoreBundle\Controller\Admin\QuerySearchController;
 use EMS\CoreBundle\Controller\Admin\ScheduleController;
@@ -202,6 +204,28 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('emsco.logger'),
             service('ems.service.mcp_tool'),
+            service('emsco.data_table.factory'),
+        ])
+        ->call('setContainer')
+        ->tag('container.service_subscriber')
+        ->tag('controller.service_arguments');
+
+    $services->set(McpPromptController::class)
+        ->public()
+        ->args([
+            service('emsco.logger'),
+            service('ems.service.mcp_prompt'),
+            service('emsco.data_table.factory'),
+        ])
+        ->call('setContainer')
+        ->tag('container.service_subscriber')
+        ->tag('controller.service_arguments');
+
+    $services->set(McpResourceController::class)
+        ->public()
+        ->args([
+            service('emsco.logger'),
+            service('ems.service.mcp_resource'),
             service('emsco.data_table.factory'),
         ])
         ->call('setContainer')

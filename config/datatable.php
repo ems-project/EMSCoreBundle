@@ -23,6 +23,8 @@ use EMS\CoreBundle\DataTable\Type\Job\JobScheduleDataTableType;
 use EMS\CoreBundle\DataTable\Type\LogDataTableType;
 use EMS\CoreBundle\DataTable\Type\Mapping\AnalyzerDataTableType;
 use EMS\CoreBundle\DataTable\Type\Mapping\FilterDataTableType;
+use EMS\CoreBundle\DataTable\Type\McpPromptDataTableType;
+use EMS\CoreBundle\DataTable\Type\McpResourceDataTableType;
 use EMS\CoreBundle\DataTable\Type\McpToolDataTableType;
 use EMS\CoreBundle\DataTable\Type\QuerySearchDataTableType;
 use EMS\CoreBundle\DataTable\Type\Release\ReleaseOverviewDataTableType;
@@ -251,6 +253,14 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('emsco.data_table.mcp_tool', McpToolDataTableType::class)
         ->args([service('ems.service.mcp_tool')])
+        ->tag('emsco.datatable');
+
+    $services->set('emsco.data_table.mcp_prompt', McpPromptDataTableType::class)
+        ->args([service('ems.service.mcp_prompt')])
+        ->tag('emsco.datatable');
+
+    $services->set('emsco.data_table.mcp_resource', McpResourceDataTableType::class)
+        ->args([service('ems.service.mcp_resource')])
         ->tag('emsco.datatable');
 
     $services->set('emsco.data_table.uploaded_asset', UploadedAssetDataTableType::class)

@@ -317,9 +317,12 @@ field:
     label: Libellé
     last_seen: 'Vu pour la dernière fois'
     locale: Locale
+    mcp_arguments: 'Template des arguments MCP (JSON)'
     mcp_input_schema: "Template du schéma d'entrée MCP (JSON)"
     mcp_output_schema: 'Modèle du schéma de sortie MCP (JSON)'
+    mcp_prompt_response: 'Template de réponse de prompt MCP (JSON)'
     mcp_response: 'Template de réponse MCP (JSON)'
+    mime_type: 'Type MIME'
     message: Message
     name: Nom
     plural: Pluriel
@@ -352,6 +355,7 @@ field:
     total_ems: 'Total dans EMS'
     translations: Traductions
     type: Type
+    uri: URI
     user: Utilisateur
     user_deleted: 'Supprimé par'
     user_impersonator: Impersonnateur
@@ -522,6 +526,8 @@ key:
     lucene_version: 'Version de Lucene'
     managed_aliases: 'Alias gérés'
     mcp: MCP
+    mcp_prompts: 'Prompts MCP'
+    mcp_resources: 'Ressources MCP'
     mcp_tools: 'Outils MCP'
     message: Message
     name: Nom

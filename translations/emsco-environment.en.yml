@@ -11,6 +11,7 @@ environment:
     property:
         name: Name
         label: Label
+        description: Description
         color: Color
         rolePublish: 'Publish role'
         base_url: 'Base URL'

@@ -74,6 +74,11 @@ use EMS\CoreBundle\EventListener\UserLocaleListener;
 use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskHandleType;
+use EMS\CoreBundle\Mcp\ElasticmsMcpPromptCustomService;
+use EMS\CoreBundle\Mcp\ElasticmsMcpResourceContentTypeService;
+use EMS\CoreBundle\Mcp\ElasticmsMcpResourceCustomService;
+use EMS\CoreBundle\Mcp\ElasticmsMcpResourceEnvironmentService;
+use EMS\CoreBundle\Mcp\ElasticmsMcpResourceWysiwygStyleService;
 use EMS\CoreBundle\Mcp\ElasticmsMcpServerFactory;
 use EMS\CoreBundle\Mcp\ElasticmsMcpToolAssetService;
 use EMS\CoreBundle\Mcp\ElasticmsMcpToolCustomService;
@@ -104,6 +109,8 @@ use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\Internationalization\XliffService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\Mapping;
+use EMS\CoreBundle\Service\Mcp\McpPromptService;
+use EMS\CoreBundle\Service\Mcp\McpResourceService;
 use EMS\CoreBundle\Service\Mcp\McpToolService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\ObjectChoiceCacheService;
@@ -259,6 +266,24 @@ return static function (ContainerConfigurator $container) {
             service('logger'),
         ])
         ->tag('emsco.entity.service', ['priority' => 40]);
+
+    $services->alias('ems.service.mcp_prompt', McpPromptService::class);
+
+    $services->set(McpPromptService::class)
+        ->args([
+            service('ems.repository.mcp_prompt'),
+            service('logger'),
+        ])
+        ->tag('emsco.entity.service', ['priority' => 41]);
+
+    $services->alias('ems.service.mcp_resource', McpResourceService::class);
+
+    $services->set(McpResourceService::class)
+        ->args([
+            service('ems.repository.mcp_resource'),
+            service('logger'),
+        ])
+        ->tag('emsco.entity.service', ['priority' => 42]);
 
     $services->set('emsco.data_table.type.collection', DataTableTypeCollection::class)
         ->args([tagged_iterator('emsco.datatable')]);
@@ -750,6 +775,40 @@ return static function (ContainerConfigurator $container) {
             service('emsco.logger.audit'),
         ]);
 
+    $services->set(ElasticmsMcpPromptCustomService::class)
+        ->args([
+            service('ems.service.user'),
+            service('ems.service.mcp_prompt'),
+            service('twig'),
+            service('logger'),
+            service('emsco.logger.audit'),
+        ]);
+
+    $services->set(ElasticmsMcpResourceCustomService::class)
+        ->args([
+            service('ems.service.user'),
+            service('ems.service.mcp_resource'),
+            service('twig'),
+            service('logger'),
+            service('emsco.logger.audit'),
+        ]);
+
+    $services->set(ElasticmsMcpResourceWysiwygStyleService::class)
+        ->args([
+            service('ems.service.wysiwyg_styles_set'),
+        ]);
+
+    $services->set(ElasticmsMcpResourceEnvironmentService::class)
+        ->args([
+            service('ems.service.environment'),
+        ]);
+
+    $services->set(ElasticmsMcpResourceContentTypeService::class)
+        ->args([
+            service(ContentTypeService::class),
+            service('security.authorization_checker'),
+        ]);
+
     $services->set(ElasticmsMcpServerFactory::class)
         ->args([
             service('service_container'),
@@ -759,6 +818,11 @@ return static function (ContainerConfigurator $container) {
             service(ElasticmsMcpToolDataService::class),
             service(ElasticmsMcpToolAssetService::class),
             service(ElasticmsMcpToolCustomService::class),
+            service(ElasticmsMcpPromptCustomService::class),
+            service(ElasticmsMcpResourceCustomService::class),
+            service(ElasticmsMcpResourceEnvironmentService::class),
+            service(ElasticmsMcpResourceContentTypeService::class),
+            service(ElasticmsMcpResourceWysiwygStyleService::class),
         ]);
 
     $services->set('emsco.mcp.server', Server::class)

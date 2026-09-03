@@ -153,6 +153,8 @@ class TwigElementsController extends AbstractController
             route: Routes::MCP_TOOL_INDEX
         );
         $mcpMenu->addChild(t('key.mcp_tools', [], 'emsco-core'), 'fa fa-wrench', Routes::MCP_TOOL_INDEX);
+        $mcpMenu->addChild(t('key.mcp_prompts', [], 'emsco-core'), 'fa fa-commenting-o', Routes::MCP_PROMPT_INDEX);
+        $mcpMenu->addChild(t('key.mcp_resources', [], 'emsco-core'), 'fa fa-file-code-o', Routes::MCP_RESOURCE_INDEX);
 
         $logsMenu = $menu->addChild(t('key.logs', [], 'emsco-core'), 'fa fa-file-text', Routes::LOG_INDEX);
         $logsMenu->addChild(t('key.system_logs', [], 'emsco-core'), 'fa fa-file-text', Routes::LOG_INDEX);

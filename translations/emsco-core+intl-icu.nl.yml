@@ -317,9 +317,12 @@ field:
     label: Label
     last_seen: 'Laatst gezien'
     locale: Locale
+    mcp_arguments: 'MCP argumenten-template (JSON)'
     mcp_input_schema: 'MCP invoerschema-template (JSON)'
     mcp_output_schema: 'MCP antwoordstemplate (JSON)'
+    mcp_prompt_response: 'MCP promptantwoord-template (JSON)'
     mcp_response: 'MCP uitvoerschema-template (JSON)'
+    mime_type: MIME-type
     message: Bericht
     name: Naam
     plural: Meervoud
@@ -352,6 +355,7 @@ field:
     total_ems: 'Totaal in EMS'
     translations: Vertalingen
     type: Type
+    uri: URI
     user: Gebruiker
     user_deleted: 'Verwijderd door'
     user_impersonator: Impersonator
@@ -522,6 +526,8 @@ key:
     lucene_version: Lucene-versie
     managed_aliases: 'Beheerde aliassen'
     mcp: MCP
+    mcp_prompts: MCP-prompts
+    mcp_resources: MCP-resources
     mcp_tools: MCP-tools
     message: Bericht
     name: Naam

@@ -158,4 +158,12 @@ class Routes
     final public const string MCP_TOOL_ADD = 'emsco_mcp_tool_add';
     final public const string MCP_TOOL_EDIT = 'emsco_mcp_tool_edit';
     final public const string MCP_TOOL_DELETE = 'emsco_mcp_tool_delete';
+    final public const string MCP_PROMPT_INDEX = 'emsco_mcp_prompt_index';
+    final public const string MCP_PROMPT_ADD = 'emsco_mcp_prompt_add';
+    final public const string MCP_PROMPT_EDIT = 'emsco_mcp_prompt_edit';
+    final public const string MCP_PROMPT_DELETE = 'emsco_mcp_prompt_delete';
+    final public const string MCP_RESOURCE_INDEX = 'emsco_mcp_resource_index';
+    final public const string MCP_RESOURCE_ADD = 'emsco_mcp_resource_add';
+    final public const string MCP_RESOURCE_EDIT = 'emsco_mcp_resource_edit';
+    final public const string MCP_RESOURCE_DELETE = 'emsco_mcp_resource_delete';
 }

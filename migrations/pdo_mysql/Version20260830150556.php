@@ -25,7 +25,7 @@ final class Version20260830150556 extends AbstractMigration
             && !$this->connection->getDatabasePlatform() instanceof MariaDBPlatform,
             "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySQLPlatform'."
         );
-        $this->addSql('CREATE TABLE mcp_tool (name VARCHAR(255) NOT NULL, label VARCHAR(255) NOT NULL, enabled TINYINT DEFAULT 1 NOT NULL, role VARCHAR(255) NOT NULL, description LONGTEXT DEFAULT NULL, input_schema LONGTEXT DEFAULT NULL, output_schema LONGTEXT DEFAULT NULL, response LONGTEXT DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, id CHAR(36) NOT NULL, UNIQUE INDEX UNIQ_2444886D5E237E06 (name), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8mb4_unicode_ci`');
+        $this->addSql('CREATE TABLE mcp_tool (name VARCHAR(255) NOT NULL, label VARCHAR(255) NOT NULL, enabled TINYINT DEFAULT 1 NOT NULL, role VARCHAR(255) NOT NULL, description LONGTEXT DEFAULT NULL, input_schema LONGTEXT DEFAULT NULL, output_schema LONGTEXT DEFAULT NULL, response LONGTEXT DEFAULT NULL, created DATETIME NOT NULL, modified DATETIME NOT NULL, id CHAR(36) NOT NULL, UNIQUE INDEX UNIQ_2444886D5E237E06 (name), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci`');
     }
     
     #[\Override]

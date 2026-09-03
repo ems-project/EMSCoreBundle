@@ -19,6 +19,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
 
     protected string $name = '';
     protected ?string $label = null;
+    protected ?string $description = null;
     protected string $alias = '';
     /** @var array<string, Index> */
     protected array $indexes = [];
@@ -440,6 +441,16 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     public function setLabel(?string $label): void
     {
         $this->label = $label;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
     }
 
     public function getTemplatePublication(): ?string

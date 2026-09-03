@@ -10,6 +10,7 @@
 
     <field name="name" length="255" unique="true"/>
     <field name="label" length="255" nullable="true"/>
+    <field name="description" type="text" nullable="true"/>
     <field name="alias" length="255"/>
     <field name="color" length="50" nullable="true"/>
     <field name="baseUrl" column="baseUrl" length="1024" nullable="true"/>

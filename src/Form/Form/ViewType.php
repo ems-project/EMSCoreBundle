@@ -55,7 +55,6 @@ class ViewType extends AbstractType
                 ],
             ])
             ->add('icon', IconPickerType::class, [
-                'label' => t('field.icon', [], 'emsco-core'),
                 'required' => false,
                 'row_attr' => [
                     'class' => 'col-md-4',

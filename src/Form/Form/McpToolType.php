@@ -6,11 +6,10 @@ namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\Entity\McpTool;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
+use EMS\CoreBundle\Form\Field\RolePickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
-use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,10 +21,6 @@ use function Symfony\Component\Translation\t;
  */
 final class McpToolType extends AbstractType
 {
-    public function __construct(private readonly UserService $userService)
-    {
-    }
-
     /**
      * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed>        $options
@@ -55,12 +50,7 @@ final class McpToolType extends AbstractType
                     'class' => 'col-md-12',
                 ],
             ])
-            ->add('role', ChoiceType::class, [
-                'label' => t('field.role', [], 'emsco-core'),
-                'choices' => $this->userService->getExistingRoles(),
-                'expanded' => false,
-                'multiple' => false,
-                'mapped' => true,
+            ->add('role', RolePickerType::class, [
                 'row_attr' => [
                     'class' => 'col-md-12',
                 ],

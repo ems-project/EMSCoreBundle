@@ -1,6 +1,9 @@
 environment:
     target_diff_source: "L'environnement cible doit être différent de l'environnement source"
 invalid_format: 'Format invalide'
+media_library:
+    file_exists: 'Le nom du fichier existe déjà.'
+    folder_exists: 'Le nom du dossier existe déjà.'
 revision:
     version_from_required: "Ce champ n'est pas valide ! Champ vide"
     version_to_greater: 'Doit être supérieur à "{fromField}"'

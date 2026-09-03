@@ -8,7 +8,6 @@ use EMS\CoreBundle\Core\Dashboard\DashboardService;
 use EMS\CoreBundle\Core\Dashboard\Services\Export;
 use EMS\CoreBundle\Core\Dashboard\Services\RevisionTask;
 use EMS\CoreBundle\Core\Dashboard\Services\Template;
-use EMS\CoreBundle\Form\Field\DashboardPickerType;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services();
@@ -18,13 +17,6 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems_core.dashboard.dashboards', DashboardService::class)
         ->args([tagged_iterator('ems.dashboard', indexAttribute: 'id')]);
-
-    $services->set('ems_core.dashboard.pickertype', DashboardPickerType::class)
-        ->args([
-            service('ems_core.dashboard.dashboards'),
-            service('translator'),
-        ])
-        ->tag('form.type');
 
     $services->set('ems_core.dashboard.template', Template::class)
         ->args([

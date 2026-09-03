@@ -96,37 +96,6 @@ class UserService implements EntityServiceInterface
     }
 
     /**
-     * @return array<string, string>
-     */
-    public function getExistingRoles(): array
-    {
-        $roleHierarchy = $this->securityRoles;
-
-        $out = [];
-
-        foreach ($roleHierarchy as $parent => $children) {
-            foreach ($children as $child) {
-                if (empty($out[(string) $child])) {
-                    $out[(string) $child] = (string) $child;
-                }
-            }
-            if (empty($out[(string) $parent])) {
-                $out[(string) $parent] = (string) $parent;
-            }
-        }
-
-        $out['ROLE_COPY_PASTE'] = 'ROLE_COPY_PASTE';
-        $out['ROLE_ALLOW_ALIGN'] = 'ROLE_ALLOW_ALIGN';
-        $out['ROLE_DEFAULT_SEARCH'] = 'ROLE_DEFAULT_SEARCH';
-        $out['ROLE_SUPER'] = 'ROLE_SUPER';
-        $out['ROLE_API'] = 'ROLE_API';
-        $out['ROLE_USER_READ'] = 'ROLE_USER_READ';
-        $out['ROLE_USER_MANAGEMENT'] = 'ROLE_USER_MANAGEMENT';
-
-        return $out;
-    }
-
-    /**
      * @param string[] $circles
      *
      * @return User[]
@@ -170,14 +139,24 @@ class UserService implements EntityServiceInterface
     }
 
     /**
-     * @return array<string, string>
+     * @return string[]
      */
     public function listUserRoles(): array
     {
         $roleHierarchy = $this->securityRoles;
-        $roles = [...['ROLE_USER'], ...\array_keys($roleHierarchy), ...['ROLE_API']];
 
-        return \array_combine($roles, $roles);
+        return [
+            Roles::ROLE_USER,
+            ...\array_keys($roleHierarchy),
+            ...[
+                Roles::ROLE_COPY_PASTE,
+                Roles::ROLE_ALLOW_ALIGN,
+                Roles::ROLE_DEFAULT_SEARCH,
+                Roles::ROLE_SUPER_USER,
+                Roles::ROLE_API,
+                Roles::ROLE_USER_READ,
+            ],
+        ];
     }
 
     /**

@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Entity;
 
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CoreBundle\Core\Dashboard\DashboardOptions;
+use EMS\CoreBundle\Core\Dashboard\DashboardType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use Ramsey\Uuid\Uuid;
@@ -148,14 +149,14 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
         $this->definition = $definition;
     }
 
-    public function getType(): string
+    public function getType(): DashboardType
     {
-        return $this->type;
+        return DashboardType::from($this->type);
     }
 
-    public function setType(string $type): void
+    public function setType(DashboardType $type): void
     {
-        $this->type = $type;
+        $this->type = $type->value;
     }
 
     public function getRole(): string

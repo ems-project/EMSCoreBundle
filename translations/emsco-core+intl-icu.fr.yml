@@ -101,6 +101,11 @@ content_type:
     settings: Paramètres
     tasks: Tâches
     versioning: Versioning
+contenttype:
+    action:
+        modal_import:
+            cancel: Annuler
+            submit: Importer
 core:
     action:
         render-option:
@@ -167,6 +172,9 @@ core:
                 other   {Il y a # index}
             }
     version: 'Version {core} avec Symfony {symfony}'
+dashboard:
+    exception:
+        title: 'Le tableau de bord {name} a généré une exception'
 data:
     add:
         new_title: 'Nouveau {content_type}'
@@ -185,6 +193,14 @@ data:
 documentation:
     api:
         title: Documentation
+ems_core:
+    dashboard:
+        export:
+            label: Exporter
+        revision_task:
+            label: 'Tâches de révision'
+        template:
+            label: Modèle
 entity:
     edit:
         title: 'Modifier {entity_name}'
@@ -207,6 +223,11 @@ environment:
         subtitle: 'il est temps d’aligner les environnements ?'
         title: 'Aligner les environnements'
     edit:
+        notice_rename: |
+            Si vous avez l’intention de renommer l’alias, 
+            veuillez créer un nouvel environnement et l’aligner sur celui dont vous souhaitez renommer l’alias.
+            Supprimez ensuite l’ancien.
+        save: 'Mettre à jour'
         short_title: 'Modifier l’environnement'
         title: 'Modifier l’environnement « {name} »'
     index:
@@ -220,6 +241,16 @@ environment:
         indexes: Indexes
         total: Total
     plural: Environnements
+    property:
+        base_url: 'URL de base'
+        color: Couleur
+        label: Libellé
+        name: Nom
+        option:
+            default_search: 'Dans la recherche par défaut'
+            update_referrers: 'Mettre à jour les référents'
+        rolePublish: 'Rôle de publication'
+        template_publication: 'Modèle de publication'
     rebuild:
         notice: 'Soyez prudent, selon l’option sélectionnée, certains contenus de l’index de recherche peuvent être perdus.'
         options:
@@ -241,6 +272,7 @@ field:
     accumulate_file: 'Accumuler dans un seul fichier'
     alias: Alias
     allowed_remote_hosts: 'Hôtes distants autorisés'
+    analyzer: Analyzer
     asset:
         author: 'Auteur :'
         content: 'Contenu :'
@@ -256,6 +288,7 @@ field:
     attributes: 'Attributs supplémentaires de la requête'
     available: Disponible
     channel: Canal
+    circles: Cercles
     circles_to: 'Cercles destinataires'
     color: Couleur
     command: Commande
@@ -268,6 +301,7 @@ field:
     date_build: 'Date de build'
     date_created: 'Date de création'
     date_execution: 'Date d’exécution'
+    date_expiration: "Date d'expiration"
     date_modified: 'Date de modification'
     date_range:
         duration: Durée
@@ -278,7 +312,9 @@ field:
     date_upload: 'Date d’upload'
     definition: Définition
     description: Description
+    display_name: 'Nom d’affichage'
     editor: Éditeur
+    email: Email
     email_content_type: 'Type de contenu (ex. : text/html)'
     enabled: Activé
     endpoint_url: Endpoint
@@ -290,7 +326,9 @@ field:
     events: Événements
     extra: Extra
     file:
-        disposition: Disposition
+        disposition: 'Disposition du fichier'
+        disposition_attachment: 'Pièce jointe (forcer le téléchargement)'
+        disposition_inline: 'En ligne (essayer d’ouvrir dans le navigateur)'
         extension: Extension
         mimetype: 'Type MIME'
         name: 'Nom du fichier'
@@ -299,6 +337,7 @@ field:
         size: Taille
         type: Type
     format_tags: 'Tags de format'
+    group: Groupe
     hash: 'Signature du hash'
     header: En-tête
     header_allow_origin: 'L’en-tête Access-Control-Allow-Origin'
@@ -315,6 +354,8 @@ field:
     is_public: Public
     key: Clé
     label: Libellé
+    language_preferred: 'Langue préférée'
+    language_ui: "Langue de l'interface"
     last_seen: 'Vu pour la dernière fois'
     locale: Locale
     mcp_arguments: 'Template des arguments MCP (JSON)'
@@ -325,6 +366,11 @@ field:
     mime_type: 'Type MIME'
     message: Message
     name: Nom
+    options: Options
+    orientation: Orientation
+    password: 'Mot de passe'
+    password_repeat: 'Répéter le mot de passe'
+    pdf_size: 'Format PDF'
     plural: Pluriel
     public_access: 'Accès public'
     query: Requête
@@ -360,7 +406,11 @@ field:
     user_deleted: 'Supprimé par'
     user_impersonator: Impersonnateur
     user_modified: 'Modifié par'
+    user_property: 'Propriété utilisateur'
+    user_roles: 'Rôles utilisateur'
     user_uploaded: 'Uploadé par'
+    username: "Nom d'utilisateur"
+    wysiwyg_profile: 'Profil WYSIWYG'
 field_type:
     json_menu_editor:
         add: Ajouter
@@ -419,6 +469,8 @@ fields:
     template:
         more_info: 'plus d’informations'
 form:
+    add:
+        title: 'Ajouter un formulaire'
     data:
         add:
             ouuid:
@@ -429,10 +481,14 @@ form:
         bool_table_column:
             false_value: Décocher
             true_value: Cocher
+    edit:
+        title: 'Modifier un formulaire'
     field-type-type:
         root: Structure
+    menu: Formulaires
     reorder:
         title: 'Réordonner les champs du formulaire : {label}'
+    tagline: 'Composants réutilisables'
 form_submissions:
     overview: Aperçu
     title: 'Soumissions de formulaires'
@@ -473,6 +529,8 @@ json_menu_nested:
     column:
         structure: Structure
         title: Titre
+    error:
+        item_edit_outdated: 'Désynchronisé, fermez et réessayez !'
 key:
     actions: Actions
     active_primary_shards: 'Shards primaires actifs'
@@ -535,6 +593,7 @@ key:
     new_password_confirmation: 'Répéter le nouveau mot de passe'
     none: Aucun
     not-applicable: N/A
+    not_defined: 'Non défini'
     notice: Notice
     number_of_data_nodes: 'Nombre de nœuds de données'
     number_of_nodes: 'Nombre de nœuds'
@@ -584,6 +643,9 @@ log:
         content_type_add_unreferenced: 'Erreur inattendue lors de la récupération des types de contenu non référencés depuis l’environnement externe {environment} : {error}'
         delete_failed: 'Échec de la suppression'
         invalid_table_action: 'Action de tableau inconnue'
+    icon:
+        class: 'fa fa-file-text'
+    menu: Logs
     notice:
         alias_attached: 'L’alias « {alias} » a été attaché'
         content_type_deleted: 'Le type de contenu « {contentType} » a été supprimé'
@@ -592,15 +654,87 @@ log:
         deleted_orphan_index: 'L’index « {index} » a été supprimé'
         deleted_orphan_indexes: 'Les indexes orphelins ont été supprimés'
         draft_deleted: 'Le brouillon « {revision} » a été supprimé'
+    tagline: 'Qui a fait quoi'
     title: 'Log du {created}'
+    view:
+        title: 'Logs de {created}'
     warning:
         draft_not_found: 'Brouillon introuvable avec l’id « {revisionId} »'
         duplicate_environment: 'L’environnement « {name} » existe déjà !'
         index_not_found: 'Index « {index} » introuvable'
+media_library:
+    close: Fermer
+    file:
+        add:
+            title: Téléverser
+        delete:
+            title: 'Supprimer le fichier'
+        load_more: 'Chargement de fichiers supplémentaires...'
+        rename:
+            title: 'Renommer le fichier'
+        revision:
+            title: Révision
+        view:
+            download: 'Télécharger le fichier'
+            fallback: 'Aucun plugin disponible pour afficher le contenu du fichier.'
+            next: Suivant
+            previous: Précédent
+            title: 'Voir le fichier'
+            title_modal: 'Voir le fichier : {name}'
+    files:
+        delete:
+            info: 'Suppression de {count} fichiers. Veuillez patienter...'
+            submit: Confirmer
+            title: 'Supprimer {count} fichiers'
+            warning: 'Êtes-vous sûr de vouloir supprimer les {count} fichiers sélectionnés ?'
+        move:
+            info: 'Emplacement actuel : "{path}"'
+            select_folder: 'Sélectionner un nouvel emplacement :'
+            submit: Déplacer
+            success: |-
+                {count, plural,
+                    one {Déplacement du fichier sélectionné de "{from}" vers "{to}". Veuillez patienter...}
+                    other {Déplacement de # fichiers de "{from}" vers "{to}". Veuillez patienter...}
+                }
+            title: |-
+                {count, plural,
+                    one {Déplacer le fichier}
+                    other {Déplacer # fichiers}
+                }
+    folder:
+        add:
+            title: 'Ajouter un dossier'
+        delete:
+            job_info: 'Suppression du dossier en cours. Veuillez patienter...'
+            job_info_async: 'Le dossier sera supprimé dès que possible.'
+            submit: Confirmer
+            title: 'Supprimer le dossier'
+            warning: |
+                Êtes-vous sûr de vouloir supprimer ce dossier ?
+                Cette action supprimera également tous les sous-dossiers et fichiers qu'il contient.
+        move:
+            info: 'Emplacement actuel : "{path}"'
+            job_info: |
+                Déplacement du dossier sélectionné de "{from}" vers "{to}"
+                Veuillez patienter...
+            job_info_async: 'Le dossier sera déplacé dès que possible.'
+            select_folder: 'Sélectionner un nouvel emplacement :'
+            submit: Déplacer
+            title: 'Déplacer le dossier'
+        rename:
+            job_info: |
+                Renommage du dossier en cours.
+                Veuillez patienter...
+            job_info_async: 'Le dossier sera renommé dès que possible.'
+            submit: Renommer
+            title: 'Renommer le dossier'
+    home: Accueil
+    submit: Enregistrer
 modal:
     loading_information: 'Chargement des informations...'
 navigation:
     toggle: 'Basculer la navigation'
+not-applicable: N/A
 notice_card:
     title: Notice
 notification-menu:
@@ -649,6 +783,16 @@ notification:
         revision_not_published: 'Cette révision n’est plus publiée dans {environment}'
         revision_not_published_and_duplicate: 'Cette révision n’est plus publiée dans {environment} et une autre notification existe'
     warnings: Avertissements
+option:
+    allow_add: 'Autoriser l’ajout'
+    email_notification: 'Notifications par email'
+    layout_boxed: 'Mise en page en boîte'
+    layout_sidebar_collapse: 'Réduction de la barre latérale'
+    layout_sidebar_mini: 'Barre latérale mini'
+    multiple: Multiple
+orientation:
+    landscape: Paysage
+    portrait: Portrait
 out-of-sync:
     modal:
         please-reload: 'Veuillez recharger la page.'
@@ -685,6 +829,13 @@ release:
         revision: '{date} finalisée par {user}'
         revision-not-applicable: 'Non applicable'
         still_in_target: 'Toujours publiée dans {target}'
+    release-revisison:
+        missing-revision: 'Le document « {label} » n’est plus disponible dans {environment}'
+        no_more_in_target: 'Cette révision a été dépubliée de {target}'
+        not-applicable: 'non applicable'
+        revision: '{date} finalisé par {user}'
+        revision-not-applicable: 'Non applicable'
+        still_in_target: 'Toujours publié dans {target}'
     revision:
         index:
             publish: 'Liste des documents disponibles pour publication'
@@ -713,6 +864,28 @@ revision:
         put_back_confirm: 'Restaurer « {label} » ?'
         put_back_selected: 'Restaurer la sélection'
         title: '{pluralName} dans la corbeille'
+role:
+    admin: Administrateur
+    allow_align: "Aligner l'environnement"
+    api: API
+    auditor: Auditeur
+    author: Auteur
+    copy_paste: Copier/Coller
+    copywriter: Rédacteur
+    default_search: 'Recherche par défaut'
+    form_crm: 'Formulaire CRM'
+    not_defined: 'Non défini'
+    publisher: Éditeur
+    reviewer: Réviseur
+    super: 'Super utilisateur'
+    super_admin: 'Super administrateur'
+    super_user: 'Super Utilisateur'
+    task_manager: 'Gestion des tâches'
+    traductor: Traducteur
+    user: Utilisateur
+    user_management: 'Gestion des utilisateurs'
+    user_read: 'Utilisateur (lecture)'
+    webmaster: Webmaster
 search:
     filter:
         add: Ajouter
@@ -1049,6 +1222,10 @@ user:
         subtitle: 'Administration des utilisateurs'
         title: 'Ajouter un utilisateur'
     administration: 'Administration des utilisateurs'
+    change_password:
+        cancel: Annuler
+        submit: 'Changer le mot de passe'
+        title: 'Changer votre mot de passe'
     edit:
         card_title: 'Modifier {username}'
         title: 'Modifier {display_name}'
@@ -1063,6 +1240,7 @@ user:
         continue: 'Connectez-vous à votre compte pour continuer'
         forgot: 'J’ai oublié mon mot de passe'
         message: 'Connectez-vous pour démarrer votre session'
+        password: 'Mot de passe'
         password1_aria_label: 'Mot de passe'
         password_placeholder: 'Mot de passe'
         remember_me: 'Se souvenir de moi'
@@ -1070,6 +1248,7 @@ user:
         title: Bienvenue
         user_aria_label: 'E-mail ou nom d’utilisateur'
         user_placeholder: 'E-mail ou nom d’utilisateur'
+        username: 'Nom d’utilisateur'
         welcome_back: 'Bon retour !'
     logout:
         exit: Quitter
@@ -1079,7 +1258,6 @@ user:
     option:
         allowed_configure_wysiwyg: "Autorise l'utilisateur à changer de profile WYSIWYG"
         simplified_ui: 'Interfaces simplifiées'
-        title: Options
     profile:
         change_password:
             breadcrumb_title: 'Changer votre mot de passe'
@@ -1108,7 +1286,17 @@ user:
             Remarque : vous ne pouvez demander un nouveau mot de passe qu’une seule fois toutes les {tokenLifetime} heures.
 
             Si vous ne recevez pas d’e-mail, vérifiez votre dossier de spam ou réessayez.
+        email:
+            message: |-
+                Bonjour {username} !
+
+                Pour réinitialiser votre mot de passe, veuillez visiter {confirmationUrl}
+
+                Cordialement,
+                L'équipe.
+            subject: 'Réinitialiser le mot de passe'
         title: 'Réinitialiser le mot de passe'
+        username_email: 'Nom d’utilisateur ou adresse e-mail'
 view:
     contenttype:
         reorder_item:
@@ -1127,12 +1315,28 @@ view:
                 preview: Aperçu
     icon:
         class:
+            form: 'fa fa-keyboard-o'
             release: 'fa fa-cube'
     macros:
         data-field-type:
             collection_added_items: '{0} Aucun élément n’a été ajouté.|{1} Un élément a été ajouté.|]1,Inf[ {count} éléments ont été ajoutés.'
             collection_removed_items: '{0} Aucun élément n’a été supprimé.|{1} Un élément a été supprimé.|]1,Inf[ {count} éléments ont été supprimés.'
             menu-option-button: Voir
+    profile:
+        show:
+            action:
+                cancel: Annuler
+                edit: Modifier
+                profile: { title: 'Votre profil' }
+            alt:
+                user_profile_picture: 'Photo de profil de l’utilisateur'
+            display_name: 'Nom affiché'
+            email: e-mail
+            email_notification: 'notification par e-mail'
+            locale: 'Langue de l’interface'
+            locale_preferred: 'Langue préférée'
+            login: Identifiant
+            wysiwyg: 'Profil WYSIWYG'
     title: '{name} de {plural}'
     user:
         index:
@@ -1181,6 +1385,25 @@ views:
             title: 'Révisions de {contentType} : {title}'
             until: Jusqu’à
             version: Version
+    elasticsearch:
+        cluster:
+            bits: Bits
+            build-date: 'Date de compilation'
+            cluster-uuid: 'UUID du cluster'
+            lucene-version: 'Version de Lucene'
+            node-name: 'Nom du nœud'
+            public-key: 'Clé publique'
+            tagline: Slogan
+            tika-server-not-configured: "Le serveur Tika n'est pas configuré"
+            version: Version
+        export-search:
+            title: 'Exporter les documents'
+        search:
+            error_title: 'Erreur avec le résultat de la recherche'
+            pagetitle: Recherche
+            sort-options: 'Options de tri'
+            subtitle: '{total}'
+            title: 'Moteur de recherche : {total} résultats'
     elements:
         object-toolbar-html:
             edit-draft: 'Modifier le brouillon'
@@ -1218,6 +1441,10 @@ views:
             revert-revision-label: 'Revenir à cette révision'
             unpublish-from-label: 'Dépublier de'
             view-label: 'Voir cette révision'
+        side-menu-html:
+            anonymous-user: 'Utilisateur anonyme'
+            quick-search-label: 'Recherche rapide'
+            quick-search-placeholder: Rechercher...
 webhook:
     enable:
         action: Activer

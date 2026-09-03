@@ -39,7 +39,7 @@
                                         <td class="text-center"><i class="{% if contentType.icon %}{{ contentType.icon }}{% else %}fa fa-book{% endif %}"></i></td>
                                         {% for role in ['view', 'create', 'edit', 'publish', 'delete', 'trash', 'archive', 'show_link_create', 'show_link_search'] %}
                                             <td class="{{ html_classes({'text-muted': contentType.roles[role] == 'not-defined'}) }} ">
-                                                {{ contentType.roles[role]|trans }}
+                                                {{ contentType.roles[role]|replace({'ROLE_': 'ROLE.'})|lower|trans([], 'emsco-core') }}
                                             </td>
                                         {% endfor %}
                                         <td>
@@ -84,7 +84,7 @@
                             {% for role in roles %}
                                 <tr>
                                     <td>{{ loop.index }}</td>
-                                    <td>{{ role|trans }}</td>
+                                    <td>{{ role|replace({'ROLE_': 'ROLE.'})|lower|trans([], 'emsco-core') }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -114,7 +114,7 @@
                             <tbody>
                                 {% for role in rolesFunctionality %}
                                     <tr>
-                                        <td>{{ role|trans }}</td>
+                                        <td>{{ role|replace({'ROLE_': 'ROLE.'})|lower|trans([], 'emsco-core') }}</td>
                                         <td>
                                             {% set translationKey = 'view.user.permissions.roles_functionality.' ~ role|lower %}
                                             {% set translatedDescription = translationKey|trans %}

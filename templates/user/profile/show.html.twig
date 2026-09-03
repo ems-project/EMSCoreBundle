@@ -1,4 +1,4 @@
-{%- trans_default_domain 'emsco-twigs' -%}
+{%- trans_default_domain 'emsco-core' -%}
 {% extends '@EMSCore/layout.html.twig' %}
 
 {% block title %}{{ 'view.profile.show.action.profile.title'|trans }}{% endblock %}
@@ -29,7 +29,7 @@
                             <b>{{ 'view.profile.show.email_notification'|trans }}</b> <i class="pull-right fa fa-2x fa-{% if user.emailNotification %}check-{% endif %}square-o"></i>
                         </li>
                         <li class="list-group-item">
-                            <b>{{ 'user.option.simplified_ui'|trans({}, 'emsco-user') }}</b> <i class="pull-right fa fa-2x fa-{% if attribute(user.userOptions, 'simplified_ui') %}check-{% endif %}square-o"></i>
+                            <b>{{ 'user.option.simplified_ui'|trans({}, 'emsco-core') }}</b> <i class="pull-right fa fa-2x fa-{% if attribute(user.userOptions, 'simplified_ui') %}check-{% endif %}square-o"></i>
                         </li>
                         <li class="list-group-item">
                             <b>{{ 'view.profile.show.locale'|trans }}</b> <i class="pull-right">{{ user.locale|language_name  }}</i>
@@ -51,7 +51,7 @@
                             <b>Roles : </b>
                             <i class="">
                                 {% for role in user.roles  -%}
-                                    <span class="badge text-nowrap">{{- role|trans({}, 'EMSCoreBundle') -}}</span>&nbsp;
+                                    <span class="badge text-nowrap">{{- role|replace({'ROLE_': 'ROLE.'})|lower|trans([], 'emsco-core') -}}</span>&nbsp;
                                 {%- endfor %}
                             </i>
                         </li>
@@ -66,7 +66,7 @@
                     </ul>
                     <div class="btn-group">
                         <a href="{{ path(routes.USER_PROFILE_EDIT) }}" class="btn btn-primary" data-testid="profile-edit"><i class="fa fa-pencil"></i> <b>{{ 'view.profile.show.action.edit'|trans }}</b></a>
-                        <a href="{{ path(routes.USER_CHANGE_PASSWORD) }}" class="btn btn-primary" data-testid="profile-change-password"><i class="fa fa-lock"></i> <b>{{ 'user.change_password.title'|trans({}, 'emsco-user') }}</b></a>
+                        <a href="{{ path(routes.USER_CHANGE_PASSWORD) }}" class="btn btn-primary" data-testid="profile-change-password"><i class="fa fa-lock"></i> <b>{{ 'user.change_password.title'|trans({}, 'emsco-core') }}</b></a>
                     </div>
                 </div>
             </div>

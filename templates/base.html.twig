@@ -143,11 +143,11 @@
 				} %}
 
                 <p>
-                  {{ 'user.logged_in.title'|trans({'%username%': app.user.username}, 'emsco-user') }}
-                  <small>{{ 'user.logged_in.member_since'|trans({'%date%': app.user.created|date(date_time_format)}, 'emsco-user') }}</small>
+                  {{ 'user.logged_in.title'|trans({'%username%': app.user.username}, 'emsco-core') }}
+                  <small>{{ 'user.logged_in.member_since'|trans({'%date%': app.user.created|date(date_time_format)}, 'emsco-core') }}</small>
                   <small>
                   	{% for role in app.user.roles %}
-                  		{{ role|trans }}{% if not loop.last %},{% endif %}
+                  		{{ role|replace({'ROLE_': 'ROLE.'})|lower|trans([], 'emsco-core') }}{% if not loop.last %},{% endif %}
                   	{% endfor %}
                   </small>
                 </p>
@@ -170,13 +170,13 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left" data-testid="user-footer-edit-profile">
-                  <a href="{{ path(routes.USER_PROFILE) }}" class="btn btn-default btn-flat">{{ 'user.profile.title'|trans({}, 'emsco-user') }}</a>
+                  <a href="{{ path(routes.USER_PROFILE) }}" class="btn btn-default btn-flat">{{ 'user.profile.title'|trans({}, 'emsco-core') }}</a>
                 </div>
                 <div class="pull-right" data-testid="user-footer-logout">
                		{% if is_granted('IS_IMPERSONATOR') %}
-               			<a href="{{ path('emsco_user_index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat" data-testid="logout">{{ 'user.logout.exit'|trans({}, 'emsco-user') }}</a>
+               			<a href="{{ path('emsco_user_index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat" data-testid="logout">{{ 'user.logout.exit'|trans({}, 'emsco-core') }}</a>
                		{% else %}
-               			<a href="{{ path(routes.USER_LOGOUT) }}" class="btn btn-default btn-flat" data-testid="logout">{{ 'user.logout.submit'|trans({}, 'emsco-user') }}</a>
+               			<a href="{{ path(routes.USER_LOGOUT) }}" class="btn btn-default btn-flat" data-testid="logout">{{ 'user.logout.submit'|trans({}, 'emsco-core') }}</a>
                		{% endif %}
                 </div>
               </li>
@@ -185,7 +185,7 @@
           <!-- Control Sidebar Toggle Button -->
           {% else %}
           <li>
-            <a href="{{ path(routes.USER_LOGIN) }}" ><span class="glyphicon glyphicon-lock"></span> {{ 'user.login.submit'|trans({}, 'emsco-user') }}</a>
+            <a href="{{ path(routes.USER_LOGIN) }}" ><span class="glyphicon glyphicon-lock"></span> {{ 'user.login.submit'|trans({}, 'emsco-core') }}</a>
           </li>
           {% endif %}
         </ul>

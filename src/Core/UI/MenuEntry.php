@@ -65,7 +65,7 @@ class MenuEntry
             return null;
         }
 
-        return t($this->label, $this->parameters, 'emsco-twigs');
+        return t($this->label, $this->parameters, 'emsco-core');
     }
 
     public function getIcon(): string

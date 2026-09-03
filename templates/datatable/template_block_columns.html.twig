@@ -57,8 +57,7 @@
 {% endblock contentTypeViewDefinition %}
 
 {% block dashboardType %}
-    <i class="{{ [line.data.type, 'icon']|join('.')|trans({}, 'emsco-twigs') }}"></i>&nbsp;&nbsp;
-    {{ [line.data.type, 'label']|join('.')|trans({}, 'emsco-twigs') }}
+    {{ line.data.type|trans }}
 {% endblock dashboardType %}
 
 {% block dashboardDefinition %}

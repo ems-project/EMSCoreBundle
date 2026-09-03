@@ -92,7 +92,7 @@ class UploadedAssetDataTableType extends AbstractTableType implements QueryServi
             $table->addColumnDefinition(new TranslationTableColumn(
                 titleKey: t('field.file.type', [], 'emsco-core'),
                 attribute: 'type',
-                domain: 'emsco-mimetypes'
+                domain: 'ems-mimetypes'
             ))->setItemIconCallback(fn (array $data) => Encoder::getFontAwesomeFromMimeType($data['type'], EMSCoreBundle::FONTAWESOME_VERSION));
         }
 

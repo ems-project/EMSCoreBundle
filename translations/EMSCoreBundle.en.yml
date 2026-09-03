@@ -378,29 +378,6 @@ form:
             error_with_document: 'It was impossible to update the document "%label%" : %error_message%'
             ordered: 'The %contenttype%''s documents have been ordered with the view "%view_label%"'
             too_many_documents: 'This content type have to much document (%total%) to be reorder them all in once'
-ROLE_ADMIN: Administrator
-ROLE_ALLOW_ALIGN: 'Align Environment'
-ROLE_API: API
-ROLE_AUTHOR: Author
-ROLE_COPY_PASTE: Copy/Paste
-ROLE_DEFAULT_SEARCH: 'Default search'
-ROLE_FORM_CRM: 'Form CRM'
-ROLE_PUBLISHER: Publisher
-ROLE_REVIEWER: Reviewer
-ROLE_SUPER: 'Super user'
-ROLE_SUPER_ADMIN: 'Super Admin'
-ROLE_SUPER_AUTHOR: 'Super Author'
-ROLE_SUPER_PUBLISHER: 'Super Publisher'
-ROLE_SUPER_USER: 'Super User'
-ROLE_SUPER_WEBMASTER: 'Super Webmaster'
-ROLE_TASK_MANAGER: 'Task admin'
-ROLE_TRADUCTOR: Traductor
-ROLE_COPYWRITER: Copywriter
-ROLE_AUDITOR: Auditor
-ROLE_USER: User
-ROLE_USER_MANAGEMENT: 'User Management'
-ROLE_USER_READ: 'User read'
-ROLE_WEBMASTER: Webmaster
 command:
     reindex:
         end: 'The content type %contenttype%''s documents have been reindexed in %environment% (index: %index%)'

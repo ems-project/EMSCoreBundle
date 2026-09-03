@@ -94,7 +94,7 @@
                     ,&nbsp;
                 {%- endif -%}
             {%- endif -%}
-            {{- string|trans -}}
+            {{- string|replace({'ROLE_': 'ROLE.'})|lower|trans([], 'emsco-core') -}}
         {%- endfor -%}
     {%- endif -%}
 {% endblock emsco_form_table_column_data_value_roles %}

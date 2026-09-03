@@ -8,6 +8,7 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
+use EMS\CoreBundle\Form\Field\RolePickerType;
 use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
 use EMS\CoreBundle\Service\ElasticsearchService;
 use EMS\CoreBundle\Service\UserService;
@@ -18,6 +19,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+
+use function Symfony\Component\Translation\t;
 
 class SelectUserPropertyFieldType extends DataFieldType
 {
@@ -109,21 +112,24 @@ class SelectUserPropertyFieldType extends DataFieldType
         $optionsForm = $builder->get('options');
 
         $optionsForm->get('displayOptions')
-            ->add('multiple', CheckboxType::class, ['required' => false])
+            ->add('multiple', CheckboxType::class, [
+                'label' => t('option.multiple', [], 'emsco-core'),
+                'required' => false,
+            ])
             ->add('allow_add', CheckboxType::class, [
-                'label' => 'Allow add',
+                'label' => t('option.allow_add', [], 'emsco-core'),
                 'required' => false,
             ])
             ->add('user_property', ChoiceType::class, [
                 'required' => true,
-                'label' => 'User property',
+                'label' => t('field.user_property', [], 'emsco-core'),
                 'choices' => $this->userService->listUserDisplayProperties(),
             ])
-            ->add('user_roles', ChoiceType::class, [
+            ->add('user_roles', RolePickerType::class, [
+                'label' => t('field.user_roles', [], 'emsco-core'),
+                'include_not_defined' => false,
                 'required' => false,
-                'label' => 'User roles',
                 'multiple' => true,
-                'choices' => $this->userService->listUserRoles(),
             ])
         ;
 

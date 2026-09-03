@@ -7,7 +7,6 @@ namespace EMS\CoreBundle\Core\User;
 use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Core\Security\Canonicalizer;
 use EMS\CoreBundle\Core\Security\Token;
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Group;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\AuthTokenRepository;
@@ -22,6 +21,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\AccountExpiredException;
 use Symfony\Component\Security\Core\Exception\DisabledException;
 use Symfony\Component\String\ByteString;
+
+use function Symfony\Component\Translation\t;
 
 class UserManager
 {
@@ -174,7 +175,7 @@ class UserManager
         $mailTemplate = $this->mailerService->makeMailTemplate('@'.$this->templateNamespace.self::MAIL_TEMPLATE);
         $mailTemplate
             ->addTo($user->getEmail())
-            ->setSubject('user.resetting.email.subject', ['username' => $user->getUsername()], EMSCoreBundle::TRANS_USER_DOMAIN)
+            ->setSubject(t('user.resetting.email.subject', ['username' => $user->getUsername()], 'emsco-core'))
             ->setBodyBlock('resetPassword', ['user' => $user])
         ;
 

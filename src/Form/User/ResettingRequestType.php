@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\User;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * @extends AbstractType<mixed>
@@ -26,17 +26,11 @@ class ResettingRequestType extends AbstractType
         $builder
             ->add('username_email', null, [
                 'constraints' => [new NotBlank()],
-                'label' => 'user.resetting.username_email',
+                'label' => t('user.resetting.username_email', [], 'emsco-core'),
             ])
-            ->add('submit', SubmitType::class, ['label' => 'user.resetting.title'])
+            ->add('submit', SubmitType::class, [
+                'label' => t('user.resetting.title', [], 'emsco-core'),
+            ])
         ;
-    }
-
-    #[\Override]
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'translation_domain' => EMSCoreBundle::TRANS_USER_DOMAIN,
-        ]);
     }
 }

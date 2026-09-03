@@ -101,6 +101,11 @@ content_type:
     settings: Instellingen
     tasks: Taken
     versioning: Versionering
+contenttype:
+    action:
+        modal_import:
+            cancel: Annuleren
+            submit: Importeren
 core:
     action:
         render-option:
@@ -167,6 +172,9 @@ core:
                 other   {Er zijn # indexen}
             }
     version: 'Versie {core} met Symfony {symfony}'
+dashboard:
+    exception:
+        title: 'Het dashboard {name} heeft een uitzondering veroorzaakt'
 data:
     add:
         new_title: 'Nieuwe {content_type}'
@@ -185,6 +193,14 @@ data:
 documentation:
     api:
         title: Documentatie
+ems_core:
+    dashboard:
+        export:
+            label: Exporteren
+        revision_task:
+            label: Revisietaken
+        template:
+            label: Sjabloon
 entity:
     edit:
         title: '{entity_name} bewerken'
@@ -207,6 +223,11 @@ environment:
         subtitle: 'tijd om omgevingen uit te lijnen?'
         title: 'Omgevingen uitlijnen'
     edit:
+        notice_rename: |
+            Als u de alias wilt hernoemen, 
+            maak dan een nieuwe omgeving aan en lijn deze uit met de omgeving waarvan u de alias wilt hernoemen.
+            Verwijder vervolgens de vorige.
+        save: Bijwerken
         short_title: 'Omgeving bewerken'
         title: 'Omgeving "{name}" bewerken'
     index:
@@ -220,6 +241,16 @@ environment:
         indexes: Indexen
         total: Totaal
     plural: Omgevingen
+    property:
+        base_url: Basis-URL
+        color: Kleur
+        label: Label
+        name: Naam
+        option:
+            default_search: 'In standaardzoekopdracht'
+            update_referrers: 'Verwijzers bijwerken'
+        rolePublish: Publicatierol
+        template_publication: Publicatiesjabloon
     rebuild:
         notice: 'Wees voorzichtig: afhankelijk van de geselecteerde optie kan bepaalde inhoud in de zoekindex verloren gaan.'
         options:
@@ -241,6 +272,7 @@ field:
     accumulate_file: 'In één bestand verzamelen'
     alias: Alias
     allowed_remote_hosts: 'Toegestane externe hosts'
+    analyzer: Analyzer
     asset:
         author: 'Auteur:'
         content: 'Inhoud:'
@@ -256,6 +288,7 @@ field:
     attributes: 'Extra request-attributen'
     available: Beschikbaar
     channel: Kanaal
+    circles: Kringen
     circles_to: 'Kringen naar'
     color: Kleur
     command: Commando
@@ -268,6 +301,7 @@ field:
     date_build: Builddatum
     date_created: Aanmaakdatum
     date_execution: Uitvoeringsdatum
+    date_expiration: Vervaldatum
     date_modified: Wijzigingsdatum
     date_range:
         duration: Duur
@@ -278,7 +312,9 @@ field:
     date_upload: Uploaddatum
     definition: Definitie
     description: Beschrijving
+    display_name: Weergavenaam
     editor: Editor
+    email: E-mail
     email_content_type: 'Contenttype (bv. text/html)'
     enabled: Ingeschakeld
     endpoint_url: Endpoint
@@ -290,7 +326,9 @@ field:
     events: Events
     extra: Extra
     file:
-        disposition: Dispositie
+        disposition: Bestandsdispositie
+        disposition_attachment: 'Bijlage (download forceren)'
+        disposition_inline: 'Inline (proberen te openen in browser)'
         extension: Extensie
         mimetype: MIME-type
         name: Bestandsnaam
@@ -299,6 +337,7 @@ field:
         size: Grootte
         type: Type
     format_tags: Formaat-tags
+    group: Groep
     hash: Hash-handtekening
     header: Header
     header_allow_origin: 'De Access-Control-Allow-Origin-header'
@@ -315,6 +354,8 @@ field:
     is_public: Publiek
     key: Sleutel
     label: Label
+    language_preferred: Voorkeurstaal
+    language_ui: Interfacetaal
     last_seen: 'Laatst gezien'
     locale: Locale
     mcp_arguments: 'MCP argumenten-template (JSON)'
@@ -325,6 +366,11 @@ field:
     mime_type: MIME-type
     message: Bericht
     name: Naam
+    options: Opties
+    orientation: Oriëntatie
+    password: Wachtwoord
+    password_repeat: 'Herhaal wachtwoord'
+    pdf_size: PDF-formaat
     plural: Meervoud
     public_access: 'Publieke toegang'
     query: Query
@@ -360,7 +406,11 @@ field:
     user_deleted: 'Verwijderd door'
     user_impersonator: Impersonator
     user_modified: 'Gewijzigd door'
+    user_property: Gebruikerseigenschap
+    user_roles: Gebruikersrollen
     user_uploaded: 'Geüpload door'
+    username: Gebruikersnaam
+    wysiwyg_profile: WYSIWYG-profiel
 field_type:
     json_menu_editor:
         add: Toevoegen
@@ -419,6 +469,8 @@ fields:
     template:
         more_info: 'meer info'
 form:
+    add:
+        title: 'Een formulier toevoegen'
     data:
         add:
             ouuid:
@@ -429,10 +481,14 @@ form:
         bool_table_column:
             false_value: Uitvinken
             true_value: Aanvinken
+    edit:
+        title: 'Een formulier bewerken'
     field-type-type:
         root: Structuur
+    menu: Formulieren
     reorder:
         title: 'Velden van formulier hersorteren: {label}'
+    tagline: 'Herbruikbare componenten'
 form_submissions:
     overview: Overzicht
     title: Formulierinzendingen
@@ -473,6 +529,8 @@ json_menu_nested:
     column:
         structure: Structuur
         title: Titel
+    error:
+        item_edit_outdated: 'Niet meer gesynchroniseerd, sluit en probeer opnieuw!'
 key:
     actions: Acties
     active_primary_shards: 'Actieve primaire shards'
@@ -535,6 +593,7 @@ key:
     new_password_confirmation: 'Herhaal nieuw wachtwoord'
     none: Geen
     not-applicable: N.v.t.
+    not_defined: 'Niet gedefinieerd'
     notice: Melding
     number_of_data_nodes: 'Aantal datanodes'
     number_of_nodes: 'Aantal nodes'
@@ -584,6 +643,9 @@ log:
         content_type_add_unreferenced: 'Onverwachte fout bij het ophalen van niet-gerefereerde contenttype(s) uit externe omgeving {environment}: {error}'
         delete_failed: 'Verwijderen mislukt'
         invalid_table_action: 'Onbekende tabelactie'
+    icon:
+        class: 'fa fa-file-text'
+    menu: Logs
     notice:
         alias_attached: 'De alias "{alias}" is gekoppeld'
         content_type_deleted: 'Contenttype "{contentType}" is verwijderd'
@@ -592,15 +654,87 @@ log:
         deleted_orphan_index: 'De index "{index}" is verwijderd'
         deleted_orphan_indexes: 'Verweesde indexen zijn verwijderd'
         draft_deleted: 'Concept "{revision}" is verwijderd'
+    tagline: 'Wie deed wat'
     title: 'Log van {created}'
+    view:
+        title: 'Logs van {created}'
     warning:
         draft_not_found: 'Concept niet gevonden met id "{revisionId}"'
         duplicate_environment: 'Omgeving "{name}" bestaat al!'
         index_not_found: 'Index "{index}" niet gevonden'
+media_library:
+    close: Sluiten
+    file:
+        add:
+            title: Uploaden
+        delete:
+            title: 'Bestand verwijderen'
+        load_more: 'Meer bestanden laden...'
+        rename:
+            title: 'Bestand hernoemen'
+        revision:
+            title: Revisie
+        view:
+            download: 'Bestand downloaden'
+            fallback: 'Geen plug-in beschikbaar om de bestandsinhoud weer te geven.'
+            next: Volgende
+            previous: Vorige
+            title: 'Bestand bekijken'
+            title_modal: 'Bestand bekijken: {name}'
+    files:
+        delete:
+            info: '{count} bestanden verwijderen. Even geduld...'
+            submit: Bevestigen
+            title: '{count} bestanden verwijderen'
+            warning: 'Weet u zeker dat u de {count} geselecteerde bestanden wilt verwijderen?'
+        move:
+            info: 'Huidige locatie: "{path}"'
+            select_folder: 'Selecteer nieuwe locatie:'
+            submit: Verplaatsen
+            success: |-
+                {count, plural,
+                    one {Het geselecteerde bestand verplaatsen van "{from}" naar "{to}". Even geduld...}
+                    other {# bestanden verplaatsen van "{from}" naar "{to}". Even geduld...}
+                }
+            title: |-
+                {count, plural,
+                    one {Bestand verplaatsen}
+                    other {# bestanden verplaatsen}
+                }
+    folder:
+        add:
+            title: 'Map toevoegen'
+        delete:
+            job_info: 'Map wordt verwijderd. Even geduld...'
+            job_info_async: 'De map wordt zo snel mogelijk verwijderd.'
+            submit: Bevestigen
+            title: 'Map verwijderen'
+            warning: |
+                Weet u zeker dat u deze map wilt verwijderen?
+                Deze actie verwijdert ook alle submappen en bestanden die erin zitten.
+        move:
+            info: 'Huidige locatie: "{path}"'
+            job_info: |
+                De geselecteerde map wordt verplaatst van "{from}" naar "{to}"
+                Even geduld...
+            job_info_async: 'De map wordt zo snel mogelijk verplaatst.'
+            select_folder: 'Selecteer nieuwe locatie:'
+            submit: Verplaatsen
+            title: 'Map verplaatsen'
+        rename:
+            job_info: |
+                Map wordt hernoemd.
+                Even geduld...
+            job_info_async: 'De map wordt zo snel mogelijk hernoemd.'
+            submit: Hernoemen
+            title: 'Map hernoemen'
+    home: Start
+    submit: Opslaan
 modal:
     loading_information: 'Informatie laden...'
 navigation:
     toggle: 'Navigatie omschakelen'
+not-applicable: N.v.t.
 notice_card:
     title: Melding
 notification-menu:
@@ -649,6 +783,16 @@ notification:
         revision_not_published: 'Deze revisie is niet meer gepubliceerd in {environment}'
         revision_not_published_and_duplicate: 'Deze revisie is niet meer gepubliceerd in {environment} en er bestaat een andere notificatie'
     warnings: Waarschuwingen
+option:
+    allow_add: 'Toevoegen toestaan'
+    email_notification: E-mailmeldingen
+    layout_boxed: 'Layout boxed'
+    layout_sidebar_collapse: 'Zijbalk inklapbaar'
+    layout_sidebar_mini: 'Zijbalk mini'
+    multiple: Meerdere
+orientation:
+    landscape: Liggend
+    portrait: Staand
 out-of-sync:
     modal:
         please-reload: 'Herlaad de pagina.'
@@ -685,6 +829,13 @@ release:
         revision: '{date} gefinaliseerd door {user}'
         revision-not-applicable: 'Niet van toepassing'
         still_in_target: 'Nog steeds gepubliceerd in {target}'
+    release-revisison:
+        missing-revision: 'Het document "{label}" is niet meer beschikbaar in {environment}'
+        no_more_in_target: 'Deze revisie is gedepubliceerd uit {target}'
+        not-applicable: 'niet van toepassing'
+        revision: '{date} afgerond door {user}'
+        revision-not-applicable: 'Niet van toepassing'
+        still_in_target: 'Nog steeds gepubliceerd in {target}'
     revision:
         index:
             publish: 'Lijst van documenten beschikbaar voor publicatie'
@@ -713,6 +864,28 @@ revision:
         put_back_confirm: '"{label}" terugplaatsen?'
         put_back_selected: 'Selectie terugplaatsen'
         title: '{pluralName} in prullenbak'
+role:
+    admin: Beheerder
+    allow_align: 'Omgeving uitlijnen'
+    api: API
+    auditor: Auditor
+    author: Auteur
+    copy_paste: Kopiëren/Plakken
+    copywriter: Copywriter
+    default_search: 'Standaard zoekopdracht'
+    form_crm: 'Formulier CRM'
+    not_defined: 'Niet gedefinieerd'
+    publisher: Uitgever
+    reviewer: Reviewer
+    super: 'Super gebruiker'
+    super_admin: 'Super beheerder'
+    super_user: 'Super Gebruiker'
+    task_manager: Taakbeheer
+    traductor: Vertaler
+    user: Gebruiker
+    user_management: Gebruikersbeheer
+    user_read: 'Gebruiker (lezen)'
+    webmaster: Webmaster
 search:
     filter:
         add: Toevoegen
@@ -1049,6 +1222,10 @@ user:
         subtitle: Gebruikersbeheer
         title: 'Gebruiker toevoegen'
     administration: Gebruikersbeheer
+    change_password:
+        cancel: Annuleren
+        submit: 'Wachtwoord wijzigen'
+        title: 'Uw wachtwoord wijzigen'
     edit:
         card_title: '{username} bewerken'
         title: '{display_name} bewerken'
@@ -1063,6 +1240,7 @@ user:
         continue: 'Meld u aan bij uw account om verder te gaan'
         forgot: 'Ik ben mijn wachtwoord vergeten'
         message: 'Meld u aan om uw sessie te starten'
+        password: Wachtwoord
         password1_aria_label: Wachtwoord
         password_placeholder: Wachtwoord
         remember_me: 'Onthoud mij'
@@ -1070,6 +1248,7 @@ user:
         title: Welkom
         user_aria_label: 'E-mail of gebruikersnaam'
         user_placeholder: 'E-mail of gebruikersnaam'
+        username: Gebruikersnaam
         welcome_back: 'Welkom terug!'
     logout:
         exit: Afsluiten
@@ -1079,7 +1258,6 @@ user:
     option:
         allowed_configure_wysiwyg: 'Gebruiker toestaan om van WYSIWYG-profiel te wisselen'
         simplified_ui: 'Vereenvoudigde UI'
-        title: Opties
     profile:
         change_password:
             breadcrumb_title: 'Uw wachtwoord wijzigen'
@@ -1108,7 +1286,17 @@ user:
             Opmerking: u kunt slechts één keer per {tokenLifetime} uur een nieuw wachtwoord aanvragen.
 
             Als u geen e-mail ontvangt, controleer dan uw spammap of probeer opnieuw.
+        email:
+            message: |-
+                Hallo {username}!
+
+                Om uw wachtwoord opnieuw in te stellen, bezoek {confirmationUrl}
+
+                Met vriendelijke groeten,
+                Het team.
+            subject: 'Wachtwoord resetten'
         title: 'Wachtwoord resetten'
+        username_email: 'Gebruikersnaam of e-mailadres'
 view:
     contenttype:
         reorder_item:
@@ -1127,12 +1315,28 @@ view:
                 preview: Voorbeeld
     icon:
         class:
+            form: 'fa fa-keyboard-o'
             release: 'fa fa-cube'
     macros:
         data-field-type:
             collection_added_items: '{0} Er is niets toegevoegd.|{1} Er is één item toegevoegd.|]1,Inf[ Er zijn {count} items toegevoegd.'
             collection_removed_items: '{0} Er is niets verwijderd.|{1} Er is één item verwijderd.|]1,Inf[ Er zijn {count} items verwijderd.'
             menu-option-button: Bekijken
+    profile:
+        show:
+            action:
+                cancel: Annuleren
+                edit: Bewerken
+                profile: { title: 'Uw profiel' }
+            alt:
+                user_profile_picture: 'Profielfoto van de gebruiker'
+            display_name: Weergavenaam
+            email: e-mail
+            email_notification: e-mailmelding
+            locale: 'Taal van de interface'
+            locale_preferred: Voorkeurstaal
+            login: Login
+            wysiwyg: WYSIWYG-profiel
     title: '{name} van {plural}'
     user:
         index:
@@ -1181,6 +1385,25 @@ views:
             title: 'Revisies van {contentType}: {title}'
             until: Tot
             version: Versie
+    elasticsearch:
+        cluster:
+            bits: Bits
+            build-date: Buildatum
+            cluster-uuid: Cluster-UUID
+            lucene-version: Lucene-versie
+            node-name: 'Naam van het knooppunt'
+            public-key: 'Publieke sleutel'
+            tagline: Tagline
+            tika-server-not-configured: 'Tika server is niet geconfigureerd'
+            version: Versie
+        export-search:
+            title: 'Documenten exporteren'
+        search:
+            error_title: 'Fout bij het zoekresultaat'
+            pagetitle: Zoeken
+            sort-options: Sorteeropties
+            subtitle: '{total}'
+            title: 'Zoekmachine: {total} resultaten'
     elements:
         object-toolbar-html:
             edit-draft: 'Concept bewerken'
@@ -1218,6 +1441,10 @@ views:
             revert-revision-label: 'Terugkeren naar deze revisie'
             unpublish-from-label: 'Depubliceren van'
             view-label: 'Deze revisie bekijken'
+        side-menu-html:
+            anonymous-user: 'Anonieme gebruiker'
+            quick-search-label: 'Snel zoeken'
+            quick-search-placeholder: Zoeken...
 webhook:
     enable:
         action: Inschakelen

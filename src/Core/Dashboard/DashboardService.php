@@ -19,16 +19,8 @@ class DashboardService
         $this->dashboards = \iterator_to_array($viewTypes);
     }
 
-    /**
-     * @return string[]
-     */
-    public function getIds(): array
+    public function get(DashboardType $type): DashboardInterface
     {
-        return \array_keys($this->dashboards);
-    }
-
-    public function get(string $id): DashboardInterface
-    {
-        return $this->dashboards[$id];
+        return $this->dashboards[$type->value];
     }
 }

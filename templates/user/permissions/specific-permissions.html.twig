@@ -39,7 +39,7 @@
                                     <td class="text-center"><i class="{{ contentType.icon|default('fa fa-book') }}"></i></td>
                                     {% for role in [contentType.roles.view, contentType.roles.create, contentType.roles.edit, contentType.roles.publish, contentType.roles.delete, contentType.roles.trash, contentType.roles.archive, contentType.roles.show_link_create, contentType.roles.show_link_search] %}
                                     <td class="{{ html_classes({'text-muted': role == 'not-defined'}) }} ">
-                                        {{ role|trans }}
+                                        {{ role|replace({'ROLE_': 'ROLE.'})|lower|trans([], 'emsco-core') }}
                                     </td>
                                     {% endfor %}
                                 </tr>

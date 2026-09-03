@@ -13,7 +13,6 @@ use EMS\CoreBundle\Core\Component\JsonMenuNested\JsonMenuNestedService;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Core\UI\Modal\Modal;
 use EMS\CoreBundle\Core\UI\Modal\ModalMessageType;
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType;
@@ -113,7 +112,7 @@ class JsonMenuNestedController
 
             if ($form->isSubmitted()) {
                 if ($form->get('_item_hash')->getData() !== $item->getObjectHash()) {
-                    return $this->responseWarningModal($this->translator->trans('json_menu_nested.error.item_edit_outdated', [], EMSCoreBundle::TRANS_COMPONENT));
+                    return $this->responseWarningModal($this->translator->trans('json_menu_nested.error.item_edit_outdated', [], 'emsco-core'));
                 }
                 if (null !== $object = $this->handleFormItem($form, $config, $node)) {
                     $this->jsonMenuNestedService->itemUpdate($config, $item, $object);
@@ -282,7 +281,7 @@ class JsonMenuNestedController
     private function responseWarning(string $warning): JsonResponse
     {
         return new JsonResponse([
-            'warning' => $this->translator->trans($warning, [], EMSCoreBundle::TRANS_COMPONENT),
+            'warning' => $this->translator->trans($warning, [], 'emsco-core'),
         ]);
     }
 
@@ -290,7 +289,7 @@ class JsonMenuNestedController
     {
         return new JsonResponse(Modal::forMessage(
             ModalMessageType::Warning,
-            $this->translator->trans($warning, [], EMSCoreBundle::TRANS_COMPONENT),
+            $this->translator->trans($warning, [], 'emsco-core'),
             'Warning'
         ));
     }

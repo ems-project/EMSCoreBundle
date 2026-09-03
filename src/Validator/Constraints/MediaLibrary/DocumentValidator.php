@@ -8,10 +8,11 @@ use EMS\CoreBundle\Core\Component\MediaLibrary\File\MediaLibraryFile;
 use EMS\CoreBundle\Core\Component\MediaLibrary\Folder\MediaLibraryFolder;
 use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryDocument;
 use EMS\CoreBundle\Core\Component\MediaLibrary\MediaLibraryService;
-use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
+
+use function Symfony\Component\Translation\t;
 
 class DocumentValidator extends ConstraintValidator
 {
@@ -42,13 +43,12 @@ class DocumentValidator extends ConstraintValidator
         }
 
         $message = match (true) {
-            $value instanceof MediaLibraryFile => 'media_library.error.file_exists',
-            $value instanceof MediaLibraryFolder => 'media_library.error.folder_exists',
+            $value instanceof MediaLibraryFile => t('media_library.file_exists', [], 'validators'),
+            $value instanceof MediaLibraryFolder => t('media_library.folder_exists', [], 'validators'),
         };
 
         $this->context
             ->buildViolation($message)
-            ->setTranslationDomain(EMSCoreBundle::TRANS_COMPONENT)
             ->atPath('name')
             ->addViolation();
     }

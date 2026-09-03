@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\Form\Dashboard;
 
 use EMS\CoreBundle\Core\Dashboard\DashboardService;
+use EMS\CoreBundle\Core\Dashboard\DashboardType as DashboardTypeEnum;
 use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Form\Field\ColorPickerType;
-use EMS\CoreBundle\Form\Field\DashboardPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\RolePickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -46,7 +47,6 @@ final class DashboardType extends AbstractType
                 ],
             ])
             ->add('icon', IconPickerType::class, [
-                'label' => t('field.icon', [], 'emsco-core'),
                 'required' => true,
                 'row_attr' => [
                     'class' => 'col-md-4',
@@ -87,10 +87,11 @@ final class DashboardType extends AbstractType
                     'class' => 'col-md-4',
                 ],
             ])
-            ->add('type', DashboardPickerType::class, [
+            ->add('type', EnumType::class, [
                 'label' => t('field.type', [], 'emsco-core'),
                 'required' => true,
                 'disabled' => !($options['create'] ?? false),
+                'class' => DashboardTypeEnum::class,
                 'row_attr' => [
                     'class' => 'col-md-4',
                 ],

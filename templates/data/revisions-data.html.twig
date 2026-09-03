@@ -1,4 +1,4 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-twigs' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-core' %}
 
 {% import "@EMSCore/macros/data-field-type.html.twig" as macros %}
 
@@ -19,8 +19,8 @@
 
 {% block title %}
 	{{ 'views.data.revisions-data-html.title'|trans({
-		'%content-type%': revision.contentType.singularName,
-		'%title%': revision|emsco_display
+		'contentType': revision.contentType.singularName,
+		'title': revision|emsco_display
 	}) }}
 {% endblock %}
 

@@ -1,5 +1,0 @@
-contenttype:
-    action:
-        modal_import:
-            submit: Import
-            cancel: Cancel

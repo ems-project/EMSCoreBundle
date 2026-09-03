@@ -1,11 +1,16 @@
 {% block resetPassword %}
-{%- trans_default_domain 'emsco-user' -%}
+{%- trans_default_domain 'emsco-core' -%}
 {%- set confirmationUrl = path('emsco_user_resetting_reset', {'token': user.confirmationToken}) -%}
 {% autoescape false %}
-{{ 'user.resetting.email.message'|emsco_i18n(user.localePreferred|default('en'))|trans({
-    '%username%': user.username,
-    '%token%': user.confirmationToken,
-    '%confirmationUrl%': absolute_url(confirmationUrl)
-}) }}
+    {%- set i18nTranslated = 'user.resetting.email.message'|emsco_i18n(user.localePreferred|default('en')) -%}
+    {%- if i18nTranslated != 'user.resetting.email.message' -%}
+        {{ i18nTranslated }}
+    {%- else -%}
+        {{ 'user.resetting.email.message'|trans({
+            '%username%': user.username,
+            '%token%': user.confirmationToken,
+            '%confirmationUrl%': absolute_url(confirmationUrl)
+        }) }}
+    {%- endif -%}
 {% endautoescape %}
 {% endblock %}

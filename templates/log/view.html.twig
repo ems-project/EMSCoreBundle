@@ -1,5 +1,5 @@
 {% extends '@EMSCore/log/abstract.html.twig' %}
-{% trans_default_domain 'emsco-twigs' %}
+{% trans_default_domain 'emsco-core' %}
 
 {% block title %}{{ 'log.view.title'|trans({'%created%': log.created|date(date_time_format)}) }}{% endblock %}
 

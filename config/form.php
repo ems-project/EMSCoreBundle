@@ -59,6 +59,7 @@ use EMS\CoreBundle\Form\Field\FormPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\QuerySearchPickerType;
+use EMS\CoreBundle\Form\Field\RoleMultiPickerType;
 use EMS\CoreBundle\Form\Field\RolePickerType;
 use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
 use EMS\CoreBundle\Form\Field\WysiwygStylesSetPickerType;
@@ -68,11 +69,7 @@ use EMS\CoreBundle\Form\Form\Dashboard\DashboardType;
 use EMS\CoreBundle\Form\Form\EmsCollectionType;
 use EMS\CoreBundle\Form\Form\FieldHolderType;
 use EMS\CoreBundle\Form\Form\FormType;
-use EMS\CoreBundle\Form\Form\GroupType;
 use EMS\CoreBundle\Form\Form\ManagedAliasType;
-use EMS\CoreBundle\Form\Form\McpPromptType;
-use EMS\CoreBundle\Form\Form\McpResourceType;
-use EMS\CoreBundle\Form\Form\McpToolType;
 use EMS\CoreBundle\Form\Form\NotificationFormType;
 use EMS\CoreBundle\Form\Form\QuerySearchType;
 use EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType;
@@ -513,8 +510,6 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems_core.form.user_type', UserType::class)
         ->args([
-            service('ems.service.user'),
-            service('ems.group.manager'),
             '%ems_core.circles_object%',
             '%ems_core.group_feature%',
         ])
@@ -536,6 +531,9 @@ return static function (ContainerConfigurator $container) {
         ->tag('form.type');
 
     $services->set('ems.form.field.rolepickertype', RolePickerType::class)
+        ->args([service('ems.service.user')])
+        ->tag('form.type');
+    $services->set('ems.form.field.role_multipe_picker', RoleMultiPickerType::class)
         ->args([service('ems.service.user')])
         ->tag('form.type');
 
@@ -638,32 +636,11 @@ return static function (ContainerConfigurator $container) {
         ->args([service('ems_core.form.transformer.asset')])
         ->tag('form.type');
 
-    $services->set('ems_core.form.user_group', GroupType::class)
-        ->args([service('ems.service.user')])
-        ->tag('form.type');
-
     $services->set(CriteriaFilterType::class)
         ->args([service(ContentTypeService::class)])
         ->tag('form.type');
     $services->set(ReorganizeType::class)
         ->args([service(ContentTypeService::class)])
-        ->tag('form.type');
-    $services->set(McpToolType::class)
-        ->args([
-            service('ems.service.user'),
-        ])
-        ->tag('form.type');
-
-    $services->set(McpResourceType::class)
-        ->args([
-            service('ems.service.user'),
-        ])
-        ->tag('form.type');
-
-    $services->set(McpPromptType::class)
-        ->args([
-            service('ems.service.user'),
-        ])
         ->tag('form.type');
 
     $services->set('emsco.form_extension.locale_form_extension', LocaleFormExtension::class)

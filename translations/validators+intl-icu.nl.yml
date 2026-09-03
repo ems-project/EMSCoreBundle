@@ -1,6 +1,9 @@
 environment:
     target_diff_source: 'De doelomgeving moet verschillen van de bronomgeving'
 invalid_format: 'Ongeldig formaat'
+media_library:
+    file_exists: 'Bestandsnaam bestaat al.'
+    folder_exists: 'Mapnaam bestaat al.'
 revision:
     version_from_required: 'Dit veld is niet geldig! Leeg veld'
     version_to_greater: 'Moet groter zijn dan "{fromField}"'

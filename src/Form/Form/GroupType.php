@@ -6,10 +6,9 @@ namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Group;
+use EMS\CoreBundle\Form\Field\RoleMultiPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
-use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -25,10 +24,6 @@ final class GroupType extends AbstractType
     public const string MODE_UPDATE = 'update';
     public const string UPDATE_BUTTON = 'update_button';
     public const string CREATE_BUTTON = 'create_button';
-
-    public function __construct(private readonly UserService $userService)
-    {
-    }
 
     /**
      * @param FormBuilderInterface<mixed> $builder
@@ -47,13 +42,7 @@ final class GroupType extends AbstractType
             ->add('label', TextType::class, [
                 'label' => t('field.label', [], 'emsco-core'),
             ])
-            ->add('roles', ChoiceType::class, [
-                'label' => t('field.roles', [], 'emsco-core'),
-                'choices' => $this->userService->getExistingRoles(),
-                'expanded' => true,
-                'multiple' => true,
-                'mapped' => true,
-            ]);
+            ->add('roles', RoleMultiPickerType::class);
 
         if (self::MODE_CREATE === $mode) {
             $builder->add(self::CREATE_BUTTON, SubmitEmsType::class, [

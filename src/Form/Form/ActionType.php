@@ -66,7 +66,6 @@ class ActionType extends AbstractType
                 'row_attr' => ['class' => 'col-md-8'],
             ])
             ->add('icon', IconPickerType::class, [
-                'label' => t('field.icon', [], 'emsco-core'),
                 'required' => false,
                 'row_attr' => ['class' => 'col-md-4'],
             ])

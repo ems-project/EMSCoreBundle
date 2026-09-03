@@ -17,14 +17,6 @@ class GroupManager implements EntityServiceInterface
     ) {
     }
 
-    /**
-     * @return Group[]
-     */
-    public function getAll(): array
-    {
-        return $this->groupRepository->getAll();
-    }
-
     public function isSortable(): bool
     {
         return false;

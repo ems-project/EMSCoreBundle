@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\Field;
 
 use Dompdf\Adapter\CPDF;
-use EMS\CommonBundle\Helper\Text\Encoder;
-use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 class PdfSizeType extends ChoiceType
 {
@@ -17,14 +17,14 @@ class PdfSizeType extends ChoiceType
     {
         $choices = [];
         foreach (CPDF::$PAPER_SIZES as $id => $size) {
-            $choices[\sprintf('pdf_size.%s', new Encoder()->slug($id)->toString())] = $id;
+            $choices[\ucfirst((string) $id)] = $id;
         }
 
         parent::configureOptions($resolver);
         $resolver->setDefaults([
+            'label' => t('field.pdf_size', [], 'emsco-core'),
             'choices' => $choices,
-            'label_format' => 'pdf_size.%name%',
-            'translation_domain' => EMSCoreBundle::TRANS_FORM_DOMAIN,
+            'choice_translation_domain' => false,
         ]);
     }
 }

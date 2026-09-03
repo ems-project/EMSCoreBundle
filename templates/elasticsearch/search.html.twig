@@ -1,4 +1,4 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-twigs' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-core' %}
 
 {% block title %}{% if response %}{{ 'views.elasticsearch.search.title'|trans({'%total%': response.formattedTotal|default('not-applicable'|trans) }) }}{% else %}{{ 'views.elasticsearch.search.error_title'|trans }}{%  endif %}{% endblock %}
 {% block pagetitle %}{{ 'views.elasticsearch.search.pagetitle'|trans }}{% endblock %}

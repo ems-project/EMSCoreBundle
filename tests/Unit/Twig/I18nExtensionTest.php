@@ -15,13 +15,14 @@ class I18nExtensionTest extends TestCase
 {
     private readonly I18nService $i18nService;
     private I18nExtension $i18nRuntime;
+    private UserManager $userManager;
 
     #[\Override]
     protected function setUp(): void
     {
         $this->i18nService = $this->createMock(I18nService::class);
-        $userManager = $this->createMock(UserManager::class);
-        $this->i18nRuntime = new I18nExtension($this->i18nService, $userManager);
+        $this->userManager = $this->createMock(UserManager::class);
+        $this->i18nRuntime = new I18nExtension($this->i18nService, $this->userManager);
     }
 
     #[AllowMockObjectsWithoutExpectations]
@@ -72,7 +73,7 @@ class I18nExtensionTest extends TestCase
     }
 
     #[AllowMockObjectsWithoutExpectations]
-    public function testFallbackLocale()
+    public function testNoFallbackLocale()
     {
         $this->i18nService
             ->expects($this->once())
@@ -83,6 +84,21 @@ class I18nExtensionTest extends TestCase
             ]);
 
         $value = $this->i18nRuntime->i18n('config', 'nl');
+        $this->assertEquals('config', $value);
+    }
+
+    public function testFallbackLocale()
+    {
+        $this->i18nService
+            ->expects($this->once())
+            ->method('getAsList')
+            ->willReturn([
+                'en' => 'hello in en',
+                'fr' => 'hello in fr',
+            ]);
+        $this->userManager->expects($this->once())->method('getUserLanguage')->willReturn('nl');
+
+        $value = $this->i18nRuntime->i18n('config');
         $this->assertEquals('hello in en', $value);
     }
 

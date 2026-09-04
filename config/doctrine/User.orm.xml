@@ -35,7 +35,7 @@
     <field name="userOptions" column="user_options" type="json" nullable="true"/>
 
     <many-to-one field="wysiwygProfile" target-entity="EMS\CoreBundle\Entity\WysiwygProfile">
-      <join-column name="wysiwyg_profile_id"/>
+      <join-column name="wysiwyg_profile_id" on-delete="SET NULL"/>
     </many-to-one>
     <many-to-one field="group" target-entity="EMS\CoreBundle\Entity\Group">
         <join-column name="group_id"/>

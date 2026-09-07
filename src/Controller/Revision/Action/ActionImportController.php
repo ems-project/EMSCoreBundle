@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Revision\Action;
 
 use EMS\CommonBundle\Contracts\File\FileReaderInterface;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\UI\AjaxService;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
@@ -12,7 +13,6 @@ use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Standard\Json;
 use GuzzleHttp\Psr7\MimeType;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormFactory;
@@ -25,6 +25,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Twig\Environment;
 
+use function Symfony\Component\Translation\t;
+
 class ActionImportController
 {
     public function __construct(
@@ -34,7 +36,7 @@ class ActionImportController
         private readonly FileReaderInterface $fileReader,
         private readonly RevisionService $revisionService,
         private readonly Environment $twig,
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly string $templateNamespace,
     ) {
     }
@@ -55,7 +57,7 @@ class ActionImportController
             if ($this->importData($action, $revision, $form->get('import_file')->getData())) {
                 return $modal->getSuccessResponse();
             }
-            $this->logger->error('log.contenttype.action.import.error.failed');
+            $this->logger->messageError(t('message.import_failed', [], 'emsco-core'));
         }
 
         return $modal
@@ -136,15 +138,15 @@ class ActionImportController
         $dataColumns = \array_flip(\array_filter($data[0], fn ($col) => \in_array($col, $columns)));
 
         if (\count($dataColumns) !== \count($columns)) {
-            $this->logger->error('log.contenttype.action.import.error.missing_columns', [
+            $this->logger->messageError(t('message.import_file_missing_columns', [
                 'columns' => \implode(', ', $columns),
-            ]);
+            ], 'emsco-core'));
 
             return null;
         }
 
         if (\count($data) < 2) {
-            $this->logger->error('log.contenttype.action.import.error.missing_data');
+            $this->logger->messageError(t('message.import_file_missing_data', [], 'emsco-core'));
 
             return null;
         }

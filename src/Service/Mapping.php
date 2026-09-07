@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CommonBundle\Common\Log\LocalizedLogger;
 use EMS\CommonBundle\Elasticsearch\Client;
-use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Form\FieldType\FieldTypeType;
-use Psr\Log\LoggerInterface;
+
+use function Symfony\Component\Translation\t;
 
 class Mapping
 {
@@ -44,7 +45,7 @@ class Mapping
     final public const string PUBLISHED_BY_FIELD = '_published_by';
 
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLogger $logger,
         private readonly Client $elasticaClient,
         private readonly FieldTypeType $fieldTypeType,
         private readonly ElasticsearchService $elasticsearchService,
@@ -176,19 +177,19 @@ class Mapping
         $response = $this->elasticaClient->getIndex($indexes)->setMapping($body);
 
         if (!$response->isOk()) {
-            $this->logger->warning('service.contenttype.mappings_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+            $this->logger->messageWarning(t('message.contenttype_mappings_error', [
+                'content_type' => $contentType->getSingularName(),
                 'environments' => $indexes,
                 'elasticsearch_dump' => $response->getError(),
-            ]);
+            ], 'emsco-core'));
 
             return false;
         }
 
-        $this->logger->notice('service.contenttype.mappings_updated', [
-            EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+        $this->logger->messageNotice(t('message.contenttype_mappings_updated', [
+            'content_type' => $contentType->getSingularName(),
             'environments' => $indexes,
-        ]);
+        ], 'emsco-core'));
 
         return true;
     }

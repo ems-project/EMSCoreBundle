@@ -4,20 +4,24 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Api\Admin;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\Entity\EntitiesHelper;
 use EMS\CoreBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Exception\EntityServiceNotFoundException;
 use EMS\CoreBundle\Service\EntityServiceInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use function Symfony\Component\Translation\t;
+
 class EntitiesController
 {
-    public function __construct(private readonly EntitiesHelper $entitiesHelper, private readonly LoggerInterface $logger)
-    {
+    public function __construct(
+        private readonly EntitiesHelper $entitiesHelper,
+        private readonly LocalizedLoggerInterface $logger
+    ) {
     }
 
     public function index(string $entity): Response
@@ -61,18 +65,17 @@ class EntitiesController
 
         if (null === $entityObject) {
             $entityObject = $entityService->createEntityFromJson($content, $name);
-            $this->logger->notice('api.admin.entities.create', [
+            $this->logger->messageNotice(t('message.api_entity_created', [
                 'entity' => $entity,
-                'name' => $name,
                 'id' => $entityObject->getId(),
-            ]);
+            ], 'emsco-core'));
         } else {
             $entityObject = $entityService->updateEntityFromJson($entityObject, $content);
-            $this->logger->notice('api.admin.entities.update', [
+            $this->logger->messageNotice(t('message.api_entity_updated', [
                 'entity' => $entity,
                 'name' => $name,
                 'id' => $entityObject->getId(),
-            ]);
+            ], 'emsco-core'));
         }
 
         return new JsonResponse([
@@ -84,11 +87,12 @@ class EntitiesController
     {
         $entityService = $this->getEntityService($entity);
         $id = $entityService->deleteByItemName($name);
-        $this->logger->notice('api.admin.entities.delete', [
+
+        $this->logger->messageNotice(t('message.api_entity_deleted', [
             'entity' => $entity,
             'name' => $name,
             'id' => $id,
-        ]);
+        ], 'emsco-core'));
 
         return new JsonResponse([
             'id' => $id,
@@ -103,10 +107,10 @@ class EntitiesController
             throw new \RuntimeException('Unexpected non string content');
         }
         $entityObject = $entityService->createEntityFromJson($content);
-        $this->logger->notice('api.admin.entities.create', [
+        $this->logger->messageNotice(t('message.api_entity_created', [
             'entity' => $entity,
             'id' => $entityObject->getId(),
-        ]);
+        ], 'emsco-core'));
 
         return new JsonResponse([
             'id' => (string) $entityObject->getId(),

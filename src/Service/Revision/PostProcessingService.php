@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service\Revision;
 
 use Doctrine\DBAL\Exception;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Json\JsonMenuNested;
+use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Core\Revision\RawDataTransformer;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\DataField;
@@ -22,17 +24,21 @@ use EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType;
 use EMS\CoreBundle\Form\DataField\MultiplexedTabContainerFieldType;
 use EMS\CoreBundle\Form\Form\RevisionJsonMenuNestedType;
 use EMS\Helpers\Standard\Json;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Twig\Environment as Twig;
 use Twig\Error\SyntaxError;
 
+use function Symfony\Component\Translation\t;
+
 final readonly class PostProcessingService
 {
-    public function __construct(private Twig $twig, private FormFactoryInterface $formFactory, private LoggerInterface $logger)
-    {
+    public function __construct(
+        private Twig $twig,
+        private FormFactoryInterface $formFactory,
+        private LocalizedLoggerInterface $logger
+    ) {
     }
 
     /**
@@ -107,18 +113,19 @@ final readonly class PostProcessingService
                         }
                         $found = true;
                     } catch (\Throwable $e) {
-                        $this->logger->warning('service.data.json_parse_post_processing_error', [
-                            '_id' => $context['_id'] ?? null,
+                        $this->logger->messageWarning(t('message.field_json_parse_post_processing_error', [
                             'field_name' => $dataField->giveFieldType()->getName(),
-                            EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                        ]);
+                            'error_message' => $e->getMessage(),
+                        ], 'emsco-core'), $revision ? LogRevisionContext::read($revision) : []);
                     }
                 }
             } catch (\Throwable $e) {
                 if ($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
                     if (!$migration) {
                         $form->addError(new FormError($e->getPrevious()->getMessage()));
-                        $this->logger->warning('service.data.cant_finalize_field', [
+                        $this->logger->messageWarning(t('message.data_cant_finalize_field', [
+                            'error_message' => $e->getMessage(),
+                        ], 'emsco-core'), [
                             '_id' => $context['_id'] ?? null,
                             'field_name' => $dataField->giveFieldType()->getName(),
                             'field_display' => isset($fieldType->getDisplayOptions()['label']) && !empty($fieldType->getDisplayOptions()['label']) ? $fieldType->getDisplayOptions()['label'] : $fieldType->getName(),
@@ -132,18 +139,23 @@ final readonly class PostProcessingService
                         $twigContext = $e->getSourceContext();
                         $message = \str_replace(null === $twigContext ? '_string_template_' : $twigContext->getName(), 'postProcessing', $e->getMessage());
                         $form->addError(new FormError($e->getRawMessage()));
-                        $this->logger->warning('service.data.syntax_error', [
-                            '_id' => $context['_id'] ?? null,
+
+                        $this->logger->messageWarning(t('message.field_syntax_error', [
                             'field_name' => $dataField->giveFieldType()->getName(),
+                            'error_message' => $message,
+                        ], 'emsco-core'), [
+                            ...($revision ? LogRevisionContext::read($revision) : []),
+                            '_id' => $context['_id'] ?? null,
                             'field_display' => isset($fieldType->getDisplayOptions()['label']) && !empty($fieldType->getDisplayOptions()['label']) ? $fieldType->getDisplayOptions()['label'] : $fieldType->getName(),
-                            EmsFields::LOG_ERROR_MESSAGE_FIELD => $message,
                         ]);
                     }
                 } else {
-                    $this->logger->warning('service.data.other_post_processing_error', [
+                    $this->logger->messageWarning(t('message.field_other_post_processing_error', [
+                        'field_name' => $dataField->giveFieldType()->getName(),
+                        'error_message' => $e->getMessage(),
+                    ], 'emsco-core'), [
+                        ...($revision ? LogRevisionContext::read($revision) : []),
                         '_id' => $context['_id'] ?? null,
-                        'field_name' => $fieldType->getName(),
-                        EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
                         EmsFields::LOG_EXCEPTION_FIELD => $e,
                     ]);
                 }
@@ -172,11 +184,12 @@ final readonly class PostProcessingService
                         $form->addError(new FormError($e->getPrevious()->getMessage()));
                     }
 
-                    $this->logger->warning('service.data.template_parse_error', [
-                        '_id' => $context['_id'] ?? null,
-                        EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                        EmsFields::LOG_EXCEPTION_FIELD => $e,
+                    $this->logger->messageWarning(t('message.field_template_parse_error', [
                         'computed_field_name' => $fieldType->getName(),
+                        'error_message' => $e->getMessage(),
+                    ], 'emsco-core'), [
+                        ...($revision ? LogRevisionContext::read($revision) : []),
+                        EmsFields::LOG_EXCEPTION_FIELD => $e,
                     ]);
                 }
             }

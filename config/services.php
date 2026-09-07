@@ -561,7 +561,7 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('ems.service.data'),
             service('form.factory'),
-            service('logger'),
+            service('emsco.logger'),
             service('emsco.logger.audit'),
             service(RevisionRepository::class),
             service('ems.service.publish'),

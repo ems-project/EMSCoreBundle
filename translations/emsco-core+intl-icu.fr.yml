@@ -363,8 +363,8 @@ field:
     mcp_output_schema: 'Modèle du schéma de sortie MCP (JSON)'
     mcp_prompt_response: 'Template de réponse de prompt MCP (JSON)'
     mcp_response: 'Template de réponse MCP (JSON)'
-    mime_type: 'Type MIME'
     message: Message
+    mime_type: 'Type MIME'
     name: Nom
     options: Options
     orientation: Orientation
@@ -730,6 +730,51 @@ media_library:
             title: 'Renommer le dossier'
     home: Accueil
     submit: Enregistrer
+message:
+    api_entity_created: "L'entité {entity} a été créée avec l'id {id}"
+    api_entity_deleted: 'L''entité {entity} "{name}" a été supprimée avec l''id {id}'
+    api_entity_updated: 'L''entité {entity} "{name}" a été mise à jour avec l''id {id}'
+    contenttype_mappings_error: 'La mise à jour des mappings pour {content_type} dans {environments} a échoué : {elasticsearch_dump}'
+    contenttype_mappings_updated: 'Mappings mis à jour avec succès pour le type de contenu {content_type} dans {environments}'
+    data_already_unpublished: 'Le document "{label}" était déjà dépublié de {environment}'
+    data_cant_finalize_field: '{error_message}'
+    data_check_signature_failed: 'Signature non concordante dans {environment} pour le document "{label}"'
+    data_computed_hash_mismatch: 'Hash calculé non concordant dans {environment} pour le document "{label}"'
+    data_default_value_error: "Impossible d'initialiser la valeur par défaut (json_decode) pour le type de contenu {content_type}, veuillez vérifier la configuration du type de contenu"
+    data_default_value_template_error: "Impossible d'initialiser la valeur par défaut (compile template) pour le type de contenu {content_type}, veuillez vérifier la configuration du type de contenu"
+    data_error_check_signature: 'Erreur lors de la vérification de la signature dans {environment} pour le document "{label}" : {error_message}'
+    data_hash_mismatch: 'Hash non concordant dans {environment} pour le document "{label}"'
+    data_hash_missing: 'Hash manquant dans {environment} pour le document "{label}"'
+    data_integrity_failed: 'Problème dans {environment} lors de la vérification de l''intégrité du document "{label}" : {error_message}'
+    data_not_a_draft: 'Le document "{label}" est déjà finalisé'
+    data_not_able_to_load_private_key: 'Impossible de charger la clé privée {private_key_filename} : {error_message}'
+    data_not_able_to_sign: 'Impossible de signer le document : {error_message}'
+    data_not_consumed: "{count, plural, one {Une donnée de cette révision n'a pas été consommée : {data}} other {Certaines données (#) de cette révision n'ont pas été consommées : {data}}}"
+    data_post_finalize_failed: 'Erreur lors de la finalisation du post-traitement du document "{label}" : {error_message}'
+    data_revision_not_signed: 'Révision non signée dans {environment} pour le document "{label}"'
+    data_unknown_update_type: 'Le document "{label}" n''a pas été remplacé car le type de mise à jour "{update_type}" est inconnu'
+    data_unlock_revisions_error: 'Exception inattendue lors du déverrouillage'
+    data_update_referrers_error: 'Impossible de mettre à jour les référents du document'
+    field_json_parse_post_processing_error: "Erreur lors de l'analyse JSON du résultat du script de post-traitement du champ {field_name} (|json_encode|raw) : {error_message}"
+    field_not_a_data_field: 'Champ {field_name} inattendu dans le formulaire de révision'
+    field_other_post_processing_error: 'Le post-traitement du champ {field_name} a rencontré un problème : {error_message}'
+    field_syntax_error: 'Erreur de syntaxe dans le champ {field_name} : {error_message}'
+    field_template_parse_error: "Erreur lors de l'analyse du champ calculé {computed_field_name} : {error_message}"
+    field_with_errors: 'Le champ {path} est en erreur avec le message {error_message}'
+    import_failed: "Échec de l'import"
+    import_file_missing_columns: 'Colonnes manquantes dans le fichier d''import, colonnes requises "{columns}"'
+    import_file_missing_data: "Données manquantes dans le fichier d'import"
+    revision_deleted: 'Le document "{label}" a été supprimé'
+    revision_draft_created: 'Un nouveau brouillon a été initié pour le document "{label}"'
+    revision_draft_deleted: 'Brouillon abandonné pour le document "{label}"'
+    revision_draft_updated: 'Brouillon mis à jour pour le document "{label}"'
+    revision_finalized: 'Le document "{label}" a été publié dans {environment}'
+    revision_published: 'Le document "{label}" a été publié dans {environment}'
+    revision_restored: 'Le document "{label}" a été restauré'
+    revision_unpublished: 'Le document "{label}" a été dépublié de {environment}'
+    user_profile_changed_password: 'Le mot de passe a été modifié.'
+    user_profile_updated: 'Le profil a été mis à jour.'
+    user_resetting_success: 'Le mot de passe a été réinitialisé avec succès.'
 modal:
     loading_information: 'Chargement des informations...'
 navigation:

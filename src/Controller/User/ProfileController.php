@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\User;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Form\User\ChangePasswordType;
 use EMS\CoreBundle\Form\User\UserProfileType;
 use EMS\CoreBundle\Routes;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,8 +18,11 @@ use function Symfony\Component\Translation\t;
 
 class ProfileController extends AbstractController
 {
-    public function __construct(private readonly UserManager $userManager, private readonly LoggerInterface $logger, private readonly string $templateNamespace)
-    {
+    public function __construct(
+        private readonly UserManager $userManager,
+        private readonly LocalizedLoggerInterface $logger,
+        private readonly string $templateNamespace
+    ) {
     }
 
     public function show(): Response
@@ -40,7 +43,7 @@ class ProfileController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->userManager->update($user);
-            $this->logger->notice('log.user.profile.updated');
+            $this->logger->messageNotice(t('message.user_profile_updated', [], 'emsco-core'));
 
             return $this->redirectToRoute(Routes::USER_PROFILE);
         }
@@ -60,7 +63,7 @@ class ProfileController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->userManager->update($user);
-            $this->logger->notice('log.user.profile.changed_password');
+            $this->logger->messageNotice(t('message.user_profile_changed_password', [], 'emsco-core'));
 
             return $this->redirectToRoute(Routes::USER_PROFILE);
         }

@@ -363,8 +363,8 @@ field:
     mcp_output_schema: 'MCP output schema template (JSON)'
     mcp_prompt_response: 'MCP prompt response template (JSON)'
     mcp_response: 'MCP response template (JSON)'
-    mime_type: 'MIME type'
     message: Message
+    mime_type: 'MIME type'
     name: Name
     options: Options
     orientation: Orientation
@@ -730,6 +730,51 @@ media_library:
             title: 'Rename folder'
     home: Home
     submit: Save
+message:
+    api_entity_created: 'Entity {entity} has been created with id {id}'
+    api_entity_deleted: 'Entity {entity} "{name}" has been deleted with id {id}'
+    api_entity_updated: 'Entity {entity} "{name}" has been updated with id {id}'
+    contenttype_mappings_error: 'Mappings update for {content_type} in {environments} failed: {elasticsearch_dump}'
+    contenttype_mappings_updated: 'Mappings successfully updated for content type {content_type} in {environments}'
+    data_already_unpublished: 'The document "{label}" was already unpublished from {environment}'
+    data_cant_finalize_field: '{error_message}'
+    data_check_signature_failed: 'Signature mismatch in {environment} for the document "{label}"'
+    data_computed_hash_mismatch: 'Computed hash mismatch in {environment} for the document "{label}"'
+    data_default_value_error: 'It was impossible to initiate the default value (json_decode) for the content type {content_type}, please check the content type configuration'
+    data_default_value_template_error: 'It was impossible to initiate the default value (compile template) for the content type {content_type}, please check the content type configuration'
+    data_error_check_signature: 'Error checking the signature in {environment} for the document "{label}": {error_message}'
+    data_hash_mismatch: 'Hash mismatch in {environment} for the document "{label}"'
+    data_hash_missing: 'Hash missing in {environment} for the document "{label}"'
+    data_integrity_failed: 'Issue in {environment} while checking the integrity of the document "{label}": {error_message}'
+    data_not_a_draft: 'The document "{label}" is already finalized'
+    data_not_able_to_load_private_key: 'It is impossible to load the private key {private_key_filename}: {error_message}'
+    data_not_able_to_sign: 'It was impossible to sign the document: {error_message}'
+    data_not_consumed: '{count, plural, one {A data of this revision was not consumed: {data}} other {Some data (#) of this revision were not consumed: {data}}}'
+    data_post_finalize_failed: 'Error while finalizing the post processing of the document "{label}": {error_message}'
+    data_revision_not_signed: 'Revision not signed in {environment} for the document "{label}"'
+    data_unknown_update_type: 'The document "{label}" has not been replaced as the update type "{update_type}" is unknown'
+    data_unlock_revisions_error: 'Unexpected unlock exception'
+    data_update_referrers_error: "It was impossible to update the document's referrers"
+    field_json_parse_post_processing_error: 'Error to JSON parse the result of the post processing script of field {field_name} (|json_encode|raw): {error_message}'
+    field_not_a_data_field: 'Unexpected {field_name} field in the revision form'
+    field_other_post_processing_error: 'The postprocessing of the field {field_name} faced an issue: {error_message}'
+    field_syntax_error: 'Syntax error with field {field_name}: {error_message}'
+    field_template_parse_error: 'Error to parse the computed field {computed_field_name}: {error_message}'
+    field_with_errors: 'The field {path} is in error with the message {error_message}'
+    import_failed: 'Import failed'
+    import_file_missing_columns: 'Missing columns in import file, required columns "{columns}"'
+    import_file_missing_data: 'Missing data in import file'
+    revision_deleted: 'The document "{label}" has been deleted'
+    revision_draft_created: 'A new draft has been initiated for the document "{label}"'
+    revision_draft_deleted: 'Draft discard for the document "{label}"'
+    revision_draft_updated: 'Updated draft for the document "{label}"'
+    revision_finalized: 'The document "{label}" has been published in {environment}'
+    revision_published: 'The document "{label}" has been published in {environment}'
+    revision_restored: 'The document "{label}" has been restored'
+    revision_unpublished: 'The document "{label}" has been unpublished from {environment}'
+    user_profile_changed_password: 'The password has been changed.'
+    user_profile_updated: 'The profile has been updated.'
+    user_resetting_success: 'The password has been reset successfully.'
 modal:
     loading_information: 'Loading information...'
 navigation:

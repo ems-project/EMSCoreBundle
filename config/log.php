@@ -19,7 +19,6 @@ return static function (ContainerConfigurator $container) {
         ->factory(service(LocalizedLoggerFactoryInterface::class))
         ->args([
             service('logger'),
-            'ems_logger',
         ])
 
         ->tag('monolog.logger', ['channel' => 'core']);
@@ -28,7 +27,6 @@ return static function (ContainerConfigurator $container) {
         ->factory(service(LocalizedLoggerFactoryInterface::class))
         ->args([
             service('logger'),
-            'ems_logger',
         ])
 
         ->tag('monolog.logger', ['channel' => 'audit']);

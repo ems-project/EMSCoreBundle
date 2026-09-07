@@ -363,8 +363,8 @@ field:
     mcp_output_schema: 'MCP antwoordstemplate (JSON)'
     mcp_prompt_response: 'MCP promptantwoord-template (JSON)'
     mcp_response: 'MCP uitvoerschema-template (JSON)'
-    mime_type: MIME-type
     message: Bericht
+    mime_type: MIME-type
     name: Naam
     options: Opties
     orientation: Oriëntatie
@@ -730,6 +730,51 @@ media_library:
             title: 'Map hernoemen'
     home: Start
     submit: Opslaan
+message:
+    api_entity_created: 'Entiteit {entity} is aangemaakt met id {id}'
+    api_entity_deleted: 'Entiteit {entity} "{name}" is verwijderd met id {id}'
+    api_entity_updated: 'Entiteit {entity} "{name}" is bijgewerkt met id {id}'
+    contenttype_mappings_error: 'Bijwerken van de mappings voor {content_type} in {environments} is mislukt: {elasticsearch_dump}'
+    contenttype_mappings_updated: 'Mappings succesvol bijgewerkt voor het inhoudstype {content_type} in {environments}'
+    data_already_unpublished: 'Het document "{label}" was al gedepubliceerd uit {environment}'
+    data_cant_finalize_field: '{error_message}'
+    data_check_signature_failed: 'Handtekening komt niet overeen in {environment} voor het document "{label}"'
+    data_computed_hash_mismatch: 'Berekende hash komt niet overeen in {environment} voor het document "{label}"'
+    data_default_value_error: 'Het was onmogelijk om de standaardwaarde te initialiseren (json_decode) voor het inhoudstype {content_type}, controleer de configuratie van het inhoudstype'
+    data_default_value_template_error: 'Het was onmogelijk om de standaardwaarde te initialiseren (compile template) voor het inhoudstype {content_type}, controleer de configuratie van het inhoudstype'
+    data_error_check_signature: 'Fout bij het controleren van de handtekening in {environment} voor het document "{label}": {error_message}'
+    data_hash_mismatch: 'Hash komt niet overeen in {environment} voor het document "{label}"'
+    data_hash_missing: 'Hash ontbreekt in {environment} voor het document "{label}"'
+    data_integrity_failed: 'Probleem in {environment} bij het controleren van de integriteit van het document "{label}": {error_message}'
+    data_not_a_draft: 'Het document "{label}" is al gefinaliseerd'
+    data_not_able_to_load_private_key: 'Het is onmogelijk om de privésleutel {private_key_filename} te laden: {error_message}'
+    data_not_able_to_sign: 'Het was onmogelijk om het document te ondertekenen: {error_message}'
+    data_not_consumed: '{count, plural, one {Eén gegeven van deze revisie werd niet verwerkt: {data}} other {Enkele gegevens (#) van deze revisie werden niet verwerkt: {data}}}'
+    data_post_finalize_failed: 'Fout bij het finaliseren van de naverwerking van het document "{label}": {error_message}'
+    data_revision_not_signed: 'Revisie niet ondertekend in {environment} voor het document "{label}"'
+    data_unknown_update_type: 'Het document "{label}" is niet vervangen omdat het updatetype "{update_type}" onbekend is'
+    data_unlock_revisions_error: 'Onverwachte fout bij het ontgrendelen'
+    data_update_referrers_error: 'Het was onmogelijk om de verwijzingen naar het document bij te werken'
+    field_json_parse_post_processing_error: 'Fout bij het JSON-parsen van het resultaat van het naverwerkingsscript van veld {field_name} (|json_encode|raw): {error_message}'
+    field_not_a_data_field: 'Onverwacht veld {field_name} in het revisieformulier'
+    field_other_post_processing_error: 'De naverwerking van het veld {field_name} liep tegen een probleem aan: {error_message}'
+    field_syntax_error: 'Syntaxfout bij het veld {field_name}: {error_message}'
+    field_template_parse_error: 'Fout bij het parsen van het berekende veld {computed_field_name}: {error_message}'
+    field_with_errors: 'Het veld {path} bevat een fout met de melding {error_message}'
+    import_failed: 'Import mislukt'
+    import_file_missing_columns: 'Ontbrekende kolommen in het importbestand, vereiste kolommen "{columns}"'
+    import_file_missing_data: 'Ontbrekende gegevens in het importbestand'
+    revision_deleted: 'Het document "{label}" is verwijderd'
+    revision_draft_created: 'Er is een nieuw concept gestart voor het document "{label}"'
+    revision_draft_deleted: 'Concept verworpen voor het document "{label}"'
+    revision_draft_updated: 'Concept bijgewerkt voor het document "{label}"'
+    revision_finalized: 'Het document "{label}" is gepubliceerd in {environment}'
+    revision_published: 'Het document "{label}" is gepubliceerd in {environment}'
+    revision_restored: 'Het document "{label}" is hersteld'
+    revision_unpublished: 'Het document "{label}" is gedepubliceerd uit {environment}'
+    user_profile_changed_password: 'Het wachtwoord is gewijzigd.'
+    user_profile_updated: 'Het profiel is bijgewerkt.'
+    user_resetting_success: 'Het wachtwoord is opnieuw ingesteld.'
 modal:
     loading_information: 'Informatie laden...'
 navigation:

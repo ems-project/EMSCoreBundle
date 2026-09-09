@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller;
 
 use Doctrine\ORM\EntityNotFoundException;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface;
-use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\FieldType\FieldTypeService;
 use EMS\CoreBundle\Core\ContentType\FieldType\FieldTypeTreeItem;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
@@ -25,15 +25,16 @@ use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\UserService;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Symfony\Component\Translation\t;
+
 class UserController extends AbstractController
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly ContentTypeRepository $contentTypeRepository,
         private readonly UserService $userService,
         private readonly UserManager $userManager,
@@ -161,11 +162,9 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->userManager->update($user);
-            $this->logger->notice('log.user.updated', [
-                'username_managed' => $user->getUsername(),
+            $this->logger->messageNotice(t('message.user_updated', [
                 'user_display_name' => $user->getDisplayName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-            ]);
+            ], 'emsco-core'));
 
             return $this->redirectToRoute(Routes::USER_INDEX);
         }
@@ -183,15 +182,10 @@ class UserController extends AbstractController
 
     public function delete(User $user): Response
     {
-        $username = $user->getUsername();
-        $displayName = $user->getDisplayName();
         $this->userService->deleteUser($user);
-
-        $this->logger->notice('log.user.deleted', [
-            'username_managed' => $username,
-            'user_display_name' => $displayName,
-            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
-        ]);
+        $this->logger->messageNotice(t('message.user_deleted', [
+            'user_display_name' => $user->getDisplayName(),
+        ], 'emsco-core'));
 
         return $this->redirectToRoute(Routes::USER_INDEX);
     }
@@ -200,18 +194,16 @@ class UserController extends AbstractController
     {
         if ($user->isEnabled()) {
             $user->setEnabled(false);
-            $message = 'log.user.disabled';
+            $this->logger->messageNotice(t('message.user_disabled', [
+                'user_display_name' => $user->getDisplayName(),
+            ], 'emsco-core'));
         } else {
             $user->setEnabled(true);
-            $message = 'log.user.enabled';
+            $this->logger->messageNotice(t('message.user_enabled', [
+                'user_display_name' => $user->getDisplayName(),
+            ], 'emsco-core'));
         }
         $this->userManager->update($user);
-
-        $this->logger->notice($message, [
-            'username_managed' => $user->getUsername(),
-            'user_display_name' => $user->getDisplayName(),
-            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-        ]);
 
         return $this->redirectToRoute(Routes::USER_INDEX);
     }
@@ -235,14 +227,10 @@ class UserController extends AbstractController
 
         $authToken = new AuthToken($user);
         $this->authTokenRepository->save($authToken);
-
-        // TODO: Hide the key in the logs?
-        $this->logger->notice('log.user.api_key', [
-            'username_managed' => $user->getUsername(),
+        $this->logger->messageNotice(t('message.user_api_key_generated', [
             'user_display_name' => $user->getDisplayName(),
             'api_key' => $authToken->getValue(),
-            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-        ]);
+        ], 'emsco-core'));
 
         return $this->redirectToRoute(Routes::USER_INDEX);
     }

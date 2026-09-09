@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
-use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Storage\StorageManager;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
@@ -19,7 +19,6 @@ use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,10 +28,12 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use function Symfony\Component\Translation\t;
+
 class CrudController extends AbstractController
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly UserService $userService,
         private readonly DataService $dataService,
         private readonly ContentTypeService $contentTypeService,
@@ -66,11 +67,10 @@ class CrudController extends AbstractController
                 throw $exception;
             }
 
-            $this->logger->error('log.crud.create_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $exception,
-            ]);
+            $this->logger->messageError(t('message.revision_create_error', [
+                'error_message' => $exception->getMessage(),
+                'content_type' => $contentType->getName(),
+            ], 'emsco-core'));
 
             return $this->flashMessageLogger->buildJsonResponse([
                 'success' => false,
@@ -105,11 +105,11 @@ class CrudController extends AbstractController
             if ($exception instanceof NotFoundHttpException || $exception instanceof BadRequestHttpException) {
                 throw $exception;
             }
-            $this->logger->error('log.crud.read_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $exception,
-            ]);
+
+            $this->logger->messageError(t('message.revision_read_error', [
+                'content_type' => $contentType->getName(),
+                'error_message' => $exception->getMessage(),
+            ], 'emsco-core'));
 
             return $this->flashMessageLogger->buildJsonResponse([
                 'success' => false,
@@ -184,11 +184,11 @@ class CrudController extends AbstractController
                 throw $exception;
             }
 
-            $this->logger->error('log.crud.finalize_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $exception,
-            ]);
+            $this->logger->messageError(t('message.revision_finalize_error', [
+                'error_message' => $exception->getMessage(),
+                'content_type' => $name,
+                'revision_id' => $id,
+            ], 'emsco-core'));
 
             return $this->flashMessageLogger->buildJsonResponse(['success' => false]);
         }
@@ -210,11 +210,12 @@ class CrudController extends AbstractController
             if ($exception instanceof NotFoundHttpException || $exception instanceof BadRequestHttpException) {
                 throw $exception;
             }
-            $this->logger->error('log.crud.discard_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $exception,
-            ]);
+
+            $this->logger->messageError(t('message.revision_discard_error', [
+                'revision_id' => $id,
+                'content_type' => $contentType->getName(),
+                'error_message' => $exception->getMessage(),
+            ], 'emsco-core'));
 
             return $this->flashMessageLogger->buildJsonResponse([
                 'success' => $isDiscard,
@@ -235,23 +236,23 @@ class CrudController extends AbstractController
         $isDeleted = false;
 
         try {
+            $revision = $this->revisionService->give($ouuid, $name);
             $this->dataService->delete($name, $ouuid);
-            $this->logger->notice('log.crud.deleted', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $name,
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-            ]);
+
+            $this->logger->messageNotice(t('message.revision_deleted', [
+                'label' => $revision->getLabel(),
+            ], 'emsco-core'));
             $isDeleted = true;
         } catch (\Exception $exception) {
             if ($exception instanceof NotFoundHttpException || $exception instanceof BadRequestHttpException) {
                 throw $exception;
             }
 
-            $this->logger->error('log.crud.delete_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $name,
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $exception,
-            ]);
+            $this->logger->messageError(t('message.revision_delete_error', [
+                'error_message' => $exception->getMessage(),
+                'content_type' => $name,
+                'ouuid' => $ouuid,
+            ], 'emsco-core'));
         }
 
         return $this->flashMessageLogger->buildJsonResponse([
@@ -282,11 +283,12 @@ class CrudController extends AbstractController
             if ($exception instanceof NotFoundHttpException) {
                 throw $exception;
             }
-            $this->logger->error('log.crud.replace_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $exception,
-            ]);
+
+            $this->logger->messageError(t('message.revision_replace_error', [
+                'content_type' => $contentType->getName(),
+                'error_message' => $exception->getMessage(),
+                'ouuid' => $ouuid,
+            ], 'emsco-core'));
 
             return $this->flashMessageLogger->buildJsonResponse([
                 'success' => $isReplaced,
@@ -324,11 +326,12 @@ class CrudController extends AbstractController
             if ($exception instanceof NotFoundHttpException) {
                 throw $exception;
             }
-            $this->logger->error('log.crud.merge_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $exception,
-            ]);
+
+            $this->logger->messageError(t('message.revision_merge_error', [
+                'revision_id' => $ouuid,
+                'content_type' => $contentType->getName(),
+                'error_message' => $exception->getMessage(),
+            ], 'emsco-core'));
 
             $isMerged = false;
 
@@ -467,11 +470,10 @@ class CrudController extends AbstractController
                 'ouuid' => $draftRevision->getOuuid(),
             ]);
         } catch (\Throwable $throwable) {
-            $this->logger->error('log.crud.create_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $name,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $throwable->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $throwable,
-            ]);
+            $this->logger->messageError(t('message.revision_create_error', [
+                'error_message' => $throwable->getMessage(),
+                'content_type' => $name,
+            ], 'emsco-core'));
 
             return $this->flashMessageLogger->buildJsonResponse([
                 'success' => false,

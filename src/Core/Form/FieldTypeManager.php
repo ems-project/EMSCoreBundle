@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Form;
 
-use EMS\CommonBundle\Helper\EmsFields;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Exception\ElasticmsException;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\SubfieldType;
 use EMS\CoreBundle\Service\Mapping;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
+
+use function Symfony\Component\Translation\t;
 
 class FieldTypeManager
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly FormRegistryInterface $formRegistry
     ) {
     }
@@ -72,19 +73,19 @@ class FieldTypeManager
                     $child->setParent($fieldType);
                     $child->setOptions($dataFieldType->getDefaultOptions($fieldName));
                     $fieldType->addChild($child);
-                    $this->logger->notice('log.contenttype.field.added', [
-                        'field_name' => $fieldName,
-                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
-                    ]);
+
+                    $this->logger->messageNotice(t('message.field_added', [
+                        'name' => $fieldName,
+                    ], 'emsco-core'));
 
                     return '_ems_'.$child->getName().'_modal_options';
                 }
-                $this->logger->error('log.contenttype.field.name_not_valid', [
+
+                $this->logger->messageError(t('message.field_name_not_valid', [
                     'field_format' => '/[a-z][a-z0-9_-]*/ !'.Mapping::HASH_FIELD.' !'.Mapping::HASH_FIELD,
-                ]);
+                ], 'emsco-core'));
             } else {
-                $this->logger->error('log.contenttype.field.name_mandatory', [
-                ]);
+                $this->logger->messageError(t('message.field_name_mandatory', [], 'emsco-core'));
             }
 
             return true;
@@ -118,19 +119,19 @@ class FieldTypeManager
                     $child->setType(SubfieldType::class);
                     $child->setParent($fieldType);
                     $fieldType->addChild($child);
-                    $this->logger->notice('log.contenttype.subfield.added', [
-                        'subfield_name' => $formArray['ems:internal:add:subfield:name'],
-                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
-                    ]);
+
+                    $this->logger->messageNotice(t('message.subfield_added', [
+                        'name' => $formArray['ems:internal:add:subfield:name'],
+                    ], 'emsco-core'));
 
                     return '_ems_'.$child->getName().'_modal_options';
                 }
-                $this->logger->error('log.contenttype.subfield.name_not_valid', [
+
+                $this->logger->messageError(t('message.subfield_name_not_valid', [
                     'field_format' => '/[a-z][a-z0-9_-]*/',
-                ]);
+                ], 'emsco-core'));
             } else {
-                $this->logger->error('log.contenttype.subfield.name_mandatory', [
-                ]);
+                $this->logger->messageError(t('message.subfield_name_mandatory', [], 'emsco-core'));
             }
 
             return true;
@@ -165,19 +166,17 @@ class FieldTypeManager
                         $parent->addChild($new);
                     }
 
-                    $this->logger->notice('log.contenttype.field.added', [
-                        'field_name' => $formArray['ems:internal:add:subfield:target_name'],
-                        EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
-                    ]);
+                    $this->logger->messageNotice(t('message.field_added', [
+                        'name' => $formArray['ems:internal:add:subfield:target_name'],
+                    ], 'emsco-core'));
 
                     return 'first_ems_'.$new->getName().'_modal_options';
                 }
-                $this->logger->error('log.contenttype.field.name_not_valid', [
+                $this->logger->messageError(t('message.field_name_not_valid', [
                     'field_format' => '/[a-z][a-z0-9_-]*/ !'.Mapping::HASH_FIELD.' !'.Mapping::HASH_FIELD,
-                ]);
+                ], 'emsco-core'));
             } else {
-                $this->logger->error('log.contenttype.field.name_mandatory', [
-                ]);
+                $this->logger->messageError(t('message.field_name_mandatory', [], 'emsco-core'));
             }
 
             return true;
@@ -208,10 +207,10 @@ class FieldTypeManager
     {
         if (\array_key_exists('remove', $formArray)) {
             $fieldType->setDeleted(true);
-            $this->logger->notice('log.contenttype.field.deleted', [
-                'field_name' => $fieldType->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
-            ]);
+
+            $this->logger->messageNotice(t('message.field_deleted', [
+                'name' => $fieldType->getName(),
+            ], 'emsco-core'));
 
             return true;
         }
@@ -255,9 +254,10 @@ class FieldTypeManager
             foreach ($fields as $field) {
                 $fieldType->getChildren()->add($field);
             }
-            $this->logger->notice('log.contenttype.field.reordered', [
-                'field_name' => $fieldType->getName(),
-            ]);
+
+            $this->logger->messageNotice(t('message.field_reordered', [
+                'name' => $fieldType->getName(),
+            ], 'emsco-core'));
 
             return true;
         }

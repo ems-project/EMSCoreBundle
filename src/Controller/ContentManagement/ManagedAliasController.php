@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Form\Form\ManagedAliasType;
 use EMS\CoreBundle\Repository\ManagedAliasRepository;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\AliasService;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Symfony\Component\Translation\t;
+
 class ManagedAliasController extends AbstractController
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly AliasService $aliasService,
         private readonly ManagedAliasRepository $managedAliasRepository,
         private readonly string $instanceId,
@@ -35,9 +37,9 @@ class ManagedAliasController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->save($managedAlias, $this->getIndexActions($form));
 
-            $this->logger->notice('log.managed_alias.created', [
-                'managed_alias_name' => $managedAlias->getName(),
-            ]);
+            $this->logger->messageNotice(t('message.managed_alias_created', [
+                'managed_alias_label' => $managedAlias->getLabel(),
+            ], 'emsco-core'));
 
             return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
         }
@@ -57,9 +59,10 @@ class ManagedAliasController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->save($managedAlias, $this->getIndexActions($form));
-            $this->logger->notice('log.managed_alias.updated', [
-                'managed_alias_name' => $managedAlias->getName(),
-            ]);
+
+            $this->logger->messageNotice(t('message.managed_alias_updated', [
+                'managed_alias_label' => $managedAlias->getLabel(),
+            ], 'emsco-core'));
 
             return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
         }
@@ -76,9 +79,9 @@ class ManagedAliasController extends AbstractController
 
         $this->aliasService->removeAlias($managedAlias->getAlias());
         $this->managedAliasRepository->delete($managedAlias);
-        $this->logger->notice('log.managed_alias.deleted', [
-            'managed_alias_name' => $managedAlias->getName(),
-        ]);
+        $this->logger->messageNotice(t('message.managed_alias_deleted', [
+            'managed_alias_label' => $managedAlias->getLabel(),
+        ], 'emsco-core'));
 
         return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
     }

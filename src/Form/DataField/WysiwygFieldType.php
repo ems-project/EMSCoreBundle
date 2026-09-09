@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\StorageManager;
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
@@ -31,6 +30,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+
+use function Symfony\Component\Translation\t;
 
 class WysiwygFieldType extends DataFieldType
 {
@@ -239,26 +240,39 @@ class WysiwygFieldType extends DataFieldType
         if ($optionsForm->has('mappingOptions')) {
             $optionsForm->get('mappingOptions')
                 ->add('analyzer', AnalyzerPickerType::class)
-                ->add('copy_to', TextType::class, ['required' => false]);
+                ->add('copy_to', TextType::class, [
+                    'label' => t('field.copy_to', [], 'emsco-core'),
+                    'required' => false,
+                ]);
         }
         $optionsForm->get('displayOptions')
             ->add('language', ChoiceType::class, [
+                'label' => t('field.language', [], 'emsco-core'),
                 'required' => false,
                 'choices' => \array_flip(Locales::getNames()),
                 'choice_translation_domain' => false,
             ])
-            ->add('height', IntegerType::class, ['required' => false])
-            ->add('styles_set', WysiwygStylesSetPickerType::class, ['required' => false])
-            ->add('styles_set_preview', CheckboxType::class, ['required' => false])
+            ->add('height', IntegerType::class, [
+                'label' => t('field.height', [], 'emsco-core'),
+                'required' => false,
+            ])
+            ->add('styles_set', WysiwygStylesSetPickerType::class, [
+                'label' => t('field.styles_set', [], 'emsco-core'),
+                'required' => false,
+            ])
+            ->add('styles_set_preview', CheckboxType::class, [
+                'label' => t('field.is_styles_set_preview', [], 'emsco-core'),
+                'required' => false,
+            ])
             ->add('format_tags', TextType::class, [
                 'required' => false,
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-                'label' => 'form.form_field.wysiwyg.format_tags.label',
+                'label' => t('field.format_tags', [], 'emsco-core'),
+                'help' => t('help.override_styles_set_config', [], 'emsco-core'),
             ])
             ->add('content_css', TextType::class, [
                 'required' => false,
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-                'label' => 'form.form_field.wysiwyg.content_css.label',
+                'label' => t('field.content_css', [], 'emsco-core'),
+                'help' => t('help.override_styles_set_config', [], 'emsco-core'),
             ])
         ;
     }

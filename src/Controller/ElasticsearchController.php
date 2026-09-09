@@ -6,6 +6,7 @@ namespace EMS\CoreBundle\Controller;
 
 use Elastic\Transport\Exception\NoNodeAvailableException;
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Elasticsearch\Aggregation\Bucket;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
@@ -43,7 +44,6 @@ use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Service\SortOptionService;
 use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -59,7 +59,7 @@ use function Symfony\Component\Translation\t;
 class ElasticsearchController extends AbstractController
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly IndexService $indexService,
         private readonly ElasticaService $elasticaService,
         private readonly DataService $dataService,
@@ -104,10 +104,11 @@ class ElasticsearchController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $aliasName = $form->get('name')->getData();
             $this->indexService->updateAlias($aliasName, [], [$name]);
-            $this->logger->notice('log.elasticsearch.alias_added', [
+
+            $this->logger->messageNotice(t('message.alias_added', [
                 'alias_name' => $aliasName,
                 'index_name' => $name,
-            ]);
+            ], 'emsco-core'));
 
             return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
         }
@@ -303,9 +304,10 @@ class ElasticsearchController extends AbstractController
             if ($search instanceof Search) {
                 $search->setContentType($contentType);
                 $this->searchRepository->save($search);
-                $this->logger->notice('log.elasticsearch.default_search_for_content_type', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                ]);
+
+                $this->logger->messageNotice(t('message.search_set_as_default_for_content_type', [
+                    'content_type' => $contentType->getSingularName(),
+                ], 'emsco-core'));
             }
         } else {
             $searchs = $this->searchRepository->findBy([
@@ -321,7 +323,8 @@ class ElasticsearchController extends AbstractController
             if ($search instanceof Search) {
                 $search->setDefault(true);
                 $this->searchRepository->save($search);
-                $this->logger->notice('log.elasticsearch.default_search');
+
+                $this->logger->messageNotice(t('message.search_set_as_default', [], 'emsco-core'));
             }
         }
 
@@ -551,8 +554,7 @@ class ElasticsearchController extends AbstractController
 
             if ($form->isSubmitted() && $form->isValid() && \array_key_exists('delete', $request->query->all('search_form'))) {
                 // Form treatment after the "Delete" button has been pressed (to delete a previous saved search preset)
-                $this->logger->notice('log.elasticsearch.search_deleted', [
-                ]);
+                $this->logger->messageNotice(t('message.search_deleted', [], 'emsco-core'));
             }
 
             /** @var Search $search */
@@ -573,27 +575,28 @@ class ElasticsearchController extends AbstractController
             try {
                 $response = CommonResponse::fromResultSet($this->elasticaService->search($esSearch));
                 if ($response->getTotal() >= 50000) {
-                    $this->logger->warning('log.elasticsearch.paging_limit_exceeded', [
+                    $this->logger->messageWarning(t('message.search_paging_limit_exceeded', [
                         'total' => $response->getTotal(),
                         'paging' => '50.000',
-                    ]);
+                    ], 'emsco-core'));
                     $lastPage = \ceil(50000 / $this->pagingSize);
                 } else {
                     $lastPage = \ceil($response->getTotal() / $this->pagingSize);
                 }
-            } catch (\Throwable $e) {
-                $this->logger->warning('log.error', [
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                    EmsFields::LOG_EXCEPTION_FIELD => $e,
+            } catch (\Throwable $throwable) {
+                $this->logger->messageError(t('message.action_error', [
+                    'error_message' => $throwable->getMessage(),
+                ], 'emsco-core'), [
+                    EmsFields::LOG_EXCEPTION_FIELD => $throwable,
                 ]);
                 $response = null;
                 $lastPage = 0;
             }
 
             if (null !== $response && !$response->isAccurate()) {
-                $this->logger->warning('log.elasticsearch.search_not_accurate', [
+                $this->logger->messageWarning(t('message.search_result_limited', [
                     'total' => $response->getTotal(),
-                ]);
+                ], 'emsco-core'));
             }
 
             $currentFilters = $request->query;

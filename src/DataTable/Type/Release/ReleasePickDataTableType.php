@@ -53,8 +53,22 @@ class ReleasePickDataTableType extends AbstractEntityTableType
         );
         $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', \sprintf('@%s/release/columns/revisions.html.twig', $this->templateNamespace)))->setCellClass('text-right');
 
-        $table->addItemPostAction(Routes::DATA_ADD_REVISION_TO_RELEASE, 'data.actions.add_to_release_publish', 'plus', 'data.actions.add_to_release_confirm', ['revision' => $revision->getId(), 'type' => 'publish'], ['data-testid' => 'release-action-add-publish'])->setButtonType('primary');
-        $table->addItemPostAction(Routes::DATA_ADD_REVISION_TO_RELEASE, 'data.actions.add_to_release_unpublish', 'minus', 'data.actions.add_to_release_confirm', ['revision' => $revision->getId(), 'type' => 'unpublish'], ['data-testid' => 'release-action-add-unpublish'])->setButtonType('default');
+        $table->addItemPostAction(
+            route: Routes::DATA_ADD_REVISION_TO_RELEASE,
+            labelKey: t('action.add_release_publish', [], 'emsco-core'),
+            icon: 'plus',
+            messageKey: t('action.confirmation', [], 'emsco-core'),
+            routeParameters: ['revision' => $revision->getId(), 'type' => 'publish'],
+            attributes: ['data-testid' => 'release-action-add-publish']
+        )->setButtonType('primary');
+        $table->addItemPostAction(
+            route: Routes::DATA_ADD_REVISION_TO_RELEASE,
+            labelKey: t('action.add_release_unpublish', [], 'emsco-core'),
+            icon: 'minus',
+            messageKey: t('action.confirmation', [], 'emsco-core'),
+            routeParameters: ['revision' => $revision->getId(), 'type' => 'unpublish'],
+            attributes: ['data-testid' => 'release-action-add-unpublish']
+        )->setButtonType('default');
     }
 
     #[\Override]

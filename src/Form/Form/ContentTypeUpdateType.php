@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * @extends AbstractType<mixed>
@@ -25,18 +25,18 @@ class ContentTypeUpdateType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('json', FileType::class, [
-            'label_format' => 'form.contenttype.json_update.%name%',
+            'label' => t('field.json_file', [], 'emsco-core'),
         ]);
         $builder->add('deleteExitingTemplates', CheckboxType::class, [
             'required' => false,
-            'label_format' => 'form.contenttype.json_update.%name%',
+            'label' => t('option.delete_existing_templates', [], 'emsco-core'),
         ]);
         $builder->add('deleteExitingViews', CheckboxType::class, [
             'required' => false,
-            'label_format' => 'form.contenttype.json_update.%name%',
+            'label' => t('option.delete_existing_views', [], 'emsco-core'),
         ]);
         $builder->add('update', SubmitEmsType::class, [
-            'label_format' => 'form.contenttype.json_update.%name%',
+            'label' => t('action.update_from_json', [], 'emsco-core'),
             'attr' => [
                 'class' => 'btn btn-primary',
                 'data-testid' => 'btn-action-update',
@@ -44,13 +44,5 @@ class ContentTypeUpdateType extends AbstractType
             'icon' => 'fa fa-save',
         ]);
         parent::buildForm($builder, $options);
-    }
-
-    #[\Override]
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-        ]);
     }
 }

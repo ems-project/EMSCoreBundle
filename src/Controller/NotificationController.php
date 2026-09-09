@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller;
 
 use Doctrine\Persistence\ManagerRegistry;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\Entity\ContentType;
@@ -23,7 +24,6 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\NotificationService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\Helpers\Standard\Type;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,10 +31,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+use function Symfony\Component\Translation\t;
+
 class NotificationController extends AbstractController
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly PublishService $publishService,
         private readonly EnvironmentService $environmentService,
         private readonly ManagerRegistry $doctrine,
@@ -126,9 +128,9 @@ class NotificationController extends AbstractController
 
         foreach ($treatNotification->getNotifications() as $notificationId => $true) {
             if (null === $notification = $this->notificationRepository->find($notificationId)) {
-                $this->logger->error('log.notification.notification_not_found', [
+                $this->logger->messageError(t('message.notification_not_found', [
                     'notification_id' => $notificationId,
-                ]);
+                ], 'emsco-core'));
                 continue;
             }
 

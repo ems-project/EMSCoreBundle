@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Entity\Form;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Service\ContentTypeService;
-use Psr\Log\LoggerInterface;
 
-/**
- * RebuildIndex.
- */
+use function Symfony\Component\Translation\t;
+
 class CriteriaUpdateConfig
 {
     private ?string $columnCriteria = null;
@@ -24,7 +23,7 @@ class CriteriaUpdateConfig
     public function __construct(
         View $view,
         private readonly ContentTypeService $contentTypeService,
-        private readonly LoggerInterface $logger
+        private readonly LocalizedLoggerInterface $logger
     ) {
         $contentType = $view->getContentType();
 
@@ -55,9 +54,9 @@ class CriteriaUpdateConfig
                     $dataField->setFieldType($child);
                     $this->criterion[$child->getName()] = $dataField;
                 } else {
-                    $this->logger->warning('log.view.criteria.field_not_found', [
+                    $this->logger->messageWarning(t('message.view_criteria_field_not_found', [
                         'field_path' => $path,
-                    ]);
+                    ], 'emsco-core'));
                 }
             }
         }

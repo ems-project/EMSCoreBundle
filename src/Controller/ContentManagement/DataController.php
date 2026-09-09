@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
 use Doctrine\ORM\NoResultException;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\MimeTypeHelper;
 use EMS\CoreBundle\Controller\ElasticsearchController;
@@ -13,7 +14,6 @@ use EMS\CoreBundle\Core\ContentType\ViewTypes;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Core\Revision\EventType;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
@@ -39,7 +39,6 @@ use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\CoreBundle\Twig\CoreExtension;
 use EMS\Helpers\Standard\Json;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
@@ -59,7 +58,7 @@ use function Symfony\Component\Translation\t;
 class DataController extends AbstractController
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly DataService $dataService,
         private readonly SearchService $searchService,
         private readonly ContentTypeService $contentTypeService,
@@ -215,12 +214,10 @@ class DataController extends AbstractController
                 'revisionId' => $revision->getId(),
             ]);
         } catch (NoResultException) {
-            $this->logger->warning('log.data.revision.not_found_in_environment', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-            ]);
+            $this->logger->messageWarning(t('message.revision_not_found_in_environment', [
+                'environment' => $environment->getLabel(),
+                'ouuid' => $ouuid,
+            ], 'emsco-core'));
 
             return $this->redirectToRoute('emsco_draft_in_progress', ['contentTypeId' => $contentType->getId()]);
         }
@@ -247,16 +244,17 @@ class DataController extends AbstractController
         }
 
         try {
-            $dataRaw = $this->dataService->getRevisionByEnvironment($ouuid, $contentType, $environmentObject)->getCopyRawData();
+            $revision = $this->dataService->getRevisionByEnvironment($ouuid, $contentType, $environmentObject);
+            $dataRaw = $revision->getCopyRawData();
         } catch (NoResultException) {
             throw new NotFoundHttpException(\sprintf('Revision %s not found', $ouuid));
         }
 
         if ($contentType->getAskForOuuid()) {
-            $this->logger->warning('log.data.document.cant_duplicate_when_waiting_ouuid', [
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_CONTENTTYPE_FIELD => $type,
-            ]);
+            $this->logger->messageWarning(t('message.document_cant_duplicate_ouuid_required', [
+                'content_type' => $type,
+                'label' => $revision->getLabel(),
+            ], 'emsco-core'));
 
             return $this->redirectToRoute('emsco_data_view', [
                 'environmentName' => $environment,
@@ -267,10 +265,9 @@ class DataController extends AbstractController
 
         $revision = $this->dataService->newDocument($contentType, null, $dataRaw);
 
-        $this->logger->notice('log.data.document.duplicated', [
-            EmsFields::LOG_OUUID_FIELD => $ouuid,
-            EmsFields::LOG_CONTENTTYPE_FIELD => $type,
-        ]);
+        $this->logger->messageNotice(t('message.document_duplicated', [
+            'label' => $revision->getLabel(),
+        ], 'emsco-core'));
 
         return $this->redirectToRoute(Routes::EDIT_REVISION, [
             'revisionId' => $revision->getId(),
@@ -289,17 +286,17 @@ class DataController extends AbstractController
         }
 
         try {
-            $dataRaw = $this->dataService->getRevisionByEnvironment($ouuid, $contentType, $environmentObject)->getCopyRawData();
+            $revision = $this->dataService->getRevisionByEnvironment($ouuid, $contentType, $environmentObject);
+            $dataRaw = $revision->getCopyRawData();
         } catch (NoResultException) {
             throw new NotFoundHttpException(\sprintf('Revision %s not found', $ouuid));
         }
 
         $request->getSession()->set('ems_clipboard', $dataRaw);
 
-        $this->logger->notice('log.data.document.copy', [
-            EmsFields::LOG_OUUID_FIELD => $ouuid,
-            EmsFields::LOG_CONTENTTYPE_FIELD => $type,
-        ]);
+        $this->logger->messageNotice(t('message.document_copied', [
+            'label' => $revision->getLabel(),
+        ], 'emsco-core'));
 
         return $this->redirectToRoute('emsco_data_view', [
             'environmentName' => $environment,
@@ -332,14 +329,15 @@ class DataController extends AbstractController
 
         $found = false;
         foreach ($this->environmentService->getEnvironments() as $environment) {
-            /** @var Environment $environment */
             if ($environment !== $revision->giveContentType()->giveEnvironment()) {
                 try {
                     $sibling = $this->dataService->getRevisionByEnvironment($ouuid, $revision->giveContentType(), $environment);
-                    $this->logger->warning(
-                        'log.data.revision.cant_delete_has_published',
-                        LogRevisionContext::publish($sibling, $environment)
-                    );
+
+                    $this->logger->messageWarning(t('message.revision_cannot_delete_published', [
+                        'label' => $revision->getLabel(),
+                        'environment' => $environment->getLabel(),
+                    ], 'emsco-core'), LogRevisionContext::publish($sibling, $environment));
+
                     $found = true;
                 } catch (NoResultException) {
                 }
@@ -412,12 +410,10 @@ class DataController extends AbstractController
             if ($revision->giveContentType()->isAutoPublish()) {
                 $this->publishService->silentPublish($revision);
 
-                $this->logger->warning('log.data.revision.auto_publish_rollback', [
-                    EmsFields::LOG_OUUID_FIELD => $ouuid,
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $type,
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    EmsFields::LOG_ENVIRONMENT_FIELD => $revision->giveContentType()->giveEnvironment()->getName(),
-                ]);
+                $this->logger->messageWarning(t('message.revision_auto_publish_rollback', [
+                    'label' => $revision->getLabel(),
+                    'environment' => $revision->giveContentType()->giveEnvironment()->getLabel(),
+                ], 'emsco-core'));
             }
 
             return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
@@ -447,17 +443,23 @@ class DataController extends AbstractController
             foreach ($revision->getEnvironments() as $environment) {
                 if (!$defaultOnly || $environment === $revision->giveContentType()->getEnvironment()) {
                     if ($this->indexService->indexRevision($revision, $environment)) {
-                        $this->logger->notice('log.data.revision.reindex', LogRevisionContext::update($revision));
+                        $this->logger->messageNotice(t('message.revision_reindexed', [
+                            'label' => $revision->getLabel(),
+                            'environment' => $environment->getLabel(),
+                        ], 'emsco-core'), LogRevisionContext::update($revision));
                     } else {
-                        $this->logger->warning('log.data.revision.reindex_failed_in', LogRevisionContext::update($revision));
+                        $this->logger->messageWarning(t('message.revision_reindexed_failed_in', [
+                            'label' => $revision->getLabel(),
+                            'environment' => $environment->getLabel(),
+                        ], 'emsco-core'), LogRevisionContext::update($revision));
                     }
                 }
             }
         } catch (\Throwable $throwable) {
-            $this->logger->warning('log.data.revision.reindex_failed', \array_merge(LogRevisionContext::update($revision), [
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $throwable->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $throwable,
-            ]));
+            $this->logger->messageWarning(t('message.revision_reindexed_failed', [
+                'label' => $revision->getLabel(),
+                'error_message' => $throwable->getMessage(),
+            ], 'emsco-core'), LogRevisionContext::update($revision));
         }
 
         return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
@@ -471,7 +473,7 @@ class DataController extends AbstractController
     {
         $view = $viewId;
         if ($public && !$view->isPublic()) {
-            throw new NotFoundHttpException($this->translator->trans('log.view.not_found', ['%view_id%' => $viewId->getId()], EMSCoreBundle::TRANS_DOMAIN));
+            throw $this->createNotFoundException(t('message.view_not_found', ['id' => $viewId], 'emsco-core')->trans($this->translator));
         }
         $viewType = $this->viewTypes->get($view->getType());
 
@@ -507,12 +509,9 @@ class DataController extends AbstractController
         }
 
         if (!$revision->getDraft() || null !== $revision->getEndTime()) {
-            $this->logger->warning('log.data.revision.ajax_update_on_finalized', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-            ]);
+            $this->logger->messageWarning(t('message.revision_ajax_update_on_finalized', [
+                'label' => $revision->getLabel(),
+            ], 'emsco-core'));
 
             $response = $this->flashMessageLogger->buildJsonResponse([
                 'success' => false,
@@ -524,12 +523,9 @@ class DataController extends AbstractController
 
         $revisionInRequest = $request->request->all('revision');
         if (empty($revisionInRequest['allFieldsAreThere'])) {
-            $this->logger->error('log.data.revision.not_completed_request', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-            ]);
+            $this->logger->messageError(t('message.revision_incomplete_request', [
+                'label' => $revision->getLabel(),
+            ], 'emsco-core'));
         } else {
             $this->dataService->lockRevision($revision);
             $this->logger->debug('Revision locked');
@@ -601,12 +597,9 @@ class DataController extends AbstractController
         try {
             $form = $this->createForm(RevisionType::class, $revision, ['raw_data' => $revision->getRawData()]);
             if (!empty($revision->getAutoSave())) {
-                $this->logger->error('log.data.revision.can_finalized_as_pending_auto_save', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                ]);
+                $this->logger->messageError(t('message.revision_cannot_finalize_pending_auto_save', [
+                    'label' => $revision->getLabel(),
+                ], 'emsco-core'));
 
                 return $this->redirectToRoute(Routes::EDIT_REVISION, [
                     'revisionId' => $revision->getId(),
@@ -615,26 +608,23 @@ class DataController extends AbstractController
 
             $revision = $this->dataService->finalizeDraft($revision, $form);
             if (0 !== $form->getErrors()->count()) {
-                $this->logger->error('log.data.revision.can_finalized_as_invalid', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                $this->logger->messageError(t('message.revision_cannot_finalize_invalid', [
+                    'label' => $revision->getLabel(),
                     'count' => $form->getErrors(true)->count(),
-                ]);
+                ], 'emsco-core'), LogRevisionContext::read($revision));
 
                 return $this->redirectToRoute(Routes::EDIT_REVISION, [
                     'revisionId' => $revision->getId(),
                 ]);
             }
         } catch (\Throwable $throwable) {
-            $this->logger->error('log.data.revision.can_finalized_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+            $this->logger->messageError(t('message.revision_finalize_error', [
+                'label' => $revision->getLabel(),
+                'content_type' => $revision->giveContentType()->getSingularName(),
+                'error_message' => $throwable->getMessage(),
+            ], 'emsco-core'), [
+                ...LogRevisionContext::read($revision),
                 EmsFields::LOG_EXCEPTION_FIELD => $throwable,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $throwable->getMessage(),
             ]);
 
             return $this->redirectToRoute(Routes::EDIT_REVISION, [
@@ -662,10 +652,9 @@ class DataController extends AbstractController
         try {
             $jsonContent = Json::decode($request->request->getString('JSON_BODY', '{}'));
         } catch (\Throwable) {
-            $this->logger->error('log.data.revision.add_from_json_error', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
-            ]);
+            $this->logger->messageError(t('message.revision_add_from_json_error', [
+                'content_type' => $contentType->getSingularName(),
+            ], 'emsco-core'));
 
             return $this->contentTypeService->redirectOverview($contentType);
         }
@@ -687,9 +676,9 @@ class DataController extends AbstractController
                 'revisionId' => $revision->getId(),
             ]);
         } catch (\Throwable $throwable) {
-            $this->logger->error('log.data.revision.init_document_from_array', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
+            $this->logger->messageError(t('message.revision_create_from_array_error', [
+                'content_type' => $contentType->getSingularName(),
+            ], 'emsco-core'), [
                 EmsFields::LOG_EXCEPTION_FIELD => $throwable,
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $throwable->getMessage(),
             ]);

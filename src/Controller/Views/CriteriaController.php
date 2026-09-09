@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Views;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Response\Response as EmsResponse;
-use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
@@ -31,7 +31,6 @@ use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\Helpers\Standard\Type;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormRegistryInterface;
@@ -41,10 +40,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
+use function Symfony\Component\Translation\t;
+
 class CriteriaController extends AbstractController
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly ElasticaService $elasticaService,
         private readonly DataService $dataService,
         private readonly ContentTypeService $contentTypeService,
@@ -236,9 +237,9 @@ class CriteriaController extends AbstractController
 
         foreach ($counters as $counter) {
             if ($counter['content_type_id'] == $view->getContentType()->getId()) {
-                $this->logger->warning('log.view.criteria.draft_in_progress', [
+                $this->logger->messageWarning(t('message.view_criteria_draft_in_progress', [
                     'count' => $counter['counter'],
-                ]);
+                ], 'emsco-core'));
             }
         }
 
@@ -310,8 +311,7 @@ class CriteriaController extends AbstractController
             }
         }
         if (!$authorized) {
-            $this->logger->notice('log.view.criteria.update_not_authorized', [
-            ]);
+            $this->logger->messageNotice(t('message.view_criteria_update_not_authorized', [], 'emsco-core'));
         }
 
         $tables = $this->generateCriteriaTableContext($view, $criteriaUpdateConfig);
@@ -444,9 +444,9 @@ class CriteriaController extends AbstractController
         $response = EmsResponse::fromResultSet($this->elasticaService->search($search));
 
         if ($response->getTotal() > $response->getTotalDocuments()) {
-            $this->logger->error('log.view.criteria.too_many_criteria', [
+            $this->logger->messageError(t('message.view_criteria_too_many', [
                 'total' => $response->getTotal(),
-            ]);
+            ], 'emsco-core'));
         }
 
         $targetField = false;
@@ -484,11 +484,10 @@ class CriteriaController extends AbstractController
                     throw new \Exception('Should never happen');
                 }
             } else {
-                $this->logger->warning('log.view.criteria.document_key_not_found', [
+                $this->logger->messageWarning(t('message.view_criteria_document_key_not_found', [
+                    'ems_id' => $document->getEmsId(),
                     'document_reference' => $value,
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $document->getContentType(),
-                    EmsFields::LOG_OUUID_FIELD => $document->getId(),
-                ]);
+                ], 'emsco-core'));
             }
         }
 
@@ -519,11 +518,9 @@ class CriteriaController extends AbstractController
 
             $authorized = $this->authorizationChecker->isGranted($view->getContentType()->role(ContentTypeRoles::EDIT));
             if (!$authorized) {
-                $this->logger->warning('log.view.criteria.update_privilege_issue', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                ]);
+                $this->logger->messageWarning(t('message.view_criteria_update_privilege_issue', [
+                    'label' => $revision->getLabel(),
+                ], 'emsco-core'));
 
                 return $this->flashMessageLogger->buildJsonResponse([
                     'success' => false,
@@ -531,12 +528,9 @@ class CriteriaController extends AbstractController
             }
 
             if ($revision->getDraft()) {
-                $this->logger->warning('log.view.criteria.draft_in_progress', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    'count' => 0,
-                ]);
+                $this->logger->messageWarning(t('message.view_criteria_draft_in_progress', [
+                    'count' => 1,
+                ], 'emsco-core'));
 
                 return $this->flashMessageLogger->buildJsonResponse([
                     'success' => false,
@@ -548,13 +542,10 @@ class CriteriaController extends AbstractController
                     $this->dataService->finalizeDraft($revision);
                 }
             } catch (LockedException) {
-                $this->logger->warning('log.view.criteria.locked_revision', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    'count' => 0,
+                $this->logger->messageWarning(t('message.view_criteria_locked_revision', [
+                    'label' => $revision->getLabel(),
                     'locked_by' => $revision->getLockBy(),
-                ]);
+                ], 'emsco-core'));
 
                 return $this->flashMessageLogger->buildJsonResponse([
                     'success' => false,
@@ -630,14 +621,10 @@ class CriteriaController extends AbstractController
                 }
             }
             $revision = $this->dataService->finalizeDraft($revision);
-            $this->logger->notice('log.view.criteria.new_criteria', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+            $this->logger->messageNotice(t('message.view_criteria_created', [
                 'target_field_name' => $targetFieldName,
                 'target_field_data' => $rawData[$targetFieldName],
-                'message' => $message,
-            ]);
+            ], 'emsco-core'), ['message' => $message]);
 
             return $revision;
         }
@@ -655,13 +642,10 @@ class CriteriaController extends AbstractController
             $multipleValueToAdd = $rawData[$multipleField];
             $rawData = $revision->getRawData();
             if (\in_array($multipleValueToAdd, $rawData[$multipleField] ?? [])) {
-                $this->logger->warning('log.view.criteria.already_exists', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                $this->logger->messageWarning(t('message.view_criteria_already_exists', [
                     'field_name' => $multipleField,
                     'field_data' => $multipleValueToAdd,
-                ]);
+                ], 'emsco-core'));
             } else {
                 $rawData[$multipleField][] = $multipleValueToAdd;
                 $revision->setRawData($rawData);
@@ -671,14 +655,10 @@ class CriteriaController extends AbstractController
                         $message .= ', '.$value;
                     }
                 }
-                $this->logger->notice('log.view.criteria.added', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                $this->logger->messageNotice(t('message.view_criteria_added', [
                     'field_name' => $targetFieldName,
                     'field_data' => $rawData[$targetFieldName],
-                    'message' => $message,
-                ]);
+                ], 'emsco-core'), ['message' => $message]);
             }
 
             return $revision;
@@ -724,23 +704,17 @@ class CriteriaController extends AbstractController
                         $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->giveOuuid(), $revision);
                     }
                     $revision->setRawData($rawData);
-                    $this->logger->notice('log.view.criteria.added', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
-                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                    $this->logger->messageNotice(t('message.view_criteria_added', [
                         'field_name' => $multipleField,
                         'field_data' => $filters[$multipleField],
-                    ]);
+                    ], 'emsco-core'));
 
                     return $revision;
                 }
-                $this->logger->notice('log.view.criteria.already_exists', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                $this->logger->messageNotice(t('message.view_criteria_already_exists', [
                     'field_name' => $multipleField,
                     'field_data' => $filters[$multipleField],
-                ]);
+                ], 'emsco-core'));
 
                 break;
             }
@@ -782,12 +756,9 @@ class CriteriaController extends AbstractController
             $revision = $this->dataService->getNewestRevision($type, $ouuid);
 
             if ($revision->getDraft()) {
-                $this->logger->warning('log.view.criteria.draft_in_progress', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    'count' => 0,
-                ]);
+                $this->logger->messageWarning(t('message.view_criteria_draft_in_progress', [
+                    'count' => 1,
+                ], 'emsco-core'));
 
                 return $this->flashMessageLogger->buildJsonResponse([
                     'success' => false,
@@ -802,14 +773,10 @@ class CriteriaController extends AbstractController
                 if (!$revision instanceof Revision) {
                     throw new \RuntimeException('Unexpected revision type');
                 }
-
-                $this->logger->warning('log.view.criteria.locked_revision', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                    'count' => 0,
+                $this->logger->messageWarning(t('message.view_criteria_locked_revision', [
+                    'label' => $revision->getLabel(),
                     'locked_by' => $revision->getLockBy(),
-                ]);
+                ], 'emsco-core'));
 
                 return $this->flashMessageLogger->buildJsonResponse([
                     'success' => false,
@@ -877,9 +844,9 @@ class CriteriaController extends AbstractController
         $response = EmsResponse::fromResultSet($this->elasticaService->search($search));
 
         if (0 === $response->getTotal()) {
-            $this->logger->warning('log.view.criteria.not_found', [
+            $this->logger->messageWarning(t('message.view_criteria_not_found', [
                 'field_name' => $targetFieldName,
-            ]);
+            ], 'emsco-core'));
         } elseif (1 === $response->getTotal()) {
             $revision = null;
             $queryDocument = null;
@@ -909,23 +876,17 @@ class CriteriaController extends AbstractController
                         $message .= ', '.$value;
                     }
                 }
-                $this->logger->info('log.view.criteria.removed', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                    EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                    EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                $this->logger->messageInfo(t('message.view_criteria_removed', [
                     'field_name' => $targetFieldName,
                     'field_data' => $rawData[$targetFieldName],
-                ]);
+                ], 'emsco-core'), ['message' => $message]);
 
                 return $revision;
             }
-            $this->logger->warning('log.view.criteria.already_missing', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $revision->getOuuid(),
-                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+            $this->logger->messageWarning(t('message.view_criteria_already_missing', [
                 'field_name' => $targetFieldName,
                 'field_data' => $rawData[$targetFieldName],
-            ]);
+            ], 'emsco-core'));
         } else {
             $message = false;
             /** @var Document $document */
@@ -937,10 +898,9 @@ class CriteriaController extends AbstractController
                 }
                 $message .= $document->getId();
             }
-            $this->logger->notice('log.view.criteria.too_many_criteria', [
+            $this->logger->messageNotice(t('message.view_criteria_too_many', [
                 'total' => $response->getTotal(),
-                'message' => $message,
-            ]);
+            ], 'emsco-core'), ['message' => $message]);
         }
 
         return null;
@@ -967,9 +927,9 @@ class CriteriaController extends AbstractController
                 if ($multipleField) {
                     $indexKey = \array_search($filters[$multipleField], $criteriaSet[$multipleField], true);
                     if (false === $indexKey) {
-                        $this->logger->notice('log.view.criteria.not_found', [
+                        $this->logger->messageNotice(t('message.view_criteria_not_found', [
                             'field_name' => $multipleField,
-                        ]);
+                        ], 'emsco-core'));
                     } else {
                         unset($rawData[$criteriaField][$index][$multipleField][$indexKey]);
                         $rawData[$criteriaField][$index][$multipleField] = \array_values($rawData[$criteriaField][$index][$multipleField]);
@@ -982,13 +942,10 @@ class CriteriaController extends AbstractController
                             $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->giveOuuid(), $revision);
                         }
                         $revision->setRawData($rawData);
-                        $this->logger->notice('log.view.criteria.removed', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                            EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
-                            EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
+                        $this->logger->messageNotice(t('message.view_criteria_removed', [
                             'field_name' => $multipleField,
                             'field_data' => $filters[$multipleField],
-                        ]);
+                        ], 'emsco-core'));
 
                         return $revision;
                     }
@@ -1000,12 +957,9 @@ class CriteriaController extends AbstractController
                         $revision = $this->dataService->initNewDraft($revision->giveContentType()->getName(), $revision->giveOuuid(), $revision);
                     }
                     $revision->setRawData($rawData);
-                    $this->logger->notice('log.view.criteria.removed', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $revision->giveContentType()->getName(),
-                        EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
-                        EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                        'field_name' => $multipleField,
-                    ]);
+                    $this->logger->messageNotice(t('message.view_criteria_removed', [
+                        'field_name' => $criteriaField,
+                    ], 'emsco-core'));
 
                     return $revision;
                 }
@@ -1014,11 +968,10 @@ class CriteriaController extends AbstractController
         }
 
         if (!$found) {
-            $this->logger->notice('log.view.criteria.document_key_not_found', [
+            $this->logger->messageNotice(t('message.view_criteria_document_key_not_found', [
                 'document_reference' => $criteriaField,
-                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),
-                EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
-            ]);
+                'ems_id' => $revision->getEmsId(),
+            ], 'emsco-core'));
         }
 
         return false;

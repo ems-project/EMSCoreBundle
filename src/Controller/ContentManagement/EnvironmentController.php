@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
-use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Form\Form\CompareEnvironmentFormType;
@@ -15,7 +15,6 @@ use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\PublishService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\Helpers\Standard\Type;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,10 +22,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
+use function Symfony\Component\Translation\t;
+
 class EnvironmentController extends AbstractController
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly SearchService $searchService,
         private readonly EnvironmentService $environmentService,
         private readonly ContentTypeService $contentTypeService,
@@ -78,23 +79,19 @@ class EnvironmentController extends AbstractController
                     $continue = true;
                     foreach ($alignTo as $env) {
                         if ($revision->giveContentType()->giveEnvironment()->getName() == $env) {
-                            $this->logger->warning('log.environment.cant_align_default_environment', [
-                                EmsFields::LOG_ENVIRONMENT_FIELD => $env,
-                                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),
-                                EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
-                                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                            ]);
+                            $this->logger->messageWarning(t('message.environment_cannot_align_default', [
+                                'label' => $revision->getLabel(),
+                                'content_type' => $revision->giveContentType()->getSingularName(),
+                                'environment' => $env,
+                            ], 'emsco-core'));
                             $continue = false;
                             break;
                         }
 
                         if (!$this->authorizationChecker->isGranted($revision->giveContentType()->role(ContentTypeRoles::PUBLISH))) {
-                            $this->logger->warning('log.environment.dont_have_publish_role', [
-                                EmsFields::LOG_ENVIRONMENT_FIELD => $env,
-                                EmsFields::LOG_CONTENTTYPE_FIELD => $revision->getContentType(),
-                                EmsFields::LOG_OUUID_FIELD => $revision->giveOuuid(),
-                                EmsFields::LOG_REVISION_ID_FIELD => $revision->getId(),
-                            ]);
+                            $this->logger->messageWarning(t('message.environment_publish_permission_denied', [
+                                'content_type' => $revision->giveContentType()->getSingularName(),
+                            ], 'emsco-core'));
                             $continue = false;
                             break;
                         }
@@ -114,9 +111,7 @@ class EnvironmentController extends AbstractController
                         if (2 === \count($exploded)) {
                             $this->publishService->alignRevision($exploded[0], $exploded[1], Type::string($request->query->get('withEnvironment')), Type::string($request->query->get('environment')));
                         } else {
-                            $this->logger->warning('log.environment.wrong_ouuid', [
-                                EmsFields::LOG_OUUID_FIELD => $item,
-                            ]);
+                            $this->logger->messageWarning(t('message.environment_wrong_ouuid', ['ouuid' => $item], 'emsco-core'));
                         }
                     }
                 } elseif (\array_key_exists('alignRight', $request->request->all('compare_environment_form'))) {
@@ -125,9 +120,7 @@ class EnvironmentController extends AbstractController
                         if (2 === \count($exploded)) {
                             $this->publishService->alignRevision($exploded[0], $exploded[1], Type::string($request->query->get('environment')), Type::string($request->query->get('withEnvironment')));
                         } else {
-                            $this->logger->warning('log.environment.wrong_ouuid', [
-                                EmsFields::LOG_OUUID_FIELD => $item,
-                            ]);
+                            $this->logger->messageWarning(t('message.environment_wrong_ouuid', ['ouuid' => $item], 'emsco-core'));
                         }
                     }
                 } elseif (\array_key_exists('compare', $request->request->all('compare_environment_form'))) {
@@ -223,10 +216,11 @@ class EnvironmentController extends AbstractController
             } else {
                 $page = 1;
                 $lastPage = 1;
-                $this->logger->notice('log.environment.aligned', [
-                    EmsFields::LOG_ENVIRONMENT_FIELD => $environment,
+
+                $this->logger->messageNotice(t('message.environment_aligned', [
+                    'environment' => $environment,
                     'with_environment' => $withEnvironment,
-                ]);
+                ], 'emsco-core'));
                 $total = 0;
                 $results = [];
             }

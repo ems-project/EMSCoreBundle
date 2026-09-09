@@ -28,6 +28,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 
+use function Symfony\Component\Translation\t;
+
 class JsonMenuNestedLinkFieldType extends DataFieldType
 {
     public function __construct(
@@ -163,6 +165,7 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
             ->add('json_menu_nested_unique', CheckboxType::class, ['required' => false])
             ->add('query', CodeEditorType::class, ['required' => false, 'language' => 'ace/mode/json'])
             ->add('environment', EnvironmentPickerType::class, [
+                'label' => t('field.query', [], 'emsco-core'),
                 'required' => false,
                 'managedOnly' => false,
                 'userPublishEnvironments' => false,

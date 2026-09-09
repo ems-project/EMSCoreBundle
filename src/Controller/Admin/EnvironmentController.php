@@ -115,10 +115,6 @@ class EnvironmentController extends AbstractController
 
                     $this->indexService->updateAlias($environment->getAlias(), [], [$indexName]);
 
-                    $this->logger->notice('log.environment.created', [
-                        EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                    ]);
-
                     return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
                 }
             }
@@ -139,9 +135,9 @@ class EnvironmentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->environmentService->updateEnvironment($environment);
 
-            $this->logger->notice('log.environment.updated', [
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-            ]);
+            $this->logger->messageNotice(t('message.environment_updated', [
+                'environment' => $environment->getLabel(),
+            ], 'emsco-core'));
 
             return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
         }
@@ -157,11 +153,11 @@ class EnvironmentController extends AbstractController
         try {
             $info = $this->mapping->getMapping($environment);
         } catch (NotFoundException $notFoundException) {
-            $this->logger->error('log.environment.alias_missing', [
+            $this->logger->messageError(t('message.environment_alias_missing', [
+                'environment' => $environment->getLabel(),
+            ], 'emsco-core'), [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $notFoundException->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $notFoundException,
-                EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
-                'alias' => $environment->getAlias(),
             ]);
             $info = false;
         }
@@ -202,10 +198,10 @@ class EnvironmentController extends AbstractController
                         'job' => $job->getId(),
                     ]);
                 default:
-                    $this->logger->warning('log.environment.rebuild_unknown_option', [
-                        EmsFields::LOG_ENVIRONMENT_FIELD => $environment->getName(),
+                    $this->logger->messageWarning(t('message.environment_rebuild_unknown_option', [
+                        'environment' => $environment->getLabel(),
                         'option' => $option,
-                    ]);
+                    ], 'emsco-core'));
             }
         }
 

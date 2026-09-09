@@ -15,6 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -41,6 +43,7 @@ class ExportDocumentsType extends AbstractType
         $builder
             ->setAction($data->getAction())
             ->add('query', HiddenType::class, [
+                'label' => t('field.query', [], 'emsco-core'),
                 'data' => $data->getQuery(),
             ])
             ->add('format', ChoiceType::class, [

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\ContentManagement;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Storage\NotFoundException;
 use EMS\CommonBundle\Storage\Processor\Config;
@@ -17,7 +18,6 @@ use EMS\Helpers\File\File;
 use EMS\Helpers\Html\Headers;
 use EMS\Helpers\Standard\Json;
 use EMS\Helpers\Standard\Type;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\HeaderUtils;
@@ -30,6 +30,8 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+use function Symfony\Component\Translation\t;
+
 class FileController extends AbstractController
 {
     /**
@@ -38,7 +40,7 @@ class FileController extends AbstractController
     public function __construct(
         private readonly FileService $fileService,
         private readonly AssetExtractorService $assetExtractorService,
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly FlashMessageLogger $flashMessageLogger,
         private readonly AssetExtension $assetExtension,
         protected array $assetConfig,
@@ -122,9 +124,10 @@ class FileController extends AbstractController
         try {
             $uploadedAsset = $this->fileService->initUploadFile($hash, $size, $name, $type, $user, $algo);
         } catch (\Exception $exception) {
-            $this->logger->error('log.error', [
+            $this->logger->messageError(t('message.action_error', [
+                'error_message' => $exception->getMessage(),
+            ], 'emsco-core'), [
                 EmsFields::LOG_EXCEPTION_FIELD => $exception,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
             ]);
 
             return $this->flashMessageLogger->buildJsonResponse([
@@ -147,9 +150,10 @@ class FileController extends AbstractController
         try {
             $uploadedAsset = $this->fileService->addChunk($hash, $chunk, $user);
         } catch (\Exception $exception) {
-            $this->logger->error('log.error', [
+            $this->logger->messageError(t('message.action_error', [
+                'error_message' => $exception->getMessage(),
+            ], 'emsco-core'), [
                 EmsFields::LOG_EXCEPTION_FIELD => $exception,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
             ]);
 
             return $this->flashMessageLogger->buildJsonResponse([
@@ -254,10 +258,11 @@ class FileController extends AbstractController
 
             try {
                 $uploadedAsset = $this->fileService->uploadFile($name, $type, Type::string($file->getRealPath()), $user);
-            } catch (\Exception $e) {
-                $this->logger->error('log.error', [
-                    EmsFields::LOG_EXCEPTION_FIELD => $e,
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+            } catch (\Exception $exception) {
+                $this->logger->messageError(t('message.action_error', [
+                    'error_message' => $exception->getMessage(),
+                ], 'emsco-core'), [
+                    EmsFields::LOG_EXCEPTION_FIELD => $exception,
                 ]);
 
                 return $this->flashMessageLogger->buildJsonResponse([
@@ -281,9 +286,10 @@ class FileController extends AbstractController
                 ]),
             ]);
         }
-        $this->logger->warning('log.file.upload_error', [
-            EmsFields::LOG_ERROR_MESSAGE_FIELD => $file->getError(),
-        ]);
+
+        $this->logger->messageWarning(t('message.file_upload_error', [
+            'error_message' => $file->getErrorMessage(),
+        ], 'emsco-core'));
         $this->flashMessageLogger->buildJsonResponse([
             'success' => false,
         ]);

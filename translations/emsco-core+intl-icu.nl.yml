@@ -4,12 +4,16 @@ action:
     add_alias: 'Alias toevoegen'
     add_referenced: 'Gerefereerde toevoegen'
     add_referenced_content_type: 'Een gerefereerd contenttype toevoegen'
+    add_release_publish: 'Toevoegen aan release voor publicatie'
+    add_release_unpublish: 'Toevoegen aan release voor depublicatie'
     attach: Koppelen
     cancel: Annuleren
+    clear: Wissen
     close: Sluiten
     collapse: Inklappen
     collapse_all: 'Alles inklappen'
     confirmation: 'Bevestigt u dit?'
+    copy: Kopiëren
     create: Aanmaken
     deactivate: Deactiveren
     define: Definiëren
@@ -17,17 +21,24 @@ action:
     delete_all: 'Alles verwijderen'
     delete_selected: 'Selectie verwijderen'
     details: Details
+    download: Downloaden
     download_selected: 'Selectie downloaden'
     duplicate: Dupliceren
     edit: Bewerken
     export: Exporteren
+    export_selected: 'Selectie exporteren'
+    extract_content: 'Inhoud extraheren'
+    info: Info
+    paste: Plakken
     rebuild: Heropbouwen
     refresh: Vernieuwen
     relaunch: Herstarten
     remove: Verwijderen
     reorder: Hersorteren
     save: Opslaan
+    save_as_draft: 'Opslaan als concept'
     save_close: 'Opslaan en sluiten'
+    save_publish_in: 'Opslaan en publiceren in {environments}'
     select_all: 'Alles selecteren'
     status: Status
     toggle_sidebar: 'Zijbalk omschakelen'
@@ -193,6 +204,11 @@ data:
 documentation:
     api:
         title: Documentatie
+email:
+    crm_export:
+        body_greeting: 'Met vriendelijke groeten.'
+        body_hello: 'Hallo,'
+        body_text: 'In bijlage vindt u de export van de gevraagde CRM-inzendingen.'
 ems_core:
     dashboard:
         export:
@@ -288,6 +304,7 @@ field:
     attributes: 'Extra request-attributen'
     available: Beschikbaar
     channel: Kanaal
+    char_filter: 'Char filter'
     circles: Kringen
     circles_to: 'Kringen naar'
     color: Kleur
@@ -296,6 +313,7 @@ field:
     content_css: Content-CSS
     content_js: Content-JS
     context: Context
+    copy_to: 'Kopiëren naar'
     count: Aantal
     cron: Cron
     date_build: Builddatum
@@ -336,15 +354,21 @@ field:
         paper_size: Papierformaat
         size: Grootte
         type: Type
+    filter: Filter
+    flags: Vlaggen
+    form: Formulier
     format_tags: Formaat-tags
     group: Groep
     hash: Hash-handtekening
     header: Header
     header_allow_origin: 'De Access-Control-Allow-Origin-header'
+    height: Hoogte
     hidden: Verborgen
     icon: Icoon
+    id: ID
     index: Index
     indexes: Indexen
+    instance: Instantie
     is_active: Actief
     is_dirty: Gewijzigd
     is_edit_wysiwyg: 'Bewerken met WYSIWYG'
@@ -352,12 +376,18 @@ field:
     is_menu_sidebar: 'Zichtbaar in het zijmenu'
     is_preview: Voorbeeld
     is_public: Publiek
+    is_styles_set_preview: 'Voorbeeld stijlenset'
+    json_file: JSON-bestand
     key: Sleutel
     label: Label
+    language: Taal
     language_preferred: Voorkeurstaal
     language_ui: Interfacetaal
     last_seen: 'Laatst gezien'
     locale: Locale
+    lowercase: 'Kleine letters'
+    max_output_size: 'Max. outputgrootte'
+    max_token_length: 'Max. tokenlengte'
     mcp_arguments: 'MCP argumenten-template (JSON)'
     mcp_input_schema: 'MCP invoerschema-template (JSON)'
     mcp_output_schema: 'MCP antwoordstemplate (JSON)'
@@ -370,8 +400,10 @@ field:
     orientation: Oriëntatie
     password: Wachtwoord
     password_repeat: 'Herhaal wachtwoord'
+    pattern: Patroon
     pdf_size: PDF-formaat
     plural: Meervoud
+    postition_increment_gap: 'Positie-increment gap'
     public_access: 'Publieke toegang'
     query: Query
     release_environment_source: 'Bronomgeving voor publicatie'
@@ -384,10 +416,13 @@ field:
     role_to: 'Rol aan'
     roles: Rollen
     search_config: Zoekconfiguratie
+    separator: Scheidingsteken
     severity: Ernst
     singular: Enkelvoud
     spreadsheet: Spreadsheet
     status: Status
+    stopwords: Stopwoorden
+    styles_set: Stijlenset
     table_default_css: 'Standaard class-attribuut van tabel'
     tag: Tag
     template_body: 'Template body'
@@ -395,6 +430,7 @@ field:
     template_header: 'Template header'
     template_response: 'Template response'
     text: Tekst
+    tokenizer: Tokenizer
     total: Totaal
     total_deleted: 'Totaal verwijderd'
     total_elastic: 'Totaal in ES'
@@ -478,13 +514,8 @@ form:
                 label: OUUID
                 placeholder: 'Automatisch gegenereerd indien leeg gelaten'
             save: 'Concept voor {content_type} aanmaken'
-        bool_table_column:
-            false_value: Uitvinken
-            true_value: Aanvinken
     edit:
         title: 'Een formulier bewerken'
-    field-type-type:
-        root: Structuur
     menu: Formulieren
     reorder:
         title: 'Velden van formulier hersorteren: {label}'
@@ -492,6 +523,8 @@ form:
 form_submissions:
     overview: Overzicht
     title: Formulierinzendingen
+help:
+    override_styles_set_config: 'configuratie van stijlensets overschrijven'
 inline_editor:
     action:
         discard: Annuleren
@@ -543,6 +576,7 @@ key:
     attachment: Bijlage
     bits: Bits
     build_date: Builddatum
+    build_in: Ingebouwd
     channel: Kanaal
     channels: Kanalen
     ckeditor4: 'CK Editor 4'
@@ -555,6 +589,7 @@ key:
     control_sidebar: Controlezijbalk
     created: Aangemaakt
     current_password: 'Huidig wachtwoord'
+    customized: Aangepast
     dashboards: Dashboards
     delayed_unassigned_shards: 'Vertraagde niet-toegewezen shards'
     details: Details
@@ -566,6 +601,7 @@ key:
     export_documents: 'Documenten exporteren'
     extra: Extra
     filters: Filters
+    form_root: 'Wortel van het formulier'
     form_submissions: Formulierinzendingen
     forms: Formulieren
     groups: Groepen
@@ -648,7 +684,6 @@ log:
     menu: Logs
     notice:
         alias_attached: 'De alias "{alias}" is gekoppeld'
-        content_type_deleted: 'Contenttype "{contentType}" is verwijderd'
         content_type_referenced: 'Gerefereerd contenttype "{contentType}" uit omgeving "{environment}"'
         content_type_view_deleted: 'Weergave "{view}" is verwijderd'
         deleted_orphan_index: 'De index "{index}" is verwijderd'
@@ -731,11 +766,28 @@ media_library:
     home: Start
     submit: Opslaan
 message:
+    action_created: 'Een nieuwe actie "{label}" is aangemaakt'
+    action_deleted: 'De actie "{label}" is verwijderd'
+    action_error: 'Deze pagina/actie heeft een fout ondervonden: {error_message}'
+    action_updated: 'De actie "{label}" is bijgewerkt'
+    alias_added: 'Een nieuwe alias "{alias_name}" is toegevoegd aan de index "{index_name}"'
+    analyzer_created: 'De analyzer "{label}" is aangemaakt'
+    analyzer_deleted: 'De analyzer "{label}" is verwijderd'
+    analyzer_updated: 'De analyzer "{label}" is bijgewerkt'
     api_entity_created: 'Entiteit {entity} is aangemaakt met id {id}'
     api_entity_deleted: 'Entiteit {entity} "{name}" is verwijderd met id {id}'
     api_entity_updated: 'Entiteit {entity} "{name}" is bijgewerkt met id {id}'
+    asset_extract_file_too_large: 'Aangezien dit bestand groter is ({filesize}) dan {max_size}, is de inhoud niet automatisch geëxtraheerd. U kunt de extractie forceren of de inhoud handmatig opgeven in het menu "Info".'
+    channel_alias_not_found: 'Het kanaal "{label}" kan niet worden geregistreerd omdat de alias "{alias}" ontbreekt'
+    channel_deleted: 'Het kanaal "{name}" is verwijderd'
+    content_type_action_not_found: 'Actie niet gevonden op het content type "{label}"'
+    content_type_created: 'Het content type "{label}" is aangemaakt'
+    content_type_deleted: 'Het content type "{label}" is verwijderd'
+    content_type_dirty: 'Het content type "{label}" is "dirty" (de mapping is mogelijk verouderd), probeer de mapping bij te werken'
+    content_type_mapping_not_found: 'Mapping niet gevonden voor het content type "{label}"'
     contenttype_mappings_error: 'Bijwerken van de mappings voor {content_type} in {environments} is mislukt: {elasticsearch_dump}'
     contenttype_mappings_updated: 'Mappings succesvol bijgewerkt voor het inhoudstype {content_type} in {environments}'
+    dashboard_deleted: 'Het dashboard "{label}" is verwijderd'
     data_already_unpublished: 'Het document "{label}" was al gedepubliceerd uit {environment}'
     data_cant_finalize_field: '{error_message}'
     data_check_signature_failed: 'Handtekening komt niet overeen in {environment} voor het document "{label}"'
@@ -755,26 +807,143 @@ message:
     data_unknown_update_type: 'Het document "{label}" is niet vervangen omdat het updatetype "{update_type}" onbekend is'
     data_unlock_revisions_error: 'Onverwachte fout bij het ontgrendelen'
     data_update_referrers_error: 'Het was onmogelijk om de verwijzingen naar het document bij te werken'
+    document_cant_duplicate_ouuid_required: 'Het is niet mogelijk om het document "{label}" te dupliceren omdat het content type "{content_type}" eerst een OUUID vereist'
+    document_compared: 'Revisie {revision_id} van het document {content_type}:{ouuid} vergeleken met revisie {compare_revision_id} van het document {compare_content_type}:{compare_ouuid}'
+    document_copied: 'De inhoud van het document "{label}" is naar het klembord gekopieerd'
+    document_duplicated: 'Het document "{label}" is gebruikt om een nieuw document te starten'
+    environment_alias_missing: 'De alias voor de omgeving {environment} ontbreekt, overweeg een volledig nieuwe alias op te bouwen'
+    environment_alias_removed: 'De alias {alias} is verwijderd'
+    environment_aligned: 'Omgeving {environment} en {with_environment} zijn afgestemd voor deze content types'
+    environment_cannot_align_default: 'Het document "{label}" kan niet worden gepubliceerd in {environment} omdat dit de standaardomgeving van {content_type} is'
+    environment_created: 'De omgeving {environment} is aangemaakt'
+    environment_deleted: 'De omgeving "{label}" is verwijderd'
+    environment_is_default: 'De omgeving {environment} wordt gebruikt als standaardomgeving voor minstens één content type'
+    environment_not_empty: 'De omgeving {environment} is niet leeg'
+    environment_publish_permission_denied: 'U heeft onvoldoende rechten om "{content_type}" documenten te publiceren'
+    environment_rebuild_unknown_option: 'Onmogelijk om de omgeving {environment} te herbouwen door onbekende optie "{option}"'
+    environment_updated: 'De omgeving {environment} is bijgewerkt'
+    environment_wrong_ouuid: 'Onjuist gevormde OUUID {ouuid}'
+    field_added: 'Het veld "{name}" is toegevoegd'
+    field_collection_import_array: 'Sommige gegevens werden niet geïmporteerd voor het collectieveld {field_name} omdat het geen array was'
+    field_deleted: 'Het veld "{name}" is verwijderd'
     field_json_parse_post_processing_error: 'Fout bij het JSON-parsen van het resultaat van het naverwerkingsscript van veld {field_name} (|json_encode|raw): {error_message}'
+    field_name_mandatory: 'De veldnaam is verplicht'
+    field_name_not_valid: 'De veldnaam is niet geldig (formaat: {field_format})'
     field_not_a_data_field: 'Onverwacht veld {field_name} in het revisieformulier'
     field_other_post_processing_error: 'De naverwerking van het veld {field_name} liep tegen een probleem aan: {error_message}'
+    field_reordered: 'De subvelden van het veld "{name}" zijn opnieuw geordend'
     field_syntax_error: 'Syntaxfout bij het veld {field_name}: {error_message}'
     field_template_parse_error: 'Fout bij het parsen van het berekende veld {computed_field_name}: {error_message}'
     field_with_errors: 'Het veld {path} bevat een fout met de melding {error_message}'
+    file_upload_error: 'Fout tijdens het uploaden van het bestand: {error_message}'
+    filter_deleted: 'De filter {filter_name} is verwijderd'
+    form_deleted: 'Het formulier "{label}" is verwijderd'
+    form_submission_deleted: 'Formulierinzending met id "{id}" is verwijderd!'
     import_failed: 'Import mislukt'
     import_file_missing_columns: 'Ontbrekende kolommen in het importbestand, vereiste kolommen "{columns}"'
     import_file_missing_data: 'Ontbrekende gegevens in het importbestand'
+    job_done: 'De taak "{job_id}" is voltooid'
+    job_failed: 'De taak "{label}" is mislukt in de omgeving {environment}'
+    job_initialized: 'De taak "{label}" is geïnitialiseerd in de omgeving {environment}'
+    managed_alias_created: 'Beheerde alias "{managed_alias_label}" is aangemaakt'
+    managed_alias_deleted: 'Beheerde alias "{managed_alias_label}" is verwijderd'
+    managed_alias_updated: 'Beheerde alias "{managed_alias_label}" is bijgewerkt'
+    notification_not_found: 'Melding #{notification_id} niet gevonden'
+    privilege_exception: 'U heeft onvoldoende rechten om dit document te bewerken'
+    query_search_deleted: 'De query search "{label}" is verwijderd'
+    reindex_command_end: 'De documenten van het content type {content_type} zijn opnieuw geïndexeerd in {environment} (index: {index})'
+    reindex_command_environment_not_found: 'Omgeving met naam {environment} niet gevonden'
+    reindex_command_start: 'Start herindexering van {content_type} in {environment}'
+    release_deleted: 'De release "{name}" is verwijderd'
+    release_not_ready: 'De status van de release "{name}" is niet "ready"'
+    release_revision_preceding: 'Er is al een vorige revisie gekoppeld aan de release "{name}"'
+    release_unknown_action: 'Onbekende actie'
+    revision_add_from_json_error: 'Het was niet mogelijk om een nieuw {content_type} document te starten door een interne fout'
+    revision_added_to_release: 'Document "{label}" is toegevoegd aan release "{release}"'
+    revision_ajax_update_on_finalized: 'Het is niet mogelijk om het document "{label}" op te slaan omdat deze revisie al is gefinaliseerd'
+    revision_already_in_release: 'Deze revisie van document "{label}" zat al in release "{release}"'
+    revision_auto_publish_rollback: 'Het document "{label}" is stilzwijgend teruggepubliceerd in {environment}'
+    revision_auto_save_off_with_auto_publish: 'Automatisch opslaan is uitgeschakeld omdat automatisch publiceren is ingeschakeld voor het content type {content_type}. Druk op Ctrl+S (Cmd+S) om op te slaan en te publiceren in {environment}'
+    revision_cannot_delete_published: 'Het document "{label}" kan niet worden verwijderd omdat het gepubliceerd is in {environment}'
+    revision_cannot_finalize: 'Het document "{label}" kan niet worden gefinaliseerd zoals het is'
+    revision_cannot_finalize_invalid: '{count, plural, one {Het document "{label}" kan niet worden gefinaliseerd, er is één fout} other {Het document "{label}" kan niet worden gefinaliseerd, er zijn # fouten}}'
+    revision_cannot_finalize_pending_auto_save: 'Het document "{label}" kan niet worden gefinaliseerd omdat er een automatisch opslaan in behandeling is'
+    revision_compare: 'Revisie {revision_id} van het document {content_type}:{ouuid} vergelijken met revisie {compare_revision_id}'
+    revision_compare_more_recent: 'Revisie {revision_id} van het document {content_type}:{ouuid} vergelijken met revisie {compare_revision_id}, welke is recenter'
+    revision_compare_not_found: 'Onmogelijk om revisie {revision_id} van het document {content_type}:{ouuid} te vergelijken met revisie {compare_revision_id} omdat deze revisie niet bestaat'
+    revision_create_error: 'De revisie voor het content type "{content_type}" kan niet worden aangemaakt, reden: {error_message}'
+    revision_create_from_array_error: 'Het was niet mogelijk om een nieuw {content_type} document te starten door een interne fout'
+    revision_delete_error: 'De revisie {ouuid} voor het content type "{content_type}" kan niet worden verwijderd, reden: {error_message}'
     revision_deleted: 'Het document "{label}" is verwijderd'
+    revision_deleted_but_referenced: 'Het document "{label}" is gemarkeerd als verwijderd maar wordt nog steeds gerefereerd in {environment}'
+    revision_discard_error: 'De revisie {revision_id} voor het content type "{content_type}" kan niet worden verworpen, reden: {error_message}'
+    revision_draft_cannot_be_added_to_release: 'Een revisie in conceptmodus kan niet worden toegevoegd aan een release'
     revision_draft_created: 'Er is een nieuw concept gestart voor het document "{label}"'
     revision_draft_deleted: 'Concept verworpen voor het document "{label}"'
     revision_draft_updated: 'Concept bijgewerkt voor het document "{label}"'
+    revision_edit_draft_warning: 'U bewerkt een reeds gepubliceerde revisie, het is veiliger om <a href="{path}" class="btn btn-primary"><span class="fa fa-pencil"></span> een concept te bewerken</a>'
+    revision_finalize_error: 'De revisie {revision_id} voor het content type "{content_type}" kan niet worden gefinaliseerd, reden: {error_message}'
     revision_finalized: 'Het document "{label}" is gepubliceerd in {environment}'
+    revision_incomplete_request: 'Het is niet mogelijk om het document "{label}" op te slaan. Controleer uw PHP/webconfiguratie (bv. max_input_vars in php.ini)'
+    revision_loaded_from_auto_save: 'Gegevens zijn geladen vanuit een automatisch opgeslagen versie'
+    revision_locked: 'Document "{label}" is momenteel vergrendeld door {username}'
+    revision_merge_error: 'De revisie {ouuid} voor het content type "{content_type}" kan niet worden samengevoegd/bijgewerkt, reden: {error_message}'
+    revision_not_found_in_environment: 'Het is niet mogelijk om een revisie te identificeren voor het document "{ouuid}" in de omgeving {environment}'
+    revision_not_in_target_environment: 'Document "{label}" is niet gepubliceerd in de doelomgeving "{target}"'
+    revision_only_super_can_finalize_archive: 'Alleen een supergebruiker kan een gearchiveerde revisie finaliseren'
     revision_published: 'Het document "{label}" is gepubliceerd in {environment}'
+    revision_read_error: 'De revisie voor het content type "{content_type}" kan niet worden gevonden, reden: {error_message}'
+    revision_reindexed: 'Het document "{label}" is opnieuw geïndexeerd in {environment}'
+    revision_reindexed_failed: 'Het document "{label}" heeft een fout ondervonden tijdens het herindexeren "{error_message}"'
+    revision_reindexed_failed_in: 'Het document "{label}" heeft een fout ondervonden tijdens het herindexeren in {environment}'
+    revision_replace_error: 'De revisie {ouuid} voor het content type "{content_type}" kan niet worden vervangen/bijgewerkt, reden: {error_message}'
     revision_restored: 'Het document "{label}" is hersteld'
     revision_unpublished: 'Het document "{label}" is gedepubliceerd uit {environment}'
+    revision_updated_in_release: 'Document "{label}" is bijgewerkt met een nieuwe revisie in release "{release}"'
+    schedule_created: 'Schema "{name}" is aangemaakt'
+    schedule_deleted: 'Het schema "{name}" is verwijderd'
+    schedule_updated: 'Schema "{name}" is bijgewerkt'
+    search_deleted: 'Een zoekopdracht is verwijderd'
+    search_paging_limit_exceeded: 'De paginering is beperkt tot de eerste {paging} items, {total} documenten gevonden'
+    search_result_limited: 'Het zoekresultaat is beperkt tot de eerste {total} documenten'
+    search_set_as_default: 'Deze zoekopdracht is ingesteld als standaardzoekopdracht'
+    search_set_as_default_for_content_type: 'Deze zoekopdracht is ingesteld als standaard zoekformulier voor het content type {content_type}'
+    subfield_added: 'Het subveld "{name}" is toegevoegd'
+    subfield_name_mandatory: 'De naam van het subveld is verplicht'
+    subfield_name_not_valid: 'De naam van het subveld is niet geldig (formaat: {field_format})'
+    user_api_key_generated: 'Nieuwe API-sleutel voor de gebruiker {user_display_name}: {api_key}'
+    user_custom_form_not_found: 'Aangepast gebruikersformulier "{name}" niet gevonden'
+    user_deleted: 'De gebruiker {user_display_name} is verwijderd'
+    user_disabled: 'De gebruiker {user_display_name} is uitgeschakeld'
+    user_enabled: 'De gebruiker {user_display_name} is ingeschakeld'
     user_profile_changed_password: 'Het wachtwoord is gewijzigd.'
     user_profile_updated: 'Het profiel is bijgewerkt.'
     user_resetting_success: 'Het wachtwoord is opnieuw ingesteld.'
+    user_updated: 'De gebruiker {user_display_name} is bijgewerkt'
+    view_bucket_not_found: 'Bucket {bucket_path} niet gevonden'
+    view_created: 'Een nieuwe weergave {view_label} is aangemaakt'
+    view_criteria_added: 'Er is een criterium toegevoegd voor veld {field_name} met waarde {field_data}'
+    view_criteria_already_exists: 'Er bestaat al een criterium voor veld {field_name} met waarde {field_data}'
+    view_criteria_already_missing: 'Er ontbreekt al een criterium voor veld {field_name} met waarde {field_data}'
+    view_criteria_created: 'Er is een nieuw criterium aangemaakt voor {target_field_name}:{target_field_data}'
+    view_criteria_document_key_not_found: 'Documentreferentie "{document_reference}" niet gevonden voor document "{ems_id}"'
+    view_criteria_draft_in_progress: '{count, plural, one {Eén concept in behandeling. U kunt het niet vanaf hier bijwerken.} other {# concepten in behandeling. U kunt ze niet vanaf hier bijwerken.}}'
+    view_criteria_field_not_found: 'Veldpad {field_path} niet gevonden'
+    view_criteria_locked_revision: 'Onmogelijk om het document "{label}" bij te werken omdat de revisie vergrendeld is door {locked_by}'
+    view_criteria_not_found: 'Criterium niet gevonden voor veld {field_name}'
+    view_criteria_removed: 'Er is een criterium verwijderd voor veld {field_name} met waarde {field_data}'
+    view_criteria_too_many: 'Te veel criteria gevonden ({total}). Er is iets mis met deze combinatie van criteria!'
+    view_criteria_update_not_authorized: 'U heeft onvoldoende rechten om deze weergave te gebruiken om criteria bij te werken'
+    view_criteria_update_privilege_issue: 'U bent niet gemachtigd om het document "{label}" bij te werken'
+    view_deleted: 'De weergave "{label}" is verwijderd'
+    view_document_update_error: 'Het was onmogelijk om het document "{label}" bij te werken: {error_message}'
+    view_hierarchical_reorganized: 'De documenten van {content_type} zijn gereorganiseerd met de weergave "{view_label}"'
+    view_not_found: 'Weergave {id} niet gevonden'
+    view_sorter_ordered: 'De documenten van {content_type} zijn gesorteerd met de weergave "{view_label}"'
+    view_sorter_too_many_documents: 'Dit content type heeft te veel documenten ({total}) om in één keer opnieuw te ordenen'
+    view_updated: 'De weergave "{label}" is bijgewerkt'
+    xliff_not_current_revision: 'Revisie {revision_id} van {ouuid} is niet langer de laatste revisie. De vertalingen werden niet geïmporteerd.'
+    xliff_too_many_translations: '{counter} vertaaldocumenten terwijl er slechts één wordt verwacht voor vertaal-ID {translation_id} en doeltaal {target_locale} in omgeving {environment}'
 modal:
     loading_information: 'Informatie laden...'
 navigation:
@@ -830,7 +999,11 @@ notification:
     warnings: Waarschuwingen
 option:
     allow_add: 'Toevoegen toestaan'
+    delete_existing_templates: 'Bestaande templates verwijderen'
+    delete_existing_views: 'Bestaande weergaven verwijderen'
+    disabled: Uitgeschakeld
     email_notification: E-mailmeldingen
+    enabled: Ingeschakeld
     layout_boxed: 'Layout boxed'
     layout_sidebar_collapse: 'Zijbalk inklapbaar'
     layout_sidebar_mini: 'Zijbalk mini'
@@ -1071,6 +1244,10 @@ task:
             history: Geschiedenis
             info: Informatie
         title: 'Taak bewerken: {title}'
+title:
+    asset_options: Asset-opties
+    content_type_from_json_file: 'vanuit een JSON-bestand van een content type'
+    content_type_json_update: 'Content type "{content_type}" bijwerken'
 type:
     confirm: |-
         {type, select,
@@ -1357,7 +1534,21 @@ view:
     form:
         fields:
             asset:
+                browse-server: 'Kies een bestand van de server'
+                clear-button: Wissen
+                close-modal: Sluiten
+                drag-n-drop-file: 'Sleep uw bestand hierheen'
+                drag-n-drop-files: 'Sleep uw bestanden hierheen'
+                file-hash: 'Hash van het bestand'
+                file-info: Bestandsinformatie
+                info-modal-button: Info
+                init-upload: 'Upload wordt gestart'
+                move-button: Verplaatsen
                 preview: Voorbeeld
+                remove-button: Verwijderen
+                upload-file: 'Bestand uploaden'
+                upload-files: 'Bestanden uploaden'
+                view-button: Bekijken
     icon:
         class:
             form: 'fa fa-keyboard-o'

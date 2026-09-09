@@ -7,7 +7,6 @@ namespace EMS\CoreBundle\Controller\ContentManagement;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
-use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Form\FieldTypeManager;
@@ -110,10 +109,9 @@ class ContentTypeController extends AbstractController
     public function activate(ContentType $contentType): Response
     {
         if ($contentType->getDirty()) {
-            $this->logger->error('log.contenttype.dirty', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-            ]);
+            $this->logger->messageError(t('message.content_type_dirty', [
+                'label' => $contentType->getSingularName(),
+            ], 'emsco-core'));
 
             return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
         }
@@ -211,10 +209,9 @@ class ContentTypeController extends AbstractController
                     $this->contentTypeService->update($contentType, false);
                 }
 
-                $this->logger->notice('log.contenttype.created', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                    EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
-                ]);
+                $this->logger->messageNotice(t('message.content_type_created', [
+                    'label' => $contentType->getSingularName(),
+                ], 'emsco-core'));
 
                 return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_EDIT, [
                     'contentType' => $contentType->getId(),
@@ -371,10 +368,9 @@ class ContentTypeController extends AbstractController
         try {
             $mapping = $this->mappingService->getMapping($environment);
         } catch (\Throwable) {
-            $this->logger->warning('log.contenttype.mapping.not_found', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_READ,
-            ]);
+            $this->logger->messageWarning(t('message.content_type_mapping_not_found', [
+                'label' => $contentType->getSingularName(),
+            ], 'emsco-core'));
             $mapping = null;
         }
 
@@ -395,9 +391,9 @@ class ContentTypeController extends AbstractController
                 $this->contentTypeService->update($contentType, false);
 
                 if ($contentType->getDirty()) {
-                    $this->logger->warning('log.contenttype.dirty', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                    ]);
+                    $this->logger->messageWarning(t('message.content_type_dirty', [
+                        'label' => $contentType->getSingularName(),
+                    ], 'emsco-core'));
                 }
                 if (\array_key_exists('saveAndClose', $inputContentType)) {
                     return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
@@ -420,9 +416,9 @@ class ContentTypeController extends AbstractController
         }
 
         if ($contentType->getDirty()) {
-            $this->logger->warning('log.contenttype.dirty', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-            ]);
+            $this->logger->messageWarning(t('message.content_type_dirty', [
+                'label' => $contentType->getSingularName(),
+            ], 'emsco-core'));
         }
 
         return $this->render(\sprintf('@%s/contenttype/edit.html.twig', $this->templateNamespace), [
@@ -466,9 +462,9 @@ class ContentTypeController extends AbstractController
                 $this->contentTypeService->persist($contentType);
 
                 if ($contentType->getDirty()) {
-                    $this->logger->warning('log.contenttype.dirty', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                    ]);
+                    $this->logger->messageWarning(t('message.content_type_dirty', [
+                        'label' => $contentType->getSingularName(),
+                    ], 'emsco-core'));
                 }
                 if (\array_key_exists('saveAndClose', $inputContentType)) {
                     return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_EDIT, [
@@ -496,9 +492,9 @@ class ContentTypeController extends AbstractController
         }
 
         if ($contentType->getDirty()) {
-            $this->logger->warning('log.contenttype.dirty', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-            ]);
+            $this->logger->messageWarning(t('message.content_type_dirty', [
+                'label' => $contentType->getSingularName(),
+            ], 'emsco-core'));
         }
 
         return $this->render(\sprintf('@%s/contenttype/structure.html.twig', $this->templateNamespace), [
@@ -533,9 +529,9 @@ class ContentTypeController extends AbstractController
             $this->contentTypeService->persistField($field);
 
             if ($contentType->getDirty()) {
-                $this->logger->warning('log.contenttype.dirty', [
-                    EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                ]);
+                $this->logger->messageWarning(t('message.content_type_dirty', [
+                    'label' => $contentType->getSingularName(),
+                ], 'emsco-core'));
             }
 
             if ('saveAndClose' === $action) {
@@ -555,23 +551,22 @@ class ContentTypeController extends AbstractController
                             $field->addChild($child);
                             $this->fieldTypeRepository->save($field);
 
-                            $this->logger->notice('log.contenttype.subfield.added', [
-                                'subfield_name' => $subFieldName,
-                                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
-                            ]);
+                            $this->logger->messageNotice(t('message.subfield_added', [
+                                'name' => $subFieldName,
+                            ], 'emsco-core'));
                         } catch (OptimisticLockException|ORMException $e) {
                             throw new ElasticmsException($e->getMessage(), $e->getCode(), $e);
                         }
                     } else {
-                        $this->logger->error('log.contenttype.field.name_not_valid', [
+                        $this->logger->messageError(t('message.field_name_not_valid', [
                             'field_format' => '/[a-z][a-z0-9_-]*/ !'.Mapping::HASH_FIELD.' !'.Mapping::HASH_FIELD,
-                        ]);
+                        ], 'emsco-core'));
                     }
                     break;
                 default:
-                    $this->logger->warning('log.contenttype.action_not_found', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                    ]);
+                    $this->logger->messageWarning(t('message.content_type_action_not_found', [
+                        'label' => $contentType->getSingularName(),
+                    ], 'emsco-core'));
             }
         }
 

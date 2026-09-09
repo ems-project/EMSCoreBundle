@@ -1,4 +1,4 @@
-{% use "bootstrap_3_layout.html.twig" %}{% trans_default_domain 'EMSCoreBundle' %}
+{% use "bootstrap_3_layout.html.twig" %}{% trans_default_domain 'emsco-core' %}
 
 {# Widgets #}
 {% block checkbox_radio_label -%}
@@ -595,7 +595,7 @@
 		<div>
 	  		<div class="btn-group">
 		  		{% if not form.vars.disabled %}
-					<a href="#" class="btn btn-primary add-content-button  btn-sm"><i class="fa fa-plus"></i> {{ 'Add'|trans }}</a>
+					<a href="#" class="btn btn-primary add-content-button  btn-sm"><i class="fa fa-plus"></i> {{ 'action.add'|trans }}</a>
 				{% endif %}
 			</div>
 		</div>
@@ -1160,11 +1160,11 @@
             <div class="modal-content">
               <div class="modal-header">
               	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        		<h4 class="modal-title" id="myModalLabel">{{ 'Asset options'|trans }}</h4>
+        		<h4 class="modal-title" id="myModalLabel">{{ 'title.asset_options'|trans }}</h4>
               </div>
               <div class="modal-body">
               	<div class="form-group">
-              		<label>{{ 'Hash signature'|trans }}</label>
+              		<label>{{ 'field.hash'|trans }}</label>
               		<div class="form-control asset-hash-signature">{% if form.vars.value.sha1 is defined %}{{ form.vars.value.sha1 }}{% endif %}</div>
               	</div>
         		{{- form_widget(form) -}}
@@ -1174,10 +1174,10 @@
 					{% if form.vars.meta_fields %}
 						<button type="button" class="btn btn-small btn-default extract-file-info" >
 							<i class="fa fa-bolt"></i>
-							{{ 'Extract content'|trans }}
+							{{ 'action.extract_content'|trans }}
 						</button>
 					{% endif %}
-                    <button type="button" class="btn btn-small btn-default " data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+                    <button type="button" class="btn btn-small btn-default " data-dismiss="modal"><i class="fa fa-close"></i> {{ 'action.close'|trans }}</button>
                 </div>
               </div>
             </div>
@@ -1219,10 +1219,10 @@
 		<div class="btn-group">
 			<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}" data-testid="file-btn-info-{{ form.vars.name }}">
               <i class="fa fa-info"></i>
-              {{ 'Info'|trans }}
+              {{ 'action.info'|trans }}
             </button>
-			<a href="#" class="btn btn-small btn-default view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'View'|trans}}" data-testid="file-btn-view-{{ form.vars.name }}"><i class="fa fa-eye">&nbsp;{{'View'|trans}}</i></a>
-			<a href="#" class="btn btn-small btn-default clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{'Clear'|trans}}" data-testid="file-btn-clear-{{ form.vars.name }}"><i class="fa fa-remove"></i>&nbsp;{{'Clear'|trans}}</a>
+			<a href="#" class="btn btn-small btn-default view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{'action.view'|trans}}" data-testid="file-btn-view-{{ form.vars.name }}"><i class="fa fa-eye">&nbsp;{{'action.view'|trans}}</i></a>
+			<a href="#" class="btn btn-small btn-default clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{'action.clear'|trans}}" data-testid="file-btn-clear-{{ form.vars.name }}"><i class="fa fa-remove"></i>&nbsp;{{'action.clear'|trans}}</a>
 		</div>
 	</div>
 </div>
@@ -1240,7 +1240,7 @@
 	{% elseif (form.vars.data.contentType.singularName is defined) %}
 		<strong>{{ form.vars.data.contentType.singularName }}</strong>
 	{% else %}
-		<strong>{{ 'form.field-type-type.root'|trans }}</strong>
+		<strong>{{ 'key.form_root'|trans({}, 'emsco-core') }}</strong>
 	{% endif %}
 	<div class="btn-group pull-right">
 		{% if form.add is defined %}

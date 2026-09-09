@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\View;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Command\DocumentCommand;
 use EMS\CoreBundle\Entity\UserInterface;
@@ -11,7 +12,6 @@ use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Nature\ImporterType;
 use EMS\CoreBundle\Service\FileService;
 use EMS\CoreBundle\Service\JobService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactory;
@@ -28,7 +28,7 @@ class ImporterViewType extends ViewType
     public function __construct(
         FormFactory $formFactory,
         Environment $twig,
-        LoggerInterface $logger,
+        LocalizedLoggerInterface $logger,
         private readonly FileService $fileService,
         private readonly JobService $jobService,
         private readonly TokenStorageInterface $security,

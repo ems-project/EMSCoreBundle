@@ -15,6 +15,8 @@ use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 class RevisionAuditDataTableType extends AbstractEntityTableType
 {
     public function __construct(
@@ -28,15 +30,15 @@ class RevisionAuditDataTableType extends AbstractEntityTableType
     public function build(EntityTable $table): void
     {
         $table
-            ->addColumnDefinition(new DatetimeTableColumn('log.index.column.created', 'created'))
+            ->addColumnDefinition(new DatetimeTableColumn(t('key.created', [], 'emsco-core'), 'created'))
             ->setCellClass('col-sm');
         $table
-            ->addColumnDefinition(new TableColumn('log.index.column.level_name', 'levelName'))
+            ->addColumnDefinition(new TableColumn(t('key.severity', [], 'emsco-core'), 'levelName'))
             ->setCellClass('col-xs');
         $table
-            ->addColumnDefinition(new TableColumn('log.index.column.message', 'message'));
+            ->addColumnDefinition(new TableColumn(t('key.message', [], 'emsco-core'), 'message'));
         $table
-            ->addColumnDefinition(new UserTableColumn('log.index.column.username', 'username'))
+            ->addColumnDefinition(new UserTableColumn(t('key.username', [], 'emsco-core'), 'username'))
             ->setCellClass('col-sm');
         $table->setDefaultOrder('created', 'desc');
     }

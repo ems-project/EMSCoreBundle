@@ -416,7 +416,7 @@ return static function (ContainerConfigurator $container) {
     $services->set('ems.environment.reindex', ReindexCommand::class)
         ->args([
             service('doctrine'),
-            service('logger'),
+            service('emsco.logger'),
             service('ems.service.mapping'),
             service('service_container'),
             service('ems.service.data'),

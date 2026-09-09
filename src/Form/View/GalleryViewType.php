@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\View;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Form\SearchFormType;
 use EMS\CoreBundle\Service\SearchService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactory;
@@ -19,8 +19,14 @@ use Twig\Environment;
 
 class GalleryViewType extends ViewType
 {
-    public function __construct(FormFactory $formFactory, Environment $twig, private readonly ElasticaService $elasticaService, LoggerInterface $logger, private readonly SearchService $searchService, string $templateNamespace)
-    {
+    public function __construct(
+        FormFactory $formFactory,
+        Environment $twig,
+        private readonly ElasticaService $elasticaService,
+        LocalizedLoggerInterface $logger,
+        private readonly SearchService $searchService,
+        string $templateNamespace
+    ) {
         parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 

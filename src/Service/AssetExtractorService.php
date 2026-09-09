@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Helper\MimeTypeHelper;
 use EMS\CommonBundle\Storage\NotFoundException;
@@ -15,8 +16,9 @@ use EMS\Helpers\File\File;
 use EMS\Helpers\File\TempFile;
 use EMS\Helpers\Standard\Number;
 use EMS\Helpers\Standard\Type;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
+
+use function Symfony\Component\Translation\t;
 
 class AssetExtractorService implements CacheWarmerInterface
 {
@@ -27,7 +29,7 @@ class AssetExtractorService implements CacheWarmerInterface
 
     public function __construct(
         private readonly RestClientService $rest,
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly Registry $doctrine,
         private readonly FileService $fileService,
         private readonly ?string $tikaServer,
@@ -110,10 +112,10 @@ class AssetExtractorService implements CacheWarmerInterface
 
         $filesize = $this->fileService->getSize($hash);
         if (!$forced && $filesize > (3 * 1024 * 1024)) {
-            $this->logger->warning('log.warning.asset_extract.file_to_large', [
+            $this->logger->messageWarning(t('message.asset_extract_file_too_large', [
                 'filesize' => Number::formatBytes($filesize),
                 'max_size' => '3 MB',
-            ]);
+            ], 'emsco-core'));
 
             return new ExtractedData([], $this->tikaMaxContent);
         }

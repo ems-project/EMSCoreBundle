@@ -16,7 +16,6 @@ use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 class EMSCoreBundle extends AbstractBundle
 {
     final public const string TRANS_DOMAIN = 'EMSCoreBundle';
-    final public const string TRANS_CORE = 'emsco-core';
 
     final public const string FONTAWESOME_VERSION = '4';
 

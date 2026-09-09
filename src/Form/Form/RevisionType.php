@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Form\Form;
 
 use EMS\CoreBundle\Core\User\UserManager;
 use EMS\CoreBundle\Core\User\UserOptions;
-use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
@@ -19,6 +18,8 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * @extends AbstractType<mixed>
@@ -62,7 +63,7 @@ class RevisionType extends AbstractType
             if ($revision->getDraft()) {
                 if (!$simplifiedUI) {
                     $builder->add('save', SubmitEmsType::class, [
-                        'label' => 'form.form.revision-type.save-draft-label',
+                        'label' => t('action.save_as_draft', [], 'emsco-core'),
                         'attr' => ['class' => 'btn btn-default btn-sm', 'data-testid' => 'revision-action-save-draft'],
                         'icon' => 'fa fa-save',
                     ]);
@@ -71,16 +72,15 @@ class RevisionType extends AbstractType
                 $publishedEnvironmentLabels = $revision->getEnvironments()->map(fn (Environment $e) => $e->getLabel());
                 if (\count($publishedEnvironmentLabels) > 0) {
                     $builder->add('save', SubmitEmsType::class, [
-                        'label' => 'form.form.revision-type.publish-label',
-                        'label_translation_parameters' => [
-                            '%environment%' => \implode(', ', $publishedEnvironmentLabels->toArray()),
-                        ],
+                        'label' => t('action.save_publish_in', [
+                            'environments' => \implode(', ', $publishedEnvironmentLabels->toArray()),
+                        ], 'emsco-core'),
                         'attr' => ['class' => 'btn btn-primary btn-sm', 'data-testid' => 'revision-action-publish'],
                         'icon' => 'fa fa-upload',
                     ]);
                 } else {
                     $builder->add('save', SubmitEmsType::class, [
-                        'label' => 'form.form.revision-type.save-label',
+                        'label' => t('action.save', [], 'emsco-core'),
                         'attr' => ['class' => 'btn btn-primary btn-sm', 'data-testid' => 'revision-action-save'],
                         'icon' => 'fa fa-save',
                     ]);
@@ -95,7 +95,7 @@ class RevisionType extends AbstractType
         if (!$simplifiedUI) {
             if ($options['has_clipboard']) {
                 $builder->add('paste', SubmitEmsType::class, [
-                    'label' => 'form.form.revision-type.paste-label',
+                    'label' => t('action.paste', [], 'emsco-core'),
                     'attr' => [
                         'class' => '',
                         'data-testid' => 'revision-action-paste',
@@ -106,7 +106,7 @@ class RevisionType extends AbstractType
 
             if ($options['has_copy']) {
                 $builder->add('copy', SubmitEmsType::class, [
-                    'label' => 'form.form.revision-type.copy-label',
+                    'label' => t('action.copy', [], 'emsco-core'),
                     'attr' => [
                         'class' => '',
                         'data-testid' => 'revision-action-copy',
@@ -122,11 +122,9 @@ class RevisionType extends AbstractType
 
             if (null !== $environment) {
                 $builder->add('publish', SubmitEmsType::class, [
-                    'translation_domain' => EMSCoreExtension::TRANS_DOMAIN,
-                    'label' => 'form.form.revision-type.publish-label',
-                    'label_translation_parameters' => [
-                        '%environment%' => $environment->getLabel(),
-                    ],
+                    'label' => t('action.save_publish_in', [
+                        'environments' => $environment->getLabel(),
+                    ], 'emsco-core'),
                     'attr' => [
                         'class' => 'btn btn-primary btn-sm ',
                         'data-testid' => 'revision-action-publish',

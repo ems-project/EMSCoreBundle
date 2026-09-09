@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\ContentType;
@@ -12,15 +13,16 @@ use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Repository\TemplateRepository;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Environment as Twig;
+
+use function Symfony\Component\Translation\t;
 
 final readonly class ActionService implements EntityServiceInterface
 {
     public function __construct(
         private TemplateRepository $templateRepository,
-        private LoggerInterface $logger,
+        private LocalizedLoggerInterface $logger,
         private SearchService $searchService,
         private Twig $twig,
         private JobService $jobService,
@@ -57,27 +59,19 @@ final readonly class ActionService implements EntityServiceInterface
 
             $job = $this->jobService->createCommand($user, $command, $jobAction->getTag());
 
-            $this->logger->notice('log.data.job.initialized', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-                EmsFields::LOG_OUUID_FIELD => $uuid,
-                'template_id' => $jobAction->getId(),
-                'job_id' => $job->getId(),
-                'template_name' => $jobAction->getName(),
-                'template_label' => $jobAction->getLabel(),
-                'environment' => $environment->getLabel(),
-            ]);
+            $this->logger->messageNotice(t('message.job_initialized', [
+                'label' => $jobAction->getLabel(),
+                'environment' => $jobAction->giveContentType()->giveEnvironment()->getLabel(),
+            ], 'emsco-core'));
 
             return $job;
         } catch (\Throwable $throwable) {
-            $this->logger->error('log.data.job.initialize_failed', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $jobAction->giveContentType()->getName(),
-                EmsFields::LOG_OUUID_FIELD => $uuid,
+            $this->logger->messageError(t('message.job_failed', [
+                'label' => $jobAction->getLabel(),
+                'environment' => $jobAction->giveContentType()->giveEnvironment()->getLabel(),
+            ], 'emsco-core'), [
                 EmsFields::LOG_ERROR_MESSAGE_FIELD => $throwable->getMessage(),
                 EmsFields::LOG_EXCEPTION_FIELD => $throwable,
-                'template_name' => $jobAction->getName(),
-                'template_label' => $jobAction->getLabel(),
-                'environment' => $environment?->getLabel(),
             ]);
             throw $throwable;
         }
@@ -98,13 +92,10 @@ final readonly class ActionService implements EntityServiceInterface
 
     public function delete(Template $template): void
     {
-        $name = $template->getName();
         $label = $template->getLabel();
         $this->templateRepository->delete($template);
-        $this->logger->warning('log.service.action.delete', [
-            'name' => $name,
-            'label' => $label,
-        ]);
+
+        $this->logger->messageWarning(t('message.action_deleted', ['label' => $label], 'emsco-core'));
     }
 
     public function deleteByIds(string ...$ids): void

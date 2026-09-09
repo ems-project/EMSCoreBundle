@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\DataField;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Form\EmsCollectionType;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\ElasticsearchService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -20,6 +20,8 @@ use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Defined a Container content type.
@@ -34,7 +36,7 @@ class CollectionFieldType extends DataFieldType
         FormRegistryInterface $formRegistry,
         ElasticsearchService $elasticsearchService,
         private readonly DataService $dataService,
-        private readonly LoggerInterface $logger
+        private readonly LocalizedLoggerInterface $logger
     ) {
         parent::__construct($authorizationChecker, $formRegistry, $elasticsearchService);
     }
@@ -85,10 +87,9 @@ class CollectionFieldType extends DataFieldType
                         if (\is_array($item)) {
                             $this->dataService->updateDataValue($grandChild, $item, $isMigration);
                         } else {
-                            $this->logger->warning('form.data_field.collection.import_not_an_array', [
-                                'import_data' => $item,
+                            $this->logger->messageWarning(t('message.field_collection_import_array', [
                                 'field_name' => $dataField->giveFieldType()->getName(),
-                            ]);
+                            ], 'emsco-core'), ['import_data' => $item]);
                         }
 
                         $colItem->addChild($grandChild, $grandChildKey);

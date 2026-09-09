@@ -11,6 +11,8 @@ use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 
+use function Symfony\Component\Translation\t;
+
 class FormSubmissionDataTableType extends AbstractEntityTableType
 {
     public function __construct(FormSubmissionService $entityService)
@@ -21,20 +23,47 @@ class FormSubmissionDataTableType extends AbstractEntityTableType
     #[\Override]
     public function build(EntityTable $table): void
     {
-        $table->addColumn('form-submission.index.column.id', 'id');
-        $table->addColumn('form-submission.index.column.instance', 'instance');
-        $table->addColumn('form-submission.index.column.label', 'label');
-        $table->addColumn('form-submission.index.column.form', 'name');
-        $table->addColumn('form-submission.index.column.locale', 'locale');
-        $table->addColumnDefinition(new DatetimeTableColumn('form-submission.index.column.created', 'created'));
-        $table->addColumnDefinition(new DatetimeTableColumn('form-submission.index.column.expire_date', 'expireDate'));
+        $table->addColumn(t('field.id', [], 'emsco-core'), 'id');
+        $table->addColumn(t('field.instance', [], 'emsco-core'), 'instance');
+        $table->addColumn(t('field.label', [], 'emsco-core'), 'label');
+        $table->addColumn(t('field.form', [], 'emsco-core'), 'name');
+        $table->addColumn(t('field.locale', [], 'emsco-core'), 'locale');
+        $table->addColumnDefinition(new DatetimeTableColumn(t('field.date_created', [], 'emsco-core'), 'created'));
+        $table->addColumnDefinition(new DatetimeTableColumn(t('field.date_expiration', [], 'emsco-core'), 'expireDate'));
 
-        $table->addItemGetAction('form.submissions.download', 'form-submission.form-submissions.download', 'download', [], ['data-testid' => 'form-submission-download']);
-        $table->addItemPostAction('form.submissions.process', 'form-submission.form-submissions.process', 'check', 'form-submission.form-submissions.confirm', [], ['data-testid' => 'form-submission-process']);
+        $table->addItemGetAction(
+            'form.submissions.download',
+            labelKey: t('action.download', [], 'emsco-core'),
+            icon: 'download',
+            attributes: ['data-testid' => 'form-submission-download']
+        );
+        $table->addItemPostAction(
+            route: 'form.submissions.process',
+            labelKey: t('action.delete', [], 'emsco-core'),
+            icon: 'check',
+            messageKey: t('action.confirmation', [], 'emsco-core'),
+            attributes: ['data-testid' => 'form-submission-process']
+        );
 
-        $table->addTableAction(TableAbstract::DELETE_ACTION, 'fa fa-trash', 'form-submission.index.delete_selected', 'form-submission.form-submissions.delete_selected_confirm', ['data-testid' => 'form-submission-delete-all']);
-        $table->addTableAction(TableAbstract::DOWNLOAD_ACTION, 'fa fa-download', 'form-submission.form-submissions.download_selected', null, ['data-testid' => 'form-submission-download-all']);
-        $table->addTableAction(TableAbstract::EXPORT_ACTION, 'fa fa-file-excel-o', 'form-submission.form-submissions.export_selected', null, ['data-testid' => 'form-submission-export-all']);
+        $table->addTableAction(
+            name: TableAbstract::DELETE_ACTION,
+            icon: 'fa fa-trash',
+            labelKey: t('action.delete_selected', [], 'emsco-core'),
+            confirmationKey: t('action.confirmation', [], 'emsco-core'),
+            attributes: ['data-testid' => 'form-submission-delete-all']
+        );
+        $table->addTableAction(
+            name: TableAbstract::DOWNLOAD_ACTION,
+            icon: 'fa fa-download',
+            labelKey: t('action.download_selected', [], 'emsco-core'),
+            attributes: ['data-testid' => 'form-submission-download-all']
+        );
+        $table->addTableAction(
+            name: TableAbstract::EXPORT_ACTION,
+            icon: 'fa fa-file-excel-o',
+            labelKey: t('action.export_selected', [], 'emsco-core'),
+            attributes: ['data-testid' => 'form-submission-export-all']
+        );
         $table->setDefaultOrder('created', 'desc');
     }
 

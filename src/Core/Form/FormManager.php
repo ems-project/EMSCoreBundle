@@ -4,18 +4,22 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\Form;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Form;
 use EMS\CoreBundle\Exception\FormNotFoundException;
 use EMS\CoreBundle\Repository\FormRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
-use Psr\Log\LoggerInterface;
+
+use function Symfony\Component\Translation\t;
 
 class FormManager implements EntityServiceInterface
 {
-    public function __construct(private readonly FormRepository $formRepository, private readonly LoggerInterface $logger)
-    {
+    public function __construct(
+        private readonly FormRepository $formRepository,
+        private readonly LocalizedLoggerInterface $logger
+    ) {
     }
 
     #[\Override]
@@ -97,11 +101,9 @@ class FormManager implements EntityServiceInterface
 
     public function delete(Form $form): void
     {
-        $name = $form->getName();
+        $label = $form->getLabel();
         $this->formRepository->delete($form);
-        $this->logger->warning('log.service.form.delete', [
-            'name' => $name,
-        ]);
+        $this->logger->messageWarning(t('message.form_deleted', ['label' => $label], 'emsco-core'));
     }
 
     public function getByName(string $name): Form

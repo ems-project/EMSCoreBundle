@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service;
 
 use EMS\CommonBundle\Common\EMSLink;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Core\Revision\Release\ReleaseRevisionType;
@@ -12,12 +13,19 @@ use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Repository\ReleaseRepository;
-use Psr\Log\LoggerInterface;
+
+use function Symfony\Component\Translation\t;
 
 final readonly class ReleaseService implements EntityServiceInterface
 {
-    public function __construct(private ReleaseRepository $releaseRepository, private ContentTypeService $contentTypeService, private DataService $dataService, private ReleaseRevisionService $releaseRevisionService, private PublishService $publishService, private LoggerInterface $logger)
-    {
+    public function __construct(
+        private ReleaseRepository $releaseRepository,
+        private ContentTypeService $contentTypeService,
+        private DataService $dataService,
+        private ReleaseRevisionService $releaseRevisionService,
+        private PublishService $publishService,
+        private LocalizedLoggerInterface $logger
+    ) {
     }
 
     /**
@@ -43,7 +51,10 @@ final readonly class ReleaseService implements EntityServiceInterface
     public function addRevisionForPublish(Release $release, Revision $revision): void
     {
         if ($revision->getDraft()) {
-            $this->logger->error('log.data.revision.can_not_add_draft_in_release', [...['release' => $release->getName()], ...LogRevisionContext::read($revision)]);
+            $this->logger->messageError(
+                t('message.revision_draft_cannot_be_added_to_release', [], 'emsco-core'),
+                [...LogRevisionContext::read($revision), 'release' => $release->getName()]
+            );
 
             return;
         }
@@ -52,13 +63,20 @@ final readonly class ReleaseService implements EntityServiceInterface
                 continue;
             }
             if ($releaseRevision->getRevision() === $revision) {
-                $this->logger->notice('log.data.revision.already_in_release', [...['release' => $release->getName()], ...LogRevisionContext::read($revision)]);
+                $this->logger->messageNotice(t('message.revision_already_in_release', [
+                    'release' => $release->getName(),
+                    'label' => $revision->getLabel(),
+                ], 'emsco-core'));
 
                 return;
             }
             $releaseRevision->setRevision($revision);
             $this->releaseRepository->create($release);
-            $this->logger->notice('log.data.revision.document_already_in_release_but_updated', [...['release' => $release->getName()], ...LogRevisionContext::read($revision)]);
+
+            $this->logger->messageNotice(t('message.revision_updated_in_release', [
+                'release' => $release->getName(),
+                'label' => $revision->getLabel(),
+            ], 'emsco-core'));
 
             return;
         }
@@ -66,20 +84,30 @@ final readonly class ReleaseService implements EntityServiceInterface
         $release->addRevision($revision, ReleaseRevisionType::PUBLISH);
 
         $this->releaseRepository->create($release);
-        $this->logger->notice('log.data.revision.added_to_release', [...['release' => $release->getName()], ...LogRevisionContext::read($revision)]);
+
+        $this->logger->messageNotice(t('message.revision_added_to_release', [
+            'release' => $release->getName(),
+            'label' => $revision->getLabel(),
+        ], 'emsco-core'));
     }
 
     public function addRevisionForUnpublish(Release $release, Revision $revision): void
     {
         if ($revision->getDraft()) {
-            $this->logger->error('log.data.revision.can_not_add_draft_in_release', [...['release' => $release->getName()], ...LogRevisionContext::read($revision)]);
+            $this->logger->messageError(
+                t('message.revision_draft_cannot_be_added_to_release', [], 'emsco-core'),
+                [...LogRevisionContext::read($revision), 'release' => $release->getName()]
+            );
 
             return;
         }
 
         foreach ($release->getRevisions() as $releaseRevision) {
             if ($releaseRevision->getRevisionOuuid() === $revision->giveOuuid()) {
-                $this->logger->notice('log.data.revision.already_in_release', [...['release' => $release->getName()], ...LogRevisionContext::read($revision)]);
+                $this->logger->messageNotice(t('message.revision_already_in_release', [
+                    'release' => $release->getName(),
+                    'label' => $revision->getLabel(),
+                ], 'emsco-core'));
 
                 return;
             }
@@ -88,7 +116,10 @@ final readonly class ReleaseService implements EntityServiceInterface
         try {
             $this->dataService->getRevisionByEnvironment($revision->giveOuuid(), $revision->giveContentType(), $release->getEnvironmentTarget());
         } catch (\Throwable) {
-            $this->logger->notice('log.data.revision.document_not_in_target', [...['target' => $release->getEnvironmentTarget()->getName()], ...LogRevisionContext::read($revision)]);
+            $this->logger->messageNotice(t('message.revision_not_in_target_environment', [
+                'label' => $revision->getLabel(),
+                'target' => $release->getEnvironmentTarget()->getLabel(),
+            ], 'emsco-core'));
 
             return;
         }
@@ -96,7 +127,10 @@ final readonly class ReleaseService implements EntityServiceInterface
         $release->addRevision($revision, ReleaseRevisionType::UNPUBLISH);
 
         $this->releaseRepository->create($release);
-        $this->logger->notice('log.data.revision.added_to_release', [...['release' => $release->getName()], ...LogRevisionContext::read($revision)]);
+        $this->logger->messageNotice(t('message.revision_added_to_release', [
+            'label' => $revision->getLabel(),
+            'release' => $release->getName(),
+        ], 'emsco-core'), LogRevisionContext::read($revision));
     }
 
     /**
@@ -142,9 +176,7 @@ final readonly class ReleaseService implements EntityServiceInterface
     {
         $name = $release->getName();
         $this->releaseRepository->delete($release);
-        $this->logger->warning('log.service.release.delete', [
-            'name' => $name,
-        ]);
+        $this->logger->messageWarning(t('message.release_deleted', ['name' => $name], 'emsco-core'));
     }
 
     /**
@@ -218,9 +250,7 @@ final readonly class ReleaseService implements EntityServiceInterface
     public function executeRelease(Release $release, ?string $userCommand = null): void
     {
         if (Release::READY_STATUS !== $release->getStatus()) {
-            $this->logger->error('log.service.release.not.ready', [
-                'name' => $release->getName(),
-            ]);
+            $this->logger->messageError(t('message.release_not_ready', ['name' => $release->getName()], 'emsco-core'));
 
             return;
         }

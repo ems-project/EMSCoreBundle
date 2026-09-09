@@ -4,12 +4,16 @@ action:
     add_alias: 'Ajouter un alias'
     add_referenced: 'Ajouter une référence'
     add_referenced_content_type: 'Ajouter un type de contenu référencé'
+    add_release_publish: 'Ajouter à la release pour publication'
+    add_release_unpublish: 'Ajouter à la release pour dépublication'
     attach: Attacher
     cancel: Annuler
+    clear: Effacer
     close: Fermer
     collapse: Réduire
     collapse_all: 'Tout réduire'
     confirmation: 'Confirmez-vous ?'
+    copy: Copier
     create: Créer
     deactivate: Désactiver
     define: Définir
@@ -17,17 +21,24 @@ action:
     delete_all: 'Tout supprimer'
     delete_selected: 'Supprimer la sélection'
     details: Détails
+    download: Télécharger
     download_selected: 'Télécharger la sélection'
     duplicate: Dupliquer
     edit: Modifier
     export: Exporter
+    export_selected: 'Exporter la sélection'
+    extract_content: 'Extraire le contenu'
+    info: Info
+    paste: Coller
     rebuild: Reconstruire
     refresh: Actualiser
     relaunch: Relancer
     remove: Supprimer
     reorder: Réordonner
     save: Enregistrer
+    save_as_draft: 'Enregistrer comme brouillon'
     save_close: 'Enregistrer et fermer'
+    save_publish_in: 'Enregistrer et publier dans {environments}'
     select_all: 'Tout sélectionner'
     status: Statut
     toggle_sidebar: 'Basculer la barre latérale'
@@ -193,6 +204,11 @@ data:
 documentation:
     api:
         title: Documentation
+email:
+    crm_export:
+        body_greeting: Cordialement.
+        body_hello: 'Bonjour,'
+        body_text: "Vous trouverez ci-joint l'export des soumissions CRM demandées."
 ems_core:
     dashboard:
         export:
@@ -288,6 +304,7 @@ field:
     attributes: 'Attributs supplémentaires de la requête'
     available: Disponible
     channel: Canal
+    char_filter: 'Filtre de caractères'
     circles: Cercles
     circles_to: 'Cercles destinataires'
     color: Couleur
@@ -296,6 +313,7 @@ field:
     content_css: 'CSS du contenu'
     content_js: 'JS du contenu'
     context: Contexte
+    copy_to: 'Copier vers'
     count: Nombre
     cron: Cron
     date_build: 'Date de build'
@@ -336,15 +354,21 @@ field:
         paper_size: 'Format du papier'
         size: Taille
         type: Type
+    filter: Filtre
+    flags: Indicateurs
+    form: Formulaire
     format_tags: 'Tags de format'
     group: Groupe
     hash: 'Signature du hash'
     header: En-tête
     header_allow_origin: 'L’en-tête Access-Control-Allow-Origin'
+    height: Hauteur
     hidden: Masqué
     icon: Icône
+    id: ID
     index: Index
     indexes: Indexes
+    instance: Instance
     is_active: Actif
     is_dirty: Modifié
     is_edit_wysiwyg: 'Modifier avec WYSIWYG'
@@ -352,12 +376,18 @@ field:
     is_menu_sidebar: 'Visible dans le menu latéral'
     is_preview: Prévisualisation
     is_public: Public
+    is_styles_set_preview: 'Aperçu du jeu de styles'
+    json_file: 'Fichier JSON'
     key: Clé
     label: Libellé
+    language: Langue
     language_preferred: 'Langue préférée'
     language_ui: "Langue de l'interface"
     last_seen: 'Vu pour la dernière fois'
     locale: Locale
+    lowercase: Minuscules
+    max_output_size: 'Taille de sortie max.'
+    max_token_length: 'Longueur max. du token'
     mcp_arguments: 'Template des arguments MCP (JSON)'
     mcp_input_schema: "Template du schéma d'entrée MCP (JSON)"
     mcp_output_schema: 'Modèle du schéma de sortie MCP (JSON)'
@@ -370,8 +400,10 @@ field:
     orientation: Orientation
     password: 'Mot de passe'
     password_repeat: 'Répéter le mot de passe'
+    pattern: Motif
     pdf_size: 'Format PDF'
     plural: Pluriel
+    postition_increment_gap: "Écart d'incrément de position"
     public_access: 'Accès public'
     query: Requête
     release_environment_source: 'Environnement source pour la publication'
@@ -384,10 +416,13 @@ field:
     role_to: 'Rôle destinataire'
     roles: Rôles
     search_config: 'Configuration de recherche'
+    separator: Séparateur
     severity: Sévérité
     singular: Singulier
     spreadsheet: 'Feuille de calcul'
     status: Statut
+    stopwords: 'Mots vides'
+    styles_set: 'Jeu de styles'
     table_default_css: 'Attribut class par défaut du tableau'
     tag: Tag
     template_body: 'Corps du template'
@@ -395,6 +430,7 @@ field:
     template_header: 'En-tête du template'
     template_response: 'Réponse du template'
     text: Texte
+    tokenizer: Tokenizer
     total: Total
     total_deleted: 'Total supprimé'
     total_elastic: 'Total dans ES'
@@ -478,13 +514,8 @@ form:
                 label: OUUID
                 placeholder: 'Généré automatiquement si laissé vide'
             save: 'Créer un brouillon {content_type}'
-        bool_table_column:
-            false_value: Décocher
-            true_value: Cocher
     edit:
         title: 'Modifier un formulaire'
-    field-type-type:
-        root: Structure
     menu: Formulaires
     reorder:
         title: 'Réordonner les champs du formulaire : {label}'
@@ -492,6 +523,8 @@ form:
 form_submissions:
     overview: Aperçu
     title: 'Soumissions de formulaires'
+help:
+    override_styles_set_config: 'remplacer la configuration des jeux de styles'
 inline_editor:
     action:
         discard: Abandonner
@@ -543,6 +576,7 @@ key:
     attachment: 'Pièce jointe'
     bits: Bits
     build_date: 'Date de build'
+    build_in: Intégré
     channel: Canal
     channels: Canaux
     ckeditor4: 'CK Editor 4'
@@ -555,6 +589,7 @@ key:
     control_sidebar: 'Barre latérale de contrôle'
     created: Créé
     current_password: 'Mot de passe actuel'
+    customized: Personnalisé
     dashboards: Dashboards
     delayed_unassigned_shards: 'Shards non assignés retardés'
     details: Détails
@@ -566,6 +601,7 @@ key:
     export_documents: 'Exporter les documents'
     extra: Extra
     filters: Filtres
+    form_root: 'Racine du formulaire'
     form_submissions: 'Soumissions de formulaire'
     forms: Formulaires
     groups: Groupes
@@ -648,7 +684,6 @@ log:
     menu: Logs
     notice:
         alias_attached: 'L’alias « {alias} » a été attaché'
-        content_type_deleted: 'Le type de contenu « {contentType} » a été supprimé'
         content_type_referenced: 'Type de contenu référencé « {contentType} » depuis l’environnement « {environment} »'
         content_type_view_deleted: 'La vue « {view} » a été supprimée'
         deleted_orphan_index: 'L’index « {index} » a été supprimé'
@@ -731,11 +766,28 @@ media_library:
     home: Accueil
     submit: Enregistrer
 message:
+    action_created: 'Une nouvelle action "{label}" a été créée'
+    action_deleted: 'L''action "{label}" a été supprimée'
+    action_error: 'Cette page/action a rencontré une erreur : {error_message}'
+    action_updated: 'L''action "{label}" a été mise à jour'
+    alias_added: 'Un nouvel alias "{alias_name}" a été ajouté à l''index "{index_name}"'
+    analyzer_created: 'L''analyseur "{label}" a été créé'
+    analyzer_deleted: 'L''analyseur "{label}" a été supprimé'
+    analyzer_updated: 'L''analyseur "{label}" a été mis à jour'
     api_entity_created: "L'entité {entity} a été créée avec l'id {id}"
     api_entity_deleted: 'L''entité {entity} "{name}" a été supprimée avec l''id {id}'
     api_entity_updated: 'L''entité {entity} "{name}" a été mise à jour avec l''id {id}'
+    asset_extract_file_too_large: 'Ce fichier étant plus volumineux ({filesize}) que {max_size}, son contenu n''a pas été extrait automatiquement. Vous pouvez forcer l''extraction ou le spécifier manuellement dans le menu "Info".'
+    channel_alias_not_found: 'Le canal "{label}" ne peut pas être enregistré car son alias "{alias}" est manquant'
+    channel_deleted: 'Le canal "{name}" a été supprimé'
+    content_type_action_not_found: 'Action introuvable sur le type de contenu "{label}"'
+    content_type_created: 'Le type de contenu "{label}" a été créé'
+    content_type_deleted: 'Le type de contenu "{label}" a été supprimé'
+    content_type_dirty: 'Le type de contenu "{label}" est "dirty" (son mapping est peut-être obsolète), essayez de mettre à jour son mapping'
+    content_type_mapping_not_found: 'Mapping introuvable pour le type de contenu "{label}"'
     contenttype_mappings_error: 'La mise à jour des mappings pour {content_type} dans {environments} a échoué : {elasticsearch_dump}'
     contenttype_mappings_updated: 'Mappings mis à jour avec succès pour le type de contenu {content_type} dans {environments}'
+    dashboard_deleted: 'Le tableau de bord "{label}" a été supprimé'
     data_already_unpublished: 'Le document "{label}" était déjà dépublié de {environment}'
     data_cant_finalize_field: '{error_message}'
     data_check_signature_failed: 'Signature non concordante dans {environment} pour le document "{label}"'
@@ -755,26 +807,143 @@ message:
     data_unknown_update_type: 'Le document "{label}" n''a pas été remplacé car le type de mise à jour "{update_type}" est inconnu'
     data_unlock_revisions_error: 'Exception inattendue lors du déverrouillage'
     data_update_referrers_error: 'Impossible de mettre à jour les référents du document'
+    document_cant_duplicate_ouuid_required: 'Il est impossible de dupliquer le document "{label}" car le type de contenu "{content_type}" nécessite d''abord un OUUID'
+    document_compared: 'Comparaison de la révision {revision_id} du document {content_type}:{ouuid} avec la révision {compare_revision_id} du document {compare_content_type}:{compare_ouuid}'
+    document_copied: 'Le contenu du document "{label}" a été copié dans le presse-papiers'
+    document_duplicated: 'Le document "{label}" a été utilisé pour créer un nouveau document'
+    environment_alias_missing: "L'alias pour l'environnement {environment} est manquant, envisagez de reconstruire un tout nouvel alias"
+    environment_alias_removed: "L'alias {alias} a été supprimé"
+    environment_aligned: 'Les environnements {environment} et {with_environment} sont alignés pour ces types de contenu'
+    environment_cannot_align_default: 'Le document "{label}" ne peut pas être publié dans {environment} car il s''agit de l''environnement par défaut de {content_type}'
+    environment_created: "L'environnement {environment} a été créé"
+    environment_deleted: 'L''environnement "{label}" a été supprimé'
+    environment_is_default: "L'environnement {environment} est utilisé comme environnement par défaut pour au moins un type de contenu"
+    environment_not_empty: "L'environnement {environment} n'est pas vide"
+    environment_publish_permission_denied: 'Vous n''avez pas suffisamment de droits pour publier des documents "{content_type}"'
+    environment_rebuild_unknown_option: 'Impossible de reconstruire l''environnement {environment} en raison de l''option inconnue "{option}"'
+    environment_updated: "L'environnement {environment} a été mis à jour"
+    environment_wrong_ouuid: 'OUUID mal formé {ouuid}'
+    field_added: 'Le champ "{name}" a été ajouté'
+    field_collection_import_array: "Certaines données n'ont pas été importées pour le champ de collection {field_name} car il ne s'agissait pas d'un tableau"
+    field_deleted: 'Le champ "{name}" a été supprimé'
     field_json_parse_post_processing_error: "Erreur lors de l'analyse JSON du résultat du script de post-traitement du champ {field_name} (|json_encode|raw) : {error_message}"
+    field_name_mandatory: 'Le nom du champ est obligatoire'
+    field_name_not_valid: "Le nom du champ n'est pas valide (format : {field_format})"
     field_not_a_data_field: 'Champ {field_name} inattendu dans le formulaire de révision'
     field_other_post_processing_error: 'Le post-traitement du champ {field_name} a rencontré un problème : {error_message}'
+    field_reordered: 'Les sous-champs du champ "{name}" ont été réorganisés'
     field_syntax_error: 'Erreur de syntaxe dans le champ {field_name} : {error_message}'
     field_template_parse_error: "Erreur lors de l'analyse du champ calculé {computed_field_name} : {error_message}"
     field_with_errors: 'Le champ {path} est en erreur avec le message {error_message}'
+    file_upload_error: 'Erreur lors du téléchargement du fichier : {error_message}'
+    filter_deleted: 'Le filtre {filter_name} a été supprimé'
+    form_deleted: 'Le formulaire "{label}" a été supprimé'
+    form_submission_deleted: 'La soumission de formulaire avec l''id "{id}" a été supprimée !'
     import_failed: "Échec de l'import"
     import_file_missing_columns: 'Colonnes manquantes dans le fichier d''import, colonnes requises "{columns}"'
     import_file_missing_data: "Données manquantes dans le fichier d'import"
+    job_done: 'La tâche "{job_id}" est terminée'
+    job_failed: 'La tâche "{label}" a échoué dans l''environnement {environment}'
+    job_initialized: 'La tâche "{label}" a été initialisée dans l''environnement {environment}'
+    managed_alias_created: 'L''alias géré "{managed_alias_label}" a été créé'
+    managed_alias_deleted: 'L''alias géré "{managed_alias_label}" a été supprimé'
+    managed_alias_updated: 'L''alias géré "{managed_alias_label}" a été mis à jour'
+    notification_not_found: 'Notification #{notification_id} introuvable'
+    privilege_exception: "Vous n'avez pas suffisamment de droits pour modifier ce document"
+    query_search_deleted: 'La recherche par requête "{label}" a été supprimée'
+    reindex_command_end: 'Les documents du content type {content_type} ont été réindexés dans {environment} (index : {index})'
+    reindex_command_environment_not_found: 'Environnement nommé {environment} introuvable'
+    reindex_command_start: 'Démarrage de la réindexation de {content_type} dans {environment}'
+    release_deleted: 'La release "{name}" a été supprimée'
+    release_not_ready: 'Le statut de la release "{name}" n''est pas "ready"'
+    release_revision_preceding: 'Une révision précédente est déjà liée à la release "{name}"'
+    release_unknown_action: 'Action inconnue'
+    revision_add_from_json_error: "Il a été impossible de créer un nouveau document {content_type} en raison d'une erreur interne"
+    revision_added_to_release: 'Le document "{label}" a été ajouté à la release "{release}"'
+    revision_ajax_update_on_finalized: 'Il est impossible d''enregistrer le document "{label}" car cette révision est déjà finalisée'
+    revision_already_in_release: 'Cette révision du document "{label}" était déjà présente dans la release "{release}"'
+    revision_auto_publish_rollback: 'Le document "{label}" a été republié silencieusement dans {environment}'
+    revision_auto_save_off_with_auto_publish: "L'enregistrement automatique a été désactivé car la publication automatique est activée pour le type de contenu {content_type}. Appuyez sur Ctrl+S (Cmd+S) pour enregistrer et publier dans {environment}"
+    revision_cannot_delete_published: 'Le document "{label}" ne peut pas être supprimé car il est publié dans {environment}'
+    revision_cannot_finalize: 'Le document "{label}" ne peut pas être finalisé tel quel'
+    revision_cannot_finalize_invalid: '{count, plural, one {Le document "{label}" ne peut pas être finalisé, il comporte une erreur} other {Le document "{label}" ne peut pas être finalisé, il comporte # erreurs}}'
+    revision_cannot_finalize_pending_auto_save: 'Le document "{label}" ne peut pas être finalisé car un enregistrement automatique est en attente'
+    revision_compare: 'Comparer la révision {revision_id} du document {content_type}:{ouuid} avec la révision {compare_revision_id}'
+    revision_compare_more_recent: 'Comparer la révision {revision_id} du document {content_type}:{ouuid} avec la révision {compare_revision_id}, laquelle est la plus récente'
+    revision_compare_not_found: "Impossible de comparer la révision {revision_id} du document {content_type}:{ouuid} avec la révision {compare_revision_id} car cette révision n'existe pas"
+    revision_create_error: 'La révision pour le type de contenu "{content_type}" ne peut pas être créée, raison : {error_message}'
+    revision_create_from_array_error: "Il a été impossible de créer un nouveau document {content_type} en raison d'une erreur interne"
+    revision_delete_error: 'La révision {ouuid} pour le type de contenu "{content_type}" ne peut pas être supprimée, raison : {error_message}'
     revision_deleted: 'Le document "{label}" a été supprimé'
+    revision_deleted_but_referenced: 'Le document "{label}" est marqué comme supprimé mais est encore référencé dans {environment}'
+    revision_discard_error: 'La révision {revision_id} pour le type de contenu "{content_type}" ne peut pas être annulée, raison : {error_message}'
+    revision_draft_cannot_be_added_to_release: 'Une révision en mode brouillon ne peut pas être ajoutée à une release'
     revision_draft_created: 'Un nouveau brouillon a été initié pour le document "{label}"'
     revision_draft_deleted: 'Brouillon abandonné pour le document "{label}"'
     revision_draft_updated: 'Brouillon mis à jour pour le document "{label}"'
+    revision_edit_draft_warning: 'Vous modifiez une révision déjà publiée, il est plus sûr de <a href="{path}" class="btn btn-primary"><span class="fa fa-pencil"></span> modifier un brouillon</a>'
+    revision_finalize_error: 'La révision {revision_id} pour le type de contenu "{content_type}" ne peut pas être finalisée, raison : {error_message}'
     revision_finalized: 'Le document "{label}" a été publié dans {environment}'
+    revision_incomplete_request: 'Il est impossible d''enregistrer le document "{label}". Veuillez vérifier votre configuration PHP/Web (par ex. max_input_vars dans php.ini)'
+    revision_loaded_from_auto_save: "Les données ont été chargées à partir d'une version enregistrée automatiquement"
+    revision_locked: 'Le document "{label}" est actuellement verrouillé par {username}'
+    revision_merge_error: 'La révision {ouuid} pour le type de contenu "{content_type}" ne peut pas être fusionnée/mise à jour, raison : {error_message}'
+    revision_not_found_in_environment: 'Il est impossible d''identifier une révision pour le document "{ouuid}" dans l''environnement {environment}'
+    revision_not_in_target_environment: 'Le document "{label}" n''est pas publié dans l''environnement cible "{target}"'
+    revision_only_super_can_finalize_archive: 'Seul un super utilisateur peut finaliser une révision archivée'
     revision_published: 'Le document "{label}" a été publié dans {environment}'
+    revision_read_error: 'La révision pour le type de contenu "{content_type}" est introuvable, raison : {error_message}'
+    revision_reindexed: 'Le document "{label}" a été réindexé dans {environment}'
+    revision_reindexed_failed: 'Le document "{label}" a rencontré une exception lors de sa réindexation "{error_message}"'
+    revision_reindexed_failed_in: 'Le document "{label}" a rencontré une exception lors de sa réindexation dans {environment}'
+    revision_replace_error: 'La révision {ouuid} pour le type de contenu "{content_type}" ne peut pas être remplacée/mise à jour, raison : {error_message}'
     revision_restored: 'Le document "{label}" a été restauré'
     revision_unpublished: 'Le document "{label}" a été dépublié de {environment}'
+    revision_updated_in_release: 'Le document "{label}" a été mis à jour avec une nouvelle révision dans la release "{release}"'
+    schedule_created: 'La planification "{name}" a été créée'
+    schedule_deleted: 'La planification "{name}" a été supprimée'
+    schedule_updated: 'La planification "{name}" a été mise à jour'
+    search_deleted: 'Une recherche a été supprimée'
+    search_paging_limit_exceeded: 'La pagination est limitée aux {paging} premiers éléments, {total} documents trouvés'
+    search_result_limited: 'Le résultat de recherche est limité aux {total} premiers documents'
+    search_set_as_default: 'Cette recherche a été définie comme recherche par défaut'
+    search_set_as_default_for_content_type: 'Cette recherche a été définie comme formulaire de recherche par défaut pour le type de contenu {content_type}'
+    subfield_added: 'Le sous-champ "{name}" a été ajouté'
+    subfield_name_mandatory: 'Le nom du sous-champ est obligatoire'
+    subfield_name_not_valid: "Le nom du sous-champ n'est pas valide (format : {field_format})"
+    user_api_key_generated: "Nouvelle clé API pour l'utilisateur {user_display_name} : {api_key}"
+    user_custom_form_not_found: 'Formulaire utilisateur personnalisé "{name}" introuvable'
+    user_deleted: "L'utilisateur {user_display_name} a été supprimé"
+    user_disabled: "L'utilisateur {user_display_name} a été désactivé"
+    user_enabled: "L'utilisateur {user_display_name} a été activé"
     user_profile_changed_password: 'Le mot de passe a été modifié.'
     user_profile_updated: 'Le profil a été mis à jour.'
     user_resetting_success: 'Le mot de passe a été réinitialisé avec succès.'
+    user_updated: "L'utilisateur {user_display_name} a été mis à jour"
+    view_bucket_not_found: 'Bucket {bucket_path} introuvable'
+    view_created: 'Une nouvelle vue {view_label} a été créée'
+    view_criteria_added: 'Un critère a été ajouté pour le champ {field_name} avec la valeur {field_data}'
+    view_criteria_already_exists: 'Un critère existe déjà pour le champ {field_name} avec la valeur {field_data}'
+    view_criteria_already_missing: 'Un critère est déjà absent pour le champ {field_name} avec la valeur {field_data}'
+    view_criteria_created: 'Un nouveau critère a été créé pour {target_field_name}:{target_field_data}'
+    view_criteria_document_key_not_found: 'Référence de document "{document_reference}" introuvable pour le document "{ems_id}"'
+    view_criteria_draft_in_progress: '{count, plural, one {Un brouillon en cours. Vous ne pourrez pas le mettre à jour depuis ici.} other {# brouillons en cours. Vous ne pourrez pas les mettre à jour depuis ici.}}'
+    view_criteria_field_not_found: 'Chemin de champ {field_path} introuvable'
+    view_criteria_locked_revision: 'Impossible de mettre à jour le document "{label}" car la révision est verrouillée par {locked_by}'
+    view_criteria_not_found: 'Critère introuvable pour le champ {field_name}'
+    view_criteria_removed: 'Un critère a été supprimé pour le champ {field_name} avec la valeur {field_data}'
+    view_criteria_too_many: 'Trop de critères trouvés ({total}). Il y a un problème avec cette combinaison de critères !'
+    view_criteria_update_not_authorized: "Vous n'avez pas suffisamment de droits pour utiliser cette vue afin de mettre à jour les critères"
+    view_criteria_update_privilege_issue: 'Vous n''êtes pas autorisé à mettre à jour le document "{label}"'
+    view_deleted: 'La vue "{label}" a été supprimée'
+    view_document_update_error: 'Il était impossible de mettre à jour le document "{label}" : {error_message}'
+    view_hierarchical_reorganized: 'Les documents de {content_type} ont été réorganisés avec la vue "{view_label}"'
+    view_not_found: 'Vue {id} introuvable'
+    view_sorter_ordered: 'Les documents de {content_type} ont été triés avec la vue "{view_label}"'
+    view_sorter_too_many_documents: 'Ce content type contient trop de documents ({total}) pour être réordonné en une seule fois'
+    view_updated: 'La vue "{label}" a été mise à jour'
+    xliff_not_current_revision: "La révision {revision_id} de {ouuid} n'est plus la dernière révision. Les traductions n'ont pas été importées."
+    xliff_too_many_translations: "{counter} documents de traduction alors qu'un seul est attendu pour l'identifiant de traduction {translation_id} et la locale cible {target_locale} dans l'environnement {environment}"
 modal:
     loading_information: 'Chargement des informations...'
 navigation:
@@ -830,7 +999,11 @@ notification:
     warnings: Avertissements
 option:
     allow_add: 'Autoriser l’ajout'
+    delete_existing_templates: 'Supprimer les templates existants'
+    delete_existing_views: 'Supprimer les vues existantes'
+    disabled: Désactivé
     email_notification: 'Notifications par email'
+    enabled: Activé
     layout_boxed: 'Mise en page en boîte'
     layout_sidebar_collapse: 'Réduction de la barre latérale'
     layout_sidebar_mini: 'Barre latérale mini'
@@ -1071,6 +1244,10 @@ task:
             history: Historique
             info: Information
         title: 'Modifier la tâche : {title}'
+title:
+    asset_options: 'Options du fichier'
+    content_type_from_json_file: "à partir d'un fichier JSON d'un content type"
+    content_type_json_update: 'Mettre à jour le content type "{content_type}"'
 type:
     confirm: |-
         {type, select,
@@ -1357,7 +1534,21 @@ view:
     form:
         fields:
             asset:
+                browse-server: 'Choisir un fichier sur le serveur'
+                clear-button: Effacer
+                close-modal: Fermer
+                drag-n-drop-file: 'Glissez-déposez votre fichier ici'
+                drag-n-drop-files: 'Glissez-déposez vos fichiers ici'
+                file-hash: 'Hash du fichier'
+                file-info: 'Informations du fichier'
+                info-modal-button: Info
+                init-upload: 'Le téléversement démarre'
+                move-button: Déplacer
                 preview: Aperçu
+                remove-button: Supprimer
+                upload-file: 'Téléverser un fichier'
+                upload-files: 'Téléverser des fichiers'
+                view-button: Voir
     icon:
         class:
             form: 'fa fa-keyboard-o'

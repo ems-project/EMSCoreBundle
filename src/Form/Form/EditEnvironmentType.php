@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ColorPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
@@ -70,7 +69,7 @@ class EditEnvironmentType extends AbstractType
             ])
             ->add('rolePublish', RolePickerType::class, [
                 'label' => t('environment.property.rolePublish', [], 'emsco-core'),
-                'translation_domain' => EMSCoreBundle::TRANS_CORE,
+                'translation_domain' => 'emsco-core',
                 'required' => false,
             ])
             ->add('save', SubmitEmsType::class, [

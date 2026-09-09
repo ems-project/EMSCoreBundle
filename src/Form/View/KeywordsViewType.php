@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\View;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Entity\View;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,10 +15,17 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
 
+use function Symfony\Component\Translation\t;
+
 class KeywordsViewType extends ViewType
 {
-    public function __construct(FormFactory $formFactory, Environment $twig, private readonly ElasticaService $elasticaService, LoggerInterface $logger, string $templateNamespace)
-    {
+    public function __construct(
+        FormFactory $formFactory,
+        Environment $twig,
+        private readonly ElasticaService $elasticaService,
+        LocalizedLoggerInterface $logger,
+        string $templateNamespace
+    ) {
         parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 
@@ -81,7 +88,9 @@ class KeywordsViewType extends ViewType
             foreach (\explode('.', $bucketPath) as $attribute) {
                 if (!isset($keywords[$attribute])) {
                     $keywords = [];
-                    $this->logger->warning('log.view.keywords.warning.bucket_not_found', ['bucketPath' => $bucketPath]);
+                    $this->logger->messageWarning(t('message.view_bucket_not_found', [
+                        'bucket_path' => $bucketPath,
+                    ], 'emsco-core'));
                     break;
                 }
                 $keywords = $keywords[$attribute];

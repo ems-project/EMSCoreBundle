@@ -1,8 +1,8 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-core' %}
 
-{% block title %}{{ 'form.contenttype.json_update.title'|trans({'%content_type%': contentType.singularName }) }}{% endblock %}
+{% block title %}{{ 'title.content_type_json_update'|trans({'content_type': contentType.singularName }) }}{% endblock %}
 {% block pagetitle %}{{ block('title') }}{% endblock %}
-{% block subtitle %}<small>{{ 'form.contenttype.json_update.subtitle'|trans({'%content_type%': contentType.singularName }) }}</small>{% endblock %}
+{% block subtitle %}<small>{{ 'title.content_type_from_json_file'|trans({'content_type': contentType.singularName }) }}</small>{% endblock %}
 
 
 {% block body %}

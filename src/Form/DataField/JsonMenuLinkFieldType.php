@@ -24,6 +24,8 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
+use function Symfony\Component\Translation\t;
+
 class JsonMenuLinkFieldType extends DataFieldType
 {
     public function __construct(AuthorizationCheckerInterface $authorizationChecker, FormRegistryInterface $formRegistry, ElasticsearchService $elasticsearchService, private readonly ContentTypeService $contentTypeService, private readonly ElasticaService $elasticaService, private readonly Decoder $decoder)
@@ -157,6 +159,7 @@ class JsonMenuLinkFieldType extends DataFieldType
         ])->add('json_menu_field', TextType::class, [
             'required' => false,
         ])->add('query', CodeEditorType::class, [
+            'label' => t('field.query', [], 'emsco-core'),
             'required' => false,
             'language' => 'ace/mode/json',
         ]);

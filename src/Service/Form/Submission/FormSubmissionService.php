@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Form\Submission;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Repository\FormSubmissionFileRepository;
@@ -13,14 +14,13 @@ use EMS\Helpers\Standard\Json;
 use EMS\SubmissionBundle\Entity\FormSubmission;
 use EMS\SubmissionBundle\Entity\FormSubmissionFile;
 use EMS\SubmissionBundle\Request\DatabaseRequest;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use ZipStream\ZipStream;
+
+use function Symfony\Component\Translation\t;
 
 final readonly class FormSubmissionService implements EntityServiceInterface
 {
@@ -28,8 +28,7 @@ final readonly class FormSubmissionService implements EntityServiceInterface
         private FormSubmissionRepository $formSubmissionRepository,
         private FormSubmissionFileRepository $formSubmissionFileRepository,
         private Environment $twig,
-        private RequestStack $requestStack,
-        private TranslatorInterface $translator,
+        private LocalizedLoggerInterface $logger,
         private string $templateNamespace,
     ) {
     }
@@ -187,14 +186,10 @@ final readonly class FormSubmissionService implements EntityServiceInterface
         }
 
         $formSubmission = $this->getById($id);
-        $session = $this->requestStack->getSession();
-        if (!$session instanceof FlashBagAwareSessionInterface) {
-            throw new \RuntimeException('Unexpected non FlashBag aware session');
-        }
-        $session->getFlashBag()->add('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $formSubmission->getId()], 'EMSCoreBundle'));
-
         $formSubmission->process($user->getUsername());
         $this->formSubmissionRepository->save($formSubmission);
+
+        $this->logger->messageNotice(t('message.form_submission_deleted', ['id' => $formSubmission->getId()], 'emsco-core'));
     }
 
     /**
@@ -212,11 +207,7 @@ final readonly class FormSubmissionService implements EntityServiceInterface
             $formSubmission = $this->getById($id);
             $formSubmission->process($user->getUsername());
             $this->formSubmissionRepository->persist($formSubmission);
-            $session = $this->requestStack->getSession();
-            if (!$session instanceof FlashBagAwareSessionInterface) {
-                throw new \RuntimeException('Unexpected non FlashBag aware session');
-            }
-            $session->getFlashBag()->add('notice', $this->translator->trans('form_submissions.process.success', ['%id%' => $id], 'EMSCoreBundle'));
+            $this->logger->messageNotice(t('message.form_submission_deleted', ['id' => $formSubmission->getId()], 'emsco-core'));
         }
 
         $this->formSubmissionRepository->flush();

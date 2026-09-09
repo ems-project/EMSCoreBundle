@@ -868,7 +868,9 @@ class ContentTypeService implements EntityServiceInterface
         $contentType->setActive(false)->setDeleted(true);
         $this->contentTypeRepository->save($contentType);
 
-        $this->logger->messageNotice(t('log.notice.content_type_deleted', ['contentType' => $contentType->getName()], 'emsco-core'));
+        $this->logger->messageNotice(t('message.content_type_deleted', [
+            'label' => $contentType->getSingularName(),
+        ], 'emsco-core'));
     }
 
     public function softDeleteById(string ...$ids): void

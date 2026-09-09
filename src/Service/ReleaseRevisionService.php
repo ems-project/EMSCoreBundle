@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Release;
@@ -12,14 +13,15 @@ use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Event\RevisionFinalizeDraftEvent;
 use EMS\CoreBundle\Repository\ReleaseRevisionRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use Psr\Log\LoggerInterface;
+
+use function Symfony\Component\Translation\t;
 
 final readonly class ReleaseRevisionService implements QueryServiceInterface, EntityServiceInterface
 {
     public function __construct(
         private ReleaseRevisionRepository $releaseRevisionRepository,
         private RevisionRepository $revisionRepository,
-        private LoggerInterface $logger,
+        private LocalizedLoggerInterface $logger,
         private ContentTypeService $contentTypeService,
     ) {
     }
@@ -97,9 +99,9 @@ final readonly class ReleaseRevisionService implements QueryServiceInterface, En
 
         $releaseRevisions = $this->releaseRevisionRepository->getRevisionsLinkedToReleasesByOuuid($revision->giveOuuid(), $revision->giveContentType());
         foreach ($releaseRevisions as $releaseRevision) {
-            $this->logger->warning('log.service.release_revision.preceding.revision.in.release', [
+            $this->logger->messageWarning(t('message.release_revision_preceding', [
                 'name' => $releaseRevision->getRelease()->getName(),
-            ]);
+            ], 'emsco-core'));
         }
     }
 

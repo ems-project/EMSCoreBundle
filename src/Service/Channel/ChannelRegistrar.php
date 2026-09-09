@@ -7,12 +7,14 @@ namespace EMS\CoreBundle\Service\Channel;
 use EMS\ClientHelperBundle\Contracts\Environment\EnvironmentHelperInterface;
 use EMS\ClientHelperBundle\Helper\Environment\Environment;
 use EMS\ClientHelperBundle\Twig\InlineEditExtension;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Repository\ChannelRepository;
 use EMS\CoreBundle\Service\IndexService;
 use EMS\Helpers\Standard\Json;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
+use function Symfony\Component\Translation\t;
 
 final readonly class ChannelRegistrar
 {
@@ -22,7 +24,7 @@ final readonly class ChannelRegistrar
     public function __construct(
         private ChannelRepository $channelRepository,
         private EnvironmentHelperInterface $environmentHelper,
-        private LoggerInterface $logger,
+        private LocalizedLoggerInterface $logger,
         private IndexService $indexService,
         private string $firewallName,
         private string $instanceId
@@ -68,10 +70,10 @@ final readonly class ChannelRegistrar
         }
 
         if (!$this->indexService->hasIndex($alias)) {
-            $this->logger->warning('log.channel.alias_not_found', [
+            $this->logger->messageWarning(t('message.channel_alias_not_found', [
                 'alias' => $alias,
                 'channel' => $channel->getName(),
-            ]);
+            ], 'emsco-core'));
 
             return;
         }

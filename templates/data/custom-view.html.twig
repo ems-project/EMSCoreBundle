@@ -2,7 +2,7 @@
 
 {% set label = object|emsco_display %}
 
-{% block title %}{{ 'data.custom-view.pagetitle'|trans({ '%name%':template.label, '%contentType%': contentType.singularName, '%label%': label, '%environment%': environment.label  }) }}{% endblock %}
+{% block title %}{{ 'data.custom-view.pagetitle'|trans({ 'name':template.label, 'contentType': contentType.singularName, 'label': label, 'environment': environment.label }, 'emsco-core') }}{% endblock %}
 {% block pagetitle %}
 	<i class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
 	{{ block('title') }}

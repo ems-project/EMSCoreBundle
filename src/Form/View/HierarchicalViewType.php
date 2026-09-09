@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\View;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
@@ -16,7 +17,6 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Mapping;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\Helpers\Standard\Json;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,6 +30,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
 
+use function Symfony\Component\Translation\t;
+
 class HierarchicalViewType extends ViewType
 {
     public function __construct(
@@ -37,7 +39,7 @@ class HierarchicalViewType extends ViewType
         Environment $twig,
         private readonly SearchService $searchService,
         private readonly Mapping $mapping,
-        LoggerInterface $logger,
+        LocalizedLoggerInterface $logger,
         protected DataService $dataService,
         protected RouterInterface $router,
         protected ContentTypeService $contentTypeService,
@@ -177,11 +179,11 @@ $dataField->getRawData()
 
             $this->reorder($view->getOptions()['parent'], $view, $structure);
 
-            $this->logger->notice('form.view.hierarchical.reorganized', [
+            $this->logger->messageNotice(t('message.view_hierarchical_reorganized', [
                 EmsFields::LOG_CONTENTTYPE_FIELD => $view->getContentType()->getName(),
                 'view_name' => $view->getName(),
                 'view_label' => $view->getLabel(),
-            ]);
+            ], 'emsco-core'));
 
             return new RedirectResponse($this->router->generate('emsco_draft_in_progress', [
                 'contentTypeId' => $view->getContentType()->getId(),
@@ -221,10 +223,10 @@ $dataField->getRawData()
             $revision->setRawData($data);
             $this->dataService->finalizeDraft($revision);
         } catch (\Exception $exception) {
-            $this->logger->warning('form.view.hierarchical.error_with_document', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $type,
-                EmsFields::LOG_OUUID_FIELD => $ouuid,
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+            $this->logger->messageWarning(t('message.view_document_update_error', [
+                'label' => $itemKey,
+                'error_message' => $exception->getMessage(),
+            ], 'emsco-core'), [
                 EmsFields::LOG_EXCEPTION_FIELD => $exception,
             ]);
         }

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Core\Form\FormManager;
 use EMS\CoreBundle\Core\User\UserOptions;
 use EMS\CoreBundle\Exception\FormNotFoundException;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use EMS\CoreBundle\Form\DataTransformer\FormModelTransformer;
 use EMS\CoreBundle\Service\DataService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -34,7 +34,7 @@ class UserOptionsType extends AbstractType
         private readonly FormManager $formManager,
         protected FormRegistryInterface $formRegistry,
         protected DataService $dataService,
-        protected LoggerInterface $logger,
+        protected LocalizedLoggerInterface $logger,
         private readonly ?string $customUserOptionsForm
     ) {
     }
@@ -75,9 +75,9 @@ class UserOptionsType extends AbstractType
                     ->addViewTransformer(new DataFieldViewTransformer($form->getFieldType(), $this->formRegistry))
                     ->addModelTransformer(new FormModelTransformer($form->getFieldType(), $this->formRegistry));
             } catch (FormNotFoundException) {
-                $this->logger->warning('log.user.custom_form_not_found', [
+                $this->logger->messageWarning(t('message.user_custom_form_not_found', [
                     'name' => $this->customUserOptionsForm,
-                ]);
+                ], 'emsco-core'));
             }
         }
     }

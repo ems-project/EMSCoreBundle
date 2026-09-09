@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\View;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CommonBundle\Service\Pdf\DomPdfPrinter;
 use EMS\CommonBundle\Service\Pdf\Pdf;
@@ -13,7 +14,6 @@ use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\FileDispositionType;
 use EMS\CoreBundle\Form\Field\OrientationType;
 use EMS\CoreBundle\Form\Field\PdfSizeType;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -27,8 +27,14 @@ use Twig\Environment;
 
 class ExportViewType extends ViewType
 {
-    public function __construct(FormFactory $formFactory, Environment $twig, private readonly ElasticaService $elasticaService, LoggerInterface $logger, private readonly DomPdfPrinter $pdfPrinter, string $templateNamespace)
-    {
+    public function __construct(
+        FormFactory $formFactory,
+        Environment $twig,
+        private readonly ElasticaService $elasticaService,
+        LocalizedLoggerInterface $logger,
+        private readonly DomPdfPrinter $pdfPrinter,
+        string $templateNamespace
+    ) {
         parent::__construct($formFactory, $twig, $logger, $templateNamespace);
     }
 

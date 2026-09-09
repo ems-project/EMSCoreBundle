@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Document\EMSSource;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
@@ -18,7 +19,8 @@ use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Repository\QuerySearchRepository;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Standard\Json;
-use Psr\Log\LoggerInterface;
+
+use function Symfony\Component\Translation\t;
 
 final readonly class QuerySearchService implements EntityServiceInterface
 {
@@ -27,7 +29,7 @@ final readonly class QuerySearchService implements EntityServiceInterface
         private RevisionService $revisionService,
         private ElasticaService $elasticaService,
         private QuerySearchRepository $querySearchRepository,
-        private LoggerInterface $logger,
+        private LocalizedLoggerInterface $logger,
         private EnvironmentService $environmentService,
     ) {
     }
@@ -50,11 +52,9 @@ final readonly class QuerySearchService implements EntityServiceInterface
 
     public function delete(QuerySearch $querySearch): void
     {
-        $name = $querySearch->getName();
+        $label = $querySearch->getLabel();
         $this->querySearchRepository->delete($querySearch);
-        $this->logger->warning('log.service.query_search.delete', [
-            'name' => $name,
-        ]);
+        $this->logger->messageWarning(t('message.query_search_deleted', ['label' => $label], 'emsco-core'));
     }
 
     /**

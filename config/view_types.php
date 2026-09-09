@@ -37,7 +37,7 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('form.factory'),
             service('twig'),
-            service('logger'),
+            service('emsco.logger'),
             '%ems_core.template_namespace%',
         ])
         ->tag('ems.form.viewtype', ['alias' => 'data_link'])
@@ -48,7 +48,7 @@ return static function (ContainerConfigurator $container) {
             service('form.factory'),
             service('twig'),
             service('ems_common.service.elastica'),
-            service('logger'),
+            service('emsco.logger'),
             '%ems_core.template_namespace%',
         ])
         ->tag('ems.form.viewtype', ['alias' => 'keywords'])
@@ -59,7 +59,7 @@ return static function (ContainerConfigurator $container) {
             service('form.factory'),
             service(ContentTypeService::class),
             service('twig'),
-            service('logger'),
+            service('emsco.logger'),
             service('router'),
             '%ems_core.template_namespace%',
         ])
@@ -71,7 +71,7 @@ return static function (ContainerConfigurator $container) {
             service('form.factory'),
             service('twig'),
             service('ems_common.service.elastica'),
-            service('logger'),
+            service('emsco.logger'),
             service('ems_common.pdf.printer.dom'),
             '%ems_core.template_namespace%',
         ])
@@ -84,7 +84,7 @@ return static function (ContainerConfigurator $container) {
             service('twig'),
             service('ems.service.mapping'),
             service('ems_common.service.elastica'),
-            service('logger'),
+            service('emsco.logger'),
             service('ems.service.data'),
             service('router'),
             '%ems_core.template_namespace%',
@@ -98,7 +98,7 @@ return static function (ContainerConfigurator $container) {
             service('twig'),
             service('ems.service.search'),
             service('ems.service.mapping'),
-            service('logger'),
+            service('emsco.logger'),
             service('ems.service.data'),
             service('router'),
             service('ems.service.contenttype'),
@@ -112,7 +112,7 @@ return static function (ContainerConfigurator $container) {
             service('form.factory'),
             service('twig'),
             service('ems_common.service.elastica'),
-            service('logger'),
+            service('emsco.logger'),
             '%ems_core.template_namespace%',
         ])
         ->tag('ems.form.viewtype', ['alias' => 'report'])
@@ -122,7 +122,7 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('form.factory'),
             service('twig'),
-            service('logger'),
+            service('emsco.logger'),
             '%ems_core.template_namespace%',
         ])
         ->tag('ems.form.viewtype', ['alias' => 'calendar'])
@@ -133,7 +133,7 @@ return static function (ContainerConfigurator $container) {
             service('form.factory'),
             service('twig'),
             service('ems_common.service.elastica'),
-            service('logger'),
+            service('emsco.logger'),
             service('ems.service.search'),
             '%ems_core.template_namespace%',
         ])
@@ -144,7 +144,7 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('form.factory'),
             service('twig'),
-            service('logger'),
+            service('emsco.logger'),
             service('ems.service.file'),
             service('ems.service.job'),
             service('security.token_storage'),

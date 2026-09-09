@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\Entity\ContentType;
@@ -14,7 +15,6 @@ use EMS\CoreBundle\Exception\LockedException;
 use EMS\CoreBundle\Exception\PrivilegeException;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\Channel\ChannelRegistrar;
-use Monolog\Logger;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -24,10 +24,17 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment as TwigEnvironment;
 
+use function Symfony\Component\Translation\t;
+
 class RequestListener
 {
-    public function __construct(private readonly ChannelRegistrar $channelRegistrar, private readonly TwigEnvironment $twig, private readonly Registry $doctrine, private readonly Logger $logger, private readonly RouterInterface $router)
-    {
+    public function __construct(
+        private readonly ChannelRegistrar $channelRegistrar,
+        private readonly TwigEnvironment $twig,
+        private readonly Registry $doctrine,
+        private readonly LocalizedLoggerInterface $logger,
+        private readonly RouterInterface $router
+    ) {
     }
 
     public function onKernelRequest(RequestEvent $event): void
@@ -78,7 +85,19 @@ class RequestListener
 
         try {
             if ($exception instanceof LockedException || $exception instanceof PrivilegeException) {
-                $this->logger->error($exception instanceof LockedException ? 'log.locked_exception_error' : 'log.privilege_exception_error', [...['username' => $exception->getRevision()->getLockBy()], ...LogRevisionContext::read($exception->getRevision())]);
+                if ($exception instanceof LockedException) {
+                    $this->logger->messageError(t('message.revision_locked', [
+                        'label' => $exception->getRevision()->getLabel(),
+                        'username' => $exception->getRevision()->getLockBy(),
+                    ], 'emsco-core'), LogRevisionContext::update($exception->getRevision()));
+                }
+                if ($exception instanceof PrivilegeException) {
+                    $this->logger->messageError(
+                        t('message.privilege_exception', [], 'emsco-core'),
+                        LogRevisionContext::read($exception->getRevision())
+                    );
+                }
+
                 if (null == $exception->getRevision()->getOuuid()) {
                     $response = new RedirectResponse($this->router->generate('emsco_draft_in_progress', [
                         'contentTypeId' => $exception->getRevision()->giveContentType()->getId(),
@@ -92,18 +111,20 @@ class RequestListener
                 $event->setResponse($response);
             }
             if ($exception instanceof ElasticmsException) {
-                $this->logger->error('log.error', [
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+                $this->logger->messageError(t('message.action_error', [
+                    'error_message' => $exception->getMessage(),
+                ], 'emsco-core'), [
                     EmsFields::LOG_EXCEPTION_FIELD => $exception,
                 ]);
                 $response = new RedirectResponse($this->router->generate('notifications.list', [
                 ]));
                 $event->setResponse($response);
             }
-        } catch (\Exception $e) {
-            $this->logger->error('log.error', [
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $e,
+        } catch (\Exception $exception) {
+            $this->logger->messageError(t('message.action_error', [
+                'error_message' => $exception->getMessage(),
+            ], 'emsco-core'), [
+                EmsFields::LOG_EXCEPTION_FIELD => $exception,
             ]);
         }
     }

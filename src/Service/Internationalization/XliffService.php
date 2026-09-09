@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service\Internationalization;
 
 use Doctrine\ORM\UnexpectedResultException;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
 use EMS\CommonBundle\Elasticsearch\Exception\NotSingleResultException;
 use EMS\CommonBundle\Search\Search;
@@ -21,15 +22,19 @@ use EMS\Helpers\Standard\Type;
 use EMS\Xliff\Model\Document as XliffDocument;
 use EMS\Xliff\Model\Package;
 use EMS\Xliff\Xliff;
-use Psr\Log\LoggerInterface;
+
+use function Symfony\Component\Translation\t;
 
 class XliffService
 {
     /** @var array<mixed>|null */
     private ?array $translationMust = null;
 
-    public function __construct(private readonly LoggerInterface $logger, private readonly RevisionService $revisionService, private readonly ElasticaService $elasticaService)
-    {
+    public function __construct(
+        private readonly LocalizedLoggerInterface $logger,
+        private readonly RevisionService $revisionService,
+        private readonly ElasticaService $elasticaService
+    ) {
     }
 
     /**
@@ -94,10 +99,10 @@ class XliffService
         $propertyAccessor = PropertyAccessor::createPropertyAccessor();
         $revision = $this->revisionService->getByRevisionId($this->getRevisionId($document));
         if ($currentRevisionOnly && !$revision->isCurrent()) {
-            $this->logger->warning('log.service.xliff.not_current_revision', [
+            $this->logger->messageWarning(t('message.xliff_not_current_revision', [
                 'revision_id' => $this->getRevisionId($document),
                 'ouuid' => $revision->giveOuuid(),
-            ]);
+            ], 'emsco-core'));
             throw new XliffException($package, 'The source revision is not more the current revision of the document');
         }
         if ($currentRevisionForce && !$revision->isCurrent()) {
@@ -193,13 +198,14 @@ class XliffService
             return $this->elasticaService->singleSearch($search);
         } catch (NotSingleResultException $notSingleResultException) {
             if ($notSingleResultException->getTotal() > 1) {
-                $this->logger->warning('log.service.xliff.to-many-current-translations', [
+                $this->logger->messageWarning(t('message.xliff_too_many_translations', [
                     'counter' => $notSingleResultException->getTotal(),
+                    'translation_id' => $translationId,
+                    'target_locale' => $targetLocale,
                     'environment' => $targetEnvironment->getName(),
+                ], 'emsco-core'), [
                     'translationField' => $translationField,
-                    'translationId' => $translationId,
                     'localeField' => $localeField,
-                    'targetLocale' => $targetLocale,
                 ]);
             }
 

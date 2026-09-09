@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Views;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
@@ -14,15 +15,16 @@ use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\SearchService;
 use EMS\Helpers\Standard\Color;
 use EMS\Helpers\Standard\Type;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Symfony\Component\Translation\t;
+
 class CalendarController extends AbstractController
 {
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly ElasticaService $elasticaService,
         private readonly DataService $dataService,
         private readonly SearchService $searchService,
@@ -67,8 +69,9 @@ class CalendarController extends AbstractController
                 'success' => true,
             ]);
         } catch (\Exception $exception) {
-            $this->logger->error('log.error', [
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $exception->getMessage(),
+            $this->logger->messageError(t('message.action_error', [
+                'error_message' => $exception->getMessage(),
+            ], 'emsco-core'), [
                 EmsFields::LOG_EXCEPTION_FIELD => $exception,
             ]);
 

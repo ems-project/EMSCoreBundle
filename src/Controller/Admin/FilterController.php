@@ -62,7 +62,9 @@ class FilterController extends AbstractController
     public function delete(Filter $filter): Response
     {
         $this->filterManager->delete($filter);
-        $this->logger->notice('log.filter.deleted', ['filter_name' => $filter->getName()]);
+        $this->logger->messageNotice(t('message.filter_deleted', [
+            'filter_name' => $filter->getName(),
+        ], 'emsco-core'));
 
         return $this->redirectToRoute(Routes::FILTER_INDEX);
     }

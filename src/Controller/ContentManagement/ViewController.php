@@ -105,10 +105,9 @@ class ViewController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->viewManager->update($view);
 
-            $this->logger->notice('log.view.created', [
-                'view_name' => $view->getName(),
-                'view_label' => $view->getLabel(),
-            ]);
+            $this->logger->messageNotice(t('message.view_created', [
+                'label' => $view->getLabel(),
+            ], 'emsco-core'));
 
             return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_VIEW_EDIT, [
                 'view' => $view->getId(),
@@ -136,10 +135,9 @@ class ViewController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->viewManager->update($view);
 
-            $this->logger->notice('log.view.updated', [
-                'view_name' => $view->getName(),
-                'view_label' => $view->getLabel(),
-            ]);
+            $this->logger->messageNotice(t('message.view_updated', [
+                'label' => $view->getLabel(),
+            ], 'emsco-core'));
 
             if ('json' === $request->getRequestFormat()) {
                 return $this->flashMessageLogger->buildJsonResponse(['success' => true]);
@@ -172,14 +170,8 @@ class ViewController extends AbstractController
 
     public function delete(View $view): Response
     {
-        $name = $view->getName();
-        $label = $view->getLabel();
-
         $this->viewManager->delete($view);
-        $this->logger->notice('log.view.deleted', [
-            'view_name' => $name,
-            'view_label' => $label,
-        ]);
+        $this->logger->messageNotice(t('message.view_deleted', ['label' => $view->getLabel()], 'emsco-core'));
 
         return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_VIEW_INDEX, [
             'contentType' => $view->getContentType()->getId(),

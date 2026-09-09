@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Admin;
 
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
-use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Mapping\AnalyzerManager;
@@ -46,12 +45,7 @@ class AnalyzerController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->analyzerManager->update($analyzer);
-
-            $this->logger->notice('log.analyzer.created', [
-                'analyzer_name' => $analyzer->getName(),
-                'analyzer_id' => $analyzer->getId(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_CREATE,
-            ]);
+            $this->logger->messageNotice(t('message.analyzer_created', ['label' => $analyzer->getLabel()], 'emsco-core'));
 
             return $this->redirectToRoute(Routes::ANALYZER_INDEX);
         }
@@ -70,12 +64,7 @@ class AnalyzerController extends AbstractController
     public function delete(Analyzer $analyzer): RedirectResponse
     {
         $this->analyzerManager->delete($analyzer);
-
-        $this->logger->notice('log.analyzer.deleted', [
-            'analyzer_name' => $analyzer->getName(),
-            'analyzer_id' => $analyzer->getId(),
-            EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
-        ]);
+        $this->logger->messageWarning(t('message.analyzer_deleted', ['label' => $analyzer->getLabel()], 'emsco-core'));
 
         return $this->redirectToRoute(Routes::ANALYZER_INDEX);
     }
@@ -87,12 +76,7 @@ class AnalyzerController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->analyzerManager->update($analyzer);
-
-            $this->logger->notice('log.analyzer.updated', [
-                'analyzer_name' => $analyzer->getName(),
-                'analyzer_id' => $analyzer->getId(),
-                EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_UPDATE,
-            ]);
+            $this->logger->messageNotice(t('message.analyzer_updated', ['label' => $analyzer->getLabel()], 'emsco-core'));
 
             return $this->redirectToRoute(Routes::ANALYZER_INDEX);
         }

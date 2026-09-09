@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
-use Dompdf\Adapter\CPDF;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
+use EMS\CoreBundle\Form\Field\PdfSizeType;
 use EMS\CoreBundle\Form\Field\RenderOptionType;
 use EMS\CoreBundle\Form\Field\RolePickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -228,10 +228,9 @@ class ActionType extends AbstractType
                 'required' => false,
                 'row_attr' => ['class' => 'col-md-12'],
             ])
-            ->add('size', ChoiceType::class, [
+            ->add('size', PdfSizeType::class, [
                 'attr' => ['class' => 'action_renderOption fields-to-display-for fields-to-display-for-pdf'],
                 'required' => false,
-                'choices' => \array_combine(\array_keys(CPDF::$PAPER_SIZES), \array_keys(CPDF::$PAPER_SIZES)),
                 'label' => t('field.file.paper_size', [], 'emsco-core'),
                 'row_attr' => ['class' => 'col-md-12'],
             ])

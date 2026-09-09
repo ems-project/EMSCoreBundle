@@ -5,18 +5,20 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Job;
 
 use Cron\CronExpression;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Schedule;
 use EMS\CoreBundle\Repository\ScheduleRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
-use Psr\Log\LoggerInterface;
+
+use function Symfony\Component\Translation\t;
 
 class ScheduleManager implements EntityServiceInterface
 {
     public function __construct(
         private readonly ScheduleRepository $scheduleRepository,
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
     ) {
     }
 
@@ -42,9 +44,8 @@ class ScheduleManager implements EntityServiceInterface
     {
         $name = $schedule->getName();
         $this->scheduleRepository->delete($schedule);
-        $this->logger->warning('log.service.schedule.delete', [
-            'name' => $name,
-        ]);
+
+        $this->logger->messageWarning(t('message.schedule_deleted', ['name' => $name], 'emsco-core'));
     }
 
     /**

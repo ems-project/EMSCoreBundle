@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Dashboard;
 
 use Doctrine\Common\Collections\Collection;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Core\UI\Menu;
@@ -12,7 +13,6 @@ use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Repository\DashboardRepository;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\EntityServiceInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -23,8 +23,11 @@ class DashboardManager implements EntityServiceInterface
     /** @var ?Collection<string, Dashboard> */
     private ?Collection $definitions = null;
 
-    public function __construct(private readonly DashboardRepository $dashboardRepository, private readonly LoggerInterface $logger, private readonly AuthorizationCheckerInterface $authorizationChecker)
-    {
+    public function __construct(
+        private readonly DashboardRepository $dashboardRepository,
+        private readonly LocalizedLoggerInterface $logger,
+        private readonly AuthorizationCheckerInterface $authorizationChecker
+    ) {
     }
 
     #[\Override]
@@ -106,11 +109,10 @@ class DashboardManager implements EntityServiceInterface
 
     public function delete(Dashboard $dashboard): void
     {
-        $name = $dashboard->getName();
+        $label = $dashboard->getLabel();
         $this->dashboardRepository->delete($dashboard);
-        $this->logger->warning('log.service.dashboard.delete', [
-            'name' => $name,
-        ]);
+
+        $this->logger->messageWarning(t('message.dashboard_deleted', ['label' => $label], 'emsco-core'));
     }
 
     public function getSidebarMenu(): Menu

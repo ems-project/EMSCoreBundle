@@ -416,7 +416,7 @@ return static function (ContainerConfigurator $container) {
     $services->set(DataController::class)
         ->public()
         ->args([
-            service('logger'),
+            service('emsco.logger'),
             service('ems.service.data'),
             service('ems.service.search'),
             service('ems.service.contenttype'),
@@ -525,7 +525,7 @@ return static function (ContainerConfigurator $container) {
     $services->set(ReleaseController::class)
         ->public()
         ->args([
-            service('logger'),
+            service('emsco.logger'),
             service('ems.service.release'),
             service('emsco.data_table.factory'),
             '%ems_core.template_namespace%',
@@ -640,7 +640,7 @@ return static function (ContainerConfigurator $container) {
             service('ems_common.service.elastica'),
             service('ems.service.search'),
             service('emsco.data_table.factory'),
-            service('logger'),
+            service('emsco.logger'),
             '%ems_core.template_namespace%',
         ])
         ->call('setContainer')
@@ -830,7 +830,7 @@ return static function (ContainerConfigurator $container) {
     $services->set(ElasticsearchController::class)
         ->public()
         ->args([
-            service('logger'),
+            service('emsco.logger'),
             service('ems.service.index'),
             service('ems_common.service.elastica'),
             service('ems.service.data'),
@@ -870,7 +870,7 @@ return static function (ContainerConfigurator $container) {
     $services->set(NotificationController::class)
         ->public()
         ->args([
-            service('logger'),
+            service('emsco.logger'),
             service('ems.service.publish'),
             service('ems.service.environment'),
             service('doctrine'),
@@ -938,7 +938,7 @@ return static function (ContainerConfigurator $container) {
     $services->set(UserController::class)
         ->public()
         ->args([
-            service('logger'),
+            service('emsco.logger'),
             service(ContentTypeRepository::class),
             service('ems.service.user'),
             service('emsco.manager.user'),

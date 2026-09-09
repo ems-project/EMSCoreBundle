@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service\Channel;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\Text\Encoder;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Repository\ChannelRepository;
 use EMS\CoreBundle\Service\EntityServiceInterface;
-use Psr\Log\LoggerInterface;
+
+use function Symfony\Component\Translation\t;
 
 final readonly class ChannelService implements EntityServiceInterface
 {
-    public function __construct(private ChannelRepository $channelRepository, private LoggerInterface $logger)
-    {
+    public function __construct(
+        private ChannelRepository $channelRepository,
+        private LocalizedLoggerInterface $logger
+    ) {
     }
 
     /**
@@ -38,9 +42,8 @@ final readonly class ChannelService implements EntityServiceInterface
     {
         $name = $channel->getName();
         $this->channelRepository->delete($channel);
-        $this->logger->warning('log.service.channel.delete', [
-            'name' => $name,
-        ]);
+
+        $this->logger->messageWarning(t('message.channel_deleted', ['name' => $name], 'emsco-core'));
     }
 
     /**

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Revision;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
-use EMS\CoreBundle\Core\Log\LogRevisionContext;
 use EMS\CoreBundle\DataTable\Type\Revision\RevisionAuditDataTableType;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\Form\SearchFilter;
@@ -19,12 +19,13 @@ use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\CoreBundle\Service\SearchService;
-use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+use function Symfony\Component\Translation\t;
 
 class DetailController extends AbstractController
 {
@@ -36,7 +37,7 @@ class DetailController extends AbstractController
         private readonly ElasticaService $elasticaService,
         private readonly SearchService $searchService,
         private readonly DataTableFactory $dataTableFactory,
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly string $templateNamespace
     ) {
     }
@@ -77,7 +78,7 @@ class DetailController extends AbstractController
 
         if (null != $revision->getAutoSave()) {
             $revision->setRawData($revision->getAutoSave());
-            $this->logger->notice('log.data.revision.load_from_auto_save', LogRevisionContext::read($revision));
+            $this->logger->messageNotice(t('message.revision_loaded_from_auto_save', [], 'emsco-core'));
         }
 
         $page = $request->query->getInt('page', 1);

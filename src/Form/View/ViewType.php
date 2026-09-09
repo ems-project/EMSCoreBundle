@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\View;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CoreBundle\Entity\View;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -22,7 +22,7 @@ abstract class ViewType extends AbstractType
     public function __construct(
         protected FormFactory $formFactory,
         protected Environment $twig,
-        protected LoggerInterface $logger,
+        protected LocalizedLoggerInterface $logger,
         private readonly string $templateNamespace
     ) {
     }

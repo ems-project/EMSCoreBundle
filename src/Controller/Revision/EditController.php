@@ -35,7 +35,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function Symfony\Component\Translation\t;
@@ -68,7 +67,7 @@ class EditController extends AbstractController
         $this->dataService->lockRevision($revision);
         if ($request->isMethod('GET') && null != $revision->getAutoSave()) {
             $data = $revision->getAutoSave();
-            $this->logger->notice('log.data.revision.load_from_auto_save', LogRevisionContext::read($revision));
+            $this->logger->messageNotice(t('message.revision_loaded_from_auto_save', [], 'emsco-core'));
         } else {
             $data = $revision->getRawData();
         }
@@ -105,7 +104,7 @@ class EditController extends AbstractController
         $contentType = $revision->giveContentType();
 
         if ($revision->hasEndTime() && !$this->isGranted(Roles::ROLE_SUPER)) {
-            throw new ElasticmsException($this->translator->trans('log.data.revision.only_super_can_finalize_an_archive', LogRevisionContext::read($revision), EMSCoreBundle::TRANS_DOMAIN));
+            throw new ElasticmsException(t('message.revision_only_super_can_finalize_archive', [], 'emsco-core')->trans($this->translator));
         }
 
         if (!$revision->getDraft() && $revision->isPublished($contentType->giveEnvironment()->getName())) {
@@ -114,7 +113,7 @@ class EditController extends AbstractController
 
         if ($request->isMethod('GET') && null !== $revision->getAutoSave()) {
             $revision->autoSaveToRawData();
-            $this->logger->notice('log.data.revision.load_from_auto_save', LogRevisionContext::read($revision));
+            $this->logger->messageNotice(t('message.revision_loaded_from_auto_save', [], 'emsco-core'));
         }
 
         $form = $this->createForm(RevisionType::class, $revision, [
@@ -138,7 +137,9 @@ class EditController extends AbstractController
         if ($form->isSubmitted()) {// Save, Finalize or Discard
             $allFieldsAreThere = $requestRevision['allFieldsAreThere'] ?? false;
             if (empty($requestRevision) || !$allFieldsAreThere) {
-                $this->logger->error('log.data.revision.not_completed_request', LogRevisionContext::read($revision));
+                $this->logger->messageError(t('message.revision_incomplete_request', [
+                    'label' => $revision->getLabel(),
+                ], 'emsco-core'));
 
                 return $this->redirectToRoute(Routes::VIEW_REVISIONS, [
                     'ouuid' => $revision->getOuuid(),
@@ -165,7 +166,10 @@ class EditController extends AbstractController
 
                 if (isset($requestRevision['copy'])) {
                     $request->getSession()->set('ems_clipboard', $objectArray);
-                    $this->logger->notice('log.data.document.copy', LogRevisionContext::update($revision));
+
+                    $this->logger->messageNotice(t('message.document_copied', [
+                        'label' => $revision->getLabel(),
+                    ], 'emsco-core'));
                 }
 
                 $user = $this->getUser();
@@ -225,12 +229,17 @@ class EditController extends AbstractController
             $objectArray = $revision->getRawData();
             $isValid = $this->dataService->isValid($form, null, $objectArray);
             if (!$isValid) {
-                $this->logger->warning('log.data.revision.can_finalized', LogRevisionContext::update($revision));
+                $this->logger->messageWarning(t('message.revision_cannot_finalize', [
+                    'label' => $revision->getLabel(),
+                ], 'emsco-core'), LogRevisionContext::update($revision));
             }
         }
 
         if ($contentType->isAutoPublish()) {
-            $this->logger->warning('log.data.revision.auto_save_off_with_auto_publish', LogRevisionContext::update($revision));
+            $this->logger->messageWarning(t('message.revision_auto_save_off_with_auto_publish', [
+                'environment' => $revision->giveContentType()->giveEnvironment()->getLabel(),
+                'content_type' => $revision->giveContentType()->getSingularName(),
+            ], 'emsco-core'), LogRevisionContext::update($revision));
         }
 
         $objectArray = $revision->getRawData();
@@ -243,12 +252,12 @@ class EditController extends AbstractController
         }
 
         if (!$revision->getDraft()) {
-            $this->logger->warning('controller.revision.edit-controller.warning.edit-draft', [
+            $this->logger->messageWarning(t('message.revision_edit_draft_warning', [
                 'path' => $this->generateUrl('emsco_data_new_draft', [
                     'type' => $revision->giveContentType(),
                     'ouuid' => $revision->giveOuuid(),
-                ], UrlGeneratorInterface::ABSOLUTE_PATH),
-            ]);
+                ]),
+            ], 'emsco-core'));
         }
 
         return $this->render(\sprintf('@%s/data/edit-revision.html.twig', $this->templateNamespace), [

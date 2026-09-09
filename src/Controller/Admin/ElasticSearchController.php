@@ -132,7 +132,9 @@ class ElasticSearchController extends AbstractController
     public function deleteAlias(string $name): Response
     {
         if ($this->aliasService->removeAlias($name)) {
-            $this->logger->notice('log.environment.alias_removed', ['alias' => $name]);
+            $this->logger->messageNotice(t('message.environment_alias_removed', [
+                'alias' => $name,
+            ], 'emsco-core'));
         }
 
         return $this->redirectToRoute(Routes::ADMIN_ELASTIC_UNREFERENCED_ALIASES);

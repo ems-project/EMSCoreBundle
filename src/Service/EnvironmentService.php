@@ -8,7 +8,6 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\Common\Collections\Order;
 use Doctrine\Common\Collections\ReadableCollection;
 use Doctrine\ORM\EntityManager;
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
@@ -320,7 +319,7 @@ class EnvironmentService implements EntityServiceInterface
 
                 return null === $role || $this->authorizationChecker->isGranted($role);
             })
-            ->matching(new Criteria(accessRawFieldValues: true)->orderBy(['orderKey' => Order::Ascending]))
+            ->matching(new Criteria()->orderBy(['orderKey' => \SortDirection::Ascending]))
         ;
     }
 

@@ -121,12 +121,12 @@ class UploadedAssetRepository extends EntityRepository
 
     public function getFirstUploadedByHash(string $hash): ?UploadedAsset
     {
-        return $this->uploadedByHash($hash, 'ASC');
+        return $this->uploadedByHash($hash, \SortDirection::Ascending);
     }
 
     public function getLastUploadedByHash(string $hash): ?UploadedAsset
     {
-        return $this->uploadedByHash($hash, 'DESC');
+        return $this->uploadedByHash($hash, \SortDirection::Descending);
     }
 
     /**
@@ -155,7 +155,7 @@ class UploadedAssetRepository extends EntityRepository
         ];
     }
 
-    private function uploadedByHash(string $hash, string $modifiedOrder): ?UploadedAsset
+    private function uploadedByHash(string $hash, \SortDirection $modifiedOrder): ?UploadedAsset
     {
         $qb = $this->createQueryBuilder('ua');
         $qb->where($qb->expr()->eq('ua.available', ':true'));

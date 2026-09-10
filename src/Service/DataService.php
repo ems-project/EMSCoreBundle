@@ -1185,7 +1185,7 @@ class DataService
                 ->where('t.ouuid = :ouuid')
                 ->andWhere('t.id <> :id')
                 ->andWhere('t.contentType =  :contentType')
-                ->orderBy('t.id', 'desc')
+                ->orderBy('t.id', \SortDirection::Descending)
                 ->setParameter('ouuid', $revision->getOuuid())
                 ->setParameter('contentType', $revision->getContentType())
                 ->setParameter('id', $revision->getId())

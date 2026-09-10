@@ -108,7 +108,7 @@ class UploadedAssetRepository extends EntityRepository
         $qb = $this->createQueryBuilder('ua');
         $qb
             ->andWhere($qb->expr()->in('ua.id', $ids))
-            ->orderBy('ua.created', 'desc');
+            ->orderBy('ua.created', \SortDirection::Descending);
 
         return $qb->getQuery()->execute();
     }

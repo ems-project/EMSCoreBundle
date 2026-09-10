@@ -57,8 +57,8 @@ class FormSubmissionRepository extends ServiceEntityRepository
         while (true) {
             $query = $this->createQueryBuilder('fs')
                 ->andWhere('fs.data IS NOT NULL')
-                ->orderBy('fs.created', 'DESC')
-                ->addOrderBy('fs.id', 'DESC')
+                ->orderBy('fs.created', \SortDirection::Descending)
+                ->addOrderBy('fs.id', \SortDirection::Descending)
                 ->setFirstResult($offset)
                 ->setMaxResults($batchSize)
                 ->getQuery();
@@ -168,7 +168,7 @@ class FormSubmissionRepository extends ServiceEntityRepository
 
         $qb
             ->andWhere($qb->expr()->isNotNull('fs.data'))
-            ->orderBy('fs.created', 'desc');
+            ->orderBy('fs.created', \SortDirection::Descending);
 
         return $qb->getQuery()->execute();
     }

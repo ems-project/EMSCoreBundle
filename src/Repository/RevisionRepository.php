@@ -40,7 +40,7 @@ class RevisionRepository extends EntityRepository
             ->join('r.contentType', 'c')
             ->andWhere($qb->expr()->eq('r.ouuid', ':ouuid'))
             ->setParameter('ouuid', $ouuid)
-            ->orderBy('r.startTime', 'DESC')
+            ->orderBy('r.startTime', \SortDirection::Descending)
             ->setMaxResults(1);
 
         if ($contentTypeName) {
@@ -379,7 +379,7 @@ class RevisionRepository extends EntityRepository
         $qb->andWhere($qb->expr()->eq('r.contentType', ':contentType'));
         $qb->setMaxResults(5);
         $qb->setFirstResult(($page - 1) * 5);
-        $qb->orderBy('r.created', 'DESC');
+        $qb->orderBy('r.created', \SortDirection::Descending);
         $qb->setParameter('ouuid', $ouuid);
         $qb->setParameter('contentType', $contentType);
 
@@ -848,7 +848,7 @@ class RevisionRepository extends EntityRepository
 
         $qb
             ->andWhere($qb->expr()->in('r.ouuid', ':ouuids'))
-            ->orderBy('r.startTime', 'DESC')
+            ->orderBy('r.startTime', \SortDirection::Descending)
             ->setParameter('ouuids', $ouuids, ArrayParameterType::STRING);
 
         return $qb->getQuery()->execute();

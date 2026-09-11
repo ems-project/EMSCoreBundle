@@ -1,11 +1,16 @@
 action:
     activate: Activeren
     add: Toevoegen
+    add_aggregate_option: Aggregatieopties
     add_alias: 'Alias toevoegen'
+    add_entity: 'Nieuwe {entity_name}'
+    add_managed_alias: 'Beheerde alias toevoegen'
     add_referenced: 'Gerefereerde toevoegen'
     add_referenced_content_type: 'Een gerefereerd contenttype toevoegen'
     add_release_publish: 'Toevoegen aan release voor publicatie'
     add_release_unpublish: 'Toevoegen aan release voor depublicatie'
+    add_search_field_option: 'Zoekveldoptie toevoegen'
+    add_sort_option: 'Sorteeroptie toevoegen'
     attach: Koppelen
     cancel: Annuleren
     clear: Wissen
@@ -21,25 +26,35 @@ action:
     delete_all: 'Alles verwijderen'
     delete_selected: 'Selectie verwijderen'
     details: Details
+    discard: Verwerpen
     download: Downloaden
     download_selected: 'Selectie downloaden'
     duplicate: Dupliceren
     edit: Bewerken
+    edit_entity: '{entity_name} bewerken'
+    edit_managed_alias: 'Beheerde alias bewerken'
     export: Exporteren
     export_selected: 'Selectie exporteren'
     extract_content: 'Inhoud extraheren'
+    hide: Verbergen
     info: Info
     paste: Plakken
+    publish: Publiceren
     rebuild: Heropbouwen
     refresh: Vernieuwen
     relaunch: Herstarten
     remove: Verwijderen
     reorder: Hersorteren
+    reorder_content_type: 'Het content type "{content_type}" hersorteren'
+    reorder_content_type_fields: '"{content_type}"-velden hersorteren'
+    reorganise: Reorganiseren
+    reset_filters: 'Filters resetten'
     save: Opslaan
     save_as_draft: 'Opslaan als concept'
     save_close: 'Opslaan en sluiten'
     save_publish_in: 'Opslaan en publiceren in {environments}'
     select_all: 'Alles selecteren'
+    show: Tonen
     status: Status
     toggle_sidebar: 'Zijbalk omschakelen'
     toggle_visibility: 'Zichtbaarheid omschakelen'
@@ -189,10 +204,6 @@ dashboard:
 data:
     add:
         new_title: 'Nieuwe {content_type}'
-        notice:
-            draft_not_indexed: 'Deze bewerking zal niet onmiddellijk een nieuw object ‘<em>{content_type}</em>’ indexeren. Ze start een nieuw concept zonder eerdere revisie. <strong>Dit concept zal niet zichtbaar zijn</strong> in een omgeving <strong>tot het voor de eerste keer is gefinaliseerd</strong>. Dit betekent dat u het niet zult zien in een lijstweergave (zoals index, kaart, kalender...), maar alle lopende concepten zijn te vinden in de sectie ‘Concept in uitvoering’.'
-            ouuid: 'Over de <strong>unieke objectidentificatie</strong>: u mag er zelf een opgeven (op voorwaarde dat die nog niet gebruikt is). Als u dit <strong>leeg</strong> laat, wordt tijdens het opslaan een unieke objectidentificatie <strong>gegenereerd</strong>. Het is niet mogelijk om de unieke objectidentificatie later te wijzigen.'
-        subtitle: 'Deze bewerking indexeert {object_name} niet, maar start enkel een concept met een specifieke OUUID'
         title: 'Een nieuwe {content_type} toevoegen'
     custom-view:
         pagetitle: 'Weergave {name} van {contentType} "{label}" zoals geïndexeerd in {environment}'
@@ -312,6 +323,7 @@ field:
     config: Configuratie
     content_css: Content-CSS
     content_js: Content-JS
+    content_types: Contenttypes
     context: Context
     copy_to: 'Kopiëren naar'
     count: Aantal
@@ -337,6 +349,7 @@ field:
     enabled: Ingeschakeld
     endpoint_url: Endpoint
     entry_path: 'Standaard toegangspad'
+    environment: Omgeving
     environment_default: Standaardomgeving
     environment_external: 'Externe omgeving'
     environments: Omgevingen
@@ -370,6 +383,7 @@ field:
     indexes: Indexen
     instance: Instantie
     is_active: Actief
+    is_default: Standaard
     is_dirty: Gewijzigd
     is_edit_wysiwyg: 'Bewerken met WYSIWYG'
     is_menu_notification: 'Zichtbaar in het notificatiemenu'
@@ -409,6 +423,7 @@ field:
     release_environment_source: 'Bronomgeving voor publicatie'
     release_environment_target: 'Omgeving voor (de)publicatie'
     render_option: Renderoptie
+    revision: Revisie
     revision_version_tag: 'Ja als {version_tag}'
     revision_version_tag_empty: 'Nee (stille publicatie)'
     role: Rol
@@ -463,7 +478,7 @@ field_type:
         paste: Plakken
     reorder: Hersorteren
     textarea:
-        counter: '%count% tekens'
+        counter: '{count} tekens'
 fields:
     asset:
         browse-server: 'Server doorzoeken'
@@ -524,13 +539,13 @@ form_submissions:
     overview: Overzicht
     title: Formulierinzendingen
 help:
+    add_first_aggregate_option: "Klik op 'Aggregatieoptie toevoegen' om een eerste aggregatieoptie te maken"
+    add_first_search_field_option: "Klik op 'Zoekveldoptie toevoegen' om een eerste zoekveldoptie te maken"
+    add_first_sort_option: "Klik op 'Sorteeroptie toevoegen' om een eerste sorteeroptie te maken"
     override_styles_set_config: 'configuratie van stijlensets overschrijven'
 inline_editor:
     action:
-        discard: Annuleren
         exit: Afsluiten
-        publish: Publiceren
-        save: Opslaan
     elements: Elementen
     status:
         draft_by: 'In concept door "{user}"'
@@ -565,11 +580,15 @@ json_menu_nested:
     error:
         item_edit_outdated: 'Niet meer gesynchroniseerd, sluit en probeer opnieuw!'
 key:
+    action: Actie
     actions: Acties
     active_primary_shards: 'Actieve primaire shards'
     active_shards: 'Actieve shards'
     active_shards_percent_as_number: 'Actieve shards'
+    add_user: 'Gebruiker toevoegen'
     admin: Admin
+    aggregate_option: Aggregatieoptie
+    aggregate_options: Aggregatieopties
     all_content_types: 'Alle contenttypes'
     analyzers: Analysatoren
     anonymous_user: 'Anonieme gebruiker'
@@ -601,12 +620,14 @@ key:
     export_documents: 'Documenten exporteren'
     extra: Extra
     filters: Filters
+    folders: Mappen
     form_root: 'Wortel van het formulier'
     form_submissions: Formulierinzendingen
     forms: Formulieren
     groups: Groepen
     i18n: I18N
     impersonator: Impersonator
+    inbox: Inbox
     initializing_shards: 'Initialiserende shards'
     inline: Inline
     inline_editor: 'Inline editor'
@@ -631,10 +652,13 @@ key:
     not-applicable: N.v.t.
     not_defined: 'Niet gedefinieerd'
     notice: Melding
+    notification: Notificatie
+    notifications: Notificaties
     number_of_data_nodes: 'Aantal datanodes'
     number_of_nodes: 'Aantal nodes'
     number_of_pending_tasks: 'Aantal wachtende taken'
     orphan_indexes: 'Verweesde indexen'
+    outbox: Outbox
     overview: Overzicht
     portrait: Portret
     prefix_instance_id: 'Alias voorafgaan met instance-ID'
@@ -646,21 +670,30 @@ key:
     query_search: 'Query search'
     query_searches: QuerySearch
     recent_activities: 'Recente activiteiten'
+    revisions: Revisies
     schedule: Planning
     schedule_cron: '<Minuut> <Uur> <Dag_van_de_maand> <Maand_van_het_jaar> <Dag_van_de_week>. Bv. elke 15 minuten: */15 * * * *'
     schedule_tag: 'Gebruikt om workers (bv. CLI) te identificeren die de job op afstand zouden uitvoeren'
     search: Zoeken
+    search_field_option: Zoekveldoptie
+    search_field_options: Zoekveldopties
+    search_options: Zoekopties
+    searches: Zoekopdrachten
     severity: Ernst
     show_search_form: 'Zoekformulier tonen'
     sort_by: 'Sorteren op'
+    sort_option: Sorteeroptie
+    sort_options: Sorteeropties
     status: Status
     structure: Structuur
     system_logs: Systeemlogboeken
     tagline: Tagline
     task_max_waiting_in_queue_millis: 'Maximale wachttijd van taak in wachtrij'
     tiptap: Tiptap
+    to_be_treated: 'Te behandelen'
     trash: Prullenbak
     unassigned_shards: 'Niet-toegewezen shards'
+    unknown: Onbekend
     unreferenced_aliases: 'Niet-gerefereerde aliassen'
     uploaded_files: 'Geüploade bestanden'
     uploaded_files_logs: 'Logs van geüploade bestanden'
@@ -669,6 +702,7 @@ key:
     version: Versie
     views: Weergaven
     warning: Waarschuwing
+    warnings: Waarschuwingen
     webhook_subscriptions: Abonnementen
     webhooks: Webhooks
     wysiwyg: WYSIWYG
@@ -679,8 +713,6 @@ log:
         content_type_add_unreferenced: 'Onverwachte fout bij het ophalen van niet-gerefereerde contenttype(s) uit externe omgeving {environment}: {error}'
         delete_failed: 'Verwijderen mislukt'
         invalid_table_action: 'Onbekende tabelactie'
-    icon:
-        class: 'fa fa-file-text'
     menu: Logs
     notice:
         alias_attached: 'De alias "{alias}" is gekoppeld'
@@ -771,12 +803,14 @@ message:
     action_error: 'Deze pagina/actie heeft een fout ondervonden: {error_message}'
     action_updated: 'De actie "{label}" is bijgewerkt'
     alias_added: 'Een nieuwe alias "{alias_name}" is toegevoegd aan de index "{index_name}"'
+    alias_too_many_indexes: 'Er zijn te veel indexen'
     analyzer_created: 'De analyzer "{label}" is aangemaakt'
     analyzer_deleted: 'De analyzer "{label}" is verwijderd'
     analyzer_updated: 'De analyzer "{label}" is bijgewerkt'
     api_entity_created: 'Entiteit {entity} is aangemaakt met id {id}'
     api_entity_deleted: 'Entiteit {entity} "{name}" is verwijderd met id {id}'
     api_entity_updated: 'Entiteit {entity} "{name}" is bijgewerkt met id {id}'
+    asset_extract_error: 'Er is een probleem opgetreden bij het extraheren van informatie uit het bestand {filename}: {error_message}<br>Controleer uw invoerbestand en probeer opnieuw, of voeg de meta-informatie handmatig toe via het info-menu.'
     asset_extract_file_too_large: 'Aangezien dit bestand groter is ({filesize}) dan {max_size}, is de inhoud niet automatisch geëxtraheerd. U kunt de extractie forceren of de inhoud handmatig opgeven in het menu "Info".'
     channel_alias_not_found: 'Het kanaal "{label}" kan niet worden geregistreerd omdat de alias "{alias}" ontbreekt'
     channel_deleted: 'Het kanaal "{name}" is verwijderd'
@@ -784,7 +818,15 @@ message:
     content_type_created: 'Het content type "{label}" is aangemaakt'
     content_type_deleted: 'Het content type "{label}" is verwijderd'
     content_type_dirty: 'Het content type "{label}" is "dirty" (de mapping is mogelijk verouderd), probeer de mapping bij te werken'
+    content_type_info_ouuid: |
+        Deze bewerking indexeert het nieuwe object '<em>{content_type}</em>' niet onmiddellijk. Er wordt een nieuw concept gestart zonder eerdere revisie. <strong>Dit concept is niet zichtbaar</strong> in enige omgeving <strong>totdat het voor de eerste keer is gefinaliseerd</strong>.
+        Dit betekent dat u het niet kunt zien in een lijstweergave (zoals de index, kaart, kalender...), maar alle concepten in uitvoering zijn te vinden in de sectie 'Concept in uitvoering'.
+
+        Over de <strong>unieke objectidentificatie</strong>: u kunt er vrij een opgeven (op voorwaarde dat deze nog niet in gebruik is, uiteraard).
+        Als u dit veld <strong>leeg</strong> laat, wordt er tijdens het opslaan automatisch een unieke objectidentificatie <strong>gegenereerd</strong>. Het is niet mogelijk om de unieke objectidentificatie later te wijzigen.
     content_type_mapping_not_found: 'Mapping niet gevonden voor het content type "{label}"'
+    content_type_reordered: 'Het content type "{content_type}" is hersorteerd'
+    content_type_update_mapping_error: 'Fout bij het bijwerken van de mapping van {environments}: {elasticsearch_error}'
     contenttype_mappings_error: 'Bijwerken van de mappings voor {content_type} in {environments} is mislukt: {elasticsearch_dump}'
     contenttype_mappings_updated: 'Mappings succesvol bijgewerkt voor het inhoudstype {content_type} in {environments}'
     dashboard_deleted: 'Het dashboard "{label}" is verwijderd'
@@ -811,6 +853,9 @@ message:
     document_compared: 'Revisie {revision_id} van het document {content_type}:{ouuid} vergeleken met revisie {compare_revision_id} van het document {compare_content_type}:{compare_ouuid}'
     document_copied: 'De inhoud van het document "{label}" is naar het klembord gekopieerd'
     document_duplicated: 'Het document "{label}" is gebruikt om een nieuw document te starten'
+    entity_created: '{entity} {name} is aangemaakt'
+    entity_deleted: '{entity} {name} is verwijderd'
+    entity_updated: '{entity} {name} is bijgewerkt'
     environment_alias_missing: 'De alias voor de omgeving {environment} ontbreekt, overweeg een volledig nieuwe alias op te bouwen'
     environment_alias_removed: 'De alias {alias} is verwijderd'
     environment_aligned: 'Omgeving {environment} en {with_environment} zijn afgestemd voor deze content types'
@@ -823,6 +868,8 @@ message:
     environment_rebuild_unknown_option: 'Onmogelijk om de omgeving {environment} te herbouwen door onbekende optie "{option}"'
     environment_updated: 'De omgeving {environment} is bijgewerkt'
     environment_wrong_ouuid: 'Onjuist gevormde OUUID {ouuid}'
+    error_status: 'Met de melding "{status}"'
+    error_status_code: 'De server retourneerde een {status_code}'
     field_added: 'Het veld "{name}" is toegevoegd'
     field_collection_import_array: 'Sommige gegevens werden niet geïmporteerd voor het collectieveld {field_name} omdat het geen array was'
     field_deleted: 'Het veld "{name}" is verwijderd'
@@ -837,6 +884,7 @@ message:
     field_with_errors: 'Het veld {path} bevat een fout met de melding {error_message}'
     file_upload_error: 'Fout tijdens het uploaden van het bestand: {error_message}'
     filter_deleted: 'De filter {filter_name} is verwijderd'
+    finalized_when_user: '{date} Gefinaliseerd door {user}'
     form_deleted: 'Het formulier "{label}" is verwijderd'
     form_submission_deleted: 'Formulierinzending met id "{id}" is verwijderd!'
     import_failed: 'Import mislukt'
@@ -848,8 +896,23 @@ message:
     managed_alias_created: 'Beheerde alias "{managed_alias_label}" is aangemaakt'
     managed_alias_deleted: 'Beheerde alias "{managed_alias_label}" is verwijderd'
     managed_alias_updated: 'Beheerde alias "{managed_alias_label}" is bijgewerkt'
+    notification_already_pending: 'Er is al een andere notificatie {notification_name} in behandeling voor het document "{label}" in {environment} door {notification_username}'
+    notification_no_results: 'Geen resultaat om weer te geven'
+    notification_no_results_for_filter_combo: 'Geen resultaat voor deze filtercombinatie'
     notification_not_found: 'Melding #{notification_id} niet gevonden'
+    notification_send_error: 'Fout bij het verzenden van de notificatie ({action_label}) voor {content_type}: {error_message}'
+    notification_sent: '{notification_name} voor het document "{label}" in {environment} is verzonden'
+    notification_treated: '{notification_name} voor het document "{label}" in {environment} is {status}'
+    notification_updated: 'Een "{notification_name}"-notificatie is {notification_status} voor een "{content_type}"-document ({ouuid})'
+    notification_will_be_lost_on_finalize: 'Een "{notification_name}"-notificatie gaat verloren voor dit {content_type}-document ({ouuid}) bij het finaliseren'
+    object_choice_alias_not_found: 'Alias niet gevonden voor content type {content_type}'
+    object_choice_content_type_not_found: 'Content type {content_type} niet gevonden'
+    object_choice_key_not_found: 'Objectsleutel {object_key} niet gevonden'
+    object_choice_limited_result_set: 'De datalinkkiezer is beperkt tot de eerste {limit} van {count} documenten'
     privilege_exception: 'U heeft onvoldoende rechten om dit document te bewerken'
+    publish_not_authorized: 'U kunt het content type {content_type} niet (de)publiceren'
+    publish_not_in_circles: 'U kunt het content type {content_type} niet (de)publiceren omdat u geen enkele kring deelt'
+    publish_not_in_default_environment: 'U kunt niet (de)publiceren in de standaardomgeving {environment} van het document "{label}"'
     query_search_deleted: 'De query search "{label}" is verwijderd'
     reindex_command_end: 'De documenten van het content type {content_type} zijn opnieuw geïndexeerd in {environment} (index: {index})'
     reindex_command_environment_not_found: 'Omgeving met naam {environment} niet gevonden'
@@ -862,6 +925,7 @@ message:
     revision_added_to_release: 'Document "{label}" is toegevoegd aan release "{release}"'
     revision_ajax_update_on_finalized: 'Het is niet mogelijk om het document "{label}" op te slaan omdat deze revisie al is gefinaliseerd'
     revision_already_in_release: 'Deze revisie van document "{label}" zat al in release "{release}"'
+    revision_already_published: 'Het document "{label}" is al gepubliceerd in {environment}'
     revision_auto_publish_rollback: 'Het document "{label}" is stilzwijgend teruggepubliceerd in {environment}'
     revision_auto_save_off_with_auto_publish: 'Automatisch opslaan is uitgeschakeld omdat automatisch publiceren is ingeschakeld voor het content type {content_type}. Druk op Ctrl+S (Cmd+S) om op te slaan en te publiceren in {environment}'
     revision_cannot_delete_published: 'Het document "{label}" kan niet worden verwijderd omdat het gepubliceerd is in {environment}'
@@ -880,26 +944,33 @@ message:
     revision_draft_cannot_be_added_to_release: 'Een revisie in conceptmodus kan niet worden toegevoegd aan een release'
     revision_draft_created: 'Er is een nieuw concept gestart voor het document "{label}"'
     revision_draft_deleted: 'Concept verworpen voor het document "{label}"'
+    revision_draft_publish_error: 'Een concept van het document "{label}" kan niet worden gepubliceerd in {environment}: {error_message}'
+    revision_draft_published: 'Een concept van het document "{label}" is gepubliceerd in {environment}'
     revision_draft_updated: 'Concept bijgewerkt voor het document "{label}"'
     revision_edit_draft_warning: 'U bewerkt een reeds gepubliceerde revisie, het is veiliger om <a href="{path}" class="btn btn-primary"><span class="fa fa-pencil"></span> een concept te bewerken</a>'
     revision_finalize_error: 'De revisie {revision_id} voor het content type "{content_type}" kan niet worden gefinaliseerd, reden: {error_message}'
     revision_finalized: 'Het document "{label}" is gepubliceerd in {environment}'
     revision_incomplete_request: 'Het is niet mogelijk om het document "{label}" op te slaan. Controleer uw PHP/webconfiguratie (bv. max_input_vars in php.ini)'
+    revision_json_edit_draft_only: 'Enkel een draft kan als JSON bewerkt worden'
     revision_loaded_from_auto_save: 'Gegevens zijn geladen vanuit een automatisch opgeslagen versie'
     revision_locked: 'Document "{label}" is momenteel vergrendeld door {username}'
     revision_merge_error: 'De revisie {ouuid} voor het content type "{content_type}" kan niet worden samengevoegd/bijgewerkt, reden: {error_message}'
     revision_not_found_in_environment: 'Het is niet mogelijk om een revisie te identificeren voor het document "{ouuid}" in de omgeving {environment}'
+    revision_not_found_in_source: 'Geen revisie gevonden in de omgeving {environment} voor het document "{ouuid}"'
     revision_not_in_target_environment: 'Document "{label}" is niet gepubliceerd in de doelomgeving "{target}"'
     revision_only_super_can_finalize_archive: 'Alleen een supergebruiker kan een gearchiveerde revisie finaliseren'
+    revision_publish_failed: 'De publicatie van het document "{label}" is mislukt!'
     revision_published: 'Het document "{label}" is gepubliceerd in {environment}'
     revision_read_error: 'De revisie voor het content type "{content_type}" kan niet worden gevonden, reden: {error_message}'
     revision_reindexed: 'Het document "{label}" is opnieuw geïndexeerd in {environment}'
     revision_reindexed_failed: 'Het document "{label}" heeft een fout ondervonden tijdens het herindexeren "{error_message}"'
     revision_reindexed_failed_in: 'Het document "{label}" heeft een fout ondervonden tijdens het herindexeren in {environment}'
+    revision_replace_by_date: 'vervangen door revisie {date}'
     revision_replace_error: 'De revisie {ouuid} voor het content type "{content_type}" kan niet worden vervangen/bijgewerkt, reden: {error_message}'
     revision_restored: 'Het document "{label}" is hersteld'
     revision_unpublished: 'Het document "{label}" is gedepubliceerd uit {environment}'
     revision_updated_in_release: 'Document "{label}" is bijgewerkt met een nieuwe revisie in release "{release}"'
+    revison_not_found_in_env: 'geen revisie in {environment}'
     schedule_created: 'Schema "{name}" is aangemaakt'
     schedule_deleted: 'Het schema "{name}" is verwijderd'
     schedule_updated: 'Schema "{name}" is bijgewerkt'
@@ -942,6 +1013,11 @@ message:
     view_sorter_ordered: 'De documenten van {content_type} zijn gesorteerd met de weergave "{view_label}"'
     view_sorter_too_many_documents: 'Dit content type heeft te veel documenten ({total}) om in één keer opnieuw te ordenen'
     view_updated: 'De weergave "{label}" is bijgewerkt'
+    wysiwyg_invalid_config_format: 'Formaat ongeldig: {msg}'
+    wysiwyg_profile_deleted: 'Het profiel "{name}" is verwijderd'
+    wysiwyg_profile_updated: 'Het profiel "{name}" is bijgewerkt'
+    wysiwyg_styles_set_deleted: 'De stijlenset "{name}" is verwijderd'
+    wysiwyg_styles_set_updated: 'De stijlenset "{name}" is bijgewerkt'
     xliff_not_current_revision: 'Revisie {revision_id} van {ouuid} is niet langer de laatste revisie. De vertalingen werden niet geïmporteerd.'
     xliff_too_many_translations: '{counter} vertaaldocumenten terwijl er slechts één wordt verwacht voor vertaal-ID {translation_id} en doeltaal {target_locale} in omgeving {environment}'
 modal:
@@ -1032,12 +1108,26 @@ release:
     actions:
         add_publish: 'Documenten toevoegen voor publicatie'
         add_unpublish: 'Documenten toevoegen voor depublicatie'
+        delete: Verwijderen
+        delete_confirm: 'Deze release verwijderen?'
+        delete_selected: 'Selectie verwijderen'
+        delete_selected_confirm: 'Alle geselecteerde releases verwijderen?'
+        edit: Bewerken
+        publish_confirm: 'Bevestigt u dit?'
+        publish_release: 'Nu publiceren'
+        set_status_canceled: 'Release annuleren'
         set_status_ready: 'Release valideren'
+        set_status_wip: 'Release herzien'
+        show: Bekijken
     add:
         title: 'Release toevoegen'
+    all_releases:
+        label: 'Alle releases'
     edit:
         title: 'Release bewerken'
     index:
+        column:
+            docs_count: '# Documenten'
         title: 'Lijst van releases'
     menu: Releases
     release-revision:
@@ -1055,12 +1145,40 @@ release:
         revision-not-applicable: 'Niet van toepassing'
         still_in_target: 'Nog steeds gepubliceerd in {target}'
     revision:
+        action:
+            publish: 'Document toevoegen voor publicatie'
+            unpublish: 'Document toevoegen voor depublicatie'
+        actions:
+            add_confirm: 'Bevestigt u dit?'
+            remove: 'Documenten verwijderen'
+            remove_confirm: 'Bevestigt u dit?'
         index:
+            column:
+                CT: Contenttype
+                action: Actie
+                compare: Vergelijken
+                document: Document
+                label: Label
+                maxRevId: Doelomgeving
+                minRevId: Bronomgeving
+                previous: 'Vorige revisie'
+                revision: Revisie
+                still_in_target: 'Nog in {target}'
             publish: 'Lijst van documenten beschikbaar voor publicatie'
             unpublish: 'Lijst van documenten beschikbaar voor depublicatie'
         menu: 'Documenten toevoegen'
+        table:
+            rollback:
+                action: Terugdraaien
+                confirm: 'Bevestigt u dit?'
         view:
             title: 'Documenten van release'
+    status:
+        applied: Toegepast
+        canceled: Geannuleerd
+        ready: Klaar
+        scheduled: Gepland
+        wip: Concept
     unpublish_in: 'Depubliceren in {env}'
 revision:
     draft:
@@ -1083,27 +1201,57 @@ revision:
         put_back_selected: 'Selectie terugplaatsen'
         title: '{pluralName} in prullenbak'
 role:
-    admin: Beheerder
-    allow_align: 'Omgeving uitlijnen'
-    api: API
-    auditor: Auditor
-    author: Auteur
-    copy_paste: Kopiëren/Plakken
-    copywriter: Copywriter
-    default_search: 'Standaard zoekopdracht'
-    form_crm: 'Formulier CRM'
-    not_defined: 'Niet gedefinieerd'
-    publisher: Uitgever
-    reviewer: Reviewer
-    super: 'Super gebruiker'
-    super_admin: 'Super beheerder'
-    super_user: 'Super Gebruiker'
-    task_manager: Taakbeheer
-    traductor: Vertaler
-    user: Gebruiker
-    user_management: Gebruikersbeheer
-    user_read: 'Gebruiker (lezen)'
-    webmaster: Webmaster
+    admin:
+        label: Beheerder
+    allow_align:
+        description: 'De rol Omgeving afstemmen geeft toegang tot een tool waarmee meerdere documenten in bulk gepubliceerd kunnen worden.'
+        label: 'Omgeving afstemmen'
+    api:
+        description: 'Geeft toegang via de API.'
+        label: API
+    auditor:
+        label: Auditor
+    author:
+        label: Auteur
+    copy_paste:
+        description: 'De rol Kopiëren/plakken voor het kopiëren en plakken van inhoud in documenten.'
+        label: Kopiëren/plakken
+    copywriter:
+        label: Copywriter
+    default_search:
+        description: 'De rol Standaardzoekopdracht voor de standaardzoekfunctionaliteit (verouderd).'
+        label: Standaardzoekopdracht
+    form_crm:
+        description: 'Formulier-CRM geeft toegang tot de mini-CRM-beheertool die in het CMS is opgenomen.'
+        label: Formulier-CRM
+    not_defined:
+        label: 'Niet gedefinieerd'
+    publisher:
+        label: Publisher
+    reviewer:
+        label: Reviewer
+    super:
+        label: Supergebruiker
+    super_admin:
+        label: Superbeheerder
+    super_user:
+        description: 'De rol Supergebruiker voor supergebruikersfunctionaliteiten.'
+        label: Supergebruiker
+    task_manager:
+        description: 'De rol Taakbeheerder voor het beheren van taken.'
+        label: Taakbeheerder
+    traductor:
+        label: Vertaler
+    user:
+        label: Gebruiker
+    user_management:
+        description: 'De rol Gebruikersbeheer voor het beheren van gebruikers.'
+        label: Gebruikersbeheer
+    user_read:
+        description: 'De rol Gebruiker lezen voor toegang tot informatie over CMS-gebruikersaccounts via de API.'
+        label: 'Gebruiker lezen'
+    webmaster:
+        label: Webmaster
 search:
     filter:
         add: Toevoegen
@@ -1187,18 +1335,36 @@ task:
     create:
         button: 'Taak toevoegen'
         submit: 'Taak aanmaken'
+        success: 'Taak "{title}" succesvol aangemaakt.'
         title: 'Nieuwe taak toevoegen'
     dashboard:
         action:
             edit_revision: 'Revisie bewerken'
             go_revision: Revisie
+        column:
+            actions: Acties
+            assignee: Toegewezene
+            deadline: Deadline
+            label: Document
+            modified: 'Laatste wijziging'
+            requester: Aanvrager
+            status: Status
+            title: Taak
+            version_next_tag: 'Nieuwe versie'
         search_warning: 'Meer dan {count} taken, zoeken op documenttitel is onmogelijk.'
+        tab:
+            manager: 'Alle taken'
+            requester: 'Aangevraagde taken'
+            user: 'Aan mij toegewezen'
     delay_days: '{number} dagen'
     delete:
         submit: 'Taak verwijderen'
+        success: 'Taak "{title}" succesvol verwijderd.'
+        title: 'Verwijderde taak: {title}'
     field:
         assignee: Toegewezene
         deadline: Deadline
+        delay: 'Vertraging (in dagen)'
         description: Beschrijving
         requester: Aanvrager
         title: Titel
@@ -1208,6 +1374,7 @@ task:
         requester: Aanvragers
         reset: Wissen
         status: Statussen
+        submit: Zoeken
         version_next_tag: 'Nieuwe versies'
     filters: 'Taken filteren'
     finished:
@@ -1218,11 +1385,26 @@ task:
         empty: 'Geen taken voor dit document'
         locked: 'Revisie vergrendeld door {user} tot {time}'
     mail:
+        approved:
+            action: goedgekeurd
+            subject: 'Taak "{title}" goedgekeurd voor "{document}"'
         assignee: Toegewezene
+        assignee_changed:
+            action: 'toegewezene gewijzigd'
+            subject: 'Toegewezene gewijzigd voor taak "{title}" van "{document}"'
         by_role: 'per rol {role}'
         comment: Commentaar
+        completed:
+            action: voltooid
+            subject: 'Klaar voor validatie, taak "{title}" voor "{document}"'
+        created:
+            action: aangemaakt
+            subject: 'Nieuwe taak "{title}" voor "{document}"'
         creator: Maker
         deadline: Deadline
+        deleted:
+            action: verwijderd
+            subject: 'Taak "{title}" verwijderd voor "{document}"'
         description: Beschrijving
         from: 'Van {sender}'
         greetings: 'Hallo {receiver},'
@@ -1230,24 +1412,54 @@ task:
         link_to_document: 'Link naar document'
         overdue_or_active_list: 'Hier is de lijst met achterstallige of actieve taken.'
         process_urgently: 'Behandel ze dringend.'
+        rejected:
+            action: geweigerd
+            subject: 'Taak "{title}" geweigerd voor "{document}"'
         task_has_been: 'Een taak is {action} {role}.'
         title: Titel
+        updated:
+            action: bijgewerkt
+            subject: 'Taak "{title}" bijgewerkt voor "{document}"'
     modal:
         title: 'Taak: {title}'
     planned:
         title: 'Geplande taken'
+    status:
+        approved: Afgerond
+        completed: Voltooid
+        history:
+            approved: '{user} heeft de taak goedgekeurd'
+            completed: '{user} heeft de taak voltooid'
+            created: '{user} heeft de taak aangemaakt'
+            planned: '{user} heeft de taak gepland'
+            progress: 'De taak is actief geworden voor {assignee}'
+            rejected: '{user} heeft de taak geweigerd'
+            updated: '{user} heeft de taak bijgewerkt'
+        planned: Gepland
+        progress: Actief
+        rejected: Geweigerd
     tab_tasks: Taken
     title: Taken
     update:
         submit: 'Taak opslaan'
+        success: 'Taak "{title}" succesvol bijgewerkt.'
         tab:
             history: Geschiedenis
             info: Informatie
         title: 'Taak bewerken: {title}'
+    validation:
+        approve: Goedkeuren
+        reject: Weigeren
+        send: Verzenden
 title:
     asset_options: Asset-opties
+    content_type_create_ouuid: 'Deze bewerking indexeert het {content_type} niet, maar start alleen een concept met een specifieke OUUID'
     content_type_from_json_file: 'vanuit een JSON-bestand van een content type'
     content_type_json_update: 'Content type "{content_type}" bijwerken'
+    error: 'Er is een fout opgetreden'
+    error_page: 'Oeps! Er is een fout opgetreden'
+    notifications_none_pending: 'Geen wachtende notificaties'
+    select_environments_to_compare: 'Selecteer omgevingen om te vergelijken'
 type:
     confirm: |-
         {type, select,
@@ -1437,6 +1649,17 @@ type:
             other         {}
         }
 user:
+    action:
+        delete: Verwijderen
+        delete_confirm: 'Deze gebruiker verwijderen?'
+        disable: Uitschakelen
+        disable_confirm: 'Deze gebruiker uitschakelen?'
+        edit: Bewerken
+        generate_api: API-sleutel
+        generate_api_confirm: 'API-sleutel genereren voor deze gebruiker?'
+        remove: Verwijderen
+        remove_confirm: 'Deze gebruiker uit de groep verwijderen?'
+        switch: 'Van gebruiker wisselen'
     add:
         button: 'Gebruiker toevoegen'
         card_title: 'Nieuwe gebruiker'
@@ -1454,6 +1677,21 @@ user:
     export:
         csv: CSV-export
         excel: Excel-export
+    index:
+        column:
+            circles: Kringen
+            displayname: Weergavenaam
+            email: E-mail
+            email_notification: E-mailnotificaties
+            enabled: Ingeschakeld
+            expirationDate: Vervaldatum
+            group: Groep
+            lastLogin: 'Laatste login'
+            locale_preferred: Voorkeurslocale
+            locale_ui: Interface
+            roles: Rollen
+            username: Gebruikersnaam
+            wysiwyg_profile: WYSIWYG-profiel
     logged_in:
         member_since: 'Lid sinds {date}'
         title: 'Ingelogd als {username}'
@@ -1523,6 +1761,7 @@ view:
     contenttype:
         reorder_item:
             edit_field_button: '{name} bewerken'
+            edit_main_container_button: 'De hoofdcontainer bewerken'
     custom:
         hierarchical:
             reorganise: 'Reorganiseren:'
@@ -1549,21 +1788,21 @@ view:
                 upload-file: 'Bestand uploaden'
                 upload-files: 'Bestanden uploaden'
                 view-button: Bekijken
-    icon:
-        class:
-            form: 'fa fa-keyboard-o'
-            release: 'fa fa-cube'
     macros:
         data-field-type:
             collection_added_items: '{0} Er is niets toegevoegd.|{1} Er is één item toegevoegd.|]1,Inf[ Er zijn {count} items toegevoegd.'
             collection_removed_items: '{0} Er is niets verwijderd.|{1} Er is één item verwijderd.|]1,Inf[ Er zijn {count} items verwijderd.'
+            form:
+                not-defined: 'Formulier niet gedefinieerd'
+                not-found: 'Formulier niet gevonden'
             menu-option-button: Bekijken
     profile:
         show:
             action:
                 cancel: Annuleren
                 edit: Bewerken
-                profile: { title: 'Uw profiel' }
+                profile:
+                    title: 'Uw profiel'
             alt:
                 user_profile_picture: 'Profielfoto van de gebruiker'
             display_name: Weergavenaam
@@ -1577,6 +1816,40 @@ view:
     user:
         index:
             title: Gebruikerslijst
+            user-in-group: 'Gebruikers in groep {label}'
+            user-not-in-group: 'Gebruikers niet in groep {label}'
+        permissions:
+            page_title: 'Overzicht van rechten'
+            table_headers:
+                archive: Archiveren
+                content_type: Contenttype
+                create: Aanmaken
+                delete: Verwijderen
+                description: Beschrijving
+                edit: Bewerken
+                icon: Icoon
+                publish: Publiceren
+                role: Rol
+                show_link_create: 'Link aanmaken tonen'
+                show_link_search: 'Link zoeken tonen'
+                specific_roles: 'Specif. rollen'
+                trash: Prullenbak
+                view: Bekijken
+            titles:
+                content_type_permissions: 'Rechten van contenttypes'
+                descriptions:
+                    roles_functionalities_description: 'Deze rollen zijn specifiek bedoeld voor functionaliteit en hebben niets te maken met contentbeheer. Het zijn functionele rollen die toegang geven tot specifieke CMS-functies.'
+                    roles_hierarchy_description: 'Toegang tot een rol impliceert toegang tot alle rollen eronder in de hiërarchie. Hiërarchische rollen kunnen worden toegewezen om toegang tot het contenttype te verlenen en te beperken.'
+                roles_hierarchy: Rolhiërarchie
+                roles_specific_functionalities: 'Rollen voor specifieke functionaliteiten'
+        specific_permissions:
+            breadcrumb:
+                permission_overview: 'Overzicht van rechten'
+                specific_role: 'specifieke rollen'
+            titles:
+                permissions_overview: 'Overzicht van rechten'
+                specific_permissions: 'Recht voor {content_type_singular_name}'
+                specific_roles: 'Specifieke rollen van velden'
 views:
     data:
         edit-revision-html:
@@ -1647,14 +1920,11 @@ views:
             view-current-revision: 'Huidige revisie bekijken'
             view-draft-in-progress: 'Concept in uitvoering bekijken'
         object-views-button:
-            action-dropdown-icon-class: 'fa fa-eye'
             action-dropdown-label: 'Acties in {environment}'
             action-dropdown-sr-only: 'Dropdown met acties van {environment} omschakelen'
             copy-data: 'Gegevens kopiëren'
-            copy-data-icon-class: 'fa fa-copy'
             published-label: 'Gepubliceerd in {environment}'
             raw-view: 'Ruwe weergave'
-            raw-view-icon-class: 'fa fa-th'
         revision-toolbar-html:
             add-to-release: 'Toevoegen aan release'
             cancel-label: Annuleren

@@ -1,7 +1,7 @@
-{% extends '@EMSCore/base.html.twig' %} {% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %} {% trans_default_domain 'emsco-core' %}
 
-{% block title %} Notifications {%endblock %} 
-{% block pagetitle %} Notifications {% endblock %} 
+{% block title %} {{ 'key.notifications'|trans }} {%endblock %}
+{% block pagetitle %} {{ 'key.notifications'|trans }} {% endblock %}
 
 {% block body %}
 
@@ -11,7 +11,7 @@
 		<div class="col-sm-6 col-md-12">
 			<div class="box box-solid">
 				<div class="box-header with-border">
-					<h3 class="box-title">Folders</h3>
+					<h3 class="box-title">{{ 'key.folders'|trans }}</h3>
 	
 					<div class="box-tools">
 						<button type="button" class="btn btn-box-tool"
@@ -25,7 +25,7 @@
 						<li class="{% if folder == 'inbox' %}active{% endif %}">
 							<a href="{{ path('notifications.inbox') }}">
 								<i class="fa fa-inbox"></i> 
-								{{ 'Inbox'|trans }} 
+								{{ 'key.inbox'|trans }}
 								{% if counter > 0 %}
 	     							<span class="label label-primary pull-right">{{ counter }}</span>
 	     						{% endif %}
@@ -34,7 +34,7 @@
 						<li class="{% if folder == 'sent' %}active{% endif %}">
 							<a href="{{ path('notifications.sent') }}">
 								<i class="fa fa-envelope-o"></i> 
-								{{ 'Outbox'|trans }}
+								{{ 'key.outbox'|trans }}
 								{% if countSent > 0 %}
 	     							<span class="label label-default pull-right">{{ countSent }}</span>
 	     						{% endif %}
@@ -50,7 +50,7 @@
 			<div class="box box-solid collapsed-box">
 				{{ form_start(form) }}
 				<div class="box-header with-border">
-					<h3 class="box-title">Filters</h3>
+					<h3 class="box-title">{{ 'key.filters'|trans }}</h3>
 	
 					<div class="box-tools">
 						<button type="button" class="btn btn-box-tool"

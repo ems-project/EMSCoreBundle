@@ -140,7 +140,7 @@ abstract class TableAbstract implements TableInterface
         return $this->columns[$name] ?? null;
     }
 
-    public function addColumn(string|TranslatableMessage $titleKey, string $attribute, ?string $name = null): TableColumn
+    public function addColumn(TranslatableMessage $titleKey, string $attribute, ?string $name = null): TableColumn
     {
         $column = new TableColumn($titleKey, $attribute);
 
@@ -185,7 +185,7 @@ abstract class TableAbstract implements TableInterface
     /**
      * @param array<string, string> $attributes
      */
-    public function addItemActionCollection(string|TranslatableMessage|null $labelKey = null, ?string $icon = null, array $attributes = []): TableItemActionCollection
+    public function addItemActionCollection(?TranslatableMessage $labelKey = null, ?string $icon = null, array $attributes = []): TableItemActionCollection
     {
         $itemActionCollection = new TableItemActionCollection($labelKey, $icon, $attributes);
         $this->itemActionCollection->addItemActionCollection($itemActionCollection);
@@ -197,7 +197,7 @@ abstract class TableAbstract implements TableInterface
      * @param array<mixed>          $routeParameters
      * @param array<string, string> $attributes
      */
-    public function addItemGetAction(string $route, string|TranslatableMessage $labelKey, string $icon, array $routeParameters = [], array $attributes = []): TableItemAction
+    public function addItemGetAction(string $route, TranslatableMessage $labelKey, string $icon, array $routeParameters = [], array $attributes = []): TableItemAction
     {
         return $this->itemActionCollection->addItemGetAction($route, $labelKey, $icon, $routeParameters, $attributes);
     }
@@ -206,7 +206,7 @@ abstract class TableAbstract implements TableInterface
      * @param array<string, mixed>  $routeParameters
      * @param array<string, string> $attributes
      */
-    public function addItemPostAction(string $route, string|TranslatableMessage $labelKey, string $icon, string|TranslatableMessage $messageKey, array $routeParameters = [], array $attributes = []): TableItemAction
+    public function addItemPostAction(string $route, TranslatableMessage $labelKey, string $icon, TranslatableMessage $messageKey, array $routeParameters = [], array $attributes = []): TableItemAction
     {
         return $this->itemActionCollection->addItemPostAction($route, $labelKey, $icon, $messageKey, $routeParameters, $attributes);
     }
@@ -215,7 +215,7 @@ abstract class TableAbstract implements TableInterface
      * @param array<string, string|int> $routeParameters
      * @param array<string, string>     $attributes
      */
-    public function addDynamicItemPostAction(string $route, string|TranslatableMessage $labelKey, string $icon, string|TranslatableMessage|null $messageKey = null, array $routeParameters = [], array $attributes = []): TableItemAction
+    public function addDynamicItemPostAction(string $route, TranslatableMessage $labelKey, string $icon, ?TranslatableMessage $messageKey = null, array $routeParameters = [], array $attributes = []): TableItemAction
     {
         return $this->itemActionCollection->addDynamicItemPostAction($route, $labelKey, $icon, $messageKey, $routeParameters, $attributes);
     }
@@ -224,7 +224,7 @@ abstract class TableAbstract implements TableInterface
      * @param array<string, string> $routeParameters
      * @param array<string, string> $attributes
      */
-    public function addDynamicItemGetAction(string $route, string|TranslatableMessage $labelKey, string $icon, array $routeParameters = [], array $attributes = []): TableItemAction
+    public function addDynamicItemGetAction(string $route, TranslatableMessage $labelKey, string $icon, array $routeParameters = [], array $attributes = []): TableItemAction
     {
         return $this->itemActionCollection->addDynamicItemGetAction($route, $labelKey, $icon, $routeParameters, $attributes);
     }
@@ -238,7 +238,7 @@ abstract class TableAbstract implements TableInterface
     /**
      * @param array<string, string> $attributes
      */
-    public function addTableAction(string $name, string $icon, string|TranslatableMessage $labelKey, string|TranslatableMessage|null $confirmationKey = null, array $attributes = []): TableAction
+    public function addTableAction(string $name, string $icon, TranslatableMessage $labelKey, ?TranslatableMessage $confirmationKey = null, array $attributes = []): TableAction
     {
         $action = TableAction::create($name, $icon, $labelKey, $confirmationKey);
         $action->setAttributes($attributes);
@@ -266,7 +266,7 @@ abstract class TableAbstract implements TableInterface
     /**
      * @param array<string, string> $attributes
      */
-    public function addMassAction(string $name, TranslatableMessage|string $label, string $icon, string|TranslatableMessage|null $confirmationKey = null, array $attributes = []): TableAction
+    public function addMassAction(string $name, string|TranslatableMessage $label, string $icon, ?TranslatableMessage $confirmationKey = null, array $attributes = []): TableAction
     {
         $massAction = TableAction::create($name, $icon, $label, $confirmationKey);
         $massAction->setAttributes($attributes);

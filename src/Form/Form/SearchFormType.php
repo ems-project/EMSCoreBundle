@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Entity\SearchFieldOption;
 use EMS\CoreBundle\Entity\SortOption;
@@ -156,7 +155,6 @@ class SearchFormType extends AbstractType
             'savedSearch' => false,
             'csrf_protection' => false,
             'light' => false,
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
 

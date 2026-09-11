@@ -1,14 +1,14 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-core' %}
 
-{% block title %}Add a user{% endblock %}
-{% block pagetitle %}New user{% endblock %}
+{% block title %}{{ 'key.add_user'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'key.add_user'|trans }}{% endblock %}
 
 {% block subtitle %}<small>A new user in town?</small>{% endblock %}
 
 {% block body %}
 <div class="box box-primary">
 			<div class="box-header with-border">
-				<h3 class="box-title">Add user</h3>
+				<h3 class="box-title">{{ 'key.add_user'|trans }}</h3>
 			</div>
 {{ form_start(form, {'method': 'post', 'action': path('emsco_user_add') }) }}
     <div class="box-body">

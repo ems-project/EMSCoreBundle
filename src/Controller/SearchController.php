@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller;
 
-use EMS\CoreBundle\DependencyInjection\EMSCoreExtension;
 use EMS\CoreBundle\Entity\AggregateOption;
 use EMS\CoreBundle\Entity\SearchFieldOption;
 use EMS\CoreBundle\Entity\SortOption;
@@ -22,6 +21,8 @@ use Symfony\Component\Form\ClickableInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
+
+use function Symfony\Component\Translation\t;
 
 class SearchController extends AbstractController
 {
@@ -85,7 +86,7 @@ class SearchController extends AbstractController
         }
 
         return $this->render(\sprintf('@%s/entity/new.html.twig', $this->templateNamespace), [
-            'entity_name' => $this->translator->trans('search.sort_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
+            'entity_name' => t('key.sort_option', [], 'emsco-core')->trans($this->translator),
             'form' => $form->createView(),
         ]);
     }
@@ -105,7 +106,7 @@ class SearchController extends AbstractController
         }
 
         return $this->render(\sprintf('@%s/entity/new.html.twig', $this->templateNamespace), [
-            'entity_name' => $this->translator->trans('search.search_field_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
+            'entity_name' => t('key.search_field_option', [], 'emsco-core')->trans($this->translator),
             'form' => $form->createView(),
         ]);
     }
@@ -125,7 +126,7 @@ class SearchController extends AbstractController
         }
 
         return $this->render(\sprintf('@%s/entity/new.html.twig', $this->templateNamespace), [
-            'entity_name' => $this->translator->trans('search.aggregate_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
+            'entity_name' => t('key.aggregate_option', [], 'emsco-core')->trans($this->translator),
             'form' => $form->createView(),
         ]);
     }
@@ -151,7 +152,7 @@ class SearchController extends AbstractController
         }
 
         return $this->render(\sprintf('@%s/entity/edit.html.twig', $this->templateNamespace), [
-            'entity_name' => $this->translator->trans('search.sort_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
+            'entity_name' => t('key.sort_option', [], 'emsco-core')->trans($this->translator),
             'form' => $form->createView(),
         ]);
     }
@@ -177,7 +178,7 @@ class SearchController extends AbstractController
         }
 
         return $this->render(\sprintf('@%s/entity/edit.html.twig', $this->templateNamespace), [
-            'entity_name' => $this->translator->trans('search.search_field_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
+            'entity_name' => t('key.search_field_option', [], 'emsco-core')->trans($this->translator),
             'form' => $form->createView(),
         ]);
     }
@@ -203,7 +204,7 @@ class SearchController extends AbstractController
         }
 
         return $this->render(\sprintf('@%s/entity/edit.html.twig', $this->templateNamespace), [
-            'entity_name' => $this->translator->trans('search.aggregate_option_label', [], EMSCoreExtension::TRANS_DOMAIN),
+            'entity_name' => t('key.aggregate_option', [], 'emsco-core')->trans($this->translator),
             'form' => $form->createView(),
         ]);
     }

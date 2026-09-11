@@ -4,21 +4,19 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\UI;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Level;
 use Monolog\LogRecord;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class FlashMessageLogger extends AbstractProcessingHandler
 {
     /** @var LogRecord[] */
     private array $logs = [];
 
-    public function __construct(private readonly RequestStack $requestStack, private readonly TranslatorInterface $translator)
+    public function __construct(private readonly RequestStack $requestStack)
     {
         parent::__construct(Level::Notice);
     }
@@ -46,7 +44,7 @@ final class FlashMessageLogger extends AbstractProcessingHandler
 
             return;
         }
-        $message = $this->translate($record);
+        $message = $record->message;
 
         /** @var Session $session */
         $session = $currentRequest->getSession();
@@ -73,7 +71,7 @@ final class FlashMessageLogger extends AbstractProcessingHandler
             if (!isset($response[$level])) {
                 continue;
             }
-            $response[$level][] = $this->translate($log);
+            $response[$level][] = $log->message;
         }
         $currentRequest = $this->requestStack->getCurrentRequest();
         if (null !== $currentRequest && $currentRequest->hasSession(true)) {
@@ -89,16 +87,5 @@ final class FlashMessageLogger extends AbstractProcessingHandler
         $response['success'] ??= true;
 
         return new JsonResponse($response);
-    }
-
-    private function translate(LogRecord $record): string
-    {
-        // TODO: remove the translator when all logger have been migrated to the localized logger
-        $parameters = [];
-        foreach ($record->context as $key => $value) {
-            $parameters['%'.$key.'%'] = $value;
-        }
-
-        return $this->translator->trans($record->message, $parameters, EMSCoreBundle::TRANS_DOMAIN);
     }
 }

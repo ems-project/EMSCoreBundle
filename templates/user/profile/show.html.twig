@@ -51,7 +51,7 @@
                             <b>Roles : </b>
                             <i class="">
                                 {% for role in user.roles  -%}
-                                    <span class="badge text-nowrap">{{- role|replace({'ROLE_': 'ROLE.'})|lower|trans([], 'emsco-core') -}}</span>&nbsp;
+                                    <span class="badge text-nowrap">{{- (role|replace({'ROLE_': 'ROLE.'}) ~ '.label')|lower|trans([], 'emsco-core') -}}</span>&nbsp;
                                 {%- endfor %}
                             </i>
                         </li>

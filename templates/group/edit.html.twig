@@ -1,5 +1,5 @@
 {% extends '@EMSCore/page/page.html.twig' %}
-{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain 'emsco-core' %}
 
 {% block body %}
     <div class="row">
@@ -15,7 +15,7 @@
         </div>
         <div class="col-md-7">
             <div class="md-4">
-                <h2>{{ 'view.user.index.user-in-group'|trans({'%label%': form.vars.value.label}) }}</h2>
+                <h2>{{ 'view.user.index.user-in-group'|trans({'label': form.vars.value.label}) }}</h2>
                 {% with {
                     datatable: {'form': datatableForm},
                 } %}
@@ -23,7 +23,7 @@
                 {% endwith %}
             </div>
             <div class="md-4">
-                <h2>{{ 'view.user.index.user-not-in-group'|trans({'%label%': form.vars.value.label}) }}</h2>
+                <h2>{{ 'view.user.index.user-not-in-group'|trans({'label': form.vars.value.label}) }}</h2>
                 {% with {
                     datatable: {'form': userNotInGroupDataTable},
                 } %}

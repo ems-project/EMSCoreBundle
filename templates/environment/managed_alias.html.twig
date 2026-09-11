@@ -1,9 +1,9 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-core' %}
 
 {% if new %}
-    {% set title = 'Add managed alias'|trans %}
+    {% set title = 'action.add_managed_alias'|trans %}
 {% else %}
-    {% set title = 'Edit managed alias'|trans %}
+    {% set title = 'action.edit_managed_alias'|trans %}
 {% endif %}
 
 {% block title %}{{ title }}{% endblock %}

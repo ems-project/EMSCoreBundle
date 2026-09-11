@@ -18,15 +18,16 @@ use EMS\CoreBundle\Repository\TaskRepository;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 class RevisionTasksDataTableType extends AbstractQueryTableType implements DataTableFilterFormInterface
 {
-    public const LOAD_MAX_ROWS = 1000;
+    public const int LOAD_MAX_ROWS = 1000;
 
-    /**
-     * @return array<string, array{'order_field'?: string, 'cellRender'?: bool }>
-     */
-    public const COLUMNS = [
+    /** @var array<string, string> */
+    public const array COLUMNS = [
         'title' => 'task_title',
         'label' => 'revision_label',
         'version_next_tag' => 'revision_version_next_tag',
@@ -163,7 +164,7 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
     }
 
     /**
-     * @return \Generator<string[]>
+     * @return \Generator<int, array{string, string, TranslatableMessage}>
      */
     private function getColumns(TasksDataTableContext $context): \Generator
     {
@@ -183,7 +184,23 @@ class RevisionTasksDataTableType extends AbstractQueryTableType implements DataT
         }
 
         foreach ($columns as $name => $field) {
-            yield [$name, $field, \sprintf('task.dashboard.column.%s', $name)];
+            yield [$name, $field, $this->getColumnLabel($name)];
         }
+    }
+
+    private function getColumnLabel(string $column): TranslatableMessage
+    {
+        return match ($column) {
+            'title' => t('task.dashboard.column.title', [], 'emsco-core'),
+            'label' => t('task.dashboard.column.label', [], 'emsco-core'),
+            'version_next_tag' => t('task.dashboard.column.version_next_tag', [], 'emsco-core'),
+            'requester' => t('task.dashboard.column.requester', [], 'emsco-core'),
+            'assignee' => t('task.dashboard.column.assignee', [], 'emsco-core'),
+            'status' => t('task.dashboard.column.status', [], 'emsco-core'),
+            'deadline' => t('task.dashboard.column.deadline', [], 'emsco-core'),
+            'modified' => t('task.dashboard.column.modified', [], 'emsco-core'),
+            'actions' => t('task.dashboard.column.actions', [], 'emsco-core'),
+            default => throw new \RuntimeException('invalid column')
+        };
     }
 }

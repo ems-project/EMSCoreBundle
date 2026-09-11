@@ -6,13 +6,13 @@ namespace EMS\CoreBundle\Controller\Revision;
 
 use EMS\CoreBundle\Core\Revision\Task\TaskDTO;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
-use EMS\CoreBundle\Core\Revision\Task\TaskStatus;
 use EMS\CoreBundle\Core\UI\AjaxModal;
 use EMS\CoreBundle\Core\UI\AjaxService;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskHandleType;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskType;
 use EMS\CoreBundle\Service\Revision\RevisionService;
 use EMS\Helpers\Standard\Json;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -23,6 +23,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Twig\TemplateWrapper;
 
+use function Symfony\Component\Translation\t;
+
 final class TaskController extends AbstractController
 {
     public function __construct(
@@ -30,6 +32,7 @@ final class TaskController extends AbstractController
         private readonly RevisionService $revisionService,
         private readonly AjaxService $ajax,
         private readonly FormFactoryInterface $formFactory,
+        private readonly LoggerInterface $logger,
         private readonly string $coreDateFormat,
         private readonly string $templateNamespace,
     ) {
@@ -41,7 +44,7 @@ final class TaskController extends AbstractController
         $ajaxTemplate = $this->getAjaxTemplate();
 
         if ($revision->hasTaskCurrent()) {
-            $handle = $request->request->getString('handle');
+            $handle = $request->request->get('handle');
             $formHandle = $this->createForm(RevisionTaskHandleType::class, [], [
                 'task' => $revision->getTaskCurrent(),
                 'user' => $user,
@@ -111,7 +114,7 @@ final class TaskController extends AbstractController
                 $task = $this->taskManager->taskCreate($taskDTO, $revision);
 
                 return $ajaxModal
-                    ->addMessageSuccess('task.create.success', ['%title%' => $task->getTitle()])
+                    ->addMessageSuccess(t('task.create.success', ['title' => $task->getTitle()], 'emsco-core'))
                     ->setBodyHtml('')
                     ->setFooter('modalFooterClose')
                     ->getResponse();
@@ -121,7 +124,9 @@ final class TaskController extends AbstractController
                 ->setBody('modalCreateBody', ['form' => $form->createView()])
                 ->setFooter('modalCreateFooter')
                 ->getResponse();
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            $this->logger->error($e->getMessage());
+
             return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
         }
     }
@@ -141,7 +146,7 @@ final class TaskController extends AbstractController
             $ajaxModal->setFooter('modalUpdateFooter', ['task' => $task, 'revisionOuuid' => $revision->getOuuid()]);
 
             $form = $this->createForm(RevisionTaskType::class, $taskDTO, [
-                'task_status' => TaskStatus::from($task->getStatus()),
+                'task_status' => $task->getStatus(),
                 'content_type' => $revision->giveContentType(),
             ]);
             $form->handleRequest($request);
@@ -150,8 +155,8 @@ final class TaskController extends AbstractController
                 $this->taskManager->taskUpdate($task, $taskDTO, $revision);
 
                 return $ajaxModal
-                    ->setTitle('task.update.title', ['%title%' => $task->getTitle()])
-                    ->addMessageSuccess('task.update.success', ['%title%' => $task->getTitle()])
+                    ->setTitle(t('task.update.title', ['title' => $task->getTitle()], 'emsco-core'))
+                    ->addMessageSuccess(t('task.update.success', ['title' => $task->getTitle()], 'emsco-core'))
                     ->setBody('modalTaskBody', ['form' => $form->createView(), 'task' => $task])
                     ->getResponse();
             }
@@ -173,7 +178,7 @@ final class TaskController extends AbstractController
                 throw $this->createAccessDeniedException();
             }
 
-            $ajaxModal = $this->getAjaxModal()->setTitle('task.delete.title', ['%title%' => $task->getTitle()]);
+            $ajaxModal = $this->getAjaxModal()->setTitle(t('task.delete.title', ['title' => $task->getTitle()], 'emsco-core'));
 
             $form = $this->formFactory->create();
             $form->add('comment', TextareaType::class, [
@@ -186,7 +191,7 @@ final class TaskController extends AbstractController
                 $this->taskManager->taskDelete($task, $revision, $form->getData()['comment']);
 
                 return $ajaxModal
-                    ->addMessageSuccess('task.delete.success', ['%title%' => $task->getTitle()])
+                    ->addMessageSuccess(t('task.delete.success', ['title' => $task->getTitle()], 'emsco-core'))
                     ->setBodyHtml('')
                     ->setFooter('modalFooterClose')
                     ->getResponse();

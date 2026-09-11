@@ -1,5 +1,5 @@
 {% extends '@EMSCore/base.html.twig' %}
-{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain 'emsco-core' %}
 
 {% block title %}{{ 'task.title'|trans }}{% endblock %}
 
@@ -12,15 +12,15 @@
 {%- set showFilters = attribute(requestQuery, 'filters')|default([])|length > 0 -%}
 <div id="task-dashboard" class="nav-tabs-custom">
     <ul class="nav nav-tabs">
-        {% for tabName in tabs %}
+        {% for tabName, tab in tabs %}
             {% if currentTab == tabName %}
                 <li class="active">
-                    <a href="#{{ currentTab }}" data-toggle="tab" aria-expanded="true">{{ "task.dashboard.tab.#{tabName}"|trans }}</a>
+                    <a href="#{{ currentTab }}" data-toggle="tab" aria-expanded="true">{{ tab.label|trans }}</a>
                 </li>
             {% else %}
                 <li>
                     <a href="{{ path(route, routeParams|merge({'tab': tabName})) }}">
-                        {{ "task.dashboard.tab.#{tabName}"|trans }}
+                        {{ tab.label|trans }}
                     </a>
                 </li>
             {% endif %}
@@ -40,7 +40,7 @@
             {{ block('filters') }}
 
             {% if table.count > loadMaxRows %}
-                <div class="alert alert-warning" role="alert">{{ 'task.dashboard.search_warning'|trans({ '%count%': loadMaxRows }) }}</div>
+                <div class="alert alert-warning" role="alert">{{ 'task.dashboard.search_warning'|trans({ 'count': loadMaxRows }) }}</div>
             {% endif %}
 
             {% form_theme formTable '@EMSCore/form/forms.html.twig' %}
@@ -68,18 +68,18 @@
             <div class="well">
                 <div class="row" data-ems-form-submit-on-choice-change>
                     {{ form_start(filterForm) }}
-                    {{ form_row(filterForm.status, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.status'|trans }) }}
+                    {{ form_row(filterForm.status, {'row_attr': { 'class': 'col-md-3' } }) }}
                     {% if filterForm.assignee is defined %}
-                        {{ form_row(filterForm.assignee, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.assignee'|trans  }) }}
+                        {{ form_row(filterForm.assignee, {'row_attr': { 'class': 'col-md-3' }  }) }}
                     {% endif %}
                     {% if filterForm.requester is defined %}
-                        {{ form_row(filterForm.requester, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.requester'|trans  }) }}
+                        {{ form_row(filterForm.requester, {'row_attr': { 'class': 'col-md-3' } }) }}
                     {% endif %}
                     {% if filterForm.versionNextTag is defined %}
-                        {{ form_row(filterForm.versionNextTag, {'row_attr': { 'class': 'col-md-3' }, 'label': 'task.filter.version_next_tag'|trans  }) }}
+                        {{ form_row(filterForm.versionNextTag, {'row_attr': { 'class': 'col-md-3' } }) }}
                     {% endif %}
                     {% if filterForm.isOverdue is defined %}
-                        {{ form_row(filterForm.isOverdue, {'row_attr': { 'class': 'col-md-3 pt-4' }, 'label': 'task.filter.is_overdue'|trans  }) }}
+                        {{ form_row(filterForm.isOverdue, {'row_attr': { 'class': 'col-md-3 pt-4' } }) }}
                     {% endif %}
                     <div class="col-md-12">
                         <input type="hidden" name="tab" value="{{ currentTab }}" />

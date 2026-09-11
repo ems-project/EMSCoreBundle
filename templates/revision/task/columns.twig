@@ -1,4 +1,4 @@
-{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain 'emsco-core' %}
 
 {%- block title -%}
     <a href="#" class="task-modal"
@@ -37,7 +37,7 @@
             {%- endif -%}
         </td>
     {% else %}
-        <td data-order="{{ data.task_delay }}">{{ "task.delay_days"|trans({ '%number%': data.task_delay }) }}</td>
+        <td data-order="{{ data.task_delay }}">{{ "task.delay_days"|trans({ 'number': data.task_delay }) }}</td>
     {% endif %}
 {%- endblock -%}
 

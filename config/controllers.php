@@ -684,6 +684,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.revision'),
             service('ems_core.core_ui.ajax_service'),
             service('form.factory'),
+            service('emsco.logger'),
             '%ems_core.date_format%',
             '%ems_core.template_namespace%',
         ])

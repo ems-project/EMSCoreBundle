@@ -1,13 +1,13 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-core' %}
 
-{% block title %} {{ 'Reorder the content type "%content_type%"'|trans({'%content_type%': contentType.singularName }) }}{% endblock %}
-{% block pagetitle %}{{ 'Reorder the content type "%content_type%"'|trans({'%content_type%': contentType.singularName }) }}{% endblock %}
+{% block title %} {{ 'action.reorder_content_type'|trans({'content_type': contentType.singularName }) }}{% endblock %}
+{% block pagetitle %}{{ 'action.reorder_content_type'|trans({'content_type': contentType.singularName }) }}{% endblock %}
 
 {% block breadcrumb %}
 	<ol class="breadcrumb">
 		<li><a href="{{ path("emsco_admin_content_type_index") }}"><i class="fa fa-cubes"></i> Content Types</a></li>
 		<li><a href="{{ path("emsco_admin_content_type_edit", {contentType: contentType.id}) }}"><i class="{{ contentType.icon }}"></i> Edit {{ contentType.singularName }}</a></li>
-   		<li class="active">{{ 'Reorder'|trans }}</li>
+   		<li class="active">{{ 'action.reorder'|trans }}</li>
    	</ol>
 {% endblock %}
 
@@ -19,7 +19,7 @@
 			<div class="box-header with-border">
 				<h2 class="box-title">
 					<i class="{% if contentType.icon %}{{ contentType.icon }} {% else %} fa fa-question {% endif %} "></i>
-					{{ 'Reorder %name%\'s fields'|trans({'%name%': contentType.name}) }}
+					{{ 'action.reorder_content_type_fields'|trans({'name': contentType.pluralName }) }}
 				</h2>
 
 				<div class="btn-group  pull-right">

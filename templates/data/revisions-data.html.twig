@@ -175,7 +175,7 @@
 			{{ 'views.data.revisions-data-html.current-revision'|trans }}
 		{% else %}
 			<i class="fa fa-clock-o"></i>
-			{{ 'views.data.revisions-data-html.previous-revision'|trans({'%timestamp%': revision.created|date(date_time_format)}) }}
+			{{ 'views.data.revisions-data-html.previous-revision'|trans({'timestamp': revision.created|date(date_time_format)}) }}
 		{% endif %}
 	</p>
 
@@ -254,7 +254,7 @@
 					{{ 'views.data.revisions-data-html.current-revision'|trans }}
 				{% else %}
 					<i class="fa fa-clock-o"></i>
-					{{ 'views.data.revisions-data-html.previous-revision'|trans({'%timestamp%': revision.created|date(date_time_format)}) }}
+					{{ 'views.data.revisions-data-html.previous-revision'|trans({'timestamp': revision.created|date(date_time_format)}) }}
 				{% endif %}
 			</h3>
 			{% if revision.giveContentType.versioning.enabled and revision.versionDate('to') != null and latestVersion %}
@@ -289,7 +289,7 @@
 {% block revisionFooterTabs %}
 	<div class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
-			<li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true" data-testid="revision-tab-referrers">{{ 'views.data.revisions-data-html.linked-documents-in'|trans({'%environment%': revision.contentType.environment.label, '%length%': referrerResponse.documents|length, '%total%': referrerResponse.formattedTotal }) }}</a></li>
+			<li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true" data-testid="revision-tab-referrers">{{ 'views.data.revisions-data-html.linked-documents-in'|trans({'environment': revision.contentType.environment.label, 'length': referrerResponse.documents|length, 'total': referrerResponse.formattedTotal }) }}</a></li>
 			<li class=""><a href="#tab_revisions" data-toggle="tab" aria-expanded="false" data-testid="revision-tab-revisions">Revisions <small>{{ revisionsSummary|length }}/{{ counter }}</small></a></li>
 			{% if auditTable|default(false) %}
 				<li class=""><a href="#tab_audit" data-toggle="tab" aria-expanded="false" data-testid="revision-tab-audit">Audit <small>({{ auditCount }})</small></a></li>

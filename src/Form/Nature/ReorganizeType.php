@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Nature;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\View;
@@ -75,7 +74,6 @@ class ReorganizeType extends AbstractType
     {
         $resolver->setDefaults([
             'view' => null,
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
 }

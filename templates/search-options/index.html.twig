@@ -1,10 +1,10 @@
-{% trans_default_domain 'EMSCoreBundle' %}{% extends '@EMSCore/base.html.twig' %}
-{% block title %} {{ 'Search options'|trans }} {%endblock %}
-{% block pagetitle %} {{ 'Search options'|trans }} {% endblock %} 
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-core' %}
+{% block title %} {{ 'key.search_options'|trans }} {%endblock %}
+{% block pagetitle %} {{ 'key.search_options'|trans }} {% endblock %}
 
 {% block breadcrumb %}
 	<ol class="breadcrumb">
-		<li><i class="fa fa-search"></i> {{ 'Search options'|trans }}</li>
+		<li><i class="fa fa-search"></i> {{ 'key.search_options'|trans }}</li>
    	</ol>
 {% endblock %}
 
@@ -14,9 +14,9 @@
     		{% include '@EMSCore/entity/list-entities.html.twig' with {
     		    'entities': sortOptions,
     		    'icon': 'fa fa-sort-alpha-asc',
-    		    'title': 'Sort Options'|trans,
-    		    'add_label': 'Add a Sort Option'|trans,
-    		    'missing_label': 'Click on \'Add a Sort Option\' to create a first Sort Option'|trans,
+    		    'title': 'key.sort_options'|trans,
+    		    'add_label': 'action.add_sort_option'|trans,
+    		    'missing_label': 'help.add_first_sort_option'|trans,
     		    'add_route': 'ems_search_sort_option_new',
     		    'edit_route': 'ems_search_sort_option_edit',
     		    'form': sortOptionReorderForm
@@ -26,9 +26,9 @@
     		{% include '@EMSCore/entity/list-entities.html.twig' with {
     		    'entities': aggregateOptions,
     		    'icon': 'fa fa-th',
-    		    'title': 'Aggregate Options'|trans,
-    		    'add_label': 'Add an Aggregate Option'|trans,
-    		    'missing_label': 'Click on \'Add an aggregate option\' to create a first Aggregate Option'|trans,
+    		    'title': 'key.aggregate_options'|trans,
+    		    'add_label': 'action.add_aggregate_option'|trans,
+    		    'missing_label': 'help.add_first_aggregate_option'|trans,
     		    'add_route': 'ems_search_aggregate_option_new',
     		    'edit_route': 'ems_search_aggregate_option_edit',
     		    'form': aggregateOptionReorderForm
@@ -38,9 +38,9 @@
     		{% include '@EMSCore/entity/list-entities.html.twig' with {
     		    'entities': searchFieldOptions,
     		    'icon': 'fa fa-th',
-    		    'title': 'Search Field Options'|trans,
-    		    'add_label': 'Add an Search Field Option'|trans,
-    		    'missing_label': 'Click on \'Add an search field option\' to create a first Search Field Option'|trans,
+    		    'title': 'key.search_field_options'|trans,
+    		    'add_label': 'action.add_search_field_option'|trans,
+    		    'missing_label': 'help.add_first_search_field_option'|trans,
     		    'add_route': 'ems_search_field_option_new',
     		    'edit_route': 'ems_search_field_option_edit',
     		    'form': searchFieldOptionReorderForm

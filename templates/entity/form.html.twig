@@ -1,9 +1,9 @@
-{% trans_default_domain 'EMSCoreBundle' %}{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'emsco-core' %}{% extends '@EMSCore/base.html.twig' %}
 
 
 {% block breadcrumb %}
 	<ol class="breadcrumb">
-		<li><a href="{{ path('ems_search_options_index') }}"><i class="fa fa-search"></i> {{ 'Search options'|trans }}</a></li>
+		<li><a href="{{ path('ems_search_options_index') }}"><i class="fa fa-search"></i> {{ 'key.search_options'|trans }}</a></li>
 		<li>{% block title %}{% endblock %}</li>
    	</ol>
 {% endblock %}

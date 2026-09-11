@@ -1,4 +1,4 @@
-{%- trans_default_domain 'EMSCoreBundle' -%}
+{%- trans_default_domain 'emsco-core' -%}
 <!DOCTYPE html>
 <html lang="{{ app.request.locale }}">
 <head>
@@ -143,11 +143,11 @@
 				} %}
 
                 <p>
-                  {{ 'user.logged_in.title'|trans({'%username%': app.user.username}, 'emsco-core') }}
-                  <small>{{ 'user.logged_in.member_since'|trans({'%date%': app.user.created|date(date_time_format)}, 'emsco-core') }}</small>
+                  {{ 'user.logged_in.title'|trans({'username': app.user.username}, 'emsco-core') }}
+                  <small>{{ 'user.logged_in.member_since'|trans({'date': app.user.created|date(date_time_format)}, 'emsco-core') }}</small>
                   <small>
                   	{% for role in app.user.roles %}
-                  		{{ role|replace({'ROLE_': 'ROLE.'})|lower|trans([], 'emsco-core') }}{% if not loop.last %},{% endif %}
+                  		{{ (role|replace({'ROLE_': 'ROLE.'}) ~ '.label')|lower|trans([], 'emsco-core') }}{% if not loop.last %},{% endif %}
                   	{% endfor %}
                   </small>
                 </p>
@@ -267,7 +267,7 @@
     {% if app.user %}
         <!-- To the right -->
         <div class="pull-right">
-            {{ 'core.version'|trans({ '%core%': ems_version('core'), '%symfony%': ems_version('symfony') }, 'emsco-core') }}
+            {{ 'core.version'|trans({ 'core': ems_version('core'), 'symfony': ems_version('symfony') }, 'emsco-core') }}
         </div>
         <!-- Default to the left -->
         <a href="http://www.elasticms.eu/">elastic<b>ms</b></a>

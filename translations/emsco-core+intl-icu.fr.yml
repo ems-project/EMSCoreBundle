@@ -1,11 +1,16 @@
 action:
     activate: Activer
     add: Ajouter
+    add_aggregate_option: 'Options d’agrégation'
     add_alias: 'Ajouter un alias'
+    add_entity: 'Nouveau {entity_name}'
+    add_managed_alias: 'Ajouter un alias géré'
     add_referenced: 'Ajouter une référence'
     add_referenced_content_type: 'Ajouter un type de contenu référencé'
     add_release_publish: 'Ajouter à la release pour publication'
     add_release_unpublish: 'Ajouter à la release pour dépublication'
+    add_search_field_option: 'Ajouter une option de champ de recherche'
+    add_sort_option: 'Ajouter une option de tri'
     attach: Attacher
     cancel: Annuler
     clear: Effacer
@@ -21,25 +26,35 @@ action:
     delete_all: 'Tout supprimer'
     delete_selected: 'Supprimer la sélection'
     details: Détails
+    discard: Abandonner
     download: Télécharger
     download_selected: 'Télécharger la sélection'
     duplicate: Dupliquer
     edit: Modifier
+    edit_entity: 'Modifier {entity_name}'
+    edit_managed_alias: 'Modifier l’alias géré'
     export: Exporter
     export_selected: 'Exporter la sélection'
     extract_content: 'Extraire le contenu'
+    hide: Masquer
     info: Info
     paste: Coller
+    publish: Publier
     rebuild: Reconstruire
     refresh: Actualiser
     relaunch: Relancer
     remove: Supprimer
     reorder: Réordonner
+    reorder_content_type: 'Réordonner le type de contenu « {content_type} »'
+    reorder_content_type_fields: 'Réordonner les champs de « {content_type} »'
+    reorganise: Réorganiser
+    reset_filters: 'Réinitialiser les filtres'
     save: Enregistrer
     save_as_draft: 'Enregistrer comme brouillon'
     save_close: 'Enregistrer et fermer'
     save_publish_in: 'Enregistrer et publier dans {environments}'
     select_all: 'Tout sélectionner'
+    show: Afficher
     status: Statut
     toggle_sidebar: 'Basculer la barre latérale'
     toggle_visibility: 'Basculer la visibilité'
@@ -189,10 +204,6 @@ dashboard:
 data:
     add:
         new_title: 'Nouveau {content_type}'
-        notice:
-            draft_not_indexed: 'Cette opération n’indexera pas immédiatement un nouvel objet « <em>{content_type}</em> ». Elle créera un nouveau brouillon sans révision précédente. <strong>Ce brouillon ne sera visible</strong> dans aucun environnement <strong>tant qu’il n’aura pas été finalisé une première fois</strong>. Cela signifie que vous ne pourrez pas le voir dans une vue de liste (comme l’index, la carte, le calendrier...), mais tous les brouillons en cours sont disponibles dans la section « Brouillon en cours ».'
-            ouuid: 'À propos de l’<strong>identifiant unique de l’objet</strong> : vous pouvez en spécifier un librement (à condition qu’il ne soit pas déjà utilisé, bien sûr). Si vous le laissez <strong>vide</strong>, un identifiant unique de l’objet <strong>sera généré</strong> lors de l’enregistrement. Il n’est pas possible de modifier l’identifiant unique de l’objet par la suite.'
-        subtitle: 'Cette opération n’indexera pas le {object_name}, mais initialisera uniquement un brouillon avec un OUUID spécifique'
         title: 'Ajouter un nouveau {content_type}'
     custom-view:
         pagetitle: 'Vue {name} de {contentType} « {label} » telle qu’indexée dans {environment}'
@@ -312,6 +323,7 @@ field:
     config: Configuration
     content_css: 'CSS du contenu'
     content_js: 'JS du contenu'
+    content_types: 'Types de contenu'
     context: Contexte
     copy_to: 'Copier vers'
     count: Nombre
@@ -337,6 +349,7 @@ field:
     enabled: Activé
     endpoint_url: Endpoint
     entry_path: 'Chemin d’entrée par défaut'
+    environment: Environnement
     environment_default: 'Environnement par défaut'
     environment_external: 'Environnement externe'
     environments: Environnements
@@ -370,6 +383,7 @@ field:
     indexes: Indexes
     instance: Instance
     is_active: Actif
+    is_default: 'Par défaut'
     is_dirty: Modifié
     is_edit_wysiwyg: 'Modifier avec WYSIWYG'
     is_menu_notification: 'Visible dans le menu des notifications'
@@ -409,6 +423,7 @@ field:
     release_environment_source: 'Environnement source pour la publication'
     release_environment_target: 'Environnement pour la (dé)publication'
     render_option: 'Option de rendu'
+    revision: Révision
     revision_version_tag: 'Oui comme {version_tag}'
     revision_version_tag_empty: 'Non (publication silencieuse)'
     role: Rôle
@@ -463,7 +478,7 @@ field_type:
         paste: Coller
     reorder: Réordonner
     textarea:
-        counter: '%count% caractères'
+        counter: '{count} caractères'
 fields:
     asset:
         browse-server: 'Parcourir le serveur'
@@ -524,13 +539,13 @@ form_submissions:
     overview: Aperçu
     title: 'Soumissions de formulaires'
 help:
+    add_first_aggregate_option: 'Cliquez sur « Ajouter une option d’agrégation » pour créer une première option d’agrégation'
+    add_first_search_field_option: 'Cliquez sur « Ajouter une option de champ de recherche » pour créer une première option de champ de recherche'
+    add_first_sort_option: 'Cliquez sur « Ajouter une option de tri » pour créer une première option de tri'
     override_styles_set_config: 'remplacer la configuration des jeux de styles'
 inline_editor:
     action:
-        discard: Abandonner
         exit: Quitter
-        publish: Publier
-        save: Enregistrer
     elements: Éléments
     status:
         draft_by: 'En brouillon par "{user}"'
@@ -565,11 +580,15 @@ json_menu_nested:
     error:
         item_edit_outdated: 'Désynchronisé, fermez et réessayez !'
 key:
+    action: Action
     actions: Actions
     active_primary_shards: 'Shards primaires actifs'
     active_shards: 'Shards actifs'
     active_shards_percent_as_number: 'Shards actifs'
+    add_user: 'Ajouter un utilisateur'
     admin: Admin
+    aggregate_option: 'Option d’agrégation'
+    aggregate_options: 'Options d’agrégation'
     all_content_types: 'Tous les types de contenu'
     analyzers: Analyseurs
     anonymous_user: 'Utilisateur anonyme'
@@ -601,12 +620,14 @@ key:
     export_documents: 'Exporter les documents'
     extra: Extra
     filters: Filtres
+    folders: Dossiers
     form_root: 'Racine du formulaire'
     form_submissions: 'Soumissions de formulaire'
     forms: Formulaires
     groups: Groupes
     i18n: I18N
     impersonator: Impersonnateur
+    inbox: 'Boîte de réception'
     initializing_shards: 'Shards en initialisation'
     inline: Inline
     inline_editor: 'Éditeur inline'
@@ -631,10 +652,13 @@ key:
     not-applicable: N/A
     not_defined: 'Non défini'
     notice: Notice
+    notification: Notification
+    notifications: Notifications
     number_of_data_nodes: 'Nombre de nœuds de données'
     number_of_nodes: 'Nombre de nœuds'
     number_of_pending_tasks: 'Nombre de tâches en attente'
     orphan_indexes: 'Indexes orphelins'
+    outbox: 'Boîte d’envoi'
     overview: "Vue d'ensemble"
     portrait: Portrait
     prefix_instance_id: 'Préfixer l’alias avec l’ID de l’instance'
@@ -646,21 +670,30 @@ key:
     query_search: 'Recherche par requête'
     query_searches: QuerySearch
     recent_activities: 'Activités récentes'
+    revisions: Révisions
     schedule: Planification
     schedule_cron: '<Minute> <Heure> <Jour_du_mois> <Mois_de_l’année> <Jour_de_la_semaine>. Ex. toutes les 15 minutes : */15 * * * *'
     schedule_tag: 'Utilisé pour identifier les workers (ex. CLI) qui exécuteraient le job à distance'
     search: Recherche
+    search_field_option: 'Option de champ de recherche'
+    search_field_options: 'Options de champ de recherche'
+    search_options: 'Options de recherche'
+    searches: Recherches
     severity: Sévérité
     show_search_form: 'Afficher le formulaire de recherche'
     sort_by: 'Trier par'
+    sort_option: 'Option de tri'
+    sort_options: 'Options de tri'
     status: Statut
     structure: Structure
     system_logs: 'Journaux système'
     tagline: Slogan
     task_max_waiting_in_queue_millis: 'Attente maximale d’une tâche dans la file'
     tiptap: Tiptap
+    to_be_treated: 'À traiter'
     trash: Corbeille
     unassigned_shards: 'Shards non assignés'
+    unknown: Inconnu
     unreferenced_aliases: 'Alias non référencés'
     uploaded_files: 'Fichiers uploadés'
     uploaded_files_logs: 'Logs des fichiers uploadés'
@@ -669,6 +702,7 @@ key:
     version: Version
     views: Vues
     warning: Avertissement
+    warnings: Avertissements
     webhook_subscriptions: Abonnements
     webhooks: Webhooks
     wysiwyg: WYSIWYG
@@ -679,8 +713,6 @@ log:
         content_type_add_unreferenced: 'Erreur inattendue lors de la récupération des types de contenu non référencés depuis l’environnement externe {environment} : {error}'
         delete_failed: 'Échec de la suppression'
         invalid_table_action: 'Action de tableau inconnue'
-    icon:
-        class: 'fa fa-file-text'
     menu: Logs
     notice:
         alias_attached: 'L’alias « {alias} » a été attaché'
@@ -771,12 +803,14 @@ message:
     action_error: 'Cette page/action a rencontré une erreur : {error_message}'
     action_updated: 'L''action "{label}" a été mise à jour'
     alias_added: 'Un nouvel alias "{alias_name}" a été ajouté à l''index "{index_name}"'
+    alias_too_many_indexes: "Il y a trop d'index"
     analyzer_created: 'L''analyseur "{label}" a été créé'
     analyzer_deleted: 'L''analyseur "{label}" a été supprimé'
     analyzer_updated: 'L''analyseur "{label}" a été mis à jour'
     api_entity_created: "L'entité {entity} a été créée avec l'id {id}"
     api_entity_deleted: 'L''entité {entity} "{name}" a été supprimée avec l''id {id}'
     api_entity_updated: 'L''entité {entity} "{name}" a été mise à jour avec l''id {id}'
+    asset_extract_error: "Un problème est survenu lors de l’extraction des informations du fichier {filename}\_: {error_message}<br>Veuillez vérifier votre fichier d’entrée et réessayer, ou ajoutez manuellement les métadonnées dans le menu Info."
     asset_extract_file_too_large: 'Ce fichier étant plus volumineux ({filesize}) que {max_size}, son contenu n''a pas été extrait automatiquement. Vous pouvez forcer l''extraction ou le spécifier manuellement dans le menu "Info".'
     channel_alias_not_found: 'Le canal "{label}" ne peut pas être enregistré car son alias "{alias}" est manquant'
     channel_deleted: 'Le canal "{name}" a été supprimé'
@@ -784,7 +818,15 @@ message:
     content_type_created: 'Le type de contenu "{label}" a été créé'
     content_type_deleted: 'Le type de contenu "{label}" a été supprimé'
     content_type_dirty: 'Le type de contenu "{label}" est "dirty" (son mapping est peut-être obsolète), essayez de mettre à jour son mapping'
+    content_type_info_ouuid: |
+        Cette opération n'indexera pas immédiatement un nouvel objet « <em>{content_type}</em> ». Elle démarrera un nouveau brouillon sans révision préalable. <strong>Ce brouillon ne sera visible</strong> dans aucun environnement <strong>tant qu'il n'aura pas été finalisé pour la première fois</strong>.
+        Cela signifie que vous ne pourrez pas le voir dans une vue de liste (comme l'index, la carte, le calendrier...), mais tous les brouillons en cours se trouvent dans la section « Brouillon en cours ».
+
+        À propos de l'<strong>identifiant unique de l'objet</strong> : vous êtes libre d'en spécifier un (à condition qu'il ne soit pas déjà pris, bien sûr).
+        Si vous le laissez <strong>vide</strong>, un identifiant unique d'objet <strong>sera généré</strong> lors de l'enregistrement. Il est impossible de modifier l'identifiant unique de l'objet par la suite.
     content_type_mapping_not_found: 'Mapping introuvable pour le type de contenu "{label}"'
+    content_type_reordered: 'Le type de contenu « {content_type} » a été réordonné'
+    content_type_update_mapping_error: "Erreur lors de la mise à jour du mapping de {environments}\_: {elasticsearch_error}"
     contenttype_mappings_error: 'La mise à jour des mappings pour {content_type} dans {environments} a échoué : {elasticsearch_dump}'
     contenttype_mappings_updated: 'Mappings mis à jour avec succès pour le type de contenu {content_type} dans {environments}'
     dashboard_deleted: 'Le tableau de bord "{label}" a été supprimé'
@@ -811,6 +853,9 @@ message:
     document_compared: 'Comparaison de la révision {revision_id} du document {content_type}:{ouuid} avec la révision {compare_revision_id} du document {compare_content_type}:{compare_ouuid}'
     document_copied: 'Le contenu du document "{label}" a été copié dans le presse-papiers'
     document_duplicated: 'Le document "{label}" a été utilisé pour créer un nouveau document'
+    entity_created: '{entity} {name} a été créé'
+    entity_deleted: '{entity} {name} a été supprimé'
+    entity_updated: '{entity} {name} a été mis à jour'
     environment_alias_missing: "L'alias pour l'environnement {environment} est manquant, envisagez de reconstruire un tout nouvel alias"
     environment_alias_removed: "L'alias {alias} a été supprimé"
     environment_aligned: 'Les environnements {environment} et {with_environment} sont alignés pour ces types de contenu'
@@ -823,6 +868,8 @@ message:
     environment_rebuild_unknown_option: 'Impossible de reconstruire l''environnement {environment} en raison de l''option inconnue "{option}"'
     environment_updated: "L'environnement {environment} a été mis à jour"
     environment_wrong_ouuid: 'OUUID mal formé {ouuid}'
+    error_status: 'Avec le message « {status} »'
+    error_status_code: 'Le serveur a retourné un {status_code}'
     field_added: 'Le champ "{name}" a été ajouté'
     field_collection_import_array: "Certaines données n'ont pas été importées pour le champ de collection {field_name} car il ne s'agissait pas d'un tableau"
     field_deleted: 'Le champ "{name}" a été supprimé'
@@ -837,6 +884,7 @@ message:
     field_with_errors: 'Le champ {path} est en erreur avec le message {error_message}'
     file_upload_error: 'Erreur lors du téléchargement du fichier : {error_message}'
     filter_deleted: 'Le filtre {filter_name} a été supprimé'
+    finalized_when_user: '{date} Finalisé par {user}'
     form_deleted: 'Le formulaire "{label}" a été supprimé'
     form_submission_deleted: 'La soumission de formulaire avec l''id "{id}" a été supprimée !'
     import_failed: "Échec de l'import"
@@ -848,8 +896,23 @@ message:
     managed_alias_created: 'L''alias géré "{managed_alias_label}" a été créé'
     managed_alias_deleted: 'L''alias géré "{managed_alias_label}" a été supprimé'
     managed_alias_updated: 'L''alias géré "{managed_alias_label}" a été mis à jour'
+    notification_already_pending: 'Une autre notification {notification_name} est déjà en attente pour le document « {label} » dans {environment} par {notification_username}'
+    notification_no_results: 'Aucun résultat à afficher'
+    notification_no_results_for_filter_combo: 'Aucun résultat pour cette combinaison de filtres'
     notification_not_found: 'Notification #{notification_id} introuvable'
+    notification_send_error: "Erreur lors de l’envoi de la notification ({action_label}) pour {content_type}\_: {error_message}"
+    notification_sent: '{notification_name} pour le document « {label} » dans {environment} a été envoyée'
+    notification_treated: '{notification_name} pour le document « {label} » dans {environment} a été {status}'
+    notification_updated: 'Une notification « {notification_name} » a été {notification_status} pour un document « {content_type} » ({ouuid})'
+    notification_will_be_lost_on_finalize: 'Une notification « {notification_name} » sera perdue pour ce document {content_type} ({ouuid}) lors de la finalisation'
+    object_choice_alias_not_found: 'Alias introuvable pour le type de contenu {content_type}'
+    object_choice_content_type_not_found: 'Type de contenu {content_type} introuvable'
+    object_choice_key_not_found: 'Clé d’objet {object_key} introuvable'
+    object_choice_limited_result_set: 'Le sélecteur de lien de données est limité aux {limit} premiers documents sur {count}'
     privilege_exception: "Vous n'avez pas suffisamment de droits pour modifier ce document"
+    publish_not_authorized: 'Vous ne pouvez pas (dé)publier le type de contenu {content_type}'
+    publish_not_in_circles: 'Vous ne pouvez pas (dé)publier le type de contenu {content_type} car vous ne partagez aucun cercle'
+    publish_not_in_default_environment: 'Vous ne pouvez pas (dé)publier dans l’environnement par défaut {environment} du document « {label} »'
     query_search_deleted: 'La recherche par requête "{label}" a été supprimée'
     reindex_command_end: 'Les documents du content type {content_type} ont été réindexés dans {environment} (index : {index})'
     reindex_command_environment_not_found: 'Environnement nommé {environment} introuvable'
@@ -862,6 +925,7 @@ message:
     revision_added_to_release: 'Le document "{label}" a été ajouté à la release "{release}"'
     revision_ajax_update_on_finalized: 'Il est impossible d''enregistrer le document "{label}" car cette révision est déjà finalisée'
     revision_already_in_release: 'Cette révision du document "{label}" était déjà présente dans la release "{release}"'
+    revision_already_published: 'Le document « {label} » est déjà publié dans {environment}'
     revision_auto_publish_rollback: 'Le document "{label}" a été republié silencieusement dans {environment}'
     revision_auto_save_off_with_auto_publish: "L'enregistrement automatique a été désactivé car la publication automatique est activée pour le type de contenu {content_type}. Appuyez sur Ctrl+S (Cmd+S) pour enregistrer et publier dans {environment}"
     revision_cannot_delete_published: 'Le document "{label}" ne peut pas être supprimé car il est publié dans {environment}'
@@ -880,26 +944,33 @@ message:
     revision_draft_cannot_be_added_to_release: 'Une révision en mode brouillon ne peut pas être ajoutée à une release'
     revision_draft_created: 'Un nouveau brouillon a été initié pour le document "{label}"'
     revision_draft_deleted: 'Brouillon abandonné pour le document "{label}"'
+    revision_draft_publish_error: "Un brouillon du document « {label} » ne peut pas être publié dans {environment}\_: {error_message}"
+    revision_draft_published: 'Un brouillon du document « {label} » a été publié dans {environment}'
     revision_draft_updated: 'Brouillon mis à jour pour le document "{label}"'
     revision_edit_draft_warning: 'Vous modifiez une révision déjà publiée, il est plus sûr de <a href="{path}" class="btn btn-primary"><span class="fa fa-pencil"></span> modifier un brouillon</a>'
     revision_finalize_error: 'La révision {revision_id} pour le type de contenu "{content_type}" ne peut pas être finalisée, raison : {error_message}'
     revision_finalized: 'Le document "{label}" a été publié dans {environment}'
     revision_incomplete_request: 'Il est impossible d''enregistrer le document "{label}". Veuillez vérifier votre configuration PHP/Web (par ex. max_input_vars dans php.ini)'
+    revision_json_edit_draft_only: 'Seul un brouillon peut être édité en JSON'
     revision_loaded_from_auto_save: "Les données ont été chargées à partir d'une version enregistrée automatiquement"
     revision_locked: 'Le document "{label}" est actuellement verrouillé par {username}'
     revision_merge_error: 'La révision {ouuid} pour le type de contenu "{content_type}" ne peut pas être fusionnée/mise à jour, raison : {error_message}'
     revision_not_found_in_environment: 'Il est impossible d''identifier une révision pour le document "{ouuid}" dans l''environnement {environment}'
+    revision_not_found_in_source: 'Révision manquante dans l’environnement {environment} pour le document « {ouuid} »'
     revision_not_in_target_environment: 'Le document "{label}" n''est pas publié dans l''environnement cible "{target}"'
     revision_only_super_can_finalize_archive: 'Seul un super utilisateur peut finaliser une révision archivée'
+    revision_publish_failed: "La publication du document « {label} » a échoué\_!"
     revision_published: 'Le document "{label}" a été publié dans {environment}'
     revision_read_error: 'La révision pour le type de contenu "{content_type}" est introuvable, raison : {error_message}'
     revision_reindexed: 'Le document "{label}" a été réindexé dans {environment}'
     revision_reindexed_failed: 'Le document "{label}" a rencontré une exception lors de sa réindexation "{error_message}"'
     revision_reindexed_failed_in: 'Le document "{label}" a rencontré une exception lors de sa réindexation dans {environment}'
+    revision_replace_by_date: 'remplacée par la révision {date}'
     revision_replace_error: 'La révision {ouuid} pour le type de contenu "{content_type}" ne peut pas être remplacée/mise à jour, raison : {error_message}'
     revision_restored: 'Le document "{label}" a été restauré'
     revision_unpublished: 'Le document "{label}" a été dépublié de {environment}'
     revision_updated_in_release: 'Le document "{label}" a été mis à jour avec une nouvelle révision dans la release "{release}"'
+    revison_not_found_in_env: 'aucune révision dans {environment}'
     schedule_created: 'La planification "{name}" a été créée'
     schedule_deleted: 'La planification "{name}" a été supprimée'
     schedule_updated: 'La planification "{name}" a été mise à jour'
@@ -942,6 +1013,11 @@ message:
     view_sorter_ordered: 'Les documents de {content_type} ont été triés avec la vue "{view_label}"'
     view_sorter_too_many_documents: 'Ce content type contient trop de documents ({total}) pour être réordonné en une seule fois'
     view_updated: 'La vue "{label}" a été mise à jour'
+    wysiwyg_invalid_config_format: "Format non valide\_: {msg}"
+    wysiwyg_profile_deleted: 'Le profil « {name} » a été supprimé'
+    wysiwyg_profile_updated: 'Le profil « {name} » a été mis à jour'
+    wysiwyg_styles_set_deleted: 'Le jeu de styles « {name} » a été supprimé'
+    wysiwyg_styles_set_updated: 'Le jeu de styles « {name} » a été mis à jour'
     xliff_not_current_revision: "La révision {revision_id} de {ouuid} n'est plus la dernière révision. Les traductions n'ont pas été importées."
     xliff_too_many_translations: "{counter} documents de traduction alors qu'un seul est attendu pour l'identifiant de traduction {translation_id} et la locale cible {target_locale} dans l'environnement {environment}"
 modal:
@@ -1032,12 +1108,26 @@ release:
     actions:
         add_publish: 'Ajouter des documents à publier'
         add_unpublish: 'Ajouter des documents à dépublier'
+        delete: Supprimer
+        delete_confirm: "Supprimer la release\_?"
+        delete_selected: 'Supprimer la sélection'
+        delete_selected_confirm: "Supprimer toutes les releases sélectionnées\_?"
+        edit: Modifier
+        publish_confirm: "Confirmez-vous\_?"
+        publish_release: 'Publier maintenant'
+        set_status_canceled: 'Annuler la release'
         set_status_ready: 'Valider la release'
+        set_status_wip: 'Retravailler la release'
+        show: Voir
     add:
         title: 'Ajouter une release'
+    all_releases:
+        label: 'Toutes les releases'
     edit:
         title: 'Modifier une release'
     index:
+        column:
+            docs_count: '# Documents'
         title: 'Liste des releases'
     menu: Releases
     release-revision:
@@ -1055,12 +1145,40 @@ release:
         revision-not-applicable: 'Non applicable'
         still_in_target: 'Toujours publié dans {target}'
     revision:
+        action:
+            publish: 'Ajouter un document pour publication'
+            unpublish: 'Ajouter un document pour dépublication'
+        actions:
+            add_confirm: "Confirmez-vous\_?"
+            remove: 'Retirer des documents'
+            remove_confirm: "Confirmez-vous\_?"
         index:
+            column:
+                CT: 'Type de contenu'
+                action: Action
+                compare: Comparer
+                document: Document
+                label: Libellé
+                maxRevId: 'Environnement cible'
+                minRevId: 'Environnement source'
+                previous: 'Révision précédente'
+                revision: Révision
+                still_in_target: 'Toujours dans {target}'
             publish: 'Liste des documents disponibles pour publication'
             unpublish: 'Liste des documents disponibles pour dépublication'
         menu: 'Ajouter des documents'
+        table:
+            rollback:
+                action: 'Annuler (rollback)'
+                confirm: "Confirmez-vous\_?"
         view:
             title: 'Documents de la release'
+    status:
+        applied: Appliquée
+        canceled: Annulée
+        ready: Prête
+        scheduled: Planifiée
+        wip: Brouillon
     unpublish_in: 'Dépublier dans {env}'
 revision:
     draft:
@@ -1083,27 +1201,57 @@ revision:
         put_back_selected: 'Restaurer la sélection'
         title: '{pluralName} dans la corbeille'
 role:
-    admin: Administrateur
-    allow_align: "Aligner l'environnement"
-    api: API
-    auditor: Auditeur
-    author: Auteur
-    copy_paste: Copier/Coller
-    copywriter: Rédacteur
-    default_search: 'Recherche par défaut'
-    form_crm: 'Formulaire CRM'
-    not_defined: 'Non défini'
-    publisher: Éditeur
-    reviewer: Réviseur
-    super: 'Super utilisateur'
-    super_admin: 'Super administrateur'
-    super_user: 'Super Utilisateur'
-    task_manager: 'Gestion des tâches'
-    traductor: Traducteur
-    user: Utilisateur
-    user_management: 'Gestion des utilisateurs'
-    user_read: 'Utilisateur (lecture)'
-    webmaster: Webmaster
+    admin:
+        label: Administrateur
+    allow_align:
+        description: 'Le rôle Aligner l’environnement donne accès à un outil permettant la publication en masse de plusieurs documents.'
+        label: 'Aligner l’environnement'
+    api:
+        description: 'Donne accès via l’API.'
+        label: API
+    auditor:
+        label: Auditeur
+    author:
+        label: Auteur
+    copy_paste:
+        description: 'Le rôle Copier/Coller pour copier et coller du contenu dans les documents.'
+        label: Copier/Coller
+    copywriter:
+        label: Rédacteur
+    default_search:
+        description: 'Le rôle Recherche par défaut pour la fonctionnalité de recherche par défaut (obsolète).'
+        label: 'Recherche par défaut'
+    form_crm:
+        description: 'Form CRM donne accès à l’outil de gestion mini-CRM inclus dans le CMS.'
+        label: 'Form CRM'
+    not_defined:
+        label: 'Non défini'
+    publisher:
+        label: Éditeur
+    reviewer:
+        label: Relecteur
+    super:
+        label: 'Super utilisateur'
+    super_admin:
+        label: 'Super administrateur'
+    super_user:
+        description: 'Le rôle Super utilisateur pour les fonctionnalités de super utilisateur.'
+        label: 'Super utilisateur'
+    task_manager:
+        description: 'Le rôle Gestionnaire de tâches pour la gestion des tâches.'
+        label: 'Administrateur de tâches'
+    traductor:
+        label: Traducteur
+    user:
+        label: Utilisateur
+    user_management:
+        description: 'Le rôle Gestion des utilisateurs pour la gestion des utilisateurs.'
+        label: 'Gestion des utilisateurs'
+    user_read:
+        description: 'Le rôle Lecture utilisateur pour accéder aux informations des comptes utilisateurs du CMS via l’API.'
+        label: 'Lecture utilisateur'
+    webmaster:
+        label: Webmaster
 search:
     filter:
         add: Ajouter
@@ -1187,18 +1335,36 @@ task:
     create:
         button: 'Ajouter une tâche'
         submit: 'Créer la tâche'
+        success: 'Tâche « {title} » créée avec succès.'
         title: 'Ajouter une nouvelle tâche'
     dashboard:
         action:
             edit_revision: 'Modifier la révision'
             go_revision: Révision
+        column:
+            actions: Actions
+            assignee: Assigné
+            deadline: Échéance
+            label: Document
+            modified: 'Dernière modification'
+            requester: Demandeur
+            status: Statut
+            title: Tâche
+            version_next_tag: 'Nouvelle version'
         search_warning: 'Plus de {count} tâches, la recherche sur le titre du document est impossible.'
+        tab:
+            manager: 'Toutes les tâches'
+            requester: 'Tâches demandées'
+            user: 'Assignées à moi'
     delay_days: '{number} jours'
     delete:
         submit: 'Supprimer la tâche'
+        success: 'Tâche « {title} » supprimée avec succès.'
+        title: "Tâche supprimée\_: {title}"
     field:
         assignee: Assigné
         deadline: Échéance
+        delay: 'Délai (en jours)'
         description: Description
         requester: Demandeur
         title: Titre
@@ -1208,6 +1374,7 @@ task:
         requester: Demandeurs
         reset: Effacer
         status: Statuts
+        submit: Rechercher
         version_next_tag: 'Nouvelles versions'
     filters: 'Filtrage des tâches'
     finished:
@@ -1218,11 +1385,26 @@ task:
         empty: 'Aucune tâche pour ce document'
         locked: 'Révision verrouillée par {user} jusqu’à {time}'
     mail:
+        approved:
+            action: approuvée
+            subject: 'Tâche « {title} » approuvée pour « {document} »'
         assignee: Assigné
+        assignee_changed:
+            action: 'assigné modifié'
+            subject: 'Assigné modifié pour la tâche « {title} » de « {document} »'
         by_role: 'par rôle {role}'
         comment: Commentaire
+        completed:
+            action: terminée
+            subject: 'Prête pour validation, tâche « {title} » pour « {document} »'
+        created:
+            action: créée
+            subject: 'Nouvelle tâche « {title} » pour « {document} »'
         creator: Créateur
         deadline: Échéance
+        deleted:
+            action: supprimée
+            subject: 'Tâche « {title} » supprimée pour « {document} »'
         description: Description
         from: 'De {sender}'
         greetings: 'Bonjour {receiver},'
@@ -1230,24 +1412,54 @@ task:
         link_to_document: 'Lien vers le document'
         overdue_or_active_list: 'Voici la liste des tâches en retard ou actives.'
         process_urgently: 'Veuillez les traiter rapidement.'
+        rejected:
+            action: rejetée
+            subject: 'Tâche « {title} » rejetée pour « {document} »'
         task_has_been: 'Une tâche a été {action} {role}.'
         title: Titre
+        updated:
+            action: 'mise à jour'
+            subject: 'Tâche « {title} » mise à jour pour « {document} »'
     modal:
         title: 'Tâche : {title}'
     planned:
         title: 'Tâches planifiées'
+    status:
+        approved: Terminée
+        completed: Complétée
+        history:
+            approved: '{user} a approuvé la tâche'
+            completed: '{user} a terminé la tâche'
+            created: '{user} a créé la tâche'
+            planned: '{user} a planifié la tâche'
+            progress: 'La tâche est devenue active pour {assignee}'
+            rejected: '{user} a rejeté la tâche'
+            updated: '{user} a mis à jour la tâche'
+        planned: Planifiée
+        progress: Active
+        rejected: Rejetée
     tab_tasks: Tâches
     title: Tâches
     update:
         submit: 'Enregistrer la tâche'
+        success: 'Tâche « {title} » mise à jour avec succès.'
         tab:
             history: Historique
             info: Information
         title: 'Modifier la tâche : {title}'
+    validation:
+        approve: Approuver
+        reject: Rejeter
+        send: Envoyer
 title:
     asset_options: 'Options du fichier'
+    content_type_create_ouuid: "Cette opération n'indexera pas le {content_type}, mais initiera uniquement un brouillon avec un OUUID spécifique"
     content_type_from_json_file: "à partir d'un fichier JSON d'un content type"
     content_type_json_update: 'Mettre à jour le content type "{content_type}"'
+    error: 'Une erreur est survenue'
+    error_page: "Oups\_! Une erreur est survenue"
+    notifications_none_pending: 'Aucune notification en attente'
+    select_environments_to_compare: 'Sélectionner les environnements à comparer'
 type:
     confirm: |-
         {type, select,
@@ -1437,6 +1649,17 @@ type:
             other         {}
         }
 user:
+    action:
+        delete: Supprimer
+        delete_confirm: "Supprimer cet utilisateur\_?"
+        disable: Désactiver
+        disable_confirm: "Désactiver cet utilisateur\_?"
+        edit: Modifier
+        generate_api: 'Clé API'
+        generate_api_confirm: "Générer une clé API pour cet utilisateur\_?"
+        remove: Retirer
+        remove_confirm: "Retirer cet utilisateur du groupe\_?"
+        switch: 'Changer d’utilisateur'
     add:
         button: 'Ajouter un utilisateur'
         card_title: 'Nouvel utilisateur'
@@ -1454,6 +1677,21 @@ user:
     export:
         csv: 'Export CSV'
         excel: 'Export Excel'
+    index:
+        column:
+            circles: Cercles
+            displayname: 'Nom d’affichage'
+            email: E-mail
+            email_notification: 'Notifications par e-mail'
+            enabled: Activé
+            expirationDate: 'Date d’expiration'
+            group: Groupe
+            lastLogin: 'Dernière connexion'
+            locale_preferred: 'Langue préférée'
+            locale_ui: Interface
+            roles: Rôles
+            username: 'Nom d’utilisateur'
+            wysiwyg_profile: 'Profil WYSIWYG'
     logged_in:
         member_since: 'Membre depuis le {date}'
         title: 'Connecté en tant que {username}'
@@ -1523,6 +1761,7 @@ view:
     contenttype:
         reorder_item:
             edit_field_button: 'Modifier {name}'
+            edit_main_container_button: 'Modifier le conteneur principal'
     custom:
         hierarchical:
             reorganise: 'Réorganiser :'
@@ -1549,21 +1788,21 @@ view:
                 upload-file: 'Téléverser un fichier'
                 upload-files: 'Téléverser des fichiers'
                 view-button: Voir
-    icon:
-        class:
-            form: 'fa fa-keyboard-o'
-            release: 'fa fa-cube'
     macros:
         data-field-type:
             collection_added_items: '{0} Aucun élément n’a été ajouté.|{1} Un élément a été ajouté.|]1,Inf[ {count} éléments ont été ajoutés.'
             collection_removed_items: '{0} Aucun élément n’a été supprimé.|{1} Un élément a été supprimé.|]1,Inf[ {count} éléments ont été supprimés.'
+            form:
+                not-defined: 'Formulaire non défini'
+                not-found: 'Formulaire introuvable'
             menu-option-button: Voir
     profile:
         show:
             action:
                 cancel: Annuler
                 edit: Modifier
-                profile: { title: 'Votre profil' }
+                profile:
+                    title: 'Votre profil'
             alt:
                 user_profile_picture: 'Photo de profil de l’utilisateur'
             display_name: 'Nom affiché'
@@ -1577,6 +1816,40 @@ view:
     user:
         index:
             title: 'Liste des utilisateurs'
+            user-in-group: 'Utilisateurs dans le groupe {label}'
+            user-not-in-group: 'Utilisateurs hors du groupe {label}'
+        permissions:
+            page_title: 'Vue d’ensemble des permissions'
+            table_headers:
+                archive: Archiver
+                content_type: 'Type de contenu'
+                create: Créer
+                delete: Supprimer
+                description: Description
+                edit: Modifier
+                icon: Icône
+                publish: Publier
+                role: Rôle
+                show_link_create: 'Afficher le lien de création'
+                show_link_search: 'Afficher le lien de recherche'
+                specific_roles: 'Rôles spéc.'
+                trash: Corbeille
+                view: Voir
+            titles:
+                content_type_permissions: 'Permissions des types de contenu'
+                descriptions:
+                    roles_functionalities_description: 'Ces rôles sont spécifiquement liés à des fonctionnalités et n’ont rien à voir avec la gestion de contenu. Ce sont des rôles fonctionnels qui donnent accès à des fonctionnalités spécifiques du CMS.'
+                    roles_hierarchy_description: 'L’accès à un rôle implique l’accès à tous les rôles situés en dessous dans la hiérarchie. Les rôles hiérarchiques peuvent être attribués pour accorder et limiter l’accès au type de contenu.'
+                roles_hierarchy: 'Hiérarchie des rôles'
+                roles_specific_functionalities: 'Rôles pour des fonctionnalités spécifiques'
+        specific_permissions:
+            breadcrumb:
+                permission_overview: 'Vue d’ensemble des permissions'
+                specific_role: 'rôles spécifiques'
+            titles:
+                permissions_overview: 'Vue d’ensemble des permissions'
+                specific_permissions: 'Permission pour {content_type_singular_name}'
+                specific_roles: 'Rôles spécifiques des champs'
 views:
     data:
         edit-revision-html:
@@ -1647,14 +1920,11 @@ views:
             view-current-revision: 'Voir la révision actuelle'
             view-draft-in-progress: 'Voir le brouillon en cours'
         object-views-button:
-            action-dropdown-icon-class: 'fa fa-eye'
             action-dropdown-label: 'Actions dans {environment}'
             action-dropdown-sr-only: 'Basculer le menu déroulant des actions de {environment}'
             copy-data: 'Copier les données'
-            copy-data-icon-class: 'fa fa-copy'
             published-label: 'Publié dans {environment}'
             raw-view: 'Vue brute'
-            raw-view-icon-class: 'fa fa-th'
         revision-toolbar-html:
             add-to-release: 'Ajouter à la release'
             cancel-label: Annuler

@@ -49,7 +49,7 @@ final class TaskLog
     public static function logStatusUpdate(Task $task, string $username, ?string $comment): self
     {
         $log = new self($task->getAssignee(), $username);
-        $log->status = $task->getStatus();
+        $log->status = $task->getStatus()->value;
         $log->comment = $comment;
 
         return $log;

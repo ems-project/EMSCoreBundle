@@ -13,7 +13,6 @@ use EMS\CoreBundle\Core\Revision\EventType;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\Revision\RevisionDraftsDataTableType;
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\UserInterface;
@@ -61,7 +60,7 @@ class EditController extends AbstractController
             throw new AccessDeniedException($request->getPathInfo());
         }
         if (!$revision->getDraft()) {
-            throw new ElasticmsException($this->translator->trans('log.data.revision.only_draft_can_be_json_edited', LogRevisionContext::read($revision), EMSCoreBundle::TRANS_DOMAIN));
+            throw new ElasticmsException(t('message.revision_json_edit_draft_only', [], 'emsco-core')->trans($this->translator));
         }
 
         $this->dataService->lockRevision($revision);

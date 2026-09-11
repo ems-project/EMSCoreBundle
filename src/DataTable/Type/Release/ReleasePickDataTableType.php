@@ -51,7 +51,7 @@ class ReleasePickDataTableType extends AbstractEntityTableType
                 template: \sprintf('@%s/release/columns/revisions.html.twig', $this->templateNamespace)
             )
         );
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.index.column.docs_count', 'docs_count', \sprintf('@%s/release/columns/revisions.html.twig', $this->templateNamespace)))->setCellClass('text-right');
+        $table->addColumnDefinition(new TemplateBlockTableColumn(t('release.index.column.docs_count', [], 'emsco-core'), 'docs_count', \sprintf('@%s/release/columns/revisions.html.twig', $this->templateNamespace)))->setCellClass('text-right');
 
         $table->addItemPostAction(
             route: Routes::DATA_ADD_REVISION_TO_RELEASE,

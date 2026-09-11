@@ -7,15 +7,20 @@ namespace EMS\CoreBundle\Service;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ObjectRepository;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\Helpers\Standard\Json;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+use function Symfony\Component\Translation\t;
+
 abstract class EntityService
 {
-    public function __construct(protected Registry $doctrine, protected LoggerInterface $logger, protected TranslatorInterface $translator)
-    {
+    public function __construct(
+        protected Registry $doctrine,
+        protected LocalizedLoggerInterface $logger,
+        protected TranslatorInterface $translator
+    ) {
     }
 
     /**
@@ -79,20 +84,20 @@ abstract class EntityService
             $entity->setOrderKey(100 + $count);
             $this->update($entity);
 
-            $this->logger->notice('service.entity.created', [
-                'entity_type' => $this->getEntityName(),
-                'entity_name' => \method_exists($entity, 'getName') ? $entity->getName() : $entity::class,
-            ]);
+            $this->logger->messageNotice(t('message.entity_created', [
+                'type' => $this->getEntityName(),
+                'name' => \method_exists($entity, 'getName') ? $entity->getName() : $entity::class,
+            ], 'emsco-core'));
         }
     }
 
     public function save(object $entity): void
     {
         $this->update($entity);
-        $this->logger->notice('service.entity.updated', [
-            'entity_type' => $this->getEntityName(),
-            'entity_name' => \method_exists($entity, 'getName') ? $entity->getName() : $entity::class,
-        ]);
+        $this->logger->messageNotice(t('message.entity_updated', [
+            'type' => $this->getEntityName(),
+            'name' => \method_exists($entity, 'getName') ? $entity->getName() : $entity::class,
+        ], 'emsco-core'));
     }
 
     private function update(object $entity): void
@@ -108,9 +113,9 @@ abstract class EntityService
         $em->remove($entity);
         $em->flush();
 
-        $this->logger->notice('service.entity.deleted', [
-            'entity_type' => $this->getEntityName(),
-            'entity_name' => \method_exists($entity, 'getName') ? $entity->getName() : $entity::class,
-        ]);
+        $this->logger->messageNotice(t('message.entity_deleted', [
+            'type' => $this->getEntityName(),
+            'name' => \method_exists($entity, 'getName') ? $entity->getName() : $entity::class,
+        ], 'emsco-core'));
     }
 }

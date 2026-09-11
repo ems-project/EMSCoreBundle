@@ -14,7 +14,10 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Translation\TranslatableMessage;
 use Twig\Environment;
+
+use function Symfony\Component\Translation\t;
 
 final readonly class RevisionTask implements DashboardInterface
 {
@@ -35,7 +38,7 @@ final readonly class RevisionTask implements DashboardInterface
         $tab = $request?->query->getString('tab', TasksDataTableContext::TAB_USER);
         $tabs = $this->getDashboardTabs();
 
-        if (!\in_array($tab, $tabs, true)) {
+        if (null === $tab || !\array_key_exists($tab, $tabs)) {
             throw new NotFoundHttpException(\sprintf('Could not find tab %s', $tab));
         }
 
@@ -54,14 +57,19 @@ final readonly class RevisionTask implements DashboardInterface
     }
 
     /**
-     * @return string[]
+     * @return array<string, array{label: TranslatableMessage}>
      */
     private function getDashboardTabs(): array
     {
-        return \array_filter([
-            TasksDataTableContext::TAB_USER,
-            TasksDataTableContext::TAB_REQUESTER,
-            $this->taskManager->isTaskManager() ? TasksDataTableContext::TAB_MANAGER : null,
-        ]);
+        $tabs = [
+            TasksDataTableContext::TAB_USER => ['label' => t('task.dashboard.tab.user', [], 'emsco-core')],
+            TasksDataTableContext::TAB_REQUESTER => ['label' => t('task.dashboard.tab.requester', [], 'emsco-core')],
+        ];
+
+        if ($this->taskManager->isTaskManager()) {
+            $tabs[TasksDataTableContext::TAB_MANAGER] = ['label' => t('task.dashboard.tab.manager', [], 'emsco-core')];
+        }
+
+        return $tabs;
     }
 }

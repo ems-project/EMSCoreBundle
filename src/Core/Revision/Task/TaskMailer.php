@@ -6,14 +6,16 @@ namespace EMS\CoreBundle\Core\Revision\Task;
 
 use EMS\CoreBundle\Core\Mail\MailerService;
 use EMS\CoreBundle\Core\Mail\MailTemplate;
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Task;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\UserService;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatorInterface;
+
+use function Symfony\Component\Translation\t;
 
 class TaskMailer
 {
@@ -50,7 +52,7 @@ class TaskMailer
             'senderUsername' => $senderUsername,
             'senderRole' => $sender instanceof UserInterface ? $this->getSenderRole($task, $sender) : null,
             'type' => $type,
-            'action' => $this->translator->trans(\sprintf('task.mail.%s.action', $type), [], EMSCoreBundle::TRANS_DOMAIN),
+            'action' => $this->transAction($type)->trans($this->translator),
             'task' => $task,
             'revision' => $revision,
             'comment' => $event->comment,
@@ -120,6 +122,20 @@ class TaskMailer
             ($sender->getUsername() === $task->getCreatedBy()) => 'creator',
             $this->taskManager->isTaskManager($sender) => 'task admin',
             default => null,
+        };
+    }
+
+    private function transAction(string $type): TranslatableMessage
+    {
+        return match ($type) {
+            'approved' => t('task.mail.approved.action', [], 'emsco-core'),
+            'assignee_changed' => t('task.mail.assignee_changed.action', [], 'emsco-core'),
+            'completed' => t('task.mail.completed.action', [], 'emsco-core'),
+            'created' => t('task.mail.created.action', [], 'emsco-core'),
+            'deleted' => t('task.mail.deleted.action', [], 'emsco-core'),
+            'rejected' => t('task.mail.rejected.action', [], 'emsco-core'),
+            'updated' => t('task.mail.updated.action', [], 'emsco-core'),
+            default => t('key.unknown', [], 'emsco-core')
         };
     }
 }

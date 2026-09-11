@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service;
 
 use Elastica\Aggregation\Terms;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
@@ -15,8 +16,9 @@ use EMS\CoreBundle\Event\AliasUpdateEvent;
 use EMS\CoreBundle\Event\NewIndexEvent;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
 use EMS\CoreBundle\Repository\ManagedAliasRepository;
-use Psr\Log\LoggerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+
+use function Symfony\Component\Translation\t;
 
 class AliasService
 {
@@ -38,7 +40,7 @@ class AliasService
     private array $counterIndexes = [];
 
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly Client $elasticaClient,
         private readonly EnvironmentRepository $envRepo,
         private readonly ManagedAliasRepository $managedAliasRepo,
@@ -260,7 +262,7 @@ class AliasService
         if ($resultSet->hasAggregations()) {
             $aggregation = $resultSet->getAggregation(self::COUNTER_AGGREGATION);
             if (0 !== ($aggregation['sum_other_doc_count'] ?? 0) || \count($aggregation['buckets'] ?? []) >= 2000) {
-                $this->logger->warning('service.alias.too_many_indexes');
+                $this->logger->messageWarning(t('message.alias_too_many_indexes', [], 'emsco-core'));
             }
         } else {
             $aggregation = [];

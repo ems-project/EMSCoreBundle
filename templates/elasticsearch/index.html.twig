@@ -1,12 +1,12 @@
 {% extends '@EMSCore/base.html.twig' %}
-{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain 'emsco-core' %}
 
-{% block title %}{{ 'Searchs'|trans }}{% endblock %}
-{% block pagetitle %}{{ 'Searchs'|trans }}{% endblock %}
+{% block title %}{{ 'key.searches'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'key.searches'|trans }}{% endblock %}
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
-        <li>{{ 'List Searchs'|trans }}</li>
+        <li>{{ 'key.searches'|trans }}</li>
     </ol>
 {% endblock %}
 
@@ -20,13 +20,13 @@
                         <table class="table table-condensed table-striped dataTable">
                             <thead>
                             <tr role="row">
-                                <th class="nowrap text-center" style="width: 10px">{{ 'ID'|trans }}</th>
-                                <th class="nowrap">{{ 'Name'|trans }}</th>
-                                <th class="nowrap">{{ 'Username'|trans }}</th>
-                                <th class="nowrap">{{ 'Envs'|trans }}</th>
-                                <th class="nowrap">{{ 'CTs'|trans }}</th>
-                                <th class="nowrap">{{ 'Default'|trans }}</th>
-                                <th class="nowrap">{{ 'Action'|trans }}</th>
+                                <th class="nowrap text-center" style="width: 10px">{{ 'field.id'|trans }}</th>
+                                <th class="nowrap">{{ 'field.name'|trans }}</th>
+                                <th class="nowrap">{{ 'field.username'|trans }}</th>
+                                <th class="nowrap">{{ 'field.environments'|trans }}</th>
+                                <th class="nowrap">{{ 'field.content_types'|trans }}</th>
+                                <th class="nowrap">{{ 'field.is_default'|trans }}</th>
+                                <th class="nowrap">{{ 'key.action'|trans }}</th>
                             </tr>
                             </thead>
                             <tbody>

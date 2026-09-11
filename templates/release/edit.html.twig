@@ -1,19 +1,19 @@
 {% extends '@EMSCore/base.html.twig' %}
-{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain 'emsco-core' %}
 
 {% block title %}{{ 'release.edit.title'|trans }}{% endblock %}
 {% block pagetitle %}{{ block('title') }}{% endblock %}
 
 {% block breadcrumb %}
 	<ol class="breadcrumb">
-		<li><a href="{{ path('emsco_release_index') }}"><i class="{{ 'view.icon.class.release'|trans }}"></i> {{ 'release.menu'|trans }}</a></li>
+		<li><a href="{{ path('emsco_release_index') }}"><i class="fa fa-cube}"></i> {{ 'release.menu'|trans }}</a></li>
 		<li>{{ block('title') }}</li>
    	</ol>
 {% endblock %}
 
 {% block body %}
     {% include "@EMSCore/release/form.html.twig" with {
-    	label: 'release.edit.title',
+    	label: 'release.edit.title'|trans,
     } %}
 
     {% form_theme form '@EMSCore/form/forms.html.twig' %}

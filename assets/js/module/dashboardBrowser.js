@@ -15,8 +15,9 @@ document.addEventListener('DOMContentLoaded', function (e) {
 
         let url = new URL(event.target.href)
         let text = event.target.innerText;
-        let emsId = event.target.dataset.emsId;
-        let json = event.target.dataset.json ?? null;
+        let fileEl = event.target.closest('.media-lib-file');
+        let emsId = fileEl?.dataset.emsId;
+        let json = fileEl?.dataset.json ?? null;
 
         if (json && window.opener && !window.opener.closed) {
             window.opener.postMessage({

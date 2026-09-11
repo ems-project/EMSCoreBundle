@@ -1,4 +1,4 @@
-{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain 'emsco-core' %}
 
 {% macro renderDataField(dataField, source, compare, compareRawData, locale = null) %}
 	{{ _self.renderDataFieldBlock(dataField, source, compare, compareRawData, '', [], locale) }}
@@ -161,10 +161,9 @@
 				<div class="btn-group">
 					<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#indexed-details-revision_{{ tempId }}" data-testid="asset-info-{{ dataField.fieldType.name }}">
 						<i class="fa fa-info"></i>
-						{{ 'Info'|trans }}
+						{{ 'action.info'|trans }}
 					</button>
-					<a href="{{ ems_asset_path(dataField.rawData, {'_disposition':'attachment'}) }}" class="btn btn-small btn-default" data-testid="asset-download-{{ dataField.fieldType.name }}"><i class="fa fa-download"></i>&nbsp;{{'Download'|trans}}</a>
-					{#<a href="{{ path('ems.file.view', {'sha1':dataField.rawData.sha1, 'type':dataField.rawData.mimetype, 'name':dataField.rawData.filename }) }}" class="btn btn-small btn-default"><i class="fa fa-eye"></i>&nbsp;{{'View'|trans}}</a>#}
+					<a href="{{ ems_asset_path(dataField.rawData, {'_disposition':'attachment'}) }}" class="btn btn-small btn-default" data-testid="asset-download-{{ dataField.fieldType.name }}"><i class="fa fa-download"></i>&nbsp;{{'field.asset.download'|trans}}</a>
 				</div>
 				<div class="modal" tabindex="-1" role="dialog" id="indexed-details-revision_{{ tempId }}">
 				  <div class="modal-dialog" role="document">
@@ -176,46 +175,46 @@
 					  <div class="modal-body raw-view">
 						<ul class="list-group">
 							<li class="list-group-item leaf-item">
-								<strong>{{ 'Hash signature'|trans }}</strong>
+								<strong>{{ 'field.asset.hash_signature'|trans }}</strong>
 								{{ dataField.rawData.sha1 }}
 							</li>
 							{% if dataField.rawData._title is defined %}
 								<li class="list-group-item leaf-item">
-									<strong>{{ 'Title : '|trans }}</strong>
+									<strong>{{ 'field.asset.title'|trans }}</strong>
 									{{ dataField.rawData._title }}
 								</li>
 							{% endif %}
 							{% if dataField.rawData.filesize is defined %}
 								<li class="list-group-item leaf-item">
-									<strong>{{ 'Size : '|trans }}</strong>
+									<strong>{{ 'field.asset.size'|trans }}</strong>
 									{{ dataField.rawData.filesize|number_format(0, ',', '.') }} bytes
 								</li>
 							{% endif %}
 							<li class="list-group-item leaf-item">
-								<strong>{{ 'MIME Type : '|trans }}</strong>
+								<strong>{{ 'field.asset.mime_type'|trans }}</strong>
 								{{ dataField.rawData.mimetype|default('') }}
 							</li>
 							{% if dataField.rawData._date is defined %}
 								<li class="list-group-item leaf-item">
-									<strong>{{ 'Date : '|trans }}</strong>
+									<strong>{{ 'field.asset.date'|trans }}</strong>
 									{{ dataField.rawData._date }}
 								</li>
 							{% endif %}
 							{% if dataField.rawData._author is defined %}
 								<li class="list-group-item leaf-item">
-									<strong>{{ 'Author : '|trans }}</strong>
+									<strong>{{ 'field.asset.author'|trans }}</strong>
 									{{ dataField.rawData._author }}
 								</li>
 							{% endif %}
 							{% if dataField.rawData._language is defined %}
 								<li class="list-group-item leaf-item">
-									<strong>{{ 'Language : '|trans }}</strong>
+									<strong>{{ 'field.asset.language'|trans }}</strong>
 									{{ dataField.rawData._language }}
 								</li>
 							{% endif %}
 							{% if dataField.rawData._content is defined %}
 								<li class="list-group-item leaf-item">
-									<strong>{{ 'Content : '|trans }}</strong><br>
+									<strong>{{ 'field.asset.content'|trans }}</strong><br>
 									{{ dataField.rawData._content|nl2br }}
 								</li>
 							{% endif %}
@@ -261,9 +260,9 @@
 			</h3>
 			{% if compare %}
 				{% if diffCount < 0 %}
-					<del class="text-red">{{ 'view.macros.data-field-type.collection_removed_items'|trans({'%count%': -diffCount}) }}</del>
+					<del class="text-red">{{ 'view.macros.data-field-type.collection_removed_items'|trans({'count': -diffCount}) }}</del>
 				{% elseif diffCount > 0 %}
-					<ins class="text-green">{{ 'view.macros.data-field-type.collection_added_items'|trans({'%count%': diffCount}) }}</ins>
+					<ins class="text-green">{{ 'view.macros.data-field-type.collection_added_items'|trans({'count': diffCount}) }}</ins>
                 {% endif %}
             {% endif %}
 		</div>
@@ -1304,7 +1303,7 @@
 {% block EMS_CoreBundle_Form_DataField_FormFieldType %}
     {% if dataField.fieldType.displayOptions.form is defined %}
         {% set form = emsco_get_form(dataField.fieldType.displayOptions.form, dataField.rawData) %}
-        {% set errorMessage = 'view.macros.data-field-type.form.not-found' %}
+        {% set errorMessage = 'view.macros.data-field-type.form.not-found'|trans %}
     {% endif %}
     {% if form is defined and form %}
         {{ _self.renderDataFieldBlock(emsco_get_data_field(form), source, compare, compareRawData, '', path, locale) }}
@@ -1314,7 +1313,7 @@
                 {{ dataField.fieldType.displayOptions.label|default(dataField.fieldType.name) }}{% if emsco_is_super() %} ({{ dataField.fieldType.name }}){% endif %}
             </div>
             <div class="panel-body">
-                {{ errorMessage|default('view.macros.data-field-type.form.not-defined')|trans }}
+                {{ errorMessage|default('view.macros.data-field-type.form.not-defined'|trans)|trans }}
             </div>
         </div>
     {% endif %}

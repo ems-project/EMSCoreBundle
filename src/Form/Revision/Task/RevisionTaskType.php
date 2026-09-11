@@ -21,6 +21,8 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -44,26 +46,26 @@ final class RevisionTaskType extends AbstractType
         $builder
             ->add('assignee', SelectUserPropertyType::class, [
                 'placeholder' => '',
-                'label' => 'task.field.assignee',
+                'label' => t('task.field.assignee', [], 'emsco-core'),
                 'allow_add' => false,
                 'user_property' => 'username',
                 'label_property' => 'displayName',
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'task.field.description',
+                'label' => t('task.field.description', [], 'emsco-core'),
                 'attr' => ['rows' => 5],
             ])
         ;
 
         if (null === $taskDto->id || TaskStatus::PLANNED === $taskStatus) {
             $builder->add('delay', IntegerType::class, [
-                'label' => 'task.field.delay',
+                'label' => t('task.field.delay', [], 'emsco-core'),
                 'attr' => ['min' => 0],
             ]);
         } else {
             $builder->add('deadline', TextType::class, [
                 'disabled' => TaskStatus::COMPLETED === $taskStatus,
-                'label' => 'task.field.deadline',
+                'label' => t('task.field.deadline', [], 'emsco-core'),
                 'attr' => [
                     'readonly' => TaskStatus::COMPLETED === $taskStatus,
                     'class' => 'datetime-picker',
@@ -82,7 +84,6 @@ final class RevisionTaskType extends AbstractType
             ->setAllowedTypes('content_type', ContentType::class)
             ->setDefaults([
                 'data_class' => TaskDTO::class,
-                'translation_domain' => 'EMSCoreBundle',
                 'task_status' => null,
             ]);
     }
@@ -96,7 +97,7 @@ final class RevisionTaskType extends AbstractType
         $tasksHelptexts = $contentType->getSettings()->getSettingArrayString(ContentTypeSettings::TASKS_HELPTEXTS);
 
         if ([] === $tasksTitles) {
-            $builder->add('title', TextType::class, ['label' => 'task.field.title']);
+            $builder->add('title', TextType::class, ['label' => t('task.field.title', [], 'emsco-core')]);
 
             return;
         }
@@ -108,7 +109,7 @@ final class RevisionTaskType extends AbstractType
             }
 
             $form->add('title', ChoiceType::class, [
-                'label' => 'task.field.title',
+                'label' => t('task.field.title', [], 'emsco-core'),
                 'attr' => [
                     'data-tags' => true,
                     'class' => 'select2',

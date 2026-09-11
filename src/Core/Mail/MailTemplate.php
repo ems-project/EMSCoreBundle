@@ -129,7 +129,7 @@ final class MailTemplate
      */
     public function setBody(string $key, array $parameters = []): self
     {
-        $this->body = $this->translator->trans($key, $parameters, 'EMSCoreBundle');
+        $this->body = $this->translator->trans($key, $parameters);
 
         return $this;
     }

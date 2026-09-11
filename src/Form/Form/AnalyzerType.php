@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Analyzer;
 use EMS\CoreBundle\Form\Field\AnalyzerOptionsType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -54,7 +53,6 @@ class AnalyzerType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Analyzer::class,
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
 }

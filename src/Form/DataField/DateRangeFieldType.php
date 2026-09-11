@@ -36,7 +36,7 @@ class DateRangeFieldType extends DataFieldType
         $options = $dataField->giveFieldType()->getOptions();
         $rawData = $dataField->getRawData();
 
-        if (\is_array($rawData) && !empty($dataField->getRawData())) {
+        if (\is_array($rawData) && \count(\array_filter($rawData)) > 0) {
             $dateFrom = \DateTime::createFromFormat(\DateTimeInterface::ATOM, $rawData[$options['mappingOptions']['fromDateMachineName']] ?? null);
             $dateTo = \DateTime::createFromFormat(\DateTimeInterface::ATOM, $rawData[$options['mappingOptions']['toDateMachineName']] ?? null);
 

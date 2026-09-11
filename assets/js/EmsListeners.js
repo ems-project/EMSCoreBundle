@@ -798,18 +798,23 @@ export default class EmsListeners {
 
     addDateRangeListeners() {
         const self = this;
-        jquery(this.target).find('.ems_daterangepicker').each(function( ) {
+        jquery(this.target).find('.ems_daterangepicker').each(function() {
+            const $input = $(this);
+            const options = $input.data('display-option');
+            options.autoUpdateInput = false;
 
-            const options = $(this).data('display-option');
-            $(this).unbind('change');
+            $input.unbind('change');
+            $input.daterangepicker(options);
 
-            if ($(this).not('.ignore-ems-update')) {
-                if (typeof self.onChangeCallback === "function") {
-                    $(this).daterangepicker(options, function() { self.onChangeCallback(); });
-                }
-            } else {
-                $(this).daterangepicker(options);
-            }
+            $input.on('apply.daterangepicker', function(ev, picker) {
+                $input.val(picker.startDate.format(options.locale.format) + ' - ' + picker.endDate.format(options.locale.format));
+                if (typeof self.onChangeCallback === "function") self.onChangeCallback();
+            });
+
+            $input.on('cancel.daterangepicker', function() {
+                $input.val('');
+                if (typeof self.onChangeCallback === "function") self.onChangeCallback();
+            });
         });
     }
 

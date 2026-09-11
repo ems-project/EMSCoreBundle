@@ -607,7 +607,7 @@ class RevisionRepository extends EntityRepository
         return $this->lockRevisions(null, $until, $by, true);
     }
 
-    public function unlockRevisions(?ContentType $contentType, string $by, bool $onlyCurrentRevision = true): int
+    public function unlockRevisions(?ContentType $contentType, string $by): int
     {
         $qbSelect = $this->createQueryBuilder('s');
         $qbSelect
@@ -616,9 +616,6 @@ class RevisionRepository extends EntityRepository
             ->andWhere($qbSelect->expr()->eq('s.deleted', $qbSelect->expr()->literal(false)))
             ->andWhere($qbSelect->expr()->eq('s.draft', $qbSelect->expr()->literal(false)))
         ;
-        if ($onlyCurrentRevision) {
-            $qbSelect->andWhere($qbSelect->expr()->isNull('s.endTime'));
-        }
 
         $qbUpdate = $this->createQueryBuilder('u');
         $qbUpdate
@@ -1043,7 +1040,7 @@ class RevisionRepository extends EntityRepository
         foreach ($detachableEntities as $detachableEntity) {
             $this->getEntityManager()->detach($detachableEntity);
         }
-        $this->unlockRevisions($contentType, $username, false);
+        $this->unlockRevisions($contentType, $username);
     }
 
     private function copyParameters(DBALQueryBuilder $target, DBALQueryBuilder $source): void

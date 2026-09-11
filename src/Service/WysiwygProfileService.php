@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\WysiwygProfile;
 use EMS\CoreBundle\Repository\WysiwygProfileRepository;
-use Psr\Log\LoggerInterface;
+
+use function Symfony\Component\Translation\t;
 
 class WysiwygProfileService implements EntityServiceInterface
 {
     public function __construct(
         private readonly WysiwygProfileRepository $wysiwygProfileRepository,
-        private readonly LoggerInterface $logger
+        private readonly LocalizedLoggerInterface $logger
     ) {
     }
 
@@ -41,9 +43,10 @@ class WysiwygProfileService implements EntityServiceInterface
     public function delete(WysiwygProfile $wysiwygProfile): void
     {
         $this->wysiwygProfileRepository->delete($wysiwygProfile);
-        $this->logger->notice('service.wysiwyg_profile.deleted', [
-            'profile_name' => $wysiwygProfile->getName(),
-        ]);
+
+        $this->logger->messageNotice(t('message.wysiwyg_profile_deleted', [
+            'name' => $wysiwygProfile->getName(),
+        ], 'emsco-core'));
     }
 
     public function deleteByIds(string ...$ids): void
@@ -134,9 +137,9 @@ class WysiwygProfileService implements EntityServiceInterface
     public function update(WysiwygProfile $wysiwygProfile): void
     {
         $this->wysiwygProfileRepository->update($wysiwygProfile);
-        $this->logger->notice('service.wysiwyg_profile.updated', [
-            'profile_name' => $wysiwygProfile->getName(),
-        ]);
+        $this->logger->messageNotice(t('message.wysiwyg_profile_updated', [
+            'name' => $wysiwygProfile->getName(),
+        ], 'emsco-core'));
     }
 
     #[\Override]

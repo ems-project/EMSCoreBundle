@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Data;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\Translation\TranslatableMessage;
 
 final class TableAction
@@ -31,10 +30,10 @@ final class TableAction
         string|TranslatableMessage|null $confirmationKey = null,
     ): self {
         if (!$labelKey instanceof TranslatableMessage) {
-            $labelKey = new TranslatableMessage($labelKey, [], EMSCoreBundle::TRANS_DOMAIN);
+            $labelKey = new TranslatableMessage($labelKey, []);
         }
         if (null !== $confirmationKey && !$confirmationKey instanceof TranslatableMessage) {
-            $confirmationKey = new TranslatableMessage($confirmationKey, [], EMSCoreBundle::TRANS_DOMAIN);
+            $confirmationKey = new TranslatableMessage($confirmationKey, []);
         }
 
         return new self($name, $icon, $labelKey, $confirmationKey);

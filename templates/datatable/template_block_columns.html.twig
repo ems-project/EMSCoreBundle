@@ -129,9 +129,9 @@
     {%- set info = data.getValue('info', false) -%}
     {%- if info -%}
         {%- set revision = info.revision(table.context.release.environmentSource.name) -%}
-        {{- '%date% Finalized by %user%'|trans({
-            '%date%': (revision.finalizedDate ? revision.finalizedDate|date(date_time_format) : ''),
-            '%user%': (revision.finalizedBy ? revision.finalizedBy|emsco_display_name : '')
+        {{- 'message.finalized_when_user'|trans({
+            'date': (revision.finalizedDate ? revision.finalizedDate|date(date_time_format) : ''),
+            'user': (revision.finalizedBy ? revision.finalizedBy|emsco_display_name : '')
         }) -}}
     {%- endif -%}
 {% endblock release_unpublish_source %}
@@ -140,9 +140,9 @@
     {%- set info = data.getValue('info', false) -%}
     {%- if info -%}
         {%- set revision = info.revision(table.context.release.environmentTarget.name) -%}
-        {{- '%date% Finalized by %user%'|trans({
-            '%date%': (revision.finalizedDate ? revision.finalizedDate|date(date_time_format) : ''),
-            '%user%': (revision.finalizedBy ? revision.finalizedBy|emsco_display_name : '')
+        {{- 'message.finalized_when_user'|trans({
+            'date': (revision.finalizedDate ? revision.finalizedDate|date(date_time_format) : ''),
+            'user': (revision.finalizedBy ? revision.finalizedBy|emsco_display_name : '')
         }) -}}
     {%- endif -%}
 {% endblock release_unpublish_target %}

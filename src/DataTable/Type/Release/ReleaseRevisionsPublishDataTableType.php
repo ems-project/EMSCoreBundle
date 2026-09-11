@@ -15,6 +15,8 @@ use EMS\CoreBundle\Service\ReleaseRevisionService;
 use EMS\CoreBundle\Service\ReleaseService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 class ReleaseRevisionsPublishDataTableType extends AbstractQueryTableType
 {
     public function __construct(
@@ -37,25 +39,28 @@ class ReleaseRevisionsPublishDataTableType extends AbstractQueryTableType
         $table->setIdField('emsLink');
         $table->setSelected($release->getRevisionsOuuids());
 
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.label', 'publish_label', $template));
-        $table->addColumn('release.revision.index.column.CT', 'content_type_singular_name');
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.minRevId', 'minrevid', $template));
-        $table->addColumnDefinition(new TemplateBlockTableColumn('release.revision.index.column.maxRevId', 'maxrevid', $template));
+        $table->addColumnDefinition(new TemplateBlockTableColumn(t('release.revision.index.column.label', [], 'emsco-core'), 'publish_label', $template));
+        $table->addColumn(t('release.revision.index.column.CT', [], 'emsco-core'), 'content_type_singular_name');
+        $table->addColumnDefinition(new TemplateBlockTableColumn(t('release.revision.index.column.minRevId', [], 'emsco-core'), 'minrevid', $template));
+        $table->addColumnDefinition(new TemplateBlockTableColumn(t('release.revision.index.column.maxRevId', [], 'emsco-core'), 'maxrevid', $template));
 
-        $table->addTableAction(TableAbstract::ADD_ACTION, 'fa fa-plus', 'release.actions.add_publish', 'release.revision.actions.add_confirm');
+        $table->addTableAction(
+            name: TableAbstract::ADD_ACTION,
+            icon: 'fa fa-plus',
+            labelKey: t('release.actions.add_publish', [], 'emsco-core'),
+            confirmationKey: t('release.revision.actions.add_confirm', [], 'emsco-core')
+        );
         $table->addDynamicItemPostAction(
             route: Routes::RELEASE_ADD_REVISION,
-            labelKey: 'release.revision.action.publish',
+            labelKey: t('release.revision.action.publish', [], 'emsco-core'),
             icon: 'plus',
-            messageKey: 'release.revision.actions.add_confirm',
+            messageKey: t('release.revision.actions.add_confirm', [], 'emsco-core'),
             routeParameters: [
                 'release' => (string) $release->getId(),
                 'type' => 'publish',
                 'emsLinkToAdd' => 'emsLink',
             ],
-            attributes: [
-                'data-testid' => 'release-action-add-for-publish',
-            ]
+            attributes: ['data-testid' => 'release-action-add-for-publish']
         );
     }
 

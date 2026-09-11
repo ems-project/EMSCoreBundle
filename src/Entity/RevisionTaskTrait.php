@@ -119,7 +119,7 @@ trait RevisionTaskTrait
         return $this->getTaskCurrent()->getAssignee();
     }
 
-    public function getTaskStatus(): string
+    public function getTaskStatus(): TaskStatus
     {
         return $this->getTaskCurrent()->getStatus();
     }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Form;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\Group;
 use EMS\CoreBundle\Form\Field\RoleMultiPickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -58,7 +57,6 @@ final class GroupType extends AbstractType
                     'data-testid' => 'btn-action-update',
                 ],
                 'icon' => 'fa fa-save',
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             ]);
         } else {
             throw new \RuntimeException('Invalid mode');
@@ -71,7 +69,6 @@ final class GroupType extends AbstractType
         $resolver
             ->setDefaults([
                 'data_class' => Group::class,
-                'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             ])
             ->setRequired(['mode'])
             ->setAllowedValues('mode', [self::MODE_CREATE, self::MODE_UPDATE])

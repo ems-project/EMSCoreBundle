@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Core\UI;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\TemplateWrapper;
 
@@ -24,22 +24,13 @@ final class AjaxModal
     {
     }
 
-    /**
-     * @param array<mixed> $parameters
-     */
-    public function addMessageSuccess(string $key, array $parameters = []): self
+    public function addMessageSuccess(TranslatableMessage $key): self
     {
         $this->success = true;
 
-        return $this->addMessage('success', $key, $parameters);
-    }
+        $this->messages[] = ['success' => $key->trans($this->translator)];
 
-    /**
-     * @param array<mixed> $parameters
-     */
-    public function addMessageError(string $key, array $parameters = []): self
-    {
-        return $this->addMessage('error', $key, $parameters);
+        return $this;
     }
 
     public function setIcon(?string $icon): self
@@ -56,12 +47,9 @@ final class AjaxModal
         return $this;
     }
 
-    /**
-     * @param array<mixed> $parameters
-     */
-    public function setTitle(string $key, array $parameters = [], string $translationDomain = EMSCoreBundle::TRANS_DOMAIN): self
+    public function setTitle(TranslatableMessage $title): self
     {
-        $this->title = $this->translator->trans($key, $parameters, $translationDomain);
+        $this->title = $title->trans($this->translator);
 
         return $this;
     }
@@ -124,15 +112,5 @@ final class AjaxModal
             'modalFooter' => $this->footer,
             'modalSuccess' => $this->success,
         ], fn ($value) => null !== $value));
-    }
-
-    /**
-     * @param array<mixed> $parameters
-     */
-    private function addMessage(string $type, string $key, array $parameters = []): self
-    {
-        $this->messages[] = [$type => $this->translator->trans($key, $parameters, 'EMSCoreBundle')];
-
-        return $this;
     }
 }

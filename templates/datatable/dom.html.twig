@@ -1,5 +1,5 @@
 {%- use '@EMSCore/form/forms.html.twig' -%}
-{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain 'emsco-core' %}
 
 <div class="table-responsive">
     <table id="{{ datatable.id }}" class="table table-condensed table-striped" data-datatable="{{ datatable.frontendOptions|json_encode|e('html_attr') }}">

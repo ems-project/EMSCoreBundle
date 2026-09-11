@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Nature;
 
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -40,7 +39,6 @@ class ReorderType extends AbstractType
     {
         $resolver->setDefaults([
             'result' => [],
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
         ]);
     }
 }

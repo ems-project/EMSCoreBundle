@@ -1,5 +1,5 @@
 {% use "@EMSCore/form/fields.html.twig" %}
-{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain 'emsco-core' %}
 
 {% block emsco_form_table_column_data_value_template %}
     {{- include(template_from_string(column.template), {
@@ -94,7 +94,7 @@
                     ,&nbsp;
                 {%- endif -%}
             {%- endif -%}
-            {{- string|replace({'ROLE_': 'ROLE.'})|lower|trans([], 'emsco-core') -}}
+            {{- (string|replace({'ROLE_': 'ROLE.'}) ~ '.label')|lower|trans([], 'emsco-core') -}}
         {%- endfor -%}
     {%- endif -%}
 {% endblock emsco_form_table_column_data_value_roles %}
@@ -243,7 +243,7 @@
 {% endblock emsco_form_table_column_action_checkbox %}
 
 {% block emsco_form_table_column_row_actions %}
-    {% trans_default_domain 'EMSCoreBundle' %}
+    {% trans_default_domain 'emsco-core' %}
     <div class="btn-group {{ table.rowActionsClass }}">
         {% for action in table.itemActions %}
             {% if action is iterable and action|length > 0 %}

@@ -150,7 +150,6 @@ class RevisionType extends AbstractType
             'has_copy' => false,
             'migration' => false,
             'with_warning' => true,
-            'translation_domain' => 'EMSCoreBundle',
             'raw_data' => [],
         ]);
     }

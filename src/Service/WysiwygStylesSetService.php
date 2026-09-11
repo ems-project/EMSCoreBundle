@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Service;
 
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CoreBundle\Entity\WysiwygStylesSet;
 use EMS\CoreBundle\Repository\WysiwygStylesSetRepository;
-use Psr\Log\LoggerInterface;
+
+use function Symfony\Component\Translation\t;
 
 class WysiwygStylesSetService implements EntityServiceInterface
 {
     public function __construct(
         private readonly WysiwygStylesSetRepository $wysiwygStylesSetRepository,
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
     ) {
     }
 
@@ -41,9 +43,10 @@ class WysiwygStylesSetService implements EntityServiceInterface
     public function delete(WysiwygStylesSet $wysiwygStylesSet): void
     {
         $this->wysiwygStylesSetRepository->delete($wysiwygStylesSet);
-        $this->logger->notice('service.wysiwyg_styles_set.deleted', [
-            'wysiwyg_styles_set_name' => $wysiwygStylesSet->getName(),
-        ]);
+
+        $this->logger->messageNotice(t('message.wysiwyg_styles_set_deleted', [
+            'name' => $wysiwygStylesSet->getName(),
+        ], 'emsco-core'));
     }
 
     public function deleteByIds(string ...$ids): void
@@ -148,9 +151,10 @@ class WysiwygStylesSetService implements EntityServiceInterface
     public function update(WysiwygStylesSet $wysiwygStylesSet): void
     {
         $this->wysiwygStylesSetRepository->update($wysiwygStylesSet);
-        $this->logger->notice('service.wysiwyg_styles_set.updated', [
-            'wysiwyg_styles_set_name' => $wysiwygStylesSet->getName(),
-        ]);
+
+        $this->logger->messageNotice(t('message.wysiwyg_styles_set_updated', [
+            'name' => $wysiwygStylesSet->getName(),
+        ], 'emsco-core'));
     }
 
     #[\Override]

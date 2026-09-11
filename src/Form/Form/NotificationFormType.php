@@ -7,7 +7,6 @@ namespace EMS\CoreBundle\Form\Form;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Parameter;
-use EMS\CoreBundle\EMSCoreBundle;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
@@ -35,7 +34,6 @@ class NotificationFormType extends AbstractType
     {
         $builder->add('template', EntityType::class, [
             'class' => Template::class,
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('t')
             ->where("t.renderOption = 'notification'"),
             'choice_label' => fn ($value, $key, $index) => /* @var Template $value */
@@ -50,8 +48,6 @@ class NotificationFormType extends AbstractType
             ],
             'multiple' => true,
             'choice_translation_domain' => false,
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
-
             'choices' => $this->service->getEnvironments(),
             'required' => false,
             'choice_label' => fn ($value, $key, $index) => '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName(),
@@ -65,7 +61,6 @@ class NotificationFormType extends AbstractType
         ])
         ->add('contentType', EntityType::class, [
             'class' => ContentType::class,
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('ct')
             ->where('ct.deleted = :false')
             ->setParameters(new ArrayCollection([new Parameter('false', false)]))
@@ -77,7 +72,6 @@ class NotificationFormType extends AbstractType
         ])
 
         ->add('filter', SubmitEmsType::class, [
-            'translation_domain' => EMSCoreBundle::TRANS_DOMAIN,
             'attr' => ['class' => 'btn btn-primary btn-sm', 'data-testid' => 'btn-action-filter'],
             'icon' => 'fa fa-columns',
         ]);

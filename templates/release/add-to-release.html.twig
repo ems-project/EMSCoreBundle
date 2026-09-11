@@ -1,7 +1,7 @@
 {% extends '@EMSCore/base.html.twig' %}
-{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain 'emsco-core' %}
 
-{% block title %}{{ 'pick-a-release.title'|trans({'%label%': revision.label}) }}{% endblock %}
+{% block title %}{{ 'pick-a-release.title'|trans({'label': revision.label}) }}{% endblock %}
 {% block pagetitle %}{{ block('title') }}{% endblock %}
 
 {% block breadcrumb %}

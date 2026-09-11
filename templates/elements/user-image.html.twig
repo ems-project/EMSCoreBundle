@@ -1,4 +1,4 @@
-{% trans_default_domain 'EMSCoreBundle' %}
+{% trans_default_domain 'emsco-core' %}
 {% if app.user %}
 	<img src="{{ asset('images/anonymous.gif', 'emscore') }}" data-original="https://www.gravatar.com/avatar/{{ app.user.email|lower|ems_md5 }}?d={{ "https://www.gravatar.com/avatar"|url_encode }}" class="{{ class }} lazy" alt="{{ app.user.displayName }}">
 {% else %}

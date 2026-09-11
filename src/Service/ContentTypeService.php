@@ -161,9 +161,9 @@ class ContentTypeService implements EntityServiceInterface
         $em->persist($contentType);
         $em->flush();
 
-        $this->logger->notice('service.contenttype.reordered', [
-            EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
-        ]);
+        $this->logger->messageNotice(t('message.content_type_reordered', [
+            'content_type' => $contentType->getSingularName(),
+        ], 'emsco-core'));
     }
 
     public function getIndex(ContentType $contentType, ?Environment $environment = null): string
@@ -209,10 +209,11 @@ class ContentTypeService implements EntityServiceInterface
                 $message = $throwable->getPrevious()->getMessage();
             }
 
-            $this->logger->error('service.contenttype.update_mapping_exception', [
-                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
+            $this->logger->messageError(t('message.content_type_update_mapping_error', [
                 'environments' => $envs,
                 'elasticsearch_error' => $message,
+            ], 'emsco-core'), [
+                EmsFields::LOG_CONTENTTYPE_FIELD => $contentType->getName(),
             ]);
         }
     }

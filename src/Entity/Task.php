@@ -76,9 +76,9 @@ class Task implements EntityInterface
         return $this->id->toString();
     }
 
-    public function getStatus(): string
+    public function getStatus(): TaskStatus
     {
-        return $this->status;
+        return TaskStatus::from($this->status);
     }
 
     public function isStatus(TaskStatus ...$status): bool

@@ -1,6 +1,6 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-core' %}
 
-{% block pagetitle %}{{ 'view.user.specific_permissions.titles.specific_permissions'|trans({'%content_type_singular_name%': contentType.name}) }}{% endblock %}
+{% block pagetitle %}{{ 'view.user.specific_permissions.titles.specific_permissions'|trans({'content_type_singular_name': contentType.name}) }}{% endblock %}
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
@@ -39,7 +39,7 @@
                                     <td class="text-center"><i class="{{ contentType.icon|default('fa fa-book') }}"></i></td>
                                     {% for role in [contentType.roles.view, contentType.roles.create, contentType.roles.edit, contentType.roles.publish, contentType.roles.delete, contentType.roles.trash, contentType.roles.archive, contentType.roles.show_link_create, contentType.roles.show_link_search] %}
                                     <td class="{{ html_classes({'text-muted': role == 'not-defined'}) }} ">
-                                        {{ role|replace({'ROLE_': 'ROLE.'})|lower|trans([], 'emsco-core') }}
+                                        {{ (role|replace({'ROLE_': 'ROLE.'}) ~ '.label')|lower|trans([], 'emsco-core') }}
                                     </td>
                                     {% endfor %}
                                 </tr>

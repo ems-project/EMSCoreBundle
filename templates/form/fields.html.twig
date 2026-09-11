@@ -872,7 +872,7 @@
                     <li>
                         <a type="button" class="json_menu_sortable_add_item_button" data-label="" data-content-type="{{ type|e('html_attr') }}" data-icon="{{ contentTypeIcon|e('html_attr') }}">
                             <i class="{{ contentTypeIcon }}"></i>
-                            {{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': contentType.singularName}) }}
+                            {{ 'field_type.json_menu_editor.add_item'|trans({'singular': contentType.singularName}) }}
                         </a>
                     </li>
                 {% endif %}
@@ -884,7 +884,7 @@
                     <li>
                         <a type="button" class="json_menu_sortable_add_node_button" data-label="" data-content-type="{{ type|e('html_attr') }}" data-icon="{{ contentTypeIcon|e('html_attr') }}">
                             <i class="{{ contentTypeIcon }}"></i>
-                            {{ 'field_type.json_menu_editor.add_node'|trans({'%singular%': contentType.singularName}) }}
+                            {{ 'field_type.json_menu_editor.add_node'|trans({'singular': contentType.singularName}) }}
                         </a>
                     </li>
                 {% endif %}
@@ -1102,7 +1102,7 @@
             		{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}
             			src="{{ emsco_asset_path(form.vars.value, form.vars.data.fieldType.getDisplayOption('imageAssetConfigIdentifier', 'preview')) }}"
             		{% endif %}
-            		class="img-responsive center-block" alt="{{ 'view.form.fields.asset.preview'|trans({'%label%': form_label(form)|striptags }) }}"
+            		class="img-responsive center-block" alt="{{ 'view.form.fields.asset.preview'|trans({'label': form_label(form)|striptags }) }}"
             	>
 	        </div>
         </div>

@@ -1,7 +1,7 @@
 {% extends '@EMSCore/admin-form/abstract.html.twig' %}
 {% trans_default_domain 'emsco-core' %}
 
-{% block title %}{{ 'form.reorder.title'|trans({'%label%': entity.label}) }}{% endblock %}
+{% block title %}{{ 'form.reorder.title'|trans({'label': entity.label}) }}{% endblock %}
 
 {% block breadcrumb_items %}<li>{{ block('title') }}</li>{% endblock breadcrumb_items %}
 

@@ -83,7 +83,7 @@ final class TaskNotificationMailCommand extends AbstractCoreCommand
 
         foreach ($revisionsWithCurrentTask as $revision) {
             $task = $revision->getTaskCurrent();
-            $taskStatus = TaskStatus::from($task->getStatus());
+            $taskStatus = $task->getStatus();
 
             if (TaskStatus::PROGRESS === $taskStatus || TaskStatus::REJECTED === $taskStatus) {
                 $revisionsByReceiver[$task->getAssignee()][] = $revision;

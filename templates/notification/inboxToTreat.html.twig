@@ -1,7 +1,7 @@
-{% trans_default_domain 'EMSCoreBundle' %}{{ form_start(treatform) }}
+{% trans_default_domain 'emsco-core' %}{{ form_start(treatform) }}
 
 		{% if notifications|length <= 0  %}
-			<p>{{ 'No result for this filters combinaison'|trans }}: <a href="{{ path('notifications.inbox') }}">{{ 'reset filters' }}</a></p>
+	        <p>{{ 'message.notification_no_results_for_filter_combo'|trans }}: <a href="{{ path('notifications.inbox') }}">{{ 'action.reset_filters' }}</a></p>
 		{% else %}
 
 		<div class="table-responsive">
@@ -10,14 +10,14 @@
 				<tr>
 					<th class="" style="">
 						<input type="checkbox" data-grouped-checkbox-target=".item-to-treat">
-	                  	&nbsp;{{ 'Notification'|trans }}
+	                  	&nbsp;{{ 'key.notification'|trans }}
 					</th>
-					<th>{{ 'Created by'|trans }}</th>
-					<th>{{ 'Date'|trans }}</th>
-					<th>{{ 'Environment'|trans }}</th>
-					<th>{{ 'Warnings'|trans }}</th>
-					<th>{{ 'Revision'|trans }}</th>
-					<th>{{ 'Actions'|trans }}</th>
+					<th>{{ 'notification.created_by'|trans }}</th>
+					<th>{{ 'field.date_created'|trans }}</th>
+					<th>{{ 'field.environment'|trans }}</th>
+					<th>{{ 'key.warnings'|trans }}</th>
+					<th>{{ 'field.revision'|trans }}</th>
+					<th>{{ 'key.actions'|trans }}</th>
 				</tr>
 			</tbody>
 			{% for notification in notifications %}

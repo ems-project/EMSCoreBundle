@@ -16,8 +16,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 class EMSCoreExtension extends Extension implements PrependExtensionInterface
 {
-    final public const string TRANS_DOMAIN = 'EMSCoreBundle';
-
     /**
      * @param array<mixed> $configs
      */

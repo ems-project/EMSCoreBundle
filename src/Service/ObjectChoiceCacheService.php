@@ -6,8 +6,8 @@ namespace EMS\CoreBundle\Service;
 
 use Elastica\Query\BoolQuery;
 use Elastica\Query\Exists;
+use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Elasticsearch\Document\Document;
-use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\ContentType\Version\VersionFields;
@@ -17,10 +17,11 @@ use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Field\ObjectChoiceListItem;
 use EMS\CoreBundle\Service\Revision\RevisionService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+
+use function Symfony\Component\Translation\t;
 
 class ObjectChoiceCacheService
 {
@@ -32,7 +33,7 @@ class ObjectChoiceCacheService
     private array $cachedQuerySearches = [];
 
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LocalizedLoggerInterface $logger,
         private readonly ContentTypeService $contentTypeService,
         private readonly RevisionService $revisionService,
         protected AuthorizationCheckerInterface $authorizationChecker,
@@ -98,10 +99,10 @@ class ObjectChoiceCacheService
                     $search->setSize(1000);
                     $resultSet = $this->elasticaService->search($search);
                     if ($resultSet->count() > 1000) {
-                        $this->logger->warning('service.object_choice_cache.limited_result_set', [
+                        $this->logger->messageWarning(t('message.object_choice_limited_result_set', [
                             'count' => $resultSet->count(),
                             'limit' => 1000,
-                        ]);
+                        ], 'emsco-core'));
                     }
 
                     foreach ($resultSet as $result) {
@@ -114,9 +115,9 @@ class ObjectChoiceCacheService
                         }
                     }
                 } elseif ($withWarning) {
-                    $this->logger->warning('service.object_choice_cache.contenttype_not_found', [
-                        EmsFields::LOG_CONTENTTYPE_FIELD => $type,
-                    ]);
+                    $this->logger->messageWarning(t('message.object_choice_content_type_not_found', [
+                        'content_type' => $type,
+                    ], 'emsco-core'));
                 }
                 $this->fullyLoaded[$type] = true;
             } else {
@@ -153,20 +154,20 @@ class ObjectChoiceCacheService
                         if ('' !== $index && '0' !== $index) {
                             $missingOuuidsPerIndexAndType[$index][$objectType][] = $objectOuuid;
                         } elseif ($withWarning) {
-                            $this->logger->warning('service.object_choice_cache.alias_not_found', [
-                                EmsFields::LOG_CONTENTTYPE_FIELD => $objectType,
-                            ]);
+                            $this->logger->messageWarning(t('message.object_choice_alias_not_found', [
+                                'content_type' => $objectType,
+                            ], 'emsco-core'));
                         }
                     } elseif ($withWarning) {
-                        $this->logger->warning('service.object_choice_cache.contenttype_not_found', [
-                            EmsFields::LOG_CONTENTTYPE_FIELD => $objectType,
-                        ]);
+                        $this->logger->messageWarning(t('message.object_choice_content_type_not_found', [
+                            'content_type' => $objectType,
+                        ], 'emsco-core'));
                     }
                 }
             } elseif (null !== $objectId && '' !== $objectId && $withWarning) {
-                $this->logger->warning('service.object_choice_cache.object_key_not_found', [
+                $this->logger->messageWarning(t('message.object_choice_key_not_found', [
                     'object_key' => $objectId,
-                ]);
+                ], 'emsco-core'));
             }
         }
 

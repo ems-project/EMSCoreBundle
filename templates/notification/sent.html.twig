@@ -1,4 +1,4 @@
-{% trans_default_domain 'EMSCoreBundle' %}{% if countSent %}
+{% trans_default_domain 'emsco-core' %}{% if countSent %}
 	<div class="box box-primary ">
 		<div class="box-header with-border">
 			<h3 class="box-title">
@@ -18,7 +18,7 @@
 		<div class="box-body ">
 
 		{% if notifications|length <= 0  %}
-		<p>{{ 'No result to display'|trans }}: <a href="{{ path('notifications.sent') }}">{{ 'reset filters' }}</a></p>
+		<p>{{ 'message.notification_no_results'|trans }}: <a href="{{ path('notifications.sent') }}">{{ 'action.reset_filters'|trans }}</a></p>
 		{% else %}
 		<div class="table-responsive">
 						<table class="table table-condensed table-striped">
@@ -106,7 +106,7 @@
             <div class="box-body">
 
               <div class="callout callout-success">
-                <h4>{{ 'No pending notifications'|trans }}</h4>
+                <h4>{{ 'title.notifications_none_pending'|trans }}</h4>
               </div>
             </div>
             <!-- /.box-body -->

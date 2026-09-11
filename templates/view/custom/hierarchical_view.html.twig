@@ -1,4 +1,4 @@
-{% extends '@EMSCore/view/custom/abstract.html.twig' %}{% trans_default_domain 'EMSCoreBundle' %}
+{% extends '@EMSCore/view/custom/abstract.html.twig' %}{% trans_default_domain 'emsco-core' %}
 
 {% block body %}
     <div class="row" id="hierarchical-row" data-content-type="{{ contentType|e('html_attr') }}" data-hierarchical-item-url="{{ path('views.hierarchical.item', {key: '__key__', view: view.id})|e('html_attr') }}">
@@ -6,7 +6,7 @@
             <div class="box box-solid">
                 <div class="box-header with-border">
                     <h2 class="box-title">
-                        {{ 'Reorganise: '|trans }}
+                        {{ 'action.reorganise'|trans }}
                         {{ (parent._source._contenttype~':'~parent._id)|emsco_data_link }}
                     </h2>
                 </div>

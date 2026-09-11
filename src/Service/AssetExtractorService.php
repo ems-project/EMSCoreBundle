@@ -147,10 +147,10 @@ class AssetExtractorService implements CacheWarmerInterface
                 ]);
                 $out->setContent($result->getBody()->__toString());
             } catch (\Exception $e) {
-                $this->logger->warning('service.asset_extractor.extract_error', [
-                    'file_hash' => $hash,
+                $this->logger->messageWarning(t('message.asset_extract_error', [
+                    'error_message' => $e->getMessage(),
                     'filename' => $filename ?? $hash,
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                ], 'emsco-core'), [
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                     'tika' => 'server',
                 ]);
@@ -171,10 +171,11 @@ class AssetExtractorService implements CacheWarmerInterface
                     $out->setLocale($this->cleanString($this->getTikaWrapper()->getLanguage($file)));
                 }
             } catch (\Exception $e) {
-                $this->logger->warning('service.asset_extractor.extract_error', [
-                    'file_hash' => $hash,
+                $this->logger->messageWarning(t('message.asset_extract_error', [
                     'filename' => $filename ?? $hash,
-                    EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getMessage(),
+                    'error_message' => $e->getMessage(),
+                ], 'emsco-core'), [
+                    'file_hash' => $hash,
                     EmsFields::LOG_EXCEPTION_FIELD => $e,
                     'tika' => 'jar',
                 ]);

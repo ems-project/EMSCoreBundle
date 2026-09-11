@@ -80,7 +80,6 @@ use EMS\CoreBundle\Form\Form\UserOptionsType;
 use EMS\CoreBundle\Form\Form\UserType;
 use EMS\CoreBundle\Form\Form\ViewType;
 use EMS\CoreBundle\Form\Nature\ReorganizeType;
-use EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskType;
 use EMS\CoreBundle\Form\Submission\ProcessType;
 use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
@@ -608,9 +607,6 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems.form.field.select_user_property', SelectUserPropertyType::class)
         ->args([service('ems.service.user')])
-        ->tag('form.type');
-
-    $services->set('emsco.form.revision.task.filters', RevisionTaskFiltersType::class)
         ->tag('form.type');
 
     $services->set('emsco.form.revision.task', RevisionTaskType::class)

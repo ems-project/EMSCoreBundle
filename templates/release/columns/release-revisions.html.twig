@@ -11,7 +11,7 @@
         {% if revisionTarget %}
             {{ revisionTarget|emsco_display }}
         {% elseif revisionSource %}
-            {{ 'release.release-revisison.missing-revision'|trans({'%label%': revisionSource|emsco_display, '%environment%': data.release.environmentTarget.name}) }}
+            {{ 'release.release-revisison.missing-revision'|trans({'label': revisionSource|emsco_display, 'environment': data.release.environmentTarget.name}) }}
         {% else %}
             {{ 'release.release-revisison.revision-not-applicable'|trans }}
         {% endif %}
@@ -25,14 +25,14 @@
 {% block revision %}
     {% if data.revision %}
         <a href="{{ path('emsco_view_revisions', {ouuid: data.revisionOuuid, type: data.contentType.name, revisionId: data.revision.id}) }}">
-            {{ 'release.release-revisison.revision'|trans({ '%date%' : data.revision.created|date(date_time_format) ,'%user%' : data.revision.finalizedBy|default('')|emsco_display_name }) }}
+            {{ 'release.release-revisison.revision'|trans({ 'date' : data.revision.created|date(date_time_format) ,'user' : data.revision.finalizedBy|default('')|emsco_display_name }) }}
         </a>
     {% else %}
         {% set info = data.emsId|emsco_document_info %}
         {% set revisionTarget = info.getRevision(data.release.environmentTarget.name) %}
         {% if revisionTarget %}
             <a href="{{ path('emsco_view_revisions', {ouuid: data.revisionOuuid, type: data.contentType.name, revisionId: revisionTarget.id}) }}">
-                {{ 'release.release-revisison.revision'|trans({ '%date%' : revisionTarget.created|date(date_time_format) ,'%user%' : revisionTarget.finalizedBy|default('')|emsco_display_name }) }}
+                {{ 'release.release-revisison.revision'|trans({ 'date' : revisionTarget.created|date(date_time_format) ,'user' : revisionTarget.finalizedBy|default('')|emsco_display_name }) }}
             </a>
         {% else %}
             {{ 'release.release-revisison.revision-not-applicable'|trans }}
@@ -47,7 +47,7 @@
 {% block previous %}
     {% if data.rollbackRevision %}
         <a href="{{ path('emsco_view_revisions', {ouuid: data.rollbackRevision.ouuid, type: data.rollbackRevision.contentType.name, revisionId: data.rollbackRevision.id}) }}">
-            {{ 'release.release-revisison.revision'|trans({ '%date%' : data.rollbackRevision.created|date(date_time_format) ,'%user%' : data.rollbackRevision.finalizedBy|default('')|emsco_display_name }) }}
+            {{ 'release.release-revisison.revision'|trans({ 'date' : data.rollbackRevision.created|date(date_time_format) ,'user' : data.rollbackRevision.finalizedBy|default('')|emsco_display_name }) }}
         </a>
     {% else %}
         <span class="text-muted">
@@ -68,8 +68,8 @@
         {% set stil_in_target = (revisionTarget ? true : false) %}
     {% endif %}
     {%  if stil_in_target %}
-        <i class="fa fa-check-square"><span class="sr-only">{{ 'release.release-revisison.still_in_target'|trans({'%target%': data.release.environmentTarget.label}) }}</span></i>
+        <i class="fa fa-check-square"><span class="sr-only">{{ 'release.release-revisison.still_in_target'|trans({'target': data.release.environmentTarget.label}) }}</span></i>
     {% else %}
-        <i class="fa fa-square-o"><span class="sr-only">{{ 'release.release-revisison.no_more_in_target'|trans({'%target%': data.release.environmentTarget.label})  }}</span></i>
+        <i class="fa fa-square-o"><span class="sr-only">{{ 'release.release-revisison.no_more_in_target'|trans({'target': data.release.environmentTarget.label})  }}</span></i>
     {% endif %}
 {% endblock stil_in_target %}

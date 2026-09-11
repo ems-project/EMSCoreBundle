@@ -190,13 +190,13 @@
                     {%- set addNode = def.getNodeByName(addNodeName) -%}
                     <li>
                         <button type="button" class="btn-json-menu-nested-add"
-                                title="{{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': addNode.label}) }}"
+                                title="{{ 'field_type.json_menu_editor.add_item'|trans({'singular': addNode.label}) }}"
                                 data-item-id="{{ item.id }}"
                                 data-node-id="{{ addNode.id }}"
                                 data-level="{{ level }}"
                                 data-testid="json-menu-nested-add-{{ addNode.name }}">
                             {%- if addNode.icon|default(false) -%}<i class="{{ addNode.icon }}"></i>{%- endif -%}
-                            {{ 'field_type.json_menu_editor.add_item'|trans({'%singular%': addNode.label}) }}
+                            {{ 'field_type.json_menu_editor.add_item'|trans({'singular': addNode.label}) }}
                         </button>
                     </li>
                 {%- endfor -%}

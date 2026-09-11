@@ -7,9 +7,9 @@
         {{ i18nTranslated }}
     {%- else -%}
         {{ 'user.resetting.email.message'|trans({
-            '%username%': user.username,
-            '%token%': user.confirmationToken,
-            '%confirmationUrl%': absolute_url(confirmationUrl)
+            'username': user.username,
+            'token': user.confirmationToken,
+            'confirmationUrl': absolute_url(confirmationUrl)
         }) }}
     {%- endif -%}
 {% endautoescape %}

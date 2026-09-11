@@ -402,7 +402,7 @@ abstract class DataFieldType extends AbstractType
                 || null === $parent->getRawData()
                 || $this->isSet($masterRawData ?? [], $parentRawDataArray, $restrictionOptions['mandatory_if'])) {
                 $rawData = $dataField->getRawData();
-                if (null === $rawData || (\is_string($rawData) && '' === $rawData) || (\is_array($rawData) && 0 === \count($rawData))) {
+                if (null === $rawData || (\is_string($rawData) && '' === $rawData) || (\is_array($rawData) && 0 === \count(\array_filter($rawData)))) {
                     $isValidMandatory = false;
                     $dataField->addMessage('Empty field');
                 }

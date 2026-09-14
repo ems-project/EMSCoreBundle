@@ -427,8 +427,17 @@ field:
     revision_version_tag: 'Oui comme {version_tag}'
     revision_version_tag_empty: 'Non (publication silencieuse)'
     role: Rôle
+    role_archive: Archive
     role_cc: 'Rôle cc'
+    role_create: Créer
+    role_delete: Supprimer
+    role_edit: Modifier
+    role_publish: Publier
+    role_show_link_create: 'Afficher le lien de création'
+    role_show_link_search: 'Afficher la recherche de liens'
     role_to: 'Rôle destinataire'
+    role_trash: Poubelle
+    role_view: Voir
     roles: Rôles
     search_config: 'Configuration de recherche'
     separator: Séparateur
@@ -817,7 +826,7 @@ message:
     content_type_action_not_found: 'Action introuvable sur le type de contenu "{label}"'
     content_type_created: 'Le type de contenu "{label}" a été créé'
     content_type_deleted: 'Le type de contenu "{label}" a été supprimé'
-    content_type_dirty: 'Le type de contenu "{label}" est "dirty" (son mapping est peut-être obsolète), essayez de mettre à jour son mapping'
+    content_type_dirty: 'Le type de contenu "{label}" a été modifié (son mapping est peut-être obsolète), essayez de mettre à jour son mapping'
     content_type_info_ouuid: |
         Cette opération n'indexera pas immédiatement un nouvel objet « <em>{content_type}</em> ». Elle démarrera un nouveau brouillon sans révision préalable. <strong>Ce brouillon ne sera visible</strong> dans aucun environnement <strong>tant qu'il n'aura pas été finalisé pour la première fois</strong>.
         Cela signifie que vous ne pourrez pas le voir dans une vue de liste (comme l'index, la carte, le calendrier...), mais tous les brouillons en cours se trouvent dans la section « Brouillon en cours ».

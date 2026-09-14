@@ -251,7 +251,7 @@ environment:
         title: 'Omgevingen uitlijnen'
     edit:
         notice_rename: |
-            Als u de alias wilt hernoemen, 
+            Als u de alias wilt hernoemen,
             maak dan een nieuwe omgeving aan en lijn deze uit met de omgeving waarvan u de alias wilt hernoemen.
             Verwijder vervolgens de vorige.
         save: Bijwerken
@@ -427,8 +427,17 @@ field:
     revision_version_tag: 'Ja als {version_tag}'
     revision_version_tag_empty: 'Nee (stille publicatie)'
     role: Rol
+    role_archive: Archief
     role_cc: 'Rol cc'
+    role_create: Creëren
+    role_delete: Verwijderen
+    role_edit: Bewerking
+    role_publish: Publiceren
+    role_show_link_create: 'Link weergeven/aanmaken'
+    role_show_link_search: 'Linkzoekfunctie weergeven'
     role_to: 'Rol aan'
+    role_trash: Afval
+    role_view: Zien
     roles: Rollen
     search_config: Zoekconfiguratie
     separator: Scheidingsteken

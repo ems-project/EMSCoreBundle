@@ -251,7 +251,7 @@ environment:
         title: 'Align Environments'
     edit:
         notice_rename: |
-            If you intend to rename the alias, 
+            If you intend to rename the alias,
             please create a new environment and align it to the one you would like to rename the alias.
             Then delete the previous one.
         save: Update
@@ -427,8 +427,17 @@ field:
     revision_version_tag: 'Yes as {version_tag}'
     revision_version_tag_empty: 'No (Silent publish)'
     role: Role
+    role_archive: Archive
     role_cc: 'Role cc'
+    role_create: Create
+    role_delete: Delete
+    role_edit: Edit
+    role_publish: Publish
+    role_show_link_create: 'Show link create'
+    role_show_link_search: 'Show link search'
     role_to: 'Role to'
+    role_trash: Trash
+    role_view: View
     roles: Roles
     search_config: 'Search config'
     separator: Separator
@@ -819,10 +828,10 @@ message:
     content_type_deleted: 'The content type "{label}" has been deleted'
     content_type_dirty: 'The content type "{label}" is dirty (its mapping might be out of date), try to update its mapping'
     content_type_info_ouuid: |
-        This operation will not index a new object ‘<em>{content_type}</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>. 
+        This operation will not index a new object ‘<em>{content_type}</em>’ immediately. It will start a new draft without any previous revision. <strong>This draft will not be visible</strong> in any environment <strong>until it has been finalized for the first time</strong>.
         This means you will not be able to see it in any list view (such as the index, map, calendar...), but all drafts in progress can be found in the ‘Draft in progress’ section.
 
-        About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course). 
+        About the <strong>object unique identifier</strong>: you are free to specify one (provided it has not been taken yet, of course).
         If you leave it <strong>empty</strong>, an object unique identifier <strong>will be generated</strong> during the save. It is impossible to update the object unique identifier later.
     content_type_mapping_not_found: 'Mapping not found for the content type "{label}"'
     content_type_reordered: 'Content type "{content_type}" has been reordered'

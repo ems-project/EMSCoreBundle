@@ -266,7 +266,7 @@ function editRevisionEventListeners(target, onChangeCallback = null){
         const counterLabel = counterSpan.getAttribute('data-counter-label');
         const updateCounter = function(textarea) {
             const length = textarea.value.length;
-            counterSpan.textContent = counterLabel.replace('%count%', length);
+            counterSpan.textContent = counterLabel.replace('{count}', length);
         };
         this.addEventListener('keyup', function(event){ updateCounter(event.target); });
         updateCounter(this);

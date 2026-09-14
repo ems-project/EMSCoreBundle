@@ -39,7 +39,7 @@
         {% for item in menu|default([]) %}
             {% if item.hasChildren %}
                 <ul class="sidebar-menu" data-widget="tree" data-testid="sidebar-menu-tree">
-                    <li class="header">{{ item.title|trans(item.transParameters) }}</li>
+                    <li class="header">{{ item.title|trans }}</li>
                     {% for menu in item.children %}
                         {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
                     {% endfor %}

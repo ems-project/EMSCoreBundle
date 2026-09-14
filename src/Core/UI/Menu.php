@@ -11,10 +11,7 @@ class Menu
     /** @var MenuEntry[] */
     private array $children = [];
 
-    /**
-     * @param array<string, mixed> $transParameters
-     */
-    public function __construct(private readonly TranslatableMessage $title, private readonly array $transParameters = [])
+    public function __construct(private readonly TranslatableMessage $title)
     {
     }
 
@@ -53,13 +50,5 @@ class Menu
     public function getTitle(): TranslatableMessage
     {
         return $this->title;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function getTransParameters(): array
-    {
-        return $this->transParameters;
     }
 }

@@ -251,7 +251,7 @@ environment:
         title: 'Aligner les environnements'
     edit:
         notice_rename: |
-            Si vous avez l’intention de renommer l’alias, 
+            Si vous avez l’intention de renommer l’alias,
             veuillez créer un nouvel environnement et l’aligner sur celui dont vous souhaitez renommer l’alias.
             Supprimez ensuite l’ancien.
         save: 'Mettre à jour'
@@ -609,7 +609,7 @@ key:
     created: Créé
     current_password: 'Mot de passe actuel'
     customized: Personnalisé
-    dashboards: Dashboards
+    dashboards: 'Tableaux de bord'
     delayed_unassigned_shards: 'Shards non assignés retardés'
     details: Détails
     documentation: Documentation

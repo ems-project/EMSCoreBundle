@@ -34,13 +34,13 @@ class EditEnvironmentType extends AbstractType
         $builder
             ->add('name', IconTextType::class, [
                 'icon' => 'fa fa-tag',
-                'label' => t('environment.property.name', [], 'emsco-core'),
-                'help' => t('environment.edit.notice_rename', [], 'emsco-core'),
+                'label' => t('field.name', [], 'emsco-core'),
+                'help' => t('message.environment_edit_notice_rename', [], 'emsco-core'),
             ])
             ->add('label', IconTextType::class, [
                 'required' => false,
                 'icon' => 'fa fa-header',
-                'label' => t('environment.property.label', [], 'emsco-core'),
+                'label' => t('field.label', [], 'emsco-core'),
             ])
             ->add('description', TextareaType::class, [
                 'required' => false,
@@ -48,34 +48,34 @@ class EditEnvironmentType extends AbstractType
             ])
             ->add('color', ColorPickerType::class, [
                 'required' => false,
-                'label' => t('environment.property.color', [], 'emsco-core'),
+                'label' => t('field.color', [], 'emsco-core'),
             ])
             ->add('baseUrl', TextType::class, [
                 'required' => false,
-                'label' => t('environment.property.base_url', [], 'emsco-core'),
+                'label' => t('field.base_url', [], 'emsco-core'),
             ])
             ->add('inDefaultSearch', CheckboxType::class, [
                 'required' => false,
-                'label' => t('environment.property.option.default_search', [], 'emsco-core'),
+                'label' => t('option.default_search', [], 'emsco-core'),
             ])
             ->add('updateReferrers', CheckboxType::class, [
                 'required' => false,
-                'label' => t('environment.property.option.update_referrers', [], 'emsco-core'),
+                'label' => t('option.update_referrers', [], 'emsco-core'),
             ])
             ->add('templatePublication', CodeEditorType::class, [
                 'required' => false,
                 'min-lines' => 10,
-                'label' => t('environment.property.template_publication', [], 'emsco-core'),
+                'label' => t('field.template_publication', [], 'emsco-core'),
             ])
             ->add('rolePublish', RolePickerType::class, [
-                'label' => t('environment.property.rolePublish', [], 'emsco-core'),
+                'label' => t('field.role_publish', [], 'emsco-core'),
                 'translation_domain' => 'emsco-core',
                 'required' => false,
             ])
             ->add('save', SubmitEmsType::class, [
                 'attr' => ['class' => 'btn btn-primary btn-sm ', 'data-testid' => 'btn-action-save'],
                 'icon' => 'fa fa-save',
-                'label' => t('environment.edit.save', [], 'emsco-core'),
+                'label' => t('action.update', [], 'emsco-core'),
             ]);
 
         if (\array_key_exists('type', $options) && $options['type']) {

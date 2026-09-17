@@ -276,7 +276,7 @@ class EditController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             match ($this->getClickedButtonName($form)) {
                 RevisionDraftsDataTableType::DISCARD_SELECTED_DRAFT => $this->discardRevisions($table, $contentTypeId),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
+                default => $this->logger->messageError(t('message.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentTypeId->getId()]);
@@ -285,9 +285,9 @@ class EditController extends AbstractController
         return new Page([
             'datatable' => ['form' => $form->createView(), 'table_id' => 'draft-in-progress'],
             'icon' => 'fa fa-fire',
-            'title' => t('revision.draft.title', ['pluralName' => $contentTypeId->getPluralName()], 'emsco-core'),
+            'title' => t('title.drafts_in_progress', ['pluralName' => $contentTypeId->getPluralName()], 'emsco-core'),
             'breadcrumb' => Navigation::data($contentTypeId)->add(
-                label: t('revision.draft.label', [], 'emsco-core'),
+                label: t('key.draft_in_progress', [], 'emsco-core'),
                 icon: 'fa fa-fire',
             ),
         ]);
@@ -350,9 +350,9 @@ class EditController extends AbstractController
                 $label = $this->revisionService->display($revision);
                 $this->dataService->discardDraft($revision);
 
-                $this->logger->messageNotice(t('log.notice.draft_deleted', ['revision' => $label], 'emsco-core'));
+                $this->logger->messageNotice(t('message.draft_deleted', ['revision' => $label], 'emsco-core'));
             } catch (NotFoundHttpException) {
-                $this->logger->messageWarning(t('log.warning.draft_not_found', ['revisionId' => $revisionId], 'emsco-core'));
+                $this->logger->messageWarning(t('message.draft_not_found', ['revisionId' => $revisionId], 'emsco-core'));
             }
         }
     }

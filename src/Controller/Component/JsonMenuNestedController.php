@@ -112,7 +112,7 @@ class JsonMenuNestedController
 
             if ($form->isSubmitted()) {
                 if ($form->get('_item_hash')->getData() !== $item->getObjectHash()) {
-                    return $this->responseWarningModal($this->translator->trans('json_menu_nested.error.item_edit_outdated', [], 'emsco-core'));
+                    return $this->responseWarningModal($this->translator->trans('message.item_outdated', [], 'emsco-core'));
                 }
                 if (null !== $object = $this->handleFormItem($form, $config, $node)) {
                     $this->jsonMenuNestedService->itemUpdate($config, $item, $object);

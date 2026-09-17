@@ -818,7 +818,7 @@ class DataService
             $this->unlockRevision($revision, $username);
             $this->dispatcher->dispatch(new RevisionFinalizeDraftEvent($revision));
 
-            $this->auditLogger->messageNotice(t('message.revision_finalized', [
+            $this->auditLogger->messageNotice(t('message.revision_published', [
                 'label' => $revision->getLabel(),
                 'environment' => $revision->giveContentType()->giveEnvironment()->getLabel(),
             ], 'emsco-core'), LogRevisionContext::update($revision));

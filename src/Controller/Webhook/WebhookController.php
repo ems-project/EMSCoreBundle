@@ -45,7 +45,7 @@ class WebhookController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             match ($this->getClickedButtonName($form)) {
                 TableAbstract::DELETE_ACTION => $this->webhookSubscriptionManager->deleteByIds($table->getSelected()),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
+                default => $this->logger->messageError(t('message.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::WEBHOOK_SUBSCRIPTION_INDEX);
@@ -72,7 +72,7 @@ class WebhookController extends AbstractController
             throw new MethodNotAllowedHttpException([Request::METHOD_POST]);
         }
         if (!$webhookSubscription->isEnabled()) {
-            $this->logger->messageNotice(t('webhook.enable.re-enabled', [
+            $this->logger->messageNotice(t('message.webhook_re_enabled', [
                 'id' => $webhookSubscription->getId(),
             ], 'emsco-core'));
             $this->webhookService->enable($webhookSubscription);
@@ -80,7 +80,7 @@ class WebhookController extends AbstractController
         $this->webhookService->dispatchTo($webhookSubscription, Webhook::WEBHOOK_TEST, [
             'message' => 'This is a test event',
         ]);
-        $this->logger->messageNotice(t('webhook.test.dispatched', [
+        $this->logger->messageNotice(t('message.webhook_test_dispatched', [
             'id' => $webhookSubscription->getId(),
         ], 'emsco-core'));
 
@@ -93,12 +93,12 @@ class WebhookController extends AbstractController
             throw new MethodNotAllowedHttpException([Request::METHOD_POST]);
         }
         if (!$webhookSubscription->isEnabled()) {
-            $this->logger->messageNotice(t('webhook.enable.re-enabled', [
+            $this->logger->messageNotice(t('message.webhook_re_enabled', [
                 'id' => $webhookSubscription->getId(),
             ], 'emsco-core'));
             $this->webhookService->enable($webhookSubscription);
         } else {
-            $this->logger->messageNotice(t('webhook.enable.disabled', [
+            $this->logger->messageNotice(t('message.webhook_disabled', [
                 'id' => $webhookSubscription->getId(),
             ], 'emsco-core'));
             $this->webhookService->enable($webhookSubscription, false);

@@ -54,7 +54,7 @@ class JobController extends AbstractController
             match ($this->getClickedButtonName($form)) {
                 TableAbstract::DELETE_ACTION => $this->jobService->deleteByIds(...$table->getSelected()),
                 JobDataTableType::ACTION_DELETE_ALL => $this->jobService->clean(skipFailed: false),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
+                default => $this->logger->messageError(t('message.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute('job.index');

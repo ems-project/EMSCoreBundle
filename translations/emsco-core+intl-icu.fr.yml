@@ -1,68 +1,132 @@
 action:
+    acknowledge: Acquitter
     activate: Activer
     add: Ajouter
     add_aggregate_option: 'Options d’agrégation'
     add_alias: 'Ajouter un alias'
     add_entity: 'Nouveau {entity_name}'
+    add_item: 'Ajouter un élément'
     add_managed_alias: 'Ajouter un alias géré'
+    add_node: 'Ajouter un nœud'
     add_referenced: 'Ajouter une référence'
     add_referenced_content_type: 'Ajouter un type de contenu référencé'
     add_release_publish: 'Ajouter à la release pour publication'
     add_release_unpublish: 'Ajouter à la release pour dépublication'
     add_search_field_option: 'Ajouter une option de champ de recherche'
     add_sort_option: 'Ajouter une option de tri'
+    add_task: 'Ajouter une tâche'
+    add_to_release: 'Ajouter à la release'
+    approve: Approuver
     attach: Attacher
+    browse_server: 'Parcourir le serveur'
     cancel: Annuler
+    change_order: 'Changer l’ordre'
+    change_password: 'Changer le mot de passe'
     clear: Effacer
     close: Fermer
     collapse: Réduire
     collapse_all: 'Tout réduire'
+    compare: Comparer
+    compare_with_current: 'Comparer cette révision avec la révision actuelle'
+    confirm: Confirmer
     confirmation: 'Confirmez-vous ?'
     copy: Copier
+    copy_all: 'Tout copier'
+    copy_data: 'Copier les données'
     create: Créer
+    create_draft: 'Créer un brouillon {content_type}'
+    create_task: 'Créer la tâche'
     deactivate: Désactiver
+    default_search_for_content_type: 'Recherche par défaut pour {content_type}'
     define: Définir
     delete: Supprimer
     delete_all: 'Tout supprimer'
+    delete_item: 'Supprimer l’élément'
     delete_selected: 'Supprimer la sélection'
+    delete_task: 'Supprimer la tâche'
     details: Détails
+    disable: Désactiver
     discard: Abandonner
     download: Télécharger
     download_selected: 'Télécharger la sélection'
     duplicate: Dupliquer
     edit: Modifier
+    edit_draft: 'Modifier le brouillon'
     edit_entity: 'Modifier {entity_name}'
+    edit_main_container: 'Modifier le conteneur principal'
     edit_managed_alias: 'Modifier l’alias géré'
+    edit_revision: 'Modifier la révision'
+    enable: Activer
+    exit: Quitter
     export: Exporter
     export_selected: 'Exporter la sélection'
     extract_content: 'Extraire le contenu'
+    forgot_password: 'J’ai oublié mon mot de passe'
     hide: Masquer
+    hide_revision_sidebar: 'Masquer la barre latérale de révision'
+    import: Importer
     info: Info
+    init_upload: 'Initialiser l’upload'
+    move: Déplacer
+    move_item: 'Déplacer l’élément'
+    new_entity_name: 'Nouveau {name}'
+    new_job: 'Nouveau job'
+    next: Suivant
     paste: Coller
+    previous: Précédent
     publish: Publier
+    publish_release: 'Publier maintenant'
+    put_back: Restaurer
+    put_back_selected: 'Restaurer la sélection'
+    re_index: Réindexer
     rebuild: Reconstruire
     refresh: Actualiser
+    reject: Rejeter
     relaunch: Relancer
+    reload_page: 'Recharger la page'
     remove: Supprimer
+    remove_documents: 'Retirer des documents'
+    rename: Renommer
     reorder: Réordonner
     reorder_content_type: 'Réordonner le type de contenu « {content_type} »'
     reorder_content_type_fields: 'Réordonner les champs de « {content_type} »'
     reorganise: Réorganiser
     reset_filters: 'Réinitialiser les filtres'
+    revert_to_revision: 'Revenir à cette révision'
     save: Enregistrer
     save_as_draft: 'Enregistrer comme brouillon'
     save_close: 'Enregistrer et fermer'
     save_publish_in: 'Enregistrer et publier dans {environments}'
+    save_task: 'Enregistrer la tâche'
     select_all: 'Tout sélectionner'
+    send: Envoyer
+    set_as_default_search: 'Définir comme recherche par défaut'
+    set_status_canceled: 'Annuler la release'
+    set_status_ready: 'Valider la release'
+    set_status_wip: 'Retravailler la release'
     show: Afficher
+    sign_in: 'Se connecter'
+    sign_out: 'Se déconnecter'
     status: Statut
+    switch_user: 'Changer d’utilisateur'
+    test: Tester
+    toggle_navigation: 'Basculer la navigation'
     toggle_sidebar: 'Basculer la barre latérale'
     toggle_visibility: 'Basculer la visibilité'
     toggle_visibility_selected: 'Basculer la visibilité de la sélection'
+    treat: Traiter
+    treat_selected: 'Traiter la sélection'
+    update: 'Mettre à jour'
     update_content_type_from_json: 'Mettre à jour {name} depuis un fichier JSON'
     update_from_json: 'Mettre à jour depuis JSON'
     update_mapping: 'Mettre à jour le mapping'
+    upload: Téléverser
+    upload_file: 'Uploader le fichier'
+    upload_files: 'Uploader les fichiers'
     view: Voir
+    view_current_revision: 'Voir la révision actuelle'
+    view_draft_in_progress: 'Voir le brouillon en cours'
+    view_this_revision: 'Voir cette révision'
 asset_extractor:
     status: |-
         {color, select,
@@ -70,10 +134,6 @@ asset_extractor:
             red     {Rouge : l’extracteur d’assets n’est pas complètement opérationnel. Contactez votre administrateur système}
             other   {Étrange... Contactez votre administrateur système}
         }
-button:
-    confirm: 'Confirmez-vous ?'
-    delete: Supprimer
-    reload_page: 'Recharger la page'
 certificate:
     status: |-
         {color, select,
@@ -107,31 +167,6 @@ color:
     red: Rouge
     teal: Sarcelle
     yellow: Jaune
-content-type:
-    field:
-        hide_revision_sidebar:
-            label: 'Masquer la barre latérale de révision'
-        recompute_on_publish:
-            label: 'Recalculer les documents lors de la publication'
-        tasks_enabled:
-            label: Activé
-        tasks_helptexts:
-            label: 'Textes d’aide'
-        tasks_titles:
-            label: Titres
-content_type:
-    field: Champ
-    mapping: Mapping
-    permission: Permission
-    role: Rôle
-    settings: Paramètres
-    tasks: Tâches
-    versioning: Versioning
-contenttype:
-    action:
-        modal_import:
-            cancel: Annuler
-            submit: Importer
 core:
     action:
         render-option:
@@ -198,105 +233,10 @@ core:
                 other   {Il y a # index}
             }
     version: 'Version {core} avec Symfony {symfony}'
-dashboard:
-    exception:
-        title: 'Le tableau de bord {name} a généré une exception'
-data:
-    add:
-        new_title: 'Nouveau {content_type}'
-        title: 'Ajouter un nouveau {content_type}'
-    custom-view:
-        pagetitle: 'Vue {name} de {contentType} « {label} » telle qu’indexée dans {environment}'
-    view:
-        recursive:
-            as_indexed_in: 'Tel qu’indexé dans {environment}'
-            card_title: 'Vue récursive'
-            title: 'Voir {content_type}:{id}'
-documentation:
-    api:
-        title: Documentation
-email:
-    crm_export:
-        body_greeting: Cordialement.
-        body_hello: 'Bonjour,'
-        body_text: "Vous trouverez ci-joint l'export des soumissions CRM demandées."
-ems_core:
-    dashboard:
-        export:
-            label: Exporter
-        revision_task:
-            label: 'Tâches de révision'
-        template:
-            label: Modèle
-entity:
-    edit:
-        title: 'Modifier {entity_name}'
-    new:
-        title: 'Nouveau {entity_name}'
-environment:
-    add:
-        notice: 'Cette opération créera un nouvel index Elasticsearch avec un alias pointant vers celui-ci.'
-        short_title: 'Nouvel environnement'
-        title: 'Ajouter un nouvel environnement'
-    align:
-        align_with: 'Aligner avec'
-        checkbox-all: 'Tout sélectionner'
-        circles: Cercles
-        compare: Comparer
-        compare_title: 'Comparer {environment} avec {with_environment}'
-        difference_count: '{0} Aucune différence|{1} Une différence|]1,Inf[ {count} différences'
-        select_environments: 'Sélectionner les environnements à comparer'
-        selected: Sélectionné
-        subtitle: 'il est temps d’aligner les environnements ?'
-        title: 'Aligner les environnements'
-    edit:
-        notice_rename: |
-            Si vous avez l’intention de renommer l’alias,
-            veuillez créer un nouvel environnement et l’aligner sur celui dont vous souhaitez renommer l’alias.
-            Supprimez ensuite l’ancien.
-        save: 'Mettre à jour'
-        short_title: 'Modifier l’environnement'
-        title: 'Modifier l’environnement « {name} »'
-    index:
-        title: 'Liste des environnements'
-    managed_alias:
-        add:
-            title: 'Ajouter un alias géré'
-        edit:
-            title: 'Modifier l’alias géré'
-        index: Index
-        indexes: Indexes
-        total: Total
-    plural: Environnements
-    property:
-        base_url: 'URL de base'
-        color: Couleur
-        label: Libellé
-        name: Nom
-        option:
-            default_search: 'Dans la recherche par défaut'
-            update_referrers: 'Mettre à jour les référents'
-        rolePublish: 'Rôle de publication'
-        template_publication: 'Modèle de publication'
-    rebuild:
-        notice: 'Soyez prudent, selon l’option sélectionnée, certains contenus de l’index de recherche peuvent être perdus.'
-        options:
-            title: 'Sélectionnez vos options'
-        short_title: 'Reconstruire l’index'
-        title: 'Reconstruire l’environnement {name}'
-    view:
-        elasticsearch_index_missing: 'L’index Elasticsearch est manquant !'
-        elasticsearch_information: 'Informations Elasticsearch'
-        short_title: 'Voir l’environnement'
-        title: 'Voir l’environnement {name}'
-exception:
-    error:
-        message: 'Avec le message « {status_text} ».'
-        page_title: 'Oups ! Une erreur est survenue'
-        server_returned: 'Le serveur a retourné un {status_code}'
-        title: 'Une erreur est survenue'
 field:
     accumulate_file: 'Accumuler dans un seul fichier'
+    action_dropdown_label: 'Actions dans {environment}'
+    action_dropdown_sr_only: 'Basculer le menu déroulant des actions de {environment}'
     alias: Alias
     allowed_remote_hosts: 'Hôtes distants autorisés'
     analyzer: Analyzer
@@ -312,22 +252,34 @@ field:
         mime_type: 'Type MIME :'
         size: 'Taille :'
         title: 'Titre :'
+    assigned_to: 'Assignée à '
+    assignee: Assigné
     attributes: 'Attributs supplémentaires de la requête'
     available: Disponible
+    base_url: 'URL de base'
+    boolean_clause: 'Clause booléenne'
+    boost: Boost
+    by_role: 'par rôle {role}'
     channel: Canal
     char_filter: 'Filtre de caractères'
     circles: Cercles
     circles_to: 'Cercles destinataires'
     color: Couleur
     command: Commande
+    comment: Commentaire
+    compare: Comparer
     config: Configuration
     content_css: 'CSS du contenu'
     content_js: 'JS du contenu'
+    content_type: 'Type de contenu'
     content_types: 'Types de contenu'
     context: Contexte
     copy_to: 'Copier vers'
     count: Nombre
+    created_by: 'Créée par'
+    creator: Créateur
     cron: Cron
+    date: Date
     date_build: 'Date de build'
     date_created: 'Date de création'
     date_execution: 'Date d’exécution'
@@ -340,9 +292,12 @@ field:
     date_run_next: 'Date de prochaine exécution'
     date_run_previous: 'Date d’exécution précédente'
     date_upload: 'Date d’upload'
+    deadline: Échéance
     definition: Définition
+    delay: 'Délai (en jours)'
     description: Description
     display_name: 'Nom d’affichage'
+    docs_count: '# Documents'
     editor: Éditeur
     email: Email
     email_content_type: 'Type de contenu (ex. : text/html)'
@@ -352,10 +307,15 @@ field:
     environment: Environnement
     environment_default: 'Environnement par défaut'
     environment_external: 'Environnement externe'
+    environment_source: 'Environnement source'
+    environment_target: 'Environnement cible'
     environments: Environnements
     error: 'Message d’erreur'
     events: Événements
+    expiration_date: 'Date d’expiration'
     extra: Extra
+    extra_roles: 'Rôles supplémentaires'
+    field: Champ
     file:
         disposition: 'Disposition du fichier'
         disposition_attachment: 'Pièce jointe (forcer le téléchargement)'
@@ -363,19 +323,24 @@ field:
         extension: Extension
         mimetype: 'Type MIME'
         name: 'Nom du fichier'
-        orientation: Orientation
         paper_size: 'Format du papier'
         size: Taille
         type: Type
+    file_hash: 'Hash du fichier'
+    file_hash_apostrophe: 'Hash du fichier'
+    file_info: 'Informations du fichier'
+    file_info_apostrophe: 'Informations du fichier'
     filter: Filtre
     flags: Indicateurs
     form: Formulaire
     format_tags: 'Tags de format'
+    from_sender: 'De {sender}'
     group: Groupe
     hash: 'Signature du hash'
     header: En-tête
     header_allow_origin: 'L’en-tête Access-Control-Allow-Origin'
     height: Hauteur
+    helptexts: 'Textes d’aide'
     hidden: Masqué
     icon: Icône
     id: ID
@@ -386,6 +351,7 @@ field:
     is_default: 'Par défaut'
     is_dirty: Modifié
     is_edit_wysiwyg: 'Modifier avec WYSIWYG'
+    is_mail_notification: 'notification par e-mail'
     is_menu_notification: 'Visible dans le menu des notifications'
     is_menu_sidebar: 'Visible dans le menu latéral'
     is_preview: Prévisualisation
@@ -397,9 +363,15 @@ field:
     language: Langue
     language_preferred: 'Langue préférée'
     language_ui: "Langue de l'interface"
+    last_login: 'Dernière connexion'
+    last_modification: 'Dernière modification'
     last_seen: 'Vu pour la dernière fois'
     locale: Locale
+    locale_preferred: 'Langue préférée'
+    locked_by: 'Verrouillé par'
+    locked_until: 'Verrouillé jusqu’à'
     lowercase: Minuscules
+    mapping: Mapping
     max_output_size: 'Taille de sortie max.'
     max_token_length: 'Longueur max. du token'
     mcp_arguments: 'Template des arguments MCP (JSON)'
@@ -410,19 +382,30 @@ field:
     message: Message
     mime_type: 'Type MIME'
     name: Nom
+    new_version: 'Nouvelle version'
+    node_name: 'Nom du nœud'
+    operator: Opérateur
     options: Options
     orientation: Orientation
+    ouuid: OUUID
     password: 'Mot de passe'
     password_repeat: 'Répéter le mot de passe'
     pattern: Motif
     pdf_size: 'Format PDF'
+    permission: Permission
     plural: Pluriel
     postition_increment_gap: "Écart d'incrément de position"
     public_access: 'Accès public'
+    publish_to: 'Publier vers'
+    published_label: 'Publié dans {environment}'
     query: Requête
+    quick_search: 'Recherche rapide'
+    rejected_by: 'Rejetée par'
+    rejected_message: 'Message de rejet'
     release_environment_source: 'Environnement source pour la publication'
     release_environment_target: 'Environnement pour la (dé)publication'
     render_option: 'Option de rendu'
+    requester: Demandeur
     revision: Révision
     revision_version_tag: 'Oui comme {version_tag}'
     revision_version_tag_empty: 'Non (publication silencieuse)'
@@ -452,8 +435,11 @@ field:
     template_body: 'Corps du template'
     template_footer: 'Pied du template'
     template_header: 'En-tête du template'
+    template_publication: 'Modèle de publication'
     template_response: 'Réponse du template'
     text: Texte
+    title: Tâche
+    titles: Titres
     tokenizer: Tokenizer
     total: Total
     total_deleted: 'Total supprimé'
@@ -461,6 +447,8 @@ field:
     total_ems: 'Total dans EMS'
     translations: Traductions
     type: Type
+    unpublish_from: 'Dépublier de'
+    unpublish_in: 'Dépublier dans {env}'
     uri: URI
     user: Utilisateur
     user_deleted: 'Supprimé par'
@@ -470,207 +458,158 @@ field:
     user_roles: 'Rôles utilisateur'
     user_uploaded: 'Uploadé par'
     username: "Nom d'utilisateur"
+    username_or_email: 'Nom d’utilisateur ou adresse e-mail'
     wysiwyg_profile: 'Profil WYSIWYG'
-field_type:
-    json_menu_editor:
-        add: Ajouter
-        add_item: 'Ajouter un élément'
-        add_node: 'Ajouter un nœud'
-        collapse_all_button: 'Tout replier'
-        collapse_button: Replier
-        copy: Copier
-        copy_all: 'Tout copier'
-        delete_item: 'Supprimer l’élément'
-        edit: Modifier
-        item_label_placeholder: 'Libellé de l’élément'
-        move_item: 'Déplacer l’élément'
-        paste: Coller
-    reorder: Réordonner
-    textarea:
-        counter: '{count} caractères'
-fields:
-    asset:
-        browse-server: 'Parcourir le serveur'
-        clear-button: Effacer
-        close-modal: Fermer
-        drag-n-drop-file: 'Glissez-déposez votre fichier ici'
-        drag-n-drop-files: 'Glissez-déposez vos fichiers ici'
-        file-hash: 'Hash du fichier'
-        file-info: 'Informations du fichier'
-        info-modal-button: Info
-        init-upload: 'Initialiser l’upload'
-        move-button: Déplacer
-        remove-button: Retirer
-        upload-file: 'Uploader le fichier'
-        upload-files: 'Uploader les fichiers'
-        view-button: Voir
-    field: Champ
-    file:
-        asset_options: 'Options de l’asset'
-        clear: Effacer
-        drag_and_drop: 'Glissez-déposez votre fichier ici'
-        extract_content: 'Extraire le contenu'
-        hash_signature: 'Signature du hash'
-        info: Info
-        preview_alt: 'Aperçu du champ {field}'
-        upload: 'Uploader le fichier'
-        view: Voir
-    modal:
-        add_field_to: 'Ajouter un champ à <strong>{name}</strong>'
-        add_subfield_to: 'Ajouter un sous-champ à <strong>{name}</strong>'
-        duplicate: 'Dupliquer <strong>{name}</strong>'
-    options:
-        display: Affichage
-        extra: Extra
-        mapping: Mapping
-        migration: Migration
-        restriction: Restriction
-    subfield: Sous-champ
-    template:
-        more_info: 'plus d’informations'
-form:
-    add:
-        title: 'Ajouter un formulaire'
-    data:
-        add:
-            ouuid:
-                constraint_message: "L’OUUID contient un caractère non autorisé : A-Z, a-z, 0-9, tiret : '-', underscore : '_' ou point : '.'."
-                label: OUUID
-                placeholder: 'Généré automatiquement si laissé vide'
-            save: 'Créer un brouillon {content_type}'
-    edit:
-        title: 'Modifier un formulaire'
-    menu: Formulaires
-    reorder:
-        title: 'Réordonner les champs du formulaire : {label}'
-    tagline: 'Composants réutilisables'
-form_submissions:
-    overview: Aperçu
-    title: 'Soumissions de formulaires'
 help:
     add_first_aggregate_option: 'Cliquez sur « Ajouter une option d’agrégation » pour créer une première option d’agrégation'
     add_first_search_field_option: 'Cliquez sur « Ajouter une option de champ de recherche » pour créer une première option de champ de recherche'
     add_first_sort_option: 'Cliquez sur « Ajouter une option de tri » pour créer une première option de tri'
     override_styles_set_config: 'remplacer la configuration des jeux de styles'
-inline_editor:
-    action:
-        exit: Quitter
-    elements: Éléments
-    status:
-        draft_by: 'En brouillon par "{user}"'
-    title: 'Éditeur en ligne'
-job:
-    command: Commande
-    completed: Terminé
-    info: 'À propos de ce job'
-    list: 'Liste des jobs'
-    modified: 'Dernière mise à jour'
-    output: 'Sortie du job'
-    progress: Progression
-    started: 'Heure de début'
-    tag: Tag
-    user: Utilisateur
-json_menu_nested:
-    action:
-        add: Ajouter
-        cancel: Annuler
-        copy: Copier
-        copy_all: 'Tout copier'
-        delete: Supprimer
-        edit: Modifier
-        move: Déplacer
-        new: 'Nouveau {label}'
-        paste: Coller
-        save: Enregistrer
-        view: Voir
-    column:
-        structure: Structure
-        title: Titre
-    error:
-        item_edit_outdated: 'Désynchronisé, fermez et réessayez !'
 key:
     action: Action
     actions: Actions
     active_primary_shards: 'Shards primaires actifs'
     active_shards: 'Shards actifs'
     active_shards_percent_as_number: 'Shards actifs'
+    add_documents: 'Ajouter des documents'
     add_user: 'Ajouter un utilisateur'
     admin: Admin
     aggregate_option: 'Option d’agrégation'
     aggregate_options: 'Options d’agrégation'
+    align_with: 'Aligner avec'
     all_content_types: 'Tous les types de contenu'
+    all_linked_documents: 'Tous les documents liés'
+    all_releases: 'Toutes les releases'
+    all_tasks: 'Toutes les tâches'
     analyzers: Analyseurs
     anonymous_user: 'Utilisateur anonyme'
+    api_key: 'Clé API'
+    applied: Appliquée
+    assigned_to_me: 'Assignées à moi'
+    assignees: Assignés
     attachment: 'Pièce jointe'
+    audit: Audit
+    autosave: 'Sauvegarde automatique'
     bits: Bits
     build_date: 'Date de build'
     build_in: Intégré
-    channel: Canal
+    by: Par
+    canceled: Annulée
     channels: Canaux
     ckeditor4: 'CK Editor 4'
     client: Client
     cluster_uuid: 'UUID du cluster'
+    compare_environments: 'Comparer les environnements'
+    completed: Terminé
     content: Contenu
     content_type: 'Type de contenu'
     content_types: 'Types de contenu'
-    context: Contexte
     control_sidebar: 'Barre latérale de contrôle'
     created: Créé
+    csv_export: 'Export CSV'
     current_password: 'Mot de passe actuel'
+    current_revision: 'Révision actuelle'
+    current_version: 'Version actuelle'
     customized: Personnalisé
     dashboards: 'Tableaux de bord'
     delayed_unassigned_shards: 'Shards non assignés retardés'
-    details: Détails
+    discard_modifications: 'Abandonner les modifications non enregistrées'
+    document: Document
     documentation: Documentation
-    environments: Environnements
+    draft: Brouillon
+    draft_in_progress: 'Brouillon en cours'
+    edit_revision_json: 'Édition JSON brute'
+    elasticms_logo_alt: 'Logo d’elasticMS'
+    elasticsearch_information: 'Informations Elasticsearch'
+    elements: Éléments
+    email_lowercase: e-mail
+    email_notification_lowercase: 'notification par e-mail'
+    email_or_username: 'E-mail ou nom d’utilisateur'
+    empty: Vide
     environments_external: 'Environnements externes'
     environments_local: 'Environnements locaux'
     error: Erreur
+    excel_export: 'Export Excel'
     export_documents: 'Exporter les documents'
-    extra: Extra
+    failed_jobs: 'Jobs échoués'
     filters: Filtres
+    finalize: Finaliser
+    finalized_by: 'Finalisée par'
+    finalized_on: 'Finalisée le'
     folders: Dossiers
     form_root: 'Racine du formulaire'
     form_submissions: 'Soumissions de formulaire'
     forms: Formulaires
     groups: Groupes
+    history: Historique
+    home: Accueil
     i18n: I18N
     impersonator: Impersonnateur
     inbox: 'Boîte de réception'
+    information: Information
     initializing_shards: 'Shards en initialisation'
     inline: Inline
     inline_editor: 'Éditeur inline'
+    item_label: 'Libellé de l’élément'
     job_logs: 'Logs des jobs'
+    job_output: 'Sortie du job'
     jobs: Jobs
-    label: Libellé
     landscape: Paysage
     last_commands: 'Dernières commandes'
+    last_update: 'Dernière mise à jour'
+    link_to_document: 'Lien vers le document'
+    locale_ui: 'Langue de l’interface'
+    locale_ui_abbrev: Interface
+    locked: Verrouillé
+    login: Identifiant
     logs: Logs
     loop_count: '#'
     lucene_version: 'Version de Lucene'
+    mail_action_approved: approuvée
+    mail_action_assignee_changed: 'assigné modifié'
+    mail_action_completed: terminée
+    mail_action_created: créée
+    mail_action_deleted: supprimée
+    mail_action_rejected: rejetée
+    mail_action_updated: 'mise à jour'
     managed_aliases: 'Alias gérés'
     mcp: MCP
     mcp_prompts: 'Prompts MCP'
     mcp_resources: 'Ressources MCP'
     mcp_tools: 'Outils MCP'
-    message: Message
-    name: Nom
+    more_info: 'plus d’informations'
     new_password: 'Nouveau mot de passe'
     new_password_confirmation: 'Répéter le nouveau mot de passe'
+    new_user: 'Nouvel utilisateur'
+    new_versions: 'Nouvelles versions'
     none: Aucun
     not-applicable: N/A
+    not_applicable: 'Non applicable'
     not_defined: 'Non défini'
+    nothing: Rien
     notice: Notice
     notification: Notification
     notifications: Notifications
     number_of_data_nodes: 'Nombre de nœuds de données'
     number_of_nodes: 'Nombre de nœuds'
     number_of_pending_tasks: 'Nombre de tâches en attente'
+    'on': Le
+    on_lowercase: le
     orphan_indexes: 'Indexes orphelins'
+    other: Autre
+    other_environment_actions: 'Autres actions d’environnement'
+    other_revision_actions: 'Autres actions sur cette révision'
     outbox: 'Boîte d’envoi'
+    overdue_only: 'En retard uniquement'
     overview: "Vue d'ensemble"
+    pending: 'En attente'
+    pending_jobs: 'Jobs en attente'
+    pendings: 'En attente'
+    permission_overview_singular: 'Vue d’ensemble des permissions'
     portrait: Portrait
     prefix_instance_id: 'Préfixer l’alias avec l’ID de l’instance'
+    previous_revision: 'Révision précédente'
+    progress: Progression
     public_channel: 'Rendre le canal disponible aux utilisateurs non authentifiés ?'
     public_key: 'Clé publique'
     public_view: 'Disponible publiquement (sans authentification)'
@@ -678,141 +617,99 @@ key:
     push_menu: 'Menu principal'
     query_search: 'Recherche par requête'
     query_searches: QuerySearch
+    raw_view: 'Vue brute'
+    ready: Prête
     recent_activities: 'Activités récentes'
+    releases: Releases
+    remember_me: 'Se souvenir de moi'
+    reorganise_colon: 'Réorganiser :'
+    requested_tasks: 'Tâches demandées'
+    requesters: Demandeurs
+    reset_password_subject: 'Réinitialiser le mot de passe'
+    revision_tasks: 'Tâches de révision'
     revisions: Révisions
+    roles_hierarchy: 'Hiérarchie des rôles'
+    roles_specific_functionalities: 'Rôles pour des fonctionnalités spécifiques'
+    rollback: 'Annuler (rollback)'
     schedule: Planification
     schedule_cron: '<Minute> <Heure> <Jour_du_mois> <Mois_de_l’année> <Jour_de_la_semaine>. Ex. toutes les 15 minutes : */15 * * * *'
     schedule_tag: 'Utilisé pour identifier les workers (ex. CLI) qui exécuteraient le job à distance'
+    scheduled: Planifiée
     search: Recherche
     search_field_option: 'Option de champ de recherche'
     search_field_options: 'Options de champ de recherche'
+    search_in_my_circle: 'Dans mon {name}'
+    search_in_plural: 'Rechercher dans {plural}'
     search_options: 'Options de recherche'
     searches: Recherches
-    severity: Sévérité
+    selected: Sélectionné
+    sent: Envoyées
+    settings: Paramètres
     show_search_form: 'Afficher le formulaire de recherche'
+    simplified_ui: 'Interfaces simplifiées'
     sort_by: 'Trier par'
     sort_option: 'Option de tri'
     sort_options: 'Options de tri'
-    status: Statut
+    sort_options_lowercase: 'Options de tri'
+    specif_roles_abbrev: 'Rôles spéc.'
+    specific_roles_lowercase: 'rôles spécifiques'
+    specific_roles_of_fields: 'Rôles spécifiques des champs'
+    statuses: Statuts
     structure: Structure
+    subfield: Sous-champ
     system_logs: 'Journaux système'
     tagline: Slogan
     task_max_waiting_in_queue_millis: 'Attente maximale d’une tâche dans la file'
+    task_status_active: Active
+    task_status_completed: Complétée
+    task_status_finished: Terminée
+    task_status_planned: Planifiée
+    task_status_rejected: Rejetée
+    tasks: Tâches
+    template: Modèle
+    textarea_counter: '{count} caractères'
     tiptap: Tiptap
+    title: Titre
     to_be_treated: 'À traiter'
     trash: Corbeille
+    treat_selection: 'Traiter la sélection'
     unassigned_shards: 'Shards non assignés'
     unknown: Inconnu
     unreferenced_aliases: 'Alias non référencés'
+    until: Jusqu’à
     uploaded_files: 'Fichiers uploadés'
     uploaded_files_logs: 'Logs des fichiers uploadés'
-    username: 'Nom d’utilisateur'
+    user_administration: 'Administration des utilisateurs'
+    user_management: 'Gestion des utilisateurs'
+    user_name_placeholder: '{name}'
+    user_profile_picture_alt: 'Photo de profil de l’utilisateur'
     users: Utilisateurs
     version: Version
+    versioning: Versioning
     views: Vues
     warning: Avertissement
     warnings: Avertissements
     webhook_subscriptions: Abonnements
     webhooks: Webhooks
+    welcome: Bienvenue
+    welcome_back: 'Bon retour !'
+    working_area: 'Espace de travail'
     wysiwyg: WYSIWYG
     wysiwyg_profiles: Profils
     wysiwyg_style_sets: 'Jeux de styles'
-log:
-    error:
-        content_type_add_unreferenced: 'Erreur inattendue lors de la récupération des types de contenu non référencés depuis l’environnement externe {environment} : {error}'
-        delete_failed: 'Échec de la suppression'
-        invalid_table_action: 'Action de tableau inconnue'
-    menu: Logs
-    notice:
-        alias_attached: 'L’alias « {alias} » a été attaché'
-        content_type_referenced: 'Type de contenu référencé « {contentType} » depuis l’environnement « {environment} »'
-        content_type_view_deleted: 'La vue « {view} » a été supprimée'
-        deleted_orphan_index: 'L’index « {index} » a été supprimé'
-        deleted_orphan_indexes: 'Les indexes orphelins ont été supprimés'
-        draft_deleted: 'Le brouillon « {revision} » a été supprimé'
-    tagline: 'Qui a fait quoi'
-    title: 'Log du {created}'
-    view:
-        title: 'Logs de {created}'
-    warning:
-        draft_not_found: 'Brouillon introuvable avec l’id « {revisionId} »'
-        duplicate_environment: 'L’environnement « {name} » existe déjà !'
-        index_not_found: 'Index « {index} » introuvable'
-media_library:
-    close: Fermer
-    file:
-        add:
-            title: Téléverser
-        delete:
-            title: 'Supprimer le fichier'
-        load_more: 'Chargement de fichiers supplémentaires...'
-        rename:
-            title: 'Renommer le fichier'
-        revision:
-            title: Révision
-        view:
-            download: 'Télécharger le fichier'
-            fallback: 'Aucun plugin disponible pour afficher le contenu du fichier.'
-            next: Suivant
-            previous: Précédent
-            title: 'Voir le fichier'
-            title_modal: 'Voir le fichier : {name}'
-    files:
-        delete:
-            info: 'Suppression de {count} fichiers. Veuillez patienter...'
-            submit: Confirmer
-            title: 'Supprimer {count} fichiers'
-            warning: 'Êtes-vous sûr de vouloir supprimer les {count} fichiers sélectionnés ?'
-        move:
-            info: 'Emplacement actuel : "{path}"'
-            select_folder: 'Sélectionner un nouvel emplacement :'
-            submit: Déplacer
-            success: |-
-                {count, plural,
-                    one {Déplacement du fichier sélectionné de "{from}" vers "{to}". Veuillez patienter...}
-                    other {Déplacement de # fichiers de "{from}" vers "{to}". Veuillez patienter...}
-                }
-            title: |-
-                {count, plural,
-                    one {Déplacer le fichier}
-                    other {Déplacer # fichiers}
-                }
-    folder:
-        add:
-            title: 'Ajouter un dossier'
-        delete:
-            job_info: 'Suppression du dossier en cours. Veuillez patienter...'
-            job_info_async: 'Le dossier sera supprimé dès que possible.'
-            submit: Confirmer
-            title: 'Supprimer le dossier'
-            warning: |
-                Êtes-vous sûr de vouloir supprimer ce dossier ?
-                Cette action supprimera également tous les sous-dossiers et fichiers qu'il contient.
-        move:
-            info: 'Emplacement actuel : "{path}"'
-            job_info: |
-                Déplacement du dossier sélectionné de "{from}" vers "{to}"
-                Veuillez patienter...
-            job_info_async: 'Le dossier sera déplacé dès que possible.'
-            select_folder: 'Sélectionner un nouvel emplacement :'
-            submit: Déplacer
-            title: 'Déplacer le dossier'
-        rename:
-            job_info: |
-                Renommage du dossier en cours.
-                Veuillez patienter...
-            job_info_async: 'Le dossier sera renommé dès que possible.'
-            submit: Renommer
-            title: 'Renommer le dossier'
-    home: Accueil
-    submit: Enregistrer
 message:
     action_created: 'Une nouvelle action "{label}" a été créée'
     action_deleted: 'L''action "{label}" a été supprimée'
     action_error: 'Cette page/action a rencontré une erreur : {error_message}'
     action_updated: 'L''action "{label}" a été mise à jour'
+    add_field_to: 'Ajouter un champ à <strong>{name}</strong>'
+    add_subfield_to: 'Ajouter un sous-champ à <strong>{name}</strong>'
+    aggregate_option_missing: 'Cliquez sur « Ajouter une option d’agrégation » pour créer une première option d’agrégation'
     alias_added: 'Un nouvel alias "{alias_name}" a été ajouté à l''index "{index_name}"'
+    alias_attached: 'L’alias « {alias} » a été attaché'
     alias_too_many_indexes: "Il y a trop d'index"
+    all_treated: 'Toutes les notifications sont traitées'
+    allow_configure_wysiwyg: "Autorise l'utilisateur à changer de profile WYSIWYG"
     analyzer_created: 'L''analyseur "{label}" a été créé'
     analyzer_deleted: 'L''analyseur "{label}" a été supprimé'
     analyzer_updated: 'L''analyseur "{label}" a été mis à jour'
@@ -821,8 +718,17 @@ message:
     api_entity_updated: 'L''entité {entity} "{name}" a été mise à jour avec l''id {id}'
     asset_extract_error: "Un problème est survenu lors de l’extraction des informations du fichier {filename}\_: {error_message}<br>Veuillez vérifier votre fichier d’entrée et réessayer, ou ajoutez manuellement les métadonnées dans le menu Info."
     asset_extract_file_too_large: 'Ce fichier étant plus volumineux ({filesize}) que {max_size}, son contenu n''a pas été extrait automatiquement. Vous pouvez forcer l''extraction ou le spécifier manuellement dans le menu "Info".'
+    cancel_last_modifications_confirm: 'Annuler les dernières modifications ?'
+    cancel_non_saved_modifications: 'Annuler les modifications non enregistrées'
     channel_alias_not_found: 'Le canal "{label}" ne peut pas être enregistré car son alias "{alias}" est manquant'
     channel_deleted: 'Le canal "{name}" a été supprimé'
+    collection_added_items: '{0} Aucun élément n’a été ajouté.|{1} Un élément a été ajouté.|]1,Inf[ {count} éléments ont été ajoutés.'
+    collection_removed_items: '{0} Aucun élément n’a été supprimé.|{1} Un élément a été supprimé.|]1,Inf[ {count} éléments ont été supprimés.'
+    confirm_delete_files: 'Êtes-vous sûr de vouloir supprimer les {count} fichiers sélectionnés ?'
+    confirm_delete_folder: |
+        Êtes-vous sûr de vouloir supprimer ce dossier ?
+        Cette action supprimera également tous les sous-dossiers et fichiers qu'il contient.
+    confirm_save_and_publish: 'Confirmer l’enregistrement et la publication ?'
     content_type_action_not_found: 'Action introuvable sur le type de contenu "{label}"'
     content_type_created: 'Le type de contenu "{label}" a été créé'
     content_type_deleted: 'Le type de contenu "{label}" a été supprimé'
@@ -834,11 +740,15 @@ message:
         À propos de l'<strong>identifiant unique de l'objet</strong> : vous êtes libre d'en spécifier un (à condition qu'il ne soit pas déjà pris, bien sûr).
         Si vous le laissez <strong>vide</strong>, un identifiant unique d'objet <strong>sera généré</strong> lors de l'enregistrement. Il est impossible de modifier l'identifiant unique de l'objet par la suite.
     content_type_mapping_not_found: 'Mapping introuvable pour le type de contenu "{label}"'
+    content_type_referenced: 'Type de contenu référencé « {contentType} » depuis l’environnement « {environment} »'
     content_type_reordered: 'Le type de contenu « {content_type} » a été réordonné'
     content_type_update_mapping_error: "Erreur lors de la mise à jour du mapping de {environments}\_: {elasticsearch_error}"
+    content_type_view_deleted: 'La vue « {view} » a été supprimée'
     contenttype_mappings_error: 'La mise à jour des mappings pour {content_type} dans {environments} a échoué : {elasticsearch_dump}'
     contenttype_mappings_updated: 'Mappings mis à jour avec succès pour le type de contenu {content_type} dans {environments}'
+    current_location: 'Emplacement actuel : "{path}"'
     dashboard_deleted: 'Le tableau de bord "{label}" a été supprimé'
+    dashboard_exception: 'Le tableau de bord {name} a généré une exception'
     data_already_unpublished: 'Le document "{label}" était déjà dépublié de {environment}'
     data_cant_finalize_field: '{error_message}'
     data_check_signature_failed: 'Signature non concordante dans {environment} pour le document "{label}"'
@@ -858,27 +768,56 @@ message:
     data_unknown_update_type: 'Le document "{label}" n''a pas été remplacé car le type de mise à jour "{update_type}" est inconnu'
     data_unlock_revisions_error: 'Exception inattendue lors du déverrouillage'
     data_update_referrers_error: 'Impossible de mettre à jour les référents du document'
+    delay_days: '{number} jours'
+    delete_failed: 'Échec de la suppression'
+    delete_this_draft: 'Supprimer ce brouillon'
+    delete_this_user_confirm: "Supprimer cet utilisateur\_?"
+    deleted_orphan_index: 'L’index « {index} » a été supprimé'
+    deleted_orphan_indexes: 'Les indexes orphelins ont été supprimés'
+    difference_count: '{0} Aucune différence|{1} Une différence|]1,Inf[ {count} différences'
+    disable_user_confirm: "Désactiver cet utilisateur\_?"
+    discard_draft_modification_lost: 'Les modifications apportées à ce brouillon seront perdues'
     document_cant_duplicate_ouuid_required: 'Il est impossible de dupliquer le document "{label}" car le type de contenu "{content_type}" nécessite d''abord un OUUID'
     document_compared: 'Comparaison de la révision {revision_id} du document {content_type}:{ouuid} avec la révision {compare_revision_id} du document {compare_content_type}:{compare_ouuid}'
     document_copied: 'Le contenu du document "{label}" a été copié dans le presse-papiers'
     document_duplicated: 'Le document "{label}" a été utilisé pour créer un nouveau document'
+    download_file: 'Télécharger le fichier'
+    draft_deleted: 'Le brouillon « {revision} » a été supprimé'
+    draft_modifications_will_be_lost: 'Les modifications apportées à ce brouillon seront perdues'
+    draft_not_found: 'Brouillon introuvable avec l’id « {revisionId} »'
+    drag_and_drop_file: 'Glissez-déposez votre fichier ici'
+    drag_and_drop_files: 'Glissez-déposez vos fichiers ici'
+    duplicate_environment: 'L’environnement « {name} » existe déjà !'
+    duplicate_field: 'Dupliquer <strong>{name}</strong>'
+    edit_field_name: 'Modifier {name}'
+    elasticsearch_index_missing: 'L’index Elasticsearch est manquant !'
+    email_crm_export: "Vous trouverez ci-joint l'export des soumissions CRM demandées."
+    email_greeting: Cordialement.
+    email_hello: 'Bonjour,'
     entity_created: '{entity} {name} a été créé'
     entity_deleted: '{entity} {name} a été supprimé'
     entity_updated: '{entity} {name} a été mis à jour'
+    environment_add_notice: 'Cette opération créera un nouvel index Elasticsearch avec un alias pointant vers celui-ci.'
     environment_alias_missing: "L'alias pour l'environnement {environment} est manquant, envisagez de reconstruire un tout nouvel alias"
     environment_alias_removed: "L'alias {alias} a été supprimé"
     environment_aligned: 'Les environnements {environment} et {with_environment} sont alignés pour ces types de contenu'
     environment_cannot_align_default: 'Le document "{label}" ne peut pas être publié dans {environment} car il s''agit de l''environnement par défaut de {content_type}'
     environment_created: "L'environnement {environment} a été créé"
     environment_deleted: 'L''environnement "{label}" a été supprimé'
+    environment_edit_notice_rename: |
+        Si vous avez l’intention de renommer l’alias,
+        veuillez créer un nouvel environnement et l’aligner sur celui dont vous souhaitez renommer l’alias.
+        Supprimez ensuite l’ancien.
     environment_is_default: "L'environnement {environment} est utilisé comme environnement par défaut pour au moins un type de contenu"
     environment_not_empty: "L'environnement {environment} n'est pas vide"
     environment_publish_permission_denied: 'Vous n''avez pas suffisamment de droits pour publier des documents "{content_type}"'
+    environment_rebuild_notice: 'Soyez prudent, selon l’option sélectionnée, certains contenus de l’index de recherche peuvent être perdus.'
     environment_rebuild_unknown_option: 'Impossible de reconstruire l''environnement {environment} en raison de l''option inconnue "{option}"'
     environment_updated: "L'environnement {environment} a été mis à jour"
     environment_wrong_ouuid: 'OUUID mal formé {ouuid}'
     error_status: 'Avec le message « {status} »'
     error_status_code: 'Le serveur a retourné un {status_code}'
+    error_status_with_message: 'Avec le message « {status_text} ».'
     field_added: 'Le champ "{name}" a été ajouté'
     field_collection_import_array: "Certaines données n'ont pas été importées pour le champ de collection {field_name} car il ne s'agissait pas d'un tableau"
     field_deleted: 'Le champ "{name}" a été supprimé'
@@ -890,22 +829,74 @@ message:
     field_reordered: 'Les sous-champs du champ "{name}" ont été réorganisés'
     field_syntax_error: 'Erreur de syntaxe dans le champ {field_name} : {error_message}'
     field_template_parse_error: "Erreur lors de l'analyse du champ calculé {computed_field_name} : {error_message}"
+    field_type_not_found: 'La définition de type associée à cet élément est manquante (probablement supprimée).'
     field_with_errors: 'Le champ {path} est en erreur avec le message {error_message}'
+    file_preview_fallback: 'Aucun plugin disponible pour afficher le contenu du fichier.'
+    file_preview_of_field: Aperçu
     file_upload_error: 'Erreur lors du téléchargement du fichier : {error_message}'
     filter_deleted: 'Le filtre {filter_name} a été supprimé'
+    finalized_by: '{date} Finalisé par {user}'
     finalized_when_user: '{date} Finalisé par {user}'
+    folder_delete_async: 'Le dossier sera supprimé dès que possible.'
+    folder_delete_in_progress: 'Suppression du dossier en cours. Veuillez patienter...'
+    folder_move_async: 'Le dossier sera déplacé dès que possible.'
+    folder_move_in_progress: |
+        Déplacement du dossier sélectionné de "{from}" vers "{to}"
+        Veuillez patienter...
+    folder_rename_async: 'Le dossier sera renommé dès que possible.'
+    folder_rename_in_progress: |
+        Renommage du dossier en cours.
+        Veuillez patienter...
     form_deleted: 'Le formulaire "{label}" a été supprimé'
+    form_not_defined: 'Formulaire non défini'
+    form_not_found: 'Formulaire introuvable'
     form_submission_deleted: 'La soumission de formulaire avec l''id "{id}" a été supprimée !'
+    generate_api_key_confirm: "Générer une clé API pour cet utilisateur\_?"
+    hide_finished_tasks: 'Masquer les tâches terminées ({number})'
     import_failed: "Échec de l'import"
     import_file_missing_columns: 'Colonnes manquantes dans le fichier d''import, colonnes requises "{columns}"'
     import_file_missing_data: "Données manquantes dans le fichier d'import"
+    index_not_found: 'Index « {index} » introuvable'
+    invalid_table_action: 'Action de tableau inconnue'
+    item_outdated: 'Désynchronisé, fermez et réessayez !'
     job_done: 'La tâche "{job_id}" est terminée'
     job_failed: 'La tâche "{label}" a échoué dans l''environnement {environment}'
+    job_info: 'À propos de ce job'
     job_initialized: 'La tâche "{label}" a été initialisée dans l''environnement {environment}'
+    json_menu_out_of_sync: 'Désynchronisé, veuillez rafraîchir et réessayer !'
+    linked_documents_in: 'Documents liés dans {environment} ({length}/{total})'
+    loading_information: 'Chargement des informations...'
+    loading_more_files: 'Chargement de fichiers supplémentaires...'
+    log_content_type_add_unreferenced: 'Erreur inattendue lors de la récupération des types de contenu non référencés depuis l’environnement externe {environment} : {error}'
+    logged_in_as: 'Connecté en tant que {username}'
+    mail_approved_subject: 'Tâche « {title} » approuvée pour « {document} »'
+    mail_assignee_changed_subject: 'Assigné modifié pour la tâche « {title} » de « {document} »'
+    mail_completed_subject: 'Prête pour validation, tâche « {title} » pour « {document} »'
+    mail_created_subject: 'Nouvelle tâche « {title} » pour « {document} »'
+    mail_deleted_subject: 'Tâche « {title} » supprimée pour « {document} »'
+    mail_greetings: 'Bonjour {receiver},'
+    mail_kind_regards: 'Cordialement,'
+    mail_overdue_or_active_list: 'Voici la liste des tâches en retard ou actives.'
+    mail_process_urgently: 'Veuillez les traiter rapidement.'
+    mail_rejected_subject: 'Tâche « {title} » rejetée pour « {document} »'
+    mail_task_has_been: 'Une tâche a été {action} {role}.'
+    mail_updated_subject: 'Tâche « {title} » mise à jour pour « {document} »'
     managed_alias_created: 'L''alias géré "{managed_alias_label}" a été créé'
     managed_alias_deleted: 'L''alias géré "{managed_alias_label}" a été supprimé'
     managed_alias_updated: 'L''alias géré "{managed_alias_label}" a été mis à jour'
+    member_since: 'Membre depuis le {date}'
+    messages_in_error: 'Messages en erreur'
+    messages_in_queue: 'Messages dans la file'
+    move_files_success: |-
+        {count, plural,
+            one {Déplacement du fichier sélectionné de "{from}" vers "{to}". Veuillez patienter...}
+            other {Déplacement de # fichiers de "{from}" vers "{to}". Veuillez patienter...}
+        }
+    no_linked_document: 'Ce document n’a aucun document lié'
+    no_revision_in_env: 'aucune révision dans {env}'
+    no_tasks_for_document: 'Aucune tâche pour ce document'
     notification_already_pending: 'Une autre notification {notification_name} est déjà en attente pour le document « {label} » dans {environment} par {notification_username}'
+    notification_duplicate: 'Au moins une autre notification existe pour cet objet'
     notification_no_results: 'Aucun résultat à afficher'
     notification_no_results_for_filter_combo: 'Aucun résultat pour cette combinaison de filtres'
     notification_not_found: 'Notification #{notification_id} introuvable'
@@ -918,18 +909,49 @@ message:
     object_choice_content_type_not_found: 'Type de contenu {content_type} introuvable'
     object_choice_key_not_found: 'Clé d’objet {object_key} introuvable'
     object_choice_limited_result_set: 'Le sélecteur de lien de données est limité aux {limit} premiers documents sur {count}'
+    ouuid_constraint: "L’OUUID contient un caractère non autorisé : A-Z, a-z, 0-9, tiret : '-', underscore : '_' ou point : '.'."
+    ouuid_placeholder: 'Généré automatiquement si laissé vide'
+    pick_file_from_server: 'Choisir un fichier sur le serveur'
+    please_reload_page: 'Veuillez recharger la page.'
+    preview_alt: 'Aperçu du champ {field}'
     privilege_exception: "Vous n'avez pas suffisamment de droits pour modifier ce document"
     publish_not_authorized: 'Vous ne pouvez pas (dé)publier le type de contenu {content_type}'
     publish_not_in_circles: 'Vous ne pouvez pas (dé)publier le type de contenu {content_type} car vous ne partagez aucun cercle'
     publish_not_in_default_environment: 'Vous ne pouvez pas (dé)publier dans l’environnement par défaut {environment} du document « {label} »'
+    put_back_confirm: 'Restaurer « {label} » ?'
     query_search_deleted: 'La recherche par requête "{label}" a été supprimée'
     reindex_command_end: 'Les documents du content type {content_type} ont été réindexés dans {environment} (index : {index})'
     reindex_command_environment_not_found: 'Environnement nommé {environment} introuvable'
     reindex_command_start: 'Démarrage de la réindexation de {content_type} dans {environment}'
+    release_add_publish: 'Ajouter des documents à publier'
+    release_add_unpublish: 'Ajouter des documents à dépublier'
+    release_delete_confirm: "Supprimer la release\_?"
+    release_delete_selected_confirm: "Supprimer toutes les releases sélectionnées\_?"
     release_deleted: 'La release "{name}" a été supprimée'
     release_not_ready: 'Le statut de la release "{name}" n''est pas "ready"'
+    release_revision_finalized_by: '{date} finalisé par {user}'
+    release_revision_missing: 'Le document « {label} » n’est plus disponible dans {environment}'
+    release_revision_no_more_in_target: 'Cette révision a été dépubliée de {target}'
     release_revision_preceding: 'Une révision précédente est déjà liée à la release "{name}"'
+    release_revision_still_in_target: 'Toujours publié dans {target}'
     release_unknown_action: 'Action inconnue'
+    remove_user_from_group_confirm: "Retirer cet utilisateur du groupe\_?"
+    removing_files: 'Suppression de {count} fichiers. Veuillez patienter...'
+    replaced_by_revision: 'remplacée par la révision {date}'
+    reset_password_check_email: |
+        Un e-mail a été envoyé. Il contient un lien sur lequel vous devez cliquer pour réinitialiser votre mot de passe.
+        Remarque : vous ne pouvez demander un nouveau mot de passe qu’une seule fois toutes les {tokenLifetime} heures.
+
+        Si vous ne recevez pas d’e-mail, vérifiez votre dossier de spam ou réessayez.
+    reset_password_email_body: |-
+        Bonjour {username} !
+
+        Pour réinitialiser votre mot de passe, veuillez visiter {confirmationUrl}
+
+        Cordialement,
+        L'équipe.
+    revision_add_for_publication: 'Ajouter un document pour publication'
+    revision_add_for_unpublish: 'Ajouter un document pour dépublication'
     revision_add_from_json_error: "Il a été impossible de créer un nouveau document {content_type} en raison d'une erreur interne"
     revision_added_to_release: 'Le document "{label}" a été ajouté à la release "{release}"'
     revision_ajax_update_on_finalized: 'Il est impossible d''enregistrer le document "{label}" car cette révision est déjà finalisée'
@@ -946,6 +968,7 @@ message:
     revision_compare_not_found: "Impossible de comparer la révision {revision_id} du document {content_type}:{ouuid} avec la révision {compare_revision_id} car cette révision n'existe pas"
     revision_create_error: 'La révision pour le type de contenu "{content_type}" ne peut pas être créée, raison : {error_message}'
     revision_create_from_array_error: "Il a été impossible de créer un nouveau document {content_type} en raison d'une erreur interne"
+    revision_current: 'Vous consultez la dernière révision'
     revision_delete_error: 'La révision {ouuid} pour le type de contenu "{content_type}" ne peut pas être supprimée, raison : {error_message}'
     revision_deleted: 'Le document "{label}" a été supprimé'
     revision_deleted_but_referenced: 'Le document "{label}" est marqué comme supprimé mais est encore référencé dans {environment}'
@@ -953,12 +976,13 @@ message:
     revision_draft_cannot_be_added_to_release: 'Une révision en mode brouillon ne peut pas être ajoutée à une release'
     revision_draft_created: 'Un nouveau brouillon a été initié pour le document "{label}"'
     revision_draft_deleted: 'Brouillon abandonné pour le document "{label}"'
+    revision_draft_in_progress: 'Ceci est un brouillon en cours'
     revision_draft_publish_error: "Un brouillon du document « {label} » ne peut pas être publié dans {environment}\_: {error_message}"
     revision_draft_published: 'Un brouillon du document « {label} » a été publié dans {environment}'
     revision_draft_updated: 'Brouillon mis à jour pour le document "{label}"'
     revision_edit_draft_warning: 'Vous modifiez une révision déjà publiée, il est plus sûr de <a href="{path}" class="btn btn-primary"><span class="fa fa-pencil"></span> modifier un brouillon</a>'
     revision_finalize_error: 'La révision {revision_id} pour le type de contenu "{content_type}" ne peut pas être finalisée, raison : {error_message}'
-    revision_finalized: 'Le document "{label}" a été publié dans {environment}'
+    revision_in_draft_by: 'En brouillon par "{user}"'
     revision_incomplete_request: 'Il est impossible d''enregistrer le document "{label}". Veuillez vérifier votre configuration PHP/Web (par ex. max_input_vars dans php.ini)'
     revision_json_edit_draft_only: 'Seul un brouillon peut être édité en JSON'
     revision_loaded_from_auto_save: "Les données ont été chargées à partir d'une version enregistrée automatiquement"
@@ -967,7 +991,10 @@ message:
     revision_not_found_in_environment: 'Il est impossible d''identifier une révision pour le document "{ouuid}" dans l''environnement {environment}'
     revision_not_found_in_source: 'Révision manquante dans l’environnement {environment} pour le document « {ouuid} »'
     revision_not_in_target_environment: 'Le document "{label}" n''est pas publié dans l''environnement cible "{target}"'
+    revision_not_published: 'Cette révision n’est plus publiée dans {environment}'
+    revision_not_published_and_duplicate: 'Cette révision n’est plus publiée dans {environment} et une autre notification existe'
     revision_only_super_can_finalize_archive: 'Seul un super utilisateur peut finaliser une révision archivée'
+    revision_previous: 'Ceci est une révision passée'
     revision_publish_failed: "La publication du document « {label} » a échoué\_!"
     revision_published: 'Le document "{label}" a été publié dans {environment}'
     revision_read_error: 'La révision pour le type de contenu "{content_type}" est introuvable, raison : {error_message}'
@@ -980,17 +1007,50 @@ message:
     revision_unpublished: 'Le document "{label}" a été dépublié de {environment}'
     revision_updated_in_release: 'Le document "{label}" a été mis à jour avec une nouvelle révision dans la release "{release}"'
     revison_not_found_in_env: 'aucune révision dans {environment}'
+    roles_functionalities_description: 'Ces rôles sont spécifiquement liés à des fonctionnalités et n’ont rien à voir avec la gestion de contenu. Ce sont des rôles fonctionnels qui donnent accès à des fonctionnalités spécifiques du CMS.'
+    roles_hierarchy_description: 'L’accès à un rôle implique l’accès à tous les rôles situés en dessous dans la hiérarchie. Les rôles hiérarchiques peuvent être attribués pour accorder et limiter l’accès au type de contenu.'
     schedule_created: 'La planification "{name}" a été créée'
     schedule_deleted: 'La planification "{name}" a été supprimée'
     schedule_updated: 'La planification "{name}" a été mise à jour'
     search_deleted: 'Une recherche a été supprimée'
+    search_field_option_missing: 'Cliquez sur « Ajouter une option de champ de recherche » pour créer une première option de champ de recherche'
     search_paging_limit_exceeded: 'La pagination est limitée aux {paging} premiers éléments, {total} documents trouvés'
+    search_placeholder: Rechercher...
+    search_result_count: |-
+        {count, plural,
+            =-1   {Le résultat de recherche est manquant}
+            =0    {Aucun résultat trouvé}
+            =1    {1 document trouvé}
+            other {# documents trouvés}
+        }
     search_result_limited: 'Le résultat de recherche est limité aux {total} premiers documents'
     search_set_as_default: 'Cette recherche a été définie comme recherche par défaut'
     search_set_as_default_for_content_type: 'Cette recherche a été définie comme formulaire de recherche par défaut pour le type de contenu {content_type}'
+    select_new_location: 'Sélectionner un nouvel emplacement :'
+    show_finished_tasks: 'Afficher les tâches terminées ({number})'
+    sign_in_start_session: 'Connectez-vous pour démarrer votre session'
+    sign_in_to_continue: 'Connectez-vous à votre compte pour continuer'
+    something_wrong: 'Un problème est survenu avec cette application.'
+    sort_option_missing: 'Cliquez sur « Ajouter une option de tri » pour créer une première option de tri'
+    still_in_target: 'Toujours dans {target}'
     subfield_added: 'Le sous-champ "{name}" a été ajouté'
     subfield_name_mandatory: 'Le nom du sous-champ est obligatoire'
     subfield_name_not_valid: "Le nom du sous-champ n'est pas valide (format : {field_format})"
+    task_created: 'Tâche « {title} » créée avec succès.'
+    task_deleted: 'Tâche « {title} » supprimée avec succès.'
+    task_history_approved: '{user} a approuvé la tâche'
+    task_history_completed: '{user} a terminé la tâche'
+    task_history_created: '{user} a créé la tâche'
+    task_history_planned: '{user} a planifié la tâche'
+    task_history_progress: 'La tâche est devenue active pour {assignee}'
+    task_history_rejected: '{user} a rejeté la tâche'
+    task_history_updated: '{user} a mis à jour la tâche'
+    task_revision_locked: 'Révision verrouillée par {user} jusqu’à {time}'
+    task_search_warning: 'Plus de {count} tâches, la recherche sur le titre du document est impossible.'
+    task_updated: 'Tâche « {title} » mise à jour avec succès.'
+    tika_server_not_configured: "Le serveur Tika n'est pas configuré"
+    up_to_date: 'Tout est à jour.'
+    upload_is_starting: 'Le téléversement démarre'
     user_api_key_generated: "Nouvelle clé API pour l'utilisateur {user_display_name} : {api_key}"
     user_custom_form_not_found: 'Formulaire utilisateur personnalisé "{name}" introuvable'
     user_deleted: "L'utilisateur {user_display_name} a été supprimé"
@@ -1000,6 +1060,8 @@ message:
     user_profile_updated: 'Le profil a été mis à jour.'
     user_resetting_success: 'Le mot de passe a été réinitialisé avec succès.'
     user_updated: "L'utilisateur {user_display_name} a été mis à jour"
+    users_in_group_label: 'Utilisateurs dans le groupe {label}'
+    users_not_in_group_label: 'Utilisateurs hors du groupe {label}'
     view_bucket_not_found: 'Bucket {bucket_path} introuvable'
     view_created: 'Une nouvelle vue {view_label} a été créée'
     view_criteria_added: 'Un critère a été ajouté pour le champ {field_name} avec la valeur {field_data}'
@@ -1022,6 +1084,9 @@ message:
     view_sorter_ordered: 'Les documents de {content_type} ont été triés avec la vue "{view_label}"'
     view_sorter_too_many_documents: 'Ce content type contient trop de documents ({total}) pour être réordonné en une seule fois'
     view_updated: 'La vue "{label}" a été mise à jour'
+    webhook_disabled: 'L’abonnement {id} a été désactivé'
+    webhook_re_enabled: 'L’abonnement {id} a été réactivé'
+    webhook_test_dispatched: 'Un événement webhook_test a été envoyé à l’abonnement {id}'
     wysiwyg_invalid_config_format: "Format non valide\_: {msg}"
     wysiwyg_profile_deleted: 'Le profil « {name} » a été supprimé'
     wysiwyg_profile_updated: 'Le profil « {name} » a été mis à jour'
@@ -1029,186 +1094,24 @@ message:
     wysiwyg_styles_set_updated: 'Le jeu de styles « {name} » a été mis à jour'
     xliff_not_current_revision: "La révision {revision_id} de {ouuid} n'est plus la dernière révision. Les traductions n'ont pas été importées."
     xliff_too_many_translations: "{counter} documents de traduction alors qu'un seul est attendu pour l'identifiant de traduction {translation_id} et la locale cible {target_locale} dans l'environnement {environment}"
-modal:
-    loading_information: 'Chargement des informations...'
-navigation:
-    toggle: 'Basculer la navigation'
-not-applicable: N/A
-notice_card:
-    title: Notice
-notification-menu:
-    dashboards: 'Tableaux de bord'
-notification:
-    acknowledge: Acquitter
-    actions: Actions
-    all_treated: 'Toutes les notifications sont traitées'
-    created_by: 'Créée par'
-    dashboard:
-        title: Notifications
-    date: Date
-    empty:
-        title: Vide
-    environment: Environnement
-    filter:
-        title: Filtres
-    folder:
-        inbox: 'Boîte de réception'
-        outbox: 'Boîte d’envoi'
-        title: Dossiers
-    label: Notification
-    menu:
-        link_title: Notifications
-    message: Message
-    no_pending: 'Aucune notification en attente'
-    no_result: 'Aucun résultat à afficher'
-    no_result_for_filters: 'Aucun résultat pour cette combinaison de filtres'
-    nothing_to_treat: 'Aucune notification en attente'
-    'on': Le
-    plural: Notifications
-    rejected: Rejetée
-    rejected_by: 'Rejetée par'
-    rejected_message: 'Message de rejet'
-    reset_filters: 'réinitialiser les filtres'
-    revision: Révision
-    sent:
-        title: Envoyées
-    to_be_treated: 'À traiter'
-    treat: Traiter
-    treat_selected: 'Traiter la sélection'
-    treat_selection: 'Traiter la sélection'
-    up_to_date: 'Tout est à jour.'
-    warning:
-        duplicate: 'Au moins une autre notification existe pour cet objet'
-        revision_not_published: 'Cette révision n’est plus publiée dans {environment}'
-        revision_not_published_and_duplicate: 'Cette révision n’est plus publiée dans {environment} et une autre notification existe'
-    warnings: Avertissements
 option:
     allow_add: 'Autoriser l’ajout'
+    default_search: 'Dans la recherche par défaut'
     delete_existing_templates: 'Supprimer les templates existants'
     delete_existing_views: 'Supprimer les vues existantes'
     disabled: Désactivé
+    display: Affichage
     email_notification: 'Notifications par email'
     enabled: Activé
+    extra: Extra
     layout_boxed: 'Mise en page en boîte'
     layout_sidebar_collapse: 'Réduction de la barre latérale'
     layout_sidebar_mini: 'Barre latérale mini'
+    migration: Migration
     multiple: Multiple
-orientation:
-    landscape: Paysage
-    portrait: Portrait
-out-of-sync:
-    modal:
-        please-reload: 'Veuillez recharger la page.'
-        reload-page: 'Recharger la page'
-        something-wrong: 'Un problème est survenu avec cette application.'
-        title: Désynchronisé
-pagination:
-    next: Suivant
-    previous: Précédent
-pick-a-release:
-    title: 'Choisir une release pour « {label} »'
-profile:
-    title: 'Votre profil'
-    title_sub: 'Tout à propos de vous'
-publish:
-    search_result:
-        title: 'Publier {count} {content_type} depuis {environment}'
-release:
-    actions:
-        add_publish: 'Ajouter des documents à publier'
-        add_unpublish: 'Ajouter des documents à dépublier'
-        delete: Supprimer
-        delete_confirm: "Supprimer la release\_?"
-        delete_selected: 'Supprimer la sélection'
-        delete_selected_confirm: "Supprimer toutes les releases sélectionnées\_?"
-        edit: Modifier
-        publish_confirm: "Confirmez-vous\_?"
-        publish_release: 'Publier maintenant'
-        set_status_canceled: 'Annuler la release'
-        set_status_ready: 'Valider la release'
-        set_status_wip: 'Retravailler la release'
-        show: Voir
-    add:
-        title: 'Ajouter une release'
-    all_releases:
-        label: 'Toutes les releases'
-    edit:
-        title: 'Modifier une release'
-    index:
-        column:
-            docs_count: '# Documents'
-        title: 'Liste des releases'
-    menu: Releases
-    release-revision:
-        missing-revision: 'Le document « {label} » n’est plus disponible dans {environment}'
-        no_more_in_target: 'Cette révision a été dépubliée de {target}'
-        not-applicable: 'non applicable'
-        revision: '{date} finalisée par {user}'
-        revision-not-applicable: 'Non applicable'
-        still_in_target: 'Toujours publiée dans {target}'
-    release-revisison:
-        missing-revision: 'Le document « {label} » n’est plus disponible dans {environment}'
-        no_more_in_target: 'Cette révision a été dépubliée de {target}'
-        not-applicable: 'non applicable'
-        revision: '{date} finalisé par {user}'
-        revision-not-applicable: 'Non applicable'
-        still_in_target: 'Toujours publié dans {target}'
-    revision:
-        action:
-            publish: 'Ajouter un document pour publication'
-            unpublish: 'Ajouter un document pour dépublication'
-        actions:
-            add_confirm: "Confirmez-vous\_?"
-            remove: 'Retirer des documents'
-            remove_confirm: "Confirmez-vous\_?"
-        index:
-            column:
-                CT: 'Type de contenu'
-                action: Action
-                compare: Comparer
-                document: Document
-                label: Libellé
-                maxRevId: 'Environnement cible'
-                minRevId: 'Environnement source'
-                previous: 'Révision précédente'
-                revision: Révision
-                still_in_target: 'Toujours dans {target}'
-            publish: 'Liste des documents disponibles pour publication'
-            unpublish: 'Liste des documents disponibles pour dépublication'
-        menu: 'Ajouter des documents'
-        table:
-            rollback:
-                action: 'Annuler (rollback)'
-                confirm: "Confirmez-vous\_?"
-        view:
-            title: 'Documents de la release'
-    status:
-        applied: Appliquée
-        canceled: Annulée
-        ready: Prête
-        scheduled: Planifiée
-        wip: Brouillon
-    unpublish_in: 'Dépublier dans {env}'
-revision:
-    draft:
-        delete: 'Supprimer ce brouillon'
-        edit: 'Modifier le brouillon'
-        label: 'Brouillon en cours'
-        title: 'Brouillons en cours de {pluralName}'
-        view: 'Voir le brouillon en cours'
-    field:
-        locked: 'Verrouillé jusqu’à'
-        locked_by: 'Verrouillé par'
-        ouuid: Ouuid
-    finalized_by: '{date} Finalisé par {user}'
-    missing: 'aucune révision dans {env}'
-    new: 'Nouveau {contentType}'
-    replace_by_revision: 'remplacée par la révision {date}'
-    trash:
-        put_back: Restaurer
-        put_back_confirm: 'Restaurer « {label} » ?'
-        put_back_selected: 'Restaurer la sélection'
-        title: '{pluralName} dans la corbeille'
+    recompute_on_publish: 'Recalculer les documents lors de la publication'
+    restriction: Restriction
+    update_referrers: 'Mettre à jour les référents'
 role:
     admin:
         label: Administrateur
@@ -1261,214 +1164,95 @@ role:
         label: 'Lecture utilisateur'
     webmaster:
         label: Webmaster
-search:
-    filter:
-        add: Ajouter
-        boolean_clause: 'Clause booléenne'
-        boost: Boost
-        field: Champ
-        operator: Opérateur
-        pattern: Motif
-    form: Formulaire
-    query: Requête
-    set_default:
-        confirm: 'Confirmez-vous ?'
-        label: 'Définir comme recherche par défaut'
-    set_default_content_type:
-        confirm: 'Confirmez-vous ?'
-        label: 'Recherche par défaut pour {content_type}'
-    title: |-
-        {count, plural,
-            =-1   {Le résultat de recherche est manquant}
-            =0    {Aucun résultat trouvé}
-            =1    {1 document trouvé}
-            other {# documents trouvés}
-        }
-search_options:
-    aggregate:
-        add: 'Ajouter une option d’agrégation'
-        missing: 'Cliquez sur « Ajouter une option d’agrégation » pour créer une première option d’agrégation'
-        title: 'Options d’agrégation'
-    field:
-        add: 'Ajouter une option de champ de recherche'
-        missing: 'Cliquez sur « Ajouter une option de champ de recherche » pour créer une première option de champ de recherche'
-        title: 'Options de champ de recherche'
-    sort:
-        add: 'Ajouter une option de tri'
-        missing: 'Cliquez sur « Ajouter une option de tri » pour créer une première option de tri'
-        title: 'Options de tri'
-    title: 'Options de recherche'
-sidebar-menu:
-    admin: Admin
-    compare-environments: 'Comparer les environnements'
-    content-types: 'Types de contenu'
-    content_type:
-        create: 'Nouveau {name}'
-        draft_in_progress: 'Brouillon en cours'
-        search: 'Rechercher dans {plural}'
-        search_in_my_circle: 'Dans mon {name}'
-        trash: Corbeille
-    create-job: 'Nouveau job'
-    dashboards: Dashboards
-    documentation: Documentation
-    other: Autre
-    publishers: Publieurs
-    release-admin:
-        index-link: Releases
-    search: Recherche
-    uploaded-files: 'Fichiers uploadés'
-    user-management: 'Gestion des utilisateurs'
-    user:
-        name: '{name}'
-        searches: Recherches
-status:
-    bus:
-        failed: 'Messages en erreur'
-        queue: 'Messages dans la file'
-        title: 'Messages dans le bus'
-    jobs:
-        failed: 'Jobs échoués'
-        pending: 'Jobs en attente'
-        title: Jobs
-    title: 'Statut des systèmes'
-    title_sub: 'Est-ce que tout fonctionne comme prévu ?'
-subtitle:
-    user-in-group: 'Utilisateurs dans le groupe'
-    user-not-in-group: 'Utilisateur hors du groupe'
-task:
-    action:
-        cancel: Annuler
-        save: Enregistrer
-    assigned_to: 'Assignée à '
-    close: Fermer
-    create:
-        button: 'Ajouter une tâche'
-        submit: 'Créer la tâche'
-        success: 'Tâche « {title} » créée avec succès.'
-        title: 'Ajouter une nouvelle tâche'
-    dashboard:
-        action:
-            edit_revision: 'Modifier la révision'
-            go_revision: Révision
-        column:
-            actions: Actions
-            assignee: Assigné
-            deadline: Échéance
-            label: Document
-            modified: 'Dernière modification'
-            requester: Demandeur
-            status: Statut
-            title: Tâche
-            version_next_tag: 'Nouvelle version'
-        search_warning: 'Plus de {count} tâches, la recherche sur le titre du document est impossible.'
-        tab:
-            manager: 'Toutes les tâches'
-            requester: 'Tâches demandées'
-            user: 'Assignées à moi'
-    delay_days: '{number} jours'
-    delete:
-        submit: 'Supprimer la tâche'
-        success: 'Tâche « {title} » supprimée avec succès.'
-        title: "Tâche supprimée\_: {title}"
-    field:
-        assignee: Assigné
-        deadline: Échéance
-        delay: 'Délai (en jours)'
-        description: Description
-        requester: Demandeur
-        title: Titre
-    filter:
-        assignee: Assignés
-        is_overdue: 'En retard uniquement'
-        requester: Demandeurs
-        reset: Effacer
-        status: Statuts
-        submit: Rechercher
-        version_next_tag: 'Nouvelles versions'
-    filters: 'Filtrage des tâches'
-    finished:
-        hide: 'Masquer les tâches terminées ({number})'
-        show: 'Afficher les tâches terminées ({number})'
-    info:
-        change_order: 'Changer l’ordre'
-        empty: 'Aucune tâche pour ce document'
-        locked: 'Révision verrouillée par {user} jusqu’à {time}'
-    mail:
-        approved:
-            action: approuvée
-            subject: 'Tâche « {title} » approuvée pour « {document} »'
-        assignee: Assigné
-        assignee_changed:
-            action: 'assigné modifié'
-            subject: 'Assigné modifié pour la tâche « {title} » de « {document} »'
-        by_role: 'par rôle {role}'
-        comment: Commentaire
-        completed:
-            action: terminée
-            subject: 'Prête pour validation, tâche « {title} » pour « {document} »'
-        created:
-            action: créée
-            subject: 'Nouvelle tâche « {title} » pour « {document} »'
-        creator: Créateur
-        deadline: Échéance
-        deleted:
-            action: supprimée
-            subject: 'Tâche « {title} » supprimée pour « {document} »'
-        description: Description
-        from: 'De {sender}'
-        greetings: 'Bonjour {receiver},'
-        kind_regards: 'Cordialement,'
-        link_to_document: 'Lien vers le document'
-        overdue_or_active_list: 'Voici la liste des tâches en retard ou actives.'
-        process_urgently: 'Veuillez les traiter rapidement.'
-        rejected:
-            action: rejetée
-            subject: 'Tâche « {title} » rejetée pour « {document} »'
-        task_has_been: 'Une tâche a été {action} {role}.'
-        title: Titre
-        updated:
-            action: 'mise à jour'
-            subject: 'Tâche « {title} » mise à jour pour « {document} »'
-    modal:
-        title: 'Tâche : {title}'
-    planned:
-        title: 'Tâches planifiées'
-    status:
-        approved: Terminée
-        completed: Complétée
-        history:
-            approved: '{user} a approuvé la tâche'
-            completed: '{user} a terminé la tâche'
-            created: '{user} a créé la tâche'
-            planned: '{user} a planifié la tâche'
-            progress: 'La tâche est devenue active pour {assignee}'
-            rejected: '{user} a rejeté la tâche'
-            updated: '{user} a mis à jour la tâche'
-        planned: Planifiée
-        progress: Active
-        rejected: Rejetée
-    tab_tasks: Tâches
-    title: Tâches
-    update:
-        submit: 'Enregistrer la tâche'
-        success: 'Tâche « {title} » mise à jour avec succès.'
-        tab:
-            history: Historique
-            info: Information
-        title: 'Modifier la tâche : {title}'
-    validation:
-        approve: Approuver
-        reject: Rejeter
-        send: Envoyer
 title:
+    add_content_type: 'Ajouter un nouveau {content_type}'
+    add_environment: 'Ajouter un nouvel environnement'
+    add_folder: 'Ajouter un dossier'
+    add_form: 'Ajouter un formulaire'
+    add_new_task: 'Ajouter une nouvelle tâche'
+    add_release: 'Ajouter une release'
+    align_environments: 'Aligner les environnements'
+    align_environments_subtitle: 'il est temps d’aligner les environnements ?'
+    as_indexed_in_environment: 'Tel qu’indexé dans {environment}'
     asset_options: 'Options du fichier'
+    change_your_password: 'Changer votre mot de passe'
+    compare_environments: 'Comparer {environment} avec {with_environment}'
     content_type_create_ouuid: "Cette opération n'indexera pas le {content_type}, mais initiera uniquement un brouillon avec un OUUID spécifique"
     content_type_from_json_file: "à partir d'un fichier JSON d'un content type"
     content_type_json_update: 'Mettre à jour le content type "{content_type}"'
+    content_type_permissions: 'Permissions des types de contenu'
+    delete_file: 'Supprimer le fichier'
+    delete_files_count: 'Supprimer {count} fichiers'
+    delete_folder: 'Supprimer le dossier'
+    deleted_task: "Tâche supprimée\_: {title}"
+    drafts_in_progress: 'Brouillons en cours de {pluralName}'
+    edit_display_name: 'Modifier {display_name}'
+    edit_environment: 'Modifier l’environnement « {name} »'
+    edit_environment_short: 'Modifier l’environnement'
+    edit_form: 'Modifier un formulaire'
+    edit_release: 'Modifier une release'
+    edit_revision_content_type: 'Modifier {contentType} : {revision} '
+    edit_task: 'Modifier la tâche : {title}'
+    edit_username: 'Modifier {username}'
+    edit_your_profile: 'Modifier votre profil'
     error: 'Une erreur est survenue'
-    error_page: "Oups\_! Une erreur est survenue"
+    error_page: 'Oups ! Une erreur est survenue'
+    filtering_tasks: 'Filtrage des tâches'
+    items_in_trash: '{pluralName} dans la corbeille'
+    job_list: 'Liste des jobs'
+    list_environments: 'Liste des environnements'
+    list_releases: 'Liste des releases'
+    log_of: 'Log du {created}'
+    log_tagline: 'Qui a fait quoi'
+    logs_of: 'Logs de {created}'
+    messages_in_bus: 'Messages dans le bus'
+    move_files: |-
+        {count, plural,
+            one {Déplacer le fichier}
+            other {Déplacer # fichiers}
+        }
+    move_folder: 'Déplacer le dossier'
+    name_of_plural: '{name} de {plural}'
+    new_content_type: 'Nouveau {content_type}'
+    new_draft: '{contentType} : nouveau brouillon'
+    new_environment_short: 'Nouvel environnement'
+    new_label: 'Nouveau {label}'
     notifications_none_pending: 'Aucune notification en attente'
+    out_of_sync: Désynchronisé
+    permissions_overview: 'Vue d’ensemble des permissions'
+    pick_a_release: 'Choisir une release pour « {label} »'
+    planned_tasks: 'Tâches planifiées'
+    profile: 'Votre profil'
+    profile_tagline: 'Tout à propos de vous'
+    publish_search_result: 'Publier {count} {content_type} depuis {environment}'
+    rebuild_environment: 'Reconstruire l’environnement {name}'
+    rebuild_index_short: 'Reconstruire l’index'
+    release_documents: 'Documents de la release'
+    release_revision_list_publish: 'Liste des documents disponibles pour publication'
+    release_revision_list_unpublish: 'Liste des documents disponibles pour dépublication'
+    rename_file: 'Renommer le fichier'
+    rename_folder: 'Renommer le dossier'
+    reorder_form_fields: 'Réordonner les champs du formulaire : {label}'
+    reset_password: 'Réinitialiser le mot de passe'
+    revisions_of_content_type: 'Révisions de {contentType} : {title}'
+    search_engine_results: 'Moteur de recherche : {total} résultats'
+    search_result_error: 'Erreur avec le résultat de la recherche'
     select_environments_to_compare: 'Sélectionner les environnements à comparer'
+    select_your_options: 'Sélectionnez vos options'
+    specific_permissions_for: 'Permission pour {content_type_singular_name}'
+    systems_status: 'Statut des systèmes'
+    systems_status_tagline: 'Est-ce que tout fonctionne comme prévu ?'
+    task_modal: 'Tâche : {title}'
+    user_list: 'Liste des utilisateurs'
+    user_not_in_group: 'Utilisateur hors du groupe'
+    users_in_group: 'Utilisateurs dans le groupe'
+    view_custom: 'Vue {name} de {contentType} « {label} » telle qu’indexée dans {environment}'
+    view_ems_id: 'Voir {content_type}:{id}'
+    view_environment: 'Voir l’environnement {name}'
+    view_environment_short: 'Voir l’environnement'
+    view_file: 'Voir le fichier'
+    view_file_modal: 'Voir le fichier : {name}'
+    view_recursive: 'Vue récursive'
 type:
     confirm: |-
         {type, select,
@@ -1657,314 +1441,3 @@ type:
             view          {Personnaliser le menu}
             other         {}
         }
-user:
-    action:
-        delete: Supprimer
-        delete_confirm: "Supprimer cet utilisateur\_?"
-        disable: Désactiver
-        disable_confirm: "Désactiver cet utilisateur\_?"
-        edit: Modifier
-        generate_api: 'Clé API'
-        generate_api_confirm: "Générer une clé API pour cet utilisateur\_?"
-        remove: Retirer
-        remove_confirm: "Retirer cet utilisateur du groupe\_?"
-        switch: 'Changer d’utilisateur'
-    add:
-        button: 'Ajouter un utilisateur'
-        card_title: 'Nouvel utilisateur'
-        page_title: 'Ajouter un utilisateur'
-        subtitle: 'Administration des utilisateurs'
-        title: 'Ajouter un utilisateur'
-    administration: 'Administration des utilisateurs'
-    change_password:
-        cancel: Annuler
-        submit: 'Changer le mot de passe'
-        title: 'Changer votre mot de passe'
-    edit:
-        card_title: 'Modifier {username}'
-        title: 'Modifier {display_name}'
-    export:
-        csv: 'Export CSV'
-        excel: 'Export Excel'
-    index:
-        column:
-            circles: Cercles
-            displayname: 'Nom d’affichage'
-            email: E-mail
-            email_notification: 'Notifications par e-mail'
-            enabled: Activé
-            expirationDate: 'Date d’expiration'
-            group: Groupe
-            lastLogin: 'Dernière connexion'
-            locale_preferred: 'Langue préférée'
-            locale_ui: Interface
-            roles: Rôles
-            username: 'Nom d’utilisateur'
-            wysiwyg_profile: 'Profil WYSIWYG'
-    logged_in:
-        member_since: 'Membre depuis le {date}'
-        title: 'Connecté en tant que {username}'
-    login:
-        alt_logo: 'Logo d’elasticMS'
-        continue: 'Connectez-vous à votre compte pour continuer'
-        forgot: 'J’ai oublié mon mot de passe'
-        message: 'Connectez-vous pour démarrer votre session'
-        password: 'Mot de passe'
-        password1_aria_label: 'Mot de passe'
-        password_placeholder: 'Mot de passe'
-        remember_me: 'Se souvenir de moi'
-        submit: 'Se connecter'
-        title: Bienvenue
-        user_aria_label: 'E-mail ou nom d’utilisateur'
-        user_placeholder: 'E-mail ou nom d’utilisateur'
-        username: 'Nom d’utilisateur'
-        welcome_back: 'Bon retour !'
-    logout:
-        exit: Quitter
-        submit: 'Se déconnecter'
-    management:
-        title: 'Gestion des utilisateurs'
-    option:
-        allowed_configure_wysiwyg: "Autorise l'utilisateur à changer de profile WYSIWYG"
-        simplified_ui: 'Interfaces simplifiées'
-    profile:
-        change_password:
-            breadcrumb_title: 'Changer votre mot de passe'
-            cancel: Annuler
-            submit: 'Changer le mot de passe'
-            title: 'Changer le mot de passe'
-        edit:
-            breadcrumb_title: Modifier
-            submit: 'Mettre à jour'
-            title: 'Modifier votre profil'
-        show:
-            action:
-                cancel: Annuler
-                edit: Modifier
-            email: e-mail
-            email_notification: 'notification par e-mail'
-            extra_roles: 'Rôles supplémentaires'
-            locale: "Langue de l'interface"
-            locale_preferred: 'Langue préférée'
-            username: 'Nom d’utilisateur'
-            wysiwyg: 'Profil WYSIWYG'
-        title: 'Votre profil'
-    resetting:
-        check_email: |
-            Un e-mail a été envoyé. Il contient un lien sur lequel vous devez cliquer pour réinitialiser votre mot de passe.
-            Remarque : vous ne pouvez demander un nouveau mot de passe qu’une seule fois toutes les {tokenLifetime} heures.
-
-            Si vous ne recevez pas d’e-mail, vérifiez votre dossier de spam ou réessayez.
-        email:
-            message: |-
-                Bonjour {username} !
-
-                Pour réinitialiser votre mot de passe, veuillez visiter {confirmationUrl}
-
-                Cordialement,
-                L'équipe.
-            subject: 'Réinitialiser le mot de passe'
-        title: 'Réinitialiser le mot de passe'
-        username_email: 'Nom d’utilisateur ou adresse e-mail'
-view:
-    contenttype:
-        reorder_item:
-            edit_field_button: 'Modifier {name}'
-            edit_main_container_button: 'Modifier le conteneur principal'
-    custom:
-        hierarchical:
-            reorganise: 'Réorganiser :'
-    data:
-        json-menu-nested-json-preview:
-            field-type-not-found: 'La définition de type associée à cet élément est manquante (probablement supprimée).'
-        json-menu-nested:
-            out_of_sync: 'Désynchronisé, veuillez rafraîchir et réessayer !'
-    form:
-        fields:
-            asset:
-                browse-server: 'Choisir un fichier sur le serveur'
-                clear-button: Effacer
-                close-modal: Fermer
-                drag-n-drop-file: 'Glissez-déposez votre fichier ici'
-                drag-n-drop-files: 'Glissez-déposez vos fichiers ici'
-                file-hash: 'Hash du fichier'
-                file-info: 'Informations du fichier'
-                info-modal-button: Info
-                init-upload: 'Le téléversement démarre'
-                move-button: Déplacer
-                preview: Aperçu
-                remove-button: Supprimer
-                upload-file: 'Téléverser un fichier'
-                upload-files: 'Téléverser des fichiers'
-                view-button: Voir
-    macros:
-        data-field-type:
-            collection_added_items: '{0} Aucun élément n’a été ajouté.|{1} Un élément a été ajouté.|]1,Inf[ {count} éléments ont été ajoutés.'
-            collection_removed_items: '{0} Aucun élément n’a été supprimé.|{1} Un élément a été supprimé.|]1,Inf[ {count} éléments ont été supprimés.'
-            form:
-                not-defined: 'Formulaire non défini'
-                not-found: 'Formulaire introuvable'
-            menu-option-button: Voir
-    profile:
-        show:
-            action:
-                cancel: Annuler
-                edit: Modifier
-                profile:
-                    title: 'Votre profil'
-            alt:
-                user_profile_picture: 'Photo de profil de l’utilisateur'
-            display_name: 'Nom affiché'
-            email: e-mail
-            email_notification: 'notification par e-mail'
-            locale: 'Langue de l’interface'
-            locale_preferred: 'Langue préférée'
-            login: Identifiant
-            wysiwyg: 'Profil WYSIWYG'
-    title: '{name} de {plural}'
-    user:
-        index:
-            title: 'Liste des utilisateurs'
-            user-in-group: 'Utilisateurs dans le groupe {label}'
-            user-not-in-group: 'Utilisateurs hors du groupe {label}'
-        permissions:
-            page_title: 'Vue d’ensemble des permissions'
-            table_headers:
-                archive: Archiver
-                content_type: 'Type de contenu'
-                create: Créer
-                delete: Supprimer
-                description: Description
-                edit: Modifier
-                icon: Icône
-                publish: Publier
-                role: Rôle
-                show_link_create: 'Afficher le lien de création'
-                show_link_search: 'Afficher le lien de recherche'
-                specific_roles: 'Rôles spéc.'
-                trash: Corbeille
-                view: Voir
-            titles:
-                content_type_permissions: 'Permissions des types de contenu'
-                descriptions:
-                    roles_functionalities_description: 'Ces rôles sont spécifiquement liés à des fonctionnalités et n’ont rien à voir avec la gestion de contenu. Ce sont des rôles fonctionnels qui donnent accès à des fonctionnalités spécifiques du CMS.'
-                    roles_hierarchy_description: 'L’accès à un rôle implique l’accès à tous les rôles situés en dessous dans la hiérarchie. Les rôles hiérarchiques peuvent être attribués pour accorder et limiter l’accès au type de contenu.'
-                roles_hierarchy: 'Hiérarchie des rôles'
-                roles_specific_functionalities: 'Rôles pour des fonctionnalités spécifiques'
-        specific_permissions:
-            breadcrumb:
-                permission_overview: 'Vue d’ensemble des permissions'
-                specific_role: 'rôles spécifiques'
-            titles:
-                permissions_overview: 'Vue d’ensemble des permissions'
-                specific_permissions: 'Permission pour {content_type_singular_name}'
-                specific_roles: 'Rôles spécifiques des champs'
-views:
-    data:
-        edit-revision-html:
-            cancel-label: 'Abandonner les modifications non enregistrées'
-            discard-draft-label: 'Supprimer ce brouillon'
-            discard-draft-message: 'Les modifications apportées à ce brouillon seront perdues'
-            new-draft-title: '{contentType} : nouveau brouillon'
-            subtitle: 'Espace de travail'
-            title: 'Modifier {contentType} : {revision} '
-        revisions-data-html:
-            all-linked-documents: 'Tous les documents liés'
-            audit: Audit
-            by: Par
-            current-revision: 'Révision actuelle'
-            current-version: 'Version actuelle'
-            draft-in-progress: 'Brouillon en cours'
-            finalized-by: 'Finalisée par'
-            finalized-on: 'Finalisée le'
-            last-update: 'Dernière mise à jour'
-            linked-documents-in: 'Documents liés dans {environment} ({length}/{total})'
-            modified-by: 'Modifiée par'
-            new-version: 'Nouvelle version'
-            no-linked-document: 'Ce document n’a aucun document lié'
-            nothing: Rien
-            'on': le
-            pending: 'En attente'
-            previous-revision: 'Révision précédente'
-            revision: Révision
-            revision-current: 'Vous consultez la dernière révision'
-            revision-draft-in-progress: 'Ceci est un brouillon en cours'
-            revision-previous: 'Ceci est une révision passée'
-            revisions: Révisions
-            revisions.th.actions: Actions
-            revisions.th.autosave: 'Sauvegarde automatique'
-            revisions.th.date: Date
-            revisions.th.environments: Environnements
-            revisions.th.finalize: Finaliser
-            revisions.th.id: '#'
-            revisions.th.locked: Verrouillé
-            revisions.th.pendings: 'En attente'
-            status: Statut
-            title: 'Révisions de {contentType} : {title}'
-            until: Jusqu’à
-            version: Version
-    elasticsearch:
-        cluster:
-            bits: Bits
-            build-date: 'Date de compilation'
-            cluster-uuid: 'UUID du cluster'
-            lucene-version: 'Version de Lucene'
-            node-name: 'Nom du nœud'
-            public-key: 'Clé publique'
-            tagline: Slogan
-            tika-server-not-configured: "Le serveur Tika n'est pas configuré"
-            version: Version
-        export-search:
-            title: 'Exporter les documents'
-        search:
-            error_title: 'Erreur avec le résultat de la recherche'
-            pagetitle: Recherche
-            sort-options: 'Options de tri'
-            subtitle: '{total}'
-            title: 'Moteur de recherche : {total} résultats'
-    elements:
-        object-toolbar-html:
-            edit-draft: 'Modifier le brouillon'
-            new-draft: Modifier
-            view-current-revision: 'Voir la révision actuelle'
-            view-draft-in-progress: 'Voir le brouillon en cours'
-        object-views-button:
-            action-dropdown-label: 'Actions dans {environment}'
-            action-dropdown-sr-only: 'Basculer le menu déroulant des actions de {environment}'
-            copy-data: 'Copier les données'
-            published-label: 'Publié dans {environment}'
-            raw-view: 'Vue brute'
-        revision-toolbar-html:
-            add-to-release: 'Ajouter à la release'
-            cancel-label: Annuler
-            cancel-last-updates-label: 'Annuler les modifications non enregistrées'
-            cancel-last-updates-message: 'Annuler les modifications non enregistrées'
-            cancel-message: 'Annuler les dernières modifications ?'
-            compare-label: 'Comparer cette révision avec la révision actuelle'
-            discard-draft-label: 'Supprimer ce brouillon'
-            discard-draft-message: 'Les modifications apportées à ce brouillon seront perdues'
-            edit-draft-label: 'Modifier le brouillon'
-            edit-revision-json: 'Édition JSON brute'
-            edit-revision-label: 'Modifier la révision'
-            finalize-draft-label: 'Enregistrer et publier dans {environment}'
-            finalize-draft-message: 'Confirmer l’enregistrement et la publication ?'
-            new-draft-label: Modifier
-            other-environment-actions: 'Autres actions d’environnement'
-            other-revision-actions: 'Autres actions sur cette révision'
-            publish-to-label: 'Publier vers'
-            re-index-label: Réindexer
-            revert-revision-label: 'Revenir à cette révision'
-            unpublish-from-label: 'Dépublier de'
-            view-label: 'Voir cette révision'
-        side-menu-html:
-            anonymous-user: 'Utilisateur anonyme'
-            quick-search-label: 'Recherche rapide'
-            quick-search-placeholder: Rechercher...
-webhook:
-    enable:
-        action: Activer
-        disabled: 'L’abonnement {id} a été désactivé'
-        re-enabled: 'L’abonnement {id} a été réactivé'
-    test:
-        action: Tester
-        dispatched: 'Un événement webhook_test a été envoyé à l’abonnement {id}'

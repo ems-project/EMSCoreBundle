@@ -224,7 +224,7 @@ class ActionType extends AbstractType
                     t('key.landscape', [], 'emsco-core')->getMessage() => 'landscape',
                 ],
                 'choice_translation_domain' => 'emsco-core',
-                'label' => t('field.file.orientation', [], 'emsco-core'),
+                'label' => t('field.orientation', [], 'emsco-core'),
                 'required' => false,
                 'row_attr' => ['class' => 'col-md-12'],
             ])

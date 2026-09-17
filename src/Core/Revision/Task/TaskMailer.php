@@ -128,13 +128,13 @@ class TaskMailer
     private function transAction(string $type): TranslatableMessage
     {
         return match ($type) {
-            'approved' => t('task.mail.approved.action', [], 'emsco-core'),
-            'assignee_changed' => t('task.mail.assignee_changed.action', [], 'emsco-core'),
-            'completed' => t('task.mail.completed.action', [], 'emsco-core'),
-            'created' => t('task.mail.created.action', [], 'emsco-core'),
-            'deleted' => t('task.mail.deleted.action', [], 'emsco-core'),
-            'rejected' => t('task.mail.rejected.action', [], 'emsco-core'),
-            'updated' => t('task.mail.updated.action', [], 'emsco-core'),
+            'approved' => t('key.mail_action_approved', [], 'emsco-core'),
+            'assignee_changed' => t('key.mail_action_assignee_changed', [], 'emsco-core'),
+            'completed' => t('key.mail_action_completed', [], 'emsco-core'),
+            'created' => t('key.mail_action_created', [], 'emsco-core'),
+            'deleted' => t('key.mail_action_deleted', [], 'emsco-core'),
+            'rejected' => t('key.mail_action_rejected', [], 'emsco-core'),
+            'updated' => t('key.mail_action_updated', [], 'emsco-core'),
             default => t('key.unknown', [], 'emsco-core')
         };
     }

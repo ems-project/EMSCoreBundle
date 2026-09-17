@@ -62,12 +62,12 @@ final readonly class RevisionTask implements DashboardInterface
     private function getDashboardTabs(): array
     {
         $tabs = [
-            TasksDataTableContext::TAB_USER => ['label' => t('task.dashboard.tab.user', [], 'emsco-core')],
-            TasksDataTableContext::TAB_REQUESTER => ['label' => t('task.dashboard.tab.requester', [], 'emsco-core')],
+            TasksDataTableContext::TAB_USER => ['label' => t('key.assigned_to_me', [], 'emsco-core')],
+            TasksDataTableContext::TAB_REQUESTER => ['label' => t('key.requested_tasks', [], 'emsco-core')],
         ];
 
         if ($this->taskManager->isTaskManager()) {
-            $tabs[TasksDataTableContext::TAB_MANAGER] = ['label' => t('task.dashboard.tab.manager', [], 'emsco-core')];
+            $tabs[TasksDataTableContext::TAB_MANAGER] = ['label' => t('key.all_tasks', [], 'emsco-core')];
         }
 
         return $tabs;

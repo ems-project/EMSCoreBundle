@@ -93,7 +93,7 @@ class JobRepository extends EntityRepository
 
         if ($modifiedBefore) {
             $qb
-                ->andWhere($qb->expr()->lt('job.modified', ':modified_before'))
+                ->andWhere($qb->expr()->lt('field.date_modified', ':modified_before'))
                 ->setParameter('modified_before', $modifiedBefore);
         }
 
@@ -154,8 +154,8 @@ class JobRepository extends EntityRepository
         if ('' !== $searchValue) {
             $or = $qb->expr()->orX(
                 $qb->expr()->like('job.username', ':term'),
-                $qb->expr()->like('job.command', ':term'),
-                $qb->expr()->like('job.output', ':term')
+                $qb->expr()->like('field.command', ':term'),
+                $qb->expr()->like('key.job_output', ':term')
             );
             $qb->andWhere($or)
                 ->setParameter(':term', '%'.$searchValue.'%');

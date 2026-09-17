@@ -1,16 +1,16 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-core' %}
 
-{% block title %}{{ 'environment.align.title'|trans }}{% endblock %}
-{% block pagetitle %}{{ 'environment.align.title'|trans }}{% endblock %}
+{% block title %}{{ 'title.align_environments'|trans }}{% endblock %}
+{% block pagetitle %}{{ 'title.align_environments'|trans }}{% endblock %}
 {% block breadcrumb %}
 	<ol class="breadcrumb">
-		<li><i class="fa fa-database"></i> {{ 'key.environments'|trans }}</li>
-   		<li class="active">{{ 'environment.align.title'|trans }}</li>
+		<li><i class="fa fa-database"></i> {{ 'field.environments'|trans }}</li>
+   		<li class="active">{{ 'title.align_environments'|trans }}</li>
    	</ol>
 {% endblock %}
 
 {% block subtitle %}
-<small>{{ 'environment.align.subtitle'|trans }}</small>
+<small>{{ 'title.align_environments_subtitle'|trans }}</small>
 {% endblock %}
 
 {% block body %}
@@ -86,7 +86,7 @@
                  'field': 'contentype',
             } %}
               {% include '@EMSCore/elements/sortable-th.html.twig' with {
-                 'title': 'key.label'|trans,
+                 'title': 'field.label'|trans,
                  'field': 'label',
             } %}
 

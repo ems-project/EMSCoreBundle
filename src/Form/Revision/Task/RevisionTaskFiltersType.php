@@ -41,7 +41,7 @@ class RevisionTaskFiltersType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('status', ChoiceType::class, [
-            'label' => t('task.filter.status', [], 'emsco-core'),
+            'label' => t('key.statuses', [], 'emsco-core'),
             'required' => false,
             'multiple' => true,
             'attr' => ['class' => 'select2'],
@@ -56,7 +56,7 @@ class RevisionTaskFiltersType extends AbstractType
 
         if (TasksDataTableContext::TAB_USER !== $options['tab']) {
             $builder->add('assignee', SelectUserPropertyType::class, [
-                'label' => t('task.filter.assignee', [], 'emsco-core'),
+                'label' => t('key.assignees', [], 'emsco-core'),
                 'required' => false,
                 'allow_add' => false,
                 'multiple' => true,
@@ -66,7 +66,7 @@ class RevisionTaskFiltersType extends AbstractType
         }
         if (TasksDataTableContext::TAB_REQUESTER !== $options['tab']) {
             $builder->add('requester', SelectUserPropertyType::class, [
-                'label' => t('task.filter.requester', [], 'emsco-core'),
+                'label' => t('key.requesters', [], 'emsco-core'),
                 'required' => false,
                 'allow_add' => false,
                 'multiple' => true,
@@ -78,7 +78,7 @@ class RevisionTaskFiltersType extends AbstractType
         $versionTags = $this->contentTypeService->getVersionTags();
         if ([] !== $versionTags) {
             $builder->add('versionNextTag', ChoiceType::class, [
-                'label' => t('task.filter.version_next_tag', [], 'emsco-core'),
+                'label' => t('key.new_versions', [], 'emsco-core'),
                 'required' => false,
                 'multiple' => true,
                 'attr' => ['class' => 'select2'],
@@ -89,12 +89,12 @@ class RevisionTaskFiltersType extends AbstractType
         if ($this->authorizationChecker->isGranted('ROLE_PUBLISHER')) {
             $builder->add('isOverdue', CheckboxType::class, [
                 'required' => false,
-                'label' => t('task.filter.is_overdue', [], 'emsco-core'),
+                'label' => t('key.overdue_only', [], 'emsco-core'),
             ]);
         }
 
         $builder->add('submit', SubmitType::class, [
-            'label' => t('task.filter.submit', [], 'emsco-core'),
+            'label' => t('key.search', [], 'emsco-core'),
         ]);
     }
 

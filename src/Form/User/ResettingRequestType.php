@@ -26,10 +26,10 @@ class ResettingRequestType extends AbstractType
         $builder
             ->add('username_email', null, [
                 'constraints' => [new NotBlank()],
-                'label' => t('user.resetting.username_email', [], 'emsco-core'),
+                'label' => t('field.username_or_email', [], 'emsco-core'),
             ])
             ->add('submit', SubmitType::class, [
-                'label' => t('user.resetting.title', [], 'emsco-core'),
+                'label' => t('title.reset_password', [], 'emsco-core'),
             ])
         ;
     }

@@ -129,13 +129,13 @@
     {%- if 'edit' in node.actions -%}
         <div class="btn-group">
             <button type="button" class="btn btn-sm btn-primary dropdown-toggle btn-json-menu-nested-edit" data-action="edit"
-                    title="{{- 'field_type.json_menu_editor.edit'|trans -}}"
+                    title="{{- 'action.edit'|trans -}}"
                     data-item-id="{{ item.id }}"
                     data-node-id="{{ node.id }}"
                     data-level="{{ level }}"
                     data-testid="btn-json-menu-nested-edit"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-pencil"></i>&nbsp;<span>{{ 'field_type.json_menu_editor.edit'|trans }}</span>
+                <i class="fa fa-pencil"></i>&nbsp;<span>{{ 'action.edit'|trans }}</span>
             </button>
         </div>
     {% endif %}
@@ -148,7 +148,7 @@
                 data-item-id="{{ item.id }}"
                 data-testid="btn-json-menu-nested-preview">
             <span class="fa fa-eye"></span>
-            {{ 'view.macros.data-field-type.menu-option-button'|trans }}
+            {{ 'action.view'|trans }}
         </button>
     {% endif %}
 {% endblock %}
@@ -157,9 +157,9 @@
     {% if 'move' in node.actions %}
         <a type="button" class="btn btn-sm btn-default btn-json-menu-nested-move"
            data-testid="btn-json-menu-nested-move"
-           title="{{- 'field_type.json_menu_editor.move_item'|trans -}}">
+           title="{{- 'action.move_item'|trans -}}">
             <i class="fa fa-arrows"></i>
-            {{ 'field_type.json_menu_editor.move_item'|trans }}
+            {{ 'action.move_item'|trans }}
         </a>
     {% endif %}
 {% endblock %}
@@ -167,10 +167,10 @@
 {% block buttonDelete %}
     {% if 'delete' in node.actions %}
         <button type="button" class="btn btn-sm btn-outline-danger btn-json-menu-nested-delete"
-                title="{{- 'field_type.json_menu_editor.delete_item'|trans -}}"
+                title="{{- 'action.delete_item'|trans -}}"
                 data-item-id="{{ item.id }}"
                 data-testid="btn-json-menu-nested-delete-item">
-            <i class="fa fa-trash"></i>&nbsp;<span class="sr-only">{{- 'field_type.json_menu_editor.delete_item'|trans -}}</span>
+            <i class="fa fa-trash"></i>&nbsp;<span class="sr-only">{{- 'action.delete_item'|trans -}}</span>
         </button>
     {% endif %}
 {% endblock %}
@@ -182,7 +182,7 @@
             <button type="button" class="btn btn-sm btn-default dropdown-toggle json-menu-nested-add-button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-testid="json-menu-nested-{{ def.defName }}-add-button">
                 <span class="fa fa-plus"></span>
-                {{ 'field_type.json_menu_editor.add'|trans }}
+                {{ 'action.add'|trans }}
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu {{ 'item' == position ? 'pull-right' }}">
@@ -190,13 +190,13 @@
                     {%- set addNode = def.getNodeByName(addNodeName) -%}
                     <li>
                         <button type="button" class="btn-json-menu-nested-add"
-                                title="{{ 'field_type.json_menu_editor.add_item'|trans({'singular': addNode.label}) }}"
+                                title="{{ 'action.add_item'|trans({'singular': addNode.label}) }}"
                                 data-item-id="{{ item.id }}"
                                 data-node-id="{{ addNode.id }}"
                                 data-level="{{ level }}"
                                 data-testid="json-menu-nested-add-{{ addNode.name }}">
                             {%- if addNode.icon|default(false) -%}<i class="{{ addNode.icon }}"></i>{%- endif -%}
-                            {{ 'field_type.json_menu_editor.add_item'|trans({'singular': addNode.label}) }}
+                            {{ 'action.add_item'|trans({'singular': addNode.label}) }}
                         </button>
                     </li>
                 {%- endfor -%}
@@ -218,7 +218,7 @@
                         <button class="{{ 'root' == position ? 'btn-json-menu-nested-copy-all' : 'btn-json-menu-nested-copy' }}"
                             {%- if 'item' == position %}data-item-id="{{ item.id }}"{% endif -%} data-testid="json-menu-nested-{{ 'root' == position ? 'copy-all' : 'copy'}}">
                             <span class="fa fa-copy"></span>&nbsp;
-                            {{ 'root' == position ? 'field_type.json_menu_editor.copy_all'|trans : 'field_type.json_menu_editor.copy'|trans }}
+                            {{ 'root' == position ? 'action.copy_all'|trans : 'action.copy'|trans }}
                         </button>
                     </li>
                 {% endif %}
@@ -229,7 +229,7 @@
                                 data-node-id="{{ node.id }}"
                                 {%- if 'root' == position %}data-allow="_root"{% endif -%}
                                 data-testid="json-menu-nested-paste">
-                            <span class="fa fa-paste"></span>&nbsp;{{ 'field_type.json_menu_editor.paste'|trans }}
+                            <span class="fa fa-paste"></span>&nbsp;{{ 'action.paste'|trans }}
                         </button>
                     </li>
                 {% endif %}
@@ -253,7 +253,7 @@
         {%- import "@EMSCore/macros/data-field-type.html.twig" as macros -%}
         {{ macros.renderDataField(dataFields, rawData, false, []) }}
     {%- else -%}
-        <p class="text-red">{{ 'view.data.json-menu-nested-json-preview.field-type-not-found'|trans }}</p>
+        <p class="text-red">{{ 'message.field_type_not_found'|trans }}</p>
         <pre class="ems-code-editor" data-language="ace/mode/json" data-them="ace/theme/chrome">
             {{- rawData|json_encode(constant('JSON_PRETTY_PRINT')) -}}
         </pre>
@@ -275,7 +275,7 @@
 
 {% block alertOutOfSync %}
     <div class="alert alert-warning" role="alert">
-        <span>{{ 'view.data.json-menu-nested.out_of_sync'|trans }}</span>
+        <span>{{ 'message.json_menu_out_of_sync'|trans }}</span>
         <button class="btn btn-primary btn-sm pull-right" onClick="window.location.reload();">Refresh</button>
     </div>
 {% endblock %}

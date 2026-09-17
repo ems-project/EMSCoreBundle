@@ -52,11 +52,11 @@ class UserOptionsType extends AbstractType
             $builder
                 ->add(UserOptions::ALLOWED_CONFIGURE_WYSIWYG, CheckboxType::class, [
                     'required' => false,
-                    'label' => t('user.option.allowed_configure_wysiwyg', [], 'emsco-core'),
+                    'label' => t('message.allow_configure_wysiwyg', [], 'emsco-core'),
                 ])
                 ->add(UserOptions::SIMPLIFIED_UI, CheckboxType::class, [
                     'required' => false,
-                    'label' => t('user.option.simplified_ui', [], 'emsco-core'),
+                    'label' => t('key.simplified_ui', [], 'emsco-core'),
                 ]);
         }
 

@@ -63,11 +63,11 @@ enum TaskStatus: string implements TranslatableInterface
     public function trans(TranslatorInterface $translator, ?string $locale = null): string
     {
         return match ($this) {
-            self::PROGRESS => t('task.status.progress', [], 'emsco-core')->trans($translator),
-            self::PLANNED => t('task.status.planned', [], 'emsco-core')->trans($translator),
-            self::COMPLETED => t('task.status.completed', [], 'emsco-core')->trans($translator),
-            self::APPROVED => t('task.status.approved', [], 'emsco-core')->trans($translator),
-            self::REJECTED => t('task.status.rejected', [], 'emsco-core')->trans($translator),
+            self::PROGRESS => t('key.task_status_active', [], 'emsco-core')->trans($translator),
+            self::PLANNED => t('key.task_status_planned', [], 'emsco-core')->trans($translator),
+            self::COMPLETED => t('key.task_status_completed', [], 'emsco-core')->trans($translator),
+            self::APPROVED => t('key.task_status_finished', [], 'emsco-core')->trans($translator),
+            self::REJECTED => t('key.task_status_rejected', [], 'emsco-core')->trans($translator),
         };
     }
 }

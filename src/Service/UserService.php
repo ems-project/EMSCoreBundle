@@ -216,11 +216,11 @@ class UserService implements EntityServiceInterface
     public function getSidebarMenu(): Menu
     {
         $user = $this->getCurrentUser();
-        $menu = new Menu(t('sidebar-menu.user.name', ['name' => $user->getDisplayName()], 'emsco-core'));
+        $menu = new Menu(t('key.user_name_placeholder', ['name' => $user->getDisplayName()], 'emsco-core'));
 
         $searches = $this->searchRepository->getByUsername($user->getUsername());
         if ([] !== $searches) {
-            $link = $menu->addChild(t('sidebar-menu.user.searches', [], 'emsco-core'), 'fa fa-search', 'elasticsearch.search');
+            $link = $menu->addChild(t('key.searches', [], 'emsco-core'), 'fa fa-search', 'elasticsearch.search');
             $link->setTranslation([]);
             foreach ($searches as $search) {
                 $link->addChild($search->getName(), '', 'elasticsearch.search', ['searchId' => $search->getId()]);

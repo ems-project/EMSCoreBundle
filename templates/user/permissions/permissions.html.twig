@@ -1,7 +1,7 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-core' %}
 
 {% block pagetitle %}
-    {{ 'view.user.permissions.page_title'|trans }}
+    {{ 'title.permissions_overview'|trans }}
 {% endblock %}
 
 {% block body %}
@@ -10,7 +10,7 @@
             <div class="box ">
                 <div class="box-header with-border">
                     <i class="fa fa-sitemap"></i>
-                    <h3 class="box-title">{{ 'view.user.permissions.titles.content_type_permissions'|trans }}</h3>
+                    <h3 class="box-title">{{ 'title.content_type_permissions'|trans }}</h3>
                 </div>
                 <div class="box-body">
                     {% if contentTypes is empty %}
@@ -20,18 +20,18 @@
                             <table class="table table-condensed table-striped">
                                 <tbody>
                                 <tr>
-                                    <th class="text-center" style="width: 10px">{{ 'view.user.permissions.table_headers.content_type'|trans }}</th>
-                                    <th class="text-center" style="width: 20px">{{ 'view.user.permissions.table_headers.icon'|trans }}</th>
-                                    <th>{{ 'view.user.permissions.table_headers.view'|trans }}</th>
-                                    <th>{{ 'view.user.permissions.table_headers.create'|trans }}</th>
-                                    <th>{{ 'view.user.permissions.table_headers.edit'|trans }}</th>
-                                    <th>{{ 'view.user.permissions.table_headers.publish'|trans }}</th>
-                                    <th>{{ 'view.user.permissions.table_headers.delete'|trans }}</th>
-                                    <th>{{ 'view.user.permissions.table_headers.trash'|trans }}</th>
-                                    <th>{{ 'view.user.permissions.table_headers.archive'|trans }}</th>
-                                    <th>{{ 'view.user.permissions.table_headers.show_link_create'|trans }}</th>
-                                    <th>{{ 'view.user.permissions.table_headers.show_link_search'|trans }}</th>
-                                    <th>{{ 'view.user.permissions.table_headers.specific_roles'|trans }}</th>
+                                    <th class="text-center" style="width: 10px">{{ 'field.content_type'|trans }}</th>
+                                    <th class="text-center" style="width: 20px">{{ 'field.icon'|trans }}</th>
+                                    <th>{{ 'action.view'|trans }}</th>
+                                    <th>{{ 'action.create'|trans }}</th>
+                                    <th>{{ 'action.edit'|trans }}</th>
+                                    <th>{{ 'action.publish'|trans }}</th>
+                                    <th>{{ 'action.delete'|trans }}</th>
+                                    <th>{{ 'field.role_trash'|trans }}</th>
+                                    <th>{{ 'field.role_archive'|trans }}</th>
+                                    <th>{{ 'field.role_show_link_create'|trans }}</th>
+                                    <th>{{ 'field.role_show_link_search'|trans }}</th>
+                                    <th>{{ 'key.specif_roles_abbrev'|trans }}</th>
                                 </tr>
                                 {% for contentType in contentTypes %}
                                     <tr class="text-{{ contentType.color }}">
@@ -68,16 +68,16 @@
             <div class="box ">
                 <div class="box-header with-border">
                     <i class="fa fa-group"></i>
-                    <h3 class="box-title">{{ 'view.user.permissions.titles.roles_hierarchy'|trans }}</h3>
+                    <h3 class="box-title">{{ 'key.roles_hierarchy'|trans }}</h3>
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
-                        <p>{{ 'view.user.permissions.titles.descriptions.roles_hierarchy_description'|trans }}</p>
+                        <p>{{ 'message.roles_hierarchy_description'|trans }}</p>
                         <table class="table table-condensed table-striped">
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>{{ 'view.user.permissions.table_headers.role'|trans }}</th>
+                                <th>{{ 'field.role'|trans }}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -99,16 +99,16 @@
             <div class="box ">
                 <div class="box-header with-border">
                     <i class="fa fa-group"></i>
-                    <h3 class="box-title">{{ 'view.user.permissions.titles.roles_specific_functionalities'|trans }}</h3>
+                    <h3 class="box-title">{{ 'key.roles_specific_functionalities'|trans }}</h3>
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
-                        <p>{{ 'view.user.permissions.titles.descriptions.roles_functionalities_description'|trans }}</p>
+                        <p>{{ 'message.roles_functionalities_description'|trans }}</p>
                         <table class="table table-condensed table-striped">
                             <thead>
                             <tr>
-                                <th>{{ 'view.user.permissions.table_headers.role'|trans }}</th>
-                                <th>{{ 'view.user.permissions.table_headers.description'|trans }}</th>
+                                <th>{{ 'field.role'|trans }}</th>
+                                <th>{{ 'field.description'|trans }}</th>
                             </tr>
                             </thead>
                             <tbody>

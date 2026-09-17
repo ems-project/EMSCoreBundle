@@ -3,12 +3,12 @@
 {% block tasksTab %}
     <div id="revision-tasks-content">
         {% if revision.isLockedFor(app.user.userIdentifier) %}
-            <div class="revision-tasks-info">{{- 'task.info.locked'|trans({
+            <div class="revision-tasks-info">{{- 'message.task_revision_locked'|trans({
                 'user': revision.lockBy|emsco_display_name,
                 'time': revision.lockUntil.format(date_time_format)
             }) -}}</div>
         {% elseif revision.hasTasks == false %}
-            <div id="revision-tasks-empty" class="revision-tasks-info">{{ 'task.info.empty'|trans }}</div>
+            <div id="revision-tasks-empty" class="revision-tasks-info">{{ 'message.no_tasks_for_document'|trans }}</div>
             {{ block('buttonCreate') }}
         {% else %}
             <div id="revision-task-active">
@@ -22,12 +22,12 @@
             {% if tasksPlanned|length > 0 %}
                 <div id="revision-tasks-planned">
                     <div id="revision-tasks-planned-header">
-                            <div class="revision-tasks-title">{{ 'task.planned.title'|trans }}</div>
+                            <div class="revision-tasks-title">{{ 'title.planned_tasks'|trans }}</div>
                             <div id="revision-tasks-reorder">
-                                {% if tasksPlanned|length > 1 %}<a id="btn-tasks-reorder" href="#">{{ 'task.info.change_order'|trans }}</a>{% endif %}
+                                {% if tasksPlanned|length > 1 %}<a id="btn-tasks-reorder" href="#">{{ 'action.change_order'|trans }}</a>{% endif %}
                                 <button id="btn-tasks-reorder-save" class="btn btn-xs btn-primary" style="display: none;"
-                                        data-url="{{ path('emsco_task_ajax_reorder', {'revisionOuuid': revision.ouuid }) }}">{{ 'task.action.save'|trans }}</button>
-                                <button id="btn-tasks-reorder-cancel" class="btn btn-xs btn-default" style="display: none;">{{ 'task.action.cancel'|trans }}</button>
+                                        data-url="{{ path('emsco_task_ajax_reorder', {'revisionOuuid': revision.ouuid }) }}">{{ 'action.save'|trans }}</button>
+                                <button id="btn-tasks-reorder-cancel" class="btn btn-xs btn-default" style="display: none;">{{ 'action.cancel'|trans }}</button>
                             </div>
                     </div>
                     <ul id="revision-tasks-planned-list" class="list-group revision-tasks">
@@ -43,8 +43,8 @@
                     <div id="revision-tasks-approved-link">
                         <a href="#" id="btn-tasks-approved"
                            data-toggle="true"
-                           data-toggle-text="{{ 'task.finished.hide'|trans({ 'number': tasksApproved|length }) }}">
-                            {{- 'task.finished.show'|trans({ 'number': tasksApproved|length }) -}}
+                           data-toggle-text="{{ 'message.hide_finished_tasks'|trans({ 'number': tasksApproved|length }) }}">
+                            {{- 'message.show_finished_tasks'|trans({ 'number': tasksApproved|length }) -}}
                         </a>
                     </div>
                     <ul id="revision-tasks-approved" class="list-group revision-tasks"  style="display: none;">
@@ -61,8 +61,8 @@
 {% block buttonCreate %}
     <button id="btn-task-create-modal"
             data-url="{{ path('emsco_task_ajax_modal_create', {'revisionOuuid': revision.ouuid}) }}"
-            data-title="{{ 'task.create.title'|trans }}"
-            class="btn btn-sm btn-primary btn-task-modal task-icon-create">{{ 'task.create.button'|trans }}</button>
+            data-title="{{ 'title.add_new_task'|trans }}"
+            class="btn btn-sm btn-primary btn-task-modal task-icon-create">{{ 'action.add_task'|trans }}</button>
 {% endblock %}
 
 {% block taskActive %}
@@ -78,7 +78,7 @@
                             <span id="task-deadline {{ taskCurrent.deadline.timestamp < 'now'|date('U') ? 'task-deadline-red' }}">
                                 <i class="fa fa-clock-o" aria-hidden="true"></i>&nbsp;{{ taskCurrent.deadline.format(date_format) }}
                             </span>
-                            <span>{{ 'task.assigned_to'|trans }}<strong>{{ taskCurrent.assignee|emsco_display_name }}</strong></span>
+                            <span>{{ 'field.assigned_to'|trans }}<strong>{{ taskCurrent.assignee|emsco_display_name }}</strong></span>
                         </div>
                         <div><span class="task-current-status label {{ taskCurrent.statusLabel }}">{{ taskCurrent.status|trans }}</span></div>
                     </div>
@@ -86,7 +86,7 @@
             </a>
             {% if taskCurrent.isRequester(app.user) or is_granted('ROLE_TASK_MANAGER')  %}
                 <button class="btn-task-update-modal btn-task-modal btn btn-sm pull-right"
-                        data-title="{{ 'task.update.title'|trans({ 'title': taskCurrent.title }) }}"
+                        data-title="{{ 'title.edit_task'|trans({ 'title': taskCurrent.title }) }}"
                         data-url="{{ path('emsco_task_ajax_modal_update', { 'revisionOuuid': revision.ouuid, 'taskId': taskCurrent.id }) }}">
                 </button>
             {% endif %}
@@ -133,7 +133,7 @@
                     <div>
                         <div class="tasks-item-title">{{ task.title }}</div>
                         <div id="task-info">
-                            <span>{{ 'task.assigned_to'|trans }}<strong>{{ task.assignee|emsco_display_name }}</strong></span>
+                            <span>{{ 'field.assigned_to'|trans }}<strong>{{ task.assignee|emsco_display_name }}</strong></span>
                         </div>
                         {% if isCurrent|default(false) %}
                             <div><span class="task-current-status label {{ task.statusLabel }}">{{ task.status|trans }}</span></div>
@@ -143,7 +143,7 @@
             </a>
             {% if task.isRequester(app.user) or is_granted('ROLE_TASK_MANAGER')  %}
                 <button class="btn-task-update-modal btn-task-modal btn btn-sm pull-right"
-                        data-title="{{ 'task.update.title'|trans({ 'title': task.title }) }}"
+                        data-title="{{ 'title.edit_task'|trans({ 'title': task.title }) }}"
                         data-url="{{ path('emsco_task_ajax_modal_update', { 'revisionOuuid': revision.ouuid, taskId: task.id }) }}">
                 </button>
             {% endif %}
@@ -160,7 +160,7 @@
                     <i class="task-icon {{ task.statusIcon }}"></i>
                     <div>
                         <div class="tasks-item-title">{{ task.title }}</div>
-                        <div>{{ 'task.assigned_to'|trans }} <strong>{{ task.assignee|emsco_display_name }}</strong></div>
+                        <div>{{ 'field.assigned_to'|trans }} <strong>{{ task.assignee|emsco_display_name }}</strong></div>
                     </div>
                 </div>
             </div>
@@ -170,22 +170,22 @@
 
 {% block modalFooterClose %}
     <div class="pull-left">
-        <button type="button" class="btn btn-sm btn-default task-icon-close" data-dismiss="modal">{{ 'task.close'|trans }}</button>
+        <button type="button" class="btn btn-sm btn-default task-icon-close" data-dismiss="modal">{{ 'action.close'|trans }}</button>
     </div>
 {% endblock %}
 
 {% block modalFooterActions %}
     <div class="pull-left">
-        <button type="button" class="btn btn-sm btn-default task-icon-close" data-dismiss="modal">{{ 'task.close'|trans }}</button>
+        <button type="button" class="btn btn-sm btn-default task-icon-close" data-dismiss="modal">{{ 'action.close'|trans }}</button>
     </div>
     {% if fromRevision == false %}
         <div class="pull-right">
             <div class="btn-group">
                 <a class="btn btn-sm btn-default" href="{{ path('emsco_view_revisions', { 'type': contentType.name, 'ouuid': ouuid }) }}">
-                    <i class="fa fa-file" aria-hidden="true"></i> {{ 'task.dashboard.action.go_revision'|trans }}
+                    <i class="fa fa-file" aria-hidden="true"></i> {{ 'field.revision'|trans }}
                 </a>
                 <a class="btn btn-sm btn-default" href="{{ path('emsco_data_new_draft', { 'type': contentType.name, 'ouuid': ouuid }) }}">
-                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'task.dashboard.action.edit_revision'|trans }}
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'action.edit_revision'|trans }}
                 </a>
             </div>
         </div>
@@ -198,7 +198,7 @@
 
 {% block modalCreateFooter %}
     <div class="pull-left">
-        <button id="ajax-modal-submit" class="btn btn-sm btn-primary task-icon-create">{{ 'task.create.submit'|trans }}</button>
+        <button id="ajax-modal-submit" class="btn btn-sm btn-primary task-icon-create">{{ 'action.create_task'|trans }}</button>
         <button type="button" class="btn btn-sm btn-default task-icon-cancel" data-dismiss="modal">Cancel</button>
     </div>
 {% endblock %}
@@ -208,12 +208,12 @@
         <ul class="nav nav-tabs">
             <li class="active">
                 <a href="#tab_task_info" data-toggle="tab" aria-expanded="true">
-                    <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;{{ 'task.update.tab.info'|trans }}
+                    <i class="fa fa-info-circle" aria-hidden="true"></i>&nbsp;{{ 'key.information'|trans }}
                 </a>
             </li>
             <li>
                 <a href="#tab_task_history" data-toggle="tab" aria-expanded="false">
-                    <i class="fa fa-history" aria-hidden="true"></i>&nbsp;{{ 'task.update.tab.history'|trans }}
+                    <i class="fa fa-history" aria-hidden="true"></i>&nbsp;{{ 'key.history'|trans }}
                 </a>
             </li>
         </ul>
@@ -224,19 +224,19 @@
                 {% else %}
                     <div class="row">
                         <div class="col-md-12 mb-3">
-                            <div class="mb-1"><strong>{{ 'task.field.title'|trans }}</strong></div>
+                            <div class="mb-1"><strong>{{ 'field.title'|trans }}</strong></div>
                             <div>{{ task.title }}</div>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <div class="mb-1"><strong>{{ 'task.field.assignee'|trans }}</strong></div>
+                            <div class="mb-1"><strong>{{ 'field.assignee'|trans }}</strong></div>
                             <div>{{ task.assignee|emsco_display_name }}</div>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <div class="mb-1"><strong>{{ 'task.field.requester'|trans }}</strong></div>
+                            <div class="mb-1"><strong>{{ 'field.requester'|trans }}</strong></div>
                             <div>{{ task.createdBy|emsco_display_name }}</div>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <div class="mb-1"><strong>{{ 'task.field.deadline'|trans }}</strong></div>
+                            <div class="mb-1"><strong>{{ 'field.deadline'|trans }}</strong></div>
                             {%- if task.hasDeadline -%}
                                 <div>
                                     {%- set deadline = task.deadline.format(date_format) -%}
@@ -251,7 +251,7 @@
                             {%- endif -%}
                         </div>
                         <div class="col-md-12 mb-3">
-                            <div class="mb-1"><strong>{{ 'task.field.description'|trans }}</strong></div>
+                            <div class="mb-1"><strong>{{ 'field.description'|trans }}</strong></div>
                             {%- if task.hasDescription -%}<div>{{ task.description|nl2br }}</div>{% else %}/{% endif %}
                         </div>
                     </div>
@@ -265,14 +265,14 @@
 {% block modalUpdateFooter %}
     <div class="pull-left">
         {%- if task.status.value != 'completed' -%}
-            <button id="ajax-modal-submit" class="btn btn-sm btn-primary task-icon-update">{{ 'task.update.submit'|trans }}</button>
+            <button id="ajax-modal-submit" class="btn btn-sm btn-primary task-icon-update">{{ 'action.save_task'|trans }}</button>
         {%- endif -%}
         {% if task.isRequester(app.user) or is_granted('ROLE_TASK_MANAGER')  %}
             <button type="button" id="btn-task-delete"
                     data-url="{{ path('emsco_task_ajax_delete', {'revisionOuuid': revisionOuuid, 'taskId': task.id}) }}"
-                    class="btn btn-sm btn-danger task-icon-delete">{{ 'task.delete.submit'|trans }}</button>
+                    class="btn btn-sm btn-danger task-icon-delete">{{ 'action.delete_task'|trans }}</button>
         {% endif %}
-        <button type="button" class="btn btn-sm btn-default task-icon-close" data-dismiss="modal">{{ 'task.close'|trans }}</button>
+        <button type="button" class="btn btn-sm btn-default task-icon-close" data-dismiss="modal">{{ 'action.close'|trans }}</button>
     </div>
 {% endblock %}
 
@@ -282,7 +282,7 @@
 
 {% block modalDeleteFooter %}
     <div class="pull-left">
-        <button id="ajax-modal-submit" class="btn btn-sm btn-danger task-icon-delete">{{ 'task.delete.submit'|trans }}</button>
+        <button id="ajax-modal-submit" class="btn btn-sm btn-danger task-icon-delete">{{ 'action.delete_task'|trans }}</button>
         <button type="button" class="btn btn-sm btn-default task-icon-cancel" data-dismiss="modal">Cancel</button>
     </div>
 {% endblock %}
@@ -314,19 +314,19 @@
                     <span class="time"><i class="fa fa-clock-o"></i> {{ log.date.format(date_time_format) }}</span>
                     <h3 class="timeline-header bg-info">
                         {%- if log.status == 'approved' -%}
-                            {{ 'task.status.history.approved'|trans({ 'user': "<strong>#{log.username|emsco_display_name}</strong>" })|raw }}
+                            {{ 'message.task_history_approved'|trans({ 'user': "<strong>#{log.username|emsco_display_name}</strong>" })|raw }}
                         {%- elseif log.status == 'completed' -%}
-                            {{ 'task.status.history.completed'|trans({ 'user': "<strong>#{log.username|emsco_display_name}</strong>" })|raw }}
+                            {{ 'message.task_history_completed'|trans({ 'user': "<strong>#{log.username|emsco_display_name}</strong>" })|raw }}
                         {%- elseif log.status == 'created' -%}
-                            {{ 'task.status.history.created'|trans({ 'user': "<strong>#{log.username|emsco_display_name}</strong>" })|raw }}
+                            {{ 'message.task_history_created'|trans({ 'user': "<strong>#{log.username|emsco_display_name}</strong>" })|raw }}
                         {%- elseif log.status == 'planned' -%}
-                            {{ 'task.status.history.planned'|trans({ 'user': "<strong>#{log.username|emsco_display_name}</strong>" })|raw }}
+                            {{ 'message.task_history_planned'|trans({ 'user': "<strong>#{log.username|emsco_display_name}</strong>" })|raw }}
                         {%- elseif log.status == 'progress' -%}
-                            {{ 'task.status.history.progress'|trans({ 'assignee': "<strong>#{log.assignee|emsco_display_name}</strong>" })|raw }}
+                            {{ 'message.task_history_progress'|trans({ 'assignee': "<strong>#{log.assignee|emsco_display_name}</strong>" })|raw }}
                         {%- elseif log.status == 'rejected' -%}
-                            {{ 'task.status.history.rejected'|trans({ 'user': "<strong>#{log.username|emsco_display_name}</strong>" })|raw }}
+                            {{ 'message.task_history_rejected'|trans({ 'user': "<strong>#{log.username|emsco_display_name}</strong>" })|raw }}
                         {%- elseif log.status == 'updated' -%}
-                            {{ 'task.status.history.updated'|trans({ 'user': "<strong>#{log.username|emsco_display_name}</strong>" })|raw }}
+                            {{ 'message.task_history_updated'|trans({ 'user': "<strong>#{log.username|emsco_display_name}</strong>" })|raw }}
                         {%- endif -%}
                     </h3>
                     {% if log.comment %}<div class="timeline-body bg-gray-light">{{ log.comment }}</div>{% endif %}
@@ -334,19 +334,19 @@
                         <div class="timeline-body bg-gray-light">
                             <dl class="dl-horizontal task-info">
                                 {% if null != log.taskTitle %}
-                                    <dt>{{ 'task.field.title'|trans }}</dt>
+                                    <dt>{{ 'field.title'|trans }}</dt>
                                     <dd>{{ log.taskTitle }}</dd>
                                 {% endif %}
                                 {% if null != log.taskAssignee %}
-                                    <dt>{{ 'task.field.assignee'|trans }}</dt>
+                                    <dt>{{ 'field.assignee'|trans }}</dt>
                                     <dd>{{ log.taskAssignee|emsco_display_name }}</dd>
                                 {% endif %}
                                 {% if null != log.taskDeadline %}
-                                    <dt>{{ 'task.field.deadline'|trans }}</dt>
+                                    <dt>{{ 'field.deadline'|trans }}</dt>
                                     <dd>{{ log.taskDeadline.format(date_format) }}</dd>
                                 {% endif %}
                                 {% if null != log.taskDescription %}
-                                    <dt>{{ 'task.field.description'|trans }}</dt>
+                                    <dt>{{ 'field.description'|trans }}</dt>
                                     <dd>{{ log.taskDescription|nl2br }}</dd>
                                 {% endif %}
                             </dl>

@@ -44,7 +44,7 @@ final class McpResourceController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             match ($this->getClickedButtonName($form)) {
                 TableAbstract::DELETE_ACTION => $this->mcpResourceService->deleteByIds($table->getSelected()),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
+                default => $this->logger->messageError(t('message.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::MCP_RESOURCE_INDEX);

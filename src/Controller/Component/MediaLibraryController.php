@@ -67,7 +67,7 @@ class MediaLibraryController
 
         $componentModal = $this->mediaLibraryService->modal([
             'type' => 'add_folder',
-            'title' => $this->translator->trans('media_library.folder.add.title', [], 'emsco-core'),
+            'title' => $this->translator->trans('title.add_folder', [], 'emsco-core'),
         ]);
 
         $form = $this->formFactory->create(MediaLibraryDocumentFormType::class, $newFolder);
@@ -110,7 +110,7 @@ class MediaLibraryController
 
         $componentModal = $this->mediaLibraryService->modal([
             'type' => 'delete_files',
-            'title' => $this->translator->trans('media_library.files.delete.title', ['count' => $selectionFiles], 'emsco-core'),
+            'title' => $this->translator->trans('title.delete_files_count', ['count' => $selectionFiles], 'emsco-core'),
         ]);
 
         $form = $this->formFactory->createBuilder(FormType::class, $folder)->getForm();
@@ -121,14 +121,14 @@ class MediaLibraryController
 
             $componentModal->modal->data['success'] = true;
             $componentModal->template->context->append([
-                'infoMessage' => $this->translator->trans('media_library.files.delete.info', ['count' => $selectionFiles], 'emsco-core'),
+                'infoMessage' => $this->translator->trans('message.removing_files', ['count' => $selectionFiles], 'emsco-core'),
             ]);
 
             return new JsonResponse($componentModal->render());
         }
 
         $componentModal->template->context->append([
-            'confirmMessage' => $this->translator->trans('media_library.files.delete.warning', ['count' => $selectionFiles], 'emsco-core'),
+            'confirmMessage' => $this->translator->trans('message.confirm_delete_files', ['count' => $selectionFiles], 'emsco-core'),
             'form' => $form->createView(),
         ]);
 
@@ -140,7 +140,7 @@ class MediaLibraryController
         $folder = $this->mediaLibraryService->getFolder($folderId);
         $componentModal = $this->mediaLibraryService->modal([
             'type' => 'delete_folder',
-            'title' => $this->translator->trans('media_library.folder.delete.title', [], 'emsco-core'),
+            'title' => $this->translator->trans('title.delete_folder', [], 'emsco-core'),
         ]);
 
         $form = $this->formFactory->createBuilder(FormType::class, $folder)->getForm();
@@ -150,8 +150,8 @@ class MediaLibraryController
             $job = $this->mediaLibraryService->jobFolderDelete($user, $folder);
             $this->flashBag($request)->clear();
             $modalMessage = ($this->asyncEnabled)
-                ? t('media_library.folder.delete.job_info_async', [], 'emsco-core')
-                : t('media_library.folder.delete.job_info', [], 'emsco-core')
+                ? t('message.folder_delete_async', [], 'emsco-core')
+                : t('message.folder_delete_in_progress', [], 'emsco-core')
             ;
 
             $componentModal->modal->data['success'] = true;
@@ -165,7 +165,7 @@ class MediaLibraryController
         }
 
         $componentModal->template->context->append([
-            'confirmMessage' => $this->translator->trans('media_library.folder.delete.warning', [], 'emsco-core'),
+            'confirmMessage' => $this->translator->trans('message.confirm_delete_folder', [], 'emsco-core'),
             'form' => $form->createView(),
         ]);
 
@@ -248,7 +248,7 @@ class MediaLibraryController
 
         $componentModal = $this->mediaLibraryService->modal([
             'type' => 'move_files',
-            'title' => $this->translator->trans('media_library.files.move.title', ['count' => $selectionFiles], 'emsco-core'),
+            'title' => $this->translator->trans('title.move_files', ['count' => $selectionFiles], 'emsco-core'),
         ]);
 
         $folders = $this->mediaLibraryService->getFolders()->getChoices();
@@ -261,7 +261,7 @@ class MediaLibraryController
         $form
             ->add('target', ChoiceType::class, [
                 'constraints' => [new Assert\NotBlank()],
-                'label' => t('media_library.files.move.select_folder', [], 'emsco-core'),
+                'label' => t('message.select_new_location', [], 'emsco-core'),
                 'choice_translation_domain' => false,
                 'attr' => ['class' => 'select2'],
                 'choices' => $choices,
@@ -277,7 +277,7 @@ class MediaLibraryController
             $componentModal->modal->data['success'] = true;
             $componentModal->modal->data['targetFolderId'] = $targetFolder->id ?? 'home';
             $componentModal->template->context->append([
-                'infoMessage' => $this->translator->trans('media_library.files.move.success', [
+                'infoMessage' => $this->translator->trans('message.move_files_success', [
                     'count' => $selectionFiles,
                     'from' => $currentPath,
                     'to' => $targetFolder instanceof MediaLibraryFolder ? $targetFolder->getPath()->getLabel() : 'Home',
@@ -288,7 +288,7 @@ class MediaLibraryController
         }
 
         $componentModal->template->context->append([
-            'infoMessage' => $this->translator->trans('media_library.files.move.info', ['path' => $currentPath], 'emsco-core'),
+            'infoMessage' => $this->translator->trans('message.current_location', ['path' => $currentPath], 'emsco-core'),
             'form' => $form->createView(),
         ]);
 
@@ -302,7 +302,7 @@ class MediaLibraryController
 
         $modal = $this->mediaLibraryService->modal([
             'type' => 'move_folder',
-            'title' => $this->translator->trans('media_library.folder.move.title', [], 'emsco-core'),
+            'title' => $this->translator->trans('title.move_folder', [], 'emsco-core'),
         ]);
 
         $folders = $this->mediaLibraryService->getFolders()->getChoices();
@@ -327,7 +327,7 @@ class MediaLibraryController
         $form
             ->add('target', ChoiceType::class, [
                 'constraints' => [new Assert\NotBlank()],
-                'label' => t('media_library.folder.move.select_folder', [], 'emsco-core'),
+                'label' => t('message.select_new_location', [], 'emsco-core'),
                 'choice_translation_domain' => false,
                 'attr' => ['class' => 'select2'],
                 'choices' => $choices,
@@ -342,8 +342,8 @@ class MediaLibraryController
             $job = $this->mediaLibraryService->jobFolderMove($user, $folder, $targetId);
 
             $modalMessage = ($this->asyncEnabled)
-                ? t('media_library.folder.move.job_info_async', [], 'emsco-core')
-                : t('media_library.folder.move.job_info', [], 'emsco-core')
+                ? t('message.folder_move_async', [], 'emsco-core')
+                : t('message.folder_move_in_progress', [], 'emsco-core')
             ;
 
             return $this->flashMessageLogger->buildJsonResponse([
@@ -359,7 +359,7 @@ class MediaLibraryController
         }
 
         $modal->template->context->append([
-            'infoMessage' => $this->translator->trans('media_library.folder.move.info', ['path' => $currentPath], 'emsco-core'),
+            'infoMessage' => $this->translator->trans('message.current_location', ['path' => $currentPath], 'emsco-core'),
             'form' => $form->createView(),
         ]);
 
@@ -385,7 +385,7 @@ class MediaLibraryController
 
         $modal = $this->mediaLibraryService->modal([
             'type' => 'rename_file',
-            'title' => $this->translator->trans('media_library.file.rename.title', [], 'emsco-core'),
+            'title' => $this->translator->trans('title.rename_file', [], 'emsco-core'),
             'form' => $form->createView(),
         ]);
 
@@ -405,8 +405,8 @@ class MediaLibraryController
             $this->flashBag($request)->clear();
 
             $modalMessage = ($this->asyncEnabled)
-                ? t('media_library.folder.rename.job_info_async', [], 'emsco-core')
-                : t('media_library.folder.rename.job_info', [], 'emsco-core')
+                ? t('message.folder_rename_async', [], 'emsco-core')
+                : t('message.folder_rename_in_progress', [], 'emsco-core')
             ;
 
             return new JsonResponse([
@@ -423,7 +423,7 @@ class MediaLibraryController
 
         $modal = $this->mediaLibraryService->modal([
             'type' => 'rename_folder',
-            'title' => $this->translator->trans('media_library.folder.rename.title', [], 'emsco-core'),
+            'title' => $this->translator->trans('title.rename_folder', [], 'emsco-core'),
             'form' => $form->createView(),
         ]);
 
@@ -433,7 +433,7 @@ class MediaLibraryController
     public function viewFile(string $fileId): JsonResponse
     {
         $file = $this->mediaLibraryService->getFile($fileId);
-        $modalTitle = $this->translator->trans('media_library.file.view.title_modal', ['name' => $file->giveName()], 'emsco-core');
+        $modalTitle = $this->translator->trans('title.view_file_modal', ['name' => $file->giveName()], 'emsco-core');
 
         $modal = $this->mediaLibraryService->modal([
             'type' => 'view',

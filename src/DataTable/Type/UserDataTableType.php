@@ -34,83 +34,83 @@ class UserDataTableType extends AbstractEntityTableType
     #[\Override]
     public function build(EntityTable $table): void
     {
-        $table->addColumn(t('user.index.column.username', [], 'emsco-core'), 'username');
-        $table->addColumn(t('user.index.column.displayname', [], 'emsco-core'), 'displayName');
-        $table->addColumn(t('user.index.column.email', [], 'emsco-core'), 'email');
+        $table->addColumn(t('field.username', [], 'emsco-core'), 'username');
+        $table->addColumn(t('field.display_name', [], 'emsco-core'), 'displayName');
+        $table->addColumn(t('field.email', [], 'emsco-core'), 'email');
 
         $context = $table->getContext();
         if (!$context->inGroup && $context->light && $this->groupFeature) {
-            $table->addColumnDefinition(new EntityTableColumn(t('user.index.column.group', [], 'emsco-core'), 'group'));
+            $table->addColumnDefinition(new EntityTableColumn(t('field.group', [], 'emsco-core'), 'group'));
         }
         if ($context instanceof UserContextDTO && $context->inGroup && null !== $context->groupId) {
             $table->addDynamicItemPostAction(
                 route: Routes::USER_REMOVE_FROM_GROUP,
-                labelKey: t('user.action.remove', [], 'emsco-core'),
+                labelKey: t('action.remove', [], 'emsco-core'),
                 icon: 'trash',
-                messageKey: t('user.action.remove_confirm', [], 'emsco-core'),
+                messageKey: t('message.remove_user_from_group_confirm', [], 'emsco-core'),
                 routeParameters: ['user' => 'id', 'groupName' => $context->groupId]
             );
         }
         if ($context instanceof UserContextDTO && !$context->inGroup && null !== $context->groupId) {
             $table->addDynamicItemGetAction(
                 route: Routes::USER_ADD_TO_GROUP,
-                labelKey: t('user.add.button', [], 'emsco-core'),
+                labelKey: t('key.add_user', [], 'emsco-core'),
                 icon: 'plus',
                 routeParameters: ['user' => 'id', 'group' => $context->groupId]
             );
         }
         if (!$context instanceof UserContextDTO || !$context->light) {
-            $table->addColumnDefinition(new BoolTableColumn(t('user.index.column.email_notification', [], 'emsco-core'), 'emailNotification'))
+            $table->addColumnDefinition(new BoolTableColumn(t('field.is_mail_notification', [], 'emsco-core'), 'emailNotification'))
                 ->setIconClass('fa fa-bell');
-            $table->addColumn(t('user.index.column.locale_ui', [], 'emsco-core'), 'locale');
-            $table->addColumn(t('user.index.column.locale_preferred', [], 'emsco-core'), 'localePreferred');
-            $table->addColumn(t('user.index.column.wysiwyg_profile', [], 'emsco-core'), 'wysiwygProfile');
+            $table->addColumn(t('key.locale_ui_abbrev', [], 'emsco-core'), 'locale');
+            $table->addColumn(t('field.locale_preferred', [], 'emsco-core'), 'localePreferred');
+            $table->addColumn(t('field.wysiwyg_profile', [], 'emsco-core'), 'wysiwygProfile');
             if ($this->circleObject) {
-                $table->addColumnDefinition(new DataLinksTableColumn(t('user.index.column.circles', [], 'emsco-core'), 'circles'));
+                $table->addColumnDefinition(new DataLinksTableColumn(t('field.circles', [], 'emsco-core'), 'circles'));
             }
-            $table->addColumnDefinition(new BoolTableColumn(t('user.index.column.enabled', [], 'emsco-core'), 'enabled'));
+            $table->addColumnDefinition(new BoolTableColumn(t('field.enabled', [], 'emsco-core'), 'enabled'));
             if ($this->groupFeature) {
-                $table->addColumnDefinition(new EntityTableColumn(t('user.index.column.group', [], 'emsco-core'), 'group'));
+                $table->addColumnDefinition(new EntityTableColumn(t('field.group', [], 'emsco-core'), 'group'));
             }
-            $table->addColumnDefinition(new RolesTableColumn(t('user.index.column.roles', [], 'emsco-core'), 'roles'));
-            $table->addColumnDefinition(new DatetimeTableColumn(t('user.index.column.lastLogin', [], 'emsco-core'), 'lastLogin'));
-            $table->addColumnDefinition(new DatetimeTableColumn(t('user.index.column.expirationDate', [], 'emsco-core'), 'expirationDate'));
+            $table->addColumnDefinition(new RolesTableColumn(t('field.roles', [], 'emsco-core'), 'roles'));
+            $table->addColumnDefinition(new DatetimeTableColumn(t('field.last_login', [], 'emsco-core'), 'lastLogin'));
+            $table->addColumnDefinition(new DatetimeTableColumn(t('field.expiration_date', [], 'emsco-core'), 'expirationDate'));
 
             $table->addDynamicItemGetAction(
                 route: Routes::USER_EDIT,
-                labelKey: t('user.action.edit', [], 'emsco-core'),
+                labelKey: t('action.edit', [], 'emsco-core'),
                 icon: 'pencil',
                 routeParameters: ['user' => 'id'],
                 attributes: ['data-testid' => 'user-action-edit']
             );
             $table->addDynamicItemGetAction(
                 route: 'homepage',
-                labelKey: t('user.action.switch', [], 'emsco-core'),
+                labelKey: t('action.switch_user', [], 'emsco-core'),
                 icon: 'user-secret',
                 routeParameters: ['_switch_user' => 'username'],
                 attributes: ['data-testid' => 'user-action-switch-user']
             );
             $table->addDynamicItemPostAction(
                 route: Routes::USER_ENABLING,
-                labelKey: t('user.action.disable', [], 'emsco-core'),
+                labelKey: t('action.disable', [], 'emsco-core'),
                 icon: 'user-times',
-                messageKey: t('user.action.disable_confirm', [], 'emsco-core'),
+                messageKey: t('message.disable_user_confirm', [], 'emsco-core'),
                 routeParameters: ['user' => 'id'],
                 attributes: ['data-testid' => 'user-action-disabled']
             );
             $table->addDynamicItemPostAction(
                 route: Routes::USER_API_KEY,
-                labelKey: t('user.action.generate_api', [], 'emsco-core'),
+                labelKey: t('key.api_key', [], 'emsco-core'),
                 icon: 'key',
-                messageKey: t('user.action.generate_api_confirm', [], 'emsco-core'),
+                messageKey: t('message.generate_api_key_confirm', [], 'emsco-core'),
                 routeParameters: ['username' => 'username'],
                 attributes: ['data-testid' => 'user-action-generate-api']
             )->addCondition(new Terms('roles', [Roles::ROLE_API]));
             $table->addDynamicItemPostAction(
                 route: Routes::USER_DELETE,
-                labelKey: t('user.action.delete', [], 'emsco-core'),
+                labelKey: t('action.delete', [], 'emsco-core'),
                 icon: 'trash',
-                messageKey: t('user.action.delete_confirm', [], 'emsco-core'),
+                messageKey: t('message.delete_this_user_confirm', [], 'emsco-core'),
                 routeParameters: ['user' => 'id'],
                 attributes: ['data-testid' => 'user-action-delete']
             );

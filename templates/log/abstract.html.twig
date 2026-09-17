@@ -3,10 +3,10 @@
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
-        <li><a href="{{ path('emsco_log_index') }}"><i class="fa fa-file-text"></i> {{ 'log.menu'|trans }}</a></li>
+        <li><a href="{{ path('emsco_log_index') }}"><i class="fa fa-file-text"></i> {{ 'key.logs'|trans }}</a></li>
         {% block breadcrumb_items %}{% endblock breadcrumb_items %}
     </ol>
 {% endblock %}
 
 {% block pagetitle %}{{ block('title') }}{% endblock %}
-{% block subtitle %}<small>{{ 'log.tagline'|trans }}</small>{% endblock %}
+{% block subtitle %}<small>{{ 'title.log_tagline'|trans }}</small>{% endblock %}

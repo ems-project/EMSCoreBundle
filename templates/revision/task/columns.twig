@@ -37,7 +37,7 @@
             {%- endif -%}
         </td>
     {% else %}
-        <td data-order="{{ data.task_delay }}">{{ "task.delay_days"|trans({ 'number': data.task_delay }) }}</td>
+        <td data-order="{{ data.task_delay }}">{{ "message.delay_days"|trans({ 'number': data.task_delay }) }}</td>
     {% endif %}
 {%- endblock -%}
 
@@ -46,10 +46,10 @@
 {%- block actions -%}
     <div class="btn-group">
         <a class="btn btn-sm btn-default" href="{{ path('emsco_view_revisions', { 'type': data.content_type_name, 'ouuid': data.revision_ouuid }) }}">
-            <i class="fa fa-file" aria-hidden="true"></i> {{ 'task.dashboard.action.go_revision'|trans }}
+            <i class="fa fa-file" aria-hidden="true"></i> {{ 'field.revision'|trans }}
         </a>
         <a class="btn btn-sm btn-default" href="{{ path('emsco_data_new_draft', { 'type': data.content_type_name, 'ouuid': data.revision_ouuid }) }}">
-            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'task.dashboard.action.edit_revision'|trans }}
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> {{ 'action.edit_revision'|trans }}
         </a>
     </div>
 {%- endblock -%}

@@ -2,11 +2,11 @@
 {%- trans_default_domain 'emsco-core' -%}
 {%- set confirmationUrl = path('emsco_user_resetting_reset', {'token': user.confirmationToken}) -%}
 {% autoescape false %}
-    {%- set i18nTranslated = 'user.resetting.email.message'|emsco_i18n(user.localePreferred|default('en')) -%}
-    {%- if i18nTranslated != 'user.resetting.email.message' -%}
+    {%- set i18nTranslated = 'message.reset_password_email_body'|emsco_i18n(user.localePreferred|default('en')) -%}
+    {%- if i18nTranslated != 'message.reset_password_email_body' -%}
         {{ i18nTranslated }}
     {%- else -%}
-        {{ 'user.resetting.email.message'|trans({
+        {{ 'message.reset_password_email_body'|trans({
             'username': user.username,
             'token': user.confirmationToken,
             'confirmationUrl': absolute_url(confirmationUrl)

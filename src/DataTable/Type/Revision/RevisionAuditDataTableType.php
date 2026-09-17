@@ -33,12 +33,12 @@ class RevisionAuditDataTableType extends AbstractEntityTableType
             ->addColumnDefinition(new DatetimeTableColumn(t('key.created', [], 'emsco-core'), 'created'))
             ->setCellClass('col-sm');
         $table
-            ->addColumnDefinition(new TableColumn(t('key.severity', [], 'emsco-core'), 'levelName'))
+            ->addColumnDefinition(new TableColumn(t('field.severity', [], 'emsco-core'), 'levelName'))
             ->setCellClass('col-xs');
         $table
-            ->addColumnDefinition(new TableColumn(t('key.message', [], 'emsco-core'), 'message'));
+            ->addColumnDefinition(new TableColumn(t('field.message', [], 'emsco-core'), 'message'));
         $table
-            ->addColumnDefinition(new UserTableColumn(t('key.username', [], 'emsco-core'), 'username'))
+            ->addColumnDefinition(new UserTableColumn(t('field.username', [], 'emsco-core'), 'username'))
             ->setCellClass('col-sm');
         $table->setDefaultOrder('created', 'desc');
     }

@@ -46,26 +46,26 @@ final class RevisionTaskType extends AbstractType
         $builder
             ->add('assignee', SelectUserPropertyType::class, [
                 'placeholder' => '',
-                'label' => t('task.field.assignee', [], 'emsco-core'),
+                'label' => t('field.assignee', [], 'emsco-core'),
                 'allow_add' => false,
                 'user_property' => 'username',
                 'label_property' => 'displayName',
             ])
             ->add('description', TextareaType::class, [
-                'label' => t('task.field.description', [], 'emsco-core'),
+                'label' => t('field.description', [], 'emsco-core'),
                 'attr' => ['rows' => 5],
             ])
         ;
 
         if (null === $taskDto->id || TaskStatus::PLANNED === $taskStatus) {
             $builder->add('delay', IntegerType::class, [
-                'label' => t('task.field.delay', [], 'emsco-core'),
+                'label' => t('field.delay', [], 'emsco-core'),
                 'attr' => ['min' => 0],
             ]);
         } else {
             $builder->add('deadline', TextType::class, [
                 'disabled' => TaskStatus::COMPLETED === $taskStatus,
-                'label' => t('task.field.deadline', [], 'emsco-core'),
+                'label' => t('field.deadline', [], 'emsco-core'),
                 'attr' => [
                     'readonly' => TaskStatus::COMPLETED === $taskStatus,
                     'class' => 'datetime-picker',
@@ -97,7 +97,7 @@ final class RevisionTaskType extends AbstractType
         $tasksHelptexts = $contentType->getSettings()->getSettingArrayString(ContentTypeSettings::TASKS_HELPTEXTS);
 
         if ([] === $tasksTitles) {
-            $builder->add('title', TextType::class, ['label' => t('task.field.title', [], 'emsco-core')]);
+            $builder->add('title', TextType::class, ['label' => t('field.title', [], 'emsco-core')]);
 
             return;
         }
@@ -109,7 +109,7 @@ final class RevisionTaskType extends AbstractType
             }
 
             $form->add('title', ChoiceType::class, [
-                'label' => t('task.field.title', [], 'emsco-core'),
+                'label' => t('field.title', [], 'emsco-core'),
                 'attr' => [
                     'data-tags' => true,
                     'class' => 'select2',

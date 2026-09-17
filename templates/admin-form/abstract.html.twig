@@ -3,10 +3,10 @@
 
 {% block breadcrumb %}
     <ol class="breadcrumb">
-        <li><a href="{{ path('emsco_form_admin_index') }}"><i class="fa fa-keyboard-o"></i> {{ 'form.menu'|trans }}</a></li>
+        <li><a href="{{ path('emsco_form_admin_index') }}"><i class="fa fa-keyboard-o"></i> {{ 'key.forms'|trans }}</a></li>
         {% block breadcrumb_items %}{% endblock breadcrumb_items %}
     </ol>
 {% endblock %}
 
 {% block pagetitle %}{{ block('title') }}{% endblock %}
-{% block subtitle %}<small>{{ 'form.tagline'|trans }}</small>{% endblock %}
+{% block subtitle %}<small>{{ 'key.tagline'|trans }}</small>{% endblock %}

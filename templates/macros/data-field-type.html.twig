@@ -260,9 +260,9 @@
 			</h3>
 			{% if compare %}
 				{% if diffCount < 0 %}
-					<del class="text-red">{{ 'view.macros.data-field-type.collection_removed_items'|trans({'count': -diffCount}) }}</del>
+					<del class="text-red">{{ 'message.collection_removed_items'|trans({'count': -diffCount}) }}</del>
 				{% elseif diffCount > 0 %}
-					<ins class="text-green">{{ 'view.macros.data-field-type.collection_added_items'|trans({'count': diffCount}) }}</ins>
+					<ins class="text-green">{{ 'message.collection_added_items'|trans({'count': diffCount}) }}</ins>
                 {% endif %}
             {% endif %}
 		</div>
@@ -739,7 +739,7 @@
 			<div class="nestedSortable">
 				<div class="box-header with-border">
 					{% if item.children|default({})|length > 0 %}
-						<button href="#" type="button" title="{{ 'field_type.json_menu_editor.collapse_button'|trans }}" aria-expanded="{{  defaultClose ? 'true' : 'false' }}" class="btn btn-default button-collapse"></button>
+						<button href="#" type="button" title="{{ 'action.collapse'|trans }}" aria-expanded="{{  defaultClose ? 'true' : 'false' }}" class="btn btn-default button-collapse"></button>
 						&nbsp;
 					{% endif %}
 					{% if item.contentType is defined %}<i class="{{ item.contentType|emsco_get_content_type.icon|default('') }}"></i>{% endif %}
@@ -1303,7 +1303,7 @@
 {% block EMS_CoreBundle_Form_DataField_FormFieldType %}
     {% if dataField.fieldType.displayOptions.form is defined %}
         {% set form = emsco_get_form(dataField.fieldType.displayOptions.form, dataField.rawData) %}
-        {% set errorMessage = 'view.macros.data-field-type.form.not-found'|trans %}
+        {% set errorMessage = 'message.form_not_found'|trans %}
     {% endif %}
     {% if form is defined and form %}
         {{ _self.renderDataFieldBlock(emsco_get_data_field(form), source, compare, compareRawData, '', path, locale) }}
@@ -1313,7 +1313,7 @@
                 {{ dataField.fieldType.displayOptions.label|default(dataField.fieldType.name) }}{% if emsco_is_super() %} ({{ dataField.fieldType.name }}){% endif %}
             </div>
             <div class="panel-body">
-                {{ errorMessage|default('view.macros.data-field-type.form.not-defined'|trans)|trans }}
+                {{ errorMessage|default('message.form_not_defined'|trans)|trans }}
             </div>
         </div>
     {% endif %}

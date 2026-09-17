@@ -95,7 +95,7 @@
 	{% else %}
 		{{ block('form_widget') }}
 	{% endif %}
-    <span class="pull-right text-counter" data-counter-label="{{ 'field_type.textarea.counter'|trans|e('html_attr') }}"></span>
+    <span class="pull-right text-counter" data-counter-label="{{ 'key.textarea_counter'|trans|e('html_attr') }}"></span>
 {%- endblock icontext_widget %}
 
 
@@ -819,24 +819,24 @@
 				<span class="input-group">
 					{% if item.type|default('node') == 'node' %}
 						<span class="input-group-btn">
-							<button href="#" type="button" title="{{ 'field_type.json_menu_editor.collapse_button'|trans }}" aria-expanded="false" class="btn btn-default button-collapse"></button>
+							<button href="#" type="button" title="{{ 'action.collapse'|trans }}" aria-expanded="false" class="btn btn-default button-collapse"></button>
 						</span>
 					{% endif %}
 					<span class="input-group-addon" >
                         <i class="{% if item.icon|default(false) %}{{ item.icon }}{% elseif item.type|default('node') == 'node' %}fa fa-folder{% else %}fa fa-file-text{% endif %}"></i>
                     </span>
-					<input type="text" class="form-control itemLabel ignore-ems-update" placeholder="{{ 'field_type.json_menu_editor.item_label_placeholder'|trans }}" value="{{ item.label|default('') }}">
+					<input type="text" class="form-control itemLabel ignore-ems-update" placeholder="{{ 'key.item_label'|trans }}" value="{{ item.label|default('') }}">
 					<span class="input-group-btn">
-						<a type="button" class="btn btn-primary json_menu_sortable_handle_button" title="{{ 'field_type.json_menu_editor.move_item'|trans }}">
+						<a type="button" class="btn btn-primary json_menu_sortable_handle_button" title="{{ 'action.move_item'|trans }}">
 							<i class="fa fa-arrows"></i>
-							<span class="">{{ 'field_type.json_menu_editor.move_item'|trans }}</span>
+							<span class="">{{ 'action.move_item'|trans }}</span>
 						</a>
 						{% if item.type|default('node') == 'node' %}
                             {{ addMenu }}
 						{% endif %}
-						<a type="button" class="btn btn-danger json_menu_sortable_remove_button" title="{{ 'field_type.json_menu_editor.delete_item'|trans }}">
+						<a type="button" class="btn btn-danger json_menu_sortable_remove_button" title="{{ 'action.delete_item'|trans }}">
 							<i class="fa fa-trash"></i>
-							<span class="sr-only">{{ 'field_type.json_menu_editor.delete_item'|trans }}</span>
+							<span class="sr-only">{{ 'action.delete_item'|trans }}</span>
 						</a>
 					</span>
 				</span>
@@ -861,7 +861,7 @@
     {% set addMenu %}
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span class="fa fa-plus"></span>
-            {{ 'field_type.json_menu_editor.add'|trans }}
+            {{ 'action.add'|trans }}
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
@@ -872,7 +872,7 @@
                     <li>
                         <a type="button" class="json_menu_sortable_add_item_button" data-label="" data-content-type="{{ type|e('html_attr') }}" data-icon="{{ contentTypeIcon|e('html_attr') }}">
                             <i class="{{ contentTypeIcon }}"></i>
-                            {{ 'field_type.json_menu_editor.add_item'|trans({'singular': contentType.singularName}) }}
+                            {{ 'action.add_item'|trans({'singular': contentType.singularName}) }}
                         </a>
                     </li>
                 {% endif %}
@@ -884,7 +884,7 @@
                     <li>
                         <a type="button" class="json_menu_sortable_add_node_button" data-label="" data-content-type="{{ type|e('html_attr') }}" data-icon="{{ contentTypeIcon|e('html_attr') }}">
                             <i class="{{ contentTypeIcon }}"></i>
-                            {{ 'field_type.json_menu_editor.add_node'|trans({'singular': contentType.singularName}) }}
+                            {{ 'action.add_node'|trans({'singular': contentType.singularName}) }}
                         </a>
                     </li>
                 {% endif %}
@@ -900,7 +900,7 @@
 		 data-prototype-node="{{ block('json_menu_editor_fieldtype_node')|e('html_attr') }}">
 		<div class="input-group">
 				<span class="input-group-btn">
-					<button type="#" title="{{ 'field_type.json_menu_editor.collapse_all_button'|trans }}" aria-expanded="false" class="btn btn-default button-collapse-all">
+					<button type="#" title="{{ 'action.collapse_all'|trans }}" aria-expanded="false" class="btn btn-default button-collapse-all">
 					</button>
                     {{ addMenu }}
 				</span>
@@ -979,12 +979,12 @@
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-label="{{ 'view.form.fields.asset.close-modal'|trans }}"><span aria-hidden="true">&times;</span></button>
-							<h4 class="modal-title">{{ 'view.form.fields.asset.file-info'|trans }}</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="{{ 'action.close'|trans }}"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">{{ 'field.file_info_apostrophe'|trans }}</h4>
 						</div>
 						<div class="modal-body">
 							<div class="form-group">
-								<label>{{ 'view.form.fields.asset.file-hash'|trans }}</label>
+								<label>{{ 'field.file_hash_apostrophe'|trans }}</label>
 								<div class="form-control asset-hash-signature">{% if fileItem.sha1.vars.value is defined %}{{ fileItem.sha1.vars.value }}{% endif %}</div>
 								{{- form_row(fileItem.sha1) -}}
 								{{- form_row(fileItem._image_resized_hash) -}}
@@ -993,14 +993,14 @@
 							</div>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'view.form.fields.asset.close-modal'|trans }}</button>
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'action.close'|trans }}</button>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="asset-upload-tab {% if not prototype %}hidden{% endif %}">
 				<div class="progress-group">
-					<span class="progress-text">{{ 'view.form.fields.asset.init-upload'|trans }}</span>
+					<span class="progress-text">{{ 'message.upload_is_starting'|trans }}</span>
 					<span class="progress-number">&nbsp;</span>
 					<div class="progress sm">
 						<div class="progress-bar" style="width: 0%"></div>
@@ -1011,21 +1011,21 @@
 				<div class="input-group input-group-sm">
 					{{- form_widget(fileItem.filename) -}}
 					<span class="input-group-btn">
-						<button type="button" class="btn" title="{{ 'view.form.fields.asset.info-modal-button'|trans }}" data-toggle="modal" data-target="#asst-details-{{ fileItem.vars.id }}-__name__">
+						<button type="button" class="btn" title="{{ 'action.info'|trans }}" data-toggle="modal" data-target="#asst-details-{{ fileItem.vars.id }}-__name__">
 							<i class="fa fa-info"></i>
-							<span class="sr-only">{{ 'view.form.fields.asset.info-modal-button'|trans }}</span>
+							<span class="sr-only">{{ 'action.info'|trans }}</span>
 						</button>
-						<a type="button" class="btn ui-sortable-handle move-handle" title="{{ 'view.form.fields.asset.move-button'|trans }}">
+						<a type="button" class="btn ui-sortable-handle move-handle" title="{{ 'action.move'|trans }}">
 							<i class="fa fa-arrows"></i>
-							<span class="sr-only">{{ 'view.form.fields.asset.move-button'|trans }}</span>
+							<span class="sr-only">{{ 'action.move'|trans }}</span>
 						</a>
-						<a href="{% if prototype %}#{% else %}{{ ems_asset_path(fileItem.vars.value) }}{% endif %}" type="button" class="btn btn-primary view-asset-button {% if prototype %}disabled{% endif %}" title="{{ 'view.form.fields.asset.view-button'|trans }}" target="_blank">
+						<a href="{% if prototype %}#{% else %}{{ ems_asset_path(fileItem.vars.value) }}{% endif %}" type="button" class="btn btn-primary view-asset-button {% if prototype %}disabled{% endif %}" title="{{ 'action.view'|trans }}" target="_blank">
 							<i class="fa fa-eye"></i>
-							<span class="sr-only">{{ 'view.form.fields.asset.view-button'|trans }}</span>
+							<span class="sr-only">{{ 'action.view'|trans }}</span>
 						</a>
-						<button type="button" class="btn btn-danger remove-item" title="{{ 'view.form.fields.asset.remove-button'|trans }}">
+						<button type="button" class="btn btn-danger remove-item" title="{{ 'action.remove'|trans }}">
 							<i class="fa fa-trash"></i>
-							<span class="sr-only">{{ 'view.form.fields.asset.remove-button'|trans }}</span>
+							<span class="sr-only">{{ 'action.remove'|trans }}</span>
 						</button>
 					</span>
 				</div>
@@ -1058,18 +1058,18 @@
 			  <div class="modal-dialog" role="document">
 				<div class="modal-content">
 				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="{{ 'view.form.fields.asset.close-modal'|trans }}"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="myModalLabel">{{ 'view.form.fields.asset.file-info'|trans }}</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="{{ 'action.close'|trans }}"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">{{ 'field.file_info_apostrophe'|trans }}</h4>
 				  </div>
 				  <div class="modal-body">
 					<div class="form-group">
-						<label>{{ 'view.form.fields.asset.file-hash'|trans }}</label>
+						<label>{{ 'field.file_hash_apostrophe'|trans }}</label>
 						<div class="form-control asset-hash-signature">{% if form.vars.value.sha1 is defined %}{{ form.vars.value.sha1 }}{% endif %}</div>
 					</div>
 					{{- form_widget(form) -}}
 				  </div>
 				  <div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'view.form.fields.asset.close-modal'|trans }}</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'action.close'|trans }}</button>
 				  </div>
 				</div>
 			  </div>
@@ -1081,9 +1081,9 @@
         	{% if not form.vars.disabled %}
         		<p class="text-center asset-preview">
 					{% if form.vars.multiple|default(false) %}
-						<strong>{{ 'view.form.fields.asset.drag-n-drop-files'|trans }}</strong>
+						<strong>{{ 'message.drag_and_drop_files'|trans }}</strong>
 					{% else %}
-						<strong>{{ 'view.form.fields.asset.drag-n-drop-file'|trans }}</strong>
+						<strong>{{ 'message.drag_and_drop_file'|trans }}</strong>
 					{% endif %}
                 </p>
         	{% endif %}
@@ -1102,7 +1102,7 @@
             		{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}
             			src="{{ emsco_asset_path(form.vars.value, form.vars.data.fieldType.getDisplayOption('imageAssetConfigIdentifier', 'preview')) }}"
             		{% endif %}
-            		class="img-responsive center-block" alt="{{ 'view.form.fields.asset.preview'|trans({'label': form_label(form)|striptags }) }}"
+            		class="img-responsive center-block" alt="{{ 'message.file_preview_of_field'|trans({'label': form_label(form)|striptags }) }}"
             	>
 	        </div>
         </div>
@@ -1124,21 +1124,21 @@
 		{% if form.vars.multiple|default(false) %}
 			<div class="btn-group">
 				<input type="file" id="file-upload-{{ form.vars.id }}" class="file-uploader-input" {% if form.vars.disabled %}disabled="disabled"{% endif %} multiple="multiple" data-testid="file-btn-upload-files-{{ form.vars.name }}">
-				<label class="btn btn-default" for="file-upload-{{ form.vars.id }}"><i class="fa fa-upload"></i> {{ 'view.form.fields.asset.upload-files'|trans|e('html_attr') }}</label>
+				<label class="btn btn-default" for="file-upload-{{ form.vars.id }}"><i class="fa fa-upload"></i> {{ 'action.upload_files'|trans|e('html_attr') }}</label>
 			</div>
 		{% else %}
 			<div class="btn-group">
 				<input type="file" id="file-upload-{{ form.vars.id }}" class="file-uploader-input" {% if form.vars.disabled %}disabled="disabled"{% endif %} data-testid="file-btn-upload-file-{{ form.vars.name }}">
-				<label class="btn btn-default" for="file-upload-{{ form.vars.id }}"><i class="fa fa-upload"></i> {{ 'view.form.fields.asset.upload-file'|trans|e('html_attr') }}</label>
+				<label class="btn btn-default" for="file-upload-{{ form.vars.id }}"><i class="fa fa-upload"></i> {{ 'action.upload_file'|trans|e('html_attr') }}</label>
 			</div>
-			<button type="button" data-href="{{ path('ems_core_uploaded_file_wysiwyg_modal') }}"  class="btn btn-small btn-default file-browse-server" data-testid="file-btn-browser-serer-{{ form.vars.name }}"><i class="fa fa-folder-open-o"></i><span class="sr-only">{{ 'view.form.fields.asset.browse-server'|trans }}</span></button>
+			<button type="button" data-href="{{ path('ems_core_uploaded_file_wysiwyg_modal') }}"  class="btn btn-small btn-default file-browse-server" data-testid="file-btn-browser-serer-{{ form.vars.name }}"><i class="fa fa-folder-open-o"></i><span class="sr-only">{{ 'message.pick_file_from_server'|trans }}</span></button>
 			<div class="btn-group">
 				<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}" data-testid="file-btn-info-{{ form.vars.name }}">
 				  	<i class="fa fa-info"></i>
-					{{ 'view.form.fields.asset.info-modal-button'|trans }}
+					{{ 'action.info'|trans }}
 				</button>
-				<a href="{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}{{ ems_asset_path(form.vars.value) }}{% endif %}" class="btn btn-small btn-default view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{ 'view.form.fields.asset.view-button'|trans }}" data-testid="file-btn-view-{{ form.vars.name }}"><i class="fa fa-eye">&nbsp;{{ 'view.form.fields.asset.view-button'|trans }}</i></a>
-				<a href="#" class="btn btn-small btn-default clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{ 'view.form.fields.asset.clear-button'|trans }}" data-testid="file-btn-clear-{{ form.vars.name }}"><i class="fa fa-remove"></i>&nbsp;{{ 'view.form.fields.asset.clear-button'|trans }}</a>
+				<a href="{% if form.vars.value.sha1 is defined and form.vars.value.sha1 %}{{ ems_asset_path(form.vars.value) }}{% endif %}" class="btn btn-small btn-default view-asset-button {% if not form.children.sha1.vars.value %}disabled{% endif %}" target="_blank" alt="{{ 'action.view'|trans }}" data-testid="file-btn-view-{{ form.vars.name }}"><i class="fa fa-eye">&nbsp;{{ 'action.view'|trans }}</i></a>
+				<a href="#" class="btn btn-small btn-default clear-asset-button  {% if not form.children.sha1.vars.value %}disabled{% endif %}" alt="{{ 'action.clear'|trans }}" data-testid="file-btn-clear-{{ form.vars.name }}"><i class="fa fa-remove"></i>&nbsp;{{ 'action.clear'|trans }}</a>
 			</div>
 		{% endif %}
 	</div>
@@ -1215,7 +1215,7 @@
 			<input type="file" id="upload-{{ form.vars.id }}" class="file-uploader-input" data-testid="file-btn-upload-file-{{ form.vars.name }}">
 			<label class="btn btn-default" for="upload-{{ form.vars.id }}"><i class="fa fa-upload"></i> Upload file</label>
 		</div>
-		<button type="button" data-href="{{ path('ems_core_uploaded_file_wysiwyg_modal') }}" class="btn btn-small btn-default file-browse-server" data-testid="file-btn-browser-serer-{{ form.vars.name }}"><i class="fa fa-folder-open-o"></i><span class="sr-only">{{ 'view.form.fields.asset.browse-server'|trans }}</span></button>
+		<button type="button" data-href="{{ path('ems_core_uploaded_file_wysiwyg_modal') }}" class="btn btn-small btn-default file-browse-server" data-testid="file-btn-browser-serer-{{ form.vars.name }}"><i class="fa fa-folder-open-o"></i><span class="sr-only">{{ 'message.pick_file_from_server'|trans }}</span></button>
 		<div class="btn-group">
 			<button type="button" class="btn btn-small btn-default asset-details" data-toggle="modal" data-target="#asst-details-{{ form.vars.id }}" data-testid="file-btn-info-{{ form.vars.name }}">
               <i class="fa fa-info"></i>
@@ -1449,7 +1449,7 @@
 
 {% block textarea_widget %}
     {{ parent() }}
-    <span class="pull-right text-counter" data-counter-label="{{ 'field_type.textarea.counter'|trans|e('html_attr') }}"></span>
+    <span class="pull-right text-counter" data-counter-label="{{ 'key.textarea_counter'|trans|e('html_attr') }}"></span>
 {% endblock textarea_widget %}
 
 {% block collection_entry_with_grouped_remove %}

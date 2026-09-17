@@ -3,9 +3,9 @@
 
 {% block title %}
     {%- if type == 'publish' -%}
-        {{- 'release.revision.index.publish'|trans -}}
+        {{- 'title.release_revision_list_publish'|trans -}}
     {%- elseif type == 'unpublish' -%}
-        {{- 'release.revision.index.unpublish'|trans -}}
+        {{- 'title.release_revision_list_unpublish'|trans -}}
     {%- endif -%}
 {% endblock %}
 
@@ -13,8 +13,8 @@
 
 {% block breadcrumb %}
 	<ol class="breadcrumb">
-		<li><a href="{{ path('emsco_release_index') }}"><i class="fa fa-cube}"></i> {{ 'release.menu'|trans }}</a></li>
-		<li>{{ 'release.revision.menu'|trans }}</li>
+		<li><a href="{{ path('emsco_release_index') }}"><i class="fa fa-cube}"></i> {{ 'key.releases'|trans }}</a></li>
+		<li>{{ 'key.add_documents'|trans }}</li>
    	</ol>
 {% endblock %}
 

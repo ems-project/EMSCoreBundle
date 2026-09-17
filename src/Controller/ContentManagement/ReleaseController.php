@@ -80,7 +80,7 @@ final class ReleaseController extends AbstractController
         ]);
 
         $revisionsForm = $this->createForm(TableType::class, $revisionsTable, [
-            'title_label' => t('release.revision.view.title', [], 'emsco-core'),
+            'title_label' => t('title.release_documents', [], 'emsco-core'),
         ]);
 
         $revisionsForm->handleRequest($request);
@@ -118,7 +118,7 @@ final class ReleaseController extends AbstractController
         ]);
 
         $form = $this->createForm(TableType::class, $table, [
-            'title_label' => t('release.revision.view.title', [], 'emsco-core'),
+            'title_label' => t('title.release_documents', [], 'emsco-core'),
         ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

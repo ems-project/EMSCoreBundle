@@ -3,9 +3,9 @@
 
 {% block title %}
     {% if revision.ouuid %}
-        {{ 'views.data.edit-revision-html.title'|trans({'{contentType}': revision.contentType.singularName, '{revision}': revision|emsco_display }) }}
+        {{ 'title.edit_revision_content_type'|trans({'{contentType}': revision.contentType.singularName, '{revision}': revision|emsco_display }) }}
     {% else %}
-        {{ 'views.data.edit-revision-html.new-draft-title'|trans({'{contentType}': revision.contentType.singularName }) }}
+        {{ 'title.new_draft'|trans({'{contentType}': revision.contentType.singularName }) }}
     {% endif %}
 {% endblock %}
 

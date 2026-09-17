@@ -54,11 +54,11 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
         $table->addColumnDefinition(new DatetimeTableColumn(t('field.date_modified', [], 'emsco-core'), 'draftSaveDate'));
         $table->addColumnDefinition(new UserTableColumn(t('field.user_modified', [], 'emsco-core'), 'autoSaveBy'));
 
-        $lockUntil = new DatetimeTableColumn(t('revision.field.locked', [], 'emsco-core'), 'lockUntil');
+        $lockUntil = new DatetimeTableColumn(t('field.locked_until', [], 'emsco-core'), 'lockUntil');
         $condition = new DateInFuture('lockUntil');
         $lockUntil->addCondition($condition);
         $table->addColumnDefinition($lockUntil);
-        $lockBy = new UserTableColumn(t('revision.field.locked_by', [], 'emsco-core'), 'lockBy');
+        $lockBy = new UserTableColumn(t('field.locked_by', [], 'emsco-core'), 'lockBy');
         $lockBy->addCondition($condition);
 
         $table->addColumnDefinition($lockBy);
@@ -67,7 +67,7 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
 
         $table->addDynamicItemGetAction(
             route: Routes::EDIT_REVISION,
-            labelKey: t('revision.draft.edit', [], 'emsco-core'),
+            labelKey: t('action.edit_draft', [], 'emsco-core'),
             icon: 'pencil',
             routeParameters: ['revisionId' => 'id'],
             attributes: ['data-testid' => 'revision-draft-id'],
@@ -75,7 +75,7 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
 
         $table->addDynamicItemGetAction(
             route: Routes::VIEW_REVISIONS,
-            labelKey: t('revision.draft.view', [], 'emsco-core'),
+            labelKey: t('action.view_draft_in_progress', [], 'emsco-core'),
             icon: '',
             routeParameters: ['type' => 'contentType.name', 'ouuid' => 'ouuid',
             ],
@@ -84,7 +84,7 @@ class RevisionDraftsDataTableType extends AbstractTableType implements QueryServ
 
         $table->addDynamicItemPostAction(
             route: Routes::DISCARD_DRAFT,
-            labelKey: t('revision.draft.delete', [], 'emsco-core'),
+            labelKey: t('message.delete_this_draft', [], 'emsco-core'),
             icon: 'trash',
             messageKey: t('type.delete_confirm', ['type' => 'draft'], 'emsco-core'),
             routeParameters: ['revisionId' => 'id'],

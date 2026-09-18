@@ -1,8 +1,8 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-core' %}
 
-{% block title %}{% if response %}{{ 'views.elasticsearch.search.title'|trans({'total': response.formattedTotal|default('not-applicable'|trans) }) }}{% else %}{{ 'views.elasticsearch.search.error_title'|trans }}{%  endif %}{% endblock %}
-{% block pagetitle %}{{ 'views.elasticsearch.search.pagetitle'|trans }}{% endblock %}
-{% block subtitle %}<small><span class=" badge">{% if response %}{{ 'views.elasticsearch.search.subtitle'|trans({'total': response.formattedTotal|default('not-applicable'|trans) }) }}{% endif %}</span></small>{% endblock %}
+{% block title %}{% if response %}{{ 'title.search_engine_results'|trans({'total': response.formattedTotal|default('key.not-applicable'|trans) }) }}{% else %}{{ 'title.search_result_error'|trans }}{%  endif %}{% endblock %}
+{% block pagetitle %}{{ 'key.search'|trans }}{% endblock %}
+{% block subtitle %}<small><span class=" badge">{% if response %}{{ 'field.total'|trans({'total': response.formattedTotal|default('key.not-applicable'|trans) }) }}{% endif %}</span></small>{% endblock %}
 
 
 {% block body %}
@@ -103,7 +103,7 @@
 		{% if sortOptions|length %}
     		<div class="box">
     			<div class="box-header">
-    				<h3 class="box-title"><i class="fa fa-sort-alpha-asc"></i> {{ 'views.elasticsearch.search.sort-options'|trans }}</h3>
+    				<h3 class="box-title"><i class="fa fa-sort-alpha-asc"></i> {{ 'key.sort_options_lowercase'|trans }}</h3>
     			</div>
     			<div class="box-body">
     					{% for option in sortOptions %}
@@ -247,7 +247,7 @@
 						<div class="btn-group">
                             {% include '@EMSCore/elements/get-button.html.twig' with {
 								'url':  path('search.publish', app.request.query.all ),
-								'label': 'Publish '~response.formattedTotal|default('not-applicable'|trans)~' '~form.contentTypes.vars.value.0|emsco_get_content_type.pluralName,
+								'label': 'Publish '~response.formattedTotal|default('key.not-applicable'|trans)~' '~form.contentTypes.vars.value.0|emsco_get_content_type.pluralName,
 								'icon': 'glyphicon glyphicon-open'
 							}%}
 						</div>

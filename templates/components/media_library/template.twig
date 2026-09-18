@@ -126,73 +126,73 @@
 
 {%- block media_lib_button_home -%}
     <button class="ems-btn btn-home" data-ems-icon="home" data-testid="media-lib-button-home">
-        {{- buttonLabel|default('media_library.home'|trans) -}}
+        {{- buttonLabel|default('key.home'|trans) -}}
     </button>
 {%- endblock media_lib_button_home -%}
 
 {%- block media_lib_button_folder_add -%}
     <button class="ems-btn btn-folder-add" data-ems-icon="folder" data-testid="media-lib-button-folder-add">
-        {{- buttonLabel|default('media_library.folder.add.title'|trans) -}}
+        {{- buttonLabel|default('title.add_folder'|trans) -}}
     </button>
 {%- endblock media_lib_button_folder_add -%}
 
 {%- block media_lib_button_folder_delete -%}
     <button class="ems-btn btn-folder-delete" data-ems-icon="folder-delete" data-id="{{- mediaFolder.id -}}" data-modal-size="md" data-testid="media-lib-button-folder-delete">
-        {{- buttonLabel|default('media_library.folder.delete.title'|trans) -}}
+        {{- buttonLabel|default('title.delete_folder'|trans) -}}
     </button>
 {%- endblock media_lib_button_folder_delete -%}
 
 {%- block media_lib_button_folder_rename -%}
     <button class="ems-btn btn-folder-rename" data-ems-icon="folder-rename" data-id="{{- mediaFolder.id -}}" data-testid="media-lib-button-folder-rename">
-        {{- buttonLabel|default('media_library.folder.rename.title'|trans) -}}
+        {{- buttonLabel|default('title.rename_folder'|trans) -}}
     </button>
 {%- endblock media_lib_button_folder_rename -%}
 
 {%- block media_lib_button_folder_move -%}
     <button class="ems-btn btn-folder-move" data-ems-icon="folder-move" data-id="{{- mediaFolder.id -}}" data-modal-size="md" data-testid="media-lib-button-folder-move">
-        {{- buttonLabel|default('media_library.folder.move.title'|trans) -}}
+        {{- buttonLabel|default('title.move_folder'|trans) -}}
     </button>
 {%- endblock media_lib_button_folder_move -%}
 
 {%- block media_lib_button_file_rename -%}
     <button class="ems-btn btn-file-rename" data-ems-icon="file-rename" data-id="{{- mediaFile.id -}}" data-testid="media-lib-button-file-rename">
-        {{- buttonLabel|default('media_library.file.rename.title'|trans) -}}
+        {{- buttonLabel|default('title.rename_file'|trans) -}}
     </button>
 {%- endblock media_lib_button_file_rename -%}
 
 {%- block media_lib_button_file_delete -%}
     <button class="ems-btn btn-file-delete" data-ems-icon="file-delete" data-id="{{- mediaFile.id -}}" data-testid="media-lib-button-file-delete">
-        {{- buttonLabel|default('media_library.file.delete.title'|trans) -}}
+        {{- buttonLabel|default('title.delete_file'|trans) -}}
     </button>
 {%- endblock media_lib_button_file_delete -%}
 
 {%- block media_lib_button_file_view -%}
     <button class="ems-btn btn-file-view" data-ems-icon="file-view" data-id="{{- mediaFile.id -}}" data-testid="media-lib-button-file-view">
-        {{- buttonLabel|default('media_library.file.view.title'|trans) -}}
+        {{- buttonLabel|default('title.view_file'|trans) -}}
     </button>
 {%- endblock media_lib_button_file_view -%}
 
 {%- block media_lib_button_file_revision -%}
     <a class="ems-btn" href="{{ path('emsco_view_revisions', { 'type': mediaFile.document.contentType, 'ouuid': mediaFile.id  }) }}" data-ems-icon="revision" data-testid="media-lib-button-file-revision">
-        {{- buttonLabel|default('media_library.file.revision.title'|trans) -}}
+        {{- buttonLabel|default('field.revision'|trans) -}}
     </a>
 {%- endblock media_lib_button_file_revision -%}
 
 {%- block media_lib_button_files_delete -%}
     <button class="ems-btn btn-files-delete" data-ems-icon="file-delete" data-modal-size="md" data-testid="media-lib-button-files-delete">
-        {{- buttonLabel|default('media_library.files.delete.title'|trans({ count: selectionFiles })) -}}
+        {{- buttonLabel|default('title.delete_files_count'|trans({ count: selectionFiles })) -}}
     </button>
 {%- endblock media_lib_button_files_delete -%}
 
 {%- block media_lib_button_files_move -%}
     <button class="ems-btn btn-files-move" data-ems-icon="file-move" data-modal-size="md" data-testid="media-lib-button-files-move">
-        {{- buttonLabel|default('media_library.files.move.title'|trans({ count: selectionFiles })) -}}
+        {{- buttonLabel|default('title.move_files'|trans({ count: selectionFiles })) -}}
     </button>
 {%- endblock media_lib_button_files_move -%}
 
 {%- block media_lib_button_upload -%}
     <label class="ems-btn btn-file-upload" data-ems-icon="upload" for="media-lib-upload-{{- id -}}">
-        {{- buttonLabel|default('media_library.file.add.title'|trans) -}}
+        {{- buttonLabel|default('action.upload'|trans) -}}
     </label>
 {%- endblock media_lib_button_upload -%}
 
@@ -242,37 +242,37 @@
     {%- set type = type|default(false) -%}
     {%- if type == 'delete_files' -%}
         <button id="ajax-modal-submit" class="ems-btn" data-ems-icon="delete" data-variant="danger" data-testid="media-lib-modal-submit">
-            {{- 'media_library.files.delete.submit'|trans -}}
+            {{- 'action.confirm'|trans -}}
         </button>
     {%- elseif type == 'delete_folder' -%}
         <button id="ajax-modal-submit" class="ems-btn" data-ems-icon="delete" data-variant="danger" data-testid="media-lib-modal-submit">
-            {{- 'media_library.folder.delete.submit'|trans -}}
+            {{- 'action.confirm'|trans -}}
         </button>
     {%- elseif type == 'move_files' -%}
         <button id="ajax-modal-submit" class="ems-btn" data-ems-icon="file-move" data-variant="primary" data-testid="media-lib-modal-submit">
-            {{- 'media_library.files.move.submit'|trans -}}
+            {{- 'action.move'|trans -}}
         </button>
     {%- elseif type == 'move_folder' -%}
         <button id="ajax-modal-submit" class="ems-btn" data-ems-icon="folder-move" data-variant="primary" data-testid="media-lib-modal-submit">
-            {{- 'media_library.folder.move.submit'|trans -}}
+            {{- 'action.move'|trans -}}
         </button>
     {%- elseif type == 'rename_file' -%}
         <button id="ajax-modal-submit" class="ems-btn" data-ems-icon="file-rename" data-variant="primary" data-testid="media-lib-modal-submit">
-            {{- 'media_library.folder.rename.submit'|trans -}}
+            {{- 'action.rename'|trans -}}
         </button>
     {%- elseif type == 'rename_folder' -%}
         <button id="ajax-modal-submit" class="ems-btn" data-ems-icon="folder-rename" data-variant="primary" data-testid="media-lib-modal-submit">
-            {{- 'media_library.folder.rename.submit'|trans -}}
+            {{- 'action.rename'|trans -}}
         </button>
     {%- else -%}
         {% if form is defined %}
             <button id="ajax-modal-submit" class="ems-btn" data-variant="primary" data-testid="media-lib-modal-submit">
                 <i class="{{ html_classes('fa', submitIcon|default('fa-save')) }}"></i>
-                {{ submitLabel|default('media_library.submit'|trans) }}
+                {{ submitLabel|default('action.save'|trans) }}
             </button>
         {% endif %}
     {%- endif -%}
-    <button type="button" class="ems-btn" data-dismiss="modal" data-testid="media-lib-modal-cancel">{{ 'media_library.close'|trans }}</button>
+    <button type="button" class="ems-btn" data-dismiss="modal" data-testid="media-lib-modal-cancel">{{ 'action.close'|trans }}</button>
 {%- endblock media_lib_modal_footer -%}
 
 {% block media_lib_modal_preview %}
@@ -286,8 +286,8 @@
             {% else %}
                 <object data="{{ url }}" type="{{ mediaFile.fileMimetype }}">
                     <div class="alert alert-info" role="alert">
-                        {{ fallback|default('media_library.file.view.fallback'|trans) }}
-                        <a href="{{ url }}">{{ fallback|default('media_library.file.view.download'|trans) }}</a>
+                        {{ fallback|default('message.file_preview_fallback'|trans) }}
+                        <a href="{{ url }}">{{ fallback|default('message.download_file'|trans) }}</a>
                     </div>
                 </object>
             {% endif %}
@@ -307,9 +307,9 @@
 
 {% block media_lib_modal_preview_footer %}
     <button class="ems-btn btn-preview-prev" data-ems-icon="chevrons-left" style="display: none;">
-        {{ 'media_library.file.view.previous'|trans }}
+        {{ 'action.previous'|trans }}
     </button>
     <button class="ems-btn btn-preview-next" data-ems-icon="chevrons-right" data-ems-icon-position="end" style="display: none;">
-        {{ 'media_library.file.view.next'|trans }}
+        {{ 'action.next'|trans }}
     </button>
 {% endblock media_lib_modal_preview_footer %}

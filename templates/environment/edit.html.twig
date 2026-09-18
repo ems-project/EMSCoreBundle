@@ -1,12 +1,12 @@
 {% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-core' %}
 
-{% block title %}{{ 'environment.edit.title'|trans({ 'name': environment.name }) }}{% endblock %}
+{% block title %}{{ 'title.edit_environment'|trans({ 'name': environment.name }) }}{% endblock %}
 {% block pagetitle %}{{ block('title') }}{% endblock %}
 {% block breadcrumb %}
 	<ol class="breadcrumb">
-		<li><i class="fa fa-database"></i> {{ 'environment.plural'|trans }}</li>
-		<li><a href={{ path('emsco_admin_environment_index') }}>{{ 'environment.index.title'|trans }}</a></li>
-   		<li class="active">{{ 'environment.edit.short_title'|trans }}</li>
+		<li><i class="fa fa-database"></i> {{ 'field.environments'|trans }}</li>
+		<li><a href={{ path('emsco_admin_environment_index') }}>{{ 'title.list_environments'|trans }}</a></li>
+   		<li class="active">{{ 'title.edit_environment_short'|trans }}</li>
    	</ol>
 {% endblock %}
 

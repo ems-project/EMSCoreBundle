@@ -248,7 +248,7 @@ class ContentTypeController extends AbstractController
                 TableType::REORDER_ACTION => $this->contentTypeService->reorderByIds(
                     ...TableType::getReorderedKeys($form->getName(), $request)
                 ),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
+                default => $this->logger->messageError(t('message.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::ADMIN_CONTENT_TYPE_INDEX);
@@ -292,7 +292,7 @@ class ContentTypeController extends AbstractController
         $this->contentTypeService->update($contentType);
 
         $this->logger->messageNotice(t(
-            'log.notice.content_type_referenced',
+            'message.content_type_referenced',
             ['contentType' => $contentType->getSingularName(), 'environment' => $environment->getLabel()],
             'emsco-core'
         ));

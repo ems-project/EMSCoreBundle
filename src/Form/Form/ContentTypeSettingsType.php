@@ -27,19 +27,19 @@ class ContentTypeSettingsType extends AbstractType
     {
         $builder
             ->add(ContentTypeSettings::HIDE_REVISION_SIDEBAR, CheckboxType::class, [
-                'label' => t('content-type.field.hide_revision_sidebar.label', [], 'emsco-core'),
+                'label' => t('action.hide_revision_sidebar', [], 'emsco-core'),
                 'required' => false,
             ])
             ->add(ContentTypeSettings::TASKS_ENABLED, CheckboxType::class, [
-                'label' => t('content-type.field.tasks_enabled.label', [], 'emsco-core'),
+                'label' => t('option.enabled', [], 'emsco-core'),
                 'required' => false,
             ])
             ->add(ContentTypeSettings::RECOMPUTE_ON_PUBLISH, CheckboxType::class, [
-                'label' => t('content-type.field.recompute_on_publish.label', [], 'emsco-core'),
+                'label' => t('option.recompute_on_publish', [], 'emsco-core'),
                 'required' => false,
             ])
             ->add(ContentTypeSettings::TASKS_TITLES, CollectionType::class, [
-                'label' => t('content-type.field.tasks_titles.label', [], 'emsco-core'),
+                'label' => t('field.titles', [], 'emsco-core'),
                 'entry_type' => TextType::class,
                 'attr' => [
                     'class' => 'a2lix_lib_sf_collection',
@@ -56,7 +56,7 @@ class ContentTypeSettingsType extends AbstractType
                 'block_prefix' => 'tags',
             ])
             ->add(ContentTypeSettings::TASKS_HELPTEXTS, CollectionType::class, [
-                'label' => t('content-type.field.tasks_helptexts.label', [], 'emsco-core'),
+                'label' => t('field.helptexts', [], 'emsco-core'),
                 'entry_type' => TextType::class,
                 'attr' => [
                     'class' => 'a2lix_lib_sf_collection',

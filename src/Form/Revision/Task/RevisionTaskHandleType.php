@@ -45,7 +45,7 @@ class RevisionTaskHandleType extends AbstractType
                     'constraints' => $task->isRequester($user) ? [] : [new NotBlank()],
                 ])
                 ->add('send', ButtonType::class, [
-                    'label' => t('task.validation.send', [], 'emsco-core'),
+                    'label' => t('action.send', [], 'emsco-core'),
                 ]);
         }
 
@@ -57,10 +57,10 @@ class RevisionTaskHandleType extends AbstractType
                     'constraints' => 'reject' === $options['handle'] ? [new NotBlank()] : [],
                 ])
                 ->add('approve', ButtonType::class, [
-                    'label' => t('task.validation.approve', [], 'emsco-core'),
+                    'label' => t('action.approve', [], 'emsco-core'),
                 ])
                 ->add('reject', ButtonType::class, [
-                    'label' => t('task.validation.reject', [], 'emsco-core'),
+                    'label' => t('action.reject', [], 'emsco-core'),
                 ]);
         }
     }

@@ -52,7 +52,7 @@ class TrashController extends AbstractController
                 RevisionTrashDataTableType::ACTION_PUT_BACK => $this->putBackSelection($contentType, ...$table->getSelected()),
                 RevisionTrashDataTableType::ACTION_EMPTY_TRASH => $this->emptyTrashSelection($contentType, ...$table->getSelected()),
                 default => (function () use ($contentType) {
-                    $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core'));
+                    $this->logger->messageError(t('message.invalid_table_action', [], 'emsco-core'));
 
                     return $this->redirectToRoute(Routes::DATA_TRASH, ['contentType' => $contentType->getId()]);
                 })(),
@@ -62,7 +62,7 @@ class TrashController extends AbstractController
         return new Page([
             'datatable' => ['form' => $form->createView(), 'table_id' => 'trash'],
             'icon' => 'fa fa-trash',
-            'title' => t('revision.trash.title', ['pluralName' => $contentType->getPluralName()], 'emsco-core'),
+            'title' => t('title.items_in_trash', ['pluralName' => $contentType->getPluralName()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'trash'], 'emsco-core'),
             'breadcrumb' => $this->breadcrumb($contentType),
         ]);

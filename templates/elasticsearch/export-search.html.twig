@@ -1,10 +1,10 @@
 {% extends '@EMSCore/base.html.twig' %}
 {% trans_default_domain 'emsco-core' %}
 
-{% block title %}{{ 'views.elasticsearch.export-search.title'|trans }}{% endblock %}
+{% block title %}{{ 'key.export_documents'|trans }}{% endblock %}
 
 {% block pagetitle %}
-    {{ 'views.elasticsearch.export-search.title'|trans }}
+    {{ 'key.export_documents'|trans }}
 {% endblock %}
 
 {% block body %}
@@ -14,7 +14,7 @@
                 <div class="box-header with-border">
                     <h3>
                         <i class="glyphicon glyphicon-export"></i>
-                        {{ 'views.elasticsearch.export-search.title'|trans }}
+                        {{ 'key.export_documents'|trans }}
                     </h3>
                 </div>
                 {% for exportForm in forms %}

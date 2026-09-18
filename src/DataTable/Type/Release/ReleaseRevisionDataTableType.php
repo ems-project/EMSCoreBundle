@@ -37,21 +37,21 @@ class ReleaseRevisionDataTableType extends AbstractEntityTableType
         $release = $table->getContext();
 
         $table->setMassAction(true);
-        $table->addColumnDefinition(new TemplateBlockTableColumn(t('release.revision.index.column.CT', [], 'emsco-core'), 'contentType', \sprintf('@%s/release/columns/release-revisions.html.twig', $this->templateNamespace)));
-        $table->addColumnDefinition(new TemplateBlockTableColumn(t('release.revision.index.column.document', [], 'emsco-core'), 'label', \sprintf('@%s/release/columns/release-revisions.html.twig', $this->templateNamespace)));
-        $table->addColumnDefinition(new TemplateBlockTableColumn(t('release.revision.index.column.revision', [], 'emsco-core'), 'revision', \sprintf('@%s/release/columns/release-revisions.html.twig', $this->templateNamespace)));
-        $table->addColumnDefinition(new TemplateBlockTableColumn(t('release.revision.index.column.action', [], 'emsco-core'), 'action', \sprintf('@%s/release/columns/release-revisions.html.twig', $this->templateNamespace)));
+        $table->addColumnDefinition(new TemplateBlockTableColumn(t('field.content_type', [], 'emsco-core'), 'contentType', \sprintf('@%s/release/columns/release-revisions.html.twig', $this->templateNamespace)));
+        $table->addColumnDefinition(new TemplateBlockTableColumn(t('key.document', [], 'emsco-core'), 'label', \sprintf('@%s/release/columns/release-revisions.html.twig', $this->templateNamespace)));
+        $table->addColumnDefinition(new TemplateBlockTableColumn(t('field.revision', [], 'emsco-core'), 'revision', \sprintf('@%s/release/columns/release-revisions.html.twig', $this->templateNamespace)));
+        $table->addColumnDefinition(new TemplateBlockTableColumn(t('key.action', [], 'emsco-core'), 'action', \sprintf('@%s/release/columns/release-revisions.html.twig', $this->templateNamespace)));
 
         switch ($release->getStatus()) {
             case Release::WIP_STATUS:
-                $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', t('release.revision.actions.remove', [], 'emsco-core'), t('release.revision.actions.remove_confirm', [], 'emsco-core'));
+                $table->addTableAction(TableAbstract::REMOVE_ACTION, 'fa fa-minus', t('action.remove_documents', [], 'emsco-core'), t('action.confirmation', [], 'emsco-core'));
                 break;
             case Release::APPLIED_STATUS:
-                $table->addColumnDefinition(new TemplateBlockTableColumn(t('release.revision.index.column.still_in_target', ['target' => $release->getEnvironmentTarget()->getLabel()], 'emsco-core'), 'stil_in_target', \sprintf('@%s/release/columns/release-revisions.html.twig', $this->templateNamespace)));
-                $table->addColumnDefinition(new TemplateBlockTableColumn(t('release.revision.index.column.previous', [], 'emsco-core'), 'previous', \sprintf('@%s/release/columns/release-revisions.html.twig', $this->templateNamespace)));
+                $table->addColumnDefinition(new TemplateBlockTableColumn(t('message.still_in_target', ['target' => $release->getEnvironmentTarget()->getLabel()], 'emsco-core'), 'stil_in_target', \sprintf('@%s/release/columns/release-revisions.html.twig', $this->templateNamespace)));
+                $table->addColumnDefinition(new TemplateBlockTableColumn(t('key.previous_revision', [], 'emsco-core'), 'previous', \sprintf('@%s/release/columns/release-revisions.html.twig', $this->templateNamespace)));
                 $table->addDynamicItemGetAction(
                     route: Routes::VIEW_REVISIONS,
-                    labelKey: t('release.revision.index.column.compare', [], 'emsco-core'),
+                    labelKey: t('field.compare', [], 'emsco-core'),
                     icon: 'compress',
                     routeParameters: ['type' => 'contentType', 'ouuid' => 'revisionOuuid', 'revisionId' => 'revision.id', 'compareId' => 'rollbackRevision.id'],
                     attributes: ['data-testid' => 'release-revision-compare']
@@ -59,8 +59,8 @@ class ReleaseRevisionDataTableType extends AbstractEntityTableType
                 $table->addTableAction(
                     name: self::ACTION_ROLLBACK,
                     icon: 'fa fa-rotate-left',
-                    labelKey: t('release.revision.table.rollback.action', [], 'emsco-core'),
-                    confirmationKey: t('release.revision.table.rollback.confirm', [], 'emsco-core')
+                    labelKey: t('key.rollback', [], 'emsco-core'),
+                    confirmationKey: t('action.confirmation', [], 'emsco-core')
                 );
                 break;
         }

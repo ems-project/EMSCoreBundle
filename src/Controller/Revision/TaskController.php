@@ -114,7 +114,7 @@ final class TaskController extends AbstractController
                 $task = $this->taskManager->taskCreate($taskDTO, $revision);
 
                 return $ajaxModal
-                    ->addMessageSuccess(t('task.create.success', ['title' => $task->getTitle()], 'emsco-core'))
+                    ->addMessageSuccess(t('message.task_created', ['title' => $task->getTitle()], 'emsco-core'))
                     ->setBodyHtml('')
                     ->setFooter('modalFooterClose')
                     ->getResponse();
@@ -155,8 +155,8 @@ final class TaskController extends AbstractController
                 $this->taskManager->taskUpdate($task, $taskDTO, $revision);
 
                 return $ajaxModal
-                    ->setTitle(t('task.update.title', ['title' => $task->getTitle()], 'emsco-core'))
-                    ->addMessageSuccess(t('task.update.success', ['title' => $task->getTitle()], 'emsco-core'))
+                    ->setTitle(t('title.edit_task', ['title' => $task->getTitle()], 'emsco-core'))
+                    ->addMessageSuccess(t('message.task_updated', ['title' => $task->getTitle()], 'emsco-core'))
                     ->setBody('modalTaskBody', ['form' => $form->createView(), 'task' => $task])
                     ->getResponse();
             }
@@ -178,7 +178,7 @@ final class TaskController extends AbstractController
                 throw $this->createAccessDeniedException();
             }
 
-            $ajaxModal = $this->getAjaxModal()->setTitle(t('task.delete.title', ['title' => $task->getTitle()], 'emsco-core'));
+            $ajaxModal = $this->getAjaxModal()->setTitle(t('title.deleted_task', ['title' => $task->getTitle()], 'emsco-core'));
 
             $form = $this->formFactory->create();
             $form->add('comment', TextareaType::class, [
@@ -191,7 +191,7 @@ final class TaskController extends AbstractController
                 $this->taskManager->taskDelete($task, $revision, $form->getData()['comment']);
 
                 return $ajaxModal
-                    ->addMessageSuccess(t('task.delete.success', ['title' => $task->getTitle()], 'emsco-core'))
+                    ->addMessageSuccess(t('message.task_deleted', ['title' => $task->getTitle()], 'emsco-core'))
                     ->setBodyHtml('')
                     ->setFooter('modalFooterClose')
                     ->getResponse();

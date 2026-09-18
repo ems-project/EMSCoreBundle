@@ -175,7 +175,7 @@ class UserManager
         $mailTemplate = $this->mailerService->makeMailTemplate('@'.$this->templateNamespace.self::MAIL_TEMPLATE);
         $mailTemplate
             ->addTo($user->getEmail())
-            ->setSubject(t('user.resetting.email.subject', ['username' => $user->getUsername()], 'emsco-core'))
+            ->setSubject(t('key.reset_password_subject', ['username' => $user->getUsername()], 'emsco-core'))
             ->setBodyBlock('resetPassword', ['user' => $user])
         ;
 

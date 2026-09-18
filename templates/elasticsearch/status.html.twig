@@ -32,17 +32,17 @@
                     <ul class="list-group">
                         <li class="list-group-item">Cluster name<span
                                 class=" badge bg-{{ status }}">{{ cluster.cluster_name }}</span></li>
-                        <li class="list-group-item">{{ 'views.elasticsearch.cluster.cluster-uuid'|trans }}<span
+                        <li class="list-group-item">{{ 'key.cluster_uuid'|trans }}<span
                             class=" badge bg-{{ status }}">{{ cluster.cluster_uuid }}</span></li>
-                        <li class="list-group-item">{{ 'views.elasticsearch.cluster.tagline'|trans }}<span
+                        <li class="list-group-item">{{ 'key.tagline'|trans }}<span
                             class=" badge bg-{{ status }}">{{ cluster.tagline }}</span></li>
-                        <li class="list-group-item">{{ 'views.elasticsearch.cluster.node-name'|trans }}<span
+                        <li class="list-group-item">{{ 'field.node_name'|trans }}<span
                             class=" badge bg-{{ status }}">{{ cluster.name }}</span></li>
-                        <li class="list-group-item">{{ 'views.elasticsearch.cluster.version'|trans }}<span
+                        <li class="list-group-item">{{ 'key.version'|trans }}<span
                             class=" badge bg-{{ status }}">{{ cluster.version.number }}</span></li>
-                        <li class="list-group-item">{{ 'views.elasticsearch.cluster.lucene-version'|trans }}<span
+                        <li class="list-group-item">{{ 'key.lucene_version'|trans }}<span
                             class=" badge bg-{{ status }}">{{ cluster.version.lucene_version }}</span></li>
-                        <li class="list-group-item">{{ 'views.elasticsearch.cluster.build-date'|trans }}<span
+                        <li class="list-group-item">{{ 'field.date_build'|trans }}<span
                             class=" badge bg-{{ status }}">{{ cluster.version.build_date|split('.')|first|date(date_time_format) }}</span></li>
                         <li class="list-group-item">Number of nodes <span
                             class=" badge bg-{{ status }}">{{ cluster.number_of_nodes }}</span></li>
@@ -101,13 +101,13 @@
                     <ul class="list-group">
                         {% if certificate.bits|default %}
                             <li class="list-group-item">
-                                {{ 'views.elasticsearch.cluster.bits'|trans }}
+                                {{ 'key.bits'|trans }}
                                 <span class=" badge bg-green">{{ certificate.bits }}</span>
                             </li>
                         {% endif %}
                         {% if certificate.key|default %}
                             <li class="list-group-item">
-                                <a href="{{ path('ems_get_public_key') }}">{{ 'views.elasticsearch.cluster.public-key'|trans }}</a>
+                                <a href="{{ path('ems_get_public_key') }}">{{ 'key.public_key'|trans }}</a>
                                 <pre>{{ certificate.key }}</pre>
                             </li>
                         {% endif %}
@@ -128,7 +128,7 @@
                 <div class="box-body ">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            {% if asset_extractor.content|default %}{{ asset_extractor.content }}{% else %}{{ 'views.elasticsearch.cluster.tika-server-not-configured'|trans }}{% endif %}
+                            {% if asset_extractor.content|default %}{{ asset_extractor.content }}{% else %}{{ 'message.tika_server_not_configured'|trans }}{% endif %}
                         </li>
                     </ul>
                 </div>
@@ -140,13 +140,13 @@
             <div class="box-header with-border bg-{{ jobs.status }}">
                 <h4 class="box-title">
                     <i class="icon fa fa-terminal fa-2x"></i>
-                    {{ jobs.status|capitalize }}: {{ 'status.jobs.title'|trans }}
+                    {{ jobs.status|capitalize }}: {{ 'key.jobs'|trans }}
                 </h4>
             </div>
             <div class="box-body ">
                 <ul class="list-group">
-                    <li class="list-group-item">{{ 'status.jobs.pending'|trans }}<span class=" badge bg-{{ jobs.pending|default(0) > 0 ? jobs.status : 'green' }}">{{ jobs.pending|default(0) }}</span></li>
-                    <li class="list-group-item">{{ 'status.jobs.failed'|trans }}<span class=" badge bg-{{ jobs.failed|default(0) > 0 ? jobs.status : 'green' }}">{{ jobs.failed|default(0) }}</span></li>
+                    <li class="list-group-item">{{ 'key.pending_jobs'|trans }}<span class=" badge bg-{{ jobs.pending|default(0) > 0 ? jobs.status : 'green' }}">{{ jobs.pending|default(0) }}</span></li>
+                    <li class="list-group-item">{{ 'key.failed_jobs'|trans }}<span class=" badge bg-{{ jobs.failed|default(0) > 0 ? jobs.status : 'green' }}">{{ jobs.failed|default(0) }}</span></li>
                 </ul>
             </div>
         </div>
@@ -156,13 +156,13 @@
             <div class="box-header with-border bg-{{ bus.status }}">
                 <h4 class="box-title">
                     <i class="icon fa fa-bus fa-2x"></i>
-                    {{ bus.status|capitalize }}: {{ 'status.bus.title'|trans }}
+                    {{ bus.status|capitalize }}: {{ 'title.messages_in_bus'|trans }}
                 </h4>
             </div>
             <div class="box-body ">
                 <ul class="list-group">
-                    <li class="list-group-item">{{ 'status.bus.queue'|trans }}<span class=" badge bg-{{ bus.queue|default(0) > 0 ? bus.status : 'green' }}">{{ bus.queue|default(0) }}</span></li>
-                    <li class="list-group-item">{{ 'status.bus.failed'|trans }}<span class=" badge bg-{{ bus.failed|default(0) > 0 ? bus.status : 'green' }}">{{ bus.failed|default(0) }}</span></li>
+                    <li class="list-group-item">{{ 'message.messages_in_queue'|trans }}<span class=" badge bg-{{ bus.queue|default(0) > 0 ? bus.status : 'green' }}">{{ bus.queue|default(0) }}</span></li>
+                    <li class="list-group-item">{{ 'message.messages_in_error'|trans }}<span class=" badge bg-{{ bus.failed|default(0) > 0 ? bus.status : 'green' }}">{{ bus.failed|default(0) }}</span></li>
                 </ul>
             </div>
         </div>

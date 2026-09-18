@@ -54,23 +54,23 @@ class ReleaseRevisionsUnpublishDataTableType extends AbstractTableType implement
         $table->setDefaultOrder(Mapping::FINALIZATION_DATETIME_FIELD, 'desc');
 
         $table->addColumnDefinition(new TemplateBlockTableColumn(
-            label: t('release.revision.index.column.label', [], 'emsco-core'),
+            label: t('field.label', [], 'emsco-core'),
             blockName: 'document_label',
             template: $template
         ));
         $table->addColumnDefinition(new TemplateBlockTableColumn(
-            label: t('release.revision.index.column.CT', [], 'emsco-core'),
+            label: t('field.content_type', [], 'emsco-core'),
             blockName: 'document_content_type',
             template: $template,
             orderField: Mapping::CONTENT_TYPE_FIELD
         ));
         $table->addColumnDefinition(new TemplateBlockTableColumn(
-            label: t('release.revision.index.column.minRevId', [], 'emsco-core'),
+            label: t('field.environment_source', [], 'emsco-core'),
             blockName: 'release_unpublish_source',
             template: $template
         ));
         $table->addColumnDefinition(new TemplateBlockTableColumn(
-            label: t('release.revision.index.column.maxRevId', [], 'emsco-core'),
+            label: t('field.environment_target', [], 'emsco-core'),
             blockName: 'release_unpublish_target',
             template: $template,
             orderField: Mapping::FINALIZATION_DATETIME_FIELD
@@ -79,14 +79,14 @@ class ReleaseRevisionsUnpublishDataTableType extends AbstractTableType implement
         $table->addTableAction(
             name: TableAbstract::ADD_ACTION,
             icon: 'fa fa-minus',
-            labelKey: t('release.actions.add_unpublish', [], 'emsco-core'),
-            confirmationKey: t('release.revision.actions.add_confirm', [], 'emsco-core')
+            labelKey: t('message.release_add_unpublish', [], 'emsco-core'),
+            confirmationKey: t('action.confirmation', [], 'emsco-core')
         );
         $table->addDynamicItemPostAction(
             route: Routes::RELEASE_ADD_REVISION,
-            labelKey: t('release.revision.action.unpublish', [], 'emsco-core'),
+            labelKey: t('message.revision_add_for_unpublish', [], 'emsco-core'),
             icon: 'plus',
-            messageKey: t('release.revision.actions.add_confirm', [], 'emsco-core'),
+            messageKey: t('action.confirmation', [], 'emsco-core'),
             routeParameters: [
                 'release' => (string) $context['release']->getId(),
                 'type' => 'unpublish',

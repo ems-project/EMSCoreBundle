@@ -34,7 +34,7 @@ class ResettingResetType extends AbstractType
                 'second_options' => ['label' => t('key.new_password_confirmation', [], 'emsco-core')],
                 'invalid_message' => t('user.password.mismatch', [], 'validators'),
             ])
-            ->add('submit', SubmitType::class, ['label' => t('user.resetting.title', [], 'emsco-core')])
+            ->add('submit', SubmitType::class, ['label' => t('title.reset_password', [], 'emsco-core')])
         ;
     }
 

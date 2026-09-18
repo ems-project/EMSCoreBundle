@@ -188,7 +188,7 @@ class RevisionService implements RevisionServiceInterface
 
         return match (true) {
             ($object instanceof Revision && null === $object->getOuuid() && $object->getEnvironments()->isEmpty()) => t(
-                'revision.new',
+                'title.new_content_type',
                 ['contentType' => $contentType->getSingularName()],
                 'emsco-core'
             )->trans($this->translator),

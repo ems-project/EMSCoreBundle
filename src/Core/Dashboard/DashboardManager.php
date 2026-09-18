@@ -117,7 +117,7 @@ class DashboardManager implements EntityServiceInterface
 
     public function getSidebarMenu(): Menu
     {
-        $menu = new Menu(t('sidebar-menu.dashboards', [], 'emsco-core'));
+        $menu = new Menu(t('key.dashboards', [], 'emsco-core'));
         foreach ($this->dashboardRepository->getSidebarMenu() as $dashboard) {
             if (!$this->authorizationChecker->isGranted($dashboard->getRole())) {
                 continue;
@@ -140,7 +140,7 @@ class DashboardManager implements EntityServiceInterface
 
     public function getNotificationMenu(): Menu
     {
-        $menu = new Menu(t('notification-menu.dashboards', [], 'emsco-core'));
+        $menu = new Menu(t('key.dashboards', [], 'emsco-core'));
         foreach ($this->dashboardRepository->getNotificationMenu() as $dashboard) {
             if (!$this->authorizationChecker->isGranted($dashboard->getRole())) {
                 continue;

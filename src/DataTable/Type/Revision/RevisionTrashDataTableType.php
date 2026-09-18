@@ -51,7 +51,7 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
 
         $table->addColumnDefinition(new RevisionDisplayTableColumn(t('field.label', [], 'emsco-core'), 'label'))->setOrderField('labelField');
         if ($this->userService->isSuper()) {
-            $table->addColumn(t('revision.field.ouuid', [], 'emsco-core'), 'ouuid');
+            $table->addColumn(t('field.ouuid', [], 'emsco-core'), 'ouuid');
         }
         $table->addColumnDefinition(new UserTableColumn(t('field.user_deleted', [], 'emsco-core'), 'deletedBy'));
         $table->addColumnDefinition(new DatetimeTableColumn(t('field.date_modified', [], 'emsco-core'), 'modified'));
@@ -59,9 +59,9 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
         if ($this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::EDIT))) {
             $table->addDynamicItemPostAction(
                 route: Routes::DATA_TRASH_PUT_BACK,
-                labelKey: t('revision.trash.put_back', [], 'emsco-core'),
+                labelKey: t('action.put_back', [], 'emsco-core'),
                 icon: 'recycle',
-                messageKey: t('revision.trash.put_back_confirm', [], 'emsco-core'),
+                messageKey: t('message.put_back_confirm', [], 'emsco-core'),
                 routeParameters: [
                     'contentType' => $contentType->getId(),
                     'ouuid' => 'ouuid',
@@ -71,7 +71,7 @@ class RevisionTrashDataTableType extends AbstractTableType implements QueryServi
             $table->addTableAction(
                 name: self::ACTION_PUT_BACK,
                 icon: 'fa fa-recycle',
-                labelKey: t('revision.trash.put_back_selected', [], 'emsco-core'),
+                labelKey: t('action.put_back_selected', [], 'emsco-core'),
                 attributes: ['data-testid' => 'revision-trash-action-put-back-all'],
             );
         }

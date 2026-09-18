@@ -122,7 +122,7 @@ class ViewManager implements EntityServiceInterface
     {
         $this->viewRepository->delete($view);
         $this->logger->messageNotice(
-            message: t('log.notice.content_type_view_deleted', ['view' => $view->getLabel()], 'emsco-core'),
+            message: t('message.content_type_view_deleted', ['view' => $view->getLabel()], 'emsco-core'),
             context: [
                 EmsFields::LOG_OPERATION_FIELD => EmsFields::LOG_OPERATION_DELETE,
                 EmsFields::LOG_CONTENTTYPE_FIELD => $view->getContentType()->getId(),

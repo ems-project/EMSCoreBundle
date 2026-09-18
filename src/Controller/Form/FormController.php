@@ -55,7 +55,7 @@ class FormController extends AbstractController
                 TableType::REORDER_ACTION => $this->formManager->reorderByIds(
                     ids: TableType::getReorderedKeys($form->getName(), $request)
                 ),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
+                default => $this->logger->messageError(t('message.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::FORM_ADMIN_INDEX);
@@ -149,10 +149,10 @@ class FormController extends AbstractController
         return $this->render(\sprintf('@%s/admin-form/reorder.html.twig', $this->templateNamespace), [
             'form' => $formType->createView(),
             'entity' => $form,
-            'title' => t('form.reorder.title', ['label' => $form->getLabel()], 'emsco-core'),
+            'title' => t('title.reorder_form_fields', ['label' => $form->getLabel()], 'emsco-core'),
             'subTitle' => t('type.title_sub', ['type' => 'form'], 'emsco-core'),
             'breadcrumb' => $this->breadcrumb()->add(
-                t('form.reorder.title', ['label' => $form->getLabel()], 'emsco-core')
+                t('title.reorder_form_fields', ['label' => $form->getLabel()], 'emsco-core')
             ),
         ]);
     }

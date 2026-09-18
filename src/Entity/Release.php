@@ -65,11 +65,11 @@ class Release implements EntityInterface
     public function getStatusLabel(): TranslatableMessage
     {
         return match ($this->status) {
-            self::WIP_STATUS => t('release.status.wip', [], 'emsco-core'),
-            self::READY_STATUS => t('release.status.ready', [], 'emsco-core'),
-            self::APPLIED_STATUS => t('release.status.applied', [], 'emsco-core'),
-            self::CANCELED_STATUS => t('release.status.canceled', [], 'emsco-core'),
-            self::SCHEDULED_STATUS => t('release.status.scheduled', [], 'emsco-core'),
+            self::WIP_STATUS => t('key.draft', [], 'emsco-core'),
+            self::READY_STATUS => t('key.ready', [], 'emsco-core'),
+            self::APPLIED_STATUS => t('key.applied', [], 'emsco-core'),
+            self::CANCELED_STATUS => t('key.canceled', [], 'emsco-core'),
+            self::SCHEDULED_STATUS => t('key.scheduled', [], 'emsco-core'),
             default => t('key.unknown', [], 'emsco-core')
         };
     }

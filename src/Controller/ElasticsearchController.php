@@ -216,10 +216,10 @@ class ElasticsearchController extends AbstractController
             ]))),
             'xml' => new Response($this->serializer->serialize($context, 'xml'), Response::HTTP_OK, ['Content-Type' => 'application/xml']),
             default => $this->render($htmlTemplate, \array_filter(\array_merge($context, [
-                'title' => t('status.title', [], 'emsco-core'),
-                'subTitle' => t('status.title_sub', [], 'emsco-core'),
+                'title' => t('title.systems_status', [], 'emsco-core'),
+                'subTitle' => t('title.systems_status_tagline', [], 'emsco-core'),
                 'breadcrumb' => new Navigation()->add(
-                    label: t('status.title', [], 'emsco-core'),
+                    label: t('title.systems_status', [], 'emsco-core'),
                     icon: 'fa-solid fa-stethoscope',
                 ),
             ]))),
@@ -671,7 +671,7 @@ class ElasticsearchController extends AbstractController
                 'search' => $search,
                 'sortOptions' => $this->sortOptionService->getAll(),
                 'aggregateOptions' => $this->aggregateOptionService->getAll(),
-                'title' => t('search.title', ['count' => $response?->getTotal() ?? -1], 'emsco-core'),
+                'title' => t('message.search_result_count', ['count' => $response?->getTotal() ?? -1], 'emsco-core'),
                 'subTitle' => t('type.title_sub', ['type' => 'search'], 'emsco-core'),
                 'breadcrumb' => $this->breadcrumb($search),
             ]);

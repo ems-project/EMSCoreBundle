@@ -9,7 +9,7 @@
                 {% if app.user %}
                     <p><a href="{{ path(routes.USER_PROFILE) }}" class="">{{ app.user.displayName }}</a></p>
                 {% else %}
-                    <p>{{ 'views.elements.side-menu-html.anonymous-user'|trans }}</p>
+                    <p>{{ 'key.anonymous_user'|trans }}</p>
                 {% endif %}
                 {%- if status is defined -%}
                     <a href="{{ path('elasticsearch.status') }}" id="status-overview" data-testid="status-overview">
@@ -26,8 +26,8 @@
         {% if app.user %}
             <form action="{{ path('ems_quick_search') }}" method="get" class="sidebar-form">
                 <div class="input-group">
-                    <label for="q" class="sr-only">{{ 'views.elements.side-menu-html.quick-search-label'|trans }}</label>
-                    <input id="q" type="text" name="q" class="form-control" placeholder="{{ 'views.elements.side-menu-html.quick-search-placeholder'|trans }}" data-testid="search-general-query">
+                    <label for="q" class="sr-only">{{ 'field.quick_search'|trans }}</label>
+                    <input id="q" type="text" name="q" class="form-control" placeholder="{{ 'message.search_placeholder'|trans }}" data-testid="search-general-query">
                     <span class="input-group-btn">
                         <button type="submit" name="search" id="search-btn" class="btn btn-flat" data-testid="search-general-submit"><i class="fa fa-search"></i>
                         </button>
@@ -39,7 +39,7 @@
         {% for item in menu|default([]) %}
             {% if item.hasChildren %}
                 <ul class="sidebar-menu" data-widget="tree" data-testid="sidebar-menu-tree">
-                    <li class="header">{{ item.title|trans(item.transParameters) }}</li>
+                    <li class="header">{{ item.title|trans }}</li>
                     {% for menu in item.children %}
                         {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
                     {% endfor %}

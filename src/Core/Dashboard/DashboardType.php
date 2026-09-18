@@ -18,9 +18,9 @@ enum DashboardType: string implements TranslatableInterface
     public function trans(TranslatorInterface $translator, ?string $locale = null): string
     {
         return match ($this) {
-            self::EXPORT => t('ems_core.dashboard.export.label', [], 'emsco-core')->trans($translator),
-            self::REVISION_TASK => t('ems_core.dashboard.revision_task.label', [], 'emsco-core')->trans($translator),
-            self::TEMPLATE => t('ems_core.dashboard.template.label', [], 'emsco-core')->trans($translator)
+            self::EXPORT => t('action.export', [], 'emsco-core')->trans($translator),
+            self::REVISION_TASK => t('key.revision_tasks', [], 'emsco-core')->trans($translator),
+            self::TEMPLATE => t('key.template', [], 'emsco-core')->trans($translator)
         };
     }
 }

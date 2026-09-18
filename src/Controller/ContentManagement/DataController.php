@@ -705,20 +705,20 @@ class DataController extends AbstractController
                         }
 
                         $context
-                            ->buildViolation(t('form.data.add.ouuid.constraint_message', [], 'emsco-core')->getMessage())
+                            ->buildViolation(t('message.ouuid_constraint', [], 'emsco-core')->getMessage())
                             ->setTranslationDomain('emsco-core')
                             ->addViolation();
                     }),
                 ],
-                'label' => t('form.data.add.ouuid.label', [], 'emsco-core'),
+                'label' => t('field.ouuid', [], 'emsco-core'),
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => t('form.data.add.ouuid.placeholder', [], 'emsco-core'),
+                    'placeholder' => t('message.ouuid_placeholder', [], 'emsco-core'),
                 ],
                 'required' => false,
             ])
             ->add('save', SubmitType::class, [
-                'label' => t('form.data.add.save', ['%content_type%' => $contentType->getSingularName()], 'emsco-core'),
+                'label' => t('action.create_draft', ['%content_type%' => $contentType->getSingularName()], 'emsco-core'),
                 'attr' => [
                     'class' => 'btn btn-primary pull-right',
                 ],

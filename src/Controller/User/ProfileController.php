@@ -29,8 +29,8 @@ class ProfileController extends AbstractController
     {
         return $this->render(\sprintf('@%s/user/profile/show.html.twig', $this->templateNamespace), [
             'user' => $this->userManager->getAuthenticatedUser(),
-            'title' => t('profile.title', [], 'emsco-core'),
-            'subTitle' => t('profile.title_sub', [], 'emsco-core'),
+            'title' => t('title.profile', [], 'emsco-core'),
+            'subTitle' => t('title.profile_tagline', [], 'emsco-core'),
             'breadcrumb' => $this->breadcrumb(),
         ]);
     }
@@ -50,7 +50,7 @@ class ProfileController extends AbstractController
 
         return $this->render(\sprintf('@%s/user/profile/edit.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
-            'breadcrumb' => $this->breadcrumb()->add(t('user.profile.edit.breadcrumb_title', [], 'emsco-core')),
+            'breadcrumb' => $this->breadcrumb()->add(t('action.edit', [], 'emsco-core')),
         ]);
     }
 
@@ -70,14 +70,14 @@ class ProfileController extends AbstractController
 
         return $this->render(\sprintf('@%s/user/profile/change_password.html.twig', $this->templateNamespace), [
             'form' => $form->createView(),
-            'breadcrumb' => $this->breadcrumb()->add(t('user.profile.change_password.breadcrumb_title', [], 'emsco-core')),
+            'breadcrumb' => $this->breadcrumb()->add(t('title.change_your_password', [], 'emsco-core')),
         ]);
     }
 
     private function breadcrumb(): Navigation
     {
         return new Navigation()->add(
-            label: t('profile.title', [], 'emsco-core'),
+            label: t('title.profile', [], 'emsco-core'),
             icon: 'fa fa-user',
             route: Routes::USER_PROFILE,
         );

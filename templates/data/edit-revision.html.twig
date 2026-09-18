@@ -1,7 +1,7 @@
 {% extends '@EMSCore/data/abstract-revision.html.twig' %}
 {% trans_default_domain 'emsco-core' %}
 
-{% block subtitle %}<small>{{ 'views.data.edit-revision-html.subtitle'|trans }}</small>{% endblock %}
+{% block subtitle %}<small>{{ 'key.working_area'|trans }}</small>{% endblock %}
 
 
 {% block body %}
@@ -47,7 +47,7 @@
 								{% include '@EMSCore/elements/post-button.html.twig' with {
 									'url': path('emsco_data_cancel_modifications', {'revision': revision.id}),
 									'btnClass': '',
-									'label': 'views.data.edit-revision-html.cancel-label'|trans,
+									'label': 'key.discard_modifications'|trans,
 									'icon': 'remove',
                                     'attributes': {
                                         'data-testid': 'revision-action-cancel'
@@ -62,9 +62,9 @@
 			{% if revision.draft %}
 				{% include '@EMSCore/elements/post-button.html.twig' with {
 					'url': path('emsco_discard_draft', {'revisionId': revision.id, 'type': revision.contentType.name}),
-					'message': 'views.data.edit-revision-html.discard-draft-message'|trans,
+					'message': 'message.draft_modifications_will_be_lost'|trans,
 					'btnType': 'outline-danger',
-					'label': 'views.data.edit-revision-html.discard-draft-label'|trans,
+					'label': 'message.delete_this_draft'|trans,
 					'icon': 'trash',
 					'group_class': 'pull-right',
                     'attributes': {

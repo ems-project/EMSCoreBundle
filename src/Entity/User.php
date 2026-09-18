@@ -37,7 +37,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     private Collection $authTokens;
     private string $locale = self::DEFAULT_LOCALE;
     private ?string $localePreferred = null;
-    #[Assert\Length(min: 4, max: 180, minMessage: 'user.username.short', maxMessage: 'user.username.long')]
+    #[Assert\Length(min: 2, max: 180, minMessage: 'user.username.short', maxMessage: 'user.username.long')]
     private ?string $username = null;
     private ?string $usernameCanonical = null;
     #[Assert\Email(message: 'user.email.invalid')]

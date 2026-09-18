@@ -224,7 +224,7 @@ class WysiwygController extends AbstractController
                 TableType::REORDER_ACTION => $this->wysiwygProfileService->reorderByIds(
                     ...TableType::getReorderedKeys($form->getName(), $request)
                 ),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
+                default => $this->logger->messageError(t('message.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::WYSIWYG_INDEX);
@@ -250,7 +250,7 @@ class WysiwygController extends AbstractController
                 TableType::REORDER_ACTION => $this->wysiwygStylesSetService->reorderByIds(
                     ...TableType::getReorderedKeys($form->getName(), $request)
                 ),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
+                default => $this->logger->messageError(t('message.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::WYSIWYG_INDEX);

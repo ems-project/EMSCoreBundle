@@ -49,7 +49,7 @@ class ElasticSearchController extends AbstractController
             match ($this->getClickedButtonName($form)) {
                 TableAbstract::DELETE_ACTION => $this->deleteOrphanIndexes(...$table->getSelected()),
                 EnvironmentOrphanIndexDataTableType::ACTION_DELETE_ALL => $this->deleteOrphanIndexes(),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
+                default => $this->logger->messageError(t('message.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::ADMIN_ELASTIC_ORPHAN);
@@ -88,11 +88,11 @@ class ElasticSearchController extends AbstractController
     {
         try {
             $this->indexService->deleteIndex($name);
-            $this->logger->messageNotice(t('log.notice.deleted_orphan_index', ['index' => $name], 'emsco-core'));
+            $this->logger->messageNotice(t('message.deleted_orphan_index', ['index' => $name], 'emsco-core'));
         } catch (NotFoundException) {
-            $this->logger->messageError(t('log.warning.index_not_found', ['index' => $name], 'emsco-core'));
+            $this->logger->messageError(t('message.index_not_found', ['index' => $name], 'emsco-core'));
         } catch (\Throwable $e) {
-            $this->logger->messageError(t('log.error.delete_failed', [], 'emsco-core'), [
+            $this->logger->messageError(t('message.delete_failed', [], 'emsco-core'), [
                 'error' => $e->getMessage(),
             ]);
         }
@@ -103,13 +103,13 @@ class ElasticSearchController extends AbstractController
     public function attach(string $name): Response
     {
         if (!$this->indexService->hasIndex($name)) {
-            $this->logger->messageWarning(t('log.warning.index_not_found', ['index' => $name], 'emsco-core'));
+            $this->logger->messageWarning(t('message.index_not_found', ['index' => $name], 'emsco-core'));
 
             return $this->redirectToRoute(Routes::ADMIN_ELASTIC_UNREFERENCED_ALIASES);
         }
 
         if (false !== $this->environmentService->getByName($name)) {
-            $this->logger->messageWarning(t('log.warning.duplicate_environment', ['name' => $name], 'emsco-core'));
+            $this->logger->messageWarning(t('message.duplicate_environment', ['name' => $name], 'emsco-core'));
 
             return $this->redirectToRoute(Routes::ADMIN_ELASTIC_UNREFERENCED_ALIASES);
         }
@@ -122,7 +122,7 @@ class ElasticSearchController extends AbstractController
 
         $this->environmentService->updateEnvironment($environment);
 
-        $this->logger->messageNotice(t('log.notice.alias_attached', ['alias' => $name], 'emsco-core'));
+        $this->logger->messageNotice(t('message.alias_attached', ['alias' => $name], 'emsco-core'));
 
         return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_EDIT, [
             'id' => $environment->getId(),
@@ -149,9 +149,9 @@ class ElasticSearchController extends AbstractController
                 $this->indexService->deleteIndexes(...$indexes);
             }
 
-            $this->logger->messageNotice(t('log.notice.deleted_orphan_indexes', [], 'emsco-core'));
+            $this->logger->messageNotice(t('message.deleted_orphan_indexes', [], 'emsco-core'));
         } catch (\Throwable $throwable) {
-            $this->logger->messageError(t('log.error.delete_failed', [], 'emsco-core'), [
+            $this->logger->messageError(t('message.delete_failed', [], 'emsco-core'), [
                 'error' => $throwable->getMessage(),
             ]);
         }

@@ -121,7 +121,7 @@ class AnalyzerController extends AbstractController
                 TableType::REORDER_ACTION => $this->analyzerManager->reorderByIds(
                     ...TableType::getReorderedKeys($form->getName(), $request)
                 ),
-                default => $this->logger->messageError(t('log.error.invalid_table_action', [], 'emsco-core')),
+                default => $this->logger->messageError(t('message.invalid_table_action', [], 'emsco-core')),
             };
 
             return $this->redirectToRoute(Routes::ANALYZER_INDEX);

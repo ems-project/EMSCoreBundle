@@ -17,8 +17,8 @@ enum Orientation: string implements TranslatableInterface
     public function trans(TranslatorInterface $translator, ?string $locale = null): string
     {
         return match ($this) {
-            self::Portrait => t('orientation.portrait', [], 'emsco-core')->trans($translator),
-            self::Landscape => t('orientation.landscape', [], 'emsco-core')->trans($translator),
+            self::Portrait => t('key.portrait', [], 'emsco-core')->trans($translator),
+            self::Landscape => t('key.landscape', [], 'emsco-core')->trans($translator),
         };
     }
 }

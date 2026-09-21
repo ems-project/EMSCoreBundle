@@ -14,6 +14,7 @@ use EMS\CoreBundle\Form\View\GalleryViewType;
 use EMS\CoreBundle\Form\View\HierarchicalViewType;
 use EMS\CoreBundle\Form\View\ImporterViewType;
 use EMS\CoreBundle\Form\View\KeywordsViewType;
+use EMS\CoreBundle\Form\View\RedirectionViewType;
 use EMS\CoreBundle\Form\View\ReportViewType;
 use EMS\CoreBundle\Form\View\SorterViewType;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -152,5 +153,15 @@ return static function (ContainerConfigurator $container) {
             '%ems_core.template_namespace%',
         ])
         ->tag('ems.form.viewtype', ['alias' => 'importer'])
+        ->tag('form.type');
+
+    $services->set('ems.view.redirection', RedirectionViewType::class)
+        ->args([
+            service('form.factory'),
+            service('twig'),
+            service('emsco.logger'),
+            '%ems_core.template_namespace%',
+        ])
+        ->tag('ems.form.viewtype', ['alias' => 'redirection'])
         ->tag('form.type');
 };

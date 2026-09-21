@@ -63,7 +63,6 @@ class ExportViewType extends ViewType
             'label' => 'The Elasticsearch body query [JSON Twig]',
             'attr' => [
             ],
-            'slug' => 'export_query',
         ])
         ->add('size', IntegerType::class, [
             'label' => 'Limit the result to the x first results',
@@ -72,7 +71,6 @@ class ExportViewType extends ViewType
             'label' => 'The Twig template used to display each keywords',
             'attr' => [
             ],
-            'slug' => 'export_template',
         ])
         ->add('mimetype', TextType::class, [
             'label' => 'The mimetype used in the response',
@@ -89,7 +87,6 @@ class ExportViewType extends ViewType
             'label' => 'The Twig template used to generate the export file name',
             'attr' => [
             ],
-            'slug' => 'export_filename',
             'min-lines' => 4,
             'max-lines' => 4,
         ])

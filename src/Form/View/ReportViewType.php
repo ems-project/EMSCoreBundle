@@ -52,7 +52,6 @@ class ReportViewType extends ViewType
             'label' => 'The Elasticsearch body query [JSON Twig]',
             'attr' => [
             ],
-            'slug' => 'report_query',
         ])
         ->add('size', IntegerType::class, [
             'label' => 'Limit the result to the x first results',
@@ -61,7 +60,6 @@ class ReportViewType extends ViewType
             'label' => 'The Twig template used to display each keywords',
             'attr' => [
             ],
-            'slug' => 'report_template',
         ])
         ->add('header', CodeEditorType::class, [
             'label' => 'The HTML template included at the end of the header',

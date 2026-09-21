@@ -4,25 +4,26 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\View;
 
-use EMS\CoreBundle\Core\Document\DataLinks;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-class DataLinkViewType extends ViewType
+class RedirectionViewType extends ViewType
 {
     #[\Override]
     public function getLabel(): string
     {
-        return 'Data Link: manipulate the choices in a data link of this content type';
+        return 'Redirection: add a redirection link in the content type\'s sub-menu';
     }
 
     #[\Override]
     public function getName(): string
     {
-        return 'Data Link';
+        return 'Redirection';
     }
 
     /**
@@ -42,17 +43,19 @@ class DataLinkViewType extends ViewType
     #[\Override]
     public function getBlockPrefix(): string
     {
-        return 'data_link';
+        return 'redirection';
     }
 
-    public function render(View $view, DataLinks $dataLinks): void
+    #[\Override]
+    public function generateResponse(View $view, Request $request): Response
     {
-        $this->twig->createTemplate($view->getOptions()['template'] ?? '')->render([
+        $url = $this->twig->createTemplate($view->getOptions()['template'] ?? '')->render([
             'view' => $view,
             'contentType' => $view->getContentType(),
             'environment' => $view->getContentType()->getEnvironment(),
-            'dataLinks' => $dataLinks,
         ]);
+
+        return new RedirectResponse($url);
     }
 
     #[\Override]

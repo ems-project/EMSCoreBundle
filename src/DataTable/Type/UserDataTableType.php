@@ -18,11 +18,13 @@ use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\UserService;
 use EMS\Helpers\Standard\Type;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class UserDataTableType extends AbstractEntityTableType
 {
     public function __construct(
         UserService $entityService,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly ?string $circleObject,
         private readonly bool $groupFeature,
     ) {
@@ -63,7 +65,9 @@ class UserDataTableType extends AbstractEntityTableType
             $table->addColumnDefinition(new DatetimeTableColumn('user.index.column.expirationDate', 'expirationDate'));
 
             $table->addDynamicItemGetAction(Routes::USER_EDIT, 'user.action.edit', 'pencil', ['user' => 'id'], ['data-testid' => 'user-action-edit']);
-            $table->addDynamicItemGetAction('homepage', 'user.action.switch', 'user-secret', ['_switch_user' => 'username'], ['data-testid' => 'user-action-switch-user']);
+            if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+                $table->addDynamicItemGetAction('homepage', 'user.action.switch', 'user-secret', ['_switch_user' => 'username'], ['data-testid' => 'user-action-switch-user']);
+            }
             $table->addDynamicItemPostAction(Routes::USER_ENABLING, 'user.action.disable', 'user-times', 'user.action.disable_confirm', ['user' => 'id'], ['data-testid' => 'user-action-disabled']);
             $table->addDynamicItemPostAction(Routes::USER_API_KEY, 'user.action.generate_api', 'key', 'user.action.generate_api_confirm', ['username' => 'username'], ['data-testid' => 'user-action-generate-api'])->addCondition(new Terms('roles', [Roles::ROLE_API]));
             $table->addDynamicItemPostAction(Routes::USER_DELETE, 'user.action.delete', 'trash', 'user.action.delete_confirm', ['user' => 'id'], ['data-testid' => 'user-action-delete']);

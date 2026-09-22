@@ -18,6 +18,7 @@ use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\UserService;
 use EMS\Helpers\Standard\Type;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 use function Symfony\Component\Translation\t;
 
@@ -25,6 +26,7 @@ class UserDataTableType extends AbstractEntityTableType
 {
     public function __construct(
         UserService $entityService,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly ?string $circleObject,
         private readonly bool $groupFeature,
     ) {
@@ -83,13 +85,15 @@ class UserDataTableType extends AbstractEntityTableType
                 routeParameters: ['user' => 'id'],
                 attributes: ['data-testid' => 'user-action-edit']
             );
-            $table->addDynamicItemGetAction(
+            if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+                $table->addDynamicItemGetAction(
                 route: 'homepage',
                 labelKey: t('action.switch_user', [], 'emsco-core'),
                 icon: 'user-secret',
                 routeParameters: ['_switch_user' => 'username'],
                 attributes: ['data-testid' => 'user-action-switch-user']
             );
+            }
             $table->addDynamicItemPostAction(
                 route: Routes::USER_ENABLING,
                 labelKey: t('action.disable', [], 'emsco-core'),

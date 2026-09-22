@@ -87,12 +87,12 @@ class UserDataTableType extends AbstractEntityTableType
             );
             if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
                 $table->addDynamicItemGetAction(
-                route: 'homepage',
-                labelKey: t('action.switch_user', [], 'emsco-core'),
-                icon: 'user-secret',
-                routeParameters: ['_switch_user' => 'username'],
-                attributes: ['data-testid' => 'user-action-switch-user']
-            );
+                    route: 'homepage',
+                    labelKey: t('action.switch_user', [], 'emsco-core'),
+                    icon: 'user-secret',
+                    routeParameters: ['_switch_user' => 'username'],
+                    attributes: ['data-testid' => 'user-action-switch-user']
+                );
             }
             $table->addDynamicItemPostAction(
                 route: Routes::USER_ENABLING,

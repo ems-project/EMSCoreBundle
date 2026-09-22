@@ -262,6 +262,7 @@ return static function (ContainerConfigurator $container) {
     $services->set('emsco.data_table.user', UserDataTableType::class)
         ->args([
             service('ems.service.user'),
+            service('security.authorization_checker'),
             '%ems_core.circles_object%',
             '%ems_core.group_feature%',
         ])

@@ -9,6 +9,7 @@ use EMS\CoreBundle\Core\Dashboard\DashboardOptions;
 use EMS\CoreBundle\Core\Dashboard\DashboardType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
+use EMS\Helpers\Standard\Type;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -84,9 +85,19 @@ class Dashboard extends JsonDeserializer implements \JsonSerializable, EntityInt
         $this->label = $label;
     }
 
-    public function getOption(string $option): ?string
+    /**
+     * @return mixed[]|string|null
+     */
+    public function getOption(string $option): mixed
     {
         return $this->getOptions()[$option];
+    }
+
+    public function getNullableStringOption(string $option): ?string
+    {
+        $option = $this->getOption($option);
+
+        return $option ? Type::string($option) : null;
     }
 
     public function getOptions(): DashboardOptions

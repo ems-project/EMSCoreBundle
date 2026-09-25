@@ -90,7 +90,6 @@ use EMS\CoreBundle\Repository\JobRepository;
 use EMS\CoreBundle\Repository\ManagedAliasRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Service\ActionService;
-use EMS\CoreBundle\Service\AggregateOptionService;
 use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\Channel\ChannelRegistrar;
@@ -121,9 +120,7 @@ use EMS\CoreBundle\Service\ReleaseService;
 use EMS\CoreBundle\Service\RestClientService;
 use EMS\CoreBundle\Service\Revision\PostProcessingService;
 use EMS\CoreBundle\Service\Revision\RevisionService;
-use EMS\CoreBundle\Service\SearchFieldOptionService;
 use EMS\CoreBundle\Service\SearchService;
-use EMS\CoreBundle\Service\SortOptionService;
 use EMS\CoreBundle\Service\TemplateService;
 use EMS\CoreBundle\Service\UserService;
 use EMS\CoreBundle\Service\WebhookService;
@@ -657,7 +654,6 @@ return static function (ContainerConfigurator $container) {
             service('security.token_storage'),
             service('security.helper'),
             service('ems.repository.user'),
-            service('ems.repository.search'),
             service('security.authorization_checker'),
             '%security.role_hierarchy.roles%',
         ]);
@@ -668,27 +664,6 @@ return static function (ContainerConfigurator $container) {
             service('emsco.logger'),
         ])
         ->tag('emsco.entity.service', ['priority' => 110]);
-
-    $services->set('ems.service.aggregate_option', AggregateOptionService::class)
-        ->args([
-            service('doctrine'),
-            service('emsco.logger'),
-            service('translator'),
-        ]);
-
-    $services->set('ems.service.sort_option', SortOptionService::class)
-        ->args([
-            service('doctrine'),
-            service('emsco.logger'),
-            service('translator'),
-        ]);
-
-    $services->set('ems.service.search_field_option', SearchFieldOptionService::class)
-        ->args([
-            service('doctrine'),
-            service('emsco.logger'),
-            service('translator'),
-        ]);
 
     $services->set('ems.service.wysiwyg_styles_set', WysiwygStylesSetService::class)
         ->args([
@@ -857,7 +832,6 @@ return static function (ContainerConfigurator $container) {
             service('ems_common.service.elastica'),
             service('ems.service.environment'),
             service('ems.service.contenttype'),
-            service('ems.repository.search'),
             service(RevisionRepository::class),
         ]);
 
@@ -1024,15 +998,9 @@ return static function (ContainerConfigurator $container) {
 
     $services->alias(PublishService::class, 'ems.service.publish');
 
-    $services->alias(AggregateOptionService::class, 'ems.service.aggregate_option');
-
     $services->alias(Mapping::class, 'ems.service.mapping');
 
-    $services->alias(SortOptionService::class, 'ems.service.sort_option');
-
     $services->alias(WysiwygProfileService::class, 'ems.service.wysiwyg_profile');
-
-    $services->alias(SearchFieldOptionService::class, 'ems.service.search_field_option');
 
     $services->alias(WysiwygStylesSetService::class, 'ems.service.wysiwyg_styles_set');
 

@@ -1,7 +1,7 @@
 {% trans_default_domain 'emsco-core' %}
 {{ form_start(form) }}
 	<div class="box ">
-		<div id="searchFormBoxBody" class="collapse {% if openSearchForm is defined and openSearchForm %}in{% endif %}" aria-expanded="{% if openSearchForm is not defined or not openSearchForm %}false{%else%}true{% endif %}">
+		<div id="searchFormBoxBody" class="collapse {% if app.request.query.get('open') %}in{% endif %}" aria-expanded="{% if app.request.query.get('open') %}true{%else%}false{% endif %}">
 			<div class="box-body" >
 				<div class="row">
 					{% if form.environments is defined %}
@@ -29,28 +29,28 @@
 							<div class="col-xs-12 visible-md-block visible-lg-block">
 								<div class="col-md-2">
 									<div class="form-group">
-										<label class="control-label">Boolean clause</label>
+										<label class="control-label">{{ 'field.boolean_clause'|trans }}</label>
 									</div>
 								</div>
 								<div class="col-md-3">
 									<div class="form-group">
-										<label class="control-label">Field</label>
+										<label class="control-label">{{ 'field.field'|trans }}</label>
 									</div>
 								</div>
 								<div class="col-md-2">
 									<div class="form-group">
-										<label class="control-label">Operator</label>
+										<label class="control-label">{{ 'field.operator'|trans }}</label>
 									</div>
 								</div>
 								<div class="{% if emsco_is_super() %}col-md-3{% else %}col-md-4{% endif %}">
 									<div class="form-group">
-										<label class="control-label">Pattern</label>
+										<label class="control-label">{{ 'field.pattern'|trans }}</label>
 									</div>
 								</div>
                                 {% if emsco_is_super() %}
 									<div class="col-md-1">
 										<div class="form-group">
-											<label class="control-label">Boost</label>
+											<label class="control-label">{{ 'field.boost'|trans }}</label>
 										</div>
 									</div>
                                 {% endif %}
@@ -76,53 +76,12 @@
 			<div class="box-footer">
 				<div class="form-group">
 					<div class="btn-group pull-right">
-						<a class="btn btn-primary" href="#" id="add-search-filter-button"><i class="fa fa-plus"></i> Add filter</a>
+						<a class="btn btn-primary" href="#" id="add-search-filter-button"><i class="fa fa-plus"></i> {{ 'action.add_type'|trans({type: 'filter'}) }}</a>
 						{% if form.search is defined %}
 							{{ form_widget(form.search) }}
 						{% endif %}
 						{% if form.applyFilters is defined %}
 							{{ form_widget(form.applyFilters) }}
-						{% endif %}
-					</div>
-					<div class="btn-group">
-						{% if searchId is defined and searchId %}
-							{% if is_granted('ROLE_DEFAULT_SEARCH') %}
-                                {% include '@EMSCore/elements/post-button.html.twig' with {
-                                    'url':  path('ems_search_set_default_search_from', {'id': searchId, 'search': app.request.query}),
-                                    'message': 'Set as default search ?',
-                                    'label': 'Set default',
-                                    'icon': 'check-square',
-                                    'class': 'btn'
-                                }%}
-								{%  if form.contentTypes.vars.value|length == 1 %}
-									{% set contentType = form.contentTypes.vars.value|first|emsco_get_content_type %}
-									{% if contentType %}
-                                        {% include '@EMSCore/elements/post-button.html.twig' with {
-                                            'url':  path('ems_search_set_default_search_from', {
-                                                'id': searchId,
-                                                'search': app.request.query,
-                                                'contentType': form.contentTypes.vars.value|first
-                                            }),
-                                            'message': 'Set as default '~contentType.singularName~' search ?',
-                                            'label': 'Set for '~contentType.singularName,
-                                            'icon': contentType.icon|default('check-square'),
-                                            'icon': 'check-square',
-                                            'class': 'btn'
-                                        }%}
-                                    {% endif %}
-								{% endif %}
-							{% endif %}
-                            {% include '@EMSCore/elements/post-button.html.twig' with {
-								'url':  path('elasticsearch.search.delete', {'id': searchId, 'search': app.request.query}),
-								'message': 'Do you confirm ?',
-								'label': 'Delete',
-								'icon': 'trash',
-								'class': 'btn'
-							}%}
-						{% endif %}
-
-						{% if form.save is defined %}
-							{{ form_widget(form.save) }}
 						{% endif %}
 					</div>
 				</div>

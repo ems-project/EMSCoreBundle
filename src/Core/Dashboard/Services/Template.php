@@ -18,7 +18,7 @@ class Template implements DashboardInterface
     }
 
     #[\Override]
-    public function getResponse(Dashboard $dashboard): Response
+    public function getResponse(Dashboard $dashboard, Navigation $breadcrumb): Response
     {
         $response = new Response();
         try {
@@ -26,10 +26,7 @@ class Template implements DashboardInterface
                 'dashboard' => $dashboard,
                 'options' => $dashboard->getOptions(),
                 'subTitle' => t('type.title_sub', ['type' => 'dashboard'], 'emsco-core'),
-                'breadcrumb' => Navigation::dashboards()->add(
-                    text: $dashboard->getLabel(),
-                    icon: $dashboard->getIcon(),
-                ),
+                'breadcrumb' => $breadcrumb,
             ]));
         } catch (\Throwable $throwable) {
             $response->setContent($this->twig->render(\sprintf('@%s/dashboard/services/error.html.twig', $this->templateNamespace), [
@@ -38,10 +35,7 @@ class Template implements DashboardInterface
                 'options' => $dashboard->getOptions(),
                 'title' => t('core.dashboard.exception.title', [], 'emsco-core'),
                 'subTitle' => t('type.title_sub', ['type' => 'dashboard'], 'emsco-core'),
-                'breadcrumb' => Navigation::dashboards()->add(
-                    text: $dashboard->getLabel(),
-                    icon: $dashboard->getIcon(),
-                ),
+                'breadcrumb' => $breadcrumb,
             ]));
             $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }

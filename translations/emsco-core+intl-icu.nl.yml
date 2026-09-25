@@ -16,6 +16,15 @@ action:
     add_sort_option: 'Sorteeroptie toevoegen'
     add_task: 'Taak toevoegen'
     add_to_release: 'Toevoegen aan release'
+    add_type: |-
+        {type, select,
+            aggregate_option   {Voeg een aggregatieoptie toe}
+            filter   {Een filter toevoegen}
+            search_field_option   {Voeg een optie voor een zoekveld toe}
+            sort_option   {Voeg een sorteeroptie toe}
+            other   {Toevoegen}
+        }
+    apply_filters: 'Filters toepassen'
     approve: Goedkeuren
     attach: Koppelen
     browse_server: 'Server doorzoeken'
@@ -23,6 +32,7 @@ action:
     change_order: 'Volgorde wijzigen'
     change_password: 'Wachtwoord wijzigen'
     clear: Wissen
+    clear_sort_options: 'Sorteeropties wissen'
     close: Sluiten
     collapse: Inklappen
     collapse_all: 'Alles inklappen'
@@ -59,6 +69,7 @@ action:
     enable: Inschakelen
     exit: Afsluiten
     export: Exporteren
+    export_content_type: '{pluralName} exporteren'
     export_selected: 'Selectie exporteren'
     extract_content: 'Inhoud extraheren'
     forgot_password: 'Ik ben mijn wachtwoord vergeten'
@@ -75,6 +86,7 @@ action:
     paste: Plakken
     previous: Vorige
     publish: Publiceren
+    publish_content_type: 'Publiceer {total} {pluralName}'
     publish_release: 'Nu publiceren'
     put_back: Terugplaatsen
     put_back_selected: 'Selectie terugplaatsen'
@@ -86,6 +98,14 @@ action:
     reload_page: 'Pagina herladen'
     remove: Verwijderen
     remove_documents: 'Documenten verwijderen'
+    remove_type: |-
+        {type, select,
+            aggregate_option   {Verwijder deze aggregatieoptie}
+            filter   {Verwijder deze filter}
+            search_field_option   {Verwijder deze optie voor het zoekveld}
+            sort_option   {Verwijder deze sorteeroptie}
+            other   {Verwijderen}
+        }
     rename: Hernoemen
     reorder: Hersorteren
     reorder_content_type: 'Het content type "{content_type}" hersorteren'
@@ -94,12 +114,20 @@ action:
     reset_filters: 'Filters resetten'
     revert_to_revision: 'Terugkeren naar deze revisie'
     save: Opslaan
+    save_and_edit_structure: 'Opslaan en structuur bewerken'
+    save_and_reorder: 'Opslaan en hersorteren'
     save_as_draft: 'Opslaan als concept'
     save_close: 'Opslaan en sluiten'
     save_publish_in: 'Opslaan en publiceren in {environments}'
     save_task: 'Taak opslaan'
+    save_update_mapping: 'Opslaan en mapping bewerken'
     select_all: 'Alles selecteren'
     send: Verzenden
+    set_as_default: |-
+        {type, select,
+            query_search   {Instellen als standaardzoekopdracht}
+            other   {Instellen als standaard}
+        }
     set_as_default_search: 'Instellen als standaardzoekopdracht'
     set_status_canceled: 'Release annuleren'
     set_status_ready: 'Release valideren'
@@ -237,9 +265,11 @@ field:
     accumulate_file: 'In één bestand verzamelen'
     action_dropdown_label: 'Acties in {environment}'
     action_dropdown_sr_only: 'Dropdown met acties van {environment} omschakelen'
+    aggregate_options: Aggregatieopties
     alias: Alias
     allowed_remote_hosts: 'Toegestane externe hosts'
     analyzer: Analyzer
+    ask_for_ouuid: 'Om OUUID vragen'
     asset:
         author: 'Auteur:'
         content: 'Inhoud:'
@@ -252,14 +282,18 @@ field:
         mime_type: 'MIME-type:'
         size: 'Grootte:'
         title: 'Titel:'
+    asset_field: Asset
     assigned_to: 'Toegewezen aan '
     assignee: Toegewezene
     attributes: 'Extra request-attributen'
+    auto_publish: 'Concept stilzwijgend publiceren en automatisch opslaan in de standaardomgeving'
     available: Beschikbaar
     base_url: Basis-URL
     boolean_clause: 'Booleaanse clausule'
     boost: Boost
+    business_id: 'Zakelijke ID'
     by_role: 'per rol {role}'
+    category: Categorie
     channel: Kanaal
     char_filter: 'Char filter'
     circles: Kringen
@@ -284,6 +318,7 @@ field:
     date_created: Aanmaakdatum
     date_execution: Uitvoeringsdatum
     date_expiration: Vervaldatum
+    date_from: 'Datum vanaf'
     date_modified: Wijzigingsdatum
     date_range:
         duration: Duur
@@ -291,13 +326,20 @@ field:
         to: Tot
     date_run_next: 'Volgende uitvoeringsdatum'
     date_run_previous: 'Vorige uitvoeringsdatum'
+    date_to: 'Datum tot'
     date_upload: Uploaddatum
+    dates_interval_one_day: 'Datumbereik van één dag'
+    dates_read_only: 'Datums alleen-lezen'
     deadline: Deadline
+    default_sort_order: 'Standaard sorteervolgorde'
+    default_value: Standaardwaarde
     definition: Definitie
     delay: 'Vertraging (in dagen)'
     description: Beschrijving
+    display: Weergave
     display_name: Weergavenaam
     docs_count: '# Documenten'
+    edit_twig_with_wysiwyg: 'Twig-template bewerken met een WYSIWYG-editor'
     editor: Editor
     email: E-mail
     email_content_type: 'Contenttype (bv. text/html)'
@@ -331,8 +373,10 @@ field:
     file_info: Bestandsinformatie
     file_info_apostrophe: Bestandsinformatie
     filter: Filter
+    filters: Filters
     flags: Vlaggen
     form: Formulier
+    format: Formaat
     format_tags: Formaat-tags
     from_sender: 'Van {sender}'
     group: Groep
@@ -345,8 +389,10 @@ field:
     icon: Icoon
     id: ID
     index: Index
+    index_twig: 'Indextemplate (Twig)'
     indexes: Indexen
     instance: Instantie
+    inverted: Omgekeerd
     is_active: Actief
     is_default: Standaard
     is_dirty: Gewijzigd
@@ -381,10 +427,13 @@ field:
     mcp_response: 'MCP uitvoerschema-template (JSON)'
     message: Bericht
     mime_type: MIME-type
+    minimum_should_match: 'Minimum aantal overeenkomsten'
     name: Naam
     new_version: 'Nieuwe versie'
     node_name: 'Naam van het knooppunt'
+    not_blank_new_version: 'Nieuwe versie niet leeg'
     operator: Operator
+    operators: Exploitanten
     options: Opties
     orientation: Oriëntatie
     ouuid: OUUID
@@ -394,12 +443,14 @@ field:
     pdf_size: PDF-formaat
     permission: Toestemming
     plural: Meervoud
+    plural_name: Meervoudsnaam
     postition_increment_gap: 'Positie-increment gap'
     public_access: 'Publieke toegang'
     publish_to: 'Publiceren naar'
     published_label: 'Gepubliceerd in {environment}'
     query: Query
     quick_search: 'Snel zoeken'
+    referer_field_name: 'Naam van refererveld'
     rejected_by: 'Geweigerd door'
     rejected_message: Weigeringsbericht
     release_environment_source: 'Bronomgeving voor publicatie'
@@ -422,16 +473,25 @@ field:
     role_trash: Afval
     role_view: Zien
     roles: Rollen
+    root_content_type: Hoofdcontenttype
     search_config: Zoekconfiguratie
+    search_field_options: 'Opties voor het zoekveld'
     separator: Scheidingsteken
     severity: Ernst
     singular: Enkelvoud
+    singular_name: Enkelvoudsnaam
+    sort: Sortering
+    sort_by: 'Sorteren op'
+    sort_options: Sorteeropties
+    sort_order: Sorteervolgorde
     spreadsheet: Spreadsheet
     status: Status
     stopwords: Stopwoorden
     styles_set: Stijlenset
     table_default_css: 'Standaard class-attribuut van tabel'
     tag: Tag
+    tags: Tags
+    template: Template
     template_body: 'Template body'
     template_footer: 'Template footer'
     template_header: 'Template header'
@@ -441,6 +501,7 @@ field:
     title: Taak
     titles: Titels
     tokenizer: Tokenizer
+    tooltip: Tooltip
     total: Totaal
     total_deleted: 'Totaal verwijderd'
     total_elastic: 'Totaal in ES'
@@ -459,6 +520,9 @@ field:
     user_uploaded: 'Geüpload door'
     username: Gebruikersnaam
     username_or_email: 'Gebruikersnaam of e-mailadres'
+    version_tag: Versietag
+    web_content: 'Webinhoud (beschikbaar in WYSIWYG-veld als interne link)'
+    with_business_key: 'Met zakelijke sleutel'
     wysiwyg_profile: WYSIWYG-profiel
 help:
     add_first_aggregate_option: "Klik op 'Aggregatieoptie toevoegen' om een eerste aggregatieoptie te maken"
@@ -474,7 +538,7 @@ key:
     add_documents: 'Documenten toevoegen'
     add_user: 'Gebruiker toevoegen'
     admin: Admin
-    aggregate_option: Aggregatieoptie
+    advanced_search: 'Geavanceerd zoeken'
     aggregate_options: Aggregatieopties
     align_with: 'Uitlijnen met'
     all_content_types: 'Alle contenttypes'
@@ -485,6 +549,7 @@ key:
     anonymous_user: 'Anonieme gebruiker'
     api_key: API-sleutel
     applied: Toegepast
+    ascending: Oplopend
     assigned_to_me: 'Aan mij toegewezen'
     assignees: Toegewezenen
     attachment: Bijlage
@@ -513,6 +578,7 @@ key:
     customized: Aangepast
     dashboards: Dashboards
     delayed_unassigned_shards: 'Vertraagde niet-toegewezen shards'
+    descending: Dalend
     discard_modifications: 'Niet-opgeslagen wijzigingen verwerpen'
     document: Document
     documentation: Documentatie
@@ -526,12 +592,14 @@ key:
     email_notification_lowercase: e-mailmelding
     email_or_username: 'E-mail of gebruikersnaam'
     empty: Leeg
+    environments: Omgevingen
     environments_external: 'Externe omgevingen'
     environments_local: 'Lokale omgevingen'
     error: Fout
     excel_export: Excel-export
     export_documents: 'Documenten exporteren'
     failed_jobs: 'Mislukte jobs'
+    filter: Filter
     filters: Filters
     finalize: Finaliseren
     finalized_by: 'Gefinaliseerd door'
@@ -541,6 +609,8 @@ key:
     form_submissions: Formulierinzendingen
     forms: Formulieren
     groups: Groepen
+    gt: 'Groter dan'
+    gte: 'Groter dan of gelijk aan'
     history: Geschiedenis
     home: Start
     i18n: I18N
@@ -564,6 +634,8 @@ key:
     login: Login
     logs: Logs
     loop_count: '#'
+    lt: 'Minder dan'
+    lte: 'Kleiner dan of gelijk aan'
     lucene_version: Lucene-versie
     mail_action_approved: goedgekeurd
     mail_action_assignee_changed: 'toegewezene gewijzigd'
@@ -573,11 +645,16 @@ key:
     mail_action_rejected: geweigerd
     mail_action_updated: bijgewerkt
     managed_aliases: 'Beheerde aliassen'
+    match_and: 'Match (en)'
+    match_or: 'Match (of)'
+    match_phrase: 'Match frase'
+    match_phrase_prefix: 'Match met zinsdeelprefix'
     mcp: MCP
     mcp_prompts: MCP-prompts
     mcp_resources: MCP-resources
     mcp_tools: MCP-tools
-    more_info: 'meer info'
+    must: Moeten
+    must_not: 'Mag niet'
     new_password: 'Nieuw wachtwoord'
     new_password_confirmation: 'Herhaal nieuw wachtwoord'
     new_user: 'Nieuwe gebruiker'
@@ -607,6 +684,7 @@ key:
     pendings: Wachtenden
     permission_overview_singular: 'Overzicht van rechten'
     portrait: Portret
+    prefix: Voorvoegsel
     prefix_instance_id: 'Alias voorafgaan met instance-ID'
     previous_revision: 'Vorige revisie'
     progress: Voortgang
@@ -615,6 +693,8 @@ key:
     public_view: 'Publiek beschikbaar (zonder authenticatie)'
     publishers: Publishers
     push_menu: Hoofdmenu
+    query_and: 'Query (en)'
+    query_or: 'Query (of)'
     query_search: 'Query search'
     query_searches: QuerySearch
     raw_view: 'Ruwe weergave'
@@ -636,19 +716,15 @@ key:
     schedule_tag: 'Gebruikt om workers (bv. CLI) te identificeren die de job op afstand zouden uitvoeren'
     scheduled: Gepland
     search: Zoeken
-    search_field_option: Zoekveldoptie
     search_field_options: Zoekveldopties
-    search_in_my_circle: 'In mijn {name}'
-    search_in_plural: 'Zoeken in {plural}'
     search_options: Zoekopties
-    searches: Zoekopdrachten
     selected: Geselecteerd
     sent: Verzonden
     settings: Instellingen
+    should: 'Zou moeten'
     show_search_form: 'Zoekformulier tonen'
     simplified_ui: 'Vereenvoudigde UI'
     sort_by: 'Sorteren op'
-    sort_option: Sorteeroptie
     sort_options: Sorteeropties
     sort_options_lowercase: Sorteeropties
     specif_roles_abbrev: 'Specif. rollen'
@@ -667,6 +743,7 @@ key:
     task_status_rejected: Geweigerd
     tasks: Taken
     template: Sjabloon
+    term: Termijn
     textarea_counter: '{count} tekens'
     tiptap: Tiptap
     title: Titel
@@ -681,7 +758,6 @@ key:
     uploaded_files_logs: 'Logs van geüploade bestanden'
     user_administration: Gebruikersbeheer
     user_management: Gebruikersbeheer
-    user_name_placeholder: '{name}'
     user_profile_picture_alt: 'Profielfoto van de gebruiker'
     users: Gebruikers
     version: Versie
@@ -720,6 +796,7 @@ message:
     asset_extract_file_too_large: 'Aangezien dit bestand groter is ({filesize}) dan {max_size}, is de inhoud niet automatisch geëxtraheerd. U kunt de extractie forceren of de inhoud handmatig opgeven in het menu "Info".'
     cancel_last_modifications_confirm: 'Laatste wijzigingen annuleren?'
     cancel_non_saved_modifications: 'Niet-opgeslagen wijzigingen annuleren'
+    cant_delete_query_search: '{1} De zoekquery {label} is nog steeds gekoppeld aan een inhoudstype en kan niet worden verwijderd.|]1,Inf[ {count} De zoekquery {label} is nog steeds gekoppeld aan {count} inhoudstypen en kan niet worden verwijderd.'
     channel_alias_not_found: 'Het kanaal "{label}" kan niet worden geregistreerd omdat de alias "{alias}" ontbreekt'
     channel_deleted: 'Het kanaal "{name}" is verwijderd'
     collection_added_items: '{0} Er is niets toegevoegd.|{1} Er is één item toegevoegd.|]1,Inf[ Er zijn {count} items toegevoegd.'
@@ -1012,7 +1089,6 @@ message:
     schedule_created: 'Schema "{name}" is aangemaakt'
     schedule_deleted: 'Het schema "{name}" is verwijderd'
     schedule_updated: 'Schema "{name}" is bijgewerkt'
-    search_deleted: 'Een zoekopdracht is verwijderd'
     search_field_option_missing: "Klik op 'Zoekveldoptie toevoegen' om een eerste zoekveldoptie te maken"
     search_paging_limit_exceeded: 'De paginering is beperkt tot de eerste {paging} items, {total} documenten gevonden'
     search_placeholder: Zoeken...
@@ -1021,11 +1097,8 @@ message:
             =-1   {Zoekresultaat ontbreekt}
             =0    {Geen resultaten gevonden}
             =1    {1 document gevonden}
-            other {# documenten gevonden}
+            other {{total} documenten gevonden}
         }
-    search_result_limited: 'Het zoekresultaat is beperkt tot de eerste {total} documenten'
-    search_set_as_default: 'Deze zoekopdracht is ingesteld als standaardzoekopdracht'
-    search_set_as_default_for_content_type: 'Deze zoekopdracht is ingesteld als standaard zoekformulier voor het content type {content_type}'
     select_new_location: 'Selecteer nieuwe locatie:'
     show_finished_tasks: 'Afgewerkte taken tonen ({number})'
     sign_in_start_session: 'Meld u aan om uw sessie te starten'
@@ -1235,8 +1308,6 @@ title:
     reorder_form_fields: 'Velden van formulier hersorteren: {label}'
     reset_password: 'Wachtwoord resetten'
     revisions_of_content_type: 'Revisies van {contentType}: {title}'
-    search_engine_results: 'Zoekmachine: {total} resultaten'
-    search_result_error: 'Fout bij het zoekresultaat'
     select_environments_to_compare: 'Selecteer omgevingen om te vergelijken'
     select_your_options: 'Selecteer uw opties'
     specific_permissions_for: 'Recht voor {content_type_singular_name}'

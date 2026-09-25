@@ -41,7 +41,6 @@ use EMS\CoreBundle\Repository\ReleaseRepository;
 use EMS\CoreBundle\Repository\ReleaseRevisionRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\ScheduleRepository;
-use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Repository\TaskRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
 use EMS\CoreBundle\Repository\UploadedAssetRepository;
@@ -72,9 +71,6 @@ return static function (ContainerConfigurator $container) {
         ->args([service('doctrine')]);
 
     $services->set('ems.repository.query_search', QuerySearchRepository::class)
-        ->args([service('doctrine')]);
-
-    $services->set('ems.repository.search', SearchRepository::class)
         ->args([service('doctrine')]);
 
     $services->set('ems.repository.analyzer', AnalyzerRepository::class)

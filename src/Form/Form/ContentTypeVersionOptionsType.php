@@ -9,6 +9,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -22,9 +24,18 @@ class ContentTypeVersionOptionsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add(VersionOptions::DATES_READ_ONLY, CheckboxType::class, ['required' => false])
-            ->add(VersionOptions::DATES_INTERVAL_ONE_DAY, CheckboxType::class, ['required' => false])
-            ->add(VersionOptions::NOT_BLANK_NEW_VERSION, CheckboxType::class, ['required' => false])
+            ->add(VersionOptions::DATES_READ_ONLY, CheckboxType::class, [
+                'required' => false,
+                'label' => t('field.dates_read_only', [], 'emsco-core'),
+            ])
+            ->add(VersionOptions::DATES_INTERVAL_ONE_DAY, CheckboxType::class, [
+                'required' => false,
+                'label' => t('field.dates_interval_one_day', [], 'emsco-core'),
+            ])
+            ->add(VersionOptions::NOT_BLANK_NEW_VERSION, CheckboxType::class, [
+                'required' => false,
+                'label' => t('field.not_blank_new_version', [], 'emsco-core'),
+            ])
         ;
     }
 }

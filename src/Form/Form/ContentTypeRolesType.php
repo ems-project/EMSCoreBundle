@@ -53,10 +53,6 @@ class ContentTypeRolesType extends AbstractType
                 ])
             ;
         }
-
-        $builder->add(ContentTypeRoles::SHOW_LINK_SEARCH, RolePickerType::class, [
-            'label' => t('field.role_show_link_search', [], 'emsco-core'),
-        ]);
     }
 
     #[\Override]

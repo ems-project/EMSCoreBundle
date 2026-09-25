@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Core\Dashboard\Services;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\Revision\Task\DataTable\TasksDataTableContext;
 use EMS\CoreBundle\Core\Revision\Task\TaskManager;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\DataTable\Type\Revision\RevisionTasksDataTableType;
 use EMS\CoreBundle\Entity\Dashboard;
 use EMS\CoreBundle\Form\Form\TableType;
@@ -32,7 +33,7 @@ final readonly class RevisionTask implements DashboardInterface
     }
 
     #[\Override]
-    public function getResponse(Dashboard $dashboard): Response
+    public function getResponse(Dashboard $dashboard, Navigation $breadcrumb): Response
     {
         $request = $this->requestStack->getCurrentRequest();
         $tab = $request?->query->getString('tab', TasksDataTableContext::TAB_USER);
@@ -53,6 +54,7 @@ final readonly class RevisionTask implements DashboardInterface
             'tabs' => $tabs,
             'filterForm' => $table->getFilterForm()?->createView(),
             'loadMaxRows' => RevisionTasksDataTableType::LOAD_MAX_ROWS,
+            'breadcrumb' => $breadcrumb,
         ])));
     }
 

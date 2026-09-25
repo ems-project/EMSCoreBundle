@@ -20,11 +20,14 @@ class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityI
     private UuidInterface $id;
     protected string $label;
     protected string $name = '';
-    /** @var Collection <int,Environment> */
+    /** @var Collection<int, Environment> */
     protected Collection $environments;
     /** @var array<string, mixed> */
     protected array $options = ['query' => '{}'];
     protected int $orderKey = 9999;
+    protected bool $default = false;
+    /** @var Collection<int, ContentType> */
+    protected Collection $contentTypesHavingThisAsDefault;
 
     public function __construct()
     {
@@ -32,6 +35,7 @@ class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityI
         $this->created = new \DateTime();
         $this->modified = new \DateTime();
         $this->environments = new ArrayCollection();
+        $this->contentTypesHavingThisAsDefault = new ArrayCollection();
     }
 
     public static function fromJson(string $json, ?\EMS\CommonBundle\Entity\EntityInterface $querySearch = null): QuerySearch
@@ -147,8 +151,39 @@ class QuerySearch extends JsonDeserializer implements \JsonSerializable, EntityI
         $json->removeProperty('id');
         $json->removeProperty('created');
         $json->removeProperty('modified');
+        $json->removeProperty('contentTypesHavingThisAsDefault');
         $json->replaceCollectionByEntityNames('environments');
 
         return $json;
+    }
+
+    public function isDefault(): bool
+    {
+        return $this->default;
+    }
+
+    public function setDefault(bool $default): void
+    {
+        $this->default = $default;
+    }
+
+    public function addContentTypesHavingThisAsDefault(ContentType $contentTypesHavingThisAsDefault): self
+    {
+        $this->contentTypesHavingThisAsDefault[] = $contentTypesHavingThisAsDefault;
+
+        return $this;
+    }
+
+    public function removeContentTypesHavingThisAsDefault(ContentType $contentTypesHavingThisAsDefault): void
+    {
+        $this->contentTypesHavingThisAsDefault->removeElement($contentTypesHavingThisAsDefault);
+    }
+
+    /**
+     * @return Collection<int, ContentType>
+     */
+    public function getContentTypesHavingThisAsDefault(): Collection
+    {
+        return $this->contentTypesHavingThisAsDefault;
     }
 }

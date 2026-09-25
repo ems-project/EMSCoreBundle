@@ -16,7 +16,7 @@
 				<span class="{{ icon starts with 'glyphicon-' ? "glyphicon #{icon}" : "fa fa-#{icon}" }}"></span>&nbsp;
 			{% endif %}
 			{% if label is defined %}
-				{{ label|trans }}
+				{{ label is ems_translatable_message ? label|trans : label }}
 			{% elseif rawlabel is defined %}
 				{{ rawlabel|raw }}
 			{% endif %}
@@ -27,9 +27,9 @@
 			{% if url is defined %}
 				<a href="{{ url }}"
 				   data-post-settings="{{ settings|json_encode|escape('html_attr') }}"
-				   class="core-post-button"{% if testId|length > 0 %} data-testid="{{ testId|first  ~ '-message' }}"{% endif %} {{ attrWithoutTesId }}>{{ message|trans }}</a>
+				   class="core-post-button"{% if testId|length > 0 %} data-testid="{{ testId|first  ~ '-message' }}"{% endif %} {{ attrWithoutTesId }}>{{ message is ems_translatable_message ? message|trans : message }}</a>
 			{% else %}
-				<button{% if testId|length > 0 %} data-testid="{{ testId|first  ~ '-message' }}"{% endif %} {{ attrWithoutTesId }}>{{ message|trans }}</button>
+				<button{% if testId|length > 0 %} data-testid="{{ testId|first  ~ '-message' }}"{% endif %} {{ attrWithoutTesId }}>{{ message is ems_translatable_message ? message|trans : message }}</button>
 			{% endif %}
 		</li>
 	  </ul>
@@ -42,14 +42,14 @@
 			{% if icon is defined %}
 				<span class="{{ icon starts with 'glyphicon-' ? "glyphicon #{icon}" : "fa fa-#{icon}" }}"></span>&nbsp;
 			{% endif %}
-			{% if label is defined %}{{ label|trans }}{% endif %}
+			{% if label is defined %}{{ label is ems_translatable_message ? label|trans : label }}{% endif %}
 		</a>
 	{% else %}
 		<button class="{% if btnClass is defined %}{{ btnClass }}{% else %}btn btn-sm btn-{{ btnType|default('primary') }}{% endif %}" {{ attributes|default('') }}>
 			{% if icon is defined %}
 				<span class="{{ icon starts with 'glyphicon-' ? "glyphicon #{icon}" : "fa fa-#{icon}" }}"></span>&nbsp;
 			{% endif %}
-			{% if label is defined %}{{ label|trans }}{% endif %}
+			{% if label is defined %}{{ label is ems_translatable_message ? label|trans : label }}{% endif %}
 		</button>
 	{% endif %}
 {% endif %}

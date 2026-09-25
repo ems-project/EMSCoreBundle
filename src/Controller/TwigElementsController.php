@@ -11,7 +11,6 @@ use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\AssetExtractorService;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\JobService;
-use EMS\CoreBundle\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +24,6 @@ class TwigElementsController extends AbstractController
     public function __construct(
         private readonly AssetExtractorService $assetExtractorService,
         private readonly ElasticaService $elasticaService,
-        private readonly UserService $userService,
         private readonly JobService $jobService,
         private readonly DashboardManager $dashboardManager,
         private readonly ContentTypeService $contentTypeService,
@@ -46,7 +44,6 @@ class TwigElementsController extends AbstractController
             [
                 'status' => $status,
                 'menu' => [
-                    $this->userService->getSidebarMenu(),
                     $this->dashboardManager->getSidebarMenu(),
                     $this->contentTypeService->getContentTypeMenu(),
                     $this->getPublisherMenu(),
@@ -133,7 +130,6 @@ class TwigElementsController extends AbstractController
         $menu->addChild(t('key.dashboards', [], 'emsco-core'), 'fa fa-dashboard', Routes::DASHBOARD_ADMIN_INDEX);
         $menu->addChild(t('key.query_searches', [], 'emsco-core'), 'fa fa-list-alt', 'ems_core_query_search_index');
         $menu->addChild(t('key.wysiwyg', [], 'emsco-core'), 'fa fa-edit', Routes::WYSIWYG_INDEX);
-        $menu->addChild(t('key.search', [], 'emsco-core'), 'fa fa-search', 'ems_search_options_index')->setTranslation([]);
         $menu->addChild(t('key.i18n', [], 'emsco-core'), 'fa fa-language', Routes::I18N_INDEX);
         $jobMenu = $menu->addChild(t('key.jobs', [], 'emsco-core'), 'fa fa-terminal', 'job.index');
         $jobMenu->setTranslation([]);

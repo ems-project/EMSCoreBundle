@@ -101,4 +101,9 @@ final class QuerySearchRepository extends ServiceEntityRepository
 
         return $querySearch;
     }
+
+    public function getDefault(): ?QuerySearch
+    {
+        return $this->findOneBy(['default' => true]);
+    }
 }

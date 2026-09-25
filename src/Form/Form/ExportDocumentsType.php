@@ -32,7 +32,7 @@ class ExportDocumentsType extends AbstractType
         /** @var ExportDocuments $data */
         $data = $builder->getData();
 
-        $formatChoices = ['JSON export' => 'json'];
+        $formatChoices = ['JSON' => 'json'];
         /** @var Template $template */
         foreach ($data->getContentType()->getTemplates() as $template) {
             if (RenderOptionType::EXPORT == $template->getRenderOption() && $template->getBody()) {
@@ -47,16 +47,22 @@ class ExportDocumentsType extends AbstractType
                 'data' => $data->getQuery(),
             ])
             ->add('format', ChoiceType::class, [
+                'label' => t('field.format', [], 'emsco-core'),
+                'choice_translation_domain' => false,
                 'choices' => $formatChoices,
             ])
             ->add('environment', EnvironmentPickerType::class, [
+                'label' => t('field.environment', [], 'emsco-core'),
             ])
             ->add('withBusinessKey', CheckboxType::class, [
+                'label' => t('field.with_business_key', [], 'emsco-core'),
                 'data' => true,
                 'required' => false,
             ])
             ->add('export', SubmitEmsType::class, [
-                'label' => 'Export '.$data->getContentType()->getPluralName(),
+                'label' => t('action.export_content_type', [
+                    'pluralName' => $data->getContentType()->getPluralName(),
+                ], 'emsco-core'),
                 'attr' => ['class' => 'btn btn-primary btn-sm ', 'data-testid' => 'btn-action-export'],
                 'icon' => 'fa fa-archive',
             ]);

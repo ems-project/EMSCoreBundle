@@ -45,6 +45,11 @@ class Routes
     final public const string ADMIN_MANAGED_ALIAS_ADD = 'emsco_admin_managed_alias_add';
     final public const string ADMIN_MANAGED_ALIAS_DELETE = 'emsco_admin_managed_alias_delete';
     final public const string ADMIN_MANAGED_ALIAS_EDIT = 'emsco_admin_managed_alias_edit';
+    final public const string ADMIN_QUERY_SEARCH_INDEX = 'ems_core_query_search_index';
+    final public const string ADMIN_QUERY_SEARCH_ADD = 'ems_core_query_search_add';
+    final public const string ADMIN_QUERY_SEARCH_EDIT = 'ems_core_query_search_edit';
+    final public const string ADMIN_QUERY_SEARCH_DELETE = 'ems_core_query_search_delete';
+    final public const string ADMIN_QUERY_SEARCH_SET_AS_DEFAULT = 'ems_core_query_search_set_as_default';
 
     final public const string AUTH_TOKEN_LOGIN = 'emsco_auth_token_login';
     final public const string BROWSE_UPLOADED_FILES = 'emsco_browse_uploaded_files';

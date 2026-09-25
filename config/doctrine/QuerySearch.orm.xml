@@ -28,6 +28,14 @@
       </join-table>
     </many-to-many>
 
+    <field name="default" column="default_query_search" type="boolean">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+
+    <one-to-many field="contentTypesHavingThisAsDefault" target-entity="EMS\CoreBundle\Entity\ContentType" mapped-by="querySearch"/>
+
     <field name="created" type="datetime"/>
     <field name="modified" type="datetime"/>
     <lifecycle-callbacks>

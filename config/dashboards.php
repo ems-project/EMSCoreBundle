@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use EMS\CoreBundle\Core\Dashboard\DashboardService;
+use EMS\CoreBundle\Core\Dashboard\Services\AdvancedSearch;
 use EMS\CoreBundle\Core\Dashboard\Services\Export;
 use EMS\CoreBundle\Core\Dashboard\Services\RevisionTask;
 use EMS\CoreBundle\Core\Dashboard\Services\Template;
+use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\EnvironmentRepository;
 
 return static function (ContainerConfigurator $container) {
     $services = $container->services();
@@ -42,4 +45,21 @@ return static function (ContainerConfigurator $container) {
             '%ems_core.template_namespace%',
         ])
         ->tag('ems.dashboard', ['alias' => 'revision_task']);
+
+    $services->set('ems_core.dashboard.advanced_search', AdvancedSearch::class)
+        ->args([
+            service('emsco.logger'),
+            service('twig'),
+            service('request_stack'),
+            service('form.factory'),
+            service('router'),
+            service('ems_common.storage.manager'),
+            service('ems.service.search'),
+            service('ems_common.service.elastica'),
+            service(ContentTypeRepository::class),
+            service(EnvironmentRepository::class),
+            '%ems_core.paging_size%',
+            '%ems_core.template_namespace%',
+        ])
+        ->tag('ems.dashboard', ['alias' => 'advanced_search']);
 };

@@ -17,6 +17,6 @@
 		{% endif  %}
 	{% endif %}
 	{% if label is defined %}
-		{{ label|trans }}
+		{{ label is ems_translatable_message ? label|trans : label }}
 	{% endif %}
 </a>

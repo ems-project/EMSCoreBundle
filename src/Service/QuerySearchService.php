@@ -11,6 +11,7 @@ use EMS\CommonBundle\Elasticsearch\Response\Response as CommonResponse;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Search\Search;
 use EMS\CommonBundle\Service\ElasticaService;
+use EMS\CoreBundle\Core\Dashboard\Services\AdvancedSearch;
 use EMS\CoreBundle\Core\Document\DataLinks;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -53,6 +54,12 @@ final readonly class QuerySearchService implements EntityServiceInterface
     public function delete(QuerySearch $querySearch): void
     {
         $label = $querySearch->getLabel();
+        $count = $querySearch->getContentTypesHavingThisAsDefault()->count();
+        if ($count > 0) {
+            $this->logger->messageError(t('message.cant_delete_query_search', ['label' => $label, 'count' => $count], 'emsco-core'));
+
+            return;
+        }
         $this->querySearchRepository->delete($querySearch);
         $this->logger->messageWarning(t('message.query_search_deleted', ['label' => $label], 'emsco-core'));
     }
@@ -160,12 +167,8 @@ final readonly class QuerySearchService implements EntityServiceInterface
         }
     }
 
-    public function querySearchDataLinks(DataLinks $dataLinks): void
+    public function querySearchDataLinks(DataLinks $dataLinks, QuerySearch $querySearch): void
     {
-        $querySearch = $this->getOneByName($dataLinks->getQuerySearchName());
-        if (!$querySearch instanceof QuerySearch) {
-            throw new \RuntimeException(\sprintf('QuerySearch %s not found', $dataLinks->getQuerySearchName()));
-        }
         $encodedPattern = Json::encode($dataLinks->getPattern());
         $encodedPattern = \substr($encodedPattern, 1, \strlen($encodedPattern) - 2);
 
@@ -274,8 +277,24 @@ final readonly class QuerySearchService implements EntityServiceInterface
         $aliases = $this->getAliasesFromEnvironments($querySearch->getEnvironments());
         $query = Json::decode($query);
         $search = $this->elasticaService->convertElasticsearchBody($aliases, [], $query);
-        $search->addTermsAggregation(AggregateOptionService::CONTENT_TYPES_AGGREGATION, EMSSource::FIELD_CONTENT_TYPE, 30);
+        $search->addTermsAggregation(AdvancedSearch::CONTENT_TYPES_AGGREGATION, EMSSource::FIELD_CONTENT_TYPE, 30);
 
         return $search;
+    }
+
+    public function setAsDefault(QuerySearch $querySearch): void
+    {
+        if (null !== $defaultQuerySearch = $this->querySearchRepository->getDefault()) {
+            $defaultQuerySearch->setDefault(false);
+            $this->update($defaultQuerySearch);
+        }
+
+        $querySearch->setDefault(true);
+        $this->update($querySearch);
+    }
+
+    public function getDefault(): ?QuerySearch
+    {
+        return $this->querySearchRepository->getDefault();
     }
 }

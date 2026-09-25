@@ -7,12 +7,12 @@ namespace EMS\CoreBundle\Form\Form;
 use EMS\CoreBundle\Form\Field\ContentTypePickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\IconTextType;
-use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * @extends AbstractType<mixed>
@@ -29,16 +29,17 @@ class SearchFieldOptionType extends AbstractType
         $builder
         ->add('name', IconTextType::class, [
             'icon' => 'fa fa-tag',
-            'label' => "Search Field Option's name",
+            'label' => t('field.name', [], 'emsco-core'),
         ])
         ->add('field', TextType::class, [
-            'label' => 'Search Field',
+            'label' => t('field.field', [], 'emsco-core'),
         ])
         ->add('icon', IconPickerType::class, [
             'required' => false,
         ])->add('operators', ChoiceType::class, [
             'multiple' => true,
             'required' => false,
+            'label' => t('field.operators', [], 'emsco-core'),
             'choices' => [
                 'Query (and)' => 'query_and',
                 'Query (or)' => 'query_or',
@@ -50,32 +51,9 @@ class SearchFieldOptionType extends AbstractType
                 'Match phrase prefix' => 'match_phrase_prefix',
             ],
         ])->add('contentTypes', ContentTypePickerType::class, [
+            'label' => t('field.content_types', [], 'emsco-core'),
             'multiple' => true,
             'required' => false,
-        ])->add('save', SubmitEmsType::class, [
-            'attr' => [
-                'class' => 'btn btn-primary btn-sm ',
-                'data-testid' => 'btn-action-save',
-            ],
-            'icon' => 'fa fa-save',
-        ]);
-
-        if (!$options['createform']) {
-            $builder->add('remove', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary btn-sm ',
-                    'data-testid' => 'btn-action-remove',
-                ],
-                'icon' => 'fa fa-trash',
-            ]);
-        }
-    }
-
-    #[\Override]
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'createform' => false,
         ]);
     }
 }

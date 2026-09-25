@@ -16,6 +16,15 @@ action:
     add_sort_option: 'Ajouter une option de tri'
     add_task: 'Ajouter une tâche'
     add_to_release: 'Ajouter à la release'
+    add_type: |-
+        {type, select,
+            aggregate_option   {Ajouter une option d'agrégation}
+            filter   {Ajouter un filtre}
+            search_field_option   {Ajouter une option de champ de recherche}
+            sort_option   {Ajouter une option de tri}
+            other   {Ajouter}
+        }
+    apply_filters: 'Appliquer les filtres'
     approve: Approuver
     attach: Attacher
     browse_server: 'Parcourir le serveur'
@@ -23,6 +32,7 @@ action:
     change_order: 'Changer l’ordre'
     change_password: 'Changer le mot de passe'
     clear: Effacer
+    clear_sort_options: 'Effacer les options de tri'
     close: Fermer
     collapse: Réduire
     collapse_all: 'Tout réduire'
@@ -59,6 +69,7 @@ action:
     enable: Activer
     exit: Quitter
     export: Exporter
+    export_content_type: 'Exporter {pluralName}'
     export_selected: 'Exporter la sélection'
     extract_content: 'Extraire le contenu'
     forgot_password: 'J’ai oublié mon mot de passe'
@@ -75,6 +86,7 @@ action:
     paste: Coller
     previous: Précédent
     publish: Publier
+    publish_content_type: 'Publier {total} {pluralName}'
     publish_release: 'Publier maintenant'
     put_back: Restaurer
     put_back_selected: 'Restaurer la sélection'
@@ -86,6 +98,14 @@ action:
     reload_page: 'Recharger la page'
     remove: Supprimer
     remove_documents: 'Retirer des documents'
+    remove_type: |-
+        {type, select,
+            aggregate_option   {Supprimer cette option d'agrégation}
+            filter   {Supprimer ce filtre}
+            search_field_option   {Supprimer cette option de champ de recherche}
+            sort_option   {Supprimer cette option de tri}
+            other   {Supprimer}
+        }
     rename: Renommer
     reorder: Réordonner
     reorder_content_type: 'Réordonner le type de contenu « {content_type} »'
@@ -94,12 +114,20 @@ action:
     reset_filters: 'Réinitialiser les filtres'
     revert_to_revision: 'Revenir à cette révision'
     save: Enregistrer
+    save_and_edit_structure: 'Enregistrer et modifier la structure'
+    save_and_reorder: 'Enregistrer et réordonner'
     save_as_draft: 'Enregistrer comme brouillon'
     save_close: 'Enregistrer et fermer'
     save_publish_in: 'Enregistrer et publier dans {environments}'
     save_task: 'Enregistrer la tâche'
+    save_update_mapping: 'Enregistrer et modifier le mapping'
     select_all: 'Tout sélectionner'
     send: Envoyer
+    set_as_default: |-
+        {type, select,
+            query_search   {Définir comme recherche par défaut}
+            other   {Définir par défaut}
+        }
     set_as_default_search: 'Définir comme recherche par défaut'
     set_status_canceled: 'Annuler la release'
     set_status_ready: 'Valider la release'
@@ -237,9 +265,11 @@ field:
     accumulate_file: 'Accumuler dans un seul fichier'
     action_dropdown_label: 'Actions dans {environment}'
     action_dropdown_sr_only: 'Basculer le menu déroulant des actions de {environment}'
+    aggregate_options: "Options d'agrégation"
     alias: Alias
     allowed_remote_hosts: 'Hôtes distants autorisés'
     analyzer: Analyzer
+    ask_for_ouuid: 'Demander l’OUUID'
     asset:
         author: 'Auteur :'
         content: 'Contenu :'
@@ -252,14 +282,18 @@ field:
         mime_type: 'Type MIME :'
         size: 'Taille :'
         title: 'Titre :'
+    asset_field: Asset
     assigned_to: 'Assignée à '
     assignee: Assigné
     attributes: 'Attributs supplémentaires de la requête'
+    auto_publish: 'Publier silencieusement le brouillon et l’enregistrer automatiquement dans l’environnement par défaut'
     available: Disponible
     base_url: 'URL de base'
     boolean_clause: 'Clause booléenne'
     boost: Boost
+    business_id: 'ID métier'
     by_role: 'par rôle {role}'
+    category: Catégorie
     channel: Canal
     char_filter: 'Filtre de caractères'
     circles: Cercles
@@ -284,6 +318,7 @@ field:
     date_created: 'Date de création'
     date_execution: 'Date d’exécution'
     date_expiration: "Date d'expiration"
+    date_from: 'Date de début'
     date_modified: 'Date de modification'
     date_range:
         duration: Durée
@@ -291,13 +326,20 @@ field:
         to: À
     date_run_next: 'Date de prochaine exécution'
     date_run_previous: 'Date d’exécution précédente'
+    date_to: 'Date de fin'
     date_upload: 'Date d’upload'
+    dates_interval_one_day: 'Intervalle de dates d’un jour'
+    dates_read_only: 'Dates en lecture seule'
     deadline: Échéance
+    default_sort_order: 'Ordre de tri par défaut'
+    default_value: 'Valeur par défaut'
     definition: Définition
     delay: 'Délai (en jours)'
     description: Description
+    display: Affichage
     display_name: 'Nom d’affichage'
     docs_count: '# Documents'
+    edit_twig_with_wysiwyg: 'Modifier le template Twig avec un éditeur WYSIWYG'
     editor: Éditeur
     email: Email
     email_content_type: 'Type de contenu (ex. : text/html)'
@@ -331,8 +373,10 @@ field:
     file_info: 'Informations du fichier'
     file_info_apostrophe: 'Informations du fichier'
     filter: Filtre
+    filters: Filtres
     flags: Indicateurs
     form: Formulaire
+    format: Format
     format_tags: 'Tags de format'
     from_sender: 'De {sender}'
     group: Groupe
@@ -345,8 +389,10 @@ field:
     icon: Icône
     id: ID
     index: Index
+    index_twig: 'Template d’index (Twig)'
     indexes: Indexes
     instance: Instance
+    inverted: Inversé
     is_active: Actif
     is_default: 'Par défaut'
     is_dirty: Modifié
@@ -381,10 +427,13 @@ field:
     mcp_response: 'Template de réponse MCP (JSON)'
     message: Message
     mime_type: 'Type MIME'
+    minimum_should_match: 'Le nombre minimal de correspondances doit être respecté'
     name: Nom
     new_version: 'Nouvelle version'
     node_name: 'Nom du nœud'
+    not_blank_new_version: 'Nouvelle version non vide'
     operator: Opérateur
+    operators: Opérateurs
     options: Options
     orientation: Orientation
     ouuid: OUUID
@@ -394,12 +443,14 @@ field:
     pdf_size: 'Format PDF'
     permission: Permission
     plural: Pluriel
+    plural_name: 'Nom pluriel'
     postition_increment_gap: "Écart d'incrément de position"
     public_access: 'Accès public'
     publish_to: 'Publier vers'
     published_label: 'Publié dans {environment}'
     query: Requête
     quick_search: 'Recherche rapide'
+    referer_field_name: 'Nom du champ référent'
     rejected_by: 'Rejetée par'
     rejected_message: 'Message de rejet'
     release_environment_source: 'Environnement source pour la publication'
@@ -422,16 +473,25 @@ field:
     role_trash: Poubelle
     role_view: Voir
     roles: Rôles
+    root_content_type: 'Type de contenu racine'
     search_config: 'Configuration de recherche'
+    search_field_options: 'Options du champ de recherche'
     separator: Séparateur
     severity: Sévérité
     singular: Singulier
+    singular_name: 'Nom singulier'
+    sort: Tri
+    sort_by: 'Trier par'
+    sort_options: 'Options de tri'
+    sort_order: 'Ordre de tri'
     spreadsheet: 'Feuille de calcul'
     status: Statut
     stopwords: 'Mots vides'
     styles_set: 'Jeu de styles'
     table_default_css: 'Attribut class par défaut du tableau'
     tag: Tag
+    tags: Tags
+    template: Template
     template_body: 'Corps du template'
     template_footer: 'Pied du template'
     template_header: 'En-tête du template'
@@ -441,6 +501,7 @@ field:
     title: Tâche
     titles: Titres
     tokenizer: Tokenizer
+    tooltip: Infobulle
     total: Total
     total_deleted: 'Total supprimé'
     total_elastic: 'Total dans ES'
@@ -459,6 +520,9 @@ field:
     user_uploaded: 'Uploadé par'
     username: "Nom d'utilisateur"
     username_or_email: 'Nom d’utilisateur ou adresse e-mail'
+    version_tag: 'Tag de version'
+    web_content: 'Contenu web (disponible dans le champ WYSIWYG comme lien interne)'
+    with_business_key: 'Avec clé métier'
     wysiwyg_profile: 'Profil WYSIWYG'
 help:
     add_first_aggregate_option: 'Cliquez sur « Ajouter une option d’agrégation » pour créer une première option d’agrégation'
@@ -474,7 +538,7 @@ key:
     add_documents: 'Ajouter des documents'
     add_user: 'Ajouter un utilisateur'
     admin: Admin
-    aggregate_option: 'Option d’agrégation'
+    advanced_search: 'Recherche avancée'
     aggregate_options: 'Options d’agrégation'
     align_with: 'Aligner avec'
     all_content_types: 'Tous les types de contenu'
@@ -485,6 +549,7 @@ key:
     anonymous_user: 'Utilisateur anonyme'
     api_key: 'Clé API'
     applied: Appliquée
+    ascending: Ascendant
     assigned_to_me: 'Assignées à moi'
     assignees: Assignés
     attachment: 'Pièce jointe'
@@ -513,6 +578,7 @@ key:
     customized: Personnalisé
     dashboards: 'Tableaux de bord'
     delayed_unassigned_shards: 'Shards non assignés retardés'
+    descending: Descendant
     discard_modifications: 'Abandonner les modifications non enregistrées'
     document: Document
     documentation: Documentation
@@ -526,12 +592,14 @@ key:
     email_notification_lowercase: 'notification par e-mail'
     email_or_username: 'E-mail ou nom d’utilisateur'
     empty: Vide
+    environments: Environnements
     environments_external: 'Environnements externes'
     environments_local: 'Environnements locaux'
     error: Erreur
     excel_export: 'Export Excel'
     export_documents: 'Exporter les documents'
     failed_jobs: 'Jobs échoués'
+    filter: Filtre
     filters: Filtres
     finalize: Finaliser
     finalized_by: 'Finalisée par'
@@ -541,6 +609,8 @@ key:
     form_submissions: 'Soumissions de formulaire'
     forms: Formulaires
     groups: Groupes
+    gt: 'Plus grand que'
+    gte: 'Plus grand ou égal à'
     history: Historique
     home: Accueil
     i18n: I18N
@@ -564,6 +634,8 @@ key:
     login: Identifiant
     logs: Logs
     loop_count: '#'
+    lt: 'Plus petit que'
+    lte: 'Plus petit ou égal à'
     lucene_version: 'Version de Lucene'
     mail_action_approved: approuvée
     mail_action_assignee_changed: 'assigné modifié'
@@ -573,11 +645,16 @@ key:
     mail_action_rejected: rejetée
     mail_action_updated: 'mise à jour'
     managed_aliases: 'Alias gérés'
+    match_and: 'Correspondance (et)'
+    match_or: 'Correspondance (ou)'
+    match_phrase: 'Correspondance exacte'
+    match_phrase_prefix: 'Correspondance de préfixe de phrase'
     mcp: MCP
     mcp_prompts: 'Prompts MCP'
     mcp_resources: 'Ressources MCP'
     mcp_tools: 'Outils MCP'
-    more_info: 'plus d’informations'
+    must: Doit
+    must_not: 'Ne doit pas'
     new_password: 'Nouveau mot de passe'
     new_password_confirmation: 'Répéter le nouveau mot de passe'
     new_user: 'Nouvel utilisateur'
@@ -607,6 +684,7 @@ key:
     pendings: 'En attente'
     permission_overview_singular: 'Vue d’ensemble des permissions'
     portrait: Portrait
+    prefix: Préfixe
     prefix_instance_id: 'Préfixer l’alias avec l’ID de l’instance'
     previous_revision: 'Révision précédente'
     progress: Progression
@@ -615,6 +693,8 @@ key:
     public_view: 'Disponible publiquement (sans authentification)'
     publishers: Publieurs
     push_menu: 'Menu principal'
+    query_and: 'Requête (et)'
+    query_or: 'Requête (ou)'
     query_search: 'Recherche par requête'
     query_searches: QuerySearch
     raw_view: 'Vue brute'
@@ -636,19 +716,15 @@ key:
     schedule_tag: 'Utilisé pour identifier les workers (ex. CLI) qui exécuteraient le job à distance'
     scheduled: Planifiée
     search: Recherche
-    search_field_option: 'Option de champ de recherche'
     search_field_options: 'Options de champ de recherche'
-    search_in_my_circle: 'Dans mon {name}'
-    search_in_plural: 'Rechercher dans {plural}'
     search_options: 'Options de recherche'
-    searches: Recherches
     selected: Sélectionné
     sent: Envoyées
     settings: Paramètres
+    should: Devrait
     show_search_form: 'Afficher le formulaire de recherche'
     simplified_ui: 'Interfaces simplifiées'
     sort_by: 'Trier par'
-    sort_option: 'Option de tri'
     sort_options: 'Options de tri'
     sort_options_lowercase: 'Options de tri'
     specif_roles_abbrev: 'Rôles spéc.'
@@ -667,6 +743,7 @@ key:
     task_status_rejected: Rejetée
     tasks: Tâches
     template: Modèle
+    term: Terme
     textarea_counter: '{count} caractères'
     tiptap: Tiptap
     title: Titre
@@ -681,7 +758,6 @@ key:
     uploaded_files_logs: 'Logs des fichiers uploadés'
     user_administration: 'Administration des utilisateurs'
     user_management: 'Gestion des utilisateurs'
-    user_name_placeholder: '{name}'
     user_profile_picture_alt: 'Photo de profil de l’utilisateur'
     users: Utilisateurs
     version: Version
@@ -720,6 +796,7 @@ message:
     asset_extract_file_too_large: 'Ce fichier étant plus volumineux ({filesize}) que {max_size}, son contenu n''a pas été extrait automatiquement. Vous pouvez forcer l''extraction ou le spécifier manuellement dans le menu "Info".'
     cancel_last_modifications_confirm: 'Annuler les dernières modifications ?'
     cancel_non_saved_modifications: 'Annuler les modifications non enregistrées'
+    cant_delete_query_search: '{1} La recherche {label} est toujours liée à un type de contenu et ne peut pas être supprimée.|]1,Inf[ {count} La recherche {label} est toujours liée à {count} types de contenu et ne peut pas être supprimée.'
     channel_alias_not_found: 'Le canal "{label}" ne peut pas être enregistré car son alias "{alias}" est manquant'
     channel_deleted: 'Le canal "{name}" a été supprimé'
     collection_added_items: '{0} Aucun élément n’a été ajouté.|{1} Un élément a été ajouté.|]1,Inf[ {count} éléments ont été ajoutés.'
@@ -1012,7 +1089,6 @@ message:
     schedule_created: 'La planification "{name}" a été créée'
     schedule_deleted: 'La planification "{name}" a été supprimée'
     schedule_updated: 'La planification "{name}" a été mise à jour'
-    search_deleted: 'Une recherche a été supprimée'
     search_field_option_missing: 'Cliquez sur « Ajouter une option de champ de recherche » pour créer une première option de champ de recherche'
     search_paging_limit_exceeded: 'La pagination est limitée aux {paging} premiers éléments, {total} documents trouvés'
     search_placeholder: Rechercher...
@@ -1021,11 +1097,8 @@ message:
             =-1   {Le résultat de recherche est manquant}
             =0    {Aucun résultat trouvé}
             =1    {1 document trouvé}
-            other {# documents trouvés}
+            other {{total} documents trouvés}
         }
-    search_result_limited: 'Le résultat de recherche est limité aux {total} premiers documents'
-    search_set_as_default: 'Cette recherche a été définie comme recherche par défaut'
-    search_set_as_default_for_content_type: 'Cette recherche a été définie comme formulaire de recherche par défaut pour le type de contenu {content_type}'
     select_new_location: 'Sélectionner un nouvel emplacement :'
     show_finished_tasks: 'Afficher les tâches terminées ({number})'
     sign_in_start_session: 'Connectez-vous pour démarrer votre session'
@@ -1235,8 +1308,6 @@ title:
     reorder_form_fields: 'Réordonner les champs du formulaire : {label}'
     reset_password: 'Réinitialiser le mot de passe'
     revisions_of_content_type: 'Révisions de {contentType} : {title}'
-    search_engine_results: 'Moteur de recherche : {total} résultats'
-    search_result_error: 'Erreur avec le résultat de la recherche'
     select_environments_to_compare: 'Sélectionner les environnements à comparer'
     select_your_options: 'Sélectionnez vos options'
     specific_permissions_for: 'Permission pour {content_type_singular_name}'

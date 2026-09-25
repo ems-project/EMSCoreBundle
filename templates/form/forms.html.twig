@@ -23,9 +23,9 @@
 
 {% block emsco_form_table_column_data_value_bool %}
     {%- if attribute(line.data, column.attribute)|default(false) -%}
-        <i class="fa fa-check-square-o" title="{{ 'option.enabled'|trans({}, 'emsco-core') }}"></i> <span class="sr-only">{{ 'option.enabled'|trans({}, 'emsco-core') }}</span>
+        <i class="fa fa-check-{{ column.iconType }}-o" title="{{ 'option.enabled'|trans({}, 'emsco-core') }}"></i> <span class="sr-only">{{ 'option.enabled'|trans({}, 'emsco-core') }}</span>
     {%- else -%}
-        <i class="fa fa-square-o" title="{{ 'option.disabled'|trans({}, 'emsco-core') }}"></i> <span class="sr-only">{{ 'option.disabled'|trans({}, 'emsco-core') }}</span>
+        <i class="fa fa-{{ column.iconType }}-o" title="{{ 'option.disabled'|trans({}, 'emsco-core') }}"></i> <span class="sr-only">{{ 'option.disabled'|trans({}, 'emsco-core') }}</span>
     {%- endif -%}
 {% endblock emsco_form_table_column_data_value_bool %}
 

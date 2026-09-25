@@ -14,6 +14,7 @@ use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Form\Data\TableAbstract;
 use EMS\CoreBundle\Form\Form\QuerySearchType;
 use EMS\CoreBundle\Form\Form\TableType;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\QuerySearchService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -50,7 +51,7 @@ final class QuerySearchController extends AbstractController
                 default => $this->logger->messageError(t('message.invalid_table_action', [], 'emsco-core')),
             };
 
-            return $this->redirectToRoute('ems_core_query_search_index');
+            return $this->redirectToRoute(Routes::ADMIN_QUERY_SEARCH_INDEX);
         }
 
         return new Page([
@@ -72,7 +73,7 @@ final class QuerySearchController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->querySearchService->update($querySearch);
 
-            return $this->redirectToRoute('ems_core_query_search_index');
+            return $this->redirectToRoute(Routes::ADMIN_QUERY_SEARCH_INDEX);
         }
 
         return new Page([
@@ -93,7 +94,7 @@ final class QuerySearchController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->querySearchService->update($querySearch);
 
-            return $this->redirectToRoute('ems_core_query_search_index');
+            return $this->redirectToRoute(Routes::ADMIN_QUERY_SEARCH_INDEX);
         }
 
         return new Page([
@@ -110,7 +111,14 @@ final class QuerySearchController extends AbstractController
     {
         $this->querySearchService->delete($querySearch);
 
-        return $this->redirectToRoute('ems_core_query_search_index');
+        return $this->redirectToRoute(Routes::ADMIN_QUERY_SEARCH_INDEX);
+    }
+
+    public function setAsDefault(QuerySearch $querySearch): RedirectResponse
+    {
+        $this->querySearchService->setAsDefault($querySearch);
+
+        return $this->redirectToRoute(Routes::ADMIN_QUERY_SEARCH_INDEX);
     }
 
     private function breadcrumb(): Navigation
@@ -118,7 +126,7 @@ final class QuerySearchController extends AbstractController
         return Navigation::admin()->add(
             label: t('key.query_search', [], 'emsco-core'),
             icon: 'fa fa-list-alt',
-            route: 'ems_core_query_search_index',
+            route: Routes::ADMIN_QUERY_SEARCH_INDEX,
         );
     }
 }

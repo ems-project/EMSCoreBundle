@@ -1,0 +1,239 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'emsco-core' %}
+
+{% set paginationPath = app.request.get('_route') %}
+{% set currentFilters = app.request.query|merge({name: dashboard.name}) %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('emsco_dashboard', {name: dashboard.name}) }}"><i class="{{ dashboard.icon }}"></i> {{ dashboard.label }}</a></li>
+        {% block breadcrumb_items %}{% endblock breadcrumb_items %}
+    </ol>
+{% endblock %}
+
+{% block title %}{{ dashboard.label }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+{% block subtitle %}{% if response %}<small><span class=" badge">{{ 'message.search_result_count'|trans({ total: response.formattedTotal|default(-1), count: response.total|default(-1) }) }}</span></small>{% endif %}{% endblock %}
+
+{% block pagination %}
+    {% if lastPage > 1 %}
+        <div class="box-header">
+            {% include '@EMSCore/elements/pagination.html.twig' with {
+                'lastPage': lastPage,
+                'currentPage': page,
+                'currentFilters': currentFilters,
+                'paginationPath': paginationPath,
+                'showAlwaysFirstAndLast': false
+            } %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block results %}
+    {% for result in response.documents %}
+        <div class="panel panel-default">
+            <div class="panel-heading" data-testid="search-page-item">
+                {% if types.(result.contentType) is defined %}
+                    <span class="text-{{ types.(result.contentType).color }}">
+					  	<i class="{{ types.(result.contentType).icon }}"></i>
+						{% if form.vars.data.environments|length != 1 %}
+                            {{ types.(result.contentType).singularName }} |
+                        {% endif %}
+
+                        {% set resultLabel = result|emsco_display %}
+                        {{ resultLabel }}
+                        {% if resultLabel != result.id or emsco_is_super()  %}<small>({{ result.id }})</small>{% endif %}
+			  		</span>
+                {% else %}
+                    <i class="fa fa-question"></i>
+                    {{ result.contentType|humanize }} | {{ result.id }}
+                {% endif %}
+
+            </div>
+            {% if result.highlight is defined and result.highlight %}
+                <div class="panel-body">
+                    <div class="col-xs-12">
+                        {{ result.highlight._all.0|e|replace({'&lt;em&gt;': '<em>', '&lt;/em&gt;': '</em>'})|raw }}
+                    </div>
+                </div>
+            {% endif %}
+            {% if types.(result.contentType) is defined and types.(result.contentType).indexTwig %}
+                <div class="panel-body">
+                    <div class="col-xs-12">
+                        {{
+                        types.(result.contentType).indexTwig|emsco_generate_from_template({
+                            environment: indexes.(result.index),
+                            contentType: types.(result.contentType),
+                            object: result,
+                            source: result.source
+                        })|raw
+                        }}
+                    </div>
+                </div>
+            {% endif %}
+            <div class="box-footer">
+                {% if types.(result.contentType) is defined %}
+                    {% include '@EMSCore/elements/object-toolbar.html.twig' with {
+                        environment: indexes.(result.index),
+                        contentType: types.(result.contentType),
+                        object: result.raw,
+                    }%}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block sort_option %}
+    {% if options.sortOptions|default([])|length %}
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title"><i class="fa fa-sort-alpha-asc"></i> {{ 'key.sort_options_lowercase'|trans }}</h3>
+            </div>
+            <div class="box-body">
+                {% for option in options.sortOptions %}
+                    {% set active = option.field == search.sortBy %}
+                    {% set order = active ? search.sortOrder : option.inverted ? 'desc' : 'asc' %}
+                    <a href="{{ path(paginationPath, currentFilters|merge({sortBy: option.field})) }}" class="btn btn-block btn-social btn-primary {% if active %} active{% endif %}">
+                        <i class="{% if option.icon %}{{ option.icon }}{% else %}fa fa-sort-alpha-asc{% endif %}"></i>
+                        {{ option.name }}
+                        {% if active %}
+                            <i class="fa fa-sort-{{ order }} pull-right"></i>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+                {% if search.sortBy %}
+                    <a href="{{ path(paginationPath, currentFilters|merge({ clearSort: true })) }}" class="btn btn-block btn-social btn-primary">
+                        <i class="fa fa-remove"></i>
+                        {{ 'action.clear_sort_options'|trans }}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block content_types_facet %}
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title"><i class="fa fa-sitemap"></i> {{ 'key.content_types'|trans }}</h3>
+        </div>
+        <div class="box-body">
+            {% for index in response.getAggregation('types').buckets %}
+                {% if types.(index.key) is defined %}
+                    {% set icon = types.(index.key).icon|default('fa fa-book') %}
+                    {% set color = types.(index.key).color|default('gray') %}
+                    {% set label = index.count > 1 ? types.(index.key).pluralName : types.(index.key).singularName %}
+                {% else %}
+                    {% set icon = 'fa fa-question' %}
+                    {% set color = 'gray' %}
+                    {% set label = index.key|humanize %}
+                {% endif %}
+                <a href="{{ path(paginationPath, currentFilters|merge({ contentType: index.key })) }}" class="btn btn-block btn-social bg-{{ color }}">
+                    <i class="{{ icon }}"></i>
+                    {{ label }}
+                    <span class=" badge pull-right">{{ index.count }}</span>
+                </a>
+            {% endfor %}
+            {% if response.getAggregation('types').raw.sum_other_doc_count > 0 %}
+                <a href="#" class="disabled btn btn-block btn-social btn-gray">
+                    <i class="fa fa-question"></i>
+                    {{ 'key.other'|trans }}
+                    <span class=" badge pull-right">{{ response.getAggregation('types').raw.sum_other_doc_count }}</span>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block environments_facet %}
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title"><i class="fa fa-database"></i> {{ 'key.environments'|trans }}</h3>
+        </div>
+        <div class="box-body">
+            {% for index in response.getAggregation('indexes').buckets %}
+                <a href="{{ path(paginationPath, currentFilters|merge({ environment: indexes.(index.key).name })) }}" class="btn btn-block btn-social bg-{{ indexes.(index.key).color|default('gray') }}">
+                    <i class="fa fa-eye"></i>
+                    {{ indexes.(index.key).label }}
+                    <span class=" badge pull-right">
+                        {{ index.count }}
+                    </span>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block aggregations_facets %}
+    {% for id, option in aggregateOptions %}
+        {% set aggregation = response.getAggregation(id) %}
+        {% if aggregation and (aggregation.buckets|length > 0 or aggregation.count > 0) %}
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title"><i class="fa fa-filter"></i> {{ option.name }}</h3>
+                </div>
+                <div class="box-body">
+                    {{ option.template|emsco_generate_from_template({
+                        'option': option,
+                        'id': id,
+                        'aggregation': aggregation.raw,
+                        'currentFilters': currentFilters,
+                        'paginationPath': paginationPath,
+                        'search': search
+                    })|raw }}
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block publish %}
+    {% if response and uid and form.environments.vars.value|length == 1  and form.contentTypes.vars.value|length == 1  and is_granted(form.contentTypes.vars.value.0|emsco_get_content_type.roles.publish) and form.environments.vars.value|first|emsco_get_environment.managed and response.total > 1 %}
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-footer with-border">
+                    <div class="btn-group">
+                        {% include '@EMSCore/elements/get-button.html.twig' with {
+                            'url':  path('search.publish', {uid: uid} ),
+                            'label': 'action.publish_content_type'|trans({ count: response.total, total: response.formattedTotal, pluralName: form.contentTypes.vars.value.0|emsco_get_content_type.pluralName }),
+                            'icon': 'glyphicon glyphicon-open'
+                        }%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div id="search-page-form" class="col-md-12">
+        {% include "@EMSCore/elasticsearch/search-form-filter.html.twig" %}
+    </div>
+
+    <div id="search-page" class="col-md-9">
+        {% if not response or response.totalDocuments <= 0 %}
+            <div class="callout callout-warning">
+                <h4>{{ 'message.notification_no_results'|trans }}</h4>
+                <p>{{ 'message.notification_no_results_for_filter_combo'|trans }}</p>
+            </div>
+        {% else %}
+            <div class="box">
+                {{ block('pagination') }}
+                <div class="box-body">
+                    {{ block('results') }}
+                </div>
+                {{ block('pagination') }}
+            </div>
+        {% endif %}
+    </div>
+    <div id="search-facets" class="col-md-3" data-testid="search-facets">
+        {{ block('sort_option') }}
+        {{ block('aggregations_facets') }}
+        {{ block('content_types_facet') }}
+        {{ block('environments_facet') }}
+    </div>
+    {{ block('publish') }}
+</div>
+{% endblock body %}

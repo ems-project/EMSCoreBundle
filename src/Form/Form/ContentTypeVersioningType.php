@@ -11,6 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -25,6 +27,7 @@ class ContentTypeVersioningType extends AbstractType
     {
         $builder
             ->add('tags', CollectionType::class, [
+                'label' => t('field.tags', [], 'emsco-core'),
                 'entry_type' => TextType::class,
                 'attr' => [
                     'class' => 'a2lix_lib_sf_collection',
@@ -44,7 +47,9 @@ class ContentTypeVersioningType extends AbstractType
                 'label' => false,
                 'mapping' => $options['mapping'],
             ])
-            ->add('options', ContentTypeVersionOptionsType::class);
+            ->add('options', ContentTypeVersionOptionsType::class, [
+                'label' => t('field.options', [], 'emsco-core'),
+            ]);
     }
 
     #[\Override]

@@ -17,7 +17,6 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\Search;
 use EMS\CoreBundle\Repository\RevisionRepository;
-use EMS\CoreBundle\Repository\SearchRepository;
 
 class SearchService
 {
@@ -27,17 +26,8 @@ class SearchService
         private readonly ElasticaService $elasticaService,
         private readonly EnvironmentService $environmentService,
         private readonly ContentTypeService $contentTypeService,
-        private readonly SearchRepository $searchRepository,
         private readonly RevisionRepository $revisionRepository
     ) {
-    }
-
-    /**
-     * @return Search[]
-     */
-    public function getAll(): array
-    {
-        return $this->searchRepository->getAll();
     }
 
     public function generateSearch(Search $search): CommonSearch

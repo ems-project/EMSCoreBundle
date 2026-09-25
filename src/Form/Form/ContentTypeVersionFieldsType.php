@@ -10,6 +10,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -24,18 +26,21 @@ class ContentTypeVersionFieldsType extends AbstractType
     {
         $builder
             ->add(VersionFields::DATE_FROM, ContentTypeFieldPickerType::class, [
+                'label' => t('field.date_from', [], 'emsco-core'),
                 'required' => false,
                 'firstLevelOnly' => true,
                 'mapping' => $options['mapping'],
                 'types' => ['date'],
             ])
             ->add(VersionFields::DATE_TO, ContentTypeFieldPickerType::class, [
+                'label' => t('field.date_to', [], 'emsco-core'),
                 'required' => false,
                 'firstLevelOnly' => true,
                 'mapping' => $options['mapping'],
                 'types' => ['date'],
             ])
             ->add(VersionFields::VERSION_TAG, ContentTypeFieldPickerType::class, [
+                'label' => t('field.version_tag', [], 'emsco-core'),
                 'required' => false,
                 'firstLevelOnly' => true,
                 'mapping' => $options['mapping'],

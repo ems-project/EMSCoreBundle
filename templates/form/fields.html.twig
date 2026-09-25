@@ -1459,3 +1459,10 @@
 {% block _filter_options_synonyms_entry_widget %}
     {{ block('collection_entry_with_grouped_remove') }}
 {% endblock _filter_options_synonyms_entry_widget %}
+
+{% block attributes -%}
+    {%- for attrname, attrvalue in attr|filter(p => p is ems_translatable_message) -%}
+        {%- set attr = attr|merge({(attrname): attrvalue|trans}) -%}
+    {%- endfor -%}
+    {{- parent() -}}
+{%- endblock attributes -%}

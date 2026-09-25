@@ -5,18 +5,14 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Service;
 
 use EMS\CommonBundle\Entity\EntityInterface;
-use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Core\User\UserList;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
-use EMS\CoreBundle\Repository\SearchRepository;
 use EMS\CoreBundle\Repository\UserRepository;
 use EMS\CoreBundle\Roles;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-
-use function Symfony\Component\Translation\t;
 
 class UserService implements EntityServiceInterface
 {
@@ -31,7 +27,6 @@ class UserService implements EntityServiceInterface
         private readonly TokenStorageInterface $tokenStorage,
         private readonly Security $security,
         private readonly UserRepository $userRepository,
-        private readonly SearchRepository $searchRepository,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly array $securityRoles,
     ) {
@@ -211,23 +206,6 @@ class UserService implements EntityServiceInterface
     public function isGrantedRole(string $role): bool
     {
         return $this->security->isGranted($role);
-    }
-
-    public function getSidebarMenu(): Menu
-    {
-        $user = $this->getCurrentUser();
-        $menu = new Menu(t('key.user_name_placeholder', ['name' => $user->getDisplayName()], 'emsco-core'));
-
-        $searches = $this->searchRepository->getByUsername($user->getUsername());
-        if ([] !== $searches) {
-            $link = $menu->addChild(t('key.searches', [], 'emsco-core'), 'fa fa-search', 'elasticsearch.search');
-            $link->setTranslation([]);
-            foreach ($searches as $search) {
-                $link->addChild($search->getName(), '', 'elasticsearch.search', ['searchId' => $search->getId()]);
-            }
-        }
-
-        return $menu;
     }
 
     #[\Override]

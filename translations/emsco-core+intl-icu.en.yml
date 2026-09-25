@@ -16,6 +16,15 @@ action:
     add_sort_option: 'Add a Sort Option'
     add_task: 'Add a task'
     add_to_release: 'Add to release'
+    add_type: |-
+        {type, select,
+            aggregate_option   {Add aggregate option}
+            filter   {Add filter}
+            search_field_option   {Add search field option}
+            sort_option   {Add sort option}
+            other   {Add}
+        }
+    apply_filters: 'Apply filters'
     approve: Approve
     attach: Attach
     browse_server: 'Browse server'
@@ -23,6 +32,7 @@ action:
     change_order: 'Change order'
     change_password: 'Change password'
     clear: Clear
+    clear_sort_options: 'Clear sort options'
     close: Close
     collapse: Collapse
     collapse_all: 'Collapse all'
@@ -59,6 +69,7 @@ action:
     enable: Enable
     exit: Exit
     export: Export
+    export_content_type: 'Export {pluralName}'
     export_selected: 'Export selected'
     extract_content: 'Extract content'
     forgot_password: 'I forgot my password'
@@ -75,6 +86,7 @@ action:
     paste: Paste
     previous: Previous
     publish: Publish
+    publish_content_type: 'Publish {total} {pluralName}'
     publish_release: 'Release now'
     put_back: 'Put back'
     put_back_selected: 'Put back selected'
@@ -86,6 +98,14 @@ action:
     reload_page: 'Reload page'
     remove: Remove
     remove_documents: 'Remove documents'
+    remove_type: |-
+        {type, select,
+            aggregate_option   {Remove this aggregate option}
+            filter   {Remove this filter}
+            search_field_option   {Remove this search field option}
+            sort_option   {Remove this sort option}
+            other   {Remove}
+        }
     rename: Rename
     reorder: Reorder
     reorder_content_type: 'Reorder the content type "{content_type}"'
@@ -94,12 +114,20 @@ action:
     reset_filters: 'Reset filters'
     revert_to_revision: 'Revert to this revision'
     save: Save
+    save_and_edit_structure: 'Save and edit structure'
+    save_and_reorder: 'Save and reorder'
     save_as_draft: 'Save as draft'
     save_close: 'Save and Close'
     save_publish_in: 'Save and publish in {environments}'
     save_task: 'Save task'
+    save_update_mapping: 'Save and edit mapping'
     select_all: 'Select all'
     send: Send
+    set_as_default: |-
+        {type, select,
+            query_search   {Set as default search}
+            other   {Set as default}
+        }
     set_as_default_search: 'Set as default search'
     set_status_canceled: 'Cancel release'
     set_status_ready: 'Validate release'
@@ -237,9 +265,11 @@ field:
     accumulate_file: 'Accumulate in one file'
     action_dropdown_label: 'Actions in {environment}'
     action_dropdown_sr_only: "Toggle dropdown of {environment}'s actions"
+    aggregate_options: 'Aggregate options'
     alias: Alias
     allowed_remote_hosts: 'Allowed remote hosts'
     analyzer: Analyzer
+    ask_for_ouuid: 'Ask for OUUID'
     asset:
         author: 'Author :'
         content: 'Content :'
@@ -252,14 +282,18 @@ field:
         mime_type: 'MIME Type :'
         size: 'Size :'
         title: 'Title :'
+    asset_field: Asset
     assigned_to: 'Assigned to '
     assignee: Assignee
     attributes: 'Request extra attributes'
+    auto_publish: 'Silently publish draft and auto-save into the default environment'
     available: Available
     base_url: 'Base URL'
     boolean_clause: 'Boolean clause'
     boost: Boost
+    business_id: 'Business ID'
     by_role: 'by role {role}'
+    category: Category
     channel: Channel
     char_filter: 'Char filter'
     circles: Circles
@@ -284,6 +318,7 @@ field:
     date_created: 'Date creation'
     date_execution: 'Execution date'
     date_expiration: 'Expiration date'
+    date_from: 'Date from'
     date_modified: 'Date modified'
     date_range:
         duration: Duration
@@ -291,13 +326,20 @@ field:
         to: To
     date_run_next: 'Date next run'
     date_run_previous: 'Date previous run'
+    date_to: 'Date to'
     date_upload: 'Date upload'
+    dates_interval_one_day: 'Dates interval one day'
+    dates_read_only: 'Dates read only'
     deadline: Deadline
+    default_sort_order: 'Default sort order'
+    default_value: 'Default value'
     definition: Definition
     delay: 'Delay (in days)'
     description: Description
+    display: Display
     display_name: 'Display name'
     docs_count: '# Documents'
+    edit_twig_with_wysiwyg: 'Edit the Twig template with a WYSIWYG editor'
     editor: Editor
     email: Email
     email_content_type: 'Content type (ie: text/html)'
@@ -331,8 +373,10 @@ field:
     file_info: 'File information'
     file_info_apostrophe: "File's information"
     filter: Filter
+    filters: Filters
     flags: Flags
     form: Form
+    format: Format
     format_tags: 'Format tags'
     from_sender: 'From {sender}'
     group: Group
@@ -345,8 +389,10 @@ field:
     icon: Icon
     id: ID
     index: Index
+    index_twig: 'Index template (Twig)'
     indexes: Indexes
     instance: Instance
+    inverted: Inverted
     is_active: Active
     is_default: Default
     is_dirty: Dirty
@@ -381,10 +427,13 @@ field:
     mcp_response: 'MCP response template (JSON)'
     message: Message
     mime_type: 'MIME type'
+    minimum_should_match: 'Minimum should match'
     name: Name
     new_version: 'New version'
     node_name: 'Node name'
+    not_blank_new_version: 'Not blank new version'
     operator: Operator
+    operators: Operators
     options: Options
     orientation: Orientation
     ouuid: OUUID
@@ -394,12 +443,14 @@ field:
     pdf_size: 'PDF Size'
     permission: Permission
     plural: Plural
+    plural_name: 'Plural name'
     postition_increment_gap: 'Position increment gap'
     public_access: 'Public Access'
     publish_to: 'Publish to'
     published_label: 'Published in {environment}'
     query: Query
     quick_search: 'Quick search'
+    referer_field_name: 'Referer field name'
     rejected_by: 'Rejected by'
     rejected_message: 'Rejected message'
     release_environment_source: 'Source Environment for publication'
@@ -422,16 +473,25 @@ field:
     role_trash: Trash
     role_view: View
     roles: Roles
+    root_content_type: 'Root content type'
     search_config: 'Search config'
+    search_field_options: 'Search field options'
     separator: Separator
     severity: Severity
     singular: Singular
+    singular_name: 'Singular name'
+    sort: Sort
+    sort_by: 'Sort by'
+    sort_options: 'Sort options'
+    sort_order: 'Sort order'
     spreadsheet: Spreadsheet
     status: Status
     stopwords: Stopwords
     styles_set: 'Styles set'
     table_default_css: 'Default Table class attribute'
     tag: Tag
+    tags: Tags
+    template: Template
     template_body: 'Template body'
     template_footer: 'Template footer'
     template_header: 'Template header'
@@ -441,6 +501,7 @@ field:
     title: Task
     titles: Titles
     tokenizer: Tokenizer
+    tooltip: Tooltip
     total: Total
     total_deleted: 'Total deleted'
     total_elastic: 'Total in ES'
@@ -459,6 +520,9 @@ field:
     user_uploaded: 'Uploaded by'
     username: Username
     username_or_email: 'Username or email address'
+    version_tag: 'Version tag'
+    web_content: 'Web content (available in WYSIWYG field as internal link)'
+    with_business_key: 'With business key'
     wysiwyg_profile: 'WYSIWYG profile'
 help:
     add_first_aggregate_option: "Click on 'Add an aggregate option' to create a first Aggregate Option: Click on 'Add an aggregate option' to create a first Aggregate Option"
@@ -474,7 +538,7 @@ key:
     add_documents: 'Add documents'
     add_user: 'Add user'
     admin: Admin
-    aggregate_option: 'Aggregate Option'
+    advanced_search: 'Advanced search'
     aggregate_options: 'Aggregate options'
     align_with: 'Align with'
     all_content_types: 'All Content Types'
@@ -485,6 +549,7 @@ key:
     anonymous_user: 'Anonymous user'
     api_key: 'API key'
     applied: Applied
+    ascending: Ascending
     assigned_to_me: 'Assigned to me'
     assignees: Assignees
     attachment: Attachment
@@ -513,6 +578,7 @@ key:
     customized: Customized
     dashboards: Dashboards
     delayed_unassigned_shards: 'Delayed unassigned shards'
+    descending: Descending
     discard_modifications: 'Discard non-saved modifications'
     document: Document
     documentation: Documentation
@@ -526,12 +592,14 @@ key:
     email_notification_lowercase: 'e-mail notification'
     email_or_username: 'Email or Username'
     empty: Empty
+    environments: Environments
     environments_external: 'External environments'
     environments_local: 'Local environments'
     error: Error
     excel_export: 'Excel export'
     export_documents: 'Export documents'
     failed_jobs: 'Failed jobs'
+    filter: Filter
     filters: Filters
     finalize: Finalize
     finalized_by: 'Finalized by'
@@ -541,6 +609,8 @@ key:
     form_submissions: 'Form Submissions'
     forms: Forms
     groups: Groups
+    gt: 'Greater than'
+    gte: 'Greater than or equal to'
     history: History
     home: Home
     i18n: I18N
@@ -564,6 +634,8 @@ key:
     login: Login
     logs: Logs
     loop_count: '#'
+    lt: 'Less than'
+    lte: 'Less than or equal to'
     lucene_version: 'Lucene version'
     mail_action_approved: approved
     mail_action_assignee_changed: 'changed assignee'
@@ -573,11 +645,16 @@ key:
     mail_action_rejected: rejected
     mail_action_updated: updated
     managed_aliases: 'Managed aliases'
+    match_and: 'Match (and)'
+    match_or: 'Match (or)'
+    match_phrase: 'Match phrase'
+    match_phrase_prefix: 'Match phrase prefix'
     mcp: MCP
     mcp_prompts: 'MCP prompts'
     mcp_resources: 'MCP resources'
     mcp_tools: 'MCP tools'
-    more_info: 'more info'
+    must: Must
+    must_not: 'Must not'
     new_password: 'New password'
     new_password_confirmation: 'Repeat new password'
     new_user: 'New user'
@@ -607,6 +684,7 @@ key:
     pendings: Pendings
     permission_overview_singular: 'Permission Overview'
     portrait: Portrait
+    prefix: Prefix
     prefix_instance_id: 'Prefix alias with instance ID'
     previous_revision: 'Previous revision'
     progress: Progress
@@ -615,6 +693,8 @@ key:
     public_view: 'Publicly available (without authentication)'
     publishers: Publishers
     push_menu: 'Push menu'
+    query_and: 'Query (and)'
+    query_or: 'Query (or)'
     query_search: 'Query search'
     query_searches: QuerySearch
     raw_view: 'Raw view'
@@ -636,19 +716,15 @@ key:
     schedule_tag: 'Used to indentify workers (e.g. CLI) which would remotely execute the job'
     scheduled: Scheduled
     search: Search
-    search_field_option: 'Search Field Option'
     search_field_options: 'Search field options'
-    search_in_my_circle: 'In my {name}'
-    search_in_plural: 'Search in {plural}'
     search_options: 'Search options'
-    searches: Searches
     selected: Selected
     sent: Sent
     settings: Settings
+    should: Should
     show_search_form: 'Show search form'
     simplified_ui: 'Simplified UI'
     sort_by: 'Sort by'
-    sort_option: 'Sort Option'
     sort_options: 'Sort Options'
     sort_options_lowercase: 'Sort options'
     specif_roles_abbrev: 'Specif. Roles'
@@ -667,6 +743,7 @@ key:
     task_status_rejected: Rejected
     tasks: Tasks
     template: Template
+    term: Term
     textarea_counter: '{count} characters'
     tiptap: Tiptap
     title: Title
@@ -681,7 +758,6 @@ key:
     uploaded_files_logs: 'Uploaded Files Logs'
     user_administration: 'User administration'
     user_management: 'User management'
-    user_name_placeholder: '{name}'
     user_profile_picture_alt: "User profile's picture"
     users: Users
     version: Version
@@ -720,6 +796,7 @@ message:
     asset_extract_file_too_large: 'As this file is larger ({filesize}) than {max_size} its content has not been automatically extracted. You can either force the extraction or specify it manually in the "Info" menu.'
     cancel_last_modifications_confirm: 'Cancel last modifications ?'
     cancel_non_saved_modifications: 'Cancel non-saved modifications'
+    cant_delete_query_search: '{1} The query search {label} is still linked to a content type and cannot be deleted.|]1,Inf[ {count} The query search {label} is still linked to {count} content types and cannot be deleted.'
     channel_alias_not_found: 'The channel "{label}" cannot be registered as its alias "{alias}" is missing'
     channel_deleted: 'The channel "{name}" has been deleted'
     collection_added_items: '{0} Nothing has been added.|{1} One item has been added.|]1,Inf[ {count} items have been added.'
@@ -1012,7 +1089,6 @@ message:
     schedule_created: 'Schedule "{name}" has been created'
     schedule_deleted: 'The schedule "{name}" has been deleted'
     schedule_updated: 'Schedule "{name}" has been updated'
-    search_deleted: 'A search has been deleted'
     search_field_option_missing: "Click on 'Add an search field option' to create a first Search Field Option"
     search_paging_limit_exceeded: 'The paging is limited to the first {paging} items, got {total} documents'
     search_placeholder: Search...
@@ -1021,11 +1097,8 @@ message:
             =-1   {Search result is missing}
             =0    {No results found}
             =1    {1 document found}
-            other {# documents found}
+            other {{total} documents found}
         }
-    search_result_limited: 'The search result is limited to the first {total} documents'
-    search_set_as_default: 'This search has been defined as default search'
-    search_set_as_default_for_content_type: 'This search has been defined as default search form for the content type {content_type}'
     select_new_location: 'Select new location:'
     show_finished_tasks: 'Show finished tasks ({number})'
     sign_in_start_session: 'Sign in to start your session'
@@ -1235,8 +1308,6 @@ title:
     reorder_form_fields: 'Reorder fields of form: {label}'
     reset_password: 'Reset password'
     revisions_of_content_type: 'Revisions of {contentType}: {title}'
-    search_engine_results: 'Search engine: {total} results'
-    search_result_error: 'Error with the search result'
     select_environments_to_compare: 'Select Environments to compare'
     select_your_options: 'Select your options'
     specific_permissions_for: 'Permission for {content_type_singular_name}'

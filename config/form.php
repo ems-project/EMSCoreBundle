@@ -481,8 +481,6 @@ return static function (ContainerConfigurator $container) {
     $services->set(SearchFormType::class)
         ->args([
             service('security.authorization_checker'),
-            service('ems.service.sort_option'),
-            service('ems.service.search_field_option'),
         ])
         ->tag('form.type');
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\Dashboard\Services;
 
 use EMS\CoreBundle\Core\Dashboard\DashboardOptions;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\Entity\Dashboard;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -16,20 +17,20 @@ class Export implements DashboardInterface
     }
 
     #[\Override]
-    public function getResponse(Dashboard $dashboard): Response
+    public function getResponse(Dashboard $dashboard, Navigation $breadcrumb): Response
     {
         $response = new Response();
         try {
-            $body = $dashboard->getOption(DashboardOptions::BODY) ?? '';
+            $body = $dashboard->getNullableStringOption(DashboardOptions::BODY) ?? '';
             $template = $this->twig->createTemplate($body, \sprintf('Body template for dashboard %s', $dashboard->getName()));
             $response->setContent($this->twig->render($template, [
                 'dashboard' => $dashboard,
                 'options' => $dashboard->getOptions(),
             ]));
 
-            $filename = $dashboard->getOption(DashboardOptions::FILENAME) ?? 'filename';
-            $disposition = $dashboard->getOption(DashboardOptions::FILE_DISPOSITION);
-            $mimetype = $dashboard->getOption(DashboardOptions::MIMETYPE);
+            $filename = $dashboard->getNullableStringOption(DashboardOptions::FILENAME) ?? 'filename';
+            $disposition = $dashboard->getNullableStringOption(DashboardOptions::FILE_DISPOSITION);
+            $mimetype = $dashboard->getNullableStringOption(DashboardOptions::MIMETYPE);
 
             if (\is_string($mimetype)) {
                 $response->headers->set('Content-Type', $mimetype);

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use EMS\CoreBundle\Controller\DashboardController;
 use EMS\CoreBundle\Controller\DefaultController;
 use EMS\CoreBundle\Controller\ElasticsearchController;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
@@ -25,7 +26,7 @@ return function (RoutingConfigurator $routes): void {
         ->format('html');
 
     $routes->add('ems_quick_search', '/quick-search')
-        ->controller([ElasticsearchController::class, 'quickSearch'])
-        ->methods(['GET'])
+        ->controller([DashboardController::class, 'quickSearch'])
+        ->methods(['GET', 'POST'])
         ->format('html');
 };

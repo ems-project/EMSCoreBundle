@@ -22,7 +22,6 @@ class ContentTypeRoles implements \ArrayAccess
     final public const string TRASH = 'trash';
     final public const string ARCHIVE = 'archive';
     final public const string SHOW_LINK_CREATE = 'show_link_create';
-    final public const string SHOW_LINK_SEARCH = 'show_link_search';
 
     private const array TYPES = [
         self::VIEW,
@@ -33,7 +32,6 @@ class ContentTypeRoles implements \ArrayAccess
         self::TRASH,
         self::ARCHIVE,
         self::SHOW_LINK_CREATE,
-        self::SHOW_LINK_SEARCH,
     ];
 
     /**
@@ -51,7 +49,6 @@ class ContentTypeRoles implements \ArrayAccess
         return match ($type) {
             self::VIEW, self::CREATE, self::EDIT => Roles::ROLE_AUTHOR,
             self::PUBLISH => Roles::ROLE_PUBLISHER,
-            self::SHOW_LINK_SEARCH, self::SHOW_LINK_CREATE => Roles::ROLE_USER,
             default => 'not-defined',
         };
     }

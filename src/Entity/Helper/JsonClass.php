@@ -148,4 +148,18 @@ class JsonClass implements \JsonSerializable
         }
         $this->updateProperty($property, $names);
     }
+
+    public function replaceByEntityNames(string $property): void
+    {
+        $this->replacedFields[] = $property;
+        $name = null;
+        if (isset($this->properties[$property])) {
+            $entity = $this->properties[$property];
+            if (!$entity instanceof EntityInterface) {
+                throw new \RuntimeException('Unexpected collection entity type');
+            }
+            $name = $entity->getName();
+        }
+        $this->updateProperty($property, $name);
+    }
 }

@@ -25,6 +25,7 @@ use EMS\CoreBundle\Controller\Api\File\ExtractDataController;
 use EMS\CoreBundle\Controller\Api\Form\VerificationController;
 use EMS\CoreBundle\Controller\Api\JobApiController;
 use EMS\CoreBundle\Controller\Api\McpController;
+use EMS\CoreBundle\Controller\Api\Search\SearchController;
 use EMS\CoreBundle\Controller\Api\WebhookSubscriptionController;
 use EMS\CoreBundle\Controller\BrowseController;
 use EMS\CoreBundle\Controller\ChannelController;
@@ -56,7 +57,6 @@ use EMS\CoreBundle\Controller\Revision\DetailController;
 use EMS\CoreBundle\Controller\Revision\EditController;
 use EMS\CoreBundle\Controller\Revision\TaskController;
 use EMS\CoreBundle\Controller\Revision\TrashController;
-use EMS\CoreBundle\Controller\SearchController;
 use EMS\CoreBundle\Controller\TwigElementsController;
 use EMS\CoreBundle\Controller\UploadedFileController;
 use EMS\CoreBundle\Controller\UploadedFileWysiwygController;
@@ -321,7 +321,7 @@ return static function (ContainerConfigurator $container) {
         ->tag('container.service_subscriber')
         ->tag('controller.service_arguments');
 
-    $services->set(\EMS\CoreBundle\Controller\Api\Search\SearchController::class)
+    $services->set(SearchController::class)
         ->args([service('ems_common.service.elastica')])
         ->tag('controller.service_arguments');
 
@@ -425,7 +425,6 @@ return static function (ContainerConfigurator $container) {
             service('translator'),
             service('ems.content_type.view_types'),
             service(ContentTypeRepository::class),
-            service('ems.repository.search'),
             service(RevisionRepository::class),
             service('ems.service.action'),
             service('ems_core.core_ui.flash_message_logger'),
@@ -516,6 +515,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.contenttype'),
             service('ems.service.search'),
             service('ems_common.service.elastica'),
+            service('ems_common.storage.manager'),
             '%ems_core.template_namespace%',
         ])
         ->call('setContainer')
@@ -707,7 +707,6 @@ return static function (ContainerConfigurator $container) {
         ->public()
         ->args([
             service('ems.service.query_search'),
-            service(ElasticsearchController::class),
             service('ems_core.core_document.data_links_factory'),
         ])
         ->call('setContainer')
@@ -836,22 +835,11 @@ return static function (ContainerConfigurator $container) {
             service('ems_common.service.elastica'),
             service('ems.service.data'),
             service('ems.service.asset_extractor'),
-            service('ems.service.environment'),
-            service('ems.service.contenttype'),
-            service('ems.service.revision'),
-            service('ems.service.search'),
             service('security.authorization_checker'),
             service('ems.service.job'),
-            service('ems.service.aggregate_option'),
-            service('ems.service.sort_option'),
-            service('ems.dashboard.manager'),
-            service(ContentTypeRepository::class),
-            service('ems.repository.search'),
-            service(EnvironmentRepository::class),
             service('translator'),
             service('serializer'),
             service('ems.repository.messenger_messages_repository'),
-            '%ems_core.paging_size%',
             '%ems_core.health_check_allow_origin%',
             '%ems_core.template_namespace%',
         ])
@@ -886,25 +874,11 @@ return static function (ContainerConfigurator $container) {
         ->tag('container.service_subscriber')
         ->tag('controller.service_arguments');
 
-    $services->set(SearchController::class)
-        ->public()
-        ->args([
-            service('ems.service.sort_option'),
-            service('ems.service.aggregate_option'),
-            service('ems.service.search_field_option'),
-            service('translator'),
-            '%ems_core.template_namespace%',
-        ])
-        ->call('setContainer')
-        ->tag('container.service_subscriber')
-        ->tag('controller.service_arguments');
-
     $services->set(TwigElementsController::class)
         ->public()
         ->args([
             service('ems.service.asset_extractor'),
             service('ems_common.service.elastica'),
-            service('ems.service.user'),
             service('ems.service.job'),
             service('ems.dashboard.manager'),
             service('ems.service.contenttype'),

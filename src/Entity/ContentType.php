@@ -81,6 +81,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     protected array $fields = [];
     /** @var array<string, bool|string[]> */
     protected ?array $settings = null;
+    protected ?QuerySearch $querySearch = null;
 
     public function __construct()
     {
@@ -855,6 +856,7 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
         $json->removeProperty('dirty');
         $json->removeProperty('active');
         $json->handlePersistentCollections('templates', 'views');
+        $json->replaceByEntityNames('querySearch');
 
         return $json;
     }
@@ -989,5 +991,15 @@ class ContentType extends JsonDeserializer implements \JsonSerializable, EntityI
     public function setSettings(ContentTypeSettings $settings): void
     {
         $this->settings = $settings->getSettings();
+    }
+
+    public function getQuerySearch(): ?QuerySearch
+    {
+        return $this->querySearch;
+    }
+
+    public function setQuerySearch(?QuerySearch $querySearch): void
+    {
+        $this->querySearch = $querySearch;
     }
 }

@@ -74,6 +74,9 @@
         <cascade-remove/>
       </cascade>
     </one-to-many>
+    <many-to-one field="querySearch" target-entity="EMS\CoreBundle\Entity\QuerySearch" inversed-by="contentTypesHavingThisAsDefault">
+      <join-column name="query_search_id"/>
+    </many-to-one>
 
     <field name="created" type="datetime"/>
     <field name="modified" type="datetime"/>

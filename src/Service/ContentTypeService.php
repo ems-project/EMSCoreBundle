@@ -20,6 +20,7 @@ use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
+use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
 use EMS\CoreBundle\Entity\UserInterface;
@@ -411,11 +412,39 @@ class ContentTypeService implements EntityServiceInterface
             $environmentName = $data['properties']['environment'] ?? null;
             $environment = \is_string($environmentName) ? $this->environmentService->giveByName($environmentName) : $this->getFirstEnvironment();
         }
-
         $contentType->setEnvironment($environment);
+        $this->syncQuerySearchFromJson($contentType, $data);
         $this->syncActionsFromJson($contentType, $data['properties']['templates'] ?? []);
 
         return $contentType;
+    }
+
+    /**
+     * @param array<mixed> $data
+     */
+    private function syncQuerySearchFromJson(ContentType $contentType, array $data): void
+    {
+        if (!\in_array('querySearch', $data[JsonClass::REPLACED_FIELDS] ?? [], true)) {
+            return;
+        }
+
+        $querySearchName = $data[JsonClass::PROPERTIES_INDEX]['querySearch'] ?? null;
+        if (null === $querySearchName) {
+            $contentType->setQuerySearch(null);
+
+            return;
+        }
+        if (!\is_string($querySearchName)) {
+            throw new \RuntimeException('Unexpected non string querySearch name');
+        }
+
+        /** @var QuerySearch|null $querySearch */
+        $querySearch = $this->doctrine->getManager()->getRepository(QuerySearch::class)->findOneBy(['name' => $querySearchName]);
+        if (null === $querySearch) {
+            throw new \RuntimeException(\sprintf('Could not find querySearch with the name %s', $querySearchName));
+        }
+
+        $contentType->setQuerySearch($querySearch);
     }
 
     /**
@@ -633,7 +662,6 @@ class ContentTypeService implements EntityServiceInterface
             if (isset($counters[$contentType->getId()])) {
                 $menuEntry->setBadge((string) $counters[$contentType->getId()]);
             }
-            $this->addMenuSearchLinks($contentType, $menuEntry, $circleContentType, $user);
             $this->addMenuViewLinks($contentType, $menuEntry);
             $this->addDraftInProgressLink($contentType, $menuEntry);
 
@@ -650,23 +678,6 @@ class ContentTypeService implements EntityServiceInterface
         }
 
         return $menu;
-    }
-
-    private function addMenuSearchLinks(ContentType $contentType, MenuEntry $menuEntry, ?ContentType $circleContentType, UserInterface $user): void
-    {
-        $roles = $contentType->getRoles();
-
-        if (!$this->authorizationChecker->isGranted($roles[ContentTypeRoles::SHOW_LINK_SEARCH])) {
-            return;
-        }
-
-        $menuEntry->addChild(t('key.search_in_plural', ['%plural%' => $contentType->getPluralName()], 'emsco-core'), 'fa fa-search', Routes::DATA_DEFAULT_VIEW, ['type' => $contentType->getName()]);
-
-        if (null === $circleContentType || null === $contentType->getCirclesField() || '' === $contentType->getCirclesField() || empty($user->getCircles())) {
-            return;
-        }
-
-        $menuEntry->addChild(t('key.search_in_my_circle', ['%name%' => \count($user->getCircles()) > 1 ? $circleContentType->getPluralName() : $circleContentType->getSingularName()], 'emsco-core'), $circleContentType->getIcon() ?? '', Routes::DATA_IN_MY_CIRCLE_VIEW, ['name' => $contentType->getName()]);
     }
 
     private function addMenuViewLinks(ContentType $contentType, MenuEntry $menuEntry): void

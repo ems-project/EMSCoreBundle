@@ -22,6 +22,7 @@ action:
             filter   {Add filter}
             search_field_option   {Add search field option}
             sort_option   {Add sort option}
+            translation   {Add translation}
             other   {Add}
         }
     apply_filters: 'Apply filters'
@@ -104,6 +105,7 @@ action:
             filter   {Remove this filter}
             search_field_option   {Remove this search field option}
             sort_option   {Remove this sort option}
+            translation   {Remove translation}
             other   {Remove}
         }
     rename: Rename
@@ -523,6 +525,7 @@ field:
     version_tag: 'Version tag'
     web_content: 'Web content (available in WYSIWYG field as internal link)'
     with_business_key: 'With business key'
+    with_environment: 'With environment'
     wysiwyg_profile: 'WYSIWYG profile'
 help:
     add_first_aggregate_option: "Click on 'Add an aggregate option' to create a first Aggregate Option: Click on 'Add an aggregate option' to create a first Aggregate Option"
@@ -563,6 +566,7 @@ key:
     channels: Channels
     ckeditor4: 'CK Editor 4'
     client: Client
+    cluster: Cluster
     cluster_uuid: 'Cluster UUID'
     compare_environments: 'Compare environments'
     completed: Completed

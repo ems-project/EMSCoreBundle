@@ -37,8 +37,8 @@ class I18nType extends AbstractType
                 'allow_delete' => true,
                 'attr' => [
                     'class' => 'a2lix_lib_sf_collection',
-                    'data-lang-add' => 'Add translation',
-                    'data-lang-remove' => 'Remove translation',
+                    'data-lang-add' => t('action.add_type', ['type' => 'translation'], 'emsco-core'),
+                    'data-lang-remove' => t('action.remove_type', ['type' => 'translation'], 'emsco-core'),
                     'data-entry-remove-class' => 'btn btn-sm btn-danger',
                 ],
                 'block_prefix' => 'content',

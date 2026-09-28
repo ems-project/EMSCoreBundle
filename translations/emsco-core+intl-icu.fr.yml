@@ -22,6 +22,7 @@ action:
             filter   {Ajouter un filtre}
             search_field_option   {Ajouter une option de champ de recherche}
             sort_option   {Ajouter une option de tri}
+            translation   {Ajouter une traduction}
             other   {Ajouter}
         }
     apply_filters: 'Appliquer les filtres'
@@ -104,6 +105,7 @@ action:
             filter   {Supprimer ce filtre}
             search_field_option   {Supprimer cette option de champ de recherche}
             sort_option   {Supprimer cette option de tri}
+            translation   {Supprimer la traduction}
             other   {Supprimer}
         }
     rename: Renommer
@@ -523,6 +525,7 @@ field:
     version_tag: 'Tag de version'
     web_content: 'Contenu web (disponible dans le champ WYSIWYG comme lien interne)'
     with_business_key: 'Avec clé métier'
+    with_environment: "Avec l'environnement"
     wysiwyg_profile: 'Profil WYSIWYG'
 help:
     add_first_aggregate_option: 'Cliquez sur « Ajouter une option d’agrégation » pour créer une première option d’agrégation'
@@ -563,6 +566,7 @@ key:
     channels: Canaux
     ckeditor4: 'CK Editor 4'
     client: Client
+    cluster: Cluster
     cluster_uuid: 'UUID du cluster'
     compare_environments: 'Comparer les environnements'
     completed: Terminé

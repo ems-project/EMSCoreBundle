@@ -9,6 +9,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -28,6 +30,7 @@ class ReorderType extends AbstractType
         ]);
 
         $builder->add('reorder', SubmitEmsType::class, [
+            'label' => t('action.reorder', [], 'emsco-core'),
             'attr' => [
                 'class' => 'btn btn-primary reorder-button',
                 'data-testid' => 'btn-action-reorder',

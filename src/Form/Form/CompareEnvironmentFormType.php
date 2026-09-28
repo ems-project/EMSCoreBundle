@@ -12,6 +12,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -31,18 +33,22 @@ class CompareEnvironmentFormType extends AbstractType
 
         $builder
             ->add('environment', EnvironmentPickerType::class, [
+                'label' => t('field.environment', [], 'emsco-core'),
                 'userPublishEnvironments' => true,
                 'managedOnly' => true,
             ])
             ->add('withEnvironment', EnvironmentPickerType::class, [
+                'label' => t('field.with_environment', [], 'emsco-core'),
                 'userPublishEnvironments' => true,
                 'managedOnly' => true,
             ])
             ->add('contentTypes', ContentTypePickerType::class, [
+                'label' => t('field.content_types', [], 'emsco-core'),
                 'multiple' => true,
                 'required' => false,
             ])
             ->add('compare', SubmitEmsType::class, [
+                'label' => t('action.compare', [], 'emsco-core'),
                 'attr' => [
                     'class' => 'btn btn-primary btn-md',
                     'data-testid' => 'compare-action-compare',

@@ -22,6 +22,7 @@ action:
             filter   {Een filter toevoegen}
             search_field_option   {Voeg een optie voor een zoekveld toe}
             sort_option   {Voeg een sorteeroptie toe}
+            translation   {Voeg een vertaling}
             other   {Toevoegen}
         }
     apply_filters: 'Filters toepassen'
@@ -104,6 +105,7 @@ action:
             filter   {Verwijder deze filter}
             search_field_option   {Verwijder deze optie voor het zoekveld}
             sort_option   {Verwijder deze sorteeroptie}
+            translation   {Verwijder vertaling}
             other   {Verwijderen}
         }
     rename: Hernoemen
@@ -523,6 +525,7 @@ field:
     version_tag: Versietag
     web_content: 'Webinhoud (beschikbaar in WYSIWYG-veld als interne link)'
     with_business_key: 'Met zakelijke sleutel'
+    with_environment: 'Met de omgeving'
     wysiwyg_profile: WYSIWYG-profiel
 help:
     add_first_aggregate_option: "Klik op 'Aggregatieoptie toevoegen' om een eerste aggregatieoptie te maken"
@@ -563,6 +566,7 @@ key:
     channels: Kanalen
     ckeditor4: 'CK Editor 4'
     client: Client
+    cluster: Cluster
     cluster_uuid: Cluster-UUID
     compare_environments: 'Omgevingen vergelijken'
     completed: Voltooid

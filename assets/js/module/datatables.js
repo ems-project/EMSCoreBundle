@@ -1,6 +1,13 @@
 const jquery = require('jquery');
 require('datatables.net');
 require('datatables.net-bs');
+import frenchLanguage from 'datatables.net-plugins/i18n/fr-FR.mjs';
+import dutchLanguage from 'datatables.net-plugins/i18n/nl-NL.mjs';
+
+const languages = {
+    fr: frenchLanguage,
+    nl: dutchLanguage
+};
 
 export default class datatables {
     constructor(target) {
@@ -10,7 +17,11 @@ export default class datatables {
 
     loadDatatables(datatables) {
         [].forEach.call(datatables, function(element) {
-            const datatable = jquery(element).DataTable(JSON.parse(element.dataset.datatable));
+            const options = JSON.parse(element.dataset.datatable);
+            const language = document.documentElement.lang.toLowerCase().split('-')[0];
+            if (!options.language && languages[language]) options.language = languages[language];
+
+            const datatable = jquery(element).DataTable(options);
             datatable.on('draw', () => new EmsListeners(element))
 
             document.querySelectorAll(`[data-datatable-target='${element.id}']`).forEach(

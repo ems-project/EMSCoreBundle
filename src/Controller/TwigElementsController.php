@@ -114,8 +114,13 @@ class TwigElementsController extends AbstractController
         if (!$this->isGranted('ROLE_ADMIN')) {
             return $menu;
         }
-        $menu->addChild(t('key.content_types', [], 'emsco-core'), 'fa fa-sitemap', Routes::ADMIN_CONTENT_TYPE_INDEX)->setTranslation([]);
-        $menu->addChild(t('key.forms', [], 'emsco-core'), 'fa fa-keyboard-o', Routes::FORM_ADMIN_INDEX)->setTranslation([]);
+        $contentMenu = $menu->addChild(t('key.content', [], 'emsco-core'), 'fa fa-pencil', 'job.index');
+        $contentMenu->addChild(t('key.content_types', [], 'emsco-core'), 'fa fa-sitemap', Routes::ADMIN_CONTENT_TYPE_INDEX)->setTranslation([]);
+        $contentMenu->addChild(t('key.dashboards', [], 'emsco-core'), 'fa fa-dashboard', Routes::DASHBOARD_ADMIN_INDEX);
+        $contentMenu->addChild(t('key.forms', [], 'emsco-core'), 'fa fa-keyboard-o', Routes::FORM_ADMIN_INDEX)->setTranslation([]);
+        $contentMenu->addChild(t('key.query_searches', [], 'emsco-core'), 'fa fa-search', 'ems_core_query_search_index');
+        $contentMenu->addChild(t('key.wysiwyg', [], 'emsco-core'), 'fa fa-edit', Routes::WYSIWYG_INDEX);
+        $contentMenu->addChild(t('key.i18n', [], 'emsco-core'), 'fa fa-language', Routes::I18N_INDEX);
 
         $environmentMenu = $menu->addChild(
             label: t('field.environments', [], 'emsco-core'),
@@ -123,34 +128,31 @@ class TwigElementsController extends AbstractController
             route: Routes::ADMIN_ENVIRONMENT_INDEX
         );
         $environmentMenu->addChild(t('key.overview', [], 'emsco-core'), 'fa fa-list-ul', Routes::ADMIN_ENVIRONMENT_INDEX);
+        $environmentMenu->addChild(t('key.channels', [], 'emsco-core'), 'fa fa-eye', 'ems_core_channel_index');
         $environmentMenu->addChild(t('key.unreferenced_aliases', [], 'emsco-core'), 'fa fa-chain', Routes::ADMIN_ELASTIC_UNREFERENCED_ALIASES);
         $environmentMenu->addChild(t('key.orphan_indexes', [], 'emsco-core'), 'fa fa-chain-broken', Routes::ADMIN_ELASTIC_ORPHAN);
 
-        $menu->addChild(t('key.channels', [], 'emsco-core'), 'fa fa-eye', 'ems_core_channel_index');
-        $menu->addChild(t('key.dashboards', [], 'emsco-core'), 'fa fa-dashboard', Routes::DASHBOARD_ADMIN_INDEX);
-        $menu->addChild(t('key.query_searches', [], 'emsco-core'), 'fa fa-list-alt', 'ems_core_query_search_index');
-        $menu->addChild(t('key.wysiwyg', [], 'emsco-core'), 'fa fa-edit', Routes::WYSIWYG_INDEX);
-        $menu->addChild(t('key.i18n', [], 'emsco-core'), 'fa fa-language', Routes::I18N_INDEX);
         $jobMenu = $menu->addChild(t('key.jobs', [], 'emsco-core'), 'fa fa-terminal', 'job.index');
         $jobMenu->setTranslation([]);
         $jobMenu->addChild(t('action.new_job', [], 'emsco-core'), 'fa fa-plus', 'job.add')->setTranslation([]);
         $jobMenu->addChild(t('key.job_logs', [], 'emsco-core'), 'fa fa-file-text-o', 'job.index');
         $jobMenu->addChild(t('key.schedule', [], 'emsco-core'), 'fa fa-calendar-o', Routes::SCHEDULE_INDEX);
 
-        $menu->addChild(t('key.analyzers', [], 'emsco-core'), 'fa fa-signal', Routes::ANALYZER_INDEX);
-        $menu->addChild(t('key.filters', [], 'emsco-core'), 'fa fa-filter', Routes::FILTER_INDEX);
+        $clusterMenu = $menu->addChild(t('key.cluster', [], 'emsco-core'), 'fa fa-cubes', Routes::ANALYZER_INDEX);
+        $clusterMenu->addChild(t('key.analyzers', [], 'emsco-core'), 'fa fa-signal', Routes::ANALYZER_INDEX);
+        $clusterMenu->addChild(t('key.filters', [], 'emsco-core'), 'fa fa-filter', Routes::FILTER_INDEX);
 
         $webhooks = $menu->addChild(t('key.webhooks', [], 'emsco-core'), 'fa fa-chain', Routes::WEBHOOK_SUBSCRIPTION_INDEX);
         $webhooks->addChild(t('key.webhook_subscriptions', [], 'emsco-core'), 'fa fa-solid fa-registered', Routes::WEBHOOK_SUBSCRIPTION_INDEX);
 
         $mcpMenu = $menu->addChild(
             label: t('key.mcp', [], 'emsco-core'),
-            icon: 'fa fa-medium',
+            icon: 'fa fa-plug',
             route: Routes::MCP_TOOL_INDEX
         );
         $mcpMenu->addChild(t('key.mcp_tools', [], 'emsco-core'), 'fa fa-wrench', Routes::MCP_TOOL_INDEX);
-        $mcpMenu->addChild(t('key.mcp_prompts', [], 'emsco-core'), 'fa fa-commenting-o', Routes::MCP_PROMPT_INDEX);
-        $mcpMenu->addChild(t('key.mcp_resources', [], 'emsco-core'), 'fa fa-file-code-o', Routes::MCP_RESOURCE_INDEX);
+        $mcpMenu->addChild(t('key.mcp_prompts', [], 'emsco-core'), 'fa fa-terminal', Routes::MCP_PROMPT_INDEX);
+        $mcpMenu->addChild(t('key.mcp_resources', [], 'emsco-core'), 'fa fa-file', Routes::MCP_RESOURCE_INDEX);
 
         $logsMenu = $menu->addChild(t('key.logs', [], 'emsco-core'), 'fa fa-file-text', Routes::LOG_INDEX);
         $logsMenu->addChild(t('key.system_logs', [], 'emsco-core'), 'fa fa-file-text', Routes::LOG_INDEX);

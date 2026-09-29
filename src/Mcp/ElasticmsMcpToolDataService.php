@@ -557,7 +557,7 @@ final readonly class ElasticmsMcpToolDataService
     }
 
     /**
-     * @param iterable<int, DataField> $dataFields
+     * @param iterable<int|string, DataField> $dataFields
      * @param array<string, mixed>     $rawData
      *
      * @return array<string, mixed>

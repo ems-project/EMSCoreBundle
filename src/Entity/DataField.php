@@ -33,7 +33,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
 
     private ?DataField $parent = null;
 
-    /** @var ArrayCollection<int, DataField> */
+    /** @var ArrayCollection<string|int, DataField> */
     private ArrayCollection $children;
 
     /** @var array<mixed>|string|int|float|bool|null */
@@ -618,7 +618,7 @@ class DataField implements \ArrayAccess, \IteratorAggregate, \Stringable
     }
 
     /**
-     * @return Collection<int, DataField>
+     * @return Collection<int|string, DataField>
      */
     public function getChildren(): Collection
     {

@@ -7,7 +7,6 @@ namespace EMS\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\Common\Collections\Order;
 use EMS\CommonBundle\Entity\CreatedModifiedTrait;
 use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Core\ContentType\Version\VersionFields;
@@ -590,7 +589,7 @@ class Revision implements EntityInterface, \Stringable
         return $this->environmentRevisions
             ->filter(fn (EnvironmentRevision $er) => null === $er->getDeleted())
             ->map(fn (EnvironmentRevision $er) => $er->getEnvironment())
-            ->matching(Criteria::create()->orderBy(['orderKey' => Order::Ascending]));
+            ->matching(Criteria::create()->orderBy(['orderKey' => \SortDirection::Ascending]));
     }
 
     public function isPublished(string $environmentName): bool

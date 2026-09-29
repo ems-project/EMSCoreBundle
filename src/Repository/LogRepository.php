@@ -111,7 +111,7 @@ class LogRepository extends ServiceEntityRepository
         if (\count($context->channels) > 0) {
             $qb
                 ->andWhere($qb->expr()->in('log.channel', ':channels'))
-                ->setParameter('channels', $context->channels, Types::SIMPLE_ARRAY);
+                ->setParameter('channels', $context->channels, Types::JSON);
         }
     }
 }

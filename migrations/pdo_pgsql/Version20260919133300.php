@@ -29,11 +29,11 @@ final class Version20260919133300 extends AbstractMigration
             "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
         );
 
-        $this->addSql('DROP SEQUENCE schema_demo_adm.search_id_seq CASCADE');
-        $this->addSql('DROP SEQUENCE schema_demo_adm.search_filter_id_seq CASCADE');
-        $this->addSql('DROP SEQUENCE schema_demo_adm.sort_option_id_seq CASCADE');
-        $this->addSql('DROP SEQUENCE schema_demo_adm.aggregate_option_id_seq CASCADE');
-        $this->addSql('DROP SEQUENCE schema_demo_adm.search_field_option_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE search_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE search_filter_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE sort_option_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE aggregate_option_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE search_field_option_id_seq CASCADE');
         $this->addSql('ALTER TABLE search DROP CONSTRAINT fk_b4f0dba71a445520');
         $this->addSql('ALTER TABLE search_filter DROP CONSTRAINT fk_a6263002650760a9');
         $this->addSql('DROP TABLE aggregate_option');
@@ -303,11 +303,11 @@ final class Version20260919133300 extends AbstractMigration
             "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\PostgreSQLPlatform'."
         );
 
-        $this->addSql('CREATE SEQUENCE schema_demo_adm.search_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE SEQUENCE schema_demo_adm.search_filter_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE SEQUENCE schema_demo_adm.sort_option_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE SEQUENCE schema_demo_adm.aggregate_option_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE SEQUENCE schema_demo_adm.search_field_option_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE search_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE search_filter_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE sort_option_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE aggregate_option_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE search_field_option_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE aggregate_option (id INT NOT NULL, created TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, modified TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, name VARCHAR(255) NOT NULL, config TEXT DEFAULT NULL, orderkey INT NOT NULL, template TEXT DEFAULT NULL, icon TEXT DEFAULT NULL, PRIMARY KEY (id))');
         $this->addSql('CREATE TABLE search (id BIGINT NOT NULL, username VARCHAR(100) NOT NULL, environments JSON NOT NULL, contenttypes JSON NOT NULL, name VARCHAR(100) NOT NULL, sort_by VARCHAR(100) DEFAULT NULL, sort_order VARCHAR(100) DEFAULT NULL, default_search BOOLEAN DEFAULT false NOT NULL, content_type_id BIGINT DEFAULT NULL, minimum_should_match INT DEFAULT 1 NOT NULL, PRIMARY KEY (id))');
         $this->addSql('CREATE UNIQUE INDEX uniq_b4f0dba71a445520 ON search (content_type_id)');

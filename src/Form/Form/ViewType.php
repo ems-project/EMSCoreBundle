@@ -54,6 +54,13 @@ class ViewType extends AbstractType
                     'class' => 'col-md-8',
                 ],
             ])
+            ->add('labelTranslations', TranslationsType::class, [
+                'label' => t('field.label_translations', [], 'emsco-core'),
+                'required' => false,
+                'row_attr' => [
+                    'class' => 'col-md-8',
+                ],
+            ])
             ->add('icon', IconPickerType::class, [
                 'required' => false,
                 'row_attr' => [

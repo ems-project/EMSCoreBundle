@@ -120,7 +120,7 @@ class EditController extends AbstractController
             'has_copy' => $this->isGranted('ROLE_COPY_PASTE'),
             'raw_data' => $revision->getRawData(),
         ]);
-        $this->logger->debug("Revision's form created");
+        $this->logger->debug(t('message.revision_form_created', [], 'emsco-core'));
 
         /** @var array<string, mixed> $requestRevision */
         $requestRevision = $request->request->all('revision');
@@ -131,7 +131,7 @@ class EditController extends AbstractController
         /**end little trick to reorder collection*/
 
         $form->handleRequest($request);
-        $this->logger->debug('Revision request form handled');
+        $this->logger->debug(t('message.revision_request_form_handled', [], 'emsco-core'));
 
         if ($form->isSubmitted()) {// Save, Finalize or Discard
             $allFieldsAreThere = $requestRevision['allFieldsAreThere'] ?? false;
@@ -245,9 +245,14 @@ class EditController extends AbstractController
         $this->dataService->propagateDataToComputedField($form->get('data'), $objectArray, $contentType, $contentType->getName(), $revision->getOuuid(), EventType::savedAsDraftEvent());
 
         if ($revision->getOuuid()) {
-            $this->logger->info('log.data.revision.start_edit', LogRevisionContext::read($revision));
+            $this->logger->info(t('message.start_edit', [
+                'type' => $revision->giveContentType(),
+                'oouid' => $revision->getOuuid(),
+            ], 'emsco-core'));
         } else {
-            $this->logger->info('log.data.revision.start_edit_new_document', LogRevisionContext::read($revision));
+            $this->logger->info(t('message.start_edit_without_ouuid', [
+                'type' => $revision->giveContentType(),
+            ], 'emsco-core'));
         }
 
         if (!$revision->getDraft()) {

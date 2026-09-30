@@ -109,6 +109,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'container'])
         ->tag('form.type');
@@ -118,6 +119,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
             service('ems.service.data'),
             service('emsco.logger'),
         ])
@@ -129,6 +131,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'colorpicker'])
         ->tag('form.type');
@@ -138,6 +141,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
             service('ems.service.data'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'nested'])
@@ -148,6 +152,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
             service('emsco.manager.user'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'tabs'])
@@ -158,6 +163,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'ouuid'])
         ->tag('form.type');
@@ -167,6 +173,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
             service('twig'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'computed'])
@@ -177,6 +184,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
             service('event_dispatcher'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'datalink'])
@@ -187,6 +195,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'textstring'])
         ->tag('form.type');
@@ -196,6 +205,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
             service('router'),
             service('ems.service.wysiwyg_styles_set'),
             service('ems_common.storage.manager'),
@@ -208,6 +218,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'code'])
         ->tag('form.type');
@@ -217,6 +228,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'json_menu'])
         ->tag('form.type');
@@ -226,6 +238,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'json_menu_nested'])
         ->tag('form.type');
@@ -235,6 +248,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'textarea'])
         ->tag('form.type');
@@ -244,6 +258,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'password'])
         ->tag('form.type');
@@ -253,6 +268,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'email'])
         ->tag('form.type');
@@ -262,6 +278,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'icon'])
         ->tag('form.type');
@@ -271,6 +288,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'action'])
         ->tag('form.type');
@@ -280,6 +298,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
             service('ems.service.file'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'asset'])
@@ -290,6 +309,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
             service('ems.service.file'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'file_attachment'])
@@ -300,6 +320,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'choice'])
         ->tag('form.type');
@@ -309,6 +330,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
             service('emsco.manager.user'),
             '%emsch.locales%',
         ])
@@ -320,6 +342,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
             service('ems.service.contenttype'),
             service('ems_common.service.elastica'),
             service('ems_common.json.decoder'),
@@ -332,6 +355,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
             service('ems_common.service.elastica'),
             service(EnvironmentService::class),
             service('twig'),
@@ -345,6 +369,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'checkbox'])
         ->tag('form.type');
@@ -354,6 +379,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'number'])
         ->tag('form.type');
@@ -363,6 +389,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'integer'])
         ->tag('form.type');
@@ -372,6 +399,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'date'])
         ->tag('form.type');
@@ -381,6 +409,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'date_time'])
         ->tag('form.type');
@@ -390,6 +419,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'daterange'])
         ->tag('form.type');
@@ -399,6 +429,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'time'])
         ->tag('form.type');
@@ -408,6 +439,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('form.type');
 
@@ -416,6 +448,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'copyto'])
         ->tag('form.type');
@@ -425,6 +458,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('form.type');
 
@@ -434,6 +468,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'select_user_property'])
         ->tag('form.type');
@@ -443,6 +478,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
             service('ems.service.revision'),
             service('ems.service.environment'),
             service(ContentTypeService::class),
@@ -455,6 +491,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
             service('ems.form.fieldtype.fieldtypetype'),
             service('ems.form.manager'),
         ])
@@ -466,6 +503,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('form.registry'),
             service('ems.service.elasticsearch'),
+            service('security.token_storage'),
         ])
         ->tag('ems.form.datafieldtype', ['alias' => 'holder'])
         ->tag('form.type');

@@ -11,6 +11,7 @@ use EMS\CoreBundle\Form\Field\ColorPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\RolePickerType;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Form\Form\TranslationsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
@@ -55,6 +56,13 @@ final class DashboardType extends AbstractType
             ->add('label', null, [
                 'label' => t('field.label', [], 'emsco-core'),
                 'required' => true,
+                'row_attr' => [
+                    'class' => 'col-md-4',
+                ],
+            ])
+            ->add('labelTranslations', TranslationsType::class, [
+                'label' => t('field.label_translations', [], 'emsco-core'),
+                'required' => false,
                 'row_attr' => [
                     'class' => 'col-md-4',
                 ],

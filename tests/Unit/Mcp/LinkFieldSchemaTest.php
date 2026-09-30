@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormRegistryInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 
@@ -27,6 +28,7 @@ final class LinkFieldSchemaTest extends TestCase
             $this->createStub(AuthorizationCheckerInterface::class),
             $this->createStub(FormRegistryInterface::class),
             $this->createStub(ElasticsearchService::class),
+            $this->createStub(TokenStorageInterface::class),
             $this->createStub(ElasticaService::class),
             $this->createStub(EnvironmentService::class),
             $this->createStub(Environment::class),
@@ -47,6 +49,7 @@ final class LinkFieldSchemaTest extends TestCase
             $this->createStub(AuthorizationCheckerInterface::class),
             $this->createStub(FormRegistryInterface::class),
             $this->createStub(ElasticsearchService::class),
+            $this->createStub(TokenStorageInterface::class),
         );
 
         self::assertSame(['type' => 'string'], $fieldType->generateMcpSchema(new FieldType(), static fn (array $fieldTypes): array => []));
@@ -62,6 +65,7 @@ final class LinkFieldSchemaTest extends TestCase
             $this->createStub(AuthorizationCheckerInterface::class),
             $this->createStub(FormRegistryInterface::class),
             $this->createStub(ElasticsearchService::class),
+            $this->createStub(TokenStorageInterface::class),
             $this->createStub(EventDispatcherInterface::class),
         );
 

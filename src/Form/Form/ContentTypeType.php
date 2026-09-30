@@ -81,8 +81,16 @@ class ContentTypeType extends AbstractType
         $builder->add('singularName', TextType::class, [
             'label' => t('field.singular_name', [], 'emsco-core'),
         ]);
+        $builder->add('singularNameTranslations', TranslationsType::class, [
+            'label' => t('field.singular_name_translations', [], 'emsco-core'),
+            'entry_with_advanced_options' => true,
+        ]);
         $builder->add('pluralName', TextType::class, [
             'label' => t('field.plural_name', [], 'emsco-core'),
+        ]);
+        $builder->add('pluralNameTranslations', TranslationsType::class, [
+            'label' => t('field.plural_name_translations', [], 'emsco-core'),
+            'entry_with_advanced_options' => true,
         ]);
         $builder->add('icon', IconPickerType::class, [
             'required' => false,

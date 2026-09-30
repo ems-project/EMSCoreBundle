@@ -28,6 +28,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\ResolvedFormTypeInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class McpInputToRawDataTest extends TestCase
@@ -237,21 +238,25 @@ final class McpInputToRawDataTest extends TestCase
                     $this->createStub(AuthorizationCheckerInterface::class),
                     $this->createStub(FormRegistryInterface::class),
                     $this->createStub(ElasticsearchService::class),
+                    $this->createStub(TokenStorageInterface::class),
                 ),
                 JsonMenuNestedEditorFieldType::class => new JsonMenuNestedEditorFieldType(
                     $this->createStub(AuthorizationCheckerInterface::class),
                     $this->createStub(FormRegistryInterface::class),
                     $this->createStub(ElasticsearchService::class),
+                    $this->createStub(TokenStorageInterface::class),
                 ),
                 ContainerFieldType::class => new ContainerFieldType(
                     $this->createStub(AuthorizationCheckerInterface::class),
                     $this->createStub(FormRegistryInterface::class),
                     $this->createStub(ElasticsearchService::class),
+                    $this->createStub(TokenStorageInterface::class),
                 ),
                 MultiplexedTabContainerFieldType::class => new MultiplexedTabContainerFieldType(
                     $this->createStub(AuthorizationCheckerInterface::class),
                     $this->createStub(FormRegistryInterface::class),
                     $this->createStub(ElasticsearchService::class),
+                    $this->createStub(TokenStorageInterface::class),
                     $this->createStub(UserManager::class),
                     ['fr', 'nl'],
                 ),

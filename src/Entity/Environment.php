@@ -11,6 +11,9 @@ use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Core\Environment\Index;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
+use EMS\Helpers\Translations\Translation;
+use EMS\Helpers\Translations\Translations;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class Environment extends JsonDeserializer implements \JsonSerializable, EntityInterface, \Stringable
 {
@@ -19,6 +22,8 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
 
     protected string $name = '';
     protected ?string $label = null;
+    /** @var array<string, array<string,string>>|null */
+    protected ?array $labelTranslations;
     protected ?string $description = null;
     protected string $alias = '';
     /** @var array<string, Index> */
@@ -424,18 +429,27 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
         return $json;
     }
 
-    public function getLabel(): string
+    public function getLabel(?UserInterface $user = null): string
     {
-        if (null === $this->label) {
+        return $this->getLabelTranslation($user)->getLabel();
+    }
+
+    public function getLabelTranslation(?UserInterface $user = null): Translation
+    {
+        $label = $this->label;
+        if (null === $label) {
             $replaced = \preg_replace(['/([A-Z])/', '/[_\s]+/'], ['_$1', ' '], $this->name);
             if (!\is_string($replaced)) {
                 $replaced = $this->name;
             }
 
-            return \ucfirst(\strtolower(\trim($replaced)));
+            $label = \ucfirst(\strtolower(\trim($replaced)));
+        }
+        if (!$user instanceof User) {
+            return new Translation($label);
         }
 
-        return $this->label;
+        return Translations::fromArray($this->getLabelTranslations())->getTranslation($user->getLocales(), $label);
     }
 
     public function setLabel(?string $label): void
@@ -471,5 +485,21 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     public function setRolePublish(?string $rolePublish): void
     {
         $this->rolePublish = $rolePublish;
+    }
+
+    /**
+     * @return mixed[][]
+     */
+    public function getLabelTranslations(): array
+    {
+        return $this->labelTranslations ?? [];
+    }
+
+    /**
+     * @param mixed[][]|null $labelTranslations
+     */
+    public function setLabelTranslations(?array $labelTranslations): void
+    {
+        $this->labelTranslations = $labelTranslations ?? [];
     }
 }

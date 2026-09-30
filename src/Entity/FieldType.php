@@ -12,6 +12,8 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\CoreBundle\Form\DataField\DataFieldType;
 use EMS\CoreBundle\Form\DataField\JsonMenuNestedEditorFieldType;
+use EMS\Helpers\Translations\Translation;
+use EMS\Helpers\Translations\Translations;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FieldType extends JsonDeserializer implements \JsonSerializable
@@ -487,6 +489,29 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
+    public function translateDisplayOptions(User $user): array
+    {
+        $options = $this->getDisplayOptions();
+        foreach ($options as $key => $value) {
+            if (!\str_ends_with($key, 'Translations') || !\is_array($value)) {
+                continue;
+            }
+            $labelKey = \substr($key, 0, -\strlen('Translations'));
+            $options[$labelKey] = $this->translate($labelKey, $user)->getLabel();
+            unset($options[$key]);
+        }
+
+        return $options;
+    }
+
+    public function translate(string $key, User $user): Translation
+    {
+        return Translations::fromArray($this->getDisplayOption(\sprintf('%sTranslations', $key), []))->getTranslation($user->getLocales(), $this->getDisplayOption($key, $this->getName()));
+    }
+
     public function addChild(FieldType $child, bool $prepend = false): self
     {
         $child->setParent($this);
@@ -674,7 +699,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
 
         $filtered = \array_filter(
             $this->getDisplayOptions(),
-            fn ($value) => \in_array($value, $defineOptions),
+            fn ($value) => \in_array($value, $defineOptions) || (\str_ends_with($value, 'Translations') && \in_array(\substr($value, 0, -\strlen('Translations')), $defineOptions)),
             ARRAY_FILTER_USE_KEY
         );
         $this->options[self::DISPLAY_OPTIONS] = $filtered;

@@ -216,6 +216,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.repository.dashboard'),
             service('emsco.logger'),
             service('security.authorization_checker'),
+            service('security.token_storage'),
         ])
         ->tag('emsco.entity.service', ['priority' => 50]);
 
@@ -357,7 +358,7 @@ return static function (ContainerConfigurator $container) {
             service('emsco.logger'),
             service('ems.service.environment'),
         ])
-        ->tag('emsco.entity.service', ['priority' => 30]);
+        ->tag('emsco.entity.service', ['priority' => 65]);
 
     $services->alias('ems.service.internationalization.xliff', XliffService::class);
 

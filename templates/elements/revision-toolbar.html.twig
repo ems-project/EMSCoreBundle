@@ -67,7 +67,7 @@
 						{% include '@EMSCore/elements/post-button.html.twig' with {
 							'url': path('emsco_data_finalize', {'revision': revisionId}),
 							'message': 'message.confirm_save_and_publish'|trans,
-							'label': 'action.save_publish_in'|trans({'environment': instance.contentType.environment.label|default('')}),
+							'label': 'action.save_publish_in'|trans({'environment': instance.contentType.environment.label(app.user)}),
 							'btnType': 'default',
 							'icon': 'check',
                             'attributes': {
@@ -200,7 +200,7 @@
 						</button>
 						<ul class="dropdown-menu">
 							{% for env in environmentsRevision.publish %}
-								<li><a href="{{ path('revision.publish_to', {'revisionId': revisionId, 'envId': env.id}) }}" data-testid="revision-action-publish-to-{{ env.label|lower }}">{{ env.label }}</a></li>
+								<li><a href="{{ path('revision.publish_to', {'revisionId': revisionId, 'envId': env.id}) }}" data-testid="revision-action-publish-to-{{ env.label|lower }}">{{ env.label(app.user) }}</a></li>
 							{% endfor %}
 					   </ul>
 					  </div>
@@ -215,7 +215,7 @@
 					  </button>
 					   <ul class="dropdown-menu">
 							{% for env in environmentsRevision.unpublish %}
-								<li><a href="{{ path('revision.unpublish', {'revisionId': revisionId, 'envId': env.id}) }}" data-testid="revision-action-unpublish-from-{{ env.label|lower }}">{{ env.label }}</a></li>
+								<li><a href="{{ path('revision.unpublish', {'revisionId': revisionId, 'envId': env.id}) }}" data-testid="revision-action-unpublish-from-{{ env.label|lower }}">{{ env.label(app.user) }}</a></li>
 							{% endfor %}
 					   </ul>
 				</div>

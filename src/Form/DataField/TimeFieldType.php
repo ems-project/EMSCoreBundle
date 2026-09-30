@@ -16,6 +16,8 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Basic content type for text (regular text input).
  *
@@ -199,17 +201,18 @@ class TimeFieldType extends DataFieldType
         ]);
         $optionsForm->get('displayOptions')->add('showMeridian', CheckboxType::class, [
             'required' => false,
-            'label' => 'Show meridian (true: 12hr, false: 24hr)',
+            'label' => t('field.show_meridian', [], 'emsco-core'),
         ]);
         $optionsForm->get('displayOptions')->add('defaultTime', TextType::class, [
             'required' => false,
-            'label' => 'Default time',
+            'label' => t('field.default_time', [], 'emsco-core'),
         ]);
         $optionsForm->get('displayOptions')->add('showSeconds', CheckboxType::class, [
+            'label' => t('field.show_seconds', [], 'emsco-core'),
             'required' => false,
         ]);
         $optionsForm->get('displayOptions')->add('explicitMode', CheckboxType::class, [
-            'label' => 'Explicit mode',
+            'label' => t('field.explicit_mode', [], 'emsco-core'),
             'required' => false,
         ]);
     }

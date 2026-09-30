@@ -8,6 +8,7 @@ use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Core\ContentType\DataFieldFormOptions;
 use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\DataField\Options\OptionsType;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
@@ -20,6 +21,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
@@ -28,11 +30,13 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 abstract class DataFieldType extends AbstractType
 {
     private ?DataFieldFormOptions $formOptions = null;
+    private ?User $user = null;
 
     public function __construct(
         protected AuthorizationCheckerInterface $authorizationChecker,
         protected FormRegistryInterface $formRegistry,
         protected ElasticsearchService $elasticsearchService,
+        protected TokenStorageInterface $tokenStorage,
     ) {
     }
 
@@ -180,7 +184,7 @@ abstract class DataFieldType extends AbstractType
     }
 
     /**
-     * Used to display in the content type edit page (instaed of the class path).
+     * Used to display in the content type edit page (instead of the class path).
      */
     abstract public function getLabel(): string;
 
@@ -289,7 +293,7 @@ abstract class DataFieldType extends AbstractType
         $view->vars['helptext'] = $options['helptext'];
         $view->vars['isContainer'] = static::isContainer();
         $view->vars['isVisible'] = static::isVisible();
-        if (null == $options['label']) {
+        if (null === $options['label']) {
             $view->vars['label'] = false;
         }
         /** @var DataFieldType $dataFieldType */
@@ -521,7 +525,7 @@ abstract class DataFieldType extends AbstractType
                 'disabled_fields' => $options['disabled_fields'],
                 'referrer-ems-id' => $options['referrer-ems-id'],
                 'locale' => $options['locale'],
-            ], $fieldType->getDisplayOptions());
+            ], $fieldType->translateDisplayOptions($this->getUser()));
 
             $builder->add($fieldType->getName(), $fieldType->getType(), $options);
 
@@ -584,5 +588,23 @@ abstract class DataFieldType extends AbstractType
         }
 
         return $assetSchema;
+    }
+
+    private function getUser(): User
+    {
+        if (null !== $this->user) {
+            return $this->user;
+        }
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new \RuntimeException('Unexpected null token');
+        }
+        $user = $token->getUser();
+        if (!$user instanceof User) {
+            throw new \RuntimeException('Unexpected user type');
+        }
+        $this->user = $user;
+
+        return $user;
     }
 }

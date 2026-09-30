@@ -81,7 +81,7 @@ action:
     init_upload: 'Upload initialiseren'
     move: Verplaatsen
     move_item: 'Item verplaatsen'
-    new_entity_name: 'Nieuwe {name}'
+    new_entity_name: 'Nieuwe {label}'
     new_job: 'Nieuwe job'
     next: Volgende
     paste: Plakken
@@ -105,7 +105,7 @@ action:
             filter   {Verwijder deze filter}
             search_field_option   {Verwijder deze optie voor het zoekveld}
             sort_option   {Verwijder deze sorteeroptie}
-            translation   {Verwijder vertaling}
+            translation   {Verwijder deze vertaling}
             other   {Verwijderen}
         }
     rename: Hernoemen
@@ -293,6 +293,7 @@ field:
     base_url: Basis-URL
     boolean_clause: 'Booleaanse clausule'
     boost: Boost
+    bootstrap_class: Bootstrap-klasse
     business_id: 'Zakelijke ID'
     by_role: 'per rol {role}'
     category: Categorie
@@ -334,6 +335,7 @@ field:
     dates_read_only: 'Datums alleen-lezen'
     deadline: Deadline
     default_sort_order: 'Standaard sorteervolgorde'
+    default_time: Standaardtijd
     default_value: Standaardwaarde
     definition: Definitie
     delay: 'Vertraging (in dagen)'
@@ -343,6 +345,7 @@ field:
     docs_count: '# Documenten'
     edit_twig_with_wysiwyg: 'Twig-template bewerken met een WYSIWYG-editor'
     editor: Editor
+    elision: Elisie
     email: E-mail
     email_content_type: 'Contenttype (bv. text/html)'
     enabled: Ingeschakeld
@@ -357,6 +360,7 @@ field:
     error: Foutmelding
     events: Events
     expiration_date: Vervaldatum
+    explicit_mode: 'Expliciete modus'
     extra: Extra
     extra_roles: 'Extra rollen'
     field: Veld
@@ -381,11 +385,14 @@ field:
     format: Formaat
     format_tags: Formaat-tags
     from_sender: 'Van {sender}'
+    gender: Gender
     group: Groep
     hash: Hash-handtekening
     header: Header
     header_allow_origin: 'De Access-Control-Allow-Origin-header'
     height: Hoogte
+    helptext: Helptekst
+    helptext_translations: 'Vertalingen van helpteksten'
     helptexts: Helpteksten
     hidden: Verborgen
     icon: Icoon
@@ -408,11 +415,13 @@ field:
     json_file: JSON-bestand
     key: Sleutel
     label: Label
+    label_translations: 'Vertalingen van labels'
     language: Taal
     language_preferred: Voorkeurstaal
     language_ui: Interfacetaal
     last_login: 'Laatste login'
     last_modification: 'Laatste wijziging'
+    last_of_row: 'Laatste item van de rij'
     last_seen: 'Laatst gezien'
     locale: Locale
     locale_preferred: Voorkeurstaal
@@ -434,6 +443,7 @@ field:
     new_version: 'Nieuwe versie'
     node_name: 'Naam van het knooppunt'
     not_blank_new_version: 'Nieuwe versie niet leeg'
+    number: Getal
     operator: Operator
     operators: Exploitanten
     options: Opties
@@ -446,6 +456,7 @@ field:
     permission: Toestemming
     plural: Meervoud
     plural_name: Meervoudsnaam
+    plural_name_translations: 'Vertalingen van namen in het meervoud'
     postition_increment_gap: 'Positie-increment gap'
     public_access: 'Publieke toegang'
     publish_to: 'Publiceren naar'
@@ -480,8 +491,11 @@ field:
     search_field_options: 'Opties voor het zoekveld'
     separator: Scheidingsteken
     severity: Ernst
+    show_meridian: 'Toon meridiaan (waar: 12 uur, onwaar: 24 uur)'
+    show_seconds: 'Seconden weergeven'
     singular: Enkelvoud
     singular_name: Enkelvoudsnaam
+    singular_name_translations: 'Vertalingen van enkelvoudige namen'
     sort: Sortering
     sort_by: 'Sorteren op'
     sort_options: Sorteeropties
@@ -603,6 +617,7 @@ key:
     excel_export: Excel-export
     export_documents: 'Documenten exporteren'
     failed_jobs: 'Mislukte jobs'
+    'false': Onwaar
     filter: Filter
     filters: Filters
     finalize: Finaliseren
@@ -612,6 +627,10 @@ key:
     form_root: 'Wortel van het formulier'
     form_submissions: Formulierinzendingen
     forms: Formulieren
+    gender:
+        female: Vrouwelijk
+        male: Mannelijk
+        neutral: Neutraal
     groups: Groepen
     gt: 'Groter dan'
     gte: 'Groter dan of gelijk aan'
@@ -687,6 +706,7 @@ key:
     pending_jobs: 'Wachtende jobs'
     pendings: Wachtenden
     permission_overview_singular: 'Overzicht van rechten'
+    plural: Meervoud
     portrait: Portret
     prefix: Voorvoegsel
     prefix_instance_id: 'Alias voorafgaan met instance-ID'
@@ -728,6 +748,7 @@ key:
     should: 'Zou moeten'
     show_search_form: 'Zoekformulier tonen'
     simplified_ui: 'Vereenvoudigde UI'
+    singular: Enkelvoud
     sort_by: 'Sorteren op'
     sort_options: Sorteeropties
     sort_options_lowercase: Sorteeropties
@@ -754,6 +775,7 @@ key:
     to_be_treated: 'Te behandelen'
     trash: Prullenbak
     treat_selection: 'Selectie behandelen'
+    'true': Waar
     unassigned_shards: 'Niet-toegewezen shards'
     unknown: Onbekend
     unreferenced_aliases: 'Niet-gerefereerde aliassen'
@@ -1063,6 +1085,7 @@ message:
     revision_draft_updated: 'Concept bijgewerkt voor het document "{label}"'
     revision_edit_draft_warning: 'U bewerkt een reeds gepubliceerde revisie, het is veiliger om <a href="{path}" class="btn btn-primary"><span class="fa fa-pencil"></span> een concept te bewerken</a>'
     revision_finalize_error: 'De revisie {revision_id} voor het content type "{content_type}" kan niet worden gefinaliseerd, reden: {error_message}'
+    revision_form_created: 'Revisieformulier aangemaakt'
     revision_in_draft_by: 'In concept door "{user}"'
     revision_incomplete_request: 'Het is niet mogelijk om het document "{label}" op te slaan. Controleer uw PHP/webconfiguratie (bv. max_input_vars in php.ini)'
     revision_json_edit_draft_only: 'Enkel een draft kan als JSON bewerkt worden'
@@ -1084,6 +1107,7 @@ message:
     revision_reindexed_failed_in: 'Het document "{label}" heeft een fout ondervonden tijdens het herindexeren in {environment}'
     revision_replace_by_date: 'vervangen door revisie {date}'
     revision_replace_error: 'De revisie {ouuid} voor het content type "{content_type}" kan niet worden vervangen/bijgewerkt, reden: {error_message}'
+    revision_request_form_handled: 'Aanvraagformulier voor revisie verwerkt'
     revision_restored: 'Het document "{label}" is hersteld'
     revision_unpublished: 'Het document "{label}" is gedepubliceerd uit {environment}'
     revision_updated_in_release: 'Document "{label}" is bijgewerkt met een nieuwe revisie in release "{release}"'
@@ -1109,6 +1133,8 @@ message:
     sign_in_to_continue: 'Meld u aan bij uw account om verder te gaan'
     something_wrong: 'Er is iets mis met deze applicatie.'
     sort_option_missing: "Klik op 'Sorteeroptie toevoegen' om een eerste sorteeroptie te maken"
+    start_edit: 'Begin met het bewerken van het document {ouuid} van het type {type}'
+    start_edit_without_ouuid: 'Begin met het bewerken van een nieuw document van het type {type}'
     still_in_target: 'Nog in {target}'
     subfield_added: 'Het subveld "{name}" is toegevoegd'
     subfield_name_mandatory: 'De naam van het subveld is verplicht'

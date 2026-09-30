@@ -289,7 +289,7 @@
 {% block revisionFooterTabs %}
 	<div class="nav-tabs-custom">
 		<ul class="nav nav-tabs">
-			<li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true" data-testid="revision-tab-referrers">{{ 'message.linked_documents_in'|trans({'environment': revision.contentType.environment.label, 'length': referrerResponse.documents|length, 'total': referrerResponse.formattedTotal }) }}</a></li>
+			<li class="active"><a href="#tab_referrers" data-toggle="tab" aria-expanded="true" data-testid="revision-tab-referrers">{{ 'message.linked_documents_in'|trans({'environment': revision.contentType.environment.label(app.user), 'length': referrerResponse.documents|length, 'total': referrerResponse.formattedTotal }) }}</a></li>
 			<li class=""><a href="#tab_revisions" data-toggle="tab" aria-expanded="false" data-testid="revision-tab-revisions">Revisions <small>{{ revisionsSummary|length }}/{{ counter }}</small></a></li>
 			{% if auditTable|default(false) %}
 				<li class=""><a href="#tab_audit" data-toggle="tab" aria-expanded="false" data-testid="revision-tab-audit">Audit <small>({{ auditCount }})</small></a></li>
@@ -382,7 +382,7 @@
 							{% endif %}
 							<td>
 								{% for env in rev.environments %}
-									<span class="badge bg-{{ env.color|raw }}">{{ env.label }}</span>
+									<span class="badge bg-{{ env.color|raw }}">{{ env.label(app.user) }}</span>
 								{% endfor %}
 								{% if rev.draft %}
 									<span class="badge bg-red">Draft in progress</span>

@@ -19,6 +19,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\ResolvedFormTypeInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class SaveDocumentOutputSchemaTest extends TestCase
@@ -72,16 +73,19 @@ final class SaveDocumentOutputSchemaTest extends TestCase
                     $authorizationChecker,
                     $this->createStub(FormRegistryInterface::class),
                     $this->createStub(ElasticsearchService::class),
+                    $this->createStub(TokenStorageInterface::class),
                 ),
                 CopyToFieldType::class => new CopyToFieldType(
                     $authorizationChecker,
                     $this->createStub(FormRegistryInterface::class),
                     $this->createStub(ElasticsearchService::class),
+                    $this->createStub(TokenStorageInterface::class),
                 ),
                 SubfieldType::class => new SubfieldType(
                     $authorizationChecker,
                     $this->createStub(FormRegistryInterface::class),
                     $this->createStub(ElasticsearchService::class),
+                    $this->createStub(TokenStorageInterface::class),
                 ),
                 default => throw new \RuntimeException(\sprintf('Unexpected type "%s"', $name)),
             };

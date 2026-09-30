@@ -81,7 +81,7 @@ action:
     init_upload: 'Initialize upload'
     move: Move
     move_item: 'Move item'
-    new_entity_name: 'New {name}'
+    new_entity_name: 'New {label}'
     new_job: 'New job'
     next: Next
     paste: Paste
@@ -105,7 +105,7 @@ action:
             filter   {Remove this filter}
             search_field_option   {Remove this search field option}
             sort_option   {Remove this sort option}
-            translation   {Remove translation}
+            translation   {Remove this translation}
             other   {Remove}
         }
     rename: Rename
@@ -293,6 +293,7 @@ field:
     base_url: 'Base URL'
     boolean_clause: 'Boolean clause'
     boost: Boost
+    bootstrap_class: 'Bootstrap class'
     business_id: 'Business ID'
     by_role: 'by role {role}'
     category: Category
@@ -334,6 +335,7 @@ field:
     dates_read_only: 'Dates read only'
     deadline: Deadline
     default_sort_order: 'Default sort order'
+    default_time: 'Default time'
     default_value: 'Default value'
     definition: Definition
     delay: 'Delay (in days)'
@@ -343,6 +345,7 @@ field:
     docs_count: '# Documents'
     edit_twig_with_wysiwyg: 'Edit the Twig template with a WYSIWYG editor'
     editor: Editor
+    elision: Elision
     email: Email
     email_content_type: 'Content type (ie: text/html)'
     enabled: Enabled
@@ -357,6 +360,7 @@ field:
     error: 'Error message'
     events: Events
     expiration_date: 'Expiration Date'
+    explicit_mode: 'Explicit mode'
     extra: Extra
     extra_roles: 'Extra roles'
     field: Field
@@ -381,11 +385,14 @@ field:
     format: Format
     format_tags: 'Format tags'
     from_sender: 'From {sender}'
+    gender: Gender
     group: Group
     hash: 'Hash signature'
     header: Header
     header_allow_origin: 'The Access-Control-Allow-Origin header'
     height: Height
+    helptext: Helptext
+    helptext_translations: 'Helptext translations'
     helptexts: Helptexts
     hidden: Hidden
     icon: Icon
@@ -408,11 +415,13 @@ field:
     json_file: 'JSON file'
     key: Key
     label: Label
+    label_translations: 'Label translations'
     language: Language
     language_preferred: 'Language preferred'
     language_ui: 'Language UI'
     last_login: 'Last Login'
     last_modification: 'Last modification'
+    last_of_row: 'Last item of the row'
     last_seen: 'Last seen'
     locale: Locale
     locale_preferred: 'Locale preferred'
@@ -434,6 +443,7 @@ field:
     new_version: 'New version'
     node_name: 'Node name'
     not_blank_new_version: 'Not blank new version'
+    number: Number
     operator: Operator
     operators: Operators
     options: Options
@@ -446,6 +456,7 @@ field:
     permission: Permission
     plural: Plural
     plural_name: 'Plural name'
+    plural_name_translations: 'Plural name translations'
     postition_increment_gap: 'Position increment gap'
     public_access: 'Public Access'
     publish_to: 'Publish to'
@@ -480,8 +491,11 @@ field:
     search_field_options: 'Search field options'
     separator: Separator
     severity: Severity
+    show_meridian: 'Show meridian (true: 12hr, false: 24hr)'
+    show_seconds: 'Show seconds'
     singular: Singular
     singular_name: 'Singular name'
+    singular_name_translations: 'Singular name translations'
     sort: Sort
     sort_by: 'Sort by'
     sort_options: 'Sort options'
@@ -603,6 +617,7 @@ key:
     excel_export: 'Excel export'
     export_documents: 'Export documents'
     failed_jobs: 'Failed jobs'
+    'false': 'False'
     filter: Filter
     filters: Filters
     finalize: Finalize
@@ -612,6 +627,10 @@ key:
     form_root: "Form's root"
     form_submissions: 'Form Submissions'
     forms: Forms
+    gender:
+        female: Female
+        male: Male
+        neutral: Neutral
     groups: Groups
     gt: 'Greater than'
     gte: 'Greater than or equal to'
@@ -687,6 +706,7 @@ key:
     pending_jobs: 'Pending jobs'
     pendings: Pendings
     permission_overview_singular: 'Permission Overview'
+    plural: Plural
     portrait: Portrait
     prefix: Prefix
     prefix_instance_id: 'Prefix alias with instance ID'
@@ -728,6 +748,7 @@ key:
     should: Should
     show_search_form: 'Show search form'
     simplified_ui: 'Simplified UI'
+    singular: Singular
     sort_by: 'Sort by'
     sort_options: 'Sort Options'
     sort_options_lowercase: 'Sort options'
@@ -754,6 +775,7 @@ key:
     to_be_treated: 'To be treated'
     trash: Trash
     treat_selection: 'Treat selection'
+    'true': 'True'
     unassigned_shards: 'Unassigned shards'
     unknown: Unknown
     unreferenced_aliases: 'Unreferenced aliases'
@@ -1063,6 +1085,7 @@ message:
     revision_draft_updated: 'Updated draft for the document "{label}"'
     revision_edit_draft_warning: 'You are editing an already published revision, it is safer to <a href="{path}" class="btn btn-primary"><span class="fa fa-pencil"></span> edit a draft</a>'
     revision_finalize_error: 'The revision {revision_id} for the content type "{content_type}" cannot be finalized, reason: {error_message}'
+    revision_form_created: "Revision's form created"
     revision_in_draft_by: 'In draft by "{user}"'
     revision_incomplete_request: 'It is impossible to save the document "{label}". Please check your PHP/Web configuration (i.e.: max_input_vars in php.ini)'
     revision_json_edit_draft_only: 'Only a draft can be edited as JSON'
@@ -1084,6 +1107,7 @@ message:
     revision_reindexed_failed_in: 'The document "{label}" has encountered an exception during its reindexing in {environment}'
     revision_replace_by_date: 'replace by revision {date}'
     revision_replace_error: 'The revision {ouuid} for the content type "{content_type}" cannot be replaced/updated, reason: {error_message}'
+    revision_request_form_handled: "Revision's request form handled"
     revision_restored: 'The document "{label}" has been restored'
     revision_unpublished: 'The document "{label}" has been unpublished from {environment}'
     revision_updated_in_release: 'Document "{label}" has been updated with a new revision in release "{release}"'
@@ -1109,6 +1133,8 @@ message:
     sign_in_to_continue: 'Sign in to your account to continue'
     something_wrong: 'There is something wrong with this application.'
     sort_option_missing: "Click on 'Add a Sort Option' to create a first Sort Option"
+    start_edit: 'Start editing the document {ouuid} of type {type}'
+    start_edit_without_ouuid: 'Start editing a new document of type {type}'
     still_in_target: 'Still in {target}'
     subfield_added: 'The subfield "{name}" has been added'
     subfield_name_mandatory: 'The subfield name is mandatory'

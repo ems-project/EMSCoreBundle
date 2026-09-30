@@ -81,7 +81,12 @@ action:
     init_upload: 'Initialiser l’upload'
     move: Déplacer
     move_item: 'Déplacer l’élément'
-    new_entity_name: 'Nouveau {name}'
+    new_entity_name: |-
+        {gender, select,
+            male {Nouveau {label}}
+            female {Nouvelle {label}}
+            other {Nouveau {label}}
+        }
     new_job: 'Nouveau job'
     next: Suivant
     paste: Coller
@@ -105,7 +110,7 @@ action:
             filter   {Supprimer ce filtre}
             search_field_option   {Supprimer cette option de champ de recherche}
             sort_option   {Supprimer cette option de tri}
-            translation   {Supprimer la traduction}
+            translation   {Supprimer cette traduction}
             other   {Supprimer}
         }
     rename: Renommer
@@ -293,6 +298,7 @@ field:
     base_url: 'URL de base'
     boolean_clause: 'Clause booléenne'
     boost: Boost
+    bootstrap_class: 'Classe Bootstrap'
     business_id: 'ID métier'
     by_role: 'par rôle {role}'
     category: Catégorie
@@ -334,6 +340,7 @@ field:
     dates_read_only: 'Dates en lecture seule'
     deadline: Échéance
     default_sort_order: 'Ordre de tri par défaut'
+    default_time: 'Temps par défaut'
     default_value: 'Valeur par défaut'
     definition: Définition
     delay: 'Délai (en jours)'
@@ -343,6 +350,7 @@ field:
     docs_count: '# Documents'
     edit_twig_with_wysiwyg: 'Modifier le template Twig avec un éditeur WYSIWYG'
     editor: Éditeur
+    elision: Élision
     email: Email
     email_content_type: 'Type de contenu (ex. : text/html)'
     enabled: Activé
@@ -357,6 +365,7 @@ field:
     error: 'Message d’erreur'
     events: Événements
     expiration_date: 'Date d’expiration'
+    explicit_mode: 'Explicit mode'
     extra: Extra
     extra_roles: 'Rôles supplémentaires'
     field: Champ
@@ -381,11 +390,14 @@ field:
     format: Format
     format_tags: 'Tags de format'
     from_sender: 'De {sender}'
+    gender: Genre
     group: Groupe
     hash: 'Signature du hash'
     header: En-tête
     header_allow_origin: 'L’en-tête Access-Control-Allow-Origin'
     height: Hauteur
+    helptext: "Texte d'aide"
+    helptext_translations: "Traductions des textes d'aide"
     helptexts: 'Textes d’aide'
     hidden: Masqué
     icon: Icône
@@ -408,11 +420,13 @@ field:
     json_file: 'Fichier JSON'
     key: Clé
     label: Libellé
+    label_translations: Traductions
     language: Langue
     language_preferred: 'Langue préférée'
     language_ui: "Langue de l'interface"
     last_login: 'Dernière connexion'
     last_modification: 'Dernière modification'
+    last_of_row: 'Dernier élément de la ligne'
     last_seen: 'Vu pour la dernière fois'
     locale: Locale
     locale_preferred: 'Langue préférée'
@@ -434,6 +448,7 @@ field:
     new_version: 'Nouvelle version'
     node_name: 'Nom du nœud'
     not_blank_new_version: 'Nouvelle version non vide'
+    number: Nombre
     operator: Opérateur
     operators: Opérateurs
     options: Options
@@ -446,6 +461,7 @@ field:
     permission: Permission
     plural: Pluriel
     plural_name: 'Nom pluriel'
+    plural_name_translations: 'Traductions de noms au pluriel'
     postition_increment_gap: "Écart d'incrément de position"
     public_access: 'Accès public'
     publish_to: 'Publier vers'
@@ -480,8 +496,11 @@ field:
     search_field_options: 'Options du champ de recherche'
     separator: Séparateur
     severity: Sévérité
+    show_meridian: 'Afficher le méridien (vrai : 12 h, faux : 24 h)'
+    show_seconds: 'Afficher les secondes'
     singular: Singulier
     singular_name: 'Nom singulier'
+    singular_name_translations: 'Traductions des noms au singulier'
     sort: Tri
     sort_by: 'Trier par'
     sort_options: 'Options de tri'
@@ -603,6 +622,7 @@ key:
     excel_export: 'Export Excel'
     export_documents: 'Exporter les documents'
     failed_jobs: 'Jobs échoués'
+    'false': Faux
     filter: Filtre
     filters: Filtres
     finalize: Finaliser
@@ -612,6 +632,10 @@ key:
     form_root: 'Racine du formulaire'
     form_submissions: 'Soumissions de formulaire'
     forms: Formulaires
+    gender:
+        female: Féminin
+        male: Masculin
+        neutral: Neutre
     groups: Groupes
     gt: 'Plus grand que'
     gte: 'Plus grand ou égal à'
@@ -687,6 +711,7 @@ key:
     pending_jobs: 'Jobs en attente'
     pendings: 'En attente'
     permission_overview_singular: 'Vue d’ensemble des permissions'
+    plural: Pluriel
     portrait: Portrait
     prefix: Préfixe
     prefix_instance_id: 'Préfixer l’alias avec l’ID de l’instance'
@@ -728,6 +753,7 @@ key:
     should: Devrait
     show_search_form: 'Afficher le formulaire de recherche'
     simplified_ui: 'Interfaces simplifiées'
+    singular: Singulier
     sort_by: 'Trier par'
     sort_options: 'Options de tri'
     sort_options_lowercase: 'Options de tri'
@@ -754,6 +780,7 @@ key:
     to_be_treated: 'À traiter'
     trash: Corbeille
     treat_selection: 'Traiter la sélection'
+    'true': Vrai
     unassigned_shards: 'Shards non assignés'
     unknown: Inconnu
     unreferenced_aliases: 'Alias non référencés'
@@ -1063,6 +1090,7 @@ message:
     revision_draft_updated: 'Brouillon mis à jour pour le document "{label}"'
     revision_edit_draft_warning: 'Vous modifiez une révision déjà publiée, il est plus sûr de <a href="{path}" class="btn btn-primary"><span class="fa fa-pencil"></span> modifier un brouillon</a>'
     revision_finalize_error: 'La révision {revision_id} pour le type de contenu "{content_type}" ne peut pas être finalisée, raison : {error_message}'
+    revision_form_created: 'Formulaire de révision créé'
     revision_in_draft_by: 'En brouillon par "{user}"'
     revision_incomplete_request: 'Il est impossible d''enregistrer le document "{label}". Veuillez vérifier votre configuration PHP/Web (par ex. max_input_vars dans php.ini)'
     revision_json_edit_draft_only: 'Seul un brouillon peut être édité en JSON'
@@ -1084,6 +1112,7 @@ message:
     revision_reindexed_failed_in: 'Le document "{label}" a rencontré une exception lors de sa réindexation dans {environment}'
     revision_replace_by_date: 'remplacée par la révision {date}'
     revision_replace_error: 'La révision {ouuid} pour le type de contenu "{content_type}" ne peut pas être remplacée/mise à jour, raison : {error_message}'
+    revision_request_form_handled: 'Formulaire de demande de révision traité'
     revision_restored: 'Le document "{label}" a été restauré'
     revision_unpublished: 'Le document "{label}" a été dépublié de {environment}'
     revision_updated_in_release: 'Le document "{label}" a été mis à jour avec une nouvelle révision dans la release "{release}"'
@@ -1109,6 +1138,8 @@ message:
     sign_in_to_continue: 'Connectez-vous à votre compte pour continuer'
     something_wrong: 'Un problème est survenu avec cette application.'
     sort_option_missing: 'Cliquez sur « Ajouter une option de tri » pour créer une première option de tri'
+    start_edit: 'Commencer à modifier le document {ouuid} de type {type}'
+    start_edit_without_ouuid: 'Commencer à modifier un nouveau document de type {type}'
     still_in_target: 'Toujours dans {target}'
     subfield_added: 'Le sous-champ "{name}" a été ajouté'
     subfield_name_mandatory: 'Le nom du sous-champ est obligatoire'

@@ -536,4 +536,15 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     {
         $this->roles = $roles;
     }
+
+    /**
+     * @return string[]
+     */
+    public function getLocales(): array
+    {
+        return \array_unique(\array_filter([
+            $this->locale,
+            $this->localePreferred,
+        ]));
+    }
 }

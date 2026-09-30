@@ -11,6 +11,8 @@
     <field name="name" length="100"/>
     <field name="pluralName" column="pluralName" length="100"/>
     <field name="singularName" column="singularName" length="100"/>
+    <field name="pluralNameTranslations" column="plural_name_translations" type="json" nullable="true"/>
+    <field name="singularNameTranslations" column="singular_name_translations" type="json" nullable="true"/>
     <field name="icon" length="100" nullable="true"/>
     <field name="description" type="text" nullable="true"/>
     <field name="indexTwig" column="indexTwig" type="text" nullable="true"/>

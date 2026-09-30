@@ -18,6 +18,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\ResolvedFormTypeInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
@@ -30,6 +31,7 @@ final class ComputedFieldTypeMcpSchemaTest extends TestCase
             $this->createStub(AuthorizationCheckerInterface::class),
             $this->createStub(FormRegistryInterface::class),
             $this->createStub(ElasticsearchService::class),
+            $this->createStub(TokenStorageInterface::class),
             new Environment(new ArrayLoader()),
         );
 
@@ -44,6 +46,7 @@ final class ComputedFieldTypeMcpSchemaTest extends TestCase
             $this->createStub(AuthorizationCheckerInterface::class),
             $this->createStub(FormRegistryInterface::class),
             $this->createStub(ElasticsearchService::class),
+            $this->createStub(TokenStorageInterface::class),
             new Environment(new ArrayLoader()),
         );
 
@@ -103,11 +106,13 @@ final class ComputedFieldTypeMcpSchemaTest extends TestCase
                     $authorizationChecker,
                     $this->createStub(FormRegistryInterface::class),
                     $this->createStub(ElasticsearchService::class),
+                    $this->createStub(TokenStorageInterface::class),
                 ),
                 ComputedFieldType::class => new ComputedFieldType(
                     $authorizationChecker,
                     $this->createStub(FormRegistryInterface::class),
                     $this->createStub(ElasticsearchService::class),
+                    $this->createStub(TokenStorageInterface::class),
                     new Environment(new ArrayLoader()),
                 ),
                 default => throw new \RuntimeException(\sprintf('Unexpected type "%s"', $name)),

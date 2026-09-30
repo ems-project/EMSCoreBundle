@@ -11,6 +11,7 @@
     <field name="name" length="255"/>
     <field name="type" length="255"/>
     <field name="label" length="255"/>
+    <field name="labelTranslations" column="label_translations" type="json" nullable="true"/>
     <field name="icon" length="255" nullable="true"/>
     <field name="options" type="json" nullable="true"/>
     <field name="orderKey" column="order_key" type="integer"/>

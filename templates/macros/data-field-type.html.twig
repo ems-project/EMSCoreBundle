@@ -53,11 +53,7 @@
 	<div class="panel-heading">
 		<h3 class="panel-title">
 			<i class="{% if dataField.fieldType.displayOptions.icon is defined %}{{ dataField.fieldType.displayOptions.icon }}{% else %}fa fa-file-o{% endif %}"></i>
-				{% if dataField.fieldType.displayOptions.label is defined %}
-					{{ dataField.fieldType.displayOptions.label }}
-				{% else %}
-					{{ dataField.fieldType.name }}
-				{% endif %}
+                {{ dataField.fieldType.translate('label', app.user) }}
 		</h3>
 	</div>
     {% set doCompare = false %}
@@ -243,10 +239,7 @@
 				{% if dataField.fieldType.displayOptions.icon is defined %}
 					<i class="{{ dataField.fieldType.displayOptions.icon }}"></i>
 				{% endif %}
-				{% if dataField.fieldType.displayOptions.label is defined %}
-					{{ dataField.fieldType.displayOptions.label }}
-				{% else %}
-				{% endif %}
+                {{ dataField.fieldType.translate('label', app.user) }}
 				{% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 				{% if collapsible %}
                     <div class="pull-right">
@@ -336,11 +329,7 @@
 						{% if dataField.fieldType.displayOptions.icon is defined %}
 							<i class="{{ dataField.fieldType.displayOptions.icon }}"></i>
 						{% endif %}
-						{% if dataField.fieldType.displayOptions.label is defined and dataField.fieldType.displayOptions.label%}
-							{{ dataField.fieldType.displayOptions.label }}
-						{% else %}
-							{{ dataField.fieldType.name }}
-						{% endif %}
+                        {{ dataField.fieldType.translate('label', app.user) }}
 					</h3>
 				</div>
 			{% endif %}
@@ -376,11 +365,7 @@
 					{% if dataField.fieldType.displayOptions.icon is defined %}
 						<i class="{{ dataField.fieldType.displayOptions.icon }}"></i>
 					{% endif %}
-					{% if dataField.fieldType.displayOptions.label is defined %}
-						{{ dataField.fieldType.displayOptions.label }}
-					{% else %}
-						{{ dataField.fieldType.name }}
-					{% endif %}
+                    {{ dataField.fieldType.translate('label', app.user) }}
 				</h3>
 			</div>
 			<div class="panel-body container-fluid">
@@ -480,7 +465,7 @@
 					{% with {
 						'child': child,
 						'counter': counter,
-						'label': child.fieldType.displayOptions.label|default(child.fieldType.name),
+						'label': child.fieldType.translate('label', app.user),
 						'path': path|merge([counter]),
 						}
 					%}
@@ -544,11 +529,7 @@
 
 {% block EMS_CoreBundle_Form_DataField_DataLinkFieldType %}
 	<dl>
-		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
-		{% else %}
-			<dt>{{ dataField.fieldType.name }}</dt>
-		{% endif %}
+        <dt>{{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_data_link(dataField.rawData, compare, dataField.fieldType.name, compareRawData) }}
 		</dd>
@@ -558,11 +539,7 @@
 
 {% block EMS_CoreBundle_Form_DataField_OuuidFieldType %}
 	<dl>
-		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
-		{% else %}
-			<dt>{{ dataField.fieldType.name }}</dt>
-		{% endif %}
+        <dt>{{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">{{ emsco_diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
@@ -572,11 +549,7 @@
 	{% set doCompare = compare and dataField.rawData|json_encode is not same as( (attribute(compareRawData, dataField.fieldType.name) is defined?attribute(compareRawData, dataField.fieldType.name):null)|json_encode  )  %}
     {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
-		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
-		{% else %}
-			<dt>{{ dataField.fieldType.name }}</dt>
-		{% endif %}
+        <dt>{{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {% if dataField.fieldType.displayOptions.displayTemplate is defined and dataField.fieldType.displayOptions.displayTemplate %}
             	{% if doCompare  %}
@@ -606,11 +579,7 @@
 
 {% block EMS_CoreBundle_Form_DataField_TextStringFieldType %}
 	<dl>
-		{% if dataField.fieldType.displayOptions.label is defined %}
-			<dt>{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
-		{% else %}
-			<dt>{{ dataField.fieldType.name }}</dt>
-		{% endif %}
+        <dt>{{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">{{ emsco_diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}</dd>
 	</dl>
 	{{ _self.messages(dataField) }}
@@ -619,11 +588,7 @@
 {% block EMS_CoreBundle_Form_DataField_TextareaFieldType %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<div class="panel panel-default">
@@ -641,11 +606,7 @@
     {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
     <dl>
         <dt>
-            {% if dataField.fieldType.displayOptions.label is defined %}
-                {{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-            {% else %}
-                {{ dataField.fieldType.name }}
-            {% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
         </dt>
         <dd data-testid="field-value-{{ dataField.fieldType.name }}">
             <div class="panel panel-default">
@@ -674,11 +635,7 @@
 	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
 		<dt class="{{ color }}">
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<div class="panel panel-default">
@@ -709,11 +666,7 @@
     {% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<div class="panel panel-default">
@@ -764,11 +717,7 @@
 	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<div class="panel panel-default">
@@ -802,11 +751,7 @@
 	{% set color = not doCompare ? '' : not dataField.rawData ? 'bg-red' : not compareRawData|emsco_get_string(dataField.fieldType.name) ? 'bg-green' : 'bg-orange' %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<div class="panel panel-default">
@@ -831,11 +776,7 @@
 {% block EMS_CoreBundle_Form_DataField_PasswordFieldType %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {% set hasChanged = compare and dataField.rawData is not same as ( attribute(compareRawData, dataField.fieldType.name) is defined ? attribute(compareRawData, dataField.fieldType.name) : null ) %}
@@ -866,11 +807,7 @@
 {% block EMS_CoreBundle_Form_DataField_EmailFieldType %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_text(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
@@ -882,11 +819,7 @@
 {% block EMS_CoreBundle_Form_DataField_IconFieldType %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_icon(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
@@ -898,11 +831,7 @@
 {% block EMS_CoreBundle_Form_DataField_ColorPickerFieldType %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_color(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
@@ -914,11 +843,7 @@
 {% block EMS_CoreBundle_Form_DataField_ChoiceFieldType %}
     <dl>
 		<dt class="">
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<ul>
@@ -951,11 +876,7 @@
 {% block EMS_CoreBundle_Form_DataField_JsonMenuLinkFieldType %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<ul>
@@ -1092,11 +1013,7 @@
     {% set color = not doCompare ? '' : 'bg-orange' %}
 	<dl>
 		<dt class="{{ color }}">
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name|raw }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_boolean(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
@@ -1111,11 +1028,7 @@
 {% block EMS_CoreBundle_Form_DataField_NumberFieldType %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name|raw }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_raw(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
@@ -1127,11 +1040,7 @@
 {% block EMS_CoreBundle_Form_DataField_IntegerFieldType %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name|raw }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_raw(dataField.rawData, compare, dataField.fieldType.name, compareRawData)|raw }}
@@ -1143,11 +1052,7 @@
 {% block EMS_CoreBundle_Form_DataField_DateFieldType %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name|raw }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<ul>
@@ -1161,11 +1066,7 @@
 {% block EMS_CoreBundle_Form_DataField_DateTimeFieldType %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name|raw }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			<ul>
@@ -1179,11 +1080,7 @@
 {% block EMS_CoreBundle_Form_DataField_DateRangeFieldType %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name|raw }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		{% set dateFrom = null %}
 		{% if attribute(dataField.rawData, dataField.fieldType.mappingOptions.fromDateMachineName) is defined %}
@@ -1243,11 +1140,7 @@
 {% block EMS_CoreBundle_Form_DataField_SelectUserPropertyFieldType %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name|raw }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			{% if dataField.fieldType.displayOptions.multiple|default(false) %}
@@ -1266,11 +1159,7 @@
 {% block EMS_CoreBundle_Form_DataField_TimeFieldType %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name|raw }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
             {{ emsco_diff_time(dataField.rawData, compare, dataField.fieldType.name, compareRawData, dataField.fieldType.options|emsco_time_field_time_format, dataField.fieldType.mappingOptions.format|emsco_convert_java_date_format) }}
@@ -1282,11 +1171,7 @@
 {% block EMS_CoreBundle_Form_DataField_VersionTagFieldType %}
 	<dl>
 		<dt>
-			{% if dataField.fieldType.displayOptions.label is defined %}
-				{{ dataField.fieldType.displayOptions.label }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
-			{% else %}
-				{{ dataField.fieldType.name }}
-			{% endif %}
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
 		</dt>
 		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
 			{% if dataField.rawData is null or dataField.rawData == 'silent' %}
@@ -1310,7 +1195,7 @@
     {% else %}
         <div class="panel panel-warning">
             <div class="panel-heading">
-                {{ dataField.fieldType.displayOptions.label|default(dataField.fieldType.name) }}{% if emsco_is_super() %} ({{ dataField.fieldType.name }}){% endif %}
+                {{ dataField.fieldType.translate('label', app.user) }}{% if emsco_is_super() %} ({{ dataField.fieldType.name }}){% endif %}
             </div>
             <div class="panel-body">
                 {{ errorMessage|default('message.form_not_defined'|trans)|trans }}

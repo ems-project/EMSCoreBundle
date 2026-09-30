@@ -9,6 +9,9 @@ use EMS\CommonBundle\Entity\IdentifierIntegerTrait;
 use EMS\CoreBundle\Core\ContentType\ViewDefinition;
 use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
+use EMS\Helpers\Translations\Translation;
+use EMS\Helpers\Translations\Translations;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class View extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
@@ -18,6 +21,8 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     protected string $name;
     protected string $type;
     protected string $label = '';
+    /** @var array<string, array<string,string>>|null */
+    protected ?array $labelTranslations;
     protected ?string $icon = null;
     /** @var array<mixed> */
     protected ?array $options = null;
@@ -155,9 +160,18 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
         return $json;
     }
 
-    public function getLabel(): string
+    public function getLabel(?UserInterface $user = null): string
     {
-        return $this->label;
+        return $this->getLabelTranslation($user)->getLabel();
+    }
+
+    public function getLabelTranslation(?UserInterface $user = null): Translation
+    {
+        if (!$user instanceof User) {
+            return new Translation($this->label);
+        }
+
+        return Translations::fromArray($this->getLabelTranslations())->getTranslation($user->getLocales(), $this->label);
     }
 
     public function setLabel(string $label): void
@@ -173,5 +187,21 @@ class View extends JsonDeserializer implements \JsonSerializable, EntityInterfac
     public function setDefinition(?ViewDefinition $definition): void
     {
         $this->definition = $definition?->value;
+    }
+
+    /**
+     * @return mixed[][]
+     */
+    public function getLabelTranslations(): array
+    {
+        return $this->labelTranslations ?? [];
+    }
+
+    /**
+     * @param mixed[][]|null $labelTranslations
+     */
+    public function setLabelTranslations(?array $labelTranslations): void
+    {
+        $this->labelTranslations = $labelTranslations ?? [];
     }
 }

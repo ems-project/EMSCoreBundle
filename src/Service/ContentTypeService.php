@@ -640,7 +640,6 @@ class ContentTypeService implements EntityServiceInterface
         foreach ($temp as $item) {
             $counters[$item['content_type_id']] = $item['counter'];
         }
-        $circleContentType = $this->getCircleContentType();
 
         foreach ($this->orderedContentTypes as $contentType) {
             $roles = $contentType->getRoles();
@@ -653,7 +652,7 @@ class ContentTypeService implements EntityServiceInterface
 
             [$routeOverview, $routeOverviewParams] = $this->getRedirectOverviewRoute($contentType);
             $menuEntry = new MenuEntry(
-                label: $contentType->getPluralName(),
+                label: $contentType->getPluralName($user),
                 icon: $contentType->getIcon() ?? 'fa fa-book',
                 route: $routeOverview,
                 routeParameters: $routeOverviewParams,
@@ -662,12 +661,12 @@ class ContentTypeService implements EntityServiceInterface
             if (isset($counters[$contentType->getId()])) {
                 $menuEntry->setBadge((string) $counters[$contentType->getId()]);
             }
-            $this->addMenuViewLinks($contentType, $menuEntry);
+            $this->addMenuViewLinks($contentType, $menuEntry, $user);
             $this->addDraftInProgressLink($contentType, $menuEntry);
 
             if ($this->authorizationChecker->isGranted($roles[ContentTypeRoles::SHOW_LINK_CREATE])
                 && $this->authorizationChecker->isGranted($roles[ContentTypeRoles::CREATE])) {
-                $menuEntry->addChild(t('action.new_entity_name', ['{name}' => $contentType->getSingularName()], 'emsco-core'), 'fa fa-plus', Routes::DATA_ADD, ['contentType' => $contentType->getId()]);
+                $menuEntry->addChild(t('action.new_entity_name', $contentType->getSingularNameTranslation($user)->getParameters(), 'emsco-core'), 'fa fa-plus', Routes::DATA_ADD, ['contentType' => $contentType->getId()]);
             }
             if ($this->authorizationChecker->isGranted($roles[ContentTypeRoles::TRASH])) {
                 $trashLink = $menuEntry->addChild(t('key.trash', [], 'emsco-core'), 'fa fa-trash', Routes::DATA_TRASH, ['contentType' => $contentType->getId()]);
@@ -680,7 +679,7 @@ class ContentTypeService implements EntityServiceInterface
         return $menu;
     }
 
-    private function addMenuViewLinks(ContentType $contentType, MenuEntry $menuEntry): void
+    private function addMenuViewLinks(ContentType $contentType, MenuEntry $menuEntry, UserInterface $user): void
     {
         foreach ($contentType->getViews() as $view) {
             if (null !== $view->getRole() && !$this->authorizationChecker->isGranted($view->getRole())) {
@@ -689,7 +688,7 @@ class ContentTypeService implements EntityServiceInterface
             if ('ems.view.data_link' === $view->getType()) {
                 continue;
             }
-            $menuEntry->addChild($view->getLabel(), $view->getIcon() ?? '', $view->isPublic() ? Routes::DATA_PUBLIC_VIEW : Routes::DATA_PRIVATE_VIEW, ['viewId' => $view->getId()]);
+            $menuEntry->addChild($view->getLabel($user), $view->getIcon() ?? '', $view->isPublic() ? Routes::DATA_PUBLIC_VIEW : Routes::DATA_PRIVATE_VIEW, ['viewId' => $view->getId()]);
         }
     }
 

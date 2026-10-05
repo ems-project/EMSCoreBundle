@@ -31,6 +31,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Translation\TranslatableMessage;
 
 use function Symfony\Component\Translation\t;
 
@@ -55,9 +56,9 @@ class WysiwygFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'WYSIWYG field';
+        return t('field_type.wysiwyg', [], 'emsco-core');
     }
 
     #[\Override]

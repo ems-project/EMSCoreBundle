@@ -10,6 +10,9 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 class CheckboxFieldType extends DataFieldType
 {
@@ -20,9 +23,9 @@ class CheckboxFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Checkbox field';
+        return t('field_type.checkbox', [], 'emsco-core');
     }
 
     #[\Override]
@@ -125,15 +128,11 @@ class CheckboxFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // String specific display options
         $optionsForm->get('displayOptions')->add('question_label', TextType::class, [
+            'label' => t('field.question_label', [], 'emsco-core'),
             'required' => false,
-            //         ] )->add ( 'labels', TextareaType::class, [
-            //                 'required' => false,
         ]);
 
-        //         // String specific mapping options
-        //         $optionsForm->get ( 'mappingOptions' )->add ( 'analyzer', AnalyzerPickerType::class);
         $optionsForm->get('restrictionOptions')->remove('mandatory');
         $optionsForm->get('restrictionOptions')->remove('mandatory_if');
     }

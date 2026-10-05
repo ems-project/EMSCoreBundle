@@ -23,6 +23,7 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Translation\TranslatableMessage;
 
 /**
  * @extends AbstractType<mixed>
@@ -183,10 +184,7 @@ abstract class DataFieldType extends AbstractType
         ];
     }
 
-    /**
-     * Used to display in the content type edit page (instead of the class path).
-     */
-    abstract public function getLabel(): string;
+    abstract public function getLabel(): TranslatableMessage;
 
     /**
      * @param callable(array<FieldType>): array<string, mixed> $buildObjectSchema

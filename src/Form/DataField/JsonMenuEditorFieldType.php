@@ -14,6 +14,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 class JsonMenuEditorFieldType extends DataFieldType
 {
@@ -24,9 +27,9 @@ class JsonMenuEditorFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'JSON menu editor field';
+        return t('field_type.json_menu_editor', [], 'emsco-core');
     }
 
     #[\Override]
@@ -98,16 +101,22 @@ class JsonMenuEditorFieldType extends DataFieldType
         $optionsForm = $builder->get('options');
 
         if ($optionsForm->has('mappingOptions')) {
-            $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class);
+            $optionsForm->get('mappingOptions')->add('analyzer', AnalyzerPickerType::class, [
+                'label' => t('field.analyzer', [], 'emsco-core'),
+            ]);
         }
 
         $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
+            'label' => t('field.icon', [], 'emsco-core'),
             'required' => false,
         ])->add('maxDepth', IntegerType::class, [
+            'label' => t('field.max_depth', [], 'emsco-core'),
             'required' => false,
         ])->add('nodeTypes', TextType::class, [
+            'label' => t('field.node_types', [], 'emsco-core'),
             'required' => false,
         ])->add('itemTypes', TextType::class, [
+            'label' => t('field.item_types', [], 'emsco-core'),
             'required' => false,
         ]);
     }

@@ -13,6 +13,9 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Intl\Locales;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 class ContainerFieldType extends DataFieldType
 {
@@ -23,9 +26,9 @@ class ContainerFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Visual container (invisible in Elasticsearch)';
+        return t('field_type.container', [], 'emsco-core');
     }
 
     #[\Override]
@@ -120,8 +123,12 @@ class ContainerFieldType extends DataFieldType
         $optionsForm->get('restrictionOptions')->remove('mandatory');
         $optionsForm->get('restrictionOptions')->remove('mandatory_if');
         $optionsForm->get('displayOptions')
-            ->add('icon', IconPickerType::class, ['required' => false])
+            ->add('icon', IconPickerType::class, [
+                'required' => false,
+                'label' => t('field.icon', [], 'emsco-core'),
+            ])
             ->add('language', ChoiceType::class, [
+                'label' => t('field.language', [], 'emsco-core'),
                 'required' => false,
                 'choices' => \array_flip(Locales::getNames()),
                 'choice_translation_domain' => false,

@@ -22,6 +22,8 @@ use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -51,17 +53,18 @@ class FieldTypeType extends AbstractType
 
         if ($dataFieldType->isContainer()) {
             $builder->add('ems:internal:add:field:class', FieldTypePickerType::class, [
-                'label' => "Field's type",
+                'label' => t('field.field_type', [], 'emsco-core'),
                 'mapped' => false,
                 'required' => false,
             ]);
             $builder->add('ems:internal:add:field:name', TextType::class, [
-                'label' => "Field's machine name",
+                'label' => t('field.machine_name', [], 'emsco-core'),
                 'mapped' => false,
                 'required' => false,
             ]);
 
             $builder->add('add', SubmitEmsType::class, [
+                'label' => t('action.add', ['type' => 'field'], 'emsco-core'),
                 'attr' => [
                     'class' => 'btn btn-primary ',
                     'data-testid' => 'btn-action-add',
@@ -70,13 +73,13 @@ class FieldTypeType extends AbstractType
             ]);
         } elseif (0 !== \strcmp(SubfieldType::class, $fieldType->getType())) {
             $builder->add('ems:internal:add:subfield:name', TextType::class, [
-                'label' => "Subfield's name",
+                'label' => t('field.subfield_name', [], 'emsco-core'),
                 'mapped' => false,
                 'required' => false,
             ]);
 
             $builder->add('subfield', SubmitEmsType::class, [
-                'label' => 'Add',
+                'label' => t('action.add', ['type' => 'subfield'], 'emsco-core'),
                 'attr' => [
                     'class' => 'btn btn-primary ',
                     'data-testid' => 'btn-action-subfield',
@@ -85,13 +88,13 @@ class FieldTypeType extends AbstractType
             ]);
 
             $builder->add('ems:internal:add:subfield:target_name', TextType::class, [
-                'label' => "New field's machine name",
+                'label' => t('field.machine_name', [], 'emsco-core'),
                 'mapped' => false,
                 'required' => false,
             ]);
 
             $builder->add('duplicate', SubmitEmsType::class, [
-                'label' => 'Duplicate',
+                'label' => t('action.duplicate', [], 'emsco-core'),
                 'attr' => [
                     'class' => 'btn btn-primary ',
                     'data-testid' => 'btn-action-duplicate',
@@ -101,13 +104,12 @@ class FieldTypeType extends AbstractType
         }
         if (!$options['editSubfields']) {
             $builder->add('name', TextType::class, [
-                'label' => "Field's name",
-                //                'mapped' => false,
-                //                'required' => false,
+                'label' => t('field.name', [], 'emsco-core'),
             ]);
         }
         if (null != $fieldType->getParent() && $options['editSubfields']) {
             $builder->add('remove', SubmitEmsType::class, [
+                'label' => t('action.remove', ['type' => 'subfield'], 'emsco-core'),
                 'attr' => [
                     'class' => 'btn btn-danger btn-xs',
                     'data-testid' => 'btn-action-remove',
@@ -132,6 +134,7 @@ class FieldTypeType extends AbstractType
             }
             if ($childFound && $options['editSubfields']) {
                 $builder->add('reorder', SubmitEmsType::class, [
+                    'label' => t('action.reorder', ['type' => 'subfield'], 'emsco-core'),
                     'attr' => [
                         'class' => 'btn btn-primary ',
                         'data-testid' => 'btn-action-reorder',

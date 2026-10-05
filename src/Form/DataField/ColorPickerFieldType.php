@@ -8,6 +8,9 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Form\Field\ColorPickerFullType;
 use EMS\Helpers\Standard\Json;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Defined a Container content type.
@@ -24,9 +27,9 @@ class ColorPickerFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Color picker field';
+        return t('field_type.color_picker', [], 'emsco-core');
     }
 
     #[\Override]

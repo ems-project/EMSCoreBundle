@@ -20,6 +20,9 @@ use Symfony\Component\Intl\Locales;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 class MultiplexedTabContainerFieldType extends DataFieldType
 {
@@ -65,9 +68,9 @@ class MultiplexedTabContainerFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Multiplexed Tab Container';
+        return t('field_type.multiplex_tab', [], 'emsco-core');
     }
 
     #[\Override]
@@ -89,17 +92,22 @@ class MultiplexedTabContainerFieldType extends DataFieldType
         $optionsForm = $builder->get('options');
 
         $optionsForm->get('displayOptions')->add(self::VALUES_DISPLAY_OPTION, TextareaType::class, [
+            'label' => t('field.values', [], 'emsco-core'),
             'required' => false,
         ])->add(self::LABELS_DISPLAY_OPTION, TextareaType::class, [
+            'label' => t('field.labels', [], 'emsco-core'),
             'required' => false,
         ])
         ->add(self::LOCALE_PREFERRED_FIRST_DISPLAY_OPTION, CheckboxType::class, [
+            'label' => t('field.locale_preferred_first', [], 'emsco-core'),
             'required' => false,
         ])
         ->add(self::WITH_LOCALES_VARIABLE_DISPLAY_OPTION, CheckboxType::class, [
+            'label' => t('field.with_locales_variable', [], 'emsco-core'),
             'required' => false,
         ])
         ->add(self::ICON_DISPLAY_OPTION, IconPickerType::class, [
+            'label' => t('field.icon', [], 'emsco-core'),
             'required' => false,
         ]);
 

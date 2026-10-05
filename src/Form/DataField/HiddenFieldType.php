@@ -9,6 +9,7 @@ use EMS\CoreBundle\Entity\FieldType;
 use EMS\Helpers\Standard\Json;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Translation\TranslatableMessage;
 
 /**
  * Defined a Container content type.
@@ -27,7 +28,7 @@ class HiddenFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
         throw new \Exception('This Field Type should not be used as field (as service)');
     }

@@ -10,6 +10,9 @@ use EMS\CoreBundle\Form\DataTransformer\DataFieldModelTransformer;
 use EMS\CoreBundle\Form\DataTransformer\DataFieldViewTransformer;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Defined a Nested obecjt.
@@ -26,9 +29,9 @@ class CollectionItemFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Collection item object (this message should neve seen anywhere)';
+        return t('field_type.collection_item', [], 'emsco-core');
     }
 
     #[\Override]

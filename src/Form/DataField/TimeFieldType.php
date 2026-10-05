@@ -15,6 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
 
 use function Symfony\Component\Translation\t;
 
@@ -35,9 +36,9 @@ class TimeFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Time field';
+        return t('field_type.time', [], 'emsco-core');
     }
 
     #[\Override]
@@ -187,15 +188,17 @@ class TimeFieldType extends DataFieldType
 
         if ($optionsForm->has('mappingOptions')) {
             $optionsForm->get('mappingOptions')->add('format', TextType::class, [
+                'label' => t('field.format', [], 'emsco-core'),
                 'required' => false,
                 'empty_data' => 'HH:mm:ss',
                 'attr' => [
-                    'placeholder' => 'i.e. HH:mm:ss',
+                    'placeholder' => t('placeholder.for_example', ['example' => 'HH:mm:ss'], 'emsco-core'),
                 ],
             ]);
         }
 
         $optionsForm->get('displayOptions')->add('minuteStep', IntegerType::class, [
+            'label' => t('field.minute_step', [], 'emsco-core'),
             'required' => false,
             'empty_data' => 15,
         ]);

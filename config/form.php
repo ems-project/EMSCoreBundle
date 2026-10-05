@@ -33,6 +33,7 @@ use EMS\CoreBundle\Form\DataField\MultiplexedTabContainerFieldType;
 use EMS\CoreBundle\Form\DataField\NestedFieldType;
 use EMS\CoreBundle\Form\DataField\NumberFieldType;
 use EMS\CoreBundle\Form\DataField\Options\MigrationOptionsType;
+use EMS\CoreBundle\Form\DataField\Options\RestrictionOptionsType;
 use EMS\CoreBundle\Form\DataField\OuuidFieldType;
 use EMS\CoreBundle\Form\DataField\PasswordFieldType;
 use EMS\CoreBundle\Form\DataField\SelectUserPropertyFieldType;
@@ -686,4 +687,10 @@ return static function (ContainerConfigurator $container) {
             service('router'),
             service('ems_common.storage.manager'),
         ]);
+
+    $services->set('ems.fieldtype.option.restriction', RestrictionOptionsType::class)
+        ->args([
+            service('security.token_storage'),
+        ])
+        ->tag('form.type');
 };

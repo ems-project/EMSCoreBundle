@@ -13,6 +13,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Basic content type for text (regular text input).
@@ -28,9 +31,9 @@ class TextStringFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Text field';
+        return t('field_type.text', [], 'emsco-core');
     }
 
     /**
@@ -79,26 +82,34 @@ class TextStringFieldType extends DataFieldType
 
         // String specific display options
         $optionsForm->get('displayOptions')->add('icon', IconPickerType::class, [
+            'label' => t('field.icon', [], 'emsco-core'),
             'required' => false,
         ])->add('prefixIcon', IconPickerType::class, [
+            'label' => t('field.prefix_icon', [], 'emsco-core'),
             'required' => false,
         ])->add('prefixText', IconTextType::class, [
+            'label' => t('field.prefix_text', [], 'emsco-core'),
             'required' => false,
             'prefixIcon' => 'fa fa-hand-o-left',
         ])->add('suffixIcon', IconPickerType::class, [
+            'label' => t('field.suffix_icon', [], 'emsco-core'),
             'required' => false,
         ])->add('suffixText', IconTextType::class, [
+            'label' => t('field.suffix_text', [], 'emsco-core'),
             'required' => false,
             'prefixIcon' => 'fa fa-hand-o-right',
         ])->add('placeholder', TextType::class, [
+            'label' => t('field.placeholder', [], 'emsco-core'),
             'required' => false,
         ]);
 
         if ($optionsForm->has('mappingOptions')) {
             // String specific mapping options
             $optionsForm->get('mappingOptions')
-                ->add('analyzer', AnalyzerPickerType::class)
+                ->add('analyzer', AnalyzerPickerType::class, [
+                    'label' => t('field.analyzer', [], 'emsco-core'), ])
                 ->add('copy_to', TextType::class, [
+                    'label' => t('field.copy_to', [], 'emsco-core'),
                     'required' => false,
                 ]);
         }

@@ -15,6 +15,9 @@ use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Defined a Container content type.
@@ -43,9 +46,9 @@ class TabsFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Visual tab container (invisible in Elasticsearch)';
+        return t('field_type.tabs', [], 'emsco-core');
     }
 
     #[\Override]
@@ -116,6 +119,7 @@ class TabsFieldType extends DataFieldType
 
         $optionsForm->get('displayOptions')
             ->add(self::LOCALE_PREFERRED_FIRST_DISPLAY_OPTION, CheckboxType::class, [
+                'label' => t('field.locale_preferred_first', [], 'emsco-core'),
                 'required' => false,
             ]);
 

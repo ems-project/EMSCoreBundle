@@ -113,7 +113,7 @@ class AdvancedSearch implements DashboardInterface
 
         $form->submit($data);
         $types = $this->contentTypeRepository->findAllAsAssociativeArray();
-        $environments = $this->environmentRepository->findAllAsAssociativeArray('alias');
+        $environments = $this->environmentRepository->associativeArrayByAlias();
         $esSearch = $this->buildQuery($search, $page);
         $aggregateOptions = $this->addAggregations($esSearch, $options);
         $searchBody = \array_filter(['query' => $esSearch->getQueryArray(), 'sort' => $esSearch->getSort()]);
@@ -193,8 +193,8 @@ class AdvancedSearch implements DashboardInterface
     }
 
     /**
-     * @param  array<string, string> $environments
-     * @return array<string, string>
+     * @param  array<string, \EMS\CoreBundle\Entity\Environment> $environments
+     * @return array<string, \EMS\CoreBundle\Entity\Environment>
      */
     private function getMapIndexes(CommonResponse $response, array $environments): array
     {

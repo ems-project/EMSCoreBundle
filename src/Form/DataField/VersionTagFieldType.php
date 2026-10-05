@@ -18,7 +18,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Component\Validator\Constraints\NotBlank;
+
+use function Symfony\Component\Translation\t;
 
 class VersionTagFieldType extends DataFieldType
 {
@@ -41,9 +44,9 @@ class VersionTagFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Select version tag';
+        return t('field_type.version_tag', [], 'emsco-core');
     }
 
     #[\Override]

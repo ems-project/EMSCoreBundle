@@ -37,7 +37,7 @@ final class ContentTransformers
                 continue;
             }
 
-            $choices[$transformer->getName()] = $transformer::class;
+            $choices[$transformer->getName()->getMessage()] = $transformer::class;
         }
 
         return $choices;

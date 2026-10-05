@@ -8,6 +8,9 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 class HolderFieldType extends DataFieldType
 {
@@ -18,9 +21,9 @@ class HolderFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Invisible container (Holder)';
+        return t('field_type.holder', [], 'emsco-core');
     }
 
     #[\Override]

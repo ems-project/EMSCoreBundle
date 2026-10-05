@@ -11,6 +11,9 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Defined a Container content type.
@@ -27,9 +30,9 @@ class PasswordFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Password field';
+        return t('field_type.password', [], 'emsco-core');
     }
 
     #[\Override]
@@ -51,7 +54,7 @@ class PasswordFieldType extends DataFieldType
         ]);
 
         $builder->add('reset_password_value', CheckboxType::class, [
-            'label' => 'Reset the password',
+            'label' => t('field.reset_password', [], 'emsco-core'),
             'disabled' => $this->isDisabled($options),
             'required' => false,
         ]);
@@ -71,8 +74,8 @@ class PasswordFieldType extends DataFieldType
         parent::buildOptionsForm($builder, $options);
         $optionsForm = $builder->get('options');
 
-        // String specific display options
         $optionsForm->get('displayOptions')->add('encryption', ChoiceType::class, [
+            'label' => t('field.encryption', [], 'emsco-core'),
             'required' => false,
             'choices' => [
                 'sha1' => 'sha1',

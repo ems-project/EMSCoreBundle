@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\DataField;
 
 use EMS\CoreBundle\Entity\FieldType;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 class OuuidFieldType extends DataFieldType
 {
@@ -15,9 +18,9 @@ class OuuidFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Copy of the object identifier';
+        return t('field_type.ouuid', [], 'emsco-core');
     }
 
     #[\Override]

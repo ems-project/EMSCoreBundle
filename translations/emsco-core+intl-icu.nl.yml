@@ -23,6 +23,7 @@ action:
             search_field_option   {Voeg een optie voor een zoekveld toe}
             sort_option   {Voeg een sorteeroptie toe}
             translation   {Voeg een vertaling}
+            transformer   {Voeg een transformator}
             other   {Toevoegen}
         }
     apply_filters: 'Filters toepassen'
@@ -106,6 +107,7 @@ action:
             search_field_option   {Verwijder deze optie voor het zoekveld}
             sort_option   {Verwijder deze sorteeroptie}
             translation   {Verwijder deze vertaling}
+            transformer   {Verwijder deze transformator}
             other   {Verwijderen}
         }
     rename: Hernoemen
@@ -140,7 +142,6 @@ action:
     status: Status
     switch_user: 'Van gebruiker wisselen'
     test: Testen
-    toggle_navigation: 'Navigatie omschakelen'
     toggle_sidebar: 'Zijbalk omschakelen'
     toggle_visibility: 'Zichtbaarheid omschakelen'
     toggle_visibility_selected: 'Zichtbaarheid van selectie omschakelen'
@@ -265,10 +266,12 @@ core:
     version: 'Versie {core} met Symfony {symfony}'
 field:
     accumulate_file: 'In één bestand verzamelen'
+    action_config: Actieconfiguratie
     action_dropdown_label: 'Acties in {environment}'
     action_dropdown_sr_only: 'Dropdown met acties van {environment} omschakelen'
     aggregate_options: Aggregatieopties
     alias: Alias
+    allow_link_to_root: 'Link naar de root toestaan'
     allowed_remote_hosts: 'Toegestane externe hosts'
     analyzer: Analyzer
     ask_for_ouuid: 'Om OUUID vragen'
@@ -288,9 +291,11 @@ field:
     assigned_to: 'Toegewezen aan '
     assignee: Toegewezene
     attributes: 'Extra request-attributen'
+    author: Auteur
     auto_publish: 'Concept stilzwijgend publiceren en automatisch opslaan in de standaardomgeving'
     available: Beschikbaar
     base_url: Basis-URL
+    blocks_template: Blokkensjabloon
     boolean_clause: 'Booleaanse clausule'
     boost: Boost
     bootstrap_class: Bootstrap-klasse
@@ -299,13 +304,18 @@ field:
     category: Categorie
     channel: Kanaal
     char_filter: 'Char filter'
+    choices_template: Keuzesjabloon
     circles: Kringen
     circles_to: 'Kringen naar'
+    class: HTML-klasse
+    clear_on_copy: 'Ruim op met een kopie'
+    collapsible: Inklapbaar
     color: Kleur
     command: Commando
     comment: Commentaar
     compare: Vergelijken
     config: Configuratie
+    content: Inhoud
     content_css: Content-CSS
     content_js: Content-JS
     content_type: Contenttype
@@ -333,6 +343,8 @@ field:
     date_upload: Uploaddatum
     dates_interval_one_day: 'Datumbereik van één dag'
     dates_read_only: 'Datums alleen-lezen'
+    days_of_week_disabled: 'Dagen van de week uitgeschakeld'
+    days_of_week_highlighted: 'Dagen van de week gemarkeerd'
     deadline: Deadline
     default_sort_order: 'Standaard sorteervolgorde'
     default_time: Standaardtijd
@@ -341,14 +353,18 @@ field:
     delay: 'Vertraging (in dagen)'
     description: Beschrijving
     display: Weergave
+    display_format: Weergaveformaat
     display_name: Weergavenaam
+    display_template: field.display_template
     docs_count: '# Documenten'
+    dynamic_loading: 'Dynamisch laden'
     edit_twig_with_wysiwyg: 'Twig-template bewerken met een WYSIWYG-editor'
     editor: Editor
     elision: Elisie
     email: E-mail
     email_content_type: 'Contenttype (bv. text/html)'
     enabled: Ingeschakeld
+    encryption: Versleuteling
     endpoint_url: Endpoint
     entry_path: 'Standaard toegangspad'
     environment: Omgeving
@@ -359,11 +375,14 @@ field:
     environments: Omgevingen
     error: Foutmelding
     events: Events
+    expanded: Uitgebreid
     expiration_date: Vervaldatum
     explicit_mode: 'Expliciete modus'
     extra: Extra
     extra_roles: 'Extra rollen'
     field: Veld
+    field_type: 'Type van het veld'
+    fielddata: 'Field data'
     file:
         disposition: Bestandsdispositie
         disposition_attachment: 'Bijlage (download forceren)'
@@ -378,12 +397,14 @@ field:
     file_hash_apostrophe: 'Hash van het bestand'
     file_info: Bestandsinformatie
     file_info_apostrophe: Bestandsinformatie
+    filename: Bestandsnaam
     filter: Filter
     filters: Filters
     flags: Vlaggen
     form: Formulier
     format: Formaat
     format_tags: Formaat-tags
+    from_date_machine_name: "Machinenaam van 'vanaf-datum'"
     from_sender: 'Van {sender}'
     gender: Gender
     group: Groep
@@ -395,8 +416,10 @@ field:
     helptext_translations: 'Vertalingen van helpteksten'
     helptexts: Helpteksten
     hidden: Verborgen
+    hours_disabled: 'Uren uitgeschakeld'
     icon: Icoon
     id: ID
+    image_asset_config_identifier: 'Identificatiecode voor de configuratie van het afbeeldingsbestand'
     index: Index
     index_twig: 'Indextemplate (Twig)'
     indexes: Indexen
@@ -412,10 +435,23 @@ field:
     is_preview: Voorbeeld
     is_public: Publiek
     is_styles_set_preview: 'Voorbeeld stijlenset'
+    item_bootstrap_class: 'Bootstrap-klasse voor het item'
+    item_types: Itemtypes
+    json_decode: 'Probeer JSON te decoderen'
     json_file: JSON-bestand
+    json_menu_content_type: JSON-menu-inhoudstype
+    json_menu_field: JSON-menuveld
+    json_menu_nested_field: 'Genest veld in JSON-menu'
+    json_menu_nested_types: "Geneste typen in JSON-menu's"
+    json_menu_nested_unique: 'Genest, uniek JSON-menu'
+    json_nested_deny: 'JSON genest weigeren'
+    json_nested_is_leaf: 'Geneste JSON is blad'
+    json_nested_max_depth: 'JSON geneste maximale diepte'
     key: Sleutel
     label: Label
+    label_field: Labelveld
     label_translations: 'Vertalingen van labels'
+    labels: Labels
     language: Taal
     language_preferred: Voorkeurstaal
     language_ui: Interfacetaal
@@ -425,10 +461,18 @@ field:
     last_seen: 'Laatst gezien'
     locale: Locale
     locale_preferred: Voorkeurstaal
+    locale_preferred_first: 'Voorkeurslandinstelling eerst'
     locked_by: 'Vergrendeld door'
     locked_until: 'Vergrendeld tot'
     lowercase: 'Kleine letters'
+    machine_name: Machinenaam
+    mandatory: Verplicht
+    mandatory_if: 'Verplicht indien'
     mapping: Mapping
+    mapping_options: Toewijzingsopties
+    max: Max
+    max_depth: field.max_depth
+    max_lines: 'Maximum aantal regels'
     max_output_size: 'Max. outputgrootte'
     max_token_length: 'Max. tokenlengte'
     mcp_arguments: 'MCP argumenten-template (JSON)'
@@ -438,10 +482,16 @@ field:
     mcp_response: 'MCP uitvoerschema-template (JSON)'
     message: Bericht
     mime_type: MIME-type
+    min: Min
+    minimum_role: 'Minimale rol'
     minimum_should_match: 'Minimum aantal overeenkomsten'
+    minute_step: 'Minieme stap'
+    multiple: Meerdere
     name: Naam
+    nested: Genest
     new_version: 'Nieuwe versie'
     node_name: 'Naam van het knooppunt'
+    node_types: field.node_types
     not_blank_new_version: 'Nieuwe versie niet leeg'
     number: Getal
     operator: Operator
@@ -449,19 +499,27 @@ field:
     options: Opties
     orientation: Oriëntatie
     ouuid: OUUID
+    parse_format: Parseerformaat
     password: Wachtwoord
     password_repeat: 'Herhaal wachtwoord'
     pattern: Patroon
     pdf_size: PDF-formaat
     permission: Toestemming
+    placeholder: Plaatshouder
     plural: Meervoud
     plural_name: Meervoudsnaam
     plural_name_translations: 'Vertalingen van namen in het meervoud'
+    post_processing: Nabewerking
     postition_increment_gap: 'Positie-increment gap'
+    prefix_icon: 'Voorvoegsel pictogram'
+    prefix_text: Voorvoegseltekst
+    protected: Beschermd
     public_access: 'Publieke toegang'
     publish_to: 'Publiceren naar'
     published_label: 'Gepubliceerd in {environment}'
     query: Query
+    query_search: Zoekopdracht
+    question_label: Vraaglabel
     quick_search: 'Snel zoeken'
     referer_field_name: 'Naam van refererveld'
     rejected_by: 'Geweigerd door'
@@ -469,7 +527,9 @@ field:
     release_environment_source: 'Bronomgeving voor publicatie'
     release_environment_target: 'Omgeving voor (de)publicatie'
     render_option: Renderoptie
+    renumbering: 'De items worden opnieuw genummerd'
     requester: Aanvrager
+    reset_password: 'Het wachtwoord opnieuw instellen'
     revision: Revisie
     revision_version_tag: 'Ja als {version_tag}'
     revision_version_tag_empty: 'Nee (stille publicatie)'
@@ -487,12 +547,15 @@ field:
     role_view: Zien
     roles: Rollen
     root_content_type: Hoofdcontenttype
+    rows: Rijen
     search_config: Zoekconfiguratie
     search_field_options: 'Opties voor het zoekveld'
+    search_id: Zoek-ID
     separator: Scheidingsteken
     severity: Ernst
     show_meridian: 'Toon meridiaan (waar: 12 uur, onwaar: 24 uur)'
     show_seconds: 'Seconden weergeven'
+    show_week_numbers: 'Weeknummers weergeven'
     singular: Enkelvoud
     singular_name: Enkelvoudsnaam
     singular_name_translations: 'Vertalingen van enkelvoudige namen'
@@ -500,10 +563,15 @@ field:
     sort_by: 'Sorteren op'
     sort_options: Sorteeropties
     sort_order: Sorteervolgorde
+    sortable: Sorteerbaar
     spreadsheet: Spreadsheet
     status: Status
     stopwords: Stopwoorden
+    store: Opslaan
     styles_set: Stijlenset
+    subfield_name: Subveldnaam
+    suffix_icon: 'Pictogram achtervoegsel'
+    suffix_text: Achtervoegseltekst
     table_default_css: 'Standaard class-attribuut van tabel'
     tag: Tag
     tags: Tags
@@ -514,18 +582,26 @@ field:
     template_publication: Publicatiesjabloon
     template_response: 'Template response'
     text: Tekst
+    theme: Thema
+    time_picker: Tijdskiezer
+    time_picker_24_hour: 'Tijdskiezer (24-uurs)'
+    time_picker_increment: 'Stapgrootte tijdkeuzescherm'
     title: Taak
     titles: Titels
+    to_date_machine_name: 'Einddatum veld machinenaam'
+    today_highlight: 'Hoogtepunt van vandaag'
     tokenizer: Tokenizer
     tooltip: Tooltip
     total: Totaal
     total_deleted: 'Totaal verwijderd'
     total_elastic: 'Totaal in ES'
     total_ems: 'Totaal in EMS'
+    transformers: 'Selecteer een transformator'
     translations: Vertalingen
     type: Type
     unpublish_from: 'Depubliceren van'
     unpublish_in: 'Depubliceren in {env}'
+    update_referers_field: "Veld 'verwijzers' bijwerken"
     uri: URI
     user: Gebruiker
     user_deleted: 'Verwijderd door'
@@ -536,11 +612,53 @@ field:
     user_uploaded: 'Geüpload door'
     username: Gebruikersnaam
     username_or_email: 'Gebruikersnaam of e-mailadres'
+    value_template: Waardesjabloon
+    values: Waarden
     version_tag: Versietag
     web_content: 'Webinhoud (beschikbaar in WYSIWYG-veld als interne link)'
+    week_start: 'Begin van de week'
     with_business_key: 'Met zakelijke sleutel'
     with_environment: 'Met de omgeving'
+    with_locales_variable: 'Met locales uit de variabele EMSCH_LOCALES'
     wysiwyg_profile: WYSIWYG-profiel
+field_type:
+    action: Actieveld
+    asset: Bestandsveld
+    checkbox: Selectievakje
+    choice: Keuzeveld
+    code: Code-editor
+    collection: 'Collectie (beheer van een array van onderliggende types)'
+    collection_item: 'Collectie-itemobject (dit bericht zou nooit mogen worden weergegeven)'
+    color_picker: Kleurkiezer
+    computed: 'Veld berekend op basis van de ruwe gegevens'
+    container: 'Visuele container (onzichtbaar in Elasticsearch)'
+    copy_to: 'Elasticsearch copy_to-veld'
+    data_link: 'Koppeling naar een of meer gegevensobjecten'
+    date: Datumveld
+    date_time: 'Datum- en tijdveld'
+    email: E-mailadresveld
+    form: 'Verwijzing naar een formulierentiteit'
+    holder: 'Onzichtbare container (Holder)'
+    icon: Pictogramveld
+    indexed_asset: 'Geïndexeerd bestandsveld'
+    integer: 'Veld voor gehele getallen'
+    json_menu_editor: JSON-menu-editor
+    json_menu_link: JSON-menulinkveld
+    json_menu_nested_editor: 'Editor voor geneste JSON-menu’s'
+    json_menu_nested_link: 'Linkveld voor geneste JSON-menu’s'
+    multiplex_tab: 'Container voor gemultiplexte tabbladen'
+    nested: 'Genest object'
+    number: 'Numeriek veld'
+    ouuid: 'Kopie van de objectidentificatie'
+    password: Wachtwoordveld
+    sect_user_property: 'Selectieveld voor een gebruikerseigenschap'
+    subfield: 'Virtueel subveld (definitie van alternatieve analyzers)'
+    tabs: 'Visuele tabbladcontainer (onzichtbaar in Elasticsearch)'
+    text: Tekstveld
+    textarea: Tekstgebied
+    time: Tijdveld
+    version_tag: 'Selectie van een versielabel'
+    wysiwyg: 'Editor voor opgemaakte tekst (WYSIWYG)'
 help:
     add_first_aggregate_option: "Klik op 'Aggregatieoptie toevoegen' om een eerste aggregatieoptie te maken"
     add_first_search_field_option: "Klik op 'Zoekveldoptie toevoegen' om een eerste zoekveldoptie te maken"
@@ -968,7 +1086,6 @@ message:
     job_initialized: 'De taak "{label}" is geïnitialiseerd in de omgeving {environment}'
     json_menu_out_of_sync: 'Niet gesynchroniseerd, vernieuw en probeer opnieuw!'
     linked_documents_in: 'Gekoppelde documenten in {environment} ({length}/{total})'
-    loading_information: 'Informatie laden...'
     loading_more_files: 'Meer bestanden laden...'
     log_content_type_add_unreferenced: 'Onverwachte fout bij het ophalen van niet-gerefereerde contenttype(s) uit externe omgeving {environment}: {error}'
     logged_in_as: 'Ingelogd als {username}'
@@ -1215,6 +1332,8 @@ option:
     recompute_on_publish: 'Documenten herberekenen bij publicatie'
     restriction: Beperking
     update_referrers: 'Verwijzers bijwerken'
+placeholder:
+    for_example: 'bijv. {example}'
 role:
     admin:
         label: Beheerder
@@ -1354,6 +1473,11 @@ title:
     view_file: 'Bestand bekijken'
     view_file_modal: 'Bestand bekijken: {name}'
     view_recursive: 'Recursieve weergave'
+transformer:
+    html_attribute: 'HTML Attribute'
+    html_empty: 'HTML Empty'
+    html_remove_node: 'HTML Remove node'
+    html_unwrap: 'HTML Unwrap'
 type:
     confirm: |-
         {type, select,

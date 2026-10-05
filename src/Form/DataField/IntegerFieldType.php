@@ -8,6 +8,9 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 class IntegerFieldType extends DataFieldType
 {
@@ -18,9 +21,9 @@ class IntegerFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Integer field';
+        return t('field_type.integer', [], 'emsco-core');
     }
 
     #[\Override]
@@ -91,6 +94,7 @@ class IntegerFieldType extends DataFieldType
 
         if ($optionsForm->has('mappingOptions')) {
             $optionsForm->get('mappingOptions')->add('copy_to', TextType::class, [
+                'label' => t('field.copy_to', [], 'emsco-core'),
                 'required' => false,
             ]);
         }

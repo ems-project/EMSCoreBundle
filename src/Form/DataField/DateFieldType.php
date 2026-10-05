@@ -13,6 +13,9 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 class DateFieldType extends DataFieldType
 {
@@ -23,9 +26,9 @@ class DateFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Date field';
+        return t('field_type.date', [], 'emsco-core');
     }
 
     #[\Override]
@@ -253,48 +256,54 @@ class DateFieldType extends DataFieldType
 
         if ($optionsForm->has('mappingOptions')) {
             $optionsForm->get('mappingOptions')->add('format', TextType::class, [
+                'label' => t('field.format', [], 'emsco-core'),
                 'required' => false,
                 'empty_data' => 'yyyy/MM/dd',
-                'attr' => ['placeholder' => 'i.e. yyyy/MM/dd'],
+                'attr' => ['placeholder' => t('placeholder.for_example', ['example' => 'yyyy/MM/dd'], 'emsco-core')],
             ])
             ->add('copy_to', TextType::class, [
+                'label' => t('field.copy_to', [], 'emsco-core'),
                 'required' => false,
             ]);
         }
 
         // String specific display options
         $optionsForm->get('displayOptions')->add('displayFormat', TextType::class, [
+            'label' => t('field.display_format', [], 'emsco-core'),
             'required' => false,
             'empty_data' => 'dd/MM/yyyy',
             'attr' => [
-                'placeholder' => 'e.g. dd/MM/yyyy',
+                'placeholder' => t('placeholder.for_example', ['example' => 'dd/MM/yyyy'], 'emsco-core'),
             ],
         ]);
         $optionsForm->get('displayOptions')->add('weekStart', IntegerType::class, [
+            'label' => t('field.week_start', [], 'emsco-core'),
             'required' => false,
             'empty_data' => 0,
             'attr' => [
-                'placeholder' => '0',
+                'placeholder' => t('placeholder.for_example', ['example' => '0'], 'emsco-core'),
             ],
         ]);
         $optionsForm->get('displayOptions')->add('todayHighlight', CheckboxType::class, [
+            'label' => t('field.today_highlight', [], 'emsco-core'),
             'required' => false,
-            'label' => 'Today highlight',
         ]);
         $optionsForm->get('displayOptions')->add('multidate', CheckboxType::class, [
+            'label' => t('field.multiple', [], 'emsco-core'),
             'required' => false,
         ]);
         $optionsForm->get('displayOptions')->add('daysOfWeekDisabled', TextType::class, [
+            'label' => t('field.days_of_week_disabled', [], 'emsco-core'),
             'required' => false,
             'attr' => [
-                'placeholder' => 'e.g. [0,6]',
+                'placeholder' => t('placeholder.for_example', ['example' => '0,6'], 'emsco-core'),
             ],
         ]);
         $optionsForm->get('displayOptions')->add('daysOfWeekHighlighted', TextType::class, [
+            'label' => t('field.days_of_week_highlighted', [], 'emsco-core'),
             'required' => false,
-            'label' => 'Days of week highlighted',
             'attr' => [
-                'placeholder' => 'i.e. 0,6',
+                'placeholder' => t('placeholder.for_example', ['example' => '0,6'], 'emsco-core'),
             ],
         ]);
     }

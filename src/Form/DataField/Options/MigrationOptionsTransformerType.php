@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -23,9 +25,13 @@ final class MigrationOptionsTransformerType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('class', ChoiceType::class, [
+            'label' => t('field.class', [], 'emsco-core'),
             'choices' => $options['transformers'],
         ]);
-        $builder->add('config', TextType::class, ['required' => false]);
+        $builder->add('config', TextType::class, [
+            'label' => t('field.config', [], 'emsco-core'),
+            'required' => false,
+        ]);
     }
 
     #[\Override]

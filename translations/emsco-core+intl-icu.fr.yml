@@ -23,6 +23,7 @@ action:
             search_field_option   {Ajouter une option de champ de recherche}
             sort_option   {Ajouter une option de tri}
             translation   {Ajouter une traduction}
+            transformer   {Ajouter un transformateur}
             other   {Ajouter}
         }
     apply_filters: 'Appliquer les filtres'
@@ -111,6 +112,7 @@ action:
             search_field_option   {Supprimer cette option de champ de recherche}
             sort_option   {Supprimer cette option de tri}
             translation   {Supprimer cette traduction}
+            transformer   {Supprimer ce transformateur}
             other   {Supprimer}
         }
     rename: Renommer
@@ -145,7 +147,6 @@ action:
     status: Statut
     switch_user: 'Changer d’utilisateur'
     test: Tester
-    toggle_navigation: 'Basculer la navigation'
     toggle_sidebar: 'Basculer la barre latérale'
     toggle_visibility: 'Basculer la visibilité'
     toggle_visibility_selected: 'Basculer la visibilité de la sélection'
@@ -270,10 +271,12 @@ core:
     version: 'Version {core} avec Symfony {symfony}'
 field:
     accumulate_file: 'Accumuler dans un seul fichier'
+    action_config: "Configurer l'action"
     action_dropdown_label: 'Actions dans {environment}'
     action_dropdown_sr_only: 'Basculer le menu déroulant des actions de {environment}'
     aggregate_options: "Options d'agrégation"
     alias: Alias
+    allow_link_to_root: 'Autoriser le lien vers la racine'
     allowed_remote_hosts: 'Hôtes distants autorisés'
     analyzer: Analyzer
     ask_for_ouuid: 'Demander l’OUUID'
@@ -293,9 +296,11 @@ field:
     assigned_to: 'Assignée à '
     assignee: Assigné
     attributes: 'Attributs supplémentaires de la requête'
+    author: Auteur
     auto_publish: 'Publier silencieusement le brouillon et l’enregistrer automatiquement dans l’environnement par défaut'
     available: Disponible
     base_url: 'URL de base'
+    blocks_template: 'Modèle de blocs'
     boolean_clause: 'Clause booléenne'
     boost: Boost
     bootstrap_class: 'Classe Bootstrap'
@@ -304,13 +309,18 @@ field:
     category: Catégorie
     channel: Canal
     char_filter: 'Filtre de caractères'
+    choices_template: 'Modèle de choix'
     circles: Cercles
     circles_to: 'Cercles destinataires'
+    class: 'Classe HTML'
+    clear_on_copy: 'Nettoyer à la copie'
+    collapsible: Pliant
     color: Couleur
     command: Commande
     comment: Commentaire
     compare: Comparer
     config: Configuration
+    content: Contenu
     content_css: 'CSS du contenu'
     content_js: 'JS du contenu'
     content_type: 'Type de contenu'
@@ -338,6 +348,8 @@ field:
     date_upload: 'Date d’upload'
     dates_interval_one_day: 'Intervalle de dates d’un jour'
     dates_read_only: 'Dates en lecture seule'
+    days_of_week_disabled: 'Jours de la semaine désactivés'
+    days_of_week_highlighted: 'Jours de la semaine mis en évidence'
     deadline: Échéance
     default_sort_order: 'Ordre de tri par défaut'
     default_time: 'Temps par défaut'
@@ -346,14 +358,18 @@ field:
     delay: 'Délai (en jours)'
     description: Description
     display: Affichage
+    display_format: "Format d'affichage"
     display_name: 'Nom d’affichage'
+    display_template: field.display_template
     docs_count: '# Documents'
+    dynamic_loading: 'Chargement dynamique'
     edit_twig_with_wysiwyg: 'Modifier le template Twig avec un éditeur WYSIWYG'
     editor: Éditeur
     elision: Élision
     email: Email
     email_content_type: 'Type de contenu (ex. : text/html)'
     enabled: Activé
+    encryption: Chiffrement
     endpoint_url: Endpoint
     entry_path: 'Chemin d’entrée par défaut'
     environment: Environnement
@@ -364,11 +380,14 @@ field:
     environments: Environnements
     error: 'Message d’erreur'
     events: Événements
+    expanded: Étendu
     expiration_date: 'Date d’expiration'
     explicit_mode: 'Explicit mode'
     extra: Extra
     extra_roles: 'Rôles supplémentaires'
     field: Champ
+    field_type: 'Type de champ'
+    fielddata: 'Field data'
     file:
         disposition: 'Disposition du fichier'
         disposition_attachment: 'Pièce jointe (forcer le téléchargement)'
@@ -383,12 +402,14 @@ field:
     file_hash_apostrophe: 'Hash du fichier'
     file_info: 'Informations du fichier'
     file_info_apostrophe: 'Informations du fichier'
+    filename: 'Nom de fichier'
     filter: Filtre
     filters: Filtres
     flags: Indicateurs
     form: Formulaire
     format: Format
     format_tags: 'Tags de format'
+    from_date_machine_name: 'Nom machine du champ de date de début'
     from_sender: 'De {sender}'
     gender: Genre
     group: Groupe
@@ -400,8 +421,10 @@ field:
     helptext_translations: "Traductions des textes d'aide"
     helptexts: 'Textes d’aide'
     hidden: Masqué
+    hours_disabled: 'Heures désactivées'
     icon: Icône
     id: ID
+    image_asset_config_identifier: "Identifiant de configuration de l'élément image"
     index: Index
     index_twig: 'Template d’index (Twig)'
     indexes: Indexes
@@ -417,10 +440,23 @@ field:
     is_preview: Prévisualisation
     is_public: Public
     is_styles_set_preview: 'Aperçu du jeu de styles'
+    item_bootstrap_class: "Classe Bootstrap de l'élément"
+    item_types: "Types d'éléments"
+    json_decode: 'Essayez de décoder le JSON'
     json_file: 'Fichier JSON'
+    json_menu_content_type: 'Type de contenu de menu JSON'
+    json_menu_field: 'Champ de menu JSON'
+    json_menu_nested_field: 'Champ imbriqué de menu JSON'
+    json_menu_nested_types: 'Types imbriqués de menu JSON'
+    json_menu_nested_unique: 'Menu JSON imbriqué à éléments uniques'
+    json_nested_deny: 'JSON imbriqué refusés'
+    json_nested_is_leaf: 'JSON imbriqué est une feuille'
+    json_nested_max_depth: "Profondeur maximale d'imbrication JSON"
     key: Clé
     label: Libellé
+    label_field: "Champ d'étiquette"
     label_translations: Traductions
+    labels: Étiquettes
     language: Langue
     language_preferred: 'Langue préférée'
     language_ui: "Langue de l'interface"
@@ -430,10 +466,18 @@ field:
     last_seen: 'Vu pour la dernière fois'
     locale: Locale
     locale_preferred: 'Langue préférée'
+    locale_preferred_first: 'Locale préférée en premier'
     locked_by: 'Verrouillé par'
     locked_until: 'Verrouillé jusqu’à'
     lowercase: Minuscules
+    machine_name: 'Nom machine'
+    mandatory: Obligatoire
+    mandatory_if: 'Obligatoire si'
     mapping: Mapping
+    mapping_options: 'Options de mappage'
+    max: Max
+    max_depth: field.max_depth
+    max_lines: 'Nombre maximal de lignes'
     max_output_size: 'Taille de sortie max.'
     max_token_length: 'Longueur max. du token'
     mcp_arguments: 'Template des arguments MCP (JSON)'
@@ -443,10 +487,16 @@ field:
     mcp_response: 'Template de réponse MCP (JSON)'
     message: Message
     mime_type: 'Type MIME'
+    min: Min
+    minimum_role: 'Rôle minimum'
     minimum_should_match: 'Le nombre minimal de correspondances doit être respecté'
+    minute_step: 'Étape infime'
+    multiple: Multiple
     name: Nom
+    nested: Imbriqué
     new_version: 'Nouvelle version'
     node_name: 'Nom du nœud'
+    node_types: field.node_types
     not_blank_new_version: 'Nouvelle version non vide'
     number: Nombre
     operator: Opérateur
@@ -454,19 +504,27 @@ field:
     options: Options
     orientation: Orientation
     ouuid: OUUID
+    parse_format: "Format d'analyse"
     password: 'Mot de passe'
     password_repeat: 'Répéter le mot de passe'
     pattern: Motif
     pdf_size: 'Format PDF'
     permission: Permission
+    placeholder: 'Espace réservé'
     plural: Pluriel
     plural_name: 'Nom pluriel'
     plural_name_translations: 'Traductions de noms au pluriel'
+    post_processing: Post-traitement
     postition_increment_gap: "Écart d'incrément de position"
+    prefix_icon: 'Icône de préfixe'
+    prefix_text: 'Texte préfixé'
+    protected: Protégé
     public_access: 'Accès public'
     publish_to: 'Publier vers'
     published_label: 'Publié dans {environment}'
     query: Requête
+    query_search: 'Recherche par requête'
+    question_label: 'Libellé de la question'
     quick_search: 'Recherche rapide'
     referer_field_name: 'Nom du champ référent'
     rejected_by: 'Rejetée par'
@@ -474,7 +532,9 @@ field:
     release_environment_source: 'Environnement source pour la publication'
     release_environment_target: 'Environnement pour la (dé)publication'
     render_option: 'Option de rendu'
+    renumbering: 'Les éléments seront renumérotés'
     requester: Demandeur
+    reset_password: 'Réinitialiser le mot de passe'
     revision: Révision
     revision_version_tag: 'Oui comme {version_tag}'
     revision_version_tag_empty: 'Non (publication silencieuse)'
@@ -492,12 +552,15 @@ field:
     role_view: Voir
     roles: Rôles
     root_content_type: 'Type de contenu racine'
+    rows: Rangées
     search_config: 'Configuration de recherche'
     search_field_options: 'Options du champ de recherche'
+    search_id: 'ID de recherche'
     separator: Séparateur
     severity: Sévérité
     show_meridian: 'Afficher le méridien (vrai : 12 h, faux : 24 h)'
     show_seconds: 'Afficher les secondes'
+    show_week_numbers: 'Afficher les numéros de semaine'
     singular: Singulier
     singular_name: 'Nom singulier'
     singular_name_translations: 'Traductions des noms au singulier'
@@ -505,10 +568,15 @@ field:
     sort_by: 'Trier par'
     sort_options: 'Options de tri'
     sort_order: 'Ordre de tri'
+    sortable: Triable
     spreadsheet: 'Feuille de calcul'
     status: Statut
     stopwords: 'Mots vides'
+    store: Stocker
     styles_set: 'Jeu de styles'
+    subfield_name: 'Nom du sous-champ'
+    suffix_icon: 'Icône de suffixe'
+    suffix_text: 'Texte de suffixe'
     table_default_css: 'Attribut class par défaut du tableau'
     tag: Tag
     tags: Tags
@@ -519,18 +587,26 @@ field:
     template_publication: 'Modèle de publication'
     template_response: 'Réponse du template'
     text: Texte
+    theme: Thème
+    time_picker: "Sélecteur d'heure"
+    time_picker_24_hour: "Sélecteur d'heure (format 24 heures)"
+    time_picker_increment: "Incrément du sélecteur d'heure"
     title: Tâche
     titles: Titres
+    to_date_machine_name: 'Nom machine du champ de date de fin'
+    today_highlight: "Mettre aujourd'hui en évidence"
     tokenizer: Tokenizer
     tooltip: Infobulle
     total: Total
     total_deleted: 'Total supprimé'
     total_elastic: 'Total dans ES'
     total_ems: 'Total dans EMS'
+    transformers: 'Sélectionnez un transformateur'
     translations: Traductions
     type: Type
     unpublish_from: 'Dépublier de'
     unpublish_in: 'Dépublier dans {env}'
+    update_referers_field: 'Mettre à jour le champ des référents'
     uri: URI
     user: Utilisateur
     user_deleted: 'Supprimé par'
@@ -541,11 +617,53 @@ field:
     user_uploaded: 'Uploadé par'
     username: "Nom d'utilisateur"
     username_or_email: 'Nom d’utilisateur ou adresse e-mail'
+    value_template: 'Modèle de valeur'
+    values: Valeurs
     version_tag: 'Tag de version'
     web_content: 'Contenu web (disponible dans le champ WYSIWYG comme lien interne)'
+    week_start: 'Début de la semaine'
     with_business_key: 'Avec clé métier'
     with_environment: "Avec l'environnement"
+    with_locales_variable: 'Avec les paramètres régionaux issus de la variable EMSCH_LOCALES'
     wysiwyg_profile: 'Profil WYSIWYG'
+field_type:
+    action: 'Champ d’action'
+    asset: 'Champ de fichier'
+    checkbox: 'Case à cocher'
+    choice: 'Champ de choix'
+    code: 'Éditeur de code'
+    collection: 'Collection (gestion d’un tableau de types enfants)'
+    collection_item: 'Objet d’une collection (ce message ne devrait jamais être affiché)'
+    color_picker: 'Sélecteur de couleur'
+    computed: 'Champ calculé à partir des données brutes'
+    container: 'Conteneur visuel (invisible dans Elasticsearch)'
+    copy_to: 'Champ Elasticsearch copy_to'
+    data_link: 'Lien vers un ou plusieurs objets de données'
+    date: 'Champ de date'
+    date_time: 'Champ de date et d’heure'
+    email: 'Champ d’adresse e-mail'
+    form: 'Référence à une entité de formulaire'
+    holder: 'Conteneur invisible (Holder)'
+    icon: 'Champ d’icône'
+    indexed_asset: 'Champ de fichier indexé'
+    integer: 'Champ de nombre entier'
+    json_menu_editor: 'Éditeur de menu JSON'
+    json_menu_link: 'Champ de lien de menu JSON'
+    json_menu_nested_editor: 'Éditeur de menu JSON imbriqué'
+    json_menu_nested_link: 'Champ de lien de menu JSON imbriqué'
+    multiplex_tab: 'Conteneur d’onglets multiplexés'
+    nested: 'Objet imbriqué'
+    number: 'Champ numérique'
+    ouuid: 'Copie de l’identifiant de l’objet'
+    password: 'Champ de mot de passe'
+    sect_user_property: 'Champ de sélection d’une propriété utilisateur'
+    subfield: 'Sous-champ virtuel (définition d’analyseurs alternatifs)'
+    tabs: 'Conteneur visuel d’onglets (invisible dans Elasticsearch)'
+    text: 'Champ de texte'
+    textarea: 'Zone de texte'
+    time: 'Champ d’heure'
+    version_tag: 'Sélection d’une étiquette de version'
+    wysiwyg: 'Éditeur de texte enrichi (WYSIWYG)'
 help:
     add_first_aggregate_option: 'Cliquez sur « Ajouter une option d’agrégation » pour créer une première option d’agrégation'
     add_first_search_field_option: 'Cliquez sur « Ajouter une option de champ de recherche » pour créer une première option de champ de recherche'
@@ -973,7 +1091,6 @@ message:
     job_initialized: 'La tâche "{label}" a été initialisée dans l''environnement {environment}'
     json_menu_out_of_sync: 'Désynchronisé, veuillez rafraîchir et réessayer !'
     linked_documents_in: 'Documents liés dans {environment} ({length}/{total})'
-    loading_information: 'Chargement des informations...'
     loading_more_files: 'Chargement de fichiers supplémentaires...'
     log_content_type_add_unreferenced: 'Erreur inattendue lors de la récupération des types de contenu non référencés depuis l’environnement externe {environment} : {error}'
     logged_in_as: 'Connecté en tant que {username}'
@@ -1220,6 +1337,8 @@ option:
     recompute_on_publish: 'Recalculer les documents lors de la publication'
     restriction: Restriction
     update_referrers: 'Mettre à jour les référents'
+placeholder:
+    for_example: 'p. ex. {example}'
 role:
     admin:
         label: Administrateur
@@ -1359,6 +1478,11 @@ title:
     view_file: 'Voir le fichier'
     view_file_modal: 'Voir le fichier : {name}'
     view_recursive: 'Vue récursive'
+transformer:
+    html_attribute: 'HTML Attribute'
+    html_empty: 'HTML Empty'
+    html_remove_node: 'HTML Remove node'
+    html_unwrap: 'HTML Unwrap'
 type:
     confirm: |-
         {type, select,

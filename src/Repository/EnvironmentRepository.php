@@ -85,28 +85,16 @@ class EnvironmentRepository extends EntityRepository
     }
 
     /**
-     * @return array<mixed>
+     * @return Environment[]
      */
-    public function findAllAsAssociativeArray(string $field): array
+    public function associativeArrayByAlias(): array
     {
-        $qb = $this->createQueryBuilder('e');
-        $qb->select('e.'.$field.' key, e.name name, e.label label, e.color color, e.alias alias, e.managed managed, e.baseUrl baseUrl, e.circles circles');
-
-        $out = [];
-        $result = $qb->getQuery()->getResult();
-        foreach ($result as $record) {
-            $out[$record['key']] = [
-                'color' => $record['color'],
-                'name' => $record['name'],
-                'label' => $record['label'] ?? $record['name'],
-                'alias' => $record['alias'],
-                'managed' => $record['managed'],
-                'baseUrl' => $record['baseUrl'],
-                'circles' => $record['circles'] ?? [],
-            ];
+        $associativeArray = [];
+        foreach ($this->findAll() as $environment) {
+            $associativeArray[$environment->getAlias()] = $environment;
         }
 
-        return $out;
+        return $associativeArray;
     }
 
     public function delete(Environment $environment): void

@@ -23,6 +23,7 @@ action:
             search_field_option   {Add search field option}
             sort_option   {Add sort option}
             translation   {Add translation}
+            transformer   {Add transformer}
             other   {Add}
         }
     apply_filters: 'Apply filters'
@@ -106,6 +107,7 @@ action:
             search_field_option   {Remove this search field option}
             sort_option   {Remove this sort option}
             translation   {Remove this translation}
+            transformer   {Remove this transformer}
             other   {Remove}
         }
     rename: Rename
@@ -140,7 +142,6 @@ action:
     status: Status
     switch_user: 'Switch user'
     test: Test
-    toggle_navigation: 'Toggle navigation'
     toggle_sidebar: 'Toggle sidebar'
     toggle_visibility: 'Toggle visibility'
     toggle_visibility_selected: 'Toggle visibility selected'
@@ -265,10 +266,12 @@ core:
     version: 'Version {core} with Symfony {symfony}'
 field:
     accumulate_file: 'Accumulate in one file'
+    action_config: 'Action config'
     action_dropdown_label: 'Actions in {environment}'
     action_dropdown_sr_only: "Toggle dropdown of {environment}'s actions"
     aggregate_options: 'Aggregate options'
     alias: Alias
+    allow_link_to_root: 'Allow link to root'
     allowed_remote_hosts: 'Allowed remote hosts'
     analyzer: Analyzer
     ask_for_ouuid: 'Ask for OUUID'
@@ -288,9 +291,11 @@ field:
     assigned_to: 'Assigned to '
     assignee: Assignee
     attributes: 'Request extra attributes'
+    author: Author
     auto_publish: 'Silently publish draft and auto-save into the default environment'
     available: Available
     base_url: 'Base URL'
+    blocks_template: 'Blocks template'
     boolean_clause: 'Boolean clause'
     boost: Boost
     bootstrap_class: 'Bootstrap class'
@@ -299,13 +304,18 @@ field:
     category: Category
     channel: Channel
     char_filter: 'Char filter'
+    choices_template: 'Choices template'
     circles: Circles
     circles_to: 'Circles to'
+    class: 'HTML class'
+    clear_on_copy: 'Clear on copy'
+    collapsible: Collapsible
     color: Color
     command: Command
     comment: Comment
     compare: Compare
     config: Config
+    content: Content
     content_css: 'Content css'
     content_js: 'Content js'
     content_type: 'Content Type'
@@ -333,6 +343,8 @@ field:
     date_upload: 'Date upload'
     dates_interval_one_day: 'Dates interval one day'
     dates_read_only: 'Dates read only'
+    days_of_week_disabled: 'Days of week disabled'
+    days_of_week_highlighted: 'Days of week highlighted'
     deadline: Deadline
     default_sort_order: 'Default sort order'
     default_time: 'Default time'
@@ -341,14 +353,18 @@ field:
     delay: 'Delay (in days)'
     description: Description
     display: Display
+    display_format: 'Display format'
     display_name: 'Display name'
+    display_template: 'Display template'
     docs_count: '# Documents'
+    dynamic_loading: 'Dynamic loading'
     edit_twig_with_wysiwyg: 'Edit the Twig template with a WYSIWYG editor'
     editor: Editor
     elision: Elision
     email: Email
     email_content_type: 'Content type (ie: text/html)'
     enabled: Enabled
+    encryption: Encryption
     endpoint_url: Endpoint
     entry_path: 'Default entry path'
     environment: Environment
@@ -359,11 +375,14 @@ field:
     environments: Environments
     error: 'Error message'
     events: Events
+    expanded: Expanded
     expiration_date: 'Expiration Date'
     explicit_mode: 'Explicit mode'
     extra: Extra
     extra_roles: 'Extra roles'
     field: Field
+    field_type: "Field's type"
+    fielddata: 'Field data'
     file:
         disposition: 'File disposition'
         disposition_attachment: 'Attachment (force download)'
@@ -378,12 +397,14 @@ field:
     file_hash_apostrophe: "File's hash"
     file_info: 'File information'
     file_info_apostrophe: "File's information"
+    filename: Filename
     filter: Filter
     filters: Filters
     flags: Flags
     form: Form
     format: Format
     format_tags: 'Format tags'
+    from_date_machine_name: 'From date machine name'
     from_sender: 'From {sender}'
     gender: Gender
     group: Group
@@ -395,8 +416,10 @@ field:
     helptext_translations: 'Helptext translations'
     helptexts: Helptexts
     hidden: Hidden
+    hours_disabled: 'Hours disabled'
     icon: Icon
     id: ID
+    image_asset_config_identifier: 'Image asset config identifier'
     index: Index
     index_twig: 'Index template (Twig)'
     indexes: Indexes
@@ -412,10 +435,23 @@ field:
     is_preview: Preview
     is_public: Public
     is_styles_set_preview: 'Styles set preview'
+    item_bootstrap_class: 'Item Bootstrap class'
+    item_types: 'Item types'
+    json_decode: 'Try to JSON decode'
     json_file: 'JSON file'
+    json_menu_content_type: 'JSON menu content type'
+    json_menu_field: 'JSON menu field'
+    json_menu_nested_field: 'JSON menu nested field'
+    json_menu_nested_types: 'JSON menu nested types'
+    json_menu_nested_unique: 'JSON menu nested unique'
+    json_nested_deny: 'JSON nested deny'
+    json_nested_is_leaf: 'JSON nested is leaf'
+    json_nested_max_depth: 'JSON nested max depth'
     key: Key
     label: Label
+    label_field: 'Label field'
     label_translations: 'Label translations'
+    labels: Labels
     language: Language
     language_preferred: 'Language preferred'
     language_ui: 'Language UI'
@@ -425,10 +461,18 @@ field:
     last_seen: 'Last seen'
     locale: Locale
     locale_preferred: 'Locale preferred'
+    locale_preferred_first: 'Preferred locale first'
     locked_by: 'Locked by'
     locked_until: 'Locked until'
     lowercase: Lowercase
+    machine_name: 'Machine name'
+    mandatory: Mandatory
+    mandatory_if: 'Mandatory if'
     mapping: Mapping
+    mapping_options: 'Mapping options'
+    max: Max
+    max_depth: field.max_depth
+    max_lines: 'Max lines'
     max_output_size: 'Max output size'
     max_token_length: 'Max token lenght'
     mcp_arguments: 'MCP arguments template (JSON)'
@@ -438,10 +482,16 @@ field:
     mcp_response: 'MCP response template (JSON)'
     message: Message
     mime_type: 'MIME type'
+    min: Min
+    minimum_role: 'Minimum role'
     minimum_should_match: 'Minimum should match'
+    minute_step: 'Minute step'
+    multiple: Multiple
     name: Name
+    nested: Nested
     new_version: 'New version'
     node_name: 'Node name'
+    node_types: field.node_types
     not_blank_new_version: 'Not blank new version'
     number: Number
     operator: Operator
@@ -449,19 +499,27 @@ field:
     options: Options
     orientation: Orientation
     ouuid: OUUID
+    parse_format: 'Parse format'
     password: Password
     password_repeat: 'Repeat password'
     pattern: Pattern
     pdf_size: 'PDF Size'
     permission: Permission
+    placeholder: Placeholder
     plural: Plural
     plural_name: 'Plural name'
     plural_name_translations: 'Plural name translations'
+    post_processing: 'Post processing'
     postition_increment_gap: 'Position increment gap'
+    prefix_icon: 'Prefix icon'
+    prefix_text: 'Prefix text'
+    protected: Protected
     public_access: 'Public Access'
     publish_to: 'Publish to'
     published_label: 'Published in {environment}'
     query: Query
+    query_search: 'Query search'
+    question_label: 'Question label'
     quick_search: 'Quick search'
     referer_field_name: 'Referer field name'
     rejected_by: 'Rejected by'
@@ -469,7 +527,9 @@ field:
     release_environment_source: 'Source Environment for publication'
     release_environment_target: 'Environment for (un)publication'
     render_option: 'Render option'
+    renumbering: 'Items will be renumbered'
     requester: Requester
+    reset_password: 'Reset the password'
     revision: Revision
     revision_version_tag: 'Yes as {version_tag}'
     revision_version_tag_empty: 'No (Silent publish)'
@@ -487,12 +547,15 @@ field:
     role_view: View
     roles: Roles
     root_content_type: 'Root content type'
+    rows: Rows
     search_config: 'Search config'
     search_field_options: 'Search field options'
+    search_id: 'Search ID'
     separator: Separator
     severity: Severity
     show_meridian: 'Show meridian (true: 12hr, false: 24hr)'
     show_seconds: 'Show seconds'
+    show_week_numbers: 'Show week numbers'
     singular: Singular
     singular_name: 'Singular name'
     singular_name_translations: 'Singular name translations'
@@ -500,10 +563,15 @@ field:
     sort_by: 'Sort by'
     sort_options: 'Sort options'
     sort_order: 'Sort order'
+    sortable: Sortable
     spreadsheet: Spreadsheet
     status: Status
     stopwords: Stopwords
+    store: Store
     styles_set: 'Styles set'
+    subfield_name: 'Subfield name'
+    suffix_icon: 'Suffix icon'
+    suffix_text: 'Suffix text'
     table_default_css: 'Default Table class attribute'
     tag: Tag
     tags: Tags
@@ -514,18 +582,26 @@ field:
     template_publication: 'Publication template'
     template_response: 'Template response'
     text: Text
+    theme: Theme
+    time_picker: 'Time picker'
+    time_picker_24_hour: 'Time picker 24 hour'
+    time_picker_increment: 'Time picker increment'
     title: Task
     titles: Titles
+    to_date_machine_name: 'To date machine name'
+    today_highlight: 'Highlight today'
     tokenizer: Tokenizer
     tooltip: Tooltip
     total: Total
     total_deleted: 'Total deleted'
     total_elastic: 'Total in ES'
     total_ems: 'Total in EMS'
+    transformers: 'Select a transformer'
     translations: Translations
     type: Type
     unpublish_from: 'Unpublish from'
     unpublish_in: 'Unpublish in {env}'
+    update_referers_field: 'Update referers field'
     uri: URI
     user: User
     user_deleted: 'Deleted by'
@@ -536,11 +612,53 @@ field:
     user_uploaded: 'Uploaded by'
     username: Username
     username_or_email: 'Username or email address'
+    value_template: 'Value template'
+    values: Values
     version_tag: 'Version tag'
     web_content: 'Web content (available in WYSIWYG field as internal link)'
+    week_start: 'Week start'
     with_business_key: 'With business key'
     with_environment: 'With environment'
+    with_locales_variable: 'With locales from EMSCH_LOCALES variable'
     wysiwyg_profile: 'WYSIWYG profile'
+field_type:
+    action: 'Action field'
+    asset: 'Asset field'
+    checkbox: 'Checkbox field'
+    choice: 'Choice field'
+    code: 'Code editor field'
+    collection: 'Collection (manage array of children types)'
+    collection_item: 'Collection item object (this message should neve seen anywhere)'
+    color_picker: 'Color picker field'
+    computed: 'Computed from the raw-data'
+    container: 'Visual container (invisible in Elasticsearch)'
+    copy_to: 'Elasticsearch copy_to field'
+    data_link: 'Link to data object(s)'
+    date: 'Date field'
+    date_time: 'Date Time Field'
+    email: 'Email field'
+    form: 'Refers to a form entity'
+    holder: 'Invisible container (Holder)'
+    icon: 'Icon field'
+    indexed_asset: 'Indexed file field'
+    integer: 'Integer field'
+    json_menu_editor: 'JSON menu editor field'
+    json_menu_link: 'JSON menu link field'
+    json_menu_nested_editor: 'JSON menu nested editor field'
+    json_menu_nested_link: 'JSON menu nested link field'
+    multiplex_tab: 'Multiplexed Tab Container'
+    nested: 'Nested object'
+    number: 'Number field'
+    ouuid: 'Copy of the object identifier'
+    password: 'Password field'
+    sect_user_property: 'Select User property field'
+    subfield: 'Virtual subfield (used to define alternatives analyzers)'
+    tabs: 'Visual tab container (invisible in Elasticsearch)'
+    text: 'Text field'
+    textarea: 'Textarea field'
+    time: 'Time field'
+    version_tag: 'Select version tag'
+    wysiwyg: 'WYSIWYG field'
 help:
     add_first_aggregate_option: "Click on 'Add an aggregate option' to create a first Aggregate Option: Click on 'Add an aggregate option' to create a first Aggregate Option"
     add_first_search_field_option: "'Add an search field option' to create a first Search Field Option: Click on 'Add an search field option' to create a first Search Field Option"
@@ -968,7 +1086,6 @@ message:
     job_initialized: 'The job "{label}" has been initialized in the environment {environment}'
     json_menu_out_of_sync: 'Out of sync, please refresh and retry!'
     linked_documents_in: 'Linked documents in {environment} ({length}/{total})'
-    loading_information: 'Loading information...'
     loading_more_files: 'Loading more files ...'
     log_content_type_add_unreferenced: 'Unexpected error while getting unreferenced content type(s) from external environment {environment}: {error}'
     logged_in_as: 'Logged in as {username}'
@@ -1215,6 +1332,8 @@ option:
     recompute_on_publish: 'Recompute documents on publication'
     restriction: Restriction
     update_referrers: 'Update referrers'
+placeholder:
+    for_example: 'e.g. {example}'
 role:
     admin:
         label: Administrator
@@ -1354,6 +1473,11 @@ title:
     view_file: 'View file'
     view_file_modal: 'View file: {name}'
     view_recursive: 'Recursive view'
+transformer:
+    html_attribute: 'HTML Attribute'
+    html_empty: 'HTML Empty'
+    html_remove_node: 'HTML Remove node'
+    html_unwrap: 'HTML Unwrap'
 type:
     confirm: |-
         {type, select,

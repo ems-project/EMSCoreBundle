@@ -10,6 +10,8 @@ use EMS\CoreBundle\Form\FieldType\FieldTypeType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -32,6 +34,7 @@ class ContentTypeStructureType extends AbstractType
         }
 
         $builder->add('save', SubmitEmsType::class, [
+            'label' => t('action.save', [], 'emsco-core'),
             'attr' => [
                 'class' => 'btn btn-primary btn-sm ',
                 'data-testid' => 'btn-action-save',
@@ -39,6 +42,7 @@ class ContentTypeStructureType extends AbstractType
             'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndClose', SubmitEmsType::class, [
+            'label' => t('action.save_close', [], 'emsco-core'),
             'attr' => [
                 'class' => 'btn btn-primary btn-sm ',
                 'data-testid' => 'btn-action-save-close',
@@ -46,6 +50,7 @@ class ContentTypeStructureType extends AbstractType
             'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndReorder', SubmitEmsType::class, [
+            'label' => t('action.save_and_reorder', [], 'emsco-core'),
             'attr' => [
                 'class' => 'btn btn-primary btn-sm ',
                 'data-testid' => 'btn-action-save',

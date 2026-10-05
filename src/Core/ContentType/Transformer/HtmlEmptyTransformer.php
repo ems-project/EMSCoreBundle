@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Core\ContentType\Transformer;
 
 use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 final class HtmlEmptyTransformer extends AbstractTransformer
 {
     #[\Override]
-    public function getName(): string
+    public function getName(): TranslatableMessage
     {
-        return 'HTML Empty';
+        return t('transformer.html_empty', [], 'emsco-core');
     }
 
     #[\Override]

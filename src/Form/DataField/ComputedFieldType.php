@@ -17,6 +17,7 @@ use Symfony\Component\Form\FormRegistryInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Translation\TranslatableMessage;
 use Twig\Environment;
 
 use function Symfony\Component\Translation\t;
@@ -58,9 +59,9 @@ class ComputedFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Computed from the raw-data';
+        return t('field_type.computed', [], 'emsco-core');
     }
 
     #[\Override]
@@ -100,12 +101,14 @@ class ComputedFieldType extends DataFieldType
         $optionsForm = $builder->get('options');
 
         $optionsForm->get('displayOptions')->add('valueTemplate', CodeEditorType::class, [
+            'label' => t('field.value_template', [], 'emsco-core'),
             'required' => false,
             'language' => 'ace/mode/twig',
         ])->add('json', CheckboxType::class, [
+            'label' => t('field.json_decode', [], 'emsco-core'),
             'required' => false,
-            'label' => 'Try to JSON decode',
         ])->add('displayTemplate', CodeEditorType::class, [
+            'label' => t('field.display_template', [], 'emsco-core'),
             'required' => false,
             'language' => 'ace/mode/twig',
         ]);
@@ -113,10 +116,12 @@ class ComputedFieldType extends DataFieldType
         if ($optionsForm->has('mappingOptions')) {
             $optionsForm
                 ->get('mappingOptions')->remove('analyzer')->add('mappingOptions', CodeEditorType::class, [
+                    'label' => t('field.mapping_options', [], 'emsco-core'),
                     'required' => false,
                     'language' => 'ace/mode/json',
                 ])
             ->add('copy_to', TextType::class, [
+                'label' => t('field.copy_to', [], 'emsco-core'),
                 'required' => false,
             ]);
         }

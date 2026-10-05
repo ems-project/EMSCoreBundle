@@ -16,6 +16,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 class ChoiceFieldType extends DataFieldType
 {
@@ -45,9 +48,9 @@ class ChoiceFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'Choice field';
+        return t('field_type.choice', [], 'emsco-core');
     }
 
     #[\Override]

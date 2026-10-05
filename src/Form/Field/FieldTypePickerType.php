@@ -28,12 +28,11 @@ class FieldTypePickerType extends Select2Type
         $resolver->setDefaults([
             'choices' => \array_keys($this->dataFieldTypes),
             'choice_label' => function ($value) {
-                $dataFieldType = $this->dataFieldTypes[$value];
-                $icon = $dataFieldType->getIcon();
-                $label = $dataFieldType->getLabel();
-
-                return \sprintf('<i class="%s"></i>&nbsp;%s', $icon, $label);
+                return $this->dataFieldTypes[$value]->getLabel();
             },
+            'choice_attr' => fn ($key) => [
+                'data-icon' => $this->dataFieldTypes[$key]->getIcon(),
+            ],
             'choice_value' => fn ($value) => $value,
         ]);
     }

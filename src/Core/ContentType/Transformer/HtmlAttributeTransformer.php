@@ -7,13 +7,16 @@ namespace EMS\CoreBundle\Core\ContentType\Transformer;
 use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 final class HtmlAttributeTransformer extends BaseHtmlTransformer
 {
     #[\Override]
-    public function getName(): string
+    public function getName(): TranslatableMessage
     {
-        return 'HTML Attribute';
+        return t('transformer.html_attribute', [], 'emsco-core');
     }
 
     #[\Override]

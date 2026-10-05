@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\Field;
 
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
+use EMS\Helpers\Standard\Text;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class WysiwygStylesSetPickerType extends Select2Type
@@ -25,10 +26,11 @@ class WysiwygStylesSetPickerType extends Select2Type
                 'data-live-search' => true,
                 'class' => 'wysiwyg-profile-picker',
             ],
-            'choice_attr' => fn ($category, $key, $index) => [ // TODO: it would be nice to translate the roles
-                'data-content' => "<div class='text-".$category."'><i class='fa fa-brands fa-css3'></i>&nbsp;&nbsp;".$key.'</div>',
-            ],
             'choice_value' => fn ($value) => $value,
+            'choice_translation_domain' => false,
+            'choice_attr' => fn ($key) => [
+                'data-icon' => 'fa fa-brands fa-css3',
+            ],
         ]);
     }
 
@@ -40,10 +42,8 @@ class WysiwygStylesSetPickerType extends Select2Type
         $out = [];
         $stylesSets = $this->stylesSetService->getStylesSets();
 
-        $out['default'] = 'Default';
-
         foreach ($stylesSets as $stylesSet) {
-            $out[$stylesSet->getName()] = $stylesSet->getName();
+            $out[Text::humanize($stylesSet->getName())] = $stylesSet->getName();
         }
 
         return $out;

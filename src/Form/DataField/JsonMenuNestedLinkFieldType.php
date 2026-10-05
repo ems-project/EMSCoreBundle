@@ -27,6 +27,7 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Translation\TranslatableMessage;
 use Twig\Environment;
 
 use function Symfony\Component\Translation\t;
@@ -60,9 +61,9 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
     }
 
     #[\Override]
-    public function getLabel(): string
+    public function getLabel(): TranslatableMessage
     {
-        return 'JSON menu nested link field';
+        return t('field_type.json_menu_nested_link', [], 'emsco-core');
     }
 
     #[\Override]
@@ -160,26 +161,57 @@ class JsonMenuNestedLinkFieldType extends DataFieldType
         $optionsForm = $builder->get('options');
 
         $optionsForm->get('displayOptions')
-            ->add('expanded', CheckboxType::class, ['required' => false])
-            ->add('multiple', CheckboxType::class, ['required' => false])
-            ->add('json_menu_nested_types', TextType::class, ['required' => false])
-            ->add('json_menu_nested_field', TextType::class, ['required' => true])
-            ->add('json_menu_nested_unique', CheckboxType::class, ['required' => false])
-            ->add('query', CodeEditorType::class, ['required' => false, 'language' => 'ace/mode/json'])
-            ->add('environment', EnvironmentPickerType::class, [
+            ->add('expanded', CheckboxType::class, [
+                'label' => t('field.expanded', [], 'emsco-core'),
+                'required' => false,
+            ])
+            ->add('multiple', CheckboxType::class, [
+                'label' => t('field.multiple', [], 'emsco-core'),
+                'required' => false,
+            ])
+            ->add('json_menu_nested_types', TextType::class, [
+                'label' => t('field.json_menu_nested_types', [], 'emsco-core'),
+                'required' => false,
+            ])
+            ->add('json_menu_nested_field', TextType::class, [
+                'label' => t('field.json_menu_nested_field', [], 'emsco-core'),
+                'required' => false,
+            ])
+            ->add('json_menu_nested_unique', CheckboxType::class, [
+                'label' => t('field.json_menu_nested_unique', [], 'emsco-core'),
+                'required' => false,
+            ])
+            ->add('query', CodeEditorType::class, [
                 'label' => t('field.query', [], 'emsco-core'),
+                'required' => false,
+                'language' => 'ace/mode/json'])
+            ->add('environment', EnvironmentPickerType::class, [
+                'label' => t('field.environment', [], 'emsco-core'),
                 'required' => false,
                 'managedOnly' => false,
                 'userPublishEnvironments' => false,
             ])
-            ->add('choices_template', CodeEditorType::class, ['required' => false, 'min-lines' => 10, 'language' => 'ace/mode/twig'])
-            ->add('display_template', CodeEditorType::class, ['required' => false, 'min-lines' => 10, 'language' => 'ace/mode/twig'])
+            ->add('choices_template', CodeEditorType::class, [
+                'label' => t('field.choices_template', [], 'emsco-core'),
+                'required' => false,
+                'min-lines' => 10,
+                'language' => 'ace/mode/twig',
+            ])
+            ->add('display_template', CodeEditorType::class, [
+                'label' => t('field.display_template', [], 'emsco-core'),
+                'required' => false,
+                'min-lines' => 10,
+                'language' => 'ace/mode/twig',
+            ])
         ;
 
         if ($optionsForm->has('mappingOptions')) {
             $optionsForm->get('mappingOptions')
-                ->add('analyzer', AnalyzerPickerType::class)
+                ->add('analyzer', AnalyzerPickerType::class, [
+                    'label' => t('field.analyzer', [], 'emsco-core'),
+                ])
                 ->add('copy_to', TextType::class, [
+                    'label' => t('field.copy_to', [], 'emsco-core'),
                     'required' => false,
                 ]);
         }

@@ -146,6 +146,9 @@ class JsonClass implements \JsonSerializable
                 $names[] = $entity->getName();
             }
         }
+
+        \natcasesort($names);
+
         $this->updateProperty($property, $names);
     }
 }

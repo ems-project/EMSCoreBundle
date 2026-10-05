@@ -872,7 +872,7 @@
                     <li>
                         <a type="button" class="json_menu_sortable_add_item_button" data-label="" data-content-type="{{ type|e('html_attr') }}" data-icon="{{ contentTypeIcon|e('html_attr') }}">
                             <i class="{{ contentTypeIcon }}"></i>
-                            {{ 'action.add_item'|trans({'singular': contentType.singularName}) }}
+                            {{ 'action.add_new_type'|trans({'type': contentType.singularName}) }}
                         </a>
                     </li>
                 {% endif %}
@@ -884,7 +884,7 @@
                     <li>
                         <a type="button" class="json_menu_sortable_add_node_button" data-label="" data-content-type="{{ type|e('html_attr') }}" data-icon="{{ contentTypeIcon|e('html_attr') }}">
                             <i class="{{ contentTypeIcon }}"></i>
-                            {{ 'action.add_node'|trans({'singular': contentType.singularName}) }}
+                            {{ 'action.add_new_type'|trans({'type': contentType.singularName}) }}
                         </a>
                     </li>
                 {% endif %}

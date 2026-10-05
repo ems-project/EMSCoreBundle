@@ -5,9 +5,8 @@ action:
     add_aggregate_option: Aggregatieopties
     add_alias: 'Alias toevoegen'
     add_entity: 'Nieuwe {entity_name}'
-    add_item: 'Item toevoegen'
     add_managed_alias: 'Beheerde alias toevoegen'
-    add_node: 'Node toevoegen'
+    add_new_type: 'Een nieuwe {type} toevoegen'
     add_referenced: 'Gerefereerde toevoegen'
     add_referenced_content_type: 'Een gerefereerd contenttype toevoegen'
     add_release_publish: 'Toevoegen aan release voor publicatie'

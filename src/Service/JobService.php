@@ -98,16 +98,9 @@ class JobService implements EntityServiceInterface
     /**
      * @return Job[]
      */
-    public function findByUser(string $user): array
+    public function findByUser(UserInterface $user): array
     {
-        /** @var Job[] $doneJobs */
-        $doneJobs = $this->repository->findBy([
-            'user' => $user,
-        ], [
-            'created' => 'DESC',
-        ], 20);
-
-        return $doneJobs;
+        return $this->repository->findBy(['user' => $user->getUserIdentifier()], ['created' => \SortDirection::Descending]);
     }
 
     #[\Override]

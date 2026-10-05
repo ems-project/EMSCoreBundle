@@ -22,10 +22,6 @@ return function (RoutingConfigurator $routes): void {
         ->controller([NotificationController::class, 'treatNotifications'])
         ->methods(['POST']);
 
-    $routes->add('notification.menu', '/menu')
-        ->controller([NotificationController::class, 'menuNotification'])
-        ->methods(['GET', 'POST']);
-
     $routes->add('notifications.list', '/list')
         ->controller([NotificationController::class, 'listNotifications'])
         ->methods(['GET', 'POST'])

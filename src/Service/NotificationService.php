@@ -239,7 +239,7 @@ class NotificationService
     /**
      * @param ?array<string, mixed> $filters
      */
-    public function menuNotification(?array $filters = null): int
+    public function countNotifications(?array $filters = null): int
     {
         $contentTypes = null;
         $environments = null;

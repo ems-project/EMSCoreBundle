@@ -1,0 +1,24 @@
+<aside class="control-sidebar control-sidebar-dark">
+    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+        <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+        <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-terminal"></i></a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="control-sidebar-home-tab">
+            <h3 class="control-sidebar-heading">Recent Activity</h3>
+            <ul class="control-sidebar-menu" id="activity-log">
+            </ul>
+        </div>
+        <div class="tab-pane" id="control-sidebar-settings-tab">
+            <h3 class="control-sidebar-heading">Last commands</h3>
+            <ul class="control-sidebar-menu" id="commands-log">
+                {%- for job in this.jobs|default([]) %}
+                    <li title="Job {{ job.id }}">
+                        <a href="{{ path('emsco_job_status', { job: job.id }) }}">Job #{{ job.id }}</a>
+                    </li>
+                {%- endfor -%}
+            </ul>
+        </div>
+    </div>
+</aside>
+<div class="control-sidebar-bg"></div>

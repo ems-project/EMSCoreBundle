@@ -26,7 +26,7 @@ final readonly class ChannelService implements EntityServiceInterface
      */
     public function getAll(): array
     {
-        return $this->channelRepository->getAll();
+        return $this->channelRepository->findBy([], ['orderKey' => \SortDirection::Ascending]);
     }
 
     public function update(Channel $channel): void

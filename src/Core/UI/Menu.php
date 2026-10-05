@@ -11,7 +11,7 @@ class Menu
     /** @var MenuEntry[] */
     private array $children = [];
 
-    public function __construct(private readonly TranslatableMessage $title)
+    public function __construct(public readonly TranslatableMessage $title)
     {
     }
 

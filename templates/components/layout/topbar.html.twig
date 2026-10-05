@@ -1,0 +1,99 @@
+{% trans_default_domain 'emsco-core' %}
+
+<header class="main-header">
+    <a href="{{ path('homepage') }}" class="logo">
+        <span class="logo-mini">{{ ems_shortname|raw }}</span>
+        <span class="logo-lg">{{ ems_name|raw }}</span>
+    </a>
+    <nav class="navbar navbar-static-top" role="navigation">
+        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button" id="sidebar-toggle-button" data-testid="sidebar-menu-collapse">
+            <span class="sr-only">Toggle navigation</span>
+        </a>
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+                {% if app.user %}
+                    {%- set channels = this.channels|default([]) -%}
+                    {%- if channels|length > 0 -%}
+                        <li class="dropdown channels-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-testid="channel-menu">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                {%- set homepage = path('homepage') -%}
+                                {%- for channel in channels -%}
+                                    <li>
+                                        <a href="{{ channel.getEntryPath(homepage) }}" target="_blank" data-testid="channel-menu-{{ channel.name }}">
+                                            <i class="fa fa-{{ channel.public|default ? 'unlock-alt' : 'lock' }}" aria-hidden="true"></i>
+                                            {{ channel.label }}
+                                        </a>
+                                    </li>
+                                {%- endfor -%}
+                            </ul>
+                        </li>
+                    {%- endif -%}
+                    {%- for dashboard in this.dashboards.children|default([]) -%}
+                        <li class="notifications-menu">
+                            <a href="{{ path(dashboard.route, dashboard.routeParameters) }}"{% if dashboard.color %} class="text-{{ dashboard.color }}"{% endif %} data-testid="notification-menu-{{ dashboard.label|slug|lower }}">
+                                <i class="{{ dashboard.icon }}"></i>
+                            </a>
+                        </li>
+                    {%- endfor -%}
+                    <li class="notifications-menu">
+                        <a href="{{ path('notifications.inbox') }}" data-testid="notification-menu">
+                            <i class="fa fa-envelope-o"></i>
+                            {%- if this.countNotifications > 0 -%}
+                                <span class="label label-warning">{{ this.countNotifications }}</span>
+                            {%- endif -%}
+                        </a>
+                    </li>
+                    <li class="dropdown tasks-menu" id="system-messages">
+                        <a href="#" class="dropdown-toggle" data-toggle="control-sidebar" data-testid="tasks-menu">
+                            <i id="ajax-activity" class="fa fa-refresh"></i>
+                            <span class="label label-danger"></span>
+                        </a>
+                    </li>
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-testid="user-menu">
+                            {% include '@EMSCore/elements/user-image.html.twig' with {
+                                'class': 'user-image'
+                            } %}
+                            <span class="hidden-xs">{{ app.user.displayName }}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="user-header">
+                                {% include '@EMSCore/elements/user-image.html.twig' with {
+                                    'class': 'img-circle'
+                                } %}
+                                <p>
+                                    {{ 'message.logged_in_as'|trans({'username': app.user.username}, 'emsco-core') }}
+                                    <small>{{ 'message.member_since'|trans({'date': app.user.created|date(date_time_format)}, 'emsco-core') }}</small>
+                                    <small>
+                                        {% for role in app.user.roles %}
+                                            {{ (role|replace({'ROLE_': 'ROLE.'}) ~ '.label')|lower|trans([], 'emsco-core') }}{% if not loop.last %},{% endif %}
+                                        {% endfor %}
+                                    </small>
+                                </p>
+                            </li>
+                            <li class="user-footer">
+                                <div class="pull-left" data-testid="user-footer-edit-profile">
+                                    <a href="{{ path(routes.USER_PROFILE) }}" class="btn btn-default btn-flat">{{ 'title.profile'|trans({}, 'emsco-core') }}</a>
+                                </div>
+                                <div class="pull-right" data-testid="user-footer-logout">
+                                    {% if is_granted('IS_IMPERSONATOR') %}
+                                        <a href="{{ path('emsco_user_index', {'_switch_user': '_exit'}) }}" class="btn btn-default btn-flat" data-testid="logout">{{ 'action.exit'|trans({}, 'emsco-core') }}</a>
+                                    {% else %}
+                                        <a href="{{ path(routes.USER_LOGOUT) }}" class="btn btn-default btn-flat" data-testid="logout">{{ 'action.sign_out'|trans({}, 'emsco-core') }}</a>
+                                    {% endif %}
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{{ path(routes.USER_LOGIN) }}" ><span class="glyphicon glyphicon-lock"></span> {{ 'action.sign_in'|trans({}, 'emsco-core') }}</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+</header>

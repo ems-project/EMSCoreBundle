@@ -7,7 +7,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\I18n;
-use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\UploadedAsset;
@@ -149,8 +148,7 @@ return static function (ContainerConfigurator $container) {
         ->factory([service('doctrine.orm.default_entity_manager'), 'getRepository']);
 
     $services->set(JobRepository::class)
-        ->args([Job::class])
-        ->factory([service('doctrine.orm.default_entity_manager'), 'getRepository']);
+        ->args([service('doctrine')]);
 
     $services->set(ManagedAliasRepository::class)
         ->args([ManagedAlias::class])

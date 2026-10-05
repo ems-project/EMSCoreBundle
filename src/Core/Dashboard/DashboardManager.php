@@ -8,15 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
 use EMS\CommonBundle\Entity\EntityInterface;
 use EMS\CommonBundle\Helper\Text\Encoder;
-use EMS\CoreBundle\Core\UI\Menu;
 use EMS\CoreBundle\Entity\Dashboard;
-use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Repository\DashboardRepository;
-use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\EntityServiceInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 use function Symfony\Component\Translation\t;
 
@@ -28,8 +23,6 @@ class DashboardManager implements EntityServiceInterface
     public function __construct(
         private readonly DashboardRepository $dashboardRepository,
         private readonly LocalizedLoggerInterface $logger,
-        private readonly AuthorizationCheckerInterface $authorizationChecker,
-        private readonly TokenStorageInterface $tokenStorage,
     ) {
     }
 
@@ -118,25 +111,20 @@ class DashboardManager implements EntityServiceInterface
         $this->logger->messageWarning(t('message.dashboard_deleted', ['label' => $label], 'emsco-core'));
     }
 
-    public function getSidebarMenu(): Menu
+    /**
+     * @return Dashboard[]
+     */
+    public function getVisibleSidebarDashboards(): array
     {
-        $token = $this->tokenStorage->getToken();
-        $user = null;
-        if (null !== $token) {
-            $user = $token->getUser();
-            if (!$user instanceof UserInterface) {
-                $user = null;
-            }
-        }
-        $menu = new Menu(t('key.dashboards', [], 'emsco-core'));
-        foreach ($this->dashboardRepository->getSidebarMenu() as $dashboard) {
-            if (!$this->authorizationChecker->isGranted($dashboard->getRole())) {
-                continue;
-            }
-            $menu->addChild($dashboard->getLabel($user), $dashboard->getIcon(), Routes::DASHBOARD, ['name' => $dashboard->getName()], $dashboard->getColor());
-        }
+        return $this->dashboardRepository->findBy(['sidebarMenu' => true], ['orderKey' => \SortDirection::Ascending]);
+    }
 
-        return $menu;
+    /**
+     * @return Dashboard[]
+     */
+    public function getVisibleTopbarDashboards(): array
+    {
+        return $this->dashboardRepository->findBy(['notificationMenu' => true], ['orderKey' => \SortDirection::Ascending]);
     }
 
     public function getByName(string $name): Dashboard
@@ -147,19 +135,6 @@ class DashboardManager implements EntityServiceInterface
         }
 
         return $dashboard;
-    }
-
-    public function getNotificationMenu(): Menu
-    {
-        $menu = new Menu(t('key.dashboards', [], 'emsco-core'));
-        foreach ($this->dashboardRepository->getNotificationMenu() as $dashboard) {
-            if (!$this->authorizationChecker->isGranted($dashboard->getRole())) {
-                continue;
-            }
-            $menu->addChild($dashboard->getLabel(), $dashboard->getIcon(), Routes::DASHBOARD, ['name' => $dashboard->getName()], $dashboard->getColor());
-        }
-
-        return $menu;
     }
 
     public function getDefinition(string $definition): ?Dashboard

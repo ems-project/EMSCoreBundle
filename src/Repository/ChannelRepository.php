@@ -41,14 +41,6 @@ final class ChannelRepository extends ServiceEntityRepository
         return $channel;
     }
 
-    /**
-     * @return Channel[]
-     */
-    public function getAll(): array
-    {
-        return $this->findBy([], ['orderKey' => 'ASC']);
-    }
-
     public function counter(string $searchValue = ''): int
     {
         $qb = $this->createQueryBuilder('c');

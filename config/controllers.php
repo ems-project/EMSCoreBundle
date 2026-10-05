@@ -7,6 +7,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface;
 use EMS\CoreBundle\Controller\ActionController;
 use EMS\CoreBundle\Controller\Admin\AnalyzerController;
+use EMS\CoreBundle\Controller\Admin\ChannelController;
 use EMS\CoreBundle\Controller\Admin\EnvironmentController;
 use EMS\CoreBundle\Controller\Admin\FilterController;
 use EMS\CoreBundle\Controller\Admin\I18nController;
@@ -28,7 +29,6 @@ use EMS\CoreBundle\Controller\Api\McpController;
 use EMS\CoreBundle\Controller\Api\Search\SearchController;
 use EMS\CoreBundle\Controller\Api\WebhookSubscriptionController;
 use EMS\CoreBundle\Controller\BrowseController;
-use EMS\CoreBundle\Controller\ChannelController;
 use EMS\CoreBundle\Controller\Component\JsonMenuNestedController;
 use EMS\CoreBundle\Controller\Component\MediaLibraryController;
 use EMS\CoreBundle\Controller\ContentManagement\AssetController;
@@ -57,7 +57,6 @@ use EMS\CoreBundle\Controller\Revision\DetailController;
 use EMS\CoreBundle\Controller\Revision\EditController;
 use EMS\CoreBundle\Controller\Revision\TaskController;
 use EMS\CoreBundle\Controller\Revision\TrashController;
-use EMS\CoreBundle\Controller\TwigElementsController;
 use EMS\CoreBundle\Controller\UploadedFileController;
 use EMS\CoreBundle\Controller\UploadedFileWysiwygController;
 use EMS\CoreBundle\Controller\User\GroupController;
@@ -115,7 +114,7 @@ return static function (ContainerConfigurator $container) {
         ->tag('container.service_subscriber')
         ->tag('controller.service_arguments');
 
-    $services->set(\EMS\CoreBundle\Controller\Admin\ChannelController::class)
+    $services->set(ChannelController::class)
         ->public()
         ->args([
             service('emsco.logger'),
@@ -803,15 +802,6 @@ return static function (ContainerConfigurator $container) {
         ->tag('container.service_subscriber')
         ->tag('controller.service_arguments');
 
-    $services->set(ChannelController::class)
-        ->public()
-        ->args([
-            service('ems.service.channel'),
-            '%ems_core.template_namespace%',
-        ])
-        ->call('setContainer')
-        ->tag('container.service_subscriber');
-
     $services->set(DashboardController::class)
         ->public()
         ->args([
@@ -864,26 +854,10 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.environment'),
             service('doctrine'),
             service('ems.service.notification'),
-            service('ems.dashboard.manager'),
             service(NotificationRepository::class),
             service('ems_core.core_ui.flash_message_logger'),
             '%ems_core.paging_size%',
             '%ems_core.template_namespace%',
-        ])
-        ->call('setContainer')
-        ->tag('container.service_subscriber')
-        ->tag('controller.service_arguments');
-
-    $services->set(TwigElementsController::class)
-        ->public()
-        ->args([
-            service('ems.service.asset_extractor'),
-            service('ems_common.service.elastica'),
-            service('ems.service.job'),
-            service('ems.dashboard.manager'),
-            service('ems.service.contenttype'),
-            '%ems_core.template_namespace%',
-            '%ems_core.group_feature%',
         ])
         ->call('setContainer')
         ->tag('container.service_subscriber')

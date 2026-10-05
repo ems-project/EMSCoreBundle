@@ -4,20 +4,28 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\ArrayParameterType;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\QueryBuilder;
 use EMS\CoreBundle\Entity\Job;
 
 /**
- * @extends EntityRepository<Job>
+ * @extends ServiceEntityRepository<Job>
  *
+ * @method Job|null find($id, $lockMode = null, $lockVersion = null)
  * @method Job|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
+ * @method Job[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
-class JobRepository extends EntityRepository
+class JobRepository extends ServiceEntityRepository
 {
+    public function __construct(Registry $registry)
+    {
+        parent::__construct($registry, Job::class);
+    }
+
     public function findById(int $jobId): Job
     {
         if (null === $job = $this->findOneBy(['id' => $jobId])) {

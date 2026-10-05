@@ -1,4 +1,6 @@
 {% trans_default_domain 'emsco-core' %}
+{% set status = this.status %}
+{% set sidebarMenus = this.menus %}
 <aside class="main-sidebar">
     <section class="sidebar" data-testid="sidebar">
         <div class="user-panel">
@@ -36,15 +38,37 @@
             </form>
         {% endif %}
 
-        {% for item in menu|default([]) %}
+        {% for item in sidebarMenus %}
             {% if item.hasChildren %}
                 <ul class="sidebar-menu" data-widget="tree" data-testid="sidebar-menu-tree">
                     <li class="header">{{ item.title|trans }}</li>
                     {% for menu in item.children %}
-                        {{ block('sidebarMenu', '@EMSCore/elements/menu.html.twig') }}
+                        {{ _self.item(menu) }}
                     {% endfor %}
                 </ul>
             {% endif %}
         {% endfor %}
     </section>
 </aside>
+
+{% macro item(menu, parentSlug = '') %}
+    {# @var menu \EMS\CoreBundle\Core\UI\MenuEntry #}
+    {% set menuLabel = menu.label is ems_translatable_message ? menu.label|trans : menu.label %}
+    <li{% if menu.hasChildren %} class="treeview"{% endif %}>
+        <a href="{{ path(menu.route, menu.routeParameters) }}"{% if menu.color %} class="text-{{ menu.color }}"{% endif %} data-testid="menu-item-{{ parentSlug }}{{ menuLabel|ems_slug }}">
+            <i class="{{ menu.icon }}"></i>&nbsp;<span>{{ menuLabel }}</span>
+            {% if menu.hasBadge %}
+                <span class="label {{ menu.badgeColor ? 'bg-' ~ menu.badgeColor : 'label-default' }} pull-right-container">{{ menu.badge }}</span>
+            {% elseif menu.hasChildren %}
+                <i class="fa fa-angle-left pull-right"></i>
+            {% endif %}
+        </a>
+        {% if menu.hasChildren %}
+            <ul class="treeview-menu">
+                {% for child in menu.children %}
+                    {{ _self.item(child, menuLabel|ems_slug ~ '-') }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}

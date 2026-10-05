@@ -16,6 +16,7 @@ use EMS\Helpers\File\File;
 use EMS\Helpers\File\TempFile;
 use EMS\Helpers\Standard\Number;
 use EMS\Helpers\Standard\Type;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 use function Symfony\Component\Translation\t;
@@ -25,6 +26,7 @@ class AssetExtractorService implements CacheWarmerInterface
     private const string CONTENT_EP = '/tika';
     private const string HELLO_EP = '/tika';
     private const string META_EP = '/meta';
+    private const string ASSET_EXTRACTOR_STATUS_CACHE_ID = 'status.asset_extractor.result';
     private ?TikaWrapper $wrapper = null;
 
     public function __construct(
@@ -37,6 +39,25 @@ class AssetExtractorService implements CacheWarmerInterface
         private readonly ?string $tikaDownloadUrl,
         private readonly int $tikaMaxContent = 5120,
     ) {
+    }
+
+    public function getStatus(): string
+    {
+        $cache = new FilesystemAdapter('', 60);
+        $cachedStatus = $cache->getItem(self::ASSET_EXTRACTOR_STATUS_CACHE_ID);
+        if ($cachedStatus->isHit()) {
+            return $cachedStatus->get();
+        }
+
+        try {
+            $status = 200 === $this->hello()['code'] ? 'green' : 'yellow';
+        } catch (\Throwable) {
+            $status = 'yellow';
+        }
+        $cachedStatus->set($status);
+        $cache->save($cachedStatus);
+
+        return $status;
     }
 
     private function getTikaWrapper(): TikaWrapper

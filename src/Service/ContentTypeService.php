@@ -14,8 +14,6 @@ use EMS\CommonBundle\Service\ElasticaService;
 use EMS\CoreBundle\Core\ContentType\ContentTypeRoles;
 use EMS\CoreBundle\Core\ContentType\ContentTypeUnreferenced;
 use EMS\CoreBundle\Core\ContentType\ViewDefinition;
-use EMS\CoreBundle\Core\UI\Menu;
-use EMS\CoreBundle\Core\UI\MenuEntry;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
@@ -23,7 +21,7 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Entity\Revision;
 use EMS\CoreBundle\Entity\Template;
-use EMS\CoreBundle\Entity\UserInterface;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\View;
 use EMS\CoreBundle\Exception\ContentTypeAlreadyExistException;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -36,8 +34,8 @@ use EMS\Helpers\Standard\Json;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function Symfony\Component\Translation\t;
@@ -59,10 +57,8 @@ class ContentTypeService implements EntityServiceInterface
         private readonly EnvironmentService $environmentService,
         private readonly AuthorizationCheckerInterface $authorizationChecker,
         private readonly RevisionRepository $revisionRepository,
-        private readonly TokenStorageInterface $tokenStorage,
         private readonly TranslatorInterface $translator,
         private readonly RouterInterface $router,
-        private readonly ?string $circleContentTypeName
     ) {
     }
 
@@ -119,6 +115,36 @@ class ContentTypeService implements EntityServiceInterface
         }
 
         return false;
+    }
+
+    /**
+     * @return ContentType[]
+     */
+    public function getActiveContentTypes(): array
+    {
+        $this->loadEnvironment();
+
+        return \array_filter(
+            $this->orderedContentTypes,
+            static fn (ContentType $contentType) => $contentType->getActive() && !$contentType->getDeleted()
+        );
+    }
+
+    /**
+     * @return array<int, int|string>
+     */
+    public function getDraftCounters(UserInterface $user): array
+    {
+        if (!$user instanceof User) {
+            return [];
+        }
+
+        $rows = $this->revisionRepository->draftCounterGroupedByContentType(
+            $user->getCircles(),
+            $this->authorizationChecker->isGranted('ROLE_ADMIN')
+        );
+
+        return \array_column($rows, 'counter', 'content_type_id');
     }
 
     private function loadEnvironment(): void
@@ -611,95 +637,6 @@ class ContentTypeService implements EntityServiceInterface
             $contentType->setOrderKey($contentTypeRepository->nextOrderKey());
         }
         $contentTypeRepository->save($contentType);
-    }
-
-    public function getCircleContentType(): ?ContentType
-    {
-        if (null === $circleContentTypeName = $this->circleContentTypeName) {
-            return null;
-        }
-
-        return $this->contentTypeArrayByName[$circleContentTypeName] ?? null;
-    }
-
-    public function getContentTypeMenu(): Menu
-    {
-        $menu = new Menu(t('key.content_types', [], 'emsco-core'));
-        $token = $this->tokenStorage->getToken();
-        if (null === $token) {
-            throw new \RuntimeException('Unexpected null token');
-        }
-        $user = $token->getUser();
-        if (!$user instanceof UserInterface) {
-            throw new \RuntimeException('Unexpected user type');
-        }
-        $this->loadEnvironment();
-        $isAdmin = $this->authorizationChecker->isGranted('ROLE_ADMIN');
-        $temp = $this->revisionRepository->draftCounterGroupedByContentType($user->getCircles(), $isAdmin);
-        $counters = [];
-        foreach ($temp as $item) {
-            $counters[$item['content_type_id']] = $item['counter'];
-        }
-
-        foreach ($this->orderedContentTypes as $contentType) {
-            $roles = $contentType->getRoles();
-
-            if ($contentType->getDeleted()
-                || !$contentType->getActive()
-                || (!$this->authorizationChecker->isGranted($roles[ContentTypeRoles::VIEW])) && !$contentType->getRootContentType()) {
-                continue;
-            }
-
-            [$routeOverview, $routeOverviewParams] = $this->getRedirectOverviewRoute($contentType);
-            $menuEntry = new MenuEntry(
-                label: $contentType->getPluralName($user),
-                icon: $contentType->getIcon() ?? 'fa fa-book',
-                route: $routeOverview,
-                routeParameters: $routeOverviewParams,
-                color: $contentType->getColor()
-            );
-            if (isset($counters[$contentType->getId()])) {
-                $menuEntry->setBadge((string) $counters[$contentType->getId()]);
-            }
-            $this->addMenuViewLinks($contentType, $menuEntry, $user);
-            $this->addDraftInProgressLink($contentType, $menuEntry);
-
-            if ($this->authorizationChecker->isGranted($roles[ContentTypeRoles::SHOW_LINK_CREATE])
-                && $this->authorizationChecker->isGranted($roles[ContentTypeRoles::CREATE])) {
-                $menuEntry->addChild(t('action.new_entity_name', $contentType->getSingularNameTranslation($user)->getParameters(), 'emsco-core'), 'fa fa-plus', Routes::DATA_ADD, ['contentType' => $contentType->getId()]);
-            }
-            if ($this->authorizationChecker->isGranted($roles[ContentTypeRoles::TRASH])) {
-                $trashLink = $menuEntry->addChild(t('key.trash', [], 'emsco-core'), 'fa fa-trash', Routes::DATA_TRASH, ['contentType' => $contentType->getId()]);
-            }
-            if ($menuEntry->hasChildren()) {
-                $menu->addMenuEntry($menuEntry);
-            }
-        }
-
-        return $menu;
-    }
-
-    private function addMenuViewLinks(ContentType $contentType, MenuEntry $menuEntry, UserInterface $user): void
-    {
-        foreach ($contentType->getViews() as $view) {
-            if (null !== $view->getRole() && !$this->authorizationChecker->isGranted($view->getRole())) {
-                continue;
-            }
-            if ('ems.view.data_link' === $view->getType()) {
-                continue;
-            }
-            $menuEntry->addChild($view->getLabel($user), $view->getIcon() ?? '', $view->isPublic() ? Routes::DATA_PUBLIC_VIEW : Routes::DATA_PRIVATE_VIEW, ['viewId' => $view->getId()]);
-        }
-    }
-
-    private function addDraftInProgressLink(ContentType $contentType, MenuEntry $menuEntry): void
-    {
-        if (!$contentType->giveEnvironment()->getManaged() || !$menuEntry->hasBadge() || !$this->authorizationChecker->isGranted($contentType->role(ContentTypeRoles::EDIT))) {
-            return;
-        }
-
-        $draftInProgress = $menuEntry->addChild(t('key.draft_in_progress', [], 'emsco-core'), 'fa fa-fire', Routes::DRAFT_IN_PROGRESS, ['contentTypeId' => $contentType->getId()]);
-        $draftInProgress->setBadge($menuEntry->getBadge(), $contentType->getColor());
     }
 
     #[\Override]

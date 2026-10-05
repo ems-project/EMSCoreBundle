@@ -6,7 +6,6 @@ namespace EMS\CoreBundle\Controller;
 
 use Doctrine\Persistence\ManagerRegistry;
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
-use EMS\CoreBundle\Core\Dashboard\DashboardManager;
 use EMS\CoreBundle\Core\UI\FlashMessageLogger;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
@@ -41,7 +40,6 @@ class NotificationController extends AbstractController
         private readonly EnvironmentService $environmentService,
         private readonly ManagerRegistry $doctrine,
         private readonly NotificationService $notificationService,
-        private readonly DashboardManager $dashboardManager,
         private readonly NotificationRepository $notificationRepository,
         private readonly FlashMessageLogger $flashMessageLogger,
         private readonly int $pagingSize,
@@ -148,14 +146,6 @@ class NotificationController extends AbstractController
         }
 
         return $this->redirectToRoute('notifications.inbox');
-    }
-
-    public function menuNotification(): Response
-    {
-        return $this->render(\sprintf('@%s/notification/menu.html.twig', $this->templateNamespace), [
-            'counter' => $this->notificationService->menuNotification(),
-            'dashboardMenu' => $this->dashboardManager->getNotificationMenu(),
-        ]);
     }
 
     public function listNotifications(string $folder, Request $request): Response

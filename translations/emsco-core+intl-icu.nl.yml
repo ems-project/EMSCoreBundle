@@ -2,17 +2,13 @@ action:
     acknowledge: Bevestigen
     activate: Activeren
     add: Toevoegen
-    add_aggregate_option: Aggregatieopties
     add_alias: 'Alias toevoegen'
-    add_entity: 'Nieuwe {entity_name}'
     add_managed_alias: 'Beheerde alias toevoegen'
     add_new_type: 'Een nieuwe {type} toevoegen'
     add_referenced: 'Gerefereerde toevoegen'
     add_referenced_content_type: 'Een gerefereerd contenttype toevoegen'
     add_release_publish: 'Toevoegen aan release voor publicatie'
     add_release_unpublish: 'Toevoegen aan release voor depublicatie'
-    add_search_field_option: 'Zoekveldoptie toevoegen'
-    add_sort_option: 'Sorteeroptie toevoegen'
     add_task: 'Taak toevoegen'
     add_to_release: 'Toevoegen aan release'
     add_type: |-
@@ -63,7 +59,6 @@ action:
     duplicate: Dupliceren
     edit: Bewerken
     edit_draft: 'Concept bewerken'
-    edit_entity: '{entity_name} bewerken'
     edit_main_container: 'De hoofdcontainer bewerken'
     edit_managed_alias: 'Beheerde alias bewerken'
     edit_revision: 'Revisie bewerken'
@@ -354,7 +349,7 @@ field:
     display: Weergave
     display_format: Weergaveformaat
     display_name: Weergavenaam
-    display_template: field.display_template
+    display_template: Weergavesjabloon
     docs_count: '# Documenten'
     dynamic_loading: 'Dynamisch laden'
     edit_twig_with_wysiwyg: 'Twig-template bewerken met een WYSIWYG-editor'
@@ -470,7 +465,7 @@ field:
     mapping: Mapping
     mapping_options: Toewijzingsopties
     max: Max
-    max_depth: field.max_depth
+    max_depth: 'Maximale diepte'
     max_lines: 'Maximum aantal regels'
     max_output_size: 'Max. outputgrootte'
     max_token_length: 'Max. tokenlengte'
@@ -490,7 +485,7 @@ field:
     nested: Genest
     new_version: 'Nieuwe versie'
     node_name: 'Naam van het knooppunt'
-    node_types: field.node_types
+    node_types: Knooppunttypes
     not_blank_new_version: 'Nieuwe versie niet leeg'
     number: Getal
     operator: Operator
@@ -659,9 +654,6 @@ field_type:
     version_tag: 'Selectie van een versielabel'
     wysiwyg: 'Editor voor opgemaakte tekst (WYSIWYG)'
 help:
-    add_first_aggregate_option: "Klik op 'Aggregatieoptie toevoegen' om een eerste aggregatieoptie te maken"
-    add_first_search_field_option: "Klik op 'Zoekveldoptie toevoegen' om een eerste zoekveldoptie te maken"
-    add_first_sort_option: "Klik op 'Sorteeroptie toevoegen' om een eerste sorteeroptie te maken"
     override_styles_set_config: 'configuratie van stijlensets overschrijven'
 key:
     action: Actie
@@ -673,7 +665,6 @@ key:
     add_user: 'Gebruiker toevoegen'
     admin: Admin
     advanced_search: 'Geavanceerd zoeken'
-    aggregate_options: Aggregatieopties
     align_with: 'Uitlijnen met'
     all_content_types: 'Alle contenttypes'
     all_linked_documents: 'Alle gekoppelde documenten'
@@ -857,8 +848,6 @@ key:
     schedule_tag: 'Gebruikt om workers (bv. CLI) te identificeren die de job op afstand zouden uitvoeren'
     scheduled: Gepland
     search: Zoeken
-    search_field_options: Zoekveldopties
-    search_options: Zoekopties
     selected: Geselecteerd
     sent: Verzonden
     settings: Instellingen
@@ -867,7 +856,6 @@ key:
     simplified_ui: 'Vereenvoudigde UI'
     singular: Enkelvoud
     sort_by: 'Sorteren op'
-    sort_options: Sorteeropties
     sort_options_lowercase: Sorteeropties
     specif_roles_abbrev: 'Specif. rollen'
     specific_roles_lowercase: 'specifieke rollen'
@@ -923,7 +911,6 @@ message:
     action_updated: 'De actie "{label}" is bijgewerkt'
     add_field_to: 'Een veld toevoegen aan <strong>{name}</strong>'
     add_subfield_to: 'Een subveld toevoegen aan <strong>{name}</strong>'
-    aggregate_option_missing: "Klik op 'Aggregatieoptie toevoegen' om een eerste aggregatieoptie te maken"
     alias_added: 'Een nieuwe alias "{alias_name}" is toegevoegd aan de index "{index_name}"'
     alias_attached: 'De alias "{alias}" is gekoppeld'
     alias_too_many_indexes: 'Er zijn te veel indexen'
@@ -1233,7 +1220,6 @@ message:
     schedule_created: 'Schema "{name}" is aangemaakt'
     schedule_deleted: 'Het schema "{name}" is verwijderd'
     schedule_updated: 'Schema "{name}" is bijgewerkt'
-    search_field_option_missing: "Klik op 'Zoekveldoptie toevoegen' om een eerste zoekveldoptie te maken"
     search_paging_limit_exceeded: 'De paginering is beperkt tot de eerste {paging} items, {total} documenten gevonden'
     search_placeholder: Zoeken...
     search_result_count: |-
@@ -1248,7 +1234,6 @@ message:
     sign_in_start_session: 'Meld u aan om uw sessie te starten'
     sign_in_to_continue: 'Meld u aan bij uw account om verder te gaan'
     something_wrong: 'Er is iets mis met deze applicatie.'
-    sort_option_missing: "Klik op 'Sorteeroptie toevoegen' om een eerste sorteeroptie te maken"
     start_edit: 'Begin met het bewerken van het document {ouuid} van het type {type}'
     start_edit_without_ouuid: 'Begin met het bewerken van een nieuw document van het type {type}'
     still_in_target: 'Nog in {target}'

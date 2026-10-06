@@ -2,17 +2,13 @@ action:
     acknowledge: Acquitter
     activate: Activer
     add: Ajouter
-    add_aggregate_option: 'Options d’agrégation'
     add_alias: 'Ajouter un alias'
-    add_entity: 'Nouveau {entity_name}'
     add_managed_alias: 'Ajouter un alias géré'
     add_new_type: 'Ajouter un nouveau {type}'
     add_referenced: 'Ajouter une référence'
     add_referenced_content_type: 'Ajouter un type de contenu référencé'
     add_release_publish: 'Ajouter à la release pour publication'
     add_release_unpublish: 'Ajouter à la release pour dépublication'
-    add_search_field_option: 'Ajouter une option de champ de recherche'
-    add_sort_option: 'Ajouter une option de tri'
     add_task: 'Ajouter une tâche'
     add_to_release: 'Ajouter à la release'
     add_type: |-
@@ -63,7 +59,6 @@ action:
     duplicate: Dupliquer
     edit: Modifier
     edit_draft: 'Modifier le brouillon'
-    edit_entity: 'Modifier {entity_name}'
     edit_main_container: 'Modifier le conteneur principal'
     edit_managed_alias: 'Modifier l’alias géré'
     edit_revision: 'Modifier la révision'
@@ -359,7 +354,7 @@ field:
     display: Affichage
     display_format: "Format d'affichage"
     display_name: 'Nom d’affichage'
-    display_template: field.display_template
+    display_template: "Modèle d'affichage"
     docs_count: '# Documents'
     dynamic_loading: 'Chargement dynamique'
     edit_twig_with_wysiwyg: 'Modifier le template Twig avec un éditeur WYSIWYG'
@@ -475,7 +470,7 @@ field:
     mapping: Mapping
     mapping_options: 'Options de mappage'
     max: Max
-    max_depth: field.max_depth
+    max_depth: 'Profondeur maximale'
     max_lines: 'Nombre maximal de lignes'
     max_output_size: 'Taille de sortie max.'
     max_token_length: 'Longueur max. du token'
@@ -495,7 +490,7 @@ field:
     nested: Imbriqué
     new_version: 'Nouvelle version'
     node_name: 'Nom du nœud'
-    node_types: field.node_types
+    node_types: 'Types de nœuds'
     not_blank_new_version: 'Nouvelle version non vide'
     number: Nombre
     operator: Opérateur
@@ -664,9 +659,6 @@ field_type:
     version_tag: 'Sélection d’une étiquette de version'
     wysiwyg: 'Éditeur de texte enrichi (WYSIWYG)'
 help:
-    add_first_aggregate_option: 'Cliquez sur « Ajouter une option d’agrégation » pour créer une première option d’agrégation'
-    add_first_search_field_option: 'Cliquez sur « Ajouter une option de champ de recherche » pour créer une première option de champ de recherche'
-    add_first_sort_option: 'Cliquez sur « Ajouter une option de tri » pour créer une première option de tri'
     override_styles_set_config: 'remplacer la configuration des jeux de styles'
 key:
     action: Action
@@ -678,7 +670,6 @@ key:
     add_user: 'Ajouter un utilisateur'
     admin: Admin
     advanced_search: 'Recherche avancée'
-    aggregate_options: 'Options d’agrégation'
     align_with: 'Aligner avec'
     all_content_types: 'Tous les types de contenu'
     all_linked_documents: 'Tous les documents liés'
@@ -862,8 +853,6 @@ key:
     schedule_tag: 'Utilisé pour identifier les workers (ex. CLI) qui exécuteraient le job à distance'
     scheduled: Planifiée
     search: Recherche
-    search_field_options: 'Options de champ de recherche'
-    search_options: 'Options de recherche'
     selected: Sélectionné
     sent: Envoyées
     settings: Paramètres
@@ -872,7 +861,6 @@ key:
     simplified_ui: 'Interfaces simplifiées'
     singular: Singulier
     sort_by: 'Trier par'
-    sort_options: 'Options de tri'
     sort_options_lowercase: 'Options de tri'
     specif_roles_abbrev: 'Rôles spéc.'
     specific_roles_lowercase: 'rôles spécifiques'
@@ -928,7 +916,6 @@ message:
     action_updated: 'L''action "{label}" a été mise à jour'
     add_field_to: 'Ajouter un champ à <strong>{name}</strong>'
     add_subfield_to: 'Ajouter un sous-champ à <strong>{name}</strong>'
-    aggregate_option_missing: 'Cliquez sur « Ajouter une option d’agrégation » pour créer une première option d’agrégation'
     alias_added: 'Un nouvel alias "{alias_name}" a été ajouté à l''index "{index_name}"'
     alias_attached: 'L’alias « {alias} » a été attaché'
     alias_too_many_indexes: "Il y a trop d'index"
@@ -1238,7 +1225,6 @@ message:
     schedule_created: 'La planification "{name}" a été créée'
     schedule_deleted: 'La planification "{name}" a été supprimée'
     schedule_updated: 'La planification "{name}" a été mise à jour'
-    search_field_option_missing: 'Cliquez sur « Ajouter une option de champ de recherche » pour créer une première option de champ de recherche'
     search_paging_limit_exceeded: 'La pagination est limitée aux {paging} premiers éléments, {total} documents trouvés'
     search_placeholder: Rechercher...
     search_result_count: |-
@@ -1253,7 +1239,6 @@ message:
     sign_in_start_session: 'Connectez-vous pour démarrer votre session'
     sign_in_to_continue: 'Connectez-vous à votre compte pour continuer'
     something_wrong: 'Un problème est survenu avec cette application.'
-    sort_option_missing: 'Cliquez sur « Ajouter une option de tri » pour créer une première option de tri'
     start_edit: 'Commencer à modifier le document {ouuid} de type {type}'
     start_edit_without_ouuid: 'Commencer à modifier un nouveau document de type {type}'
     still_in_target: 'Toujours dans {target}'

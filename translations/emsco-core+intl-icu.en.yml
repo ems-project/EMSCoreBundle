@@ -2,17 +2,13 @@ action:
     acknowledge: Acknowledge
     activate: Activate
     add: Add
-    add_aggregate_option: 'Aggregate Options'
     add_alias: 'Add alias'
-    add_entity: 'New {entity_name}'
     add_managed_alias: 'Add managed alias'
     add_new_type: 'Add a new {type}'
     add_referenced: 'Add referenced'
     add_referenced_content_type: 'Add a reference content type'
     add_release_publish: 'Add to release for publication'
     add_release_unpublish: 'Add to release for unpublish'
-    add_search_field_option: 'Add an Search Field Option'
-    add_sort_option: 'Add a Sort Option'
     add_task: 'Add a task'
     add_to_release: 'Add to release'
     add_type: |-
@@ -63,7 +59,6 @@ action:
     duplicate: Duplicate
     edit: Edit
     edit_draft: 'Edit draft'
-    edit_entity: 'Edit {entity_name}'
     edit_main_container: 'Edit the main container'
     edit_managed_alias: 'Edit managed alias'
     edit_revision: 'Edit revision'
@@ -470,7 +465,7 @@ field:
     mapping: Mapping
     mapping_options: 'Mapping options'
     max: Max
-    max_depth: field.max_depth
+    max_depth: 'Max depth'
     max_lines: 'Max lines'
     max_output_size: 'Max output size'
     max_token_length: 'Max token lenght'
@@ -490,7 +485,7 @@ field:
     nested: Nested
     new_version: 'New version'
     node_name: 'Node name'
-    node_types: field.node_types
+    node_types: 'Node types'
     not_blank_new_version: 'Not blank new version'
     number: Number
     operator: Operator
@@ -659,9 +654,6 @@ field_type:
     version_tag: 'Select version tag'
     wysiwyg: 'WYSIWYG field'
 help:
-    add_first_aggregate_option: "Click on 'Add an aggregate option' to create a first Aggregate Option: Click on 'Add an aggregate option' to create a first Aggregate Option"
-    add_first_search_field_option: "'Add an search field option' to create a first Search Field Option: Click on 'Add an search field option' to create a first Search Field Option"
-    add_first_sort_option: "Click on 'Add a Sort Option' to create a first Sort Option: Click on 'Add a Sort Option' to create a first Sort Option"
     override_styles_set_config: 'override styles sets config'
 key:
     action: Action
@@ -673,7 +665,6 @@ key:
     add_user: 'Add user'
     admin: Admin
     advanced_search: 'Advanced search'
-    aggregate_options: 'Aggregate options'
     align_with: 'Align with'
     all_content_types: 'All Content Types'
     all_linked_documents: 'All linked documents'
@@ -857,8 +848,6 @@ key:
     schedule_tag: 'Used to indentify workers (e.g. CLI) which would remotely execute the job'
     scheduled: Scheduled
     search: Search
-    search_field_options: 'Search field options'
-    search_options: 'Search options'
     selected: Selected
     sent: Sent
     settings: Settings
@@ -867,7 +856,6 @@ key:
     simplified_ui: 'Simplified UI'
     singular: Singular
     sort_by: 'Sort by'
-    sort_options: 'Sort Options'
     sort_options_lowercase: 'Sort options'
     specif_roles_abbrev: 'Specif. Roles'
     specific_roles_lowercase: 'specific roles'
@@ -923,7 +911,6 @@ message:
     action_updated: 'The action "{label}" has been updated'
     add_field_to: 'Add a field to <strong>{name}</strong>'
     add_subfield_to: 'Add a subfield to <strong>{name}</strong>'
-    aggregate_option_missing: "Click on 'Add an aggregate option' to create a first Aggregate Option"
     alias_added: 'A new alias "{alias_name}" has been added to the index "{index_name}"'
     alias_attached: 'The alias "{alias}" has been attached'
     alias_too_many_indexes: 'There are too many indexes'
@@ -1233,7 +1220,6 @@ message:
     schedule_created: 'Schedule "{name}" has been created'
     schedule_deleted: 'The schedule "{name}" has been deleted'
     schedule_updated: 'Schedule "{name}" has been updated'
-    search_field_option_missing: "Click on 'Add an search field option' to create a first Search Field Option"
     search_paging_limit_exceeded: 'The paging is limited to the first {paging} items, got {total} documents'
     search_placeholder: Search...
     search_result_count: |-
@@ -1248,7 +1234,6 @@ message:
     sign_in_start_session: 'Sign in to start your session'
     sign_in_to_continue: 'Sign in to your account to continue'
     something_wrong: 'There is something wrong with this application.'
-    sort_option_missing: "Click on 'Add a Sort Option' to create a first Sort Option"
     start_edit: 'Start editing the document {ouuid} of type {type}'
     start_edit_without_ouuid: 'Start editing a new document of type {type}'
     still_in_target: 'Still in {target}'

@@ -25,20 +25,6 @@ import JsonMenuNestedComponent from "./component/jsonMenuNestedComponent";
 
 }(function($) {
 
-    function activeMenu() {
-        //try to find which side menu elements to activate
-        const currentMenuLink = $('section.sidebar ul.sidebar-menu a[href="' + window.location.pathname + window.location.search + '"]');
-
-        if ( currentMenuLink.length > 0 ) {
-            currentMenuLink.last().parents('li').addClass('active');
-        }
-        else {
-            $('#side-menu-id').each(function(){
-                $('#'+$(this).data('target')).parents('li').addClass('active');
-            });
-        }
-    }
-
     function loadLazyImages() {
         $("img.lazy").show().lazyload({
             effect : "fadeIn",
@@ -338,7 +324,6 @@ import JsonMenuNestedComponent from "./component/jsonMenuNestedComponent";
 
 
     $(document).ready(function() {
-        activeMenu();
         loadLazyImages();
         matchHeight();
         closeModalNotification();

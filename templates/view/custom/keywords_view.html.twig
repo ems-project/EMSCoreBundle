@@ -7,8 +7,4 @@
 		{{ view.options.template|emsco_generate_from_template({keyword: keyword})|raw }}
 	{% endfor %}
 </div>
-
-{% include '@EMSCore/app/menu.html.twig' with {
-	'item':  'data-view-'~ contentType.id ~ '-' ~ view.id
-}%}
 {% endblock %}

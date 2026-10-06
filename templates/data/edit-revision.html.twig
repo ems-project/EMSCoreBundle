@@ -76,16 +76,6 @@
 		{{ form_end(form) }}
 </div>
 
-{% if revision.draft %}
-	{% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'data-draft-' ~ revision.contentType.id
-	}%}
-{% else %}
-	{% include '@EMSCore/app/menu.html.twig' with {
-		'item':  'data-index-' ~ revision.contentType.id
-	}%}
-{% endif %}
-
 {% endblock %}
 
 {% block frontend_application_css %}

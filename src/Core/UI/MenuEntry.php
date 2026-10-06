@@ -19,7 +19,7 @@ class MenuEntry
     public function __construct(
         public readonly string|TranslatableMessage $label,
         public readonly string $icon,
-        public string $route,
+        public ?string $route = null,
         public array $routeParameters = [],
         public readonly ?string $color = null,
     ) {

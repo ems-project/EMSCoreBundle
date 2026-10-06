@@ -178,6 +178,7 @@ return static function (ContainerConfigurator $container) {
     $services->set('ems_core.event_listener.page_listener', PageListener::class)
         ->args([
             service('twig'),
+            service('emsco.ui.layout'),
             '%ems_core.template_namespace%',
         ])
         ->tag('kernel.event_subscriber');
@@ -459,6 +460,7 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
             service('ems_common.service.elastica'),
             service('ems.service.asset_extractor'),
+            service('router.default'),
             '%ems_core.group_feature%',
         ]);
 

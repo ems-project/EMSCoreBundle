@@ -1,6 +1,7 @@
 {% trans_default_domain 'emsco-core' %}
+
 {% set status = this.status %}
-{% set sidebarMenus = this.menus %}
+
 <aside class="main-sidebar">
     <section class="sidebar" data-testid="sidebar">
         <div class="user-panel">
@@ -38,24 +39,33 @@
             </form>
         {% endif %}
 
-        {% for item in sidebarMenus %}
-            {% if item.hasChildren %}
-                <ul class="sidebar-menu" data-widget="tree" data-testid="sidebar-menu-tree">
-                    <li class="header">{{ item.title|trans }}</li>
-                    {% for menu in item.children %}
-                        {{ _self.item(menu) }}
-                    {% endfor %}
-                </ul>
-            {% endif %}
+        {% for item in this.menus|filter(p => p.hasChildren) %}
+            <ul class="sidebar-menu" data-widget="tree" data-testid="sidebar-menu-tree">
+                <li class="header">{{ item.title|trans }}</li>
+                {% for menu in item.children %}
+                    {{ _self.item(this, menu) }}
+                {% endfor %}
+            </ul>
         {% endfor %}
     </section>
 </aside>
 
-{% macro item(menu, parentSlug = '') %}
-    {# @var menu \EMS\CoreBundle\Core\UI\MenuEntry #}
+{% macro item(component, menu, parentSlug = '') %}
     {% set menuLabel = menu.label is ems_translatable_message ? menu.label|trans : menu.label %}
-    <li{% if menu.hasChildren %} class="treeview"{% endif %}>
-        <a href="{{ path(menu.route, menu.routeParameters) }}"{% if menu.color %} class="text-{{ menu.color }}"{% endif %} data-testid="menu-item-{{ parentSlug }}{{ menuLabel|ems_slug }}">
+    {% set menuColor = menu.color|default('') %}
+    {% set slug = menuLabel|ems_slug %}
+    {% set path = menu.route is not null ? path(menu.route, menu.routeParameters) : null %}
+    {% set active = component.isPathActive(path) %}
+
+    {%- if active == false -%}
+        {%- set activeChildren = menu.children|filter(i => i.route is not null and component.isPathActive(path(i.route, i.routeParameters))) -%}
+        {%- set active = activeChildren|length > 0 -%}
+    {%- endif -%}
+
+    <li class="{{ html_classes({'treeview': menu.hasChildren, 'active': active }) }}">
+        <a href="{{ menu.hasChildren ? '#' : path|default('#') }}"
+           class="{{ html_classes( { ("text-#{menuColor}"): menuColor != ''}) }}"
+           data-testid="menu-item-{{ parentSlug }}{{ slug }}">
             <i class="{{ menu.icon }}"></i>&nbsp;<span>{{ menuLabel }}</span>
             {% if menu.hasBadge %}
                 <span class="label {{ menu.badgeColor ? 'bg-' ~ menu.badgeColor : 'label-default' }} pull-right-container">{{ menu.badge }}</span>
@@ -66,7 +76,7 @@
         {% if menu.hasChildren %}
             <ul class="treeview-menu">
                 {% for child in menu.children %}
-                    {{ _self.item(child, menuLabel|ems_slug ~ '-') }}
+                    {{ _self.item(component, child, parentSlug ~ slug ~ '-') }}
                 {% endfor %}
             </ul>
         {% endif %}

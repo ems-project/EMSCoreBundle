@@ -26,4 +26,9 @@ readonly class Page
         public string $template = 'page/page.html.twig'
     ) {
     }
+
+    public function getBreadcrumb(): ?Navigation
+    {
+        return $this->context['breadcrumb'] ?? null;
+    }
 }

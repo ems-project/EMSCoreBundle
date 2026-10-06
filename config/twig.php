@@ -143,6 +143,7 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('emsco.ui.layout'),
             service('security.helper'),
+            service('request_stack'),
         ])
         ->tag('twig.component', ['key' => 'ems_layout_sidebar', 'template' => '@%ems_core.template_namespace%/components/layout/sidebar.html.twig']);
 

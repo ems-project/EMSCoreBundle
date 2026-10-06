@@ -26,13 +26,13 @@ class I18nContentType extends AbstractType
         $builder->add('locale', TextType::class, [
             'label' => t('field.locale', [], 'emsco-core'),
             'required' => true,
-            'row_attr' => ['class' => 'col-md-2'],
+            'col' => 2,
         ])
         ->add('text', TextareaType::class, [
             'label' => t('field.text', [], 'emsco-core'),
             'attr' => ['rows' => 4],
             'required' => true,
-            'row_attr' => ['class' => 'col-md-10'],
+            'col' => 10,
         ]);
     }
 

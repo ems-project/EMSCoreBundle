@@ -30,7 +30,7 @@ class I18nType extends AbstractType
             ->add('identifier', null, [
                 'label' => t('field.key', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => ['class' => 'col-md-6'],
+                'col' => 6,
             ])
             ->add('content', CollectionType::class, [
                 'allow_add' => true,
@@ -45,15 +45,12 @@ class I18nType extends AbstractType
                 'entry_type' => I18nContentType::class,
                 'entry_options' => [
                     'label' => false,
-                    'row_attr' => ['class' => 'col-md-12'],
                 ],
                 'label' => t('field.translations', [], 'emsco-core'),
-                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add('save', SubmitEmsType::class, [
-                'attr' => ['class' => 'btn btn-sm btn-primary', 'data-testid' => 'btn-action-save'],
+                'attr' => ['data-testid' => 'btn-action-save'],
                 'label' => t('action.save', [], 'emsco-core'),
-                'icon' => 'fa fa-save',
             ]);
     }
 

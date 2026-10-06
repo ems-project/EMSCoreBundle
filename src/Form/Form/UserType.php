@@ -150,19 +150,16 @@ final class UserType extends AbstractType
 
         if (self::MODE_CREATE === $mode) {
             $builder->add('create', SubmitEmsType::class, [
-                'attr' => ['class' => 'btn btn-primary btn-sm', 'data-testid' => 'user-create'],
+                'attr' => ['data-testid' => 'user-create'],
                 'label' => t('action.create', [], 'emsco-core'),
-                'icon' => 'fa fa-plus',
             ]);
         }
         if (self::MODE_UPDATE === $mode) {
             $builder->add('update', SubmitEmsType::class, [
                 'attr' => [
-                    'class' => 'btn btn-primary btn-sm ',
                     'data-testid' => 'user-update',
                 ],
                 'label' => t('action.save', [], 'emsco-core'),
-                'icon' => 'fa fa-save',
             ]);
         }
     }

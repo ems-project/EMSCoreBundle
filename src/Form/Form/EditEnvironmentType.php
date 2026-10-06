@@ -77,8 +77,7 @@ class EditEnvironmentType extends AbstractType
                 'required' => false,
             ])
             ->add('save', SubmitEmsType::class, [
-                'attr' => ['class' => 'btn btn-primary btn-sm ', 'data-testid' => 'btn-action-save'],
-                'icon' => 'fa fa-save',
+                'attr' => ['data-testid' => 'btn-action-save'],
                 'label' => t('action.update', [], 'emsco-core'),
             ]);
 

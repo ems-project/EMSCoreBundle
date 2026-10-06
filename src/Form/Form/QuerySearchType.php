@@ -38,16 +38,12 @@ final class QuerySearchType extends AbstractType
             ->add('label', null, [
                 'label' => t('field.label', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-6',
-                ],
+                'col' => 6,
             ])
             ->add('name', null, [
                 'label' => t('field.name', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-6',
-                ],
+                'col' => 6,
             ])
             ->add('environments', ChoiceType::class, [
                 'label' => t('field.environments', [], 'emsco-core'),
@@ -57,9 +53,7 @@ final class QuerySearchType extends AbstractType
                 'multiple' => true,
                 'choices' => $this->service->getEnvironments(),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-6',
-                ],
+                'col' => 6,
                 'choice_label' => fn (Environment $value) => '<i class="fa fa-square text-'.$value->getColor().'"></i>&nbsp;&nbsp;'.$value->getName(),
                 'choice_value' => function (Environment $value) {
                     if (null != $value) {
@@ -74,12 +68,8 @@ final class QuerySearchType extends AbstractType
                 'label' => false,
             ])
             ->add('save', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary btn-sm ',
-                    'data-testid' => 'btn-action-save',
-                ],
+                'attr' => ['data-testid' => 'btn-action-save'],
                 'label' => t('action.save', [], 'emsco-core'),
-                'icon' => 'fa fa-save',
             ]);
         $builder->get('options')->addModelTransformer(new QuerySearchOptionsTransformer());
     }

@@ -28,20 +28,20 @@ final class TranslationType extends AbstractType
         $builder
             ->add('locale', ChoiceType::class, [
                 'label' => t('field.locale', [], 'emsco-core'),
-                'row_attr' => ['class' => 'col-md-4'],
+                'col' => 4,
                 'required' => true,
                 'choices' => \array_flip(Locales::getNames()),
                 'choice_translation_domain' => false,
             ])
             ->add('label', $options['label_type'], [
                 'label' => t('field.label', [], 'emsco-core'),
-                'row_attr' => ['class' => 'col-md-8'],
+                'col' => 8,
                 'required' => true,
             ]);
         if ($options['with_advanced_options']) {
             $builder->add('gender', ChoiceType::class, [
                 'label' => t('field.gender', [], 'emsco-core'),
-                'row_attr' => ['class' => 'col-md-4'],
+                'col' => 4,
                 'required' => false,
                 'choices' => [
                     t('key.gender.male', [], 'emsco-core')->getMessage() => 'male',
@@ -51,7 +51,7 @@ final class TranslationType extends AbstractType
                 'choice_translation_domain' => 'emsco-core',
             ])->add('number', ChoiceType::class, [
                 'label' => t('field.number', [], 'emsco-core'),
-                'row_attr' => ['class' => 'col-md-4'],
+                'col' => 4,
                 'required' => false,
                 'choices' => [
                     t('key.singular', [], 'emsco-core')->getMessage() => 'singular',
@@ -60,7 +60,7 @@ final class TranslationType extends AbstractType
                 'choice_translation_domain' => 'emsco-core',
             ])->add('elision', ChoiceType::class, [
                 'label' => t('field.elision', [], 'emsco-core'),
-                'row_attr' => ['class' => 'col-md-4'],
+                'col' => 4,
                 'required' => false,
                 'choices' => [
                     t('key.false', [], 'emsco-core')->getMessage() => 'false',

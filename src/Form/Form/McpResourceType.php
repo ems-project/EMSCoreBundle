@@ -33,66 +33,43 @@ final class McpResourceType extends AbstractType
             ->add('label', null, [
                 'label' => t('field.label', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
+                'col' => 3,
             ])
             ->add('name', null, [
                 'label' => t('field.name', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
+                'col' => 3,
             ])
             ->add('uri', TextType::class, [
                 'label' => t('field.uri', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-6',
-                ],
+                'col' => 6,
             ])
             ->add('enabled', CheckboxType::class, [
                 'label' => t('field.enabled', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ])
             ->add('role', RolePickerType::class, [
                 'mapped' => true,
-                'row_attr' => [
-                    'class' => 'col-md-6',
-                ],
+                'col' => 6,
             ])
             ->add('mimeType', TextType::class, [
                 'label' => t('field.mime_type', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-6',
-                ],
+                'col' => 6,
             ])
             ->add('description', TextareaType::class, [
                 'label' => t('field.description', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ])
             ->add('response', CodeEditorType::class, [
                 'label' => t('field.mcp_response', [], 'emsco-core'),
                 'required' => false,
                 'language' => 'ace/mode/twig',
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ])
             ->add('save', SubmitEmsType::class, [
                 'label' => t('action.save', [], 'emsco-core'),
-                'attr' => [
-                    'class' => 'btn btn-primary btn-sm ',
-                    'data-testid' => 'btn-action-save',
-                ],
-                'icon' => 'fa fa-save',
+                'attr' => ['data-testid' => 'btn-action-save'],
             ]);
     }
 

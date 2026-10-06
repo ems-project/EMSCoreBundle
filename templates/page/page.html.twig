@@ -80,12 +80,12 @@
                 {{ form_start(form) }}
                 <div class="box-body ">
                     {{ form_errors(form) }}
-                    <div class="row">
-                        {% for child in form|filter(c => not (c.vars.name in ['save', 'save_close'])) %}
-                            {{ form_row(child) }}
-                            <div class="clearfix"></div>
-                        {% endfor %}
-                    </div>
+                    {% for child in form|filter(c => not (c.vars.name in ['save', 'save_close'])) %}
+                        <div class="row">
+                            {{ form_row(child, 'col-' in child.vars.row_attr.class|default('') ? {} : {col: child.vars.col|default(12)}) }}
+                        </div>
+                        <div class="clearfix"></div>
+                    {% endfor %}
                 </div>
                 <div class="box-footer">
                     {%- for button in form|filter(c => c.vars.name in ['save', 'save_close'])  -%}

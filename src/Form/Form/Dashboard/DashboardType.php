@@ -43,66 +43,46 @@ final class DashboardType extends AbstractType
             ->add('name', null, [
                 'label' => t('field.name', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-4',
-                ],
+                'col' => 4,
             ])
             ->add('icon', IconPickerType::class, [
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-4',
-                ],
+                'col' => 4,
             ])
             ->add('label', null, [
                 'label' => t('field.label', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-4',
-                ],
+                'col' => 4,
             ])
             ->add('labelTranslations', TranslationsType::class, [
                 'label' => t('field.label_translations', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-4',
-                ],
+                'col' => 4,
             ])
             ->add('role', RolePickerType::class, [
                 'label' => t('field.role', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-4',
-                ],
+                'col' => 4,
             ])
             ->add('sidebarMenu', CheckboxType::class, [
                 'label' => t('field.is_menu_sidebar', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ])
             ->add('notificationMenu', CheckboxType::class, [
                 'label' => t('field.is_menu_notification', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ])
             ->add('color', ColorPickerType::class, [
                 'label' => t('field.color', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-4',
-                ],
+                'col' => 4,
             ])
             ->add('type', EnumType::class, [
                 'label' => t('field.type', [], 'emsco-core'),
                 'required' => true,
                 'disabled' => !($options['create'] ?? false),
                 'class' => DashboardTypeEnum::class,
-                'row_attr' => [
-                    'class' => 'col-md-4',
-                ],
+                'col' => 4,
             ]);
 
         if (false === $options['create']) {
@@ -112,12 +92,8 @@ final class DashboardType extends AbstractType
         }
 
         $builder->add('save', SubmitEmsType::class, [
+            'attr' => ['data-testid' => 'btn-action-save'],
             'label' => t('action.save', [], 'emsco-core'),
-            'attr' => [
-                'class' => 'btn btn-primary btn-sm ',
-                'data-testid' => 'btn-action-save',
-            ],
-            'icon' => 'fa fa-save',
         ]);
     }
 

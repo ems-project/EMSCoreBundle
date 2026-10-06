@@ -45,6 +45,7 @@ use EMS\CoreBundle\Form\DataField\TimeFieldType;
 use EMS\CoreBundle\Form\DataField\VersionTagFieldType;
 use EMS\CoreBundle\Form\DataField\WysiwygFieldType;
 use EMS\CoreBundle\Form\DataTransformer\AssetTransformer;
+use EMS\CoreBundle\Form\Extension\ColTypeExtension;
 use EMS\CoreBundle\Form\Extension\LocaleFormExtension;
 use EMS\CoreBundle\Form\Factory\ContentTypeFieldChoiceListFactory;
 use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
@@ -679,8 +680,8 @@ return static function (ContainerConfigurator $container) {
         ->args([service(ContentTypeService::class)])
         ->tag('form.type');
 
-    $services->set('emsco.form_extension.locale_form_extension', LocaleFormExtension::class)
-        ->tag('form.type_extension');
+    $services->set(ColTypeExtension::class)->tag('form.type_extension');
+    $services->set(LocaleFormExtension::class)->tag('form.type_extension');
 
     $services->set('ems_core.form.transformer.asset', AssetTransformer::class)
         ->args([

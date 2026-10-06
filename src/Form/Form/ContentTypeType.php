@@ -136,28 +136,16 @@ class ContentTypeType extends AbstractType
         ]);
 
         $builder->add('save', SubmitEmsType::class, [
+            'attr' => ['data-testid' => 'btn-action-save'],
             'label' => t('action.save', [], 'emsco-core'),
-            'attr' => [
-                'class' => 'btn btn-primary btn-sm ',
-                'data-testid' => 'btn-action-save',
-            ],
-            'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndUpdateMapping', SubmitEmsType::class, [
+            'attr' => ['data-testid' => 'btn-action-save-update-mapping'],
             'label' => t('action.save_update_mapping', [], 'emsco-core'),
-            'attr' => [
-                'class' => 'btn btn-primary btn-sm ',
-                'data-testid' => 'btn-action-save-update-mapping',
-            ],
-            'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndClose', SubmitEmsType::class, [
             'label' => t('action.save_close', [], 'emsco-core'),
-            'attr' => [
-                'class' => 'btn btn-primary btn-sm ',
-                'data-testid' => 'btn-action-save-close',
-            ],
-            'icon' => 'fa fa-save',
+            'attr' => ['data-testid' => 'btn-action-save-close'],
         ]);
 
         $builder->add('rootContentType', null, [

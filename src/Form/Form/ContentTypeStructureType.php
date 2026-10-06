@@ -34,27 +34,16 @@ class ContentTypeStructureType extends AbstractType
         }
 
         $builder->add('save', SubmitEmsType::class, [
+            'attr' => ['data-testid' => 'btn-action-save'],
             'label' => t('action.save', [], 'emsco-core'),
-            'attr' => [
-                'class' => 'btn btn-primary btn-sm ',
-                'data-testid' => 'btn-action-save',
-            ],
-            'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndClose', SubmitEmsType::class, [
+            'attr' => ['data-testid' => 'btn-action-save-close'],
             'label' => t('action.save_close', [], 'emsco-core'),
-            'attr' => [
-                'class' => 'btn btn-primary btn-sm ',
-                'data-testid' => 'btn-action-save-close',
-            ],
-            'icon' => 'fa fa-save',
         ]);
         $builder->add('saveAndReorder', SubmitEmsType::class, [
+            'attr' => ['data-testid' => 'btn-action-save'],
             'label' => t('action.save_and_reorder', [], 'emsco-core'),
-            'attr' => [
-                'class' => 'btn btn-primary btn-sm ',
-                'data-testid' => 'btn-action-save',
-            ],
             'icon' => 'fa fa-reorder',
         ]);
     }

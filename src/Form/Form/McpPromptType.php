@@ -32,60 +32,37 @@ final class McpPromptType extends AbstractType
             ->add('label', null, [
                 'label' => t('field.label', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
+                'col' => 3,
             ])
             ->add('name', null, [
                 'label' => t('field.name', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
+                'col' => 3,
             ])
             ->add('enabled', CheckboxType::class, [
                 'label' => t('field.enabled', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ])
             ->add('role', RolePickerType::class, [
                 'mapped' => true,
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ])
             ->add('description', TextareaType::class, [
                 'label' => t('field.description', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ])
             ->add('arguments', CodeEditorType::class, [
                 'label' => t('field.mcp_arguments', [], 'emsco-core'),
                 'required' => false,
                 'language' => 'ace/mode/twig',
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ])
             ->add('response', CodeEditorType::class, [
                 'label' => t('field.mcp_prompt_response', [], 'emsco-core'),
                 'required' => false,
                 'language' => 'ace/mode/twig',
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ])
             ->add('save', SubmitEmsType::class, [
                 'label' => t('action.save', [], 'emsco-core'),
-                'attr' => [
-                    'class' => 'btn btn-primary btn-sm ',
-                    'data-testid' => 'btn-action-save',
-                ],
-                'icon' => 'fa fa-save',
+                'attr' => ['data-testid' => 'btn-action-save'],
             ]);
     }
 

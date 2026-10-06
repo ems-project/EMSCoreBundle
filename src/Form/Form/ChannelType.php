@@ -31,41 +31,28 @@ final class ChannelType extends AbstractType
             ->add('label', null, [
                 'label' => t('field.label', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
+                'col' => 3,
             ])
             ->add('name', null, [
                 'label' => t('field.name', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
+                'col' => 3,
             ])
             ->add('alias', null, [
                 'label' => t('field.alias', [], 'emsco-core'),
                 'required' => true,
-                'row_attr' => [
-                    'class' => 'col-md-3',
-                ],
+                'col' => 3,
             ])
             ->add('public', CheckboxType::class, [
                 'label' => t('key.public_channel', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ])
             ->add('options', ChannelOptionsType::class, [
                 'label' => false,
             ])
             ->add('save', SubmitEmsType::class, [
+                'attr' => ['data-testid' => 'btn-action-save'],
                 'label' => t('action.save', [], 'emsco-core'),
-                'attr' => [
-                    'class' => 'btn btn-primary btn-sm ',
-                    'data-testid' => 'btn-action-save',
-                ],
-                'icon' => 'fa fa-save',
             ]);
         $builder->get('options')->addModelTransformer(new ChannelOptionsTransformer());
     }

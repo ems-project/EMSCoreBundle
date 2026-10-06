@@ -9,6 +9,8 @@ use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractType<mixed>
  */
@@ -26,11 +28,8 @@ class RevisionJsonType extends AbstractType
                 'language' => 'ace/mode/json',
             ])
             ->add('save', SubmitEmsType::class, [
-                'attr' => [
-                    'class' => 'btn btn-primary btn-sm ',
-                    'data-testid' => 'btn-action-save',
-                ],
-                'icon' => 'fa fa-save',
+                'attr' => ['data-testid' => 'btn-action-save'],
+                'label' => t('action.save', [], 'emsco-core'),
             ]);
     }
 }

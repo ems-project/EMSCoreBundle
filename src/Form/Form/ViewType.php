@@ -43,50 +43,37 @@ class ViewType extends AbstractType
             ->add('name', IconTextType::class, [
                 'label' => t('field.name', [], 'emsco-core'),
                 'icon' => 'fa fa-tag',
-                'row_attr' => [
-                    'class' => 'col-md-8',
-                ],
+                'col' => 8,
             ])
             ->add('label', IconTextType::class, [
                 'label' => t('field.label', [], 'emsco-core'),
                 'icon' => 'fa fa-header',
-                'row_attr' => [
-                    'class' => 'col-md-8',
-                ],
+                'col' => 8,
             ])
             ->add('labelTranslations', TranslationsType::class, [
                 'label' => t('field.label_translations', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-8',
-                ],
+                'col' => 8,
             ])
             ->add('icon', IconPickerType::class, [
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-4',
-                ],
+                'col' => 4,
             ])
             ->add('role', RolePickerType::class, [
                 'label' => t('field.role', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-4',
-                ],
+                'col' => 4,
             ])
             ->add('public', CheckboxType::class, [
                 'label' => t('key.public_view', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ]);
 
         if ($options['create']) {
             $builder->add('type', ViewTypePickerType::class, [
                 'label' => t('field.type', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => ['class' => 'col-md-6'],
+                'col' => 6,
             ]);
         } else {
             $viewOptionsType = Type::string($this->container->get($view->getType())::class);
@@ -96,32 +83,24 @@ class ViewType extends AbstractType
 
             $builder->add('options', $viewOptionsType, [
                 'view' => $view,
-                'row_attr' => ['class' => 'col-md-12'],
             ]);
         }
 
         if (null !== $options['ajax-save-url']) {
             $builder->add('save', SubmitEmsType::class, [
-                'label' => t('action.save', [], 'emsco-core'),
                 'attr' => [
-                    'class' => 'btn btn-primary btn-sm',
                     'data-ajax-save-url' => $options['ajax-save-url'],
                     'data-testid' => 'btn-action-save',
                 ],
-                'icon' => 'fa fa-save',
+                'label' => t('action.save', [], 'emsco-core'),
             ])->add('save_close', SubmitEmsType::class, [
                 'label' => t('action.save_close', [], 'emsco-core'),
-                'attr' => [
-                    'class' => 'btn btn-primary btn-sm',
-                    'data-testid' => 'btn-action-save-close',
-                ],
-                'icon' => 'fa fa-save',
+                'attr' => ['data-testid' => 'btn-action-save-close'],
             ]);
         } else {
             $builder->add('save', SubmitEmsType::class, [
+                'attr' => ['data-testid' => 'btn-action-save'],
                 'label' => t('action.save', [], 'emsco-core'),
-                'attr' => ['class' => 'btn btn-primary btn-sm', 'data-testid' => 'btn-action-save'],
-                'icon' => 'fa fa-save',
             ]);
         }
     }

@@ -46,9 +46,6 @@ class DashboardOptionsType extends AbstractType
                 'label' => t('field.template_body', [], 'emsco-core'),
                 'required' => true,
                 'language' => 'ace/mode/twig',
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ]);
         }
 
@@ -70,13 +67,11 @@ class DashboardOptionsType extends AbstractType
                 'label' => t('field.template_header', [], 'emsco-core'),
                 'required' => true,
                 'language' => 'ace/mode/twig',
-                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add(DashboardOptions::FOOTER, CodeEditorType::class, [
                 'label' => t('field.template_footer', [], 'emsco-core'),
                 'required' => true,
                 'language' => 'ace/mode/twig',
-                'row_attr' => ['class' => 'col-md-12'],
             ]);
     }
 
@@ -89,19 +84,18 @@ class DashboardOptionsType extends AbstractType
             ->add(DashboardOptions::FILENAME, CodeEditorType::class, [
                 'label' => t('field.file.name', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => ['class' => 'col-md-12'],
+
                 'max-lines' => 5,
                 'min-lines' => 5,
             ])
             ->add(DashboardOptions::MIMETYPE, null, [
                 'label' => t('field.file.mimetype', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add(DashboardOptions::FILE_DISPOSITION, ChoiceType::class, [
                 'label' => t('field.file.disposition', [], 'emsco-core'),
                 'expanded' => true,
-                'row_attr' => ['class' => 'col-md-12'],
+
                 'choices' => [
                     t('key.none', [], 'emsco-core')->getMessage() => null,
                     t('key.attachment', [], 'emsco-core')->getMessage() => ResponseHeaderBag::DISPOSITION_ATTACHMENT,
@@ -137,23 +131,20 @@ class DashboardOptionsType extends AbstractType
                 'label' => t('field.environments', [], 'emsco-core'),
                 'required' => false,
                 'multiple' => true,
-                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add(DashboardOptions::CONTENT_TYPES, ContentTypePickerType::class, [
                 'label' => t('field.content_types', [], 'emsco-core'),
                 'required' => false,
                 'multiple' => true,
-                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add(DashboardOptions::SORT_BY, null, [
                 'label' => t('field.sort_by', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add(DashboardOptions::SORT_ORDER, ChoiceType::class, [
                 'label' => t('field.sort_order', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => ['class' => 'col-md-12'],
+
                 'choices' => [
                     t('key.ascending', [], 'emsco-core')->getMessage() => 'asc',
                     t('key.descending', [], 'emsco-core')->getMessage() => 'desc',
@@ -162,7 +153,7 @@ class DashboardOptionsType extends AbstractType
             ->add(DashboardOptions::MINIMUM_SHOULD_MATCH, IntegerType::class, [
                 'label' => t('field.minimum_should_match', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => ['class' => 'col-md-12'],
+
                 'empty_data' => 1,
             ])
             ->add(DashboardOptions::FILTERS, CollectionType::class, [
@@ -179,7 +170,6 @@ class DashboardOptionsType extends AbstractType
                 'entry_options' => [
                     'data_class' => null,
                 ],
-                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add(DashboardOptions::SORT_OPTIONS, CollectionType::class, [
                 'label' => t('field.sort_options', [], 'emsco-core'),
@@ -192,7 +182,6 @@ class DashboardOptionsType extends AbstractType
                     'data-lang-remove' => t('action.remove_type', ['type' => 'sort_option'], 'emsco-core'),
                     'data-entry-remove-class' => 'btn btn-sm btn-danger',
                 ],
-                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add(DashboardOptions::AGGREGATE_OPTIONS, CollectionType::class, [
                 'label' => t('field.aggregate_options', [], 'emsco-core'),
@@ -205,7 +194,6 @@ class DashboardOptionsType extends AbstractType
                     'data-lang-remove' => t('action.remove_type', ['type' => 'aggregate_option'], 'emsco-core'),
                     'data-entry-remove-class' => 'btn btn-sm btn-danger',
                 ],
-                'row_attr' => ['class' => 'col-md-12'],
             ])
             ->add(DashboardOptions::SEARCH_FIELD_OPTIONS, CollectionType::class, [
                 'label' => t('field.search_field_options', [], 'emsco-core'),
@@ -218,7 +206,6 @@ class DashboardOptionsType extends AbstractType
                     'data-lang-remove' => t('action.remove_type', ['type' => 'search_field_option'], 'emsco-core'),
                     'data-entry-remove-class' => 'btn btn-sm btn-danger',
                 ],
-                'row_attr' => ['class' => 'col-md-12'],
             ]);
     }
 }

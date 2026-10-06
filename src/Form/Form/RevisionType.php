@@ -63,26 +63,24 @@ class RevisionType extends AbstractType
             if ($revision->getDraft()) {
                 if (!$simplifiedUI) {
                     $builder->add('save', SubmitEmsType::class, [
-                        'label' => t('action.save_as_draft', [], 'emsco-core'),
                         'attr' => ['class' => 'btn btn-default btn-sm', 'data-testid' => 'revision-action-save-draft'],
-                        'icon' => 'fa fa-save',
+                        'label' => t('action.save_as_draft', [], 'emsco-core'),
                     ]);
                 }
             } else {
                 $publishedEnvironmentLabels = $revision->getEnvironments()->map(fn (Environment $e) => $e->getLabel());
                 if (\count($publishedEnvironmentLabels) > 0) {
                     $builder->add('save', SubmitEmsType::class, [
+                        'attr' => ['data-testid' => 'revision-action-publish'],
                         'label' => t('action.save_publish_in', [
                             'environments' => \implode(', ', $publishedEnvironmentLabels->toArray()),
                         ], 'emsco-core'),
-                        'attr' => ['class' => 'btn btn-primary btn-sm', 'data-testid' => 'revision-action-publish'],
                         'icon' => 'fa fa-upload',
                     ]);
                 } else {
                     $builder->add('save', SubmitEmsType::class, [
+                        'attr' => ['data-testid' => 'revision-action-save'],
                         'label' => t('action.save', [], 'emsco-core'),
-                        'attr' => ['class' => 'btn btn-primary btn-sm', 'data-testid' => 'revision-action-save'],
-                        'icon' => 'fa fa-save',
                     ]);
                 }
             }

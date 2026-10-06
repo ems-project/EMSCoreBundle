@@ -27,39 +27,27 @@ final class ChannelOptionsType extends AbstractType
             ->add('prefix_instance_id', CheckboxType::class, [
                 'label' => t('key.prefix_instance_id', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ])
             ->add('inline_editor', CheckboxType::class, [
                 'label' => t('key.inline_editor', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-12',
-                ],
             ])
             ->add('entryPath', null, [
                 'label' => t('field.entry_path', [], 'emsco-core'),
                 'required' => false,
-                'row_attr' => [
-                    'class' => 'col-md-8',
-                ],
+                'col' => 8,
             ])
             ->add('attributes', CodeEditorType::class, [
                 'label' => t('field.attributes', [], 'emsco-core'),
                 'required' => true,
                 'language' => 'ace/mode/json',
-                'row_attr' => [
-                    'class' => 'col-md-8',
-                ],
+                'col' => 8,
             ])
             ->add('searchConfig', CodeEditorType::class, [
                 'label' => t('field.search_config', [], 'emsco-core'),
                 'required' => true,
                 'language' => 'ace/mode/json',
-                'row_attr' => [
-                    'class' => 'col-md-8',
-                ],
+                'col' => 8,
             ]);
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use EMS\CoreBundle\Controller\Form\FormController;
+use EMS\CoreBundle\Controller\Admin\FormController;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 return function (RoutingConfigurator $routes): void {

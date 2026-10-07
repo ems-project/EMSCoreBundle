@@ -26,10 +26,10 @@ class FormDataTableType extends AbstractEntityTableType
     {
         $this
             ->addColumnsOrderLabelName($table)
-            ->addItemEdit($table, Routes::FORM_ADMIN_EDIT);
+            ->addItemEdit($table, Routes::ADMIN_FORM_EDIT);
 
         $table->addItemGetAction(
-            route: Routes::FORM_ADMIN_REORDER,
+            route: Routes::ADMIN_FORM_REORDER,
             labelKey: t('action.reorder', [], 'emsco-core'),
             icon: 'reorder',
             attributes: ['data-testid' => 'btn-action-reorder'],
@@ -37,8 +37,8 @@ class FormDataTableType extends AbstractEntityTableType
 
         $this
             ->addColumnsCreatedModifiedDate($table)
-            ->addItemDelete($table, 'form', Routes::FORM_ADMIN_DELETE)
-            ->addTableToolbarActionAdd($table, Routes::FORM_ADMIN_ADD, [])
+            ->addItemDelete($table, 'form', Routes::ADMIN_FORM_DELETE)
+            ->addTableToolbarActionAdd($table, Routes::ADMIN_FORM_ADD, [])
             ->addTableActionDelete($table, 'form');
     }
 

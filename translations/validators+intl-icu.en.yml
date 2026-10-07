@@ -1,6 +1,7 @@
 environment:
     target_diff_source: 'The target environment must be different from the source environment'
 invalid_format: 'Invalid format'
+not_unique: 'Already exits'
 media_library:
     file_exists: 'File name already exists.'
     folder_exists: 'Folder name already exists.'

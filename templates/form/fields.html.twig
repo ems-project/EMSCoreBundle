@@ -7,6 +7,18 @@
 	{{- parent() -}}
 {%- endblock form_row -%}
 
+{% block ems_row_attributes -%}
+	{%- set row_classes = [
+		row_attr.class|default(''),
+		col|default(null) ? 'col-md-' ~ col,
+		'form-group',
+		(not compound or force_error|default(false)) and not valid ? 'has-error',
+	]|filter(class => class)|join(' ')|trim -%}
+	{%- with {attr: row_attr|merge({class: row_classes})} -%}
+		{{- block('attributes') -}}
+	{%- endwith -%}
+{%- endblock ems_row_attributes %}
+
 {# Widgets #}
 {% block checkbox_radio_label -%}
     {# Do not display the label if widget is not defined in order to prevent double label rendering #}
@@ -1231,10 +1243,10 @@
 
 
 {% block fieldTypeType_row -%}
+<div{{ block('ems_row_attributes') }}>
 <li class="list-group-item" id="{{ form.vars.id }}_item">
 	<h4>
 	{% if form.vars.data.parent %}
-{# 			<i class="glyphicon glyphicon-move move-handle"></i>#}
 		<strong>{{ form.vars.data.name }}</strong>
 		<small>{{ form.vars.data.type }}</small>
 	{% elseif (form.vars.data.contentType.singularName is defined) %}
@@ -1431,6 +1443,7 @@
 		</ul>
 	{% endif %}
 </li>
+</div>
 {%- endblock fieldTypeType_row %}
 
 {%- block ems_version_tag_row -%}

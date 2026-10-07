@@ -10,6 +10,7 @@ use EMS\CoreBundle\Controller\Admin\AnalyzerController;
 use EMS\CoreBundle\Controller\Admin\ChannelController;
 use EMS\CoreBundle\Controller\Admin\EnvironmentController;
 use EMS\CoreBundle\Controller\Admin\FilterController;
+use EMS\CoreBundle\Controller\Admin\FormController;
 use EMS\CoreBundle\Controller\Admin\I18nController;
 use EMS\CoreBundle\Controller\Admin\McpPromptController;
 use EMS\CoreBundle\Controller\Admin\McpResourceController;
@@ -46,7 +47,6 @@ use EMS\CoreBundle\Controller\Dashboard\DashboardBrowserController;
 use EMS\CoreBundle\Controller\DashboardController;
 use EMS\CoreBundle\Controller\DefaultController;
 use EMS\CoreBundle\Controller\ElasticsearchController;
-use EMS\CoreBundle\Controller\Form\FormController;
 use EMS\CoreBundle\Controller\Form\SubmissionController;
 use EMS\CoreBundle\Controller\InlineEditorController;
 use EMS\CoreBundle\Controller\Log\LogController;
@@ -171,6 +171,18 @@ return static function (ContainerConfigurator $container) {
             service('emsco.helper.filter'),
             service('emsco.data_table.factory'),
             service('emsco.logger'),
+        ])
+        ->call('setContainer')
+        ->tag('container.service_subscriber')
+        ->tag('controller.service_arguments');
+
+    $services->set(FormController::class)
+        ->public()
+        ->args([
+            service('emsco.logger'),
+            service('ems.form.manager'),
+            service('ems.form.field-type.manager'),
+            service('emsco.data_table.factory'),
         ])
         ->call('setContainer')
         ->tag('container.service_subscriber')
@@ -552,19 +564,6 @@ return static function (ContainerConfigurator $container) {
             service('twig'),
             '%ems_core.template_namespace%',
         ])
-        ->tag('controller.service_arguments');
-
-    $services->set(FormController::class)
-        ->public()
-        ->args([
-            service('emsco.logger'),
-            service('ems.form.manager'),
-            service('ems.form.field-type.manager'),
-            service('emsco.data_table.factory'),
-            '%ems_core.template_namespace%',
-        ])
-        ->call('setContainer')
-        ->tag('container.service_subscriber')
         ->tag('controller.service_arguments');
 
     $services->set(GroupController::class)

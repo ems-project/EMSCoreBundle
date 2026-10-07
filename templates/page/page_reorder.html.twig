@@ -1,0 +1,48 @@
+{% extends '@EMSCore/page/page.html.twig' %}
+
+{% trans_default_domain 'emsco-core' %}
+
+{% macro reorder_items(parent, contentType) %}
+    {% for child in parent.children|filter(child => not child.deleted) %}
+        {% set isContainer = (child.type ~ '::isContainer')|emsco_call_user_func %}
+        <li id="{{ child.id }}" class="{{ not isContainer ? 'mjs-nestedSortable-no-nesting' }}">
+            <div class="box-header">
+                <b>{{ child.name }}</b> {{ child.type }}
+                <div class="btn-group pull-right">
+                    {% if contentType %}
+                        <a class="btn btn-xs btn-primary" href="{{ path('emsco_admin_content_type_edit_field', { contentType: contentType.id, field: child.id }) }}">
+                            <i class="fa fa-edit"></i>
+                            {{ 'message.edit_field_name'|trans({'name': child.name}) }}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% if isContainer and child.children|length > 0 %}
+                <ol>
+                    {{ _self.reorder_items(child, contentType) }}
+                </ol>
+            {% endif %}
+        </li>
+    {% endfor %}
+{% endmacro %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-solid">
+                {{ form_start(form) }}
+                <div class="box-body no-padding">
+                    <ol class="nested-sortable vertical" id="root-list" data-nested-max-level="15" data-nested-is-tree="true">
+                        {{ _self.reorder_items(entity.fieldType, contentType|default(null)) }}
+                    </ol>
+                </div>
+                <div class="box-footer">
+                    <div class="btn-group">
+                        {{ form_widget(form.reorder) }}
+                    </div>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -31,6 +31,11 @@ class Routes
     final public const string ADMIN_CONTENT_TYPE_VIEW_EDIT = 'emsco_admin_content_type_view_edit';
     final public const string ADMIN_CONTENT_TYPE_VIEW_INDEX = 'emsco_admin_content_type_view_index';
     final public const string ADMIN_CONTENT_TYPE_VIEW_UNDEFINE = 'emsco_admin_content_type_view_undefine';
+    final public const string ADMIN_FORM_INDEX = 'emsco_form_admin_index';
+    final public const string ADMIN_FORM_ADD = 'emsco_form_admin_add';
+    final public const string ADMIN_FORM_EDIT = 'emsco_form_admin_edit';
+    final public const string ADMIN_FORM_REORDER = 'emsco_form_admin_reorder';
+    final public const string ADMIN_FORM_DELETE = 'emsco_form_admin_delete';
     final public const string ADMIN_ELASTIC_ALIAS_ATTACH = 'emsco_admin_elastic_alias_attach';
     final public const string ADMIN_ELASTIC_ALIAS_DELETE = 'emsco_admin_elastic_alias_delete';
     final public const string ADMIN_ELASTIC_ORPHAN = 'emsco_admin_elastic_orphan';
@@ -79,15 +84,10 @@ class Routes
     final public const string FILTER_DELETE = 'emsco_filter_delete';
     final public const string FILTER_ADD = 'emsco_filter_add';
     final public const string FILTER_EXPORT = 'emsco_filter_export';
-    final public const string FORM_ADMIN_INDEX = 'emsco_form_admin_index';
-    final public const string FORM_ADMIN_ADD = 'emsco_form_admin_add';
     final public const string GROUP_ADD = 'emsco_group_admin_add';
     final public const string GROUP_INDEX = 'emsco_group_admin_index';
     final public const string GROUP_EDIT = 'emsco_group_admin_edit';
     final public const string GROUP_DELETE = 'emsco_group_admin_delete';
-    final public const string FORM_ADMIN_EDIT = 'emsco_form_admin_edit';
-    final public const string FORM_ADMIN_REORDER = 'emsco_form_admin_reorder';
-    final public const string FORM_ADMIN_DELETE = 'emsco_form_admin_delete';
     final public const string I18N_INDEX = 'emsco_i18n_index';
     final public const string I18N_ADD = 'emsco_i18n_add';
     final public const string I18N_EDIT = 'emsco_i18n_edit';

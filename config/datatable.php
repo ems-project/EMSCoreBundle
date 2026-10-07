@@ -44,6 +44,8 @@ use EMS\CoreBundle\DataTable\Type\Wysiwyg\WysiwygProfileDataTableType;
 use EMS\CoreBundle\DataTable\Type\Wysiwyg\WysiwygStylesSetDataTableType;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Repository\TaskRepository;
+use EMS\CoreBundle\Repository\UploadedAssetRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 use EMS\CoreBundle\Service\I18nService;
@@ -178,7 +180,7 @@ return static function (ContainerConfigurator $container) {
     $services->set('emsco.data_table.revision.tasks', RevisionTasksDataTableType::class)
         ->args([
             service('emsco.revision.task.data_table.query_service'),
-            service('ems.repository.task'),
+            service(TaskRepository::class),
         ])
         ->tag('emsco.datatable');
 
@@ -265,7 +267,7 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('emsco.data_table.uploaded_asset', UploadedAssetDataTableType::class)
         ->args([
-            service('ems.repository.uploaded_asset_repository'),
+            service(UploadedAssetRepository::class),
             service('router'),
         ])
         ->tag('emsco.datatable');

@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Query\QueryBuilder as DBALQueryBuilder;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\Persistence\ManagerRegistry;
 use EMS\CommonBundle\Common\EMSLink;
 use EMS\CoreBundle\Core\ContentType\Version\VersionFields;
 use EMS\CoreBundle\Core\Revision\Task\TaskStatus;
@@ -25,13 +26,19 @@ use EMS\CoreBundle\Entity\Revision;
 use Ramsey\Uuid\UuidInterface;
 
 /**
- * @extends EntityRepository<Revision>
+ * @extends ServiceEntityRepository<Revision>
  *
+ * @method Revision|null find($id, $lockMode = null, $lockVersion = null)
  * @method Revision|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
  * @method Revision[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
-class RevisionRepository extends EntityRepository
+class RevisionRepository extends ServiceEntityRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Revision::class);
+    }
+
     public function findRevision(string $ouuid, ?string $contentTypeName = null, ?\DateTimeInterface $dateTime = null): ?Revision
     {
         $qb = $this->createQueryBuilder('r');

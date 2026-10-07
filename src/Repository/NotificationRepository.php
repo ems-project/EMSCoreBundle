@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Repository;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Form\NotificationFilter;
@@ -23,11 +23,15 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * @extends ServiceEntityRepository<Notification>
  *
  * @method Notification|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Notification|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
+ * @method Notification[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
 class NotificationRepository extends ServiceEntityRepository
 {
-    public function __construct(Registry $registry, private readonly AuthorizationCheckerInterface $authorizationChecker)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        private readonly AuthorizationCheckerInterface $authorizationChecker
+    ) {
         parent::__construct($registry, Notification::class);
     }
 

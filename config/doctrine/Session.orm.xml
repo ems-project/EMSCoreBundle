@@ -2,7 +2,7 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="EMS\CoreBundle\Entity\Session" table="session" repository-class="EMS\CoreBundle\Repository\SessionRepository">
+  <entity name="EMS\CoreBundle\Entity\Session" table="session">
 
     <id name="id" type="string" column="id" length="128"/>
 

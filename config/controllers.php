@@ -71,9 +71,12 @@ use EMS\CoreBundle\Controller\Webhook\WebhookController;
 use EMS\CoreBundle\Controller\Wysiwyg\AjaxPasteController;
 use EMS\CoreBundle\Controller\Wysiwyg\StylesetController;
 use EMS\CoreBundle\Core\Revision\Json\JsonMenuRenderer;
+use EMS\CoreBundle\Repository\AuthTokenRepository;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\FieldTypeRepository;
 use EMS\CoreBundle\Repository\ManagedAliasRepository;
+use EMS\CoreBundle\Repository\MessengerMessagesRepository;
 use EMS\CoreBundle\Repository\NotificationRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use EMS\CoreBundle\Repository\TemplateRepository;
@@ -402,7 +405,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.mapping'),
             service('ems.form.field-type.manager'),
             service(EnvironmentRepository::class),
-            service('ems.repository.field_type'),
+            service(FieldTypeRepository::class),
             '%ems_core.template_namespace%',
         ])
         ->call('setContainer')
@@ -762,7 +765,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.form.factories.objectChoiceListFactory'),
             service('security.authorization_checker'),
             service('form.registry'),
-            service('ems.repository.field_type'),
+            service(FieldTypeRepository::class),
             service(RevisionRepository::class),
             service('ems_core.core_ui.flash_message_logger'),
             '%ems_core.template_namespace%',
@@ -828,7 +831,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.job'),
             service('translator'),
             service('serializer'),
-            service('ems.repository.messenger_messages_repository'),
+            service(MessengerMessagesRepository::class),
             '%ems_core.health_check_allow_origin%',
             '%ems_core.template_namespace%',
         ])
@@ -893,7 +896,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.group.manager'),
             service(SpreadsheetGeneratorServiceInterface::class),
             service('emsco.data_table.factory'),
-            service('ems.repository.auth_token'),
+            service(AuthTokenRepository::class),
             service('ems_core.core_ui.flash_message_logger'),
             '%ems_core.template_namespace%',
             service('emsco.core.content_type.field_type.service'),

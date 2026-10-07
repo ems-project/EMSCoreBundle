@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Repository;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EMS\CoreBundle\Core\Security\Canonicalizer;
 use EMS\CoreBundle\Core\User\UserContextDTO;
 use EMS\CoreBundle\Core\User\UserList;
@@ -19,12 +19,12 @@ use EMS\CoreBundle\Entity\UserInterface;
  *
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
  * @method User|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
- * @method User[]    findAll()
  * @method User[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
+ * @method User[]    findAll()
  */
-final class UserRepository extends ServiceEntityRepository implements UserRepositoryInterface
+class UserRepository extends ServiceEntityRepository
 {
-    public function __construct(Registry $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
     }
@@ -91,7 +91,11 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
         return isset($result[0]) && $result[0] instanceof User ? $result[0] : null;
     }
 
-    #[\Override]
+    /**
+     * @param array<string> $circles
+     *
+     * @return User[]
+     */
     public function findForRoleAndCircles(string $role, array $circles): array
     {
         $qb = $this->createQueryBuilder('u');
@@ -114,7 +118,6 @@ final class UserRepository extends ServiceEntityRepository implements UserReposi
         return $resultSet;
     }
 
-    #[\Override]
     public function getUsersEnabled(): UserList
     {
         $resultSet = $this->findBy([

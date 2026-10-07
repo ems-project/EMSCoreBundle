@@ -85,6 +85,7 @@ use EMS\CoreBundle\Form\Nature\ReorganizeType;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskType;
 use EMS\CoreBundle\Form\Submission\ProcessType;
 use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
+use EMS\CoreBundle\Repository\AnalyzerRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 
@@ -628,7 +629,7 @@ return static function (ContainerConfigurator $container) {
         ->tag('form.type');
 
     $services->set('ems.form.field.analyzerpickertype', AnalyzerPickerType::class)
-        ->args([service('ems.repository.analyzer')])
+        ->args([service(AnalyzerRepository::class)])
         ->tag('form.type');
 
     $services->set('ems.form.field.formpickertype', FormPickerType::class)

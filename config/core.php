@@ -21,6 +21,7 @@ use EMS\CoreBundle\Core\Config\AbstractConfigFactory;
 use EMS\CoreBundle\Core\Config\ConfigValueResolver;
 use EMS\CoreBundle\Core\InlineEditor\InlineEditor;
 use EMS\CoreBundle\Core\Metric\JobMetricCollector;
+use EMS\CoreBundle\Repository\CacheActionRepository;
 use EMS\CoreBundle\Repository\JobRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\DataService;
@@ -33,7 +34,7 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('emsco.core_action.action_service', ActionService::class)
         ->args([
-            service('ems.repository.cache_action'),
+            service(CacheActionRepository::class),
             service('emsco.manager.user'),
             service('messenger.default_bus'),
             service('emsco.core_mercure.mercure_service'),

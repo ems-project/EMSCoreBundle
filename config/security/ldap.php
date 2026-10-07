@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use EMS\CoreBundle\Repository\AuthTokenRepository;
+use EMS\CoreBundle\Repository\UserRepository;
 use EMS\CoreBundle\Security\Ldap\LdapAuthTokenLoginAuthenticator;
 use EMS\CoreBundle\Security\Ldap\LdapConfig;
 use EMS\CoreBundle\Security\Ldap\LdapFormLoginAuthenticator;
@@ -23,7 +25,7 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service(Ldap::class),
             service('ems_core.security.ldap.config'),
-            service('ems.repository.user'),
+            service(UserRepository::class),
         ]);
 
     $services->set('emsco.security.authenticator.form_login_ldap', LdapFormLoginAuthenticator::class)
@@ -37,6 +39,6 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('ems_core.security.ldap.config'),
             service('emsco.security.provider.user_ldap'),
-            service('ems.repository.auth_token'),
+            service(AuthTokenRepository::class),
         ]);
 };

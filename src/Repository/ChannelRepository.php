@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Repository;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EMS\CoreBundle\Entity\Channel;
 use EMS\CoreBundle\Exception\NotFoundException;
 
@@ -19,9 +19,9 @@ use EMS\CoreBundle\Exception\NotFoundException;
  * @method Channel|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
  * @method Channel[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
-final class ChannelRepository extends ServiceEntityRepository
+class ChannelRepository extends ServiceEntityRepository
 {
-    public function __construct(Registry $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Channel::class);
     }

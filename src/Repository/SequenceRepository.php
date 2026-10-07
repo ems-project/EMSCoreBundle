@@ -4,15 +4,25 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use EMS\CoreBundle\Entity\Sequence;
 use EMS\CoreBundle\Exception\SequenceException;
 
 /**
- * @extends EntityRepository<Sequence>
+ * @extends ServiceEntityRepository<Sequence>
+ *
+ * @method Sequence|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Sequence|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
+ * @method Sequence[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
-class SequenceRepository extends EntityRepository
+class SequenceRepository extends ServiceEntityRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Sequence::class);
+    }
+
     /**
      * Get the next value of a sequence for a sequence name.
      *

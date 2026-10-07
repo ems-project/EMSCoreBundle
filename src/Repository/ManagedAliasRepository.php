@@ -4,16 +4,26 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EMS\CoreBundle\Entity\ManagedAlias;
 
 /**
- * @extends EntityRepository<ManagedAlias>
+ * @extends ServiceEntityRepository<ManagedAlias>
+ *
+ * @method ManagedAlias|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ManagedAlias|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
+ * @method ManagedAlias[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
-class ManagedAliasRepository extends EntityRepository
+class ManagedAliasRepository extends ServiceEntityRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, ManagedAlias::class);
+    }
+
     /**
      * @return string[]
      */

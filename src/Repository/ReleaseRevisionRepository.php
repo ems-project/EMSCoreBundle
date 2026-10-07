@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Repository;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\ORM\Query\Parameter;
+use Doctrine\Persistence\ManagerRegistry;
 use EMS\CoreBundle\Entity\ContentType;
 use EMS\CoreBundle\Entity\Release;
 use EMS\CoreBundle\Entity\ReleaseRevision;
@@ -16,11 +16,13 @@ use EMS\CoreBundle\Entity\ReleaseRevision;
 /**
  * @extends ServiceEntityRepository<ReleaseRevision>
  *
- * @method ReleaseRevision[] findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
+ * @method ReleaseRevision|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ReleaseRevision|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
+ * @method ReleaseRevision[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
-final class ReleaseRevisionRepository extends ServiceEntityRepository
+class ReleaseRevisionRepository extends ServiceEntityRepository
 {
-    public function __construct(Registry $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ReleaseRevision::class);
     }

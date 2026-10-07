@@ -85,11 +85,40 @@ use EMS\CoreBundle\Mcp\ElasticmsMcpToolAssetService;
 use EMS\CoreBundle\Mcp\ElasticmsMcpToolCustomService;
 use EMS\CoreBundle\Mcp\ElasticmsMcpToolDataService;
 use EMS\CoreBundle\Mcp\ElasticmsMcpToolUserService;
+use EMS\CoreBundle\Repository\AnalyzerRepository;
+use EMS\CoreBundle\Repository\AuthTokenRepository;
+use EMS\CoreBundle\Repository\ChannelRepository;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
+use EMS\CoreBundle\Repository\DashboardRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
+use EMS\CoreBundle\Repository\EnvironmentRevisionRepository;
+use EMS\CoreBundle\Repository\FieldTypeRepository;
+use EMS\CoreBundle\Repository\FilterRepository;
+use EMS\CoreBundle\Repository\FormRepository;
+use EMS\CoreBundle\Repository\FormSubmissionFileRepository;
+use EMS\CoreBundle\Repository\FormSubmissionRepository;
+use EMS\CoreBundle\Repository\FormVerificationRepository;
+use EMS\CoreBundle\Repository\GroupRepository;
+use EMS\CoreBundle\Repository\I18nRepository;
 use EMS\CoreBundle\Repository\JobRepository;
+use EMS\CoreBundle\Repository\LogRepository;
 use EMS\CoreBundle\Repository\ManagedAliasRepository;
+use EMS\CoreBundle\Repository\McpPromptRepository;
+use EMS\CoreBundle\Repository\McpResourceRepository;
+use EMS\CoreBundle\Repository\McpToolRepository;
+use EMS\CoreBundle\Repository\QuerySearchRepository;
+use EMS\CoreBundle\Repository\ReleaseRepository;
+use EMS\CoreBundle\Repository\ReleaseRevisionRepository;
 use EMS\CoreBundle\Repository\RevisionRepository;
+use EMS\CoreBundle\Repository\ScheduleRepository;
+use EMS\CoreBundle\Repository\TaskRepository;
+use EMS\CoreBundle\Repository\TemplateRepository;
+use EMS\CoreBundle\Repository\UploadedAssetRepository;
+use EMS\CoreBundle\Repository\UserRepository;
+use EMS\CoreBundle\Repository\ViewRepository;
+use EMS\CoreBundle\Repository\WebhookSubscriptionRepository;
+use EMS\CoreBundle\Repository\WysiwygProfileRepository;
+use EMS\CoreBundle\Repository\WysiwygStylesSetRepository;
 use EMS\CoreBundle\Service\ActionService;
 use EMS\CoreBundle\Service\AliasService;
 use EMS\CoreBundle\Service\AssetExtractorService;
@@ -202,7 +231,7 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('emsco.service.webhook', WebhookService::class)
         ->args([
-            service('ems.repository.webhook_subscription'),
+            service(WebhookSubscriptionRepository::class),
             service('messenger.default_bus'),
         ]);
 
@@ -215,7 +244,7 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems.dashboard.manager', DashboardManager::class)
         ->args([
-            service('ems.repository.dashboard'),
+            service(DashboardRepository::class),
             service('emsco.logger'),
         ])
         ->tag('emsco.entity.service', ['priority' => 50]);
@@ -228,28 +257,28 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems.form.manager', FormManager::class)
         ->args([
-            service('ems.repository.form'),
+            service(FormRepository::class),
             service('emsco.logger'),
         ])
         ->tag('emsco.entity.service', ['priority' => 70]);
 
     $services->set('ems.group.manager', GroupManager::class)
         ->args([
-            service('ems.repository.group'),
+            service(GroupRepository::class),
             service('logger'),
         ])
         ->tag('emsco.entity.service', ['priority' => 70]);
 
     $services->set('ems.service.channel', ChannelService::class)
         ->args([
-            service('ems.repository.channel'),
+            service(ChannelRepository::class),
             service('emsco.logger'),
         ])
         ->tag('emsco.entity.service', ['priority' => 40]);
 
     $services->set('ems.service.channel.register', ChannelRegistrar::class)
         ->args([
-            service('ems.repository.channel'),
+            service(ChannelRepository::class),
             service(EnvironmentHelperInterface::class),
             service('emsco.logger'),
             service('ems.service.index'),
@@ -261,7 +290,7 @@ return static function (ContainerConfigurator $container) {
 
     $services->set(McpToolService::class)
         ->args([
-            service('ems.repository.mcp_tool'),
+            service(McpToolRepository::class),
             service('logger'),
         ])
         ->tag('emsco.entity.service', ['priority' => 40]);
@@ -270,7 +299,7 @@ return static function (ContainerConfigurator $container) {
 
     $services->set(McpPromptService::class)
         ->args([
-            service('ems.repository.mcp_prompt'),
+            service(McpPromptRepository::class),
             service('logger'),
         ])
         ->tag('emsco.entity.service', ['priority' => 41]);
@@ -279,7 +308,7 @@ return static function (ContainerConfigurator $container) {
 
     $services->set(McpResourceService::class)
         ->args([
-            service('ems.repository.mcp_resource'),
+            service(McpResourceRepository::class),
             service('logger'),
         ])
         ->tag('emsco.entity.service', ['priority' => 42]);
@@ -318,7 +347,7 @@ return static function (ContainerConfigurator $container) {
         ]);
 
     $services->set('emsco.core.content_type.field_type.service', FieldTypeService::class)
-        ->args([service('ems.repository.field_type')]);
+        ->args([service(FieldTypeRepository::class)]);
 
     $services->set('ems_core.core_content_type_transformer.content_transformer', ContentTransformer::class)
         ->args([
@@ -354,7 +383,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.contenttype'),
             service('ems.service.revision'),
             service('ems_common.service.elastica'),
-            service('ems.repository.query_search'),
+            service(QuerySearchRepository::class),
             service('emsco.logger'),
             service('ems.service.environment'),
         ])
@@ -395,7 +424,7 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('emsco.revision.task.manager', TaskManager::class)
         ->args([
-            service('ems.repository.task'),
+            service(TaskRepository::class),
             service(RevisionRepository::class),
             service('ems.service.data'),
             service('ems.service.user'),
@@ -471,13 +500,13 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems.view.manager', ViewManager::class)
         ->args([
-            service('ems.repository.view'),
+            service(ViewRepository::class),
             service('emsco.logger'),
         ]);
 
     $services->set('ems.schedule.manager', ScheduleManager::class)
         ->args([
-            service('ems.repository.schedule'),
+            service(ScheduleRepository::class),
             service('emsco.logger'),
         ])
         ->tag('emsco.entity.service', ['priority' => 20]);
@@ -494,16 +523,16 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems.log.manager', LogManager::class)
         ->args([
-            service('ems.repository.log'),
+            service(LogRepository::class),
             service('logger'),
         ]);
 
     $services->set('emsco.helper.analyzer', AnalyzerManager::class)
-        ->args([service('ems.repository.analyzer')])
+        ->args([service(AnalyzerRepository::class)])
         ->tag('emsco.entity.service', ['priority' => 120]);
 
     $services->set('emsco.helper.filter', FilterManager::class)
-        ->args([service('ems.repository.filter')])
+        ->args([service(FilterRepository::class)])
         ->tag('emsco.entity.service', ['priority' => 110]);
 
     $services->set('emsco.helper.entities', EntitiesHelper::class)
@@ -513,10 +542,10 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('security.token_storage'),
             service('ems_core.core_mail.mailer_service'),
-            service('ems.repository.user'),
+            service(UserRepository::class),
             service('security.user_password_hasher'),
             service('security.authorization_checker'),
-            service('ems.repository.auth_token'),
+            service(AuthTokenRepository::class),
             service('ems.service.wysiwyg_profile'),
             '%ems_core.template_namespace%',
         ]);
@@ -639,7 +668,7 @@ return static function (ContainerConfigurator $container) {
             service('emsco.logger'),
             service('ems_common.service.elastica'),
             service('ems.service.alias'),
-            service('ems.repository.environment_revision'),
+            service(EnvironmentRevisionRepository::class),
             '%ems_core.instance_id%',
         ])
         ->tag('emsco.entity.service', ['priority' => 80]);
@@ -663,21 +692,21 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('security.token_storage'),
             service('security.helper'),
-            service('ems.repository.user'),
+            service(UserRepository::class),
             service('security.authorization_checker'),
             '%security.role_hierarchy.roles%',
         ]);
 
     $services->set('ems.service.wysiwyg_profile', WysiwygProfileService::class)
         ->args([
-            service('ems.repository.wysiwyg_profile'),
+            service(WysiwygProfileRepository::class),
             service('emsco.logger'),
         ])
         ->tag('emsco.entity.service', ['priority' => 110]);
 
     $services->set('ems.service.wysiwyg_styles_set', WysiwygStylesSetService::class)
         ->args([
-            service('ems.repository.wysiwyg_style_set'),
+            service(WysiwygStylesSetRepository::class),
             service('emsco.logger'),
         ])
         ->tag('emsco.entity.service', ['priority' => 100]);
@@ -707,7 +736,7 @@ return static function (ContainerConfigurator $container) {
             service('emsco.logger'),
             service('emsco.logger.audit'),
             service('ems.elasticsearch.bulker'),
-            service('ems.repository.environment_revision'),
+            service(EnvironmentRevisionRepository::class),
         ]);
 
     $services->set('ems.service.notification', NotificationService::class)
@@ -817,7 +846,7 @@ return static function (ContainerConfigurator $container) {
     $services->alias(Server::class, 'emsco.mcp.server');
 
     $services->set(I18nService::class, I18nService::class)
-        ->args([service('ems.repository.i18n')])
+        ->args([service(I18nRepository::class)])
         ->tag('emsco.entity.service', ['priority' => 130]);
 
     $services->set('ems.service.rest_client', RestClientService::class);
@@ -850,7 +879,7 @@ return static function (ContainerConfigurator $container) {
             service('doctrine'),
             service('ems_common.storage.manager'),
             service('ems_common.storage.processor'),
-            service('ems.repository.uploaded_asset_repository'),
+            service(UploadedAssetRepository::class),
         ]);
 
     $services->set('ems.service.elasticsearch', ElasticsearchService::class)
@@ -885,7 +914,7 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems.service.action', ActionService::class)
         ->args([
-            service('ems.repository.template'),
+            service(TemplateRepository::class),
             service('emsco.logger'),
             service('ems.service.search'),
             service('twig'),
@@ -894,7 +923,7 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems.service.release', ReleaseService::class)
         ->args([
-            service('ems.repository.release'),
+            service(ReleaseRepository::class),
             service('ems.service.contenttype'),
             service('ems.service.data'),
             service('ems.service.release_revision'),
@@ -904,7 +933,7 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems.service.release_revision', ReleaseRevisionService::class)
         ->args([
-            service('ems.repository.release_revision'),
+            service(ReleaseRevisionRepository::class),
             service(RevisionRepository::class),
             service('emsco.logger'),
             service('ems.service.contenttype'),
@@ -912,19 +941,19 @@ return static function (ContainerConfigurator $container) {
         ->tag('kernel.event_listener', ['event' => RevisionFinalizeDraftEvent::class, 'method' => 'finalizeDraftEvent', 'priority' => 0]);
 
     $services->set('emsco.service.webhook_subscription', WebhookSubscriptionService::class)
-        ->args([service('ems.repository.webhook_subscription')]);
+        ->args([service(WebhookSubscriptionRepository::class)]);
 
     $services->set('ems.form_submission', FormSubmissionService::class)
         ->args([
-            service('ems.repository.form_submission'),
-            service('ems.repository.form_submission_file'),
+            service(FormSubmissionRepository::class),
+            service(FormSubmissionFileRepository::class),
             service('twig'),
             service('emsco.logger'),
             '%ems_core.template_namespace%',
         ]);
 
     $services->set('ems.form_verification', FormVerificationService::class)
-        ->args([service('ems.repository.form_verification')]);
+        ->args([service(FormVerificationRepository::class)]);
 
     $services->set('ems.managed_alias.manager', ManagedAliasManager::class)
         ->args([
@@ -959,14 +988,14 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('emsco.core_messenger_handler.webhook_subscription_handler', WebhookSubscriptionHandler::class)
         ->args([
-            service('ems.repository.webhook_subscription'),
+            service(WebhookSubscriptionRepository::class),
             service('http_client'),
         ])
         ->tag('messenger.message_handler', ['handles' => WebhookSubscriberMessage::class]);
 
     $services->set('emsco.webhook_subscription.manager', WebhookSubscriptionManager::class)
         ->args([
-            service('ems.repository.webhook_subscription'),
+            service(WebhookSubscriptionRepository::class),
         ]);
 
     $services->alias('ems.service.data', DataService::class)

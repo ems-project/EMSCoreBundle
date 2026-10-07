@@ -4,22 +4,28 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Repository;
 
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\ReadableCollection;
 use Doctrine\DBAL\ArrayParameterType;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\Revision;
 
 /**
- * @extends EntityRepository<Environment>
+ * @extends ServiceEntityRepository<Environment>
  *
  * @method Environment|null find($id, $lockMode = null, $lockVersion = null)
  * @method Environment|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
  */
-class EnvironmentRepository extends EntityRepository
+class EnvironmentRepository extends ServiceEntityRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Environment::class);
+    }
+
     /**
      * @return Environment[]
      */

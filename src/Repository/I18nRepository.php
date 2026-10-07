@@ -4,20 +4,22 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Repository;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use EMS\CoreBundle\Entity\I18n;
 
 /**
  * @extends ServiceEntityRepository<I18n>
  *
+ * @method I18n|null find($id, $lockMode = null, $lockVersion = null)
  * @method I18n|null findOneBy(mixed[] $criteria, mixed[] $orderBy = null)
+ * @method I18n[]    findBy(mixed[] $criteria, mixed[] $orderBy = null, $limit = null, $offset = null)
  */
 class I18nRepository extends ServiceEntityRepository
 {
-    public function __construct(Registry $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, I18n::class);
     }

@@ -47,6 +47,10 @@ class Routes
     final public const string ADMIN_ENVIRONMENT_REBUILD = 'emsco_admin_environment_rebuild';
     final public const string ADMIN_ENVIRONMENT_REMOVE = 'emsco_admin_environment_remove';
     final public const string ADMIN_ENVIRONMENT_VIEW = 'emsco_admin_environment_view';
+    final public const string ADMIN_JOB_INDEX = 'emsco_admin_job_index';
+    final public const string ADMIN_JOB_ADD = 'emsco_admin_job_add';
+    final public const string ADMIN_JOB_DELETE = 'emsco_admin_job_delete';
+    final public const string ADMIN_JOB_RELAUNCH = 'emsco_admin_job_relaunch';
     final public const string ADMIN_MANAGED_ALIAS_ADD = 'emsco_admin_managed_alias_add';
     final public const string ADMIN_MANAGED_ALIAS_DELETE = 'emsco_admin_managed_alias_delete';
     final public const string ADMIN_MANAGED_ALIAS_EDIT = 'emsco_admin_managed_alias_edit';

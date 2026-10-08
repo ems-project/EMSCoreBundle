@@ -74,6 +74,7 @@ action:
     import: Importeren
     info: Info
     init_upload: 'Upload initialiseren'
+    launch: Starten
     move: Verplaatsen
     move_item: 'Item verplaatsen'
     new_entity_name: 'Nieuwe {label}'
@@ -692,6 +693,7 @@ key:
     cluster_uuid: Cluster-UUID
     compare_environments: 'Omgevingen vergelijken'
     completed: Voltooid
+    console_output: Console-uitvoer
     content: Inhoud
     content_type: Contenttype
     content_types: Contenttypes
@@ -724,6 +726,7 @@ key:
     error: Fout
     excel_export: Excel-export
     export_documents: 'Documenten exporteren'
+    failed: Mislukt
     failed_jobs: 'Mislukte jobs'
     'false': Onwaar
     filter: Filter
@@ -753,7 +756,6 @@ key:
     inline_editor: 'Inline editor'
     item_label: Itemlabel
     job_logs: Joblogs
-    job_output: Jobuitvoer
     jobs: Jobs
     landscape: Landschap
     last_commands: 'Laatste commando’s'
@@ -843,6 +845,7 @@ key:
     roles_hierarchy: Rolhiërarchie
     roles_specific_functionalities: 'Rollen voor specifieke functionaliteiten'
     rollback: Terugdraaien
+    running: Bezig
     schedule: Planning
     schedule_cron: '<Minuut> <Uur> <Dag_van_de_maand> <Maand_van_het_jaar> <Dag_van_de_week>. Bv. elke 15 minuten: */15 * * * *'
     schedule_tag: 'Gebruikt om workers (bv. CLI) te identificeren die de job op afstand zouden uitvoeren'
@@ -894,6 +897,7 @@ key:
     version: Versie
     versioning: Versionering
     views: Weergaven
+    waiting_to_start: 'Wacht om te starten'
     warning: Waarschuwing
     warnings: Waarschuwingen
     webhook_subscriptions: Abonnementen
@@ -1236,6 +1240,7 @@ message:
     something_wrong: 'Er is iets mis met deze applicatie.'
     start_edit: 'Begin met het bewerken van het document {ouuid} van het type {type}'
     start_edit_without_ouuid: 'Begin met het bewerken van een nieuw document van het type {type}'
+    started_on_date: 'Gestart op {date}'
     still_in_target: 'Nog in {target}'
     subfield_added: 'Het subveld "{name}" is toegevoegd'
     subfield_name_mandatory: 'De naam van het subveld is verplicht'
@@ -1374,7 +1379,6 @@ title:
     add_content_type: 'Een nieuwe {content_type} toevoegen'
     add_environment: 'Een nieuwe omgeving toevoegen'
     add_folder: 'Map toevoegen'
-    add_form: 'Een formulier toevoegen'
     add_new_task: 'Nieuwe taak toevoegen'
     add_release: 'Release toevoegen'
     align_environments: 'Omgevingen uitlijnen'
@@ -1395,7 +1399,6 @@ title:
     edit_display_name: '{display_name} bewerken'
     edit_environment: 'Omgeving "{name}" bewerken'
     edit_environment_short: 'Omgeving bewerken'
-    edit_form: 'Een formulier bewerken'
     edit_release: 'Release bewerken'
     edit_revision_content_type: '{contentType} bewerken: {revision} '
     edit_task: 'Taak bewerken: {title}'

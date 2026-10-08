@@ -11,13 +11,15 @@ use EMS\CoreBundle\Form\DataField\HolderFieldType;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[UniqueEntity(fields: 'name', message: 'not_unique', errorPath: 'name')]
+#[UniqueEntity(fields: 'name', message: 'form.name.already_used', errorPath: 'name')]
 class Form extends JsonDeserializer implements \JsonSerializable, EntityInterface
 {
     use CreatedModifiedTrait;
 
     private UuidInterface $id;
+    #[Assert\NotBlank]
     protected string $name;
     protected string $label;
     protected int $orderKey;

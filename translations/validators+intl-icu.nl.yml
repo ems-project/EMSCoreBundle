@@ -1,7 +1,9 @@
 environment:
     target_diff_source: 'De doelomgeving moet verschillen van de bronomgeving'
+form:
+    name:
+        already_used: 'Bestaat al'
 invalid_format: 'Ongeldig formaat'
-not_unique: 'Bestaat al'
 media_library:
     file_exists: 'Bestandsnaam bestaat al.'
     folder_exists: 'Mapnaam bestaat al.'

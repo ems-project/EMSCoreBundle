@@ -26,22 +26,22 @@ return function (RoutingConfigurator $routes) {
         ->options(['openapi' => true]);
 
     $routes->add('emsco_api_start_next_job', '/next-job/{tag}')
-        ->controller([JobController::class, 'startNextJob'])
+        ->controller([JobApiController::class, 'startNextJob'])
         ->methods(['POST'])
         ->options(['openapi' => true]);
 
     $routes->add('emsco_api_job_completed', '/job-completed/{job}')
-        ->controller([JobController::class, 'jobCompleted'])
+        ->controller([JobApiController::class, 'jobCompleted'])
         ->methods(['POST'])
         ->options(['openapi' => true]);
 
     $routes->add('emsco_api_job_failed', '/job-failed/{job}')
-        ->controller([JobController::class, 'jobFailed'])
+        ->controller([JobApiController::class, 'jobFailed'])
         ->methods(['POST'])
         ->options(['openapi' => true]);
 
     $routes->add('emsco_api_job_write', '/job-write/{job}')
-        ->controller([JobController::class, 'jobWrite'])
+        ->controller([JobApiController::class, 'write'])
         ->methods(['POST'])
         ->options(['openapi' => true]);
 

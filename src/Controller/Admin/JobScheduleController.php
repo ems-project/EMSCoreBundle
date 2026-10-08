@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 use function Symfony\Component\Translation\t;
 
-final class ScheduleController extends AbstractController
+final class JobScheduleController extends AbstractController
 {
     use CoreControllerTrait;
 

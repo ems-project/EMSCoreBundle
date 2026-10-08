@@ -23,7 +23,7 @@ readonly class Page
      */
     public function __construct(
         public array $context,
-        public string $template = 'page/page.html.twig'
+        public string $template = 'page/default.html.twig'
     ) {
     }
 

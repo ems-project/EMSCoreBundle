@@ -10,6 +10,7 @@ use EMS\CoreBundle\Form\Data\DatetimeTableColumn;
 use EMS\CoreBundle\Form\Data\EntityTable;
 use EMS\CoreBundle\Form\Data\TemplateBlockTableColumn;
 use EMS\CoreBundle\Roles;
+use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\JobService;
 
 use function Symfony\Component\Translation\t;
@@ -54,13 +55,13 @@ class JobDataTableType extends AbstractEntityTableType
         ));
 
         $table->addItemGetAction(
-            route: 'emsco_job_status',
+            route: Routes::JOB_STATUS,
             labelKey: t('action.status', [], 'emsco-core'),
             icon: 'eye',
             attributes: ['data-testid' => 'btn-action-status'],
         );
         $table->addItemPostAction(
-            route: 'emsco_job_relaunch',
+            route: Routes::ADMIN_JOB_RELAUNCH,
             labelKey: t('action.relaunch', [], 'emsco-core'),
             icon: 'recycle',
             messageKey: t('type.confirm', ['type' => 'relaunch_job'], 'emsco-core'),
@@ -68,8 +69,8 @@ class JobDataTableType extends AbstractEntityTableType
         );
 
         $this
-            ->addItemDelete($table, 'job', 'job.delete')
-            ->addTableToolbarActionAdd($table, 'job.add')
+            ->addItemDelete($table, 'job', Routes::ADMIN_JOB_DELETE)
+            ->addTableToolbarActionAdd($table, Routes::ADMIN_JOB_ADD)
             ->addTableActionDelete($table, 'job');
 
         $table->addMassAction(

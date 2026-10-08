@@ -148,7 +148,7 @@ class FormController extends AbstractController
                     t('title.reorder_form_fields', ['label' => $form->getLabel()], 'emsco-core')
                 ),
             ],
-            template: 'page/page_reorder.html.twig',
+            template: 'page/form_reorder.html.twig',
         );
     }
 

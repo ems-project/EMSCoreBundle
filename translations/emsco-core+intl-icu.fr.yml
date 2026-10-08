@@ -74,6 +74,7 @@ action:
     import: Importer
     info: Info
     init_upload: 'Initialiser l’upload'
+    launch: Lancer
     move: Déplacer
     move_item: 'Déplacer l’élément'
     new_entity_name: |-
@@ -697,6 +698,7 @@ key:
     cluster_uuid: 'UUID du cluster'
     compare_environments: 'Comparer les environnements'
     completed: Terminé
+    console_output: 'Sortie de la console'
     content: Contenu
     content_type: 'Type de contenu'
     content_types: 'Types de contenu'
@@ -729,6 +731,7 @@ key:
     error: Erreur
     excel_export: 'Export Excel'
     export_documents: 'Exporter les documents'
+    failed: Échec
     failed_jobs: 'Jobs échoués'
     'false': Faux
     filter: Filtre
@@ -758,7 +761,6 @@ key:
     inline_editor: 'Éditeur inline'
     item_label: 'Libellé de l’élément'
     job_logs: 'Logs des jobs'
-    job_output: 'Sortie du job'
     jobs: Jobs
     landscape: Paysage
     last_commands: 'Dernières commandes'
@@ -848,6 +850,7 @@ key:
     roles_hierarchy: 'Hiérarchie des rôles'
     roles_specific_functionalities: 'Rôles pour des fonctionnalités spécifiques'
     rollback: 'Annuler (rollback)'
+    running: 'En cours'
     schedule: Planification
     schedule_cron: '<Minute> <Heure> <Jour_du_mois> <Mois_de_l’année> <Jour_de_la_semaine>. Ex. toutes les 15 minutes : */15 * * * *'
     schedule_tag: 'Utilisé pour identifier les workers (ex. CLI) qui exécuteraient le job à distance'
@@ -899,6 +902,7 @@ key:
     version: Version
     versioning: Versioning
     views: Vues
+    waiting_to_start: 'En attente de démarrage'
     warning: Avertissement
     warnings: Avertissements
     webhook_subscriptions: Abonnements
@@ -1241,6 +1245,7 @@ message:
     something_wrong: 'Un problème est survenu avec cette application.'
     start_edit: 'Commencer à modifier le document {ouuid} de type {type}'
     start_edit_without_ouuid: 'Commencer à modifier un nouveau document de type {type}'
+    started_on_date: 'Démarré le {date}'
     still_in_target: 'Toujours dans {target}'
     subfield_added: 'Le sous-champ "{name}" a été ajouté'
     subfield_name_mandatory: 'Le nom du sous-champ est obligatoire'
@@ -1379,7 +1384,6 @@ title:
     add_content_type: 'Ajouter un nouveau {content_type}'
     add_environment: 'Ajouter un nouvel environnement'
     add_folder: 'Ajouter un dossier'
-    add_form: 'Ajouter un formulaire'
     add_new_task: 'Ajouter une nouvelle tâche'
     add_release: 'Ajouter une release'
     align_environments: 'Aligner les environnements'
@@ -1400,7 +1404,6 @@ title:
     edit_display_name: 'Modifier {display_name}'
     edit_environment: 'Modifier l’environnement « {name} »'
     edit_environment_short: 'Modifier l’environnement'
-    edit_form: 'Modifier un formulaire'
     edit_release: 'Modifier une release'
     edit_revision_content_type: 'Modifier {contentType} : {revision} '
     edit_task: 'Modifier la tâche : {title}'

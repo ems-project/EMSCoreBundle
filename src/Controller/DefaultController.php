@@ -20,7 +20,7 @@ class DefaultController extends AbstractController
                 'title' => t('key.documentation', [], 'emsco-core'),
                 'breadcrumb' => new Navigation()->add(t('key.documentation', [], 'emsco-core')),
             ],
-            template: 'page/page_documentation.html.twig',
+            template: 'page/documentation.html.twig',
         );
     }
 }

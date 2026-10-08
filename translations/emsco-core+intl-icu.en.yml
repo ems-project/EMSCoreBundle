@@ -74,6 +74,7 @@ action:
     import: Import
     info: Info
     init_upload: 'Initialize upload'
+    launch: Launch
     move: Move
     move_item: 'Move item'
     new_entity_name: 'New {label}'
@@ -692,6 +693,7 @@ key:
     cluster_uuid: 'Cluster UUID'
     compare_environments: 'Compare environments'
     completed: Completed
+    console_output: 'Console output'
     content: Content
     content_type: 'Content type'
     content_types: 'Content Types'
@@ -724,6 +726,7 @@ key:
     error: Error
     excel_export: 'Excel export'
     export_documents: 'Export documents'
+    failed: Failed
     failed_jobs: 'Failed jobs'
     'false': 'False'
     filter: Filter
@@ -753,7 +756,6 @@ key:
     inline_editor: 'Inline editor'
     item_label: 'Item label'
     job_logs: 'Jobs logs'
-    job_output: "Job's output"
     jobs: Jobs
     landscape: Landscape
     last_commands: 'Last commands'
@@ -843,6 +845,7 @@ key:
     roles_hierarchy: 'Roles hierarchy'
     roles_specific_functionalities: 'Roles for specific functionalities'
     rollback: Rollback
+    running: Running
     schedule: Schedule
     schedule_cron: '<Minute> <Hour> <Day_of_the_Month> <Month_of_the_Year> <Day_of_the_Week>. E.g. every 15 minutes: */15 * * * *'
     schedule_tag: 'Used to indentify workers (e.g. CLI) which would remotely execute the job'
@@ -894,6 +897,7 @@ key:
     version: Version
     versioning: Versioning
     views: Views
+    waiting_to_start: 'Waiting to start'
     warning: Warning
     warnings: Warnings
     webhook_subscriptions: Subscriptions
@@ -1236,6 +1240,7 @@ message:
     something_wrong: 'There is something wrong with this application.'
     start_edit: 'Start editing the document {ouuid} of type {type}'
     start_edit_without_ouuid: 'Start editing a new document of type {type}'
+    started_on_date: 'Started on {date}'
     still_in_target: 'Still in {target}'
     subfield_added: 'The subfield "{name}" has been added'
     subfield_name_mandatory: 'The subfield name is mandatory'
@@ -1374,7 +1379,6 @@ title:
     add_content_type: 'Add a new {content_type}'
     add_environment: 'Add a new Environment'
     add_folder: 'Add folder'
-    add_form: 'Add a form'
     add_new_task: 'Add a new task'
     add_release: 'Add a Release'
     align_environments: 'Align Environments'
@@ -1395,7 +1399,6 @@ title:
     edit_display_name: 'Edit {display_name}'
     edit_environment: 'Edit the environment "{name}"'
     edit_environment_short: 'Edit environment'
-    edit_form: 'Edit a form'
     edit_release: 'Edit a Release'
     edit_revision_content_type: 'Edit the {contentType}: {revision} '
     edit_task: 'Edit task : {title}'

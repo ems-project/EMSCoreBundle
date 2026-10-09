@@ -805,6 +805,7 @@ key:
     notification: Notification
     notifications: Notifications
     number_of_data_nodes: 'Nombre de nœuds de données'
+    number_of_in_flight_fetch: 'Nombre de récupérations en cours'
     number_of_nodes: 'Nombre de nœuds'
     number_of_pending_tasks: 'Nombre de tâches en attente'
     'on': Le
@@ -839,6 +840,7 @@ key:
     ready: Prête
     recent_activities: 'Activités récentes'
     releases: Releases
+    relocating_shards: 'Shards en cours de relocalisation'
     remember_me: 'Se souvenir de moi'
     reorganise_colon: 'Réorganiser :'
     requested_tasks: 'Tâches demandées'

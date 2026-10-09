@@ -800,6 +800,7 @@ key:
     notification: Notification
     notifications: Notifications
     number_of_data_nodes: 'Number of data nodes'
+    number_of_in_flight_fetch: 'Number of in flight fetch'
     number_of_nodes: 'Number of nodes'
     number_of_pending_tasks: 'Number of pending tasks'
     'on': 'On'
@@ -834,6 +835,7 @@ key:
     ready: Ready
     recent_activities: 'Recent Activities'
     releases: Releases
+    relocating_shards: 'Relocating shards'
     remember_me: 'Remember Me'
     reorganise_colon: 'Reorganise:'
     requested_tasks: 'Requested tasks'

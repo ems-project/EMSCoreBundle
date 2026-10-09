@@ -1,0 +1,158 @@
+{% extends '@EMSCore/page/default.html.twig' %}
+
+{% trans_default_domain 'emsco-core' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-6 col-lg-4">
+            {% if cluster|default %}
+                <div class="box box box-solid">
+                    <div class="box-header with-border bg-{{ cluster.status }}">
+                        <h4 class="box-title">
+                            <i class="icon fa fa-cubes fa-2x"></i>
+                            {{ cluster.title }}
+                        </h4>
+                    </div>
+                    {% if app.user %}
+                        <div class="box-body ">
+                            <ul class="list-group">
+                                <li class="list-group-item">Cluster name<span
+                                            class=" badge bg-{{ status }}">{{ cluster.cluster_name }}</span></li>
+                                <li class="list-group-item">{{ 'key.cluster_uuid'|trans }}<span
+                                            class=" badge bg-{{ status }}">{{ cluster.cluster_uuid }}</span></li>
+                                <li class="list-group-item">{{ 'key.tagline'|trans }}<span
+                                            class=" badge bg-{{ status }}">{{ cluster.tagline }}</span></li>
+                                <li class="list-group-item">{{ 'field.node_name'|trans }}<span
+                                            class=" badge bg-{{ status }}">{{ cluster.name }}</span></li>
+                                <li class="list-group-item">{{ 'key.version'|trans }}<span
+                                            class=" badge bg-{{ status }}">{{ cluster.version.number }}</span></li>
+                                <li class="list-group-item">{{ 'key.lucene_version'|trans }}<span
+                                            class=" badge bg-{{ status }}">{{ cluster.version.lucene_version }}</span></li>
+                                <li class="list-group-item">{{ 'field.date_build'|trans }}<span
+                                            class=" badge bg-{{ status }}">{{ cluster.version.build_date|split('.')|first|date(date_time_format) }}</span></li>
+                                <li class="list-group-item">Number of nodes <span
+                                            class=" badge bg-{{ status }}">{{ cluster.number_of_nodes }}</span></li>
+                                <li class="list-group-item">Number of data nodes <span
+                                            class=" badge bg-{{ status }}">{{
+                                        cluster.number_of_data_nodes }}</span></li>
+                                <li class="list-group-item">Active primary shards <span
+                                            class=" badge bg-{{ status }}">{{
+                                        cluster.active_primary_shards }}</span></li>
+                                <li class="list-group-item">Active shards <span
+                                            class=" badge bg-{{ status }}">{{ cluster.active_shards }}</span></li>
+                                <li class="list-group-item">Relocating shards <span
+                                            class=" badge bg-{{ status }}">{{ cluster.relocating_shards
+                                        }}</span></li>
+                                <li class="list-group-item">Initializing shards <span
+                                            class=" badge bg-{{ status }}">{{
+                                        cluster.initializing_shards }}</span></li>
+                                <li class="list-group-item">Unassigned shards <span
+                                            class=" badge bg-{{ status }}">{{ cluster.unassigned_shards
+                                        }}</span></li>
+                                <li class="list-group-item">Delayed unassigned shards <span
+                                            class=" badge bg-{{ status }}">{{
+                                        cluster.delayed_unassigned_shards }}</span></li>
+                                <li class="list-group-item">Number of pending tasks <span
+                                            class=" badge bg-{{ status }}">{{
+                                        cluster.number_of_pending_tasks }}</span></li>
+                                <li class="list-group-item">Number of in flight fetch <span
+                                            class=" badge bg-{{ status }}">{{
+                                        cluster.number_of_in_flight_fetch }}</span></li>
+                                <li class="list-group-item">Task max waiting in queue <span
+                                            class=" badge bg-{{ status }}">{{
+                                        cluster.task_max_waiting_in_queue_millis }} ms</span></li>
+                                <li class="list-group-item">Active shards percent as number <span
+                                            class=" badge bg-{{ status }}">{{
+                                        cluster.active_shards_percent_as_number }}</span></li>
+
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+        </div>
+
+        <div class="col-md-6 col-lg-8">
+            {% if certificate|default %}
+                <div class="box box box-solid">
+                    <div class="box-header with-border bg-{{ certificate.status }}">
+                        <h4 class="box-title">
+                            <i class="icon fa fa-key fa-2x"></i>
+                            {{ certificate.title }}
+                        </h4>
+                    </div>
+                    {% if app.user %}
+                        <div class="box-body ">
+                            <ul class="list-group">
+                                {% if certificate.bits|default %}
+                                    <li class="list-group-item">
+                                        {{ 'key.bits'|trans }}
+                                        <span class=" badge bg-green">{{ certificate.bits }}</span>
+                                    </li>
+                                {% endif %}
+                                {% if certificate.key|default %}
+                                    <li class="list-group-item">
+                                        <a href="{{ path('ems_get_public_key') }}">{{ 'key.public_key'|trans }}</a>
+                                        <pre>{{ certificate.key }}</pre>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+            {% if asset_extractor|default %}
+                <div class="box box box-solid">
+                    <div class="box-header with-border bg-{{ asset_extractor.status }}">
+                        <h4 class="box-title">
+                            <i class="icon fa fa-external-link fa-2x"></i>
+                            {{ asset_extractor.title }}
+                        </h4>
+                    </div>
+                    {% if app.user %}
+                        <div class="box-body ">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    {% if asset_extractor.content|default %}{{ asset_extractor.content }}{% else %}{{ 'message.tika_server_not_configured'|trans }}{% endif %}
+                                </li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+            {% if jobs|default %}
+                <div class="box box box-solid">
+                    <div class="box-header with-border bg-{{ jobs.status }}">
+                        <h4 class="box-title">
+                            <i class="icon fa fa-terminal fa-2x"></i>
+                            {{ jobs.status|capitalize }}: {{ 'key.jobs'|trans }}
+                        </h4>
+                    </div>
+                    <div class="box-body ">
+                        <ul class="list-group">
+                            <li class="list-group-item">{{ 'key.pending_jobs'|trans }}<span class=" badge bg-{{ jobs.pending|default(0) > 0 ? jobs.status : 'green' }}">{{ jobs.pending|default(0) }}</span></li>
+                            <li class="list-group-item">{{ 'key.failed_jobs'|trans }}<span class=" badge bg-{{ jobs.failed|default(0) > 0 ? jobs.status : 'green' }}">{{ jobs.failed|default(0) }}</span></li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+            {% if bus|default %}
+                <div class="box box box-solid">
+                    <div class="box-header with-border bg-{{ bus.status }}">
+                        <h4 class="box-title">
+                            <i class="icon fa fa-bus fa-2x"></i>
+                            {{ bus.status|capitalize }}: {{ 'title.messages_in_bus'|trans }}
+                        </h4>
+                    </div>
+                    <div class="box-body ">
+                        <ul class="list-group">
+                            <li class="list-group-item">{{ 'message.messages_in_queue'|trans }}<span class=" badge bg-{{ bus.queue|default(0) > 0 ? bus.status : 'green' }}">{{ bus.queue|default(0) }}</span></li>
+                            <li class="list-group-item">{{ 'message.messages_in_error'|trans }}<span class=" badge bg-{{ bus.failed|default(0) > 0 ? bus.status : 'green' }}">{{ bus.failed|default(0) }}</span></li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

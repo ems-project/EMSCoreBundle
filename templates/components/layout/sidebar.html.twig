@@ -16,12 +16,7 @@
                 {% endif %}
                 {%- if status is defined -%}
                     <a href="{{ path('elasticsearch.status') }}" id="status-overview" data-testid="status-overview">
-                        {%- with {
-                            title: 'cluster.status'|trans({color: status}, 'emsco-core'),
-                            status: status,
-                        } -%}
-                            {{ block('status', '@EMSCore/elasticsearch/status.html.twig') }}
-                        {%- endwith -%}
+                        <i class="fa fa-circle text-{{ status }}"></i> {{ status }}
                     </a>
                 {%- endif -%}
             </div>

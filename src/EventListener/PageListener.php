@@ -42,6 +42,10 @@ class PageListener implements EventSubscriberInterface
         $this->layoutService->setCurrentPage($page);
 
         $content = $this->twig->render(\sprintf('@%s/', $this->templateNamespace).$page->template, $page->context);
-        $event->setResponse(new Response($content, Response::HTTP_OK));
+
+        $response = $page->response ?? new Response(status: Response::HTTP_OK);
+        $response->setContent($content);
+
+        $event->setResponse($response);
     }
 }

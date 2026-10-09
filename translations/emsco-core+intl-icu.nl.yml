@@ -799,7 +799,8 @@ key:
     notice: Melding
     notification: Notificatie
     notifications: Notificaties
-    number_of_data_nodes: 'Aantal datanodes'
+    number_of_data_nodes: 'Aantal data nodes'
+    number_of_in_flight_fetch: 'Aantal in-flight fetches'
     number_of_nodes: 'Aantal nodes'
     number_of_pending_tasks: 'Aantal wachtende taken'
     'on': Op
@@ -834,6 +835,7 @@ key:
     ready: Klaar
     recent_activities: 'Recente activiteiten'
     releases: Releases
+    relocating_shards: 'Shards in verhuizing'
     remember_me: 'Onthoud mij'
     reorganise_colon: 'Reorganiseren:'
     requested_tasks: 'Aangevraagde taken'

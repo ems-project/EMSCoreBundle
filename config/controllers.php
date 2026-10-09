@@ -842,7 +842,6 @@ return static function (ContainerConfigurator $container) {
             service('serializer'),
             service(MessengerMessagesRepository::class),
             '%ems_core.health_check_allow_origin%',
-            '%ems_core.template_namespace%',
         ])
         ->call('setContainer')
         ->tag('container.service_subscriber')

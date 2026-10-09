@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\User;
 
 use EMS\CoreBundle\Entity\User;
+use EMS\CoreBundle\Form\Field\CancelType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
+use EMS\CoreBundle\Routes;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -39,13 +42,25 @@ class ChangePasswordType extends AbstractType
 
         $builder->add('plainPassword', RepeatedType::class, [
             'type' => PasswordType::class,
-            'options' => [
-                'attr' => ['autocomplete' => 'new-password',
-                ], ],
-            'first_options' => ['label' => t('key.new_password', [], 'emsco-core')],
-            'second_options' => ['label' => t('key.new_password_confirmation', [], 'emsco-core')],
+            'options' => ['attr' => ['autocomplete' => 'new-password']],
+            'first_options' => [
+                'label' => t('key.new_password', [], 'emsco-core'),
+            ],
+            'second_options' => [
+                'label' => t('key.new_password_confirmation', [], 'emsco-core'),
+            ],
             'invalid_message' => t('user.password.mismatch', [], 'validators'),
         ]);
+
+        $builder
+            ->add('save', SubmitEmsType::class, [
+                'attr' => ['data-testid' => 'change-password-submit'],
+                'label' => t('action.save', [], 'emsco-core'),
+            ])
+            ->add('cancel', CancelType::class, [
+                'attr' => ['data-testid' => 'change-password-cancel'],
+                'route' => Routes::USER_PROFILE,
+            ]);
     }
 
     #[\Override]

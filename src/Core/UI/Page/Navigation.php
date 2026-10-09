@@ -15,6 +15,11 @@ class Navigation
     /** @var NavigationItem[] */
     public array $items = [];
 
+    public static function home(): self
+    {
+        return new self()->add(label: t('key.home', [], 'emsco-core'));
+    }
+
     public static function admin(): self
     {
         return new self()->add(label: t('key.admin', [], 'emsco-core'));

@@ -374,7 +374,6 @@ field:
     expiration_date: Vervaldatum
     explicit_mode: 'Expliciete modus'
     extra: Extra
-    extra_roles: 'Extra rollen'
     field: Veld
     field_type: 'Type van het veld'
     fielddata: 'Field data'
@@ -707,6 +706,7 @@ key:
     dashboards: Dashboards
     delayed_unassigned_shards: 'Vertraagde niet-toegewezen shards'
     descending: Dalend
+    details: Details
     discard_modifications: 'Niet-opgeslagen wijzigingen verwerpen'
     document: Document
     documentation: Documentatie
@@ -748,7 +748,6 @@ key:
     history: Geschiedenis
     home: Start
     i18n: I18N
-    impersonator: Impersonator
     inbox: Inbox
     information: Informatie
     initializing_shards: 'Initialiserende shards'
@@ -1412,8 +1411,6 @@ title:
     list_environments: 'Omgevingen weergeven'
     list_releases: 'Lijst van releases'
     log_of: 'Log van {created}'
-    log_tagline: 'Wie deed wat'
-    logs_of: 'Logs van {created}'
     messages_in_bus: 'Berichten in de bus'
     move_files: |-
         {count, plural,

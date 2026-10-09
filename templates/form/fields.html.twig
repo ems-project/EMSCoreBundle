@@ -19,6 +19,23 @@
 	{%- endwith -%}
 {%- endblock ems_row_attributes %}
 
+{%- block link_widget -%}
+	<a href="{{ path(route, route_params) }}" {%- for name, value in attr %} {{ name }}="{{ value }}"{% endfor -%}>
+		{{ label|trans }}
+	</a>
+{%- endblock link_widget -%}
+
+{%- block cancel_widget -%}
+	{%- set attr = attr|merge({class: ('btn btn-sm btn-default ' ~ attr.class|default(''))|trim}) -%}
+	{{- block('link_widget') -}}
+{%- endblock cancel_widget -%}
+
+{%- block user_options_row -%}
+	{%- if form.children|length > 0 -%}
+		{{ parent() }}
+	{%- endif -%}
+{%- endblock user_options_row -%}
+
 {# Widgets #}
 {% block checkbox_radio_label -%}
     {# Do not display the label if widget is not defined in order to prevent double label rendering #}

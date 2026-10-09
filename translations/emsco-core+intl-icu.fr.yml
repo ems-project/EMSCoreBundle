@@ -379,7 +379,6 @@ field:
     expiration_date: 'Date d’expiration'
     explicit_mode: 'Explicit mode'
     extra: Extra
-    extra_roles: 'Rôles supplémentaires'
     field: Champ
     field_type: 'Type de champ'
     fielddata: 'Field data'
@@ -712,6 +711,7 @@ key:
     dashboards: 'Tableaux de bord'
     delayed_unassigned_shards: 'Shards non assignés retardés'
     descending: Descendant
+    details: Détails
     discard_modifications: 'Abandonner les modifications non enregistrées'
     document: Document
     documentation: Documentation
@@ -753,7 +753,6 @@ key:
     history: Historique
     home: Accueil
     i18n: I18N
-    impersonator: Impersonnateur
     inbox: 'Boîte de réception'
     information: Information
     initializing_shards: 'Shards en initialisation'
@@ -1417,8 +1416,6 @@ title:
     list_environments: 'Liste des environnements'
     list_releases: 'Liste des releases'
     log_of: 'Log du {created}'
-    log_tagline: 'Qui a fait quoi'
-    logs_of: 'Logs de {created}'
     messages_in_bus: 'Messages dans le bus'
     move_files: |-
         {count, plural,

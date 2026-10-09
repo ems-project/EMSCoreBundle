@@ -1,7 +1,4 @@
-{% extends '@EMSCore/log/abstract.html.twig' %}
-{% trans_default_domain 'emsco-core' %}
-
-{% block title %}{{ 'title.logs_of'|trans({'created': log.created|date(date_time_format)}) }}{% endblock %}
+{% extends '@EMSCore/page/default.html.twig' %}
 
 {% block body %}
     <div class="box box-default">
@@ -55,4 +52,4 @@
             }%}
         </div>
     </div>
-{% endblock %}
+{% endblock body %}

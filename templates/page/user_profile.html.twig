@@ -1,11 +1,8 @@
-{%- trans_default_domain 'emsco-core' -%}
-{% extends '@EMSCore/layout.html.twig' %}
+{% extends '@EMSCore/page/default.html.twig' %}
 
-{% block title %}{{ 'title.profile'|trans }}{% endblock %}
-{% block pagetitle %}{{ 'title.profile'|trans }}{% endblock %}
-{% block subtitle %}{% endblock %}
+{% trans_default_domain 'emsco-core' %}
 
-{% block content %}
+{% block body %}
     <div class="row">
         <div class="col-md-5 col-md-offset-4">
             <div class="box box-primary">
@@ -47,14 +44,16 @@
                                 </i>
                             </li>
                         {% endif %}
-                        <li class="list-group-item" data-testid="profile-roles">
-                            <b>Roles : </b>
-                            <i class="">
-                                {% for role in user.roles  -%}
-                                    <span class="badge text-nowrap">{{- (role|replace({'ROLE_': 'ROLE.'}) ~ '.label')|lower|trans([], 'emsco-core') -}}</span>&nbsp;
-                                {%- endfor %}
-                            </i>
-                        </li>
+                        {%- if user.userRoles|length > 0 -%}
+                            <li class="list-group-item" data-testid="profile-roles">
+                                <b>Roles : </b>
+                                <i class="">
+                                    {% for role in user.userRoles  -%}
+                                        <span class="badge text-nowrap">{{- (role|replace({'ROLE_': 'ROLE.'}) ~ '.label')|lower|trans([], 'emsco-core') -}}</span>&nbsp;
+                                    {%- endfor %}
+                                </i>
+                            </li>
+                        {%- endif -%}
                         {%- if user.group -%}
                             <li class="list-group-item" data-testid="profile-group">
                                 <b>{{ 'field.group'|trans }}</b> <i class="pull-right">{{ user.group.label }}</i>
@@ -66,10 +65,10 @@
                     </ul>
                     <div class="btn-group">
                         <a href="{{ path(routes.USER_PROFILE_EDIT) }}" class="btn btn-primary" data-testid="profile-edit"><i class="fa fa-pencil"></i> <b>{{ 'action.edit'|trans }}</b></a>
-                        <a href="{{ path(routes.USER_CHANGE_PASSWORD) }}" class="btn btn-primary" data-testid="profile-change-password"><i class="fa fa-lock"></i> <b>{{ 'title.change_your_password'|trans({}, 'emsco-core') }}</b></a>
+                        <a href="{{ path(routes.USER_CHANGE_PASSWORD) }}" class="btn btn-primary" data-testid="profile-change-password"><i class="fa fa-lock"></i> <b>{{ 'action.change_password'|trans({}, 'emsco-core') }}</b></a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-{% endblock content %}
+{% endblock %}

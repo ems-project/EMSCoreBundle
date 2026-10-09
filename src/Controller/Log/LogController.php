@@ -30,7 +30,7 @@ class LogController extends AbstractController
         private readonly LogManager $logManager,
         private readonly DataTableFactory $dataTableFactory,
         private readonly LocalizedLoggerInterface $logger,
-        private readonly string $templateNamespace,
+        private readonly string $datetimeFormat,
     ) {
     }
 
@@ -59,15 +59,20 @@ class LogController extends AbstractController
         ]);
     }
 
-    public function view(Log $log): Response
+    public function view(Log $log): Page
     {
-        return $this->render(\sprintf('@%s/log/view.html.twig', $this->templateNamespace), [
-            'log' => $log,
-            'subTitle' => t('type.title_sub', ['type' => 'log'], 'emsco-core'),
-            'breadcrumb' => $this->breadcrumb()->add(
-                label: t('action.details', [], 'emsco-core'),
-            ),
-        ]);
+        return new Page(
+            context: [
+                'log' => $log,
+                'icon' => 'fa fa-file-text',
+                'title' => t('title.log_of', ['created' => $log->getCreated()->format($this->datetimeFormat)], 'emsco-core'),
+                'subTitle' => t('type.title_sub', ['type' => 'log'], 'emsco-core'),
+                'breadcrumb' => $this->breadcrumb()->add(
+                    t('key.details', [], 'emsco-core'),
+                ),
+            ],
+            template: 'page/log.html.twig'
+        );
     }
 
     public function delete(Log $log): Response
@@ -82,7 +87,7 @@ class LogController extends AbstractController
         return Navigation::admin()->add(
             label: t('key.logs', [], 'emsco-core'),
             icon: 'fa fa-file-text',
-            route: 'emsco_log_index',
+            route: Routes::LOG_INDEX,
         );
     }
 }

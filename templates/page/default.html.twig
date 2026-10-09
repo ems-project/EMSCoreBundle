@@ -80,15 +80,24 @@
                 {{ form_start(form) }}
                 <div class="box-body ">
                     {{ form_errors(form) }}
-                    {% for child in form|filter(c => not (c.vars.name in ['save', 'save_close'])) %}
-                        <div class="row">
-                            {{ form_row(child, 'col-' in child.vars.row_attr.class|default('') ? {} : {col: child.vars.col|default(12)}) }}
-                        </div>
-                        <div class="clearfix"></div>
+                    {% for child in form|filter(c => not (c.vars.name in ['save', 'cancel', 'save_close'])) %}
+                        {% if 'repeated' in child.vars.block_prefixes %}
+                            {% for sub in child %}
+                                <div class="row">
+                                    {{ form_row(sub, 'col-' in sub.vars.row_attr.class|default('') ? {} : {col: sub.vars.col|default(12)}) }}
+                                </div>
+                                <div class="clearfix"></div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="row">
+                                {{ form_row(child, 'col-' in child.vars.row_attr.class|default('') ? {} : {col: child.vars.col|default(12)}) }}
+                            </div>
+                            <div class="clearfix"></div>
+                        {% endif %}
                     {% endfor %}
                 </div>
                 <div class="box-footer">
-                    {%- for button in form|filter(c => c.vars.name in ['save', 'save_close'])  -%}
+                    {%- for button in form|filter(c => c.vars.name in ['save', 'cancel', 'save_close'])  -%}
                         {{ form_widget(button) }}
                     {%- endfor -%}
                 </div>

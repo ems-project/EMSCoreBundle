@@ -8,7 +8,10 @@ use Doctrine\ORM\EntityRepository;
 use EMS\CoreBundle\Core\User\UserOptions;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\WysiwygProfile;
+use EMS\CoreBundle\Form\Field\CancelType;
+use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\UserOptionsType;
+use EMS\CoreBundle\Routes;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -42,9 +45,11 @@ class UserProfileType extends AbstractType
         }
         $builder
             ->add('displayName', null, [
+                'col' => 4,
                 'label' => t('field.display_name', [], 'emsco-core'),
             ])
             ->add('email', EmailType::class, [
+                'col' => 4,
                 'label' => t('field.email', [], 'emsco-core'),
             ])
             ->add('emailNotification', CheckboxType::class, [
@@ -52,6 +57,7 @@ class UserProfileType extends AbstractType
                 'required' => false,
             ])
             ->add('current_password', PasswordType::class, [
+                'col' => 4,
                 'label' => t('key.current_password', [], 'emsco-core'),
                 'mapped' => false,
                 'constraints' => [
@@ -76,6 +82,7 @@ class UserProfileType extends AbstractType
                 'context' => UserOptionsType::CONTEXT_PROFILE,
             ])
             ->add('locale', ChoiceType::class, [
+                'col' => 4,
                 'label' => t('field.language_ui', [], 'emsco-core'),
                 'required' => true,
                 'choices' => [
@@ -86,6 +93,7 @@ class UserProfileType extends AbstractType
                 'choice_translation_domain' => false,
             ])
             ->add('localePreferred', ChoiceType::class, [
+                'col' => 4,
                 'label' => t('field.language_preferred', [], 'emsco-core'),
                 'required' => false,
                 'choices' => \array_flip(Locales::getNames()),
@@ -94,6 +102,7 @@ class UserProfileType extends AbstractType
 
         $builder
             ->add('wysiwygProfile', EntityType::class, [
+                'col' => 4,
                 'required' => false,
                 'label' => t('field.wysiwyg_profile', [], 'emsco-core'),
                 'class' => WysiwygProfile::class,
@@ -104,6 +113,16 @@ class UserProfileType extends AbstractType
                     'data-live-search' => true,
                     'class' => 'wysiwyg-profile-picker',
                 ],
+            ]);
+
+        $builder
+            ->add('save', SubmitEmsType::class, [
+                'attr' => ['data-testid' => 'profile-edit-submit'],
+                'label' => t('action.save', [], 'emsco-core'),
+            ])
+            ->add('cancel', CancelType::class, [
+                'attr' => ['data-testid' => 'profile-edit-cancel'],
+                'route' => Routes::USER_PROFILE,
             ]);
     }
 

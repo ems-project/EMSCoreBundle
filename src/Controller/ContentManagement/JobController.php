@@ -11,6 +11,7 @@ use EMS\CoreBundle\Core\UI\Page\Navigation;
 use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\Entity\Job;
 use EMS\CoreBundle\Helper\EmsCoreResponse;
+use EMS\CoreBundle\Roles;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\JobService;
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
@@ -105,10 +106,14 @@ class JobController extends AbstractController
 
     private function breadcrumb(): Navigation
     {
-        return Navigation::admin()->add(
-            label: t('key.jobs', [], 'emsco-core'),
-            icon: 'fa fa-terminal',
-            route: Routes::ADMIN_JOB_INDEX,
-        );
+        if ($this->isGranted(Roles::ROLE_ADMIN)) {
+            return Navigation::admin()->add(
+                label: t('key.jobs', [], 'emsco-core'),
+                icon: 'fa fa-terminal',
+                route: Routes::ADMIN_JOB_INDEX,
+            );
+        }
+
+        return Navigation::home();
     }
 }

@@ -609,7 +609,7 @@ return static function (ContainerConfigurator $container) {
             service('ems.log.manager'),
             service('emsco.data_table.factory'),
             service('emsco.logger'),
-            '%ems_core.template_namespace%',
+            '%ems_core.date_time_format%',
         ])
         ->call('setContainer')
         ->tag('container.service_subscriber')
@@ -736,7 +736,6 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('emsco.manager.user'),
             service('emsco.logger'),
-            '%ems_core.template_namespace%',
         ])
         ->call('setContainer')
         ->tag('container.service_subscriber');

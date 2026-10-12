@@ -40,6 +40,8 @@ action:
     copy: Copier
     copy_all: 'Tout copier'
     copy_data: 'Copier les données'
+    copy_error: 'La copie a échoué.'
+    copy_success: 'Copié dans le presse-papiers.'
     create: Créer
     create_draft: 'Créer un brouillon {content_type}'
     create_task: 'Créer la tâche'

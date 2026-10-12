@@ -40,6 +40,8 @@ action:
     copy: Kopiëren
     copy_all: 'Alles kopiëren'
     copy_data: 'Gegevens kopiëren'
+    copy_error: 'Kopiëren mislukt.'
+    copy_success: 'Naar het klembord gekopieerd.'
     create: Aanmaken
     create_draft: 'Concept voor {content_type} aanmaken'
     create_task: 'Taak aanmaken'

@@ -40,6 +40,8 @@ action:
     copy: Copy
     copy_all: 'Copy all'
     copy_data: 'Copy data'
+    copy_error: 'Copy failed.'
+    copy_success: 'Copied to the clipboard.'
     create: Create
     create_draft: 'Create {content_type} draft'
     create_task: 'Create task'

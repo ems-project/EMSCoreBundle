@@ -479,7 +479,7 @@ class FieldType extends JsonDeserializer implements \JsonSerializable
             if (\array_key_exists('key_'.$item['id'], $fieldsByIds)) {
                 $this->getChildren()->add($fieldsByIds['key_'.$item['id']]);
                 $fieldsByIds['key_'.$item['id']]->setParent($this);
-                $fieldsByIds['key_'.$item['id']]->setOrderKey($key + 1);
+                $fieldsByIds['key_'.$item['id']]->setOrderKey((int) $key);
                 $fieldsByIds['key_'.$item['id']]->reorderFields($item['children'] ?? [], $fieldsByIds);
             } else {
                 throw new \RuntimeException(\sprintf('Field %d not found', $item['id']));

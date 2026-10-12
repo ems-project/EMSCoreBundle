@@ -45,15 +45,6 @@ class Indexer
     }
 
     /**
-     * @param array<mixed> $mappings
-     */
-    public function update(string $name, array $mappings): void
-    {
-        $this->mapping->updateMapping($name, $mappings);
-        $this->logger->info("Update index {index}'s mapping", ['index' => $name]);
-    }
-
-    /**
      * When clean is true, the old index will be removed!
      * Use oldIndexRegex when the alias has multiple indexes attached and you only want to switch aggainst a regex.
      */

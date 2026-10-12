@@ -962,6 +962,8 @@ message:
     content_type_update_mapping_error: "Erreur lors de la mise à jour du mapping de {environments}\_: {elasticsearch_error}"
     content_type_view_deleted: 'La vue « {view} » a été supprimée'
     contenttype_mappings_error: 'La mise à jour des mappings pour {content_type} dans {environments} a échoué : {elasticsearch_dump}'
+    contenttype_mappings_incompatible_definition: 'Incompatibilité de mappage pour le type de contenu {content_type} dans {environments} : le champ "{fieldPath}" a une "{option}" différente : existing={existing}, generated={generated}.'
+    contenttype_mappings_non_compatible_definition: 'Incompatibilité de mappage pour le type de contenu {content_type} dans {environments} : le champ « {fieldPath} » présente une définition incompatible.'
     contenttype_mappings_updated: 'Mappings mis à jour avec succès pour le type de contenu {content_type} dans {environments}'
     current_location: 'Emplacement actuel : "{path}"'
     dashboard_deleted: 'Le tableau de bord "{label}" a été supprimé'

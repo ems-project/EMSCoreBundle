@@ -957,6 +957,8 @@ message:
     content_type_update_mapping_error: "Error on updating {environments}''s mapping: {elasticsearch_error}"
     content_type_view_deleted: 'View "{view}" has been deleted'
     contenttype_mappings_error: 'Mappings update for {content_type} in {environments} failed: {elasticsearch_dump}'
+    contenttype_mappings_incompatible_definition: 'Mapping incompatibility for content type {content_type} in {environments}: field "{fieldPath}" has a different "{option}": existing={existing}, generated={generated}.'
+    contenttype_mappings_non_compatible_definition: 'Mapping incompatibility for content type {content_type} in {environments}: field "{fieldPath}" has a non-compatible definition.'
     contenttype_mappings_updated: 'Mappings successfully updated for content type {content_type} in {environments}'
     current_location: 'Current location: "{path}"'
     dashboard_deleted: 'The dashboard "{label}" has been deleted'

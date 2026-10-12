@@ -957,6 +957,8 @@ message:
     content_type_update_mapping_error: 'Fout bij het bijwerken van de mapping van {environments}: {elasticsearch_error}'
     content_type_view_deleted: 'Weergave "{view}" is verwijderd'
     contenttype_mappings_error: 'Bijwerken van de mappings voor {content_type} in {environments} is mislukt: {elasticsearch_dump}'
+    contenttype_mappings_incompatible_definition: 'Mapping-incompatibiliteit voor inhoudstype {content_type} in {environments}: veld "{fieldPath}" heeft een andere "{option}": bestaand={existing}, gegenereerd={generated}.'
+    contenttype_mappings_non_compatible_definition: 'Incompatibiliteit bij mapping voor inhoudstype {content_type} in {environments}: veld "{fieldPath}" heeft een incompatibele definitie.'
     contenttype_mappings_updated: 'Mappings succesvol bijgewerkt voor het inhoudstype {content_type} in {environments}'
     current_location: 'Huidige locatie: "{path}"'
     dashboard_deleted: 'Het dashboard "{label}" is verwijderd'

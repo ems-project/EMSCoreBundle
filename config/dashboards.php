@@ -7,6 +7,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use EMS\CoreBundle\Core\Dashboard\DashboardService;
 use EMS\CoreBundle\Core\Dashboard\Services\AdvancedSearch;
 use EMS\CoreBundle\Core\Dashboard\Services\Export;
+use EMS\CoreBundle\Core\Dashboard\Services\Matomo;
 use EMS\CoreBundle\Core\Dashboard\Services\RevisionTask;
 use EMS\CoreBundle\Core\Dashboard\Services\Template;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
@@ -34,6 +35,13 @@ return static function (ContainerConfigurator $container) {
             '%ems_core.template_namespace%',
         ])
         ->tag('ems.dashboard', ['alias' => 'export']);
+
+    $services->set('ems_core.dashboard.matomo', Matomo::class)
+        ->args([
+            service('twig'),
+            '%ems_core.template_namespace%',
+        ])
+        ->tag('ems.dashboard', ['alias' => 'matomo']);
 
     $services->set('ems_core.dashboard.revision_task', RevisionTask::class)
         ->args([

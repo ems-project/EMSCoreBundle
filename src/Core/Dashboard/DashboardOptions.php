@@ -7,7 +7,7 @@ namespace EMS\CoreBundle\Core\Dashboard;
 use EMS\Helpers\Standard\Type;
 
 /**
- * @implements \ArrayAccess<string, string>
+ * @implements \ArrayAccess<string, mixed>
  */
 class DashboardOptions implements \ArrayAccess
 {
@@ -30,6 +30,9 @@ class DashboardOptions implements \ArrayAccess
     final public const string SORT_OPTIONS = 'sortOptions';
     final public const string AGGREGATE_OPTIONS = 'aggregateOptions';
     final public const string SEARCH_FIELD_OPTIONS = 'searchFieldOptions';
+    final public const string MATOMO_URL = 'matomoUrl';
+    final public const string MATOMO_SITE_ID = 'matomoSiteId';
+    final public const string MATOMO_TOKEN_AUTH = 'matomoTokenAuth';
 
     private const array OPTIONS = [
         self::BODY,
@@ -47,10 +50,13 @@ class DashboardOptions implements \ArrayAccess
         self::SORT_OPTIONS,
         self::AGGREGATE_OPTIONS,
         self::SEARCH_FIELD_OPTIONS,
+        self::MATOMO_URL,
+        self::MATOMO_SITE_ID,
+        self::MATOMO_TOKEN_AUTH,
     ];
 
     /**
-     * @param array<string, ?string> $data
+     * @param array<string, mixed> $data
      */
     public function __construct(array $data)
     {
@@ -62,7 +68,7 @@ class DashboardOptions implements \ArrayAccess
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     public function getOptions(): array
     {

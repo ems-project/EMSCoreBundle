@@ -15,6 +15,7 @@ enum DashboardType: string implements TranslatableInterface
     case REVISION_TASK = 'ems_core.dashboard.revision_task';
     case TEMPLATE = 'ems_core.dashboard.template';
     case LEGACY_SEARCH = 'ems_core.dashboard.advanced_search';
+    case MATOMO = 'ems_core.dashboard.matomo';
 
     public function trans(TranslatorInterface $translator, ?string $locale = null): string
     {
@@ -22,7 +23,8 @@ enum DashboardType: string implements TranslatableInterface
             self::EXPORT => t('action.export', [], 'emsco-core')->trans($translator),
             self::REVISION_TASK => t('key.revision_tasks', [], 'emsco-core')->trans($translator),
             self::TEMPLATE => t('key.template', [], 'emsco-core')->trans($translator),
-            self::LEGACY_SEARCH => t('key.advanced_search', [], 'emsco-core')->trans($translator)
+            self::LEGACY_SEARCH => t('key.advanced_search', [], 'emsco-core')->trans($translator),
+            self::MATOMO => t('key.matomo', [], 'emsco-core')->trans($translator)
         };
     }
 }

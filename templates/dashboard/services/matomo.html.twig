@@ -1,0 +1,22 @@
+{% extends '@EMSCore/base.html.twig' %}
+{% trans_default_domain 'emsco-core' %}
+
+{% block breadcrumb %}
+    <ol class="breadcrumb">
+        <li><a href="{{ path('emsco_dashboard', {name: dashboard.name}) }}"><i class="{{ dashboard.icon }}"></i> {{ dashboard.label(app.user) }}</a></li>
+    </ol>
+{% endblock %}
+
+{% block title %}{{ dashboard.label(app.user) }}{% endblock %}
+{% block pagetitle %}{{ block('title') }}{% endblock %}
+{% block subtitle %}{% endblock %}
+
+{% block body %}
+    <iframe
+        src="{{ matomoUrl }}"
+        title="{{ dashboard.label }}"
+        class="w-100 border-0"
+        style="min-height: calc(100vh - 10rem);"
+        loading="lazy"
+    ></iframe>
+{% endblock %}

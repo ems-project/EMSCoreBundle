@@ -464,6 +464,9 @@ field:
     mandatory_if: 'Verplicht indien'
     mapping: Mapping
     mapping_options: Toewijzingsopties
+    matomo_site_id: Matomo-site-ID
+    matomo_token_auth: 'Matomo-authenticatietoken met alleen-lezen toegang'
+    matomo_url: Matomo-URL
     max: Max
     max_depth: 'Maximale diepte'
     max_lines: 'Maximum aantal regels'
@@ -781,6 +784,7 @@ key:
     match_or: 'Match (of)'
     match_phrase: 'Match frase'
     match_phrase_prefix: 'Match met zinsdeelprefix'
+    matomo: Matomo
     mcp: MCP
     mcp_prompts: MCP-prompts
     mcp_resources: MCP-resources

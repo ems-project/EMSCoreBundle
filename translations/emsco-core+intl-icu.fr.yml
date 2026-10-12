@@ -469,6 +469,9 @@ field:
     mandatory_if: 'Obligatoire si'
     mapping: Mapping
     mapping_options: 'Options de mappage'
+    matomo_site_id: 'Identifiant du site Matomo'
+    matomo_token_auth: 'Jeton d’authentification Matomo avec accès en lecture seule'
+    matomo_url: 'URL Matomo'
     max: Max
     max_depth: 'Profondeur maximale'
     max_lines: 'Nombre maximal de lignes'
@@ -786,6 +789,7 @@ key:
     match_or: 'Correspondance (ou)'
     match_phrase: 'Correspondance exacte'
     match_phrase_prefix: 'Correspondance de préfixe de phrase'
+    matomo: Matomo
     mcp: MCP
     mcp_prompts: 'Prompts MCP'
     mcp_resources: 'Ressources MCP'

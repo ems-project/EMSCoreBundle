@@ -8,6 +8,7 @@ use EMS\CoreBundle\Core\Dashboard\DashboardOptions;
 use EMS\CoreBundle\Core\Dashboard\Services\AdvancedSearch;
 use EMS\CoreBundle\Core\Dashboard\Services\DashboardInterface;
 use EMS\CoreBundle\Core\Dashboard\Services\Export;
+use EMS\CoreBundle\Core\Dashboard\Services\Matomo;
 use EMS\CoreBundle\Core\Dashboard\Services\Template;
 use EMS\CoreBundle\Form\Field\CodeEditorType;
 use EMS\CoreBundle\Form\Field\ContentTypePickerType;
@@ -52,6 +53,7 @@ class DashboardOptionsType extends AbstractType
         match ($dashboard::class) {
             Export::class => $this->buildForExport($builder) ,
             Template::class => $this->buildForTemplate($builder),
+            Matomo::class => $this->buildForMatomo($builder),
             AdvancedSearch::class => $this->buildForAdvancedSearch($builder),
             default => null,
         };
@@ -102,6 +104,28 @@ class DashboardOptionsType extends AbstractType
                     t('key.inline', [], 'emsco-core')->getMessage() => ResponseHeaderBag::DISPOSITION_INLINE,
                 ],
                 'choice_translation_domain' => 'emsco-core',
+            ]);
+    }
+
+    /**
+     * @param FormBuilderInterface<mixed> $builder
+     */
+    private function buildForMatomo(FormBuilderInterface $builder): void
+    {
+        $builder
+            ->add(DashboardOptions::MATOMO_URL, null, [
+                'label' => t('field.matomo_url', [], 'emsco-core'),
+                'required' => true,
+            ])
+            ->add(DashboardOptions::MATOMO_SITE_ID, IntegerType::class, [
+                'label' => t('field.matomo_site_id', [], 'emsco-core'),
+                'required' => true,
+                'empty_data' => 1,
+                'attr' => ['min' => 1],
+            ])
+            ->add(DashboardOptions::MATOMO_TOKEN_AUTH, null, [
+                'label' => t('field.matomo_token_auth', [], 'emsco-core'),
+                'required' => true,
             ]);
     }
 

@@ -137,18 +137,21 @@ class JsonClass implements \JsonSerializable
     public function replaceCollectionByEntityNames(string $property): void
     {
         $this->replacedFields[] = $property;
-        $names = [];
-        if (isset($this->properties[$property])) {
-            foreach ($this->properties[$property]->toArray() as $entity) {
-                if (!$entity instanceof EntityInterface) {
-                    throw new \RuntimeException('Unexpected collection entity type');
-                }
-                $names[] = $entity->getName();
-            }
+        if (!isset($this->properties[$property])) {
+            $this->updateProperty($property, []);
+
+            return;
         }
 
+        $names = [];
+        foreach ($this->properties[$property]->toArray() as $entity) {
+            if (!$entity instanceof EntityInterface) {
+                throw new \RuntimeException('Unexpected collection entity type');
+            }
+            $names[] = $entity->getName();
+        }
         \natcasesort($names);
-
+        $names = \array_values($names);
         $this->updateProperty($property, $names);
     }
 

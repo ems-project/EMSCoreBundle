@@ -1,4 +1,5 @@
 environment:
+    name_invalid: 'The name must start with a lowercase letter and may only contain lowercase letters, digits, hyphens and underscores.'
     target_diff_source: 'The target environment must be different from the source environment'
 form:
     name:

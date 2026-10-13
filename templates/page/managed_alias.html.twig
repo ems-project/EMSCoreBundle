@@ -1,21 +1,12 @@
-{% extends '@EMSCore/base.html.twig' %}{% trans_default_domain 'emsco-core' %}
+{% extends '@EMSCore/page/default.html.twig' %}{% trans_default_domain 'emsco-core' %}
 
-{% if new %}
-    {% set title = 'action.add_managed_alias'|trans %}
-{% else %}
-    {% set title = 'action.edit_managed_alias'|trans %}
-{% endif %}
-
-{% block title %}{{ title }}{% endblock %}
-{% block pagetitle %}{{ title }}{% endblock %} 
-
-{% block body %}
+{% block render_form %}
     <div class="row">
         {{ form_start(form) }}
         <div class="col-md-6">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">{{ title }}</h3>
+                    <h3 class="box-title">{{ title|trans }}</h3>
                 </div>
                 <div class="box-body">
                     {{ form_row(form.name) }}
@@ -61,7 +52,7 @@
         </div>
         {{ form_end(form) }}
     </div>
-{% endblock %}
+{% endblock render_form %}
 
 {% block frontend_application_css %}
     <link rel="stylesheet" href="{{ asset('managed-alias.css', 'emscore') }}">

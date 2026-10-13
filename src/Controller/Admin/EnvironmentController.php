@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Controller\Admin;
 
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
-use EMS\CommonBundle\Elasticsearch\Exception\NotFoundException;
-use EMS\CommonBundle\Helper\EmsFields;
 use EMS\CoreBundle\Controller\CoreControllerTrait;
 use EMS\CoreBundle\Core\DataTable\DataTableFactory;
 use EMS\CoreBundle\Core\UI\Page\Navigation;
@@ -14,14 +12,10 @@ use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\DataTable\Type\Environment\EnvironmentDataTableType;
 use EMS\CoreBundle\DataTable\Type\Environment\EnvironmentManagedAliasDataTableType;
 use EMS\CoreBundle\Entity\Environment;
-use EMS\CoreBundle\Entity\Form\RebuildIndex;
-use EMS\CoreBundle\Entity\UserInterface;
 use EMS\CoreBundle\Form\Data\TableAbstract;
-use EMS\CoreBundle\Form\Field\ColorPickerType;
-use EMS\CoreBundle\Form\Field\IconTextType;
-use EMS\CoreBundle\Form\Field\SubmitEmsType;
-use EMS\CoreBundle\Form\Form\EditEnvironmentType;
-use EMS\CoreBundle\Form\Form\RebuildIndexType;
+use EMS\CoreBundle\Form\Form\Environment\EnvironmentType;
+use EMS\CoreBundle\Form\Form\Environment\RebuildType;
+use EMS\CoreBundle\Form\Form\Environment\ViewEnvironmentType;
 use EMS\CoreBundle\Form\Form\TableType;
 use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\ContentTypeService;
@@ -30,18 +24,20 @@ use EMS\CoreBundle\Service\IndexService;
 use EMS\CoreBundle\Service\JobService;
 use EMS\CoreBundle\Service\Mapping;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 use function Symfony\Component\Translation\t;
 
 class EnvironmentController extends AbstractController
 {
     use CoreControllerTrait;
+
+    private Navigation $breadcrumb;
 
     public function __construct(
         private readonly LocalizedLoggerInterface $logger,
@@ -52,84 +48,50 @@ class EnvironmentController extends AbstractController
         private readonly JobService $jobService,
         private readonly DataTableFactory $dataTableFactory,
         private readonly FormFactory $formFactory,
-        private readonly ?string $circlesObject,
-        private readonly string $templateNamespace,
     ) {
+        $this->breadcrumb = Navigation::admin()->environments();
     }
 
-    public function remove(Environment $environment): Response
+    public function add(Request $request): Page|RedirectResponse
+    {
+        $environment = new Environment();
+        $form = $this->createForm(EnvironmentType::class, $environment, ['create' => true]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->environmentService->create($environment);
+            $indexName = $environment->getNewIndexName();
+            $this->mapping->createIndex($indexName, $this->environmentService->getIndexAnalysisConfiguration());
+
+            foreach ($this->contentTypeService->getAll() as $contentType) {
+                $this->contentTypeService->updateMapping($contentType, $indexName);
+            }
+
+            $this->indexService->updateAlias($environment->getAlias(), [], [$indexName]);
+
+            return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
+        }
+
+        return new Page([
+            'form' => $form->createView(),
+            'title' => t('type.title_create', ['type' => 'environment'], 'emsco-core'),
+            'notice' => t('message.environment_add_notice', [], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb->add(
+                t('type.title_create', ['type' => 'environment'], 'emsco-core')
+            ),
+        ]);
+    }
+
+    public function delete(Environment $environment): Response
     {
         $this->environmentService->delete($environment);
 
         return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
     }
 
-    public static function isValidName(string $name): bool
+    public function edit(UserInterface $user, Environment $environment, Request $request): Page|RedirectResponse
     {
-        return \preg_match('/^[a-z][a-z0-9\-_]*$/', $name) && \strlen($name) <= 100;
-    }
-
-    public function add(Request $request): Response
-    {
-        $form = $this->createFormBuilder([])->add('name', IconTextType::class, [
-            'icon' => 'fa fa-database',
-            'required' => false,
-        ])->add('color', ColorPickerType::class, [
-            'required' => false,
-        ])->add('save', SubmitEmsType::class, [
-            'label' => 'Create',
-            'icon' => 'fa fa-plus',
-            'attr' => [
-                'class' => 'btn btn-primary pull-right',
-                'data-testid' => 'btn-action-save',
-            ],
-        ])->getForm();
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted()) {
-            $environmentName = $form->get('name')->getData();
-
-            if (!static::isValidName($environmentName)) {
-                $form->get('name')->addError(new FormError('Must respects the following regex /^[a-z][a-z0-9\-_]*$/'));
-            }
-
-            if ($form->isValid()) {
-                $anotherObject = $this->environmentService->getByName($environmentName);
-
-                if ($anotherObject) {
-                    // TODO: test name format
-                    $form->get('name')->addError(new FormError('Another environment named '.$environmentName.' already exists'));
-                } else {
-                    $environment = $this->environmentService->createEnvironment(
-                        name: $environmentName,
-                        color: $form->get('color')->getData()
-                    );
-
-                    $indexName = $environment->getNewIndexName();
-                    $this->mapping->createIndex($indexName, $this->environmentService->getIndexAnalysisConfiguration());
-
-                    foreach ($this->contentTypeService->getAll() as $contentType) {
-                        $this->contentTypeService->updateMapping($contentType, $indexName);
-                    }
-
-                    $this->indexService->updateAlias($environment->getAlias(), [], [$indexName]);
-
-                    return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
-                }
-            }
-        }
-
-        return $this->render(\sprintf('@%s/environment/add.html.twig', $this->templateNamespace), [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    public function edit(Environment $environment, Request $request): Response
-    {
-        $form = $this->createForm(EditEnvironmentType::class, $environment, [
-            'type' => (null !== $this->circlesObject && '' !== $this->circlesObject ? $this->circlesObject : null),
-        ]);
+        $form = $this->createForm(EnvironmentType::class, $environment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -142,72 +104,12 @@ class EnvironmentController extends AbstractController
             return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
         }
 
-        return $this->render(\sprintf('@%s/environment/edit.html.twig', $this->templateNamespace), [
-            'environment' => $environment,
+        return new Page([
             'form' => $form->createView(),
-        ]);
-    }
-
-    public function view(Environment $environment): Response
-    {
-        try {
-            $info = $this->mapping->getMapping($environment);
-        } catch (NotFoundException $notFoundException) {
-            $this->logger->messageError(t('message.environment_alias_missing', [
-                'environment' => $environment->getLabel(),
-            ], 'emsco-core'), [
-                EmsFields::LOG_ERROR_MESSAGE_FIELD => $notFoundException->getMessage(),
-                EmsFields::LOG_EXCEPTION_FIELD => $notFoundException,
-            ]);
-            $info = false;
-        }
-
-        return $this->render(\sprintf('@%s/environment/view.html.twig', $this->templateNamespace), [
-            'environment' => $environment,
-            'info' => $info,
-        ]);
-    }
-
-    public function rebuild(Environment $environment, Request $request): Response
-    {
-        $rebuildIndex = new RebuildIndex();
-
-        $form = $this->createForm(RebuildIndexType::class, $rebuildIndex);
-
-        $form->handleRequest($request);
-
-        $user = $this->getUser();
-        if (!$user instanceof UserInterface) {
-            throw new \RuntimeException('Unexpected user object');
-        }
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $option = $rebuildIndex->getOption();
-
-            switch ($option) {
-                case 'newIndex':
-                    $job = $this->jobService->createCommand($user, \sprintf('ems:environment:rebuild %s', $environment->getName()));
-
-                    return $this->redirectToRoute('emsco_job_status', [
-                        'job' => $job->getId(),
-                    ]);
-                case 'sameIndex':
-                    $job = $this->jobService->createCommand($user, \sprintf('ems:environment:reindex %s', $environment->getName()));
-
-                    return $this->redirectToRoute('emsco_job_status', [
-                        'job' => $job->getId(),
-                    ]);
-                default:
-                    $this->logger->messageWarning(t('message.environment_rebuild_unknown_option', [
-                        'environment' => $environment->getLabel(),
-                        'option' => $option,
-                    ], 'emsco-core'));
-            }
-        }
-
-        return $this->render(\sprintf('@%s/environment/rebuild.html.twig', $this->templateNamespace), [
-            'environment' => $environment,
-            'form' => $form->createView(),
+            'title' => t('type.title_edit', ['type' => 'environment', 'label' => $environment->getLabel($user)], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb->add(
+                t('type.title_edit', ['type' => 'environment', 'label' => $environment->getLabel($user)], 'emsco-core')
+            ),
         ]);
     }
 
@@ -247,6 +149,44 @@ class EnvironmentController extends AbstractController
                 ),
             ]),
         };
+    }
+
+    public function rebuild(UserInterface $user, Environment $environment, Request $request): Page|RedirectResponse
+    {
+        $form = $this->createForm(RebuildType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $command = match ($form->get('option')->getData()) {
+                'newIndex' => 'ems:environment:rebuild',
+                'sameIndex' => 'ems:environment:reindex',
+                default => throw new \RuntimeException('Unexpected rebuild option'),
+            };
+            $job = $this->jobService->createCommand($user, \sprintf('%s %s', $command, $environment->getName()));
+
+            return $this->redirectToRoute(Routes::JOB_STATUS, ['job' => $job->getId()]);
+        }
+
+        return new Page([
+            'form' => $form->createView(),
+            'title' => t('title.rebuild_environment', ['name' => $environment->getName()], 'emsco-core'),
+            'notice' => t('message.environment_rebuild_notice', [], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb->add(
+                t('title.rebuild_index_short', [], 'emsco-core')
+            ),
+        ]);
+    }
+
+    public function view(UserInterface $user, Environment $environment): Page
+    {
+        return new Page([
+            'form' => $this->createForm(ViewEnvironmentType::class, $environment)->createView(),
+            'title' => t('title.view_environment', ['label' => $environment->getLabel($user)], 'emsco-core'),
+            'subTitle' => t('title.view_environment_short', [], 'emsco-core'),
+            'breadcrumb' => $this->breadcrumb->add(
+                t('title.view_environment', ['label' => $environment->getLabel($user)], 'emsco-core')
+            ),
+        ]);
     }
 
     /**

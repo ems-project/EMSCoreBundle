@@ -719,7 +719,6 @@ key:
     draft_in_progress: 'Concept in uitvoering'
     edit_revision_json: 'Ruwe JSON-bewerking'
     elasticms_logo_alt: 'Logo van elasticMS'
-    elasticsearch_information: Elasticsearch-informatie
     elements: Elementen
     email_lowercase: e-mail
     email_notification_lowercase: e-mailmelding
@@ -1010,7 +1009,6 @@ message:
     duplicate_environment: 'Omgeving "{name}" bestaat al!'
     duplicate_field: 'Dupliceren <strong>{name}</strong>'
     edit_field_name: '{name} bewerken'
-    elasticsearch_index_missing: 'Elasticsearch-index ontbreekt!'
     email_crm_export: 'In bijlage vindt u de export van de gevraagde CRM-inzendingen.'
     email_greeting: 'Met vriendelijke groeten.'
     email_hello: 'Hallo,'
@@ -1032,7 +1030,6 @@ message:
     environment_not_empty: 'De omgeving {environment} is niet leeg'
     environment_publish_permission_denied: 'U heeft onvoldoende rechten om "{content_type}" documenten te publiceren'
     environment_rebuild_notice: 'Wees voorzichtig: afhankelijk van de geselecteerde optie kan bepaalde inhoud in de zoekindex verloren gaan.'
-    environment_rebuild_unknown_option: 'Onmogelijk om de omgeving {environment} te herbouwen door onbekende optie "{option}"'
     environment_updated: 'De omgeving {environment} is bijgewerkt'
     environment_wrong_ouuid: 'Onjuist gevormde OUUID {ouuid}'
     error_status: 'Met de melding "{status}"'
@@ -1327,6 +1324,8 @@ option:
     layout_sidebar_mini: 'Zijbalk mini'
     migration: Migratie
     multiple: Meerdere
+    rebuild_new_index: 'Er wordt een nieuwe index aangemaakt en alle objecten worden opnieuw geïndexeerd met de revisie van deze omgeving. Daarna wordt de alias van de omgeving bijgewerkt. Er wordt niets verwijderd uit de huidige zoekindex.'
+    rebuild_same_index: 'Alle objecten in eMS worden opnieuw geïndexeerd in de bestaande index.'
     recompute_on_publish: 'Documenten herberekenen bij publicatie'
     restriction: Beperking
     update_referrers: 'Verwijzers bijwerken'
@@ -1386,7 +1385,6 @@ role:
         label: Webmaster
 title:
     add_content_type: 'Een nieuwe {content_type} toevoegen'
-    add_environment: 'Een nieuwe omgeving toevoegen'
     add_folder: 'Map toevoegen'
     add_new_task: 'Nieuwe taak toevoegen'
     add_release: 'Release toevoegen'
@@ -1406,8 +1404,6 @@ title:
     deleted_task: 'Verwijderde taak: {title}'
     drafts_in_progress: '{pluralName} concepten in uitvoering'
     edit_display_name: '{display_name} bewerken'
-    edit_environment: 'Omgeving "{name}" bewerken'
-    edit_environment_short: 'Omgeving bewerken'
     edit_release: 'Release bewerken'
     edit_revision_content_type: '{contentType} bewerken: {revision} '
     edit_task: 'Taak bewerken: {title}'
@@ -1418,7 +1414,6 @@ title:
     filtering_tasks: 'Taken filteren'
     items_in_trash: '{pluralName} in prullenbak'
     job_list: Joblijst
-    list_environments: 'Omgevingen weergeven'
     list_releases: 'Lijst van releases'
     log_of: 'Log van {created}'
     messages_in_bus: 'Berichten in de bus'
@@ -1431,7 +1426,6 @@ title:
     name_of_plural: '{name} van {plural}'
     new_content_type: 'Nieuwe {content_type}'
     new_draft: '{contentType}: nieuw concept'
-    new_environment_short: 'Nieuwe omgeving'
     new_label: 'Nieuwe {label}'
     notifications_none_pending: 'Geen wachtende notificaties'
     out_of_sync: 'Niet gesynchroniseerd'
@@ -1452,7 +1446,6 @@ title:
     reset_password: 'Wachtwoord resetten'
     revisions_of_content_type: 'Revisies van {contentType}: {title}'
     select_environments_to_compare: 'Selecteer omgevingen om te vergelijken'
-    select_your_options: 'Selecteer uw opties'
     specific_permissions_for: 'Recht voor {content_type_singular_name}'
     systems_status: Systeemstatus
     systems_status_tagline: 'Werkt alles zoals verwacht?'
@@ -1462,7 +1455,7 @@ title:
     users_in_group: 'Gebruikers in groep'
     view_custom: 'Weergave {name} van {contentType} "{label}" zoals geïndexeerd in {environment}'
     view_ems_id: '{content_type}:{id} bekijken'
-    view_environment: 'Omgeving {name} bekijken'
+    view_environment: 'Omgeving {label} bekijken'
     view_environment_short: 'Omgeving bekijken'
     view_file: 'Bestand bekijken'
     view_file_modal: 'Bestand bekijken: {name}'

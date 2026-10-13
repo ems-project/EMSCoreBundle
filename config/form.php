@@ -69,6 +69,8 @@ use EMS\CoreBundle\Form\FieldType\FieldTypeType;
 use EMS\CoreBundle\Form\Form\ActionType;
 use EMS\CoreBundle\Form\Form\Dashboard\DashboardType;
 use EMS\CoreBundle\Form\Form\EmsCollectionType;
+use EMS\CoreBundle\Form\Form\Environment\EnvironmentType;
+use EMS\CoreBundle\Form\Form\Environment\ViewEnvironmentType;
 use EMS\CoreBundle\Form\Form\FieldHolderType;
 use EMS\CoreBundle\Form\Form\FormType;
 use EMS\CoreBundle\Form\Form\ManagedAliasType;
@@ -599,6 +601,16 @@ return static function (ContainerConfigurator $container) {
         ->args([
             '%ems_core.circles_object%',
             service('ems.service.environment'),
+        ])
+        ->tag('form.type');
+
+    $services->set('emsco.form.environment', EnvironmentType::class)
+        ->args(['%ems_core.circles_object%'])
+        ->tag('form.type');
+    $services->set('emsco.form.environment_view', ViewEnvironmentType::class)
+        ->args([
+            service('ems.service.mapping'),
+            service('emsco.logger'),
         ])
         ->tag('form.type');
 

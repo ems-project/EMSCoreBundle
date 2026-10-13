@@ -1,4 +1,5 @@
 environment:
+    name_invalid: 'De naam moet met een kleine letter beginnen en mag enkel kleine letters, cijfers, koppeltekens en underscores bevatten.'
     target_diff_source: 'De doelomgeving moet verschillen van de bronomgeving'
 form:
     name:

@@ -719,7 +719,6 @@ key:
     draft_in_progress: 'Draft in progress'
     edit_revision_json: 'JSON raw edit'
     elasticms_logo_alt: "elasticMS's logo"
-    elasticsearch_information: 'Elasticsearch information'
     elements: Elements
     email_lowercase: e-mail
     email_notification_lowercase: 'e-mail notification'
@@ -1010,7 +1009,6 @@ message:
     duplicate_environment: 'Environment "{name}" already exists!'
     duplicate_field: 'Duplicate <strong>{name{</strong>'
     edit_field_name: 'Edit {name}'
-    elasticsearch_index_missing: 'Elasticsearch index is missing !'
     email_crm_export: 'Please find attached the export of requested CRM submissions.'
     email_greeting: Regards.
     email_hello: 'Hello,'
@@ -1032,7 +1030,6 @@ message:
     environment_not_empty: 'The environment {environment} is not empty'
     environment_publish_permission_denied: 'You do not have enough privileges to publish "{content_type}" documents'
     environment_rebuild_notice: 'Be cautious, depending of the option selected some content in the search index may be lost.'
-    environment_rebuild_unknown_option: 'Impossible to rebuild the environment {environment} due to unknown option "{option}"'
     environment_updated: 'The environment {environment} has been updated'
     environment_wrong_ouuid: 'Malformed OUUID {ouuid}'
     error_status: 'With the message "{status}"'
@@ -1327,6 +1324,8 @@ option:
     layout_sidebar_mini: 'Sidebar mini'
     migration: Migration
     multiple: Multiple
+    rebuild_new_index: "A new index will be created and all objects will be reindexed with the revision defined for this environment. Once it's done the environment alias will be updated. Nothing will be removed from the current search index."
+    rebuild_same_index: 'All objects in eMS will be just reindexed into the existing index.'
     recompute_on_publish: 'Recompute documents on publication'
     restriction: Restriction
     update_referrers: 'Update referrers'
@@ -1386,7 +1385,6 @@ role:
         label: Webmaster
 title:
     add_content_type: 'Add a new {content_type}'
-    add_environment: 'Add a new Environment'
     add_folder: 'Add folder'
     add_new_task: 'Add a new task'
     add_release: 'Add a Release'
@@ -1406,8 +1404,6 @@ title:
     deleted_task: 'Deleted task : {title}'
     drafts_in_progress: '{pluralName} drafts in progress'
     edit_display_name: 'Edit {display_name}'
-    edit_environment: 'Edit the environment "{name}"'
-    edit_environment_short: 'Edit environment'
     edit_release: 'Edit a Release'
     edit_revision_content_type: 'Edit the {contentType}: {revision} '
     edit_task: 'Edit task : {title}'
@@ -1418,7 +1414,6 @@ title:
     filtering_tasks: 'Filtering the tasks'
     items_in_trash: '{pluralName} in trash'
     job_list: "Job's list"
-    list_environments: 'List Environments'
     list_releases: 'List of Releases'
     log_of: 'Log of the {created}'
     messages_in_bus: 'Messages in the bus'
@@ -1431,7 +1426,6 @@ title:
     name_of_plural: '{name} of {plural}'
     new_content_type: 'New {content_type}'
     new_draft: '{contentType}: new draft'
-    new_environment_short: 'New Environment'
     new_label: 'New {label}'
     notifications_none_pending: 'No pending notifications'
     out_of_sync: 'Out of sync'
@@ -1452,7 +1446,6 @@ title:
     reset_password: 'Reset password'
     revisions_of_content_type: 'Revisions of {contentType}: {title}'
     select_environments_to_compare: 'Select Environments to compare'
-    select_your_options: 'Select your options'
     specific_permissions_for: 'Permission for {content_type_singular_name}'
     systems_status: "Systems' status"
     systems_status_tagline: 'Is everything working as expected?'
@@ -1462,7 +1455,7 @@ title:
     users_in_group: 'Users in group'
     view_custom: 'View {name} of the {contentType} "{label}" as indexed in {environment}'
     view_ems_id: 'View {content_type}:{id}'
-    view_environment: 'View the environment {name}'
+    view_environment: 'View the environment {label}'
     view_environment_short: 'View environment'
     view_file: 'View file'
     view_file_modal: 'View file: {name}'

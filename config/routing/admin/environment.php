@@ -7,7 +7,7 @@ use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 return function (RoutingConfigurator $routes): void {
     $routes->add('emsco_admin_environment_remove', '/remove/{environment}')
-        ->controller([EnvironmentController::class, 'remove'])
+        ->controller([EnvironmentController::class, 'delete'])
         ->methods(['POST']);
 
     $routes->add('emsco_admin_environment_add', '/add')

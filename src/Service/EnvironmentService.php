@@ -84,10 +84,7 @@ class EnvironmentService implements EntityServiceInterface
         $environment = new Environment();
         $environment->setName($name);
         $environment->setColor($color ?? 'default');
-        $environment->setAlias($this->generateAlias($environment));
-        $environment->setManaged(true);
         $environment->setUpdateReferrers($updateReferrers);
-        $environment->setOrderKey($this->count(context: ['managed' => true]));
         $environment->setRolePublish($rolePublish);
 
         if (null !== $position) {
@@ -95,6 +92,18 @@ class EnvironmentService implements EntityServiceInterface
             $position = \max(1, \min($position, $max + 1));
             $this->environmentRepository->shiftOrderKeyFrom($position, 1);
             $environment->setOrderKey($position);
+        }
+
+        return $this->create($environment);
+    }
+
+    public function create(Environment $environment): Environment
+    {
+        $environment->setAlias($this->generateAlias($environment));
+        $environment->setManaged(true);
+
+        if (!$environment->hasOrderKey()) {
+            $environment->setOrderKey($this->count(context: ['managed' => true]));
         }
 
         $this->environmentRepository->save($environment);

@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace EMS\CoreBundle\Controller\ContentManagement;
+namespace EMS\CoreBundle\Controller\Admin;
 
 use EMS\CommonBundle\Contracts\Log\LocalizedLoggerInterface;
+use EMS\CoreBundle\Core\UI\Page\Navigation;
+use EMS\CoreBundle\Core\UI\Page\Page;
 use EMS\CoreBundle\Entity\ManagedAlias;
 use EMS\CoreBundle\Form\Form\ManagedAliasType;
 use EMS\CoreBundle\Repository\ManagedAliasRepository;
@@ -12,23 +14,24 @@ use EMS\CoreBundle\Routes;
 use EMS\CoreBundle\Service\AliasService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 use function Symfony\Component\Translation\t;
 
-class ManagedAliasController extends AbstractController
+class EnvironmentManagedAliasController extends AbstractController
 {
+    private const string PAGE_TEMPLATE = 'page/managed_alias.html.twig';
+
     public function __construct(
         private readonly LocalizedLoggerInterface $logger,
         private readonly AliasService $aliasService,
         private readonly ManagedAliasRepository $managedAliasRepository,
         private readonly string $instanceId,
-        private readonly string $templateNamespace,
     ) {
     }
 
-    public function add(Request $request): Response
+    public function add(Request $request): Page|RedirectResponse
     {
         $managedAlias = new ManagedAlias();
         $form = $this->createForm(ManagedAliasType::class, $managedAlias);
@@ -44,13 +47,14 @@ class ManagedAliasController extends AbstractController
             return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
         }
 
-        return $this->render(\sprintf('@%s/environment/managed_alias.html.twig', $this->templateNamespace), [
-            'new' => true,
+        return new Page([
             'form' => $form->createView(),
-        ]);
+            'title' => t('action.add_managed_alias', [], 'emsco-core'),
+            'breadcrumb' => Navigation::admin()->environments()->add(t('action.add_managed_alias', [], 'emsco-core')),
+        ], self::PAGE_TEMPLATE);
     }
 
-    public function edit(Request $request, ManagedAlias $managedAlias): Response
+    public function edit(Request $request, ManagedAlias $managedAlias): Page|RedirectResponse
     {
         $managedAlias = $this->aliasService->getManagedAliasByName($managedAlias->getName());
 
@@ -67,16 +71,15 @@ class ManagedAliasController extends AbstractController
             return $this->redirectToRoute(Routes::ADMIN_ENVIRONMENT_INDEX);
         }
 
-        return $this->render(\sprintf('@%s/environment/managed_alias.html.twig', $this->templateNamespace), [
-            'new' => false,
+        return new Page([
             'form' => $form->createView(),
-        ]);
+            'title' => t('action.edit_managed_alias', [], 'emsco-core'),
+            'breadcrumb' => Navigation::admin()->environments()->add(t('action.edit_managed_alias', [], 'emsco-core')),
+        ], self::PAGE_TEMPLATE);
     }
 
-    public function remove(ManagedAlias $managedAlias): Response
+    public function remove(ManagedAlias $managedAlias): RedirectResponse
     {
-        $managedAlias = $this->aliasService->getManagedAliasByName($managedAlias->getAlias());
-
         $this->aliasService->removeAlias($managedAlias->getAlias());
         $this->managedAliasRepository->delete($managedAlias);
         $this->logger->messageNotice(t('message.managed_alias_deleted', [

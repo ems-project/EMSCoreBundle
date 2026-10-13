@@ -724,7 +724,6 @@ key:
     draft_in_progress: 'Brouillon en cours'
     edit_revision_json: 'Édition JSON brute'
     elasticms_logo_alt: 'Logo d’elasticMS'
-    elasticsearch_information: 'Informations Elasticsearch'
     elements: Éléments
     email_lowercase: e-mail
     email_notification_lowercase: 'notification par e-mail'
@@ -1015,7 +1014,6 @@ message:
     duplicate_environment: 'L’environnement « {name} » existe déjà !'
     duplicate_field: 'Dupliquer <strong>{name}</strong>'
     edit_field_name: 'Modifier {name}'
-    elasticsearch_index_missing: 'L’index Elasticsearch est manquant !'
     email_crm_export: "Vous trouverez ci-joint l'export des soumissions CRM demandées."
     email_greeting: Cordialement.
     email_hello: 'Bonjour,'
@@ -1037,7 +1035,6 @@ message:
     environment_not_empty: "L'environnement {environment} n'est pas vide"
     environment_publish_permission_denied: 'Vous n''avez pas suffisamment de droits pour publier des documents "{content_type}"'
     environment_rebuild_notice: 'Soyez prudent, selon l’option sélectionnée, certains contenus de l’index de recherche peuvent être perdus.'
-    environment_rebuild_unknown_option: 'Impossible de reconstruire l''environnement {environment} en raison de l''option inconnue "{option}"'
     environment_updated: "L'environnement {environment} a été mis à jour"
     environment_wrong_ouuid: 'OUUID mal formé {ouuid}'
     error_status: 'Avec le message « {status} »'
@@ -1332,6 +1329,8 @@ option:
     layout_sidebar_mini: 'Barre latérale mini'
     migration: Migration
     multiple: Multiple
+    rebuild_new_index: "Un nouvel index sera créé et tous les objets seront réindexés avec la révision définie pour cet environnement. Ensuite, l'alias de l'environnement sera mis à jour. Rien ne sera supprimé de l'index de recherche actuel."
+    rebuild_same_index: "Tous les objets d'eMS seront simplement réindexés dans l'index existant."
     recompute_on_publish: 'Recalculer les documents lors de la publication'
     restriction: Restriction
     update_referrers: 'Mettre à jour les référents'
@@ -1391,7 +1390,6 @@ role:
         label: Webmaster
 title:
     add_content_type: 'Ajouter un nouveau {content_type}'
-    add_environment: 'Ajouter un nouvel environnement'
     add_folder: 'Ajouter un dossier'
     add_new_task: 'Ajouter une nouvelle tâche'
     add_release: 'Ajouter une release'
@@ -1411,8 +1409,6 @@ title:
     deleted_task: "Tâche supprimée\_: {title}"
     drafts_in_progress: 'Brouillons en cours de {pluralName}'
     edit_display_name: 'Modifier {display_name}'
-    edit_environment: 'Modifier l’environnement « {name} »'
-    edit_environment_short: 'Modifier l’environnement'
     edit_release: 'Modifier une release'
     edit_revision_content_type: 'Modifier {contentType} : {revision} '
     edit_task: 'Modifier la tâche : {title}'
@@ -1423,7 +1419,6 @@ title:
     filtering_tasks: 'Filtrage des tâches'
     items_in_trash: '{pluralName} dans la corbeille'
     job_list: 'Liste des jobs'
-    list_environments: 'Liste des environnements'
     list_releases: 'Liste des releases'
     log_of: 'Log du {created}'
     messages_in_bus: 'Messages dans le bus'
@@ -1436,7 +1431,6 @@ title:
     name_of_plural: '{name} de {plural}'
     new_content_type: 'Nouveau {content_type}'
     new_draft: '{contentType} : nouveau brouillon'
-    new_environment_short: 'Nouvel environnement'
     new_label: 'Nouveau {label}'
     notifications_none_pending: 'Aucune notification en attente'
     out_of_sync: Désynchronisé
@@ -1457,7 +1451,6 @@ title:
     reset_password: 'Réinitialiser le mot de passe'
     revisions_of_content_type: 'Révisions de {contentType} : {title}'
     select_environments_to_compare: 'Sélectionner les environnements à comparer'
-    select_your_options: 'Sélectionnez vos options'
     specific_permissions_for: 'Permission pour {content_type_singular_name}'
     systems_status: 'Statut des systèmes'
     systems_status_tagline: 'Est-ce que tout fonctionne comme prévu ?'
@@ -1467,7 +1460,7 @@ title:
     users_in_group: 'Utilisateurs dans le groupe'
     view_custom: 'Vue {name} de {contentType} « {label} » telle qu’indexée dans {environment}'
     view_ems_id: 'Voir {content_type}:{id}'
-    view_environment: 'Voir l’environnement {name}'
+    view_environment: 'Voir l’environnement {label}'
     view_environment_short: 'Voir l’environnement'
     view_file: 'Voir le fichier'
     view_file_modal: 'Voir le fichier : {name}'

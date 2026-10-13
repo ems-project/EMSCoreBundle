@@ -9,6 +9,7 @@ use EMS\CoreBundle\Controller\ActionController;
 use EMS\CoreBundle\Controller\Admin\AnalyzerController;
 use EMS\CoreBundle\Controller\Admin\ChannelController;
 use EMS\CoreBundle\Controller\Admin\EnvironmentController;
+use EMS\CoreBundle\Controller\Admin\EnvironmentManagedAliasController;
 use EMS\CoreBundle\Controller\Admin\FilterController;
 use EMS\CoreBundle\Controller\Admin\FormController;
 use EMS\CoreBundle\Controller\Admin\I18nController;
@@ -40,7 +41,6 @@ use EMS\CoreBundle\Controller\ContentManagement\DataController;
 use EMS\CoreBundle\Controller\ContentManagement\DatatableController;
 use EMS\CoreBundle\Controller\ContentManagement\FileController;
 use EMS\CoreBundle\Controller\ContentManagement\JobController;
-use EMS\CoreBundle\Controller\ContentManagement\ManagedAliasController;
 use EMS\CoreBundle\Controller\ContentManagement\PublishController;
 use EMS\CoreBundle\Controller\ContentManagement\ReleaseController;
 use EMS\CoreBundle\Controller\ContentManagement\ViewController;
@@ -151,7 +151,6 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.job'),
             service('emsco.data_table.factory'),
             service('form.factory'),
-            '%ems_core.circles_object%',
             '%ems_core.template_namespace%',
         ])
         ->call('setContainer')
@@ -517,14 +516,13 @@ return static function (ContainerConfigurator $container) {
         ->tag('container.service_subscriber')
         ->tag('controller.service_arguments');
 
-    $services->set(ManagedAliasController::class)
+    $services->set(EnvironmentManagedAliasController::class)
         ->public()
         ->args([
             service('emsco.logger'),
             service('ems.service.alias'),
             service(ManagedAliasRepository::class),
             '%ems_core.instance_id%',
-            '%ems_core.template_namespace%',
         ])
         ->call('setContainer')
         ->tag('container.service_subscriber')

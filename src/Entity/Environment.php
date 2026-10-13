@@ -13,13 +13,19 @@ use EMS\CoreBundle\Entity\Helper\JsonClass;
 use EMS\CoreBundle\Entity\Helper\JsonDeserializer;
 use EMS\Helpers\Translations\Translation;
 use EMS\Helpers\Translations\Translations;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
+#[UniqueEntity(fields: ['name'], message: 'form.name.already_used')]
 class Environment extends JsonDeserializer implements \JsonSerializable, EntityInterface, \Stringable
 {
     use CreatedModifiedTrait;
     use IdentifierIntegerTrait;
 
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 100)]
+    #[Assert\Regex(pattern: '/^[a-z][a-z0-9\-_]*$/', message: 'environment.name_invalid')]
     protected string $name = '';
     protected ?string $label = null;
     /** @var array<string, array<string,string>>|null */
@@ -38,7 +44,7 @@ class Environment extends JsonDeserializer implements \JsonSerializable, EntityI
     /** @var string */
     protected $baseUrl;
     /** @var bool */
-    protected $managed;
+    protected $managed = true;
     /** @var bool */
     protected $snapshot = false;
     /** @var Collection<int, EnvironmentRevision> */

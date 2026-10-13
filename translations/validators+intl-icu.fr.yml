@@ -1,4 +1,5 @@
 environment:
+    name_invalid: "Le nom doit commencer par une lettre minuscule et ne peut contenir que des lettres minuscules, des chiffres, des traits d'union et des underscores."
     target_diff_source: "L'environnement cible doit être différent de l'environnement source"
 form:
     name:

@@ -11,6 +11,9 @@
 
         <many-to-one field="revision" target-entity="EMS\CoreBundle\Entity\Revision" inversed-by="environmentRevisions">
             <join-column name="revision_id" nullable="false" on-delete="CASCADE" />
+            <cascade>
+                <cascade-persist />
+            </cascade>
         </many-to-one>
 
         <many-to-one field="environment" target-entity="EMS\CoreBundle\Entity\Environment" inversed-by="environmentRevisions">

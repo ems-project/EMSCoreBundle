@@ -18,7 +18,7 @@ class CantBeFinalizedException extends ElasticmsException implements \Stringable
             $message = \sprintf('A new revision for the document %s:%s can not be finalized', $revision->giveContentType()->getName(), $revision->getOuuid());
         }
         if ('' !== $originMessage) {
-            $message .= \sprintf(' : %s', $originMessage);
+            $message = $originMessage;
         }
         parent::__construct($message, $code, $previous);
     }

@@ -69,13 +69,10 @@ final class JsonMenuNestedController extends AbstractController
         if ($form->isSubmitted()) {
             $formDataField = $form->get('data');
             $objectArray = RawDataTransformer::reverseTransform($fieldType, $form->getData()['data']);
+            $this->dataService->getPostProcessing()->jsonMenuNested($formDataField, $revision->giveContentType(), $objectArray);
             $isValid = $this->dataService->isValid($formDataField, null, $objectArray);
 
             if ($isValid || $form->isValid()) {
-                if (\is_array($objectArray)) {
-                    $this->dataService->getPostProcessing()->jsonMenuNested($formDataField, $revision->giveContentType(), $objectArray);
-                }
-
                 return $this->getAjaxModal()->getSuccessResponse([
                     'html' => $this->jsonMenuRenderer->generateNestedItem($requestData['config'], [
                         'id' => 'item',

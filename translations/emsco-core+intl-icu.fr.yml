@@ -749,7 +749,6 @@ message:
     dashboard_deleted: 'Le tableau de bord "{label}" a été supprimé'
     dashboard_exception: 'Le tableau de bord {name} a généré une exception'
     data_already_unpublished: 'Le document "{label}" était déjà dépublié de {environment}'
-    data_cant_finalize_field: '{error_message}'
     data_check_signature_failed: 'Signature non concordante dans {environment} pour le document "{label}"'
     data_computed_hash_mismatch: 'Hash calculé non concordant dans {environment} pour le document "{label}"'
     data_default_value_error: "Impossible d'initialiser la valeur par défaut (json_decode) pour le type de contenu {content_type}, veuillez vérifier la configuration du type de contenu"

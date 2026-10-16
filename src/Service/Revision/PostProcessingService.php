@@ -118,12 +118,6 @@ final readonly class PostProcessingService
                 if ($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
                     if (!$migration) {
                         $form->addError(new FormError($e->getPrevious()->getMessage()));
-                        $this->logger->warning('service.data.cant_finalize_field', [
-                            '_id' => $context['_id'] ?? null,
-                            'field_name' => $dataField->giveFieldType()->getName(),
-                            'field_display' => isset($fieldType->getDisplayOptions()['label']) && !empty($fieldType->getDisplayOptions()['label']) ? $fieldType->getDisplayOptions()['label'] : $fieldType->getName(),
-                            EmsFields::LOG_ERROR_MESSAGE_FIELD => $e->getPrevious()->getMessage(),
-                        ]);
                     }
                 } elseif ($e->getPrevious() && $e->getPrevious() instanceof Exception) {
                     throw $e->getPrevious();

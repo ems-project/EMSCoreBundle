@@ -34,6 +34,7 @@ final readonly class SubmissionExporter
         foreach ($this->formSubmissionService->getUnprocessed($config->batchSize) as $submission) {
             ++$unprocessedSubmissionsCount;
             $data = [
+                'id' => $submission->getId(),
                 'instance' => $submission->getInstance(),
                 'name' => $submission->getName(),
                 'locale' => $submission->getLocale(),

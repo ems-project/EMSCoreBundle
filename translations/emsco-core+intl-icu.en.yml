@@ -969,7 +969,6 @@ message:
     dashboard_deleted: 'The dashboard "{label}" has been deleted'
     dashboard_exception: 'The dashboard {name} raised an exception'
     data_already_unpublished: 'The document "{label}" was already unpublished from {environment}'
-    data_cant_finalize_field: '{error_message}'
     data_check_signature_failed: 'Signature mismatch in {environment} for the document "{label}"'
     data_computed_hash_mismatch: 'Computed hash mismatch in {environment} for the document "{label}"'
     data_default_value_error: 'It was impossible to initiate the default value (json_decode) for the content type {content_type}, please check the content type configuration'

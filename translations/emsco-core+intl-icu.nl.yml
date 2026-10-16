@@ -969,7 +969,6 @@ message:
     dashboard_deleted: 'Het dashboard "{label}" is verwijderd'
     dashboard_exception: 'Het dashboard {name} heeft een uitzondering veroorzaakt'
     data_already_unpublished: 'Het document "{label}" was al gedepubliceerd uit {environment}'
-    data_cant_finalize_field: '{error_message}'
     data_check_signature_failed: 'Handtekening komt niet overeen in {environment} voor het document "{label}"'
     data_computed_hash_mismatch: 'Berekende hash komt niet overeen in {environment} voor het document "{label}"'
     data_default_value_error: 'Het was onmogelijk om de standaardwaarde te initialiseren (json_decode) voor het inhoudstype {content_type}, controleer de configuratie van het inhoudstype'

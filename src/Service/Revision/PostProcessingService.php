@@ -27,6 +27,7 @@ use EMS\Helpers\Standard\Json;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment as Twig;
 use Twig\Error\SyntaxError;
 
@@ -37,7 +38,8 @@ final readonly class PostProcessingService
     public function __construct(
         private Twig $twig,
         private FormFactoryInterface $formFactory,
-        private LocalizedLoggerInterface $logger
+        private LocalizedLoggerInterface $logger,
+        private TranslatorInterface $translator,
     ) {
     }
 
@@ -120,12 +122,13 @@ final readonly class PostProcessingService
                     }
                 }
             } catch (\Throwable $e) {
-                if ($e->getPrevious() && $e->getPrevious() instanceof CantBeFinalizedException) {
+                $previousEvent = $e->getPrevious();
+                if ($previousEvent instanceof CantBeFinalizedException) {
                     if (!$migration) {
-                        $form->addError(new FormError($e->getPrevious()->getMessage()));
+                        $form->addError(new FormError($previousEvent->getTranslatableMessage()->trans($this->translator)));
                     }
-                } elseif ($e->getPrevious() && $e->getPrevious() instanceof Exception) {
-                    throw $e->getPrevious();
+                } elseif ($previousEvent instanceof Exception) {
+                    throw $previousEvent;
                 } elseif ($e instanceof SyntaxError) {
                     if (!$migration) {
                         $twigContext = $e->getSourceContext();

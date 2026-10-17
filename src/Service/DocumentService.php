@@ -16,6 +16,8 @@ use EMS\CoreBundle\Form\Form\RevisionType;
 use EMS\CoreBundle\Repository\RevisionRepository;
 use Symfony\Component\Form\FormFactoryInterface;
 
+use function Symfony\Component\Translation\t;
+
 class DocumentService
 {
     private ?EntityManager $entityManager = null;
@@ -80,7 +82,7 @@ class DocumentService
         if ($currentRevision && $currentRevision->getDraft()) {
             if (!$documentImportContext->shouldForce()) {
                 // TODO: activate the newRevision when it's available
-                throw new CantBeFinalizedException('a draft is already in progress for the document', 0/* , $newRevision */);
+                throw new CantBeFinalizedException(t('message.another_draft_already_exist', [], 'emsco-core'));
             }
 
             $this->dataService->discardDraft($currentRevision, true, $documentImportContext->getLockUser());

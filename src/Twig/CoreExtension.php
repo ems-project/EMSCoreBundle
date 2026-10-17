@@ -25,7 +25,6 @@ use EMS\CoreBundle\Entity\Environment;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\Sequence;
 use EMS\CoreBundle\Event\DispatchToWebhookEvent;
-use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Exception\SkipNotificationException;
 use EMS\CoreBundle\Form\DataField\DateRangeFieldType;
 use EMS\CoreBundle\Form\DataField\TimeFieldType;
@@ -125,12 +124,6 @@ readonly class CoreExtension
     public function callUserFunc(mixed $function, mixed ...$parameter): mixed
     {
         return \call_user_func($function, $parameter);
-    }
-
-    #[AsTwigFunction(name: 'emsco_cant_be_finalized')]
-    public function cantBeFinalized(string $message = '', int $code = 0, ?\Throwable $previous = null): never
-    {
-        throw new CantBeFinalizedException($message, $code, $previous);
     }
 
     #[AsTwigFilter(name: 'emsco_convert_javascript_date_range_format')]

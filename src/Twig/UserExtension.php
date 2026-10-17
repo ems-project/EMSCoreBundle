@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Twig;
 
 use EMS\CoreBundle\Core\User\UserList;
+use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Entity\UserInterface;
+use EMS\CoreBundle\Exception\CantBeFinalizedException;
 use EMS\CoreBundle\Service\UserService;
+use EMS\Helpers\Translations\Translations;
 use Twig\Attribute\AsTwigFilter;
 use Twig\Attribute\AsTwigFunction;
+
+use function Symfony\Component\Translation\t;
 
 readonly class UserExtension
 {
@@ -77,5 +82,22 @@ readonly class UserExtension
             null, '' => 'N/A',
             default => $this->userService->searchUser($username)?->getDisplayName() ?? $username,
         };
+    }
+
+    /**
+     * @param string[] $translations
+     */
+    #[AsTwigFunction(name: 'emsco_cant_be_finalized')]
+    public function cantBeFinalized(string $message = '', array $translations = []): never
+    {
+        $user = $this->userService->getCurrentUser();
+        if (!$user instanceof User) {
+            throw new \RuntimeException(\sprintf('User class must be an instance of "%s".', User::class));
+        }
+        $message = Translations::fromSimpleArray($user->getLocales(), $translations, $message);
+        if ('' === $message) {
+            throw new CantBeFinalizedException(t('message.draft_cant_be_finalized', [], 'emsco-core'));
+        }
+        throw new CantBeFinalizedException(t('message.custom', ['message' => $message], 'emsco-core'));
     }
 }

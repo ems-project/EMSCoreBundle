@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Controller\Api\Form;
 
+use EMS\CoreBundle\Service\Form\Submission\FormSubmissionContext;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionException;
 use EMS\CoreBundle\Service\Form\Submission\FormSubmissionService;
 use EMS\Helpers\File\File;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 use function Symfony\Component\String\u;
 
@@ -27,6 +29,36 @@ final class SubmissionController extends AbstractController
         private readonly FormSubmissionService $formSubmissionService,
         private readonly LoggerInterface $logger,
     ) {
+    }
+
+    public function getSubmissions(Request $request): JsonResponse
+    {
+        $fromDateTime = Type::nullableString($request->query->all()['from-datetime'] ?? null);
+        $fromDateTime = $fromDateTime ? \DateTimeImmutable::createFromFormat(\DateTimeInterface::ATOM, $fromDateTime) : null;
+        if (false === $fromDateTime) {
+            throw new BadRequestHttpException('The format of the "from" query parameter is incorrect.');
+        }
+        $toDateTime = Type::nullableString($request->query->all()['to-datetime'] ?? null);
+        $toDateTime = $toDateTime ? \DateTimeImmutable::createFromFormat(\DateTimeInterface::ATOM, $toDateTime) : null;
+        if (false === $toDateTime) {
+            throw new BadRequestHttpException('The format of the "to" query parameter is incorrect.');
+        }
+        $context = new FormSubmissionContext(
+            $fromDateTime,
+            $toDateTime,
+            Type::nullableArray($request->query->all()['names'] ?? null),
+            Type::nullableArray($request->query->all()['instances'] ?? null),
+            Type::nullableArray($request->query->all()['locales'] ?? null),
+        );
+        $size = (int) ($request->query->all()['size'] ?? 50);
+        $from = (int) ($request->query->all()['from'] ?? 0);
+        $total = $this->formSubmissionService->count('', $context);
+        $formSubmissions = $this->formSubmissionService->get($from, $size, null, 'asc', '', $context);
+
+        return new JsonResponse([
+            'total' => $total,
+            'submissions' => $formSubmissions,
+        ]);
     }
 
     public function submit(Request $request): JsonResponse

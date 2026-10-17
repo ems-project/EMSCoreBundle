@@ -7,6 +7,7 @@ namespace EMS\CoreBundle\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use EMS\CoreBundle\Service\Form\Submission\FormSubmissionContext;
 use EMS\SubmissionBundle\Entity\FormSubmission;
 
 /**
@@ -33,12 +34,12 @@ class FormSubmissionRepository extends ServiceEntityRepository
     /**
      * @return FormSubmission[]
      */
-    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue): array
+    public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, ?FormSubmissionContext $context): array
     {
         $qb = $this->createQueryBuilder('fs');
         $qb->setFirstResult($from)
             ->setMaxResults($size);
-        $this->addSearchFilters($qb, $searchValue);
+        $this->addSearchFilters($qb, $searchValue, $context);
 
         if (\in_array($orderField, ['id', 'instance', 'name', 'locale', 'created', 'expireDate'], true)) {
             $qb->orderBy(\sprintf('fs.%s', $orderField), $orderDirection);
@@ -78,11 +79,11 @@ class FormSubmissionRepository extends ServiceEntityRepository
         }
     }
 
-    public function countAllUnprocessed(string $searchValue): int
+    public function countAllUnprocessed(string $searchValue, ?FormSubmissionContext $context): int
     {
         $qb = $this->createQueryBuilder('fs');
         $qb->select('count(fs.id)');
-        $this->addSearchFilters($qb, $searchValue);
+        $this->addSearchFilters($qb, $searchValue, $context);
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
@@ -196,7 +197,7 @@ class FormSubmissionRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    private function addSearchFilters(QueryBuilder $qb, string $searchValue): void
+    private function addSearchFilters(QueryBuilder $qb, string $searchValue, ?FormSubmissionContext $context): void
     {
         $qb->andWhere($qb->expr()->isNotNull('fs.data'));
         if ('' !== $searchValue) {
@@ -208,6 +209,26 @@ class FormSubmissionRepository extends ServiceEntityRepository
             );
             $qb->andWhere($or)
                 ->setParameter(':term', '%'.$searchValue.'%');
+        }
+        if (null === $context) {
+            return;
+        }
+        if ($context->getLocales()) {
+            $qb->andWhere($qb->expr()->in('fs.locale', $context->getLocales()));
+        }
+        if ($context->getNames()) {
+            $qb->andWhere($qb->expr()->in('fs.name', $context->getNames()));
+        }
+        if ($context->getInstances()) {
+            $qb->andWhere($qb->expr()->in('fs.instance', $context->getInstances()));
+        }
+        if ($context->getFrom()) {
+            $qb->andWhere($qb->expr()->gte('fs.created', ':from'))
+            ->setParameter('from', $context->getFrom());
+        }
+        if ($context->getTo()) {
+            $qb->andWhere($qb->expr()->lte('fs.created', ':to'))
+            ->setParameter('to', $context->getTo());
         }
     }
 }

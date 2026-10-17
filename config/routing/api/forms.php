@@ -12,6 +12,11 @@ return function (RoutingConfigurator $routes) {
         ->defaults(['_format' => 'json'])
         ->methods(['POST'])
         ->options(['openapi' => true]);
+    $routes->add('emsco_api_forms_submissions_get', '/submissions')
+        ->controller([SubmissionController::class, 'getSubmissions'])
+        ->defaults(['_format' => 'json'])
+        ->methods(['get'])
+        ->options(['openapi' => true]);
 
     $routes->add('emsco_api_forms_submissions_file', '/submissions/{submissionId}/files/{submissionFileId}')
         ->controller([SubmissionController::class, 'submissionFile'])

@@ -39,7 +39,11 @@ final readonly class FormSubmissionService implements EntityServiceInterface
     #[\Override]
     public function get(int $from, int $size, ?string $orderField, string $orderDirection, string $searchValue, mixed $context = null): array
     {
-        return $this->formSubmissionRepository->get($from, $size, $orderField, $orderDirection, $searchValue);
+        if (null !== $context && !$context instanceof FormSubmissionContext) {
+            throw new \InvalidArgumentException('Context must be an instance of FormSubmissionContext');
+        }
+
+        return $this->formSubmissionRepository->get($from, $size, $orderField, $orderDirection, $searchValue, $context);
     }
 
     public function findById(string $id): ?FormSubmission
@@ -276,7 +280,11 @@ final readonly class FormSubmissionService implements EntityServiceInterface
     #[\Override]
     public function count(string $searchValue = '', mixed $context = null): int
     {
-        return $this->formSubmissionRepository->countAllUnprocessed($searchValue);
+        if (null !== $context && !$context instanceof FormSubmissionContext) {
+            throw new \InvalidArgumentException('Context must be an instance of FormSubmissionContext');
+        }
+
+        return $this->formSubmissionRepository->countAllUnprocessed($searchValue, $context);
     }
 
     #[\Override]

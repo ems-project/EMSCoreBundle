@@ -46,6 +46,7 @@ return function (RoutingConfigurator $routes): void {
     $routes->import('@EMSCoreBundle/config/routing/revision.php')->prefix('/revision');
     $routes->import('@EMSCoreBundle/config/routing/admin/analyzer.php')->prefix('/admin/analyzer');
     $routes->import('@EMSCoreBundle/config/routing/admin/filter.php')->prefix('/admin/filter');
+    $routes->import('@EMSCoreBundle/config/routing/admin/choice-list.php');
     $routes->import('@EMSCoreBundle/config/routing/admin/i18n.php')->prefix('/admin/i18n');
     $routes->import('@EMSCoreBundle/config/routing/admin/content-type.php')->prefix('/admin/content-type');
     $routes->import('@EMSCoreBundle/config/routing/admin/action.php')->prefix('/admin/content-type/action');

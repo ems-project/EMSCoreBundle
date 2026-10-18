@@ -873,6 +873,23 @@
 	{{ _self.messages(dataField) }}
 {% endblock %}
 
+{% block EMS_CoreBundle_Form_DataField_ChoiceListFieldType %}
+    <dl>
+		<dt class="">
+            {{ dataField.fieldType.translate('label', app.user) }} {% if emsco_is_super() %}({{ dataField.fieldType.name }}){% endif %}
+		</dt>
+		<dd data-testid="field-value-{{ dataField.fieldType.name }}">
+			<ul>
+                {%- set values = dataField.fieldType.displayOptions.choice_list|emsco_choice_list -%}
+                {%- set labels =  values|map(p => p.group ? "#{p.group.label} > #{p.label}" : p.label) -%}
+                {%- set choices =  values|map((v, k) => k) -%}
+				{{ emsco_diff_choice(dataField.rawData, labels, choices, compare, dataField.fieldType.name, compareRawData) }}
+			</ul>
+		</dd>
+	</dl>
+	{{ _self.messages(dataField) }}
+{% endblock EMS_CoreBundle_Form_DataField_ChoiceListFieldType %}
+
 {% block EMS_CoreBundle_Form_DataField_JsonMenuLinkFieldType %}
 	<dl>
 		<dt>

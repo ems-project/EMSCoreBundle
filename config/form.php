@@ -8,6 +8,7 @@ use EMS\CoreBundle\Form\DataField\ActionFieldType;
 use EMS\CoreBundle\Form\DataField\AssetFieldType;
 use EMS\CoreBundle\Form\DataField\CheckboxFieldType;
 use EMS\CoreBundle\Form\DataField\ChoiceFieldType;
+use EMS\CoreBundle\Form\DataField\ChoiceListFieldType;
 use EMS\CoreBundle\Form\DataField\CodeFieldType;
 use EMS\CoreBundle\Form\DataField\CollectionFieldType;
 use EMS\CoreBundle\Form\DataField\CollectionItemFieldType;
@@ -67,6 +68,10 @@ use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
 use EMS\CoreBundle\Form\Field\WysiwygStylesSetPickerType;
 use EMS\CoreBundle\Form\FieldType\FieldTypeType;
 use EMS\CoreBundle\Form\Form\ActionType;
+use EMS\CoreBundle\Form\Form\ChoiceList\ChoiceListOptionChoiceType;
+use EMS\CoreBundle\Form\Form\ChoiceList\ChoiceListOptionGroupType;
+use EMS\CoreBundle\Form\Form\ChoiceList\ChoiceListOptionType;
+use EMS\CoreBundle\Form\Form\ChoiceList\ChoiceListType;
 use EMS\CoreBundle\Form\Form\Dashboard\DashboardType;
 use EMS\CoreBundle\Form\Form\EmsCollectionType;
 use EMS\CoreBundle\Form\Form\Environment\EnvironmentType;
@@ -88,6 +93,7 @@ use EMS\CoreBundle\Form\Revision\Task\RevisionTaskType;
 use EMS\CoreBundle\Form\Submission\ProcessType;
 use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
 use EMS\CoreBundle\Repository\AnalyzerRepository;
+use EMS\CoreBundle\Repository\ChoiceListRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 
@@ -330,6 +336,17 @@ return static function (ContainerConfigurator $container) {
         ->tag('ems.form.datafieldtype', ['alias' => 'choice'])
         ->tag('form.type');
 
+    $services->set('ems.fieldtype.choice_list', ChoiceListFieldType::class)
+        ->args([
+            service('security.authorization_checker'),
+            service('form.registry'),
+            service('ems.service.elasticsearch'),
+            service('security.token_storage'),
+            service(ChoiceListRepository::class),
+        ])
+        ->tag('ems.form.datafieldtype', ['alias' => 'choice_list'])
+        ->tag('form.type');
+
     $services->set('ems.fieldtype.multiplexed_tab_container', MultiplexedTabContainerFieldType::class)
         ->args([
             service('security.authorization_checker'),
@@ -537,6 +554,13 @@ return static function (ContainerConfigurator $container) {
     $services->set('ems_core.form.dashboard_type', DashboardType::class)
         ->args([service('ems_core.dashboard.dashboards')])
         ->tag('form.type');
+
+    $services->set('ems_core.form.choice_list_type', ChoiceListType::class)
+        ->tag('form.type');
+
+    $services->set(ChoiceListOptionType::class)->tag('form.type');
+    $services->set(ChoiceListOptionGroupType::class)->tag('form.type');
+    $services->set(ChoiceListOptionChoiceType::class)->tag('form.type');
 
     $services->set('ems_core.form.form_type', FormType::class)
         ->tag('form.type');

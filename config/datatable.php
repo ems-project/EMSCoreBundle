@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use EMS\CoreBundle\DataTable\Type\ChannelDataTableType;
+use EMS\CoreBundle\DataTable\Type\ChoiceListDataTableType;
 use EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeActionDataTableType;
 use EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeDataTableType;
 use EMS\CoreBundle\DataTable\Type\ContentType\ContentTypeUnreferencedDataTableType;
@@ -213,6 +214,10 @@ return static function (ContainerConfigurator $container) {
             service('ems.dashboard.manager'),
             '%ems_core.template_namespace%',
         ])
+        ->tag('emsco.datatable');
+
+    $services->set('emsco.data_table.choice_list', ChoiceListDataTableType::class)
+        ->args([service('emsco.choice_list.manager')])
         ->tag('emsco.datatable');
 
     $services->set('emsco.data_table.form', FormDataTableType::class)

@@ -10,6 +10,7 @@ use EMS\CommonBundle\Contracts\ExpressionServiceInterface;
 use EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface;
 use EMS\CommonBundle\Elasticsearch\Client;
 use EMS\CommonBundle\Helper\Text\Encoder;
+use EMS\CoreBundle\Core\ChoiceList\ChoiceListManager;
 use EMS\CoreBundle\Core\ContentType\FieldType\FieldTypeService;
 use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformer;
 use EMS\CoreBundle\Core\ContentType\Transformer\ContentTransformers;
@@ -88,6 +89,7 @@ use EMS\CoreBundle\Mcp\ElasticmsMcpToolUserService;
 use EMS\CoreBundle\Repository\AnalyzerRepository;
 use EMS\CoreBundle\Repository\AuthTokenRepository;
 use EMS\CoreBundle\Repository\ChannelRepository;
+use EMS\CoreBundle\Repository\ChoiceListRepository;
 use EMS\CoreBundle\Repository\ContentTypeRepository;
 use EMS\CoreBundle\Repository\DashboardRepository;
 use EMS\CoreBundle\Repository\EnvironmentRepository;
@@ -248,6 +250,10 @@ return static function (ContainerConfigurator $container) {
             service('emsco.logger'),
         ])
         ->tag('emsco.entity.service', ['priority' => 50]);
+
+    $services->set('emsco.choice_list.manager', ChoiceListManager::class)
+        ->args([service(ChoiceListRepository::class)])
+        ->tag('emsco.entity.service', ['priority' => 125]);
 
     $services->set('ems.form.field-type.manager', FieldTypeManager::class)
         ->args([

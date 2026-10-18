@@ -301,6 +301,7 @@ field:
     category: Category
     channel: Channel
     char_filter: 'Char filter'
+    choices: Choices
     choices_template: 'Choices template'
     circles: Circles
     circles_to: 'Circles to'
@@ -404,6 +405,7 @@ field:
     from_sender: 'From {sender}'
     gender: Gender
     group: Group
+    groups: Groups
     hash: 'Hash signature'
     header: Header
     header_allow_origin: 'The Access-Control-Allow-Origin header'
@@ -458,6 +460,7 @@ field:
     locale: Locale
     locale_preferred: 'Locale preferred'
     locale_preferred_first: 'Preferred locale first'
+    locales: Locales
     locked_by: 'Locked by'
     locked_until: 'Locked until'
     lowercase: Lowercase
@@ -611,6 +614,7 @@ field:
     user_uploaded: 'Uploaded by'
     username: Username
     username_or_email: 'Username or email address'
+    value: Value
     value_template: 'Value template'
     values: Values
     version_tag: 'Version tag'
@@ -625,6 +629,7 @@ field_type:
     asset: 'Asset field'
     checkbox: 'Checkbox field'
     choice: 'Choice field'
+    choice_list: 'Choice list'
     code: 'Code editor field'
     collection: 'Collection (manage array of children types)'
     collection_item: 'Collection item object (this message should neve seen anywhere)'
@@ -660,6 +665,7 @@ field_type:
     wysiwyg: 'WYSIWYG field'
 help:
     override_styles_set_config: 'override styles sets config'
+    sort_choice_list: 'Sort choices alphabetically. If not defined, the order defined in the choice list is preserved.'
 key:
     action: Action
     actions: Actions
@@ -691,6 +697,7 @@ key:
     by: By
     canceled: Canceled
     channels: Channels
+    choice_lists: 'Choice lists'
     ckeditor4: 'CK Editor 4'
     client: Client
     cluster: Cluster

@@ -306,6 +306,7 @@ field:
     category: Catégorie
     channel: Canal
     char_filter: 'Filtre de caractères'
+    choices: Choix
     choices_template: 'Modèle de choix'
     circles: Cercles
     circles_to: 'Cercles destinataires'
@@ -409,6 +410,7 @@ field:
     from_sender: 'De {sender}'
     gender: Genre
     group: Groupe
+    groups: Groupes
     hash: 'Signature du hash'
     header: En-tête
     header_allow_origin: 'L’en-tête Access-Control-Allow-Origin'
@@ -463,6 +465,7 @@ field:
     locale: Locale
     locale_preferred: 'Langue préférée'
     locale_preferred_first: 'Locale préférée en premier'
+    locales: 'Paramètres régionaux'
     locked_by: 'Verrouillé par'
     locked_until: 'Verrouillé jusqu’à'
     lowercase: Minuscules
@@ -616,6 +619,7 @@ field:
     user_uploaded: 'Uploadé par'
     username: "Nom d'utilisateur"
     username_or_email: 'Nom d’utilisateur ou adresse e-mail'
+    value: Valeur
     value_template: 'Modèle de valeur'
     values: Valeurs
     version_tag: 'Tag de version'
@@ -630,6 +634,7 @@ field_type:
     asset: 'Champ de fichier'
     checkbox: 'Case à cocher'
     choice: 'Champ de choix'
+    choice_list: 'Liste de choix'
     code: 'Éditeur de code'
     collection: 'Collection (gestion d’un tableau de types enfants)'
     collection_item: 'Objet d’une collection (ce message ne devrait jamais être affiché)'
@@ -665,6 +670,7 @@ field_type:
     wysiwyg: 'Éditeur de texte enrichi (WYSIWYG)'
 help:
     override_styles_set_config: 'remplacer la configuration des jeux de styles'
+    sort_choice_list: 'Trier les choix par ordre alphabétique. Si aucune définition n’est fournie, l’ordre établi dans la liste des choix est conservé.'
 key:
     action: Action
     actions: Actions
@@ -696,6 +702,7 @@ key:
     by: Par
     canceled: Annulée
     channels: Canaux
+    choice_lists: 'Listes de choix'
     ckeditor4: 'CK Editor 4'
     client: Client
     cluster: Cluster

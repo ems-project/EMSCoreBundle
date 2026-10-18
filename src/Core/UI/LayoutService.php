@@ -246,7 +246,8 @@ class LayoutService
         $contentMenu->addChild(t('key.content_types', [], 'emsco-core'), 'fa fa-sitemap', Routes::ADMIN_CONTENT_TYPE_INDEX);
         $contentMenu->addChild(t('key.dashboards', [], 'emsco-core'), 'fa fa-dashboard', Routes::DASHBOARD_ADMIN_INDEX);
         $contentMenu->addChild(t('key.forms', [], 'emsco-core'), 'fa fa-keyboard-o', Routes::ADMIN_FORM_INDEX);
-        $contentMenu->addChild(t('key.query_searches', [], 'emsco-core'), 'fa fa-search', 'ems_core_query_search_index');
+        $contentMenu->addChild(t('key.query_searches', [], 'emsco-core'), 'fa fa-search', Routes::ADMIN_QUERY_SEARCH_INDEX);
+        $contentMenu->addChild(t('key.choice_lists', [], 'emsco-core'), 'fa fa-list', Routes::CHOICE_LIST_ADMIN_INDEX);
         $contentMenu->addChild(t('key.wysiwyg', [], 'emsco-core'), 'fa fa-edit', Routes::WYSIWYG_INDEX);
         $contentMenu->addChild(t('key.i18n', [], 'emsco-core'), 'fa fa-language', Routes::I18N_INDEX);
 

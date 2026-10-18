@@ -76,6 +76,10 @@ class Routes
     final public const string DASHBOARD_ADMIN_DELETE = 'emsco_dashboard_admin_delete';
     final public const string DASHBOARD_ADMIN_DEFINE = 'emsco_dashboard_admin_define';
     final public const string DASHBOARD_ADMIN_UNDEFINE = 'emsco_dashboard_admin_undefine';
+    final public const string CHOICE_LIST_ADMIN_INDEX = 'emsco_choice_list_admin_index';
+    final public const string CHOICE_LIST_ADMIN_ADD = 'emsco_choice_list_admin_add';
+    final public const string CHOICE_LIST_ADMIN_EDIT = 'emsco_choice_list_admin_edit';
+    final public const string CHOICE_LIST_ADMIN_DELETE = 'emsco_choice_list_admin_delete';
     final public const string DASHBOARD = 'emsco_dashboard';
     final public const string DASHBOARD_HOME = 'emsco_dashboard_home';
     final public const string ANALYZER_INDEX = 'emsco_analyzer_index';

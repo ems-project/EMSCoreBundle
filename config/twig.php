@@ -87,6 +87,8 @@ return static function (ContainerConfigurator $container) {
             service('ems.service.revision'),
             service('form.factory'),
             service('request_stack'),
+            service('emsco.choice_list.manager'),
+            service('emsco.manager.user'),
         ])
         ->tag('twig.attribute_extension')
         ->tag('twig.runtime');

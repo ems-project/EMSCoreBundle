@@ -8,6 +8,7 @@ use EMS\CommonBundle\Contracts\Spreadsheet\SpreadsheetGeneratorServiceInterface;
 use EMS\CoreBundle\Controller\ActionController;
 use EMS\CoreBundle\Controller\Admin\AnalyzerController;
 use EMS\CoreBundle\Controller\Admin\ChannelController;
+use EMS\CoreBundle\Controller\Admin\ChoiceListController;
 use EMS\CoreBundle\Controller\Admin\EnvironmentController;
 use EMS\CoreBundle\Controller\Admin\EnvironmentManagedAliasController;
 use EMS\CoreBundle\Controller\Admin\FilterController;
@@ -134,6 +135,17 @@ return static function (ContainerConfigurator $container) {
         ->args([
             service('emsco.logger'),
             service('ems.dashboard.manager'),
+            service('emsco.data_table.factory'),
+        ])
+        ->call('setContainer')
+        ->tag('container.service_subscriber')
+        ->tag('controller.service_arguments');
+
+    $services->set(ChoiceListController::class)
+        ->public()
+        ->args([
+            service('emsco.logger'),
+            service('emsco.choice_list.manager'),
             service('emsco.data_table.factory'),
         ])
         ->call('setContainer')

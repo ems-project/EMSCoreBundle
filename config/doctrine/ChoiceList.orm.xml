@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/xml-mapping.html">
+  <entity name="EMS\CoreBundle\Entity\ChoiceList" table="choice_list">
+
+    <unique-constraints>
+      <unique-constraint name="name_uniq" columns="name"/>
+    </unique-constraints>
+
+    <id name="id" type="uuid" column="id">
+      <generator strategy="CUSTOM"/>
+      <custom-id-generator class="Ramsey\Uuid\Doctrine\UuidGenerator"/>
+    </id>
+
+    <field name="name" length="255" unique="true"/>
+    <field name="label" length="255"/>
+    <field name="labelTranslations" column="label_translations" type="json" nullable="true"/>
+    <field name="options" type="json" nullable="true"/>
+
+    <field name="created" type="datetime"/>
+    <field name="modified" type="datetime"/>
+    <lifecycle-callbacks>
+      <lifecycle-callback type="prePersist" method="updateModified" />
+      <lifecycle-callback type="preUpdate" method="updateModified" />
+    </lifecycle-callbacks>
+  </entity>
+</doctrine-mapping>

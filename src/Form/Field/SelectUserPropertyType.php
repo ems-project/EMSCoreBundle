@@ -63,6 +63,7 @@ final class SelectUserPropertyType extends AbstractType
             ->setDefaults([
                 'is_dynamic' => false,
                 'user_roles' => [],
+                'user_groups' => [],
                 'exclude_values' => [],
                 'event_dispatcher' => null,
                 'multiple' => false,
@@ -80,6 +81,7 @@ final class SelectUserPropertyType extends AbstractType
                     $options['user_property'],
                     $labelProperty,
                     $options['user_roles'],
+                    $options['user_groups'],
                     $options['exclude_values']
                 );
             })
@@ -96,14 +98,15 @@ final class SelectUserPropertyType extends AbstractType
 
     /**
      * @param string[] $roles
+     * @param string[] $groups
      * @param string[] $excludeValues
      *
      * @return array<int|string, int|string>
      */
-    private function getChoices(string $property, string $propertyLabel, array $roles, array $excludeValues): array
+    private function getChoices(string $property, string $propertyLabel, array $roles, array $groups, array $excludeValues): array
     {
         $accessor = new PropertyAccessor();
-        $users = $this->userService->findUsersWithRoles($roles);
+        $users = $this->userService->findUsersWithRolesOrGroups($roles, $groups);
 
         $choices = [];
 

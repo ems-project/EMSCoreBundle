@@ -59,6 +59,7 @@ use EMS\CoreBundle\Form\Field\EditImageType;
 use EMS\CoreBundle\Form\Field\EnvironmentPickerType;
 use EMS\CoreBundle\Form\Field\FieldTypePickerType;
 use EMS\CoreBundle\Form\Field\FormPickerType;
+use EMS\CoreBundle\Form\Field\GroupPickerType;
 use EMS\CoreBundle\Form\Field\IconPickerType;
 use EMS\CoreBundle\Form\Field\ObjectPickerType;
 use EMS\CoreBundle\Form\Field\QuerySearchPickerType;
@@ -94,6 +95,7 @@ use EMS\CoreBundle\Form\Submission\ProcessType;
 use EMS\CoreBundle\Form\View\Criteria\CriteriaFilterType;
 use EMS\CoreBundle\Repository\AnalyzerRepository;
 use EMS\CoreBundle\Repository\ChoiceListRepository;
+use EMS\CoreBundle\Repository\GroupRepository;
 use EMS\CoreBundle\Service\ContentTypeService;
 use EMS\CoreBundle\Service\EnvironmentService;
 
@@ -666,6 +668,10 @@ return static function (ContainerConfigurator $container) {
 
     $services->set('ems.form.field.analyzerpickertype', AnalyzerPickerType::class)
         ->args([service(AnalyzerRepository::class)])
+        ->tag('form.type');
+
+    $services->set('ems.form.field.grouppickertype', GroupPickerType::class)
+        ->args([service(GroupRepository::class)])
         ->tag('form.type');
 
     $services->set('ems.form.field.formpickertype', FormPickerType::class)

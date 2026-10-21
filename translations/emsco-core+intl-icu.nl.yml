@@ -607,6 +607,7 @@ field:
     uri: URI
     user: Gebruiker
     user_deleted: 'Verwijderd door'
+    user_groups: 'Gebruikersgroepen'
     user_impersonator: Impersonator
     user_modified: 'Gewijzigd door'
     user_property: Gebruikerseigenschap

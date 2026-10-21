@@ -612,6 +612,7 @@ field:
     uri: URI
     user: Utilisateur
     user_deleted: 'Supprimé par'
+    user_groups: 'Groupes d’utilisateurs'
     user_impersonator: Impersonnateur
     user_modified: 'Modifié par'
     user_property: 'Propriété utilisateur'

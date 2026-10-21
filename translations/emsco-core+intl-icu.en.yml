@@ -607,6 +607,7 @@ field:
     uri: URI
     user: User
     user_deleted: 'Deleted by'
+    user_groups: 'User groups'
     user_impersonator: Impersonator
     user_modified: 'Modified by'
     user_property: 'User property'

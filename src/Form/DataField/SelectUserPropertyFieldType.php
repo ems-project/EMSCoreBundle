@@ -8,6 +8,7 @@ use EMS\CoreBundle\Entity\DataField;
 use EMS\CoreBundle\Entity\FieldType;
 use EMS\CoreBundle\Entity\User;
 use EMS\CoreBundle\Form\Field\AnalyzerPickerType;
+use EMS\CoreBundle\Form\Field\GroupPickerType;
 use EMS\CoreBundle\Form\Field\RolePickerType;
 use EMS\CoreBundle\Form\Field\SelectUserPropertyType;
 use EMS\CoreBundle\Service\ElasticsearchService;
@@ -88,6 +89,7 @@ class SelectUserPropertyFieldType extends DataFieldType
             'allow_add' => $options['allow_add'],
             'user_property' => $options['user_property'],
             'user_roles' => $options['user_roles'],
+            'user_groups' => $options['user_groups'],
             'event_dispatcher' => $builder->getEventDispatcher(),
             'required' => false,
             'empty_data' => $options['multiple'] ? [] : null,
@@ -104,6 +106,7 @@ class SelectUserPropertyFieldType extends DataFieldType
                 'allow_add' => true,
                 'multiple' => false,
                 'user_roles' => [],
+                'user_groups' => [],
             ])
         ;
     }
@@ -134,7 +137,11 @@ class SelectUserPropertyFieldType extends DataFieldType
                 'required' => false,
                 'multiple' => true,
             ])
-        ;
+            ->add('user_groups', GroupPickerType::class, [
+                'required' => false,
+                'label' => t('field.user_groups', [], 'emsco-core'),
+                'multiple' => true,
+            ]);
 
         if ($optionsForm->has('mappingOptions')) {
             $optionsForm->get('mappingOptions')

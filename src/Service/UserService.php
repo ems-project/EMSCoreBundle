@@ -156,18 +156,19 @@ class UserService implements EntityServiceInterface
 
     /**
      * @param string[] $roles
+     * @param string[] $groups
      *
      * @return User[]
      */
-    public function findUsersWithRoles(array $roles): array
+    public function findUsersWithRolesOrGroups(array $roles, array $groups = []): array
     {
         $users = $this->userRepository->findBy(['enabled' => true]);
 
-        if ([] === $roles) {
+        if ([] === $roles && [] === $groups) {
             return $users;
         }
 
-        return \array_filter($users, fn (User $user) => \array_any($roles, $user->hasRole(...)));
+        return \array_filter($users, fn (User $user) => \array_any($roles, $user->hasRole(...)) || \in_array($user->getGroup()?->getName(), $groups, true));
     }
 
     #[\Override]

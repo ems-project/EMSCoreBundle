@@ -63,7 +63,7 @@ final readonly class TaskManager
      */
     public function getTaskManagers(): array
     {
-        $users = $this->userService->findUsersWithRoles([Roles::ROLE_TASK_MANAGER]);
+        $users = $this->userService->findUsersWithRolesOrGroups([Roles::ROLE_TASK_MANAGER]);
 
         return \array_reduce($users, static function ($carry, User $user) {
             $carry[$user->getUsername()] = $user;

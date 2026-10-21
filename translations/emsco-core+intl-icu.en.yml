@@ -786,7 +786,7 @@ message:
     drag_and_drop_file: 'Drag and drop your file here'
     drag_and_drop_files: 'Drag and drop your files here'
     duplicate_environment: 'Environment "{name}" already exists!'
-    duplicate_field: 'Duplicate <strong>{name{</strong>'
+    duplicate_field: 'Duplicate <strong>{name}</strong>'
     edit_field_name: 'Edit {name}'
     elasticsearch_index_missing: 'Elasticsearch index is missing !'
     email_crm_export: 'Please find attached the export of requested CRM submissions.'

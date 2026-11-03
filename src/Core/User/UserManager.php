@@ -107,6 +107,11 @@ class UserManager
         return $this->userRepository->findOneBy(['emailCanonical' => Canonicalizer::canonicalize($email)]);
     }
 
+    public function getUserByUsernameOrEmail(string $usernameOrEmail): ?User
+    {
+        return $this->userRepository->findUserByUsernameOrEmail($usernameOrEmail);
+    }
+
     public function getUserByUsername(string $username): ?User
     {
         return $this->userRepository->findOneBy(['usernameCanonical' => Canonicalizer::canonicalize($username)]);
@@ -202,6 +207,11 @@ class UserManager
         $this->hashPassword($user);
 
         $this->userRepository->save($user);
+    }
+
+    public function delete(User $user): void
+    {
+        $this->userRepository->remove($user);
     }
 
     public function updateEnabled(string $username, bool $enabled): void

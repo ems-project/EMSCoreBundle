@@ -20,6 +20,7 @@ use EMS\CoreBundle\Controller\Admin\McpPromptController;
 use EMS\CoreBundle\Controller\Admin\McpResourceController;
 use EMS\CoreBundle\Controller\Admin\McpToolController;
 use EMS\CoreBundle\Controller\Admin\QuerySearchController;
+use EMS\CoreBundle\Controller\Admin\UserController as AdminUserController;
 use EMS\CoreBundle\Controller\Admin\WysiwygController;
 use EMS\CoreBundle\Controller\Api\Admin\DocumentationController;
 use EMS\CoreBundle\Controller\Api\Admin\EntitiesController;
@@ -919,6 +920,17 @@ return static function (ContainerConfigurator $container) {
             '%ems_core.template_namespace%',
             service('emsco.core.content_type.field_type.service'),
             '%ems_core.date_time_format%',
+        ])
+        ->call('setContainer')
+        ->tag('container.service_subscriber')
+        ->tag('controller.service_arguments');
+
+    $services->set(AdminUserController::class)
+        ->public()
+        ->args([
+            service('emsco.manager.user'),
+            service('ems.group.manager'),
+            service('ems.service.wysiwyg_profile'),
         ])
         ->call('setContainer')
         ->tag('container.service_subscriber')

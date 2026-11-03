@@ -19,6 +19,9 @@ return function (RoutingConfigurator $routes): void {
         ->requirements(['_format' => 'html|json'])
         ->format('html');
 
+    $routes->import('@EMSCoreBundle/config/routing/api/user.php')
+        ->prefix('/api/admin/user');
+
     $routes->import('@EMSCoreBundle/config/routing/api/admin.php')
         ->prefix('/api/admin');
 

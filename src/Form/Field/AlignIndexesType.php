@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\Field;
 
 use EMS\CoreBundle\Service\AliasService;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AlignIndexesType extends Select2Type
+class AlignIndexesType extends ChoiceType
 {
     public function __construct(private readonly AliasService $aliasService)
     {
@@ -17,6 +18,7 @@ class AlignIndexesType extends Select2Type
     #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
+        parent::configureOptions($resolver);
         $managedAliases = $this->aliasService->getManagedAliases();
         $choices = [];
 
@@ -46,6 +48,9 @@ class AlignIndexesType extends Select2Type
                     'data-icon' => \sprintf('fa fa-code-fork text-%s', $managedAlias->getColor()),
                 ];
             },
+            'attr' => [
+                'class' => 'select2',
+            ],
         ]);
     }
 }

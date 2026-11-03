@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\Field;
 
 use EMS\CoreBundle\Repository\AnalyzerRepository;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function Symfony\Component\Translation\t;
 
-class AnalyzerPickerType extends Select2Type
+class AnalyzerPickerType extends ChoiceType
 {
     public function __construct(private readonly AnalyzerRepository $repository)
     {
@@ -19,6 +20,7 @@ class AnalyzerPickerType extends Select2Type
     #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
+        parent::configureOptions($resolver);
         $built_in = [
             'Standard' => 'standard',
             'Simple' => 'simple',
@@ -81,6 +83,7 @@ class AnalyzerPickerType extends Select2Type
             'label' => t('field.analyzer', [], 'emsco-core'),
             'attr' => [
                 'data-live-search' => true,
+                'class' => 'select2',
             ],
             'choice_value' => fn ($value) => $value,
             'choice_translation_domain' => false,

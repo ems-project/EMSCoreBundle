@@ -31,12 +31,6 @@ final class SelectUserPropertyType extends AbstractType
         return ChoiceType::class;
     }
 
-    #[\Override]
-    public function getBlockPrefix(): string
-    {
-        return 'select2';
-    }
-
     /**
      * @param FormBuilderInterface<mixed> $builder
      * @param array<string, mixed>        $options
@@ -69,6 +63,9 @@ final class SelectUserPropertyType extends AbstractType
                 'multiple' => false,
                 'label_property' => null,
                 'choice_translation_domain' => false,
+                'attr' => [
+                    'class' => 'select2',
+                ],
             ])
             ->setNormalizer('choices', function (Options $options, $value) {
                 if (true === $options['is_dynamic']) {

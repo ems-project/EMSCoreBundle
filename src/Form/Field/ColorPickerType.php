@@ -4,24 +4,17 @@ declare(strict_types=1);
 
 namespace EMS\CoreBundle\Form\Field;
 
-use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function Symfony\Component\Translation\t;
 
-/**
- * @extends AbstractType<mixed>
- */
-class ColorPickerType extends AbstractType
+class ColorPickerType extends ChoiceType
 {
-    public function getParent(): string
-    {
-        return Select2Type::class;
-    }
-
     #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
+        parent::configureOptions($resolver);
         $resolver->setDefaults([
             'choices' => [
                 t('color.red', [], 'emsco-core')->getMessage() => 'red',
@@ -45,6 +38,7 @@ class ColorPickerType extends AbstractType
             'choice_translation_domain' => 'emsco-core',
             'attr' => [
                 'data-live-search' => true,
+                'class' => 'select2',
             ],
             'choice_attr' => fn ($key) => [
                 'data-icon' => \sprintf('fa fa-square text-%s', $key ?? 'muted'),

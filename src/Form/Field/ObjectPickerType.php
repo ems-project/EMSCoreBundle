@@ -7,18 +7,25 @@ namespace EMS\CoreBundle\Form\Field;
 use EMS\CoreBundle\Entity\QuerySearch;
 use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Service\QuerySearchService;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ObjectPickerType extends Select2Type
+class ObjectPickerType extends ChoiceType
 {
     public function __construct(
         private readonly ObjectChoiceListFactory $choiceListFactory,
         private readonly QuerySearchService $querySearchService,
     ) {
         parent::__construct($choiceListFactory);
+    }
+
+    #[\Override]
+    public function getParent(): string
+    {
+        return ChoiceType::class;
     }
 
     #[\Override]
@@ -62,6 +69,9 @@ class ObjectPickerType extends Select2Type
             'querySearch' => null,
             'querySearchLabel' => null,
             'referrer-ems-id' => null,
+            'attr' => [
+                'class' => 'select2 objectpicker',
+            ],
         ]);
     }
 
@@ -87,12 +97,6 @@ class ObjectPickerType extends Select2Type
         $view->vars['attr']['data-query-search'] = $querySearch;
         $view->vars['attr']['data-query-search-label'] = $querySearchLabel;
         $view->vars['attr']['data-referrer-ems-id'] = $options['referrer-ems-id'] ?? false;
-    }
-
-    #[\Override]
-    public function getBlockPrefix(): string
-    {
-        return 'objectpicker';
     }
 
     private function getQuerySearchLabel(?string $querySearch): ?string

@@ -6,9 +6,10 @@ namespace EMS\CoreBundle\Form\Field;
 
 use EMS\CoreBundle\Service\WysiwygStylesSetService;
 use EMS\Helpers\Standard\Text;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class WysiwygStylesSetPickerType extends Select2Type
+class WysiwygStylesSetPickerType extends ChoiceType
 {
     public function __construct(private readonly WysiwygStylesSetService $stylesSetService)
     {
@@ -18,13 +19,14 @@ class WysiwygStylesSetPickerType extends Select2Type
     #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
+        parent::configureOptions($resolver);
         $choices = $this->getExistingStylesSets();
 
         $resolver->setDefaults([
             'choices' => $choices,
             'attr' => [
                 'data-live-search' => true,
-                'class' => 'wysiwyg-profile-picker',
+                'class' => 'wysiwyg-profile-picker select2',
             ],
             'choice_value' => fn ($value) => $value,
             'choice_translation_domain' => false,

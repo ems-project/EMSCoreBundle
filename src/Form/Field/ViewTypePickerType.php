@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace EMS\CoreBundle\Form\Field;
 
 use EMS\CoreBundle\Core\ContentType\ViewTypes;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ViewTypePickerType extends Select2Type
+class ViewTypePickerType extends ChoiceType
 {
     public function __construct(private readonly ViewTypes $viewTypes)
     {
@@ -17,10 +18,13 @@ class ViewTypePickerType extends Select2Type
     #[\Override]
     public function configureOptions(OptionsResolver $resolver): void
     {
+        parent::configureOptions($resolver);
+
         $resolver->setDefaults([
             'choices' => $this->viewTypes->getIds(),
             'attr' => [
                 'data-live-search' => true,
+                'class' => 'select2',
             ],
             'choice_label' => function (string $choice): string {
                 $viewType = $this->viewTypes->get($choice);

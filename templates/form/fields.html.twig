@@ -147,21 +147,6 @@
 	</div>
 {%- endblock colorpicker_widget %}
 
-{% block select2_widget -%}
-	{% set attr = attr|merge({class: (attr.class|default('') ~ ' select2')|trim}) %}
-	{{ block('choice_widget') }}
-{%- endblock select2_widget %}
-
-{% block objectpicker_widget -%}
-	{% set attr = attr|merge({class: (attr.class|default('') ~ ' objectpicker')|trim}) %}
-	{{ block('choice_widget') }}
-{%- endblock objectpicker_widget %}
-
-{% block selectpicker_widget -%}
-	{% set attr = attr|merge({class: (attr.class|default('') ~ ' selectpicker')|trim}) %}
-	{{ block('choice_widget') }}
-{%- endblock selectpicker_widget %}
-
 {%- block submit_ems_widget -%}
 	{%- set icon = icon|default(icons[name]|default('fa fa-save')) -%}
 	{%- set attr = attr|merge({class: attr.class|default('btn btn-primary btn-sm')}) -%}

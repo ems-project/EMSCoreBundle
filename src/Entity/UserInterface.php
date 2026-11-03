@@ -65,6 +65,13 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
 
     public function isExpired(): bool;
 
+    public function getGroup(): ?Group;
+
+    /**
+     * @return string[]
+     */
+    public function getExtraRoles(): array;
+
     /**
      * @return array{
      *     id: int|string,

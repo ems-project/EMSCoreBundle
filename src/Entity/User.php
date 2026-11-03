@@ -407,6 +407,14 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         return \array_values(\array_unique($roles));
     }
 
+    public function getExtraRoles(): array
+    {
+        $roles = $this->roles;
+        $groupRole = $this->getGroup()?->getRoles() ?? [];
+
+        return \array_diff($roles, $groupRole);
+    }
+
     #[\Override]
     public function hasRole(string $role): bool
     {

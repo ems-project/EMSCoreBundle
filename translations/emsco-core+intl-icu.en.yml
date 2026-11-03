@@ -377,6 +377,7 @@ field:
     expiration_date: 'Expiration Date'
     explicit_mode: 'Explicit mode'
     extra: Extra
+    extra_roles: 'Additional roles'
     field: Field
     field_type: "Field's type"
     fielddata: 'Field data'

@@ -73,8 +73,10 @@ class UserDataTableType extends AbstractEntityTableType
             $table->addColumnDefinition(new BoolTableColumn(t('field.enabled', [], 'emsco-core'), 'enabled'));
             if ($this->groupFeature) {
                 $table->addColumnDefinition(new EntityTableColumn(t('field.group', [], 'emsco-core'), 'group'));
+                $table->addColumnDefinition(new RolesTableColumn(t('field.extra_roles', [], 'emsco-core'), 'extraRoles'));
+            } else {
+                $table->addColumnDefinition(new RolesTableColumn(t('field.roles', [], 'emsco-core'), 'roles'));
             }
-            $table->addColumnDefinition(new RolesTableColumn(t('field.roles', [], 'emsco-core'), 'roles'));
             $table->addColumnDefinition(new DatetimeTableColumn(t('field.last_login', [], 'emsco-core'), 'lastLogin'));
             $table->addColumnDefinition(new DatetimeTableColumn(t('field.expiration_date', [], 'emsco-core'), 'expirationDate'));
 

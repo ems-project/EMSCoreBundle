@@ -21,6 +21,7 @@ final readonly class ElasticmsMcpServerFactory
         private ElasticmsMcpToolCustomService $toolCustomService,
         private ElasticmsMcpPromptCustomService $promptCustomService,
         private ElasticmsMcpResourceCustomService $customResourceService,
+        private ElasticmsMcpResourceChoiceListService $choiceListResourceService,
         private ElasticmsMcpResourceEnvironmentService $environmentResourceService,
         private ElasticmsMcpResourceContentTypeService $contentTypeResourceService,
         private ElasticmsMcpResourceWysiwygStyleService $wysiwygStyleResourceService,
@@ -49,6 +50,7 @@ final readonly class ElasticmsMcpServerFactory
         $this->promptCustomService->addCustomPrompts($builder);
 
         $this->customResourceService->addCustomResources($builder);
+        $this->choiceListResourceService->addChoiceListResources($builder);
         $this->environmentResourceService->addEnvironmentResources($builder);
         $this->contentTypeResourceService->addContentTypeResources($builder);
         $this->wysiwygStyleResourceService->addWysiwygStyleResources($builder);

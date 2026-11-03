@@ -20,6 +20,7 @@ class ChoiceList extends JsonDeserializer implements \JsonSerializable, EntityIn
     private UuidInterface $id;
     protected string $name;
     protected string $label;
+    protected string $description;
     /** @var array<string, array<string, string>>|null */
     protected ?array $labelTranslations;
     /** @var array<string, mixed> */
@@ -92,6 +93,16 @@ class ChoiceList extends JsonDeserializer implements \JsonSerializable, EntityIn
     public function setOptions(array $options): void
     {
         $this->options = $options;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
     }
 
     /**

@@ -8,6 +8,7 @@ use EMS\CoreBundle\Entity\ChoiceList;
 use EMS\CoreBundle\Form\Field\SubmitEmsType;
 use EMS\CoreBundle\Form\Form\TranslationsType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -32,6 +33,10 @@ final class ChoiceListType extends AbstractType
             ])
             ->add('label', null, [
                 'label' => t('field.label', [], 'emsco-core'),
+                'required' => true,
+            ])
+            ->add('description', TextareaType::class, [
+                'label' => t('field.description', [], 'emsco-core'),
                 'required' => true,
             ])
             ->add('labelTranslations', TranslationsType::class, [

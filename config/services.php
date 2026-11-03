@@ -77,6 +77,7 @@ use EMS\CoreBundle\Form\Factory\ObjectChoiceListFactory;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskFiltersType;
 use EMS\CoreBundle\Form\Revision\Task\RevisionTaskHandleType;
 use EMS\CoreBundle\Mcp\ElasticmsMcpPromptCustomService;
+use EMS\CoreBundle\Mcp\ElasticmsMcpResourceChoiceListService;
 use EMS\CoreBundle\Mcp\ElasticmsMcpResourceContentTypeService;
 use EMS\CoreBundle\Mcp\ElasticmsMcpResourceCustomService;
 use EMS\CoreBundle\Mcp\ElasticmsMcpResourceEnvironmentService;
@@ -831,6 +832,11 @@ return static function (ContainerConfigurator $container) {
             service('security.authorization_checker'),
         ]);
 
+    $services->set(ElasticmsMcpResourceChoiceListService::class)
+        ->args([
+            service(ChoiceListRepository::class),
+        ]);
+
     $services->set(ElasticmsMcpServerFactory::class)
         ->args([
             service('service_container'),
@@ -842,6 +848,7 @@ return static function (ContainerConfigurator $container) {
             service(ElasticmsMcpToolCustomService::class),
             service(ElasticmsMcpPromptCustomService::class),
             service(ElasticmsMcpResourceCustomService::class),
+            service(ElasticmsMcpResourceChoiceListService::class),
             service(ElasticmsMcpResourceEnvironmentService::class),
             service(ElasticmsMcpResourceContentTypeService::class),
             service(ElasticmsMcpResourceWysiwygStyleService::class),

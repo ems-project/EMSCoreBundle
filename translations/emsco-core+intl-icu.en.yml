@@ -685,6 +685,7 @@ key:
     all_tasks: 'All tasks'
     analyzers: Analyzers
     anonymous_user: 'Anonymous user'
+    api_documentation: 'API documentation'
     api_key: 'API key'
     applied: Applied
     ascending: Ascending

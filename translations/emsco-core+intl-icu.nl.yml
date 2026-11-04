@@ -685,6 +685,7 @@ key:
     all_tasks: 'Alle taken'
     analyzers: Analysatoren
     anonymous_user: 'Anonieme gebruiker'
+    api_documentation: 'API-documentatie'
     api_key: API-sleutel
     applied: Toegepast
     ascending: Oplopend

@@ -290,6 +290,14 @@ class LayoutService
             route: 'documentation'
         );
 
+        if ($this->isGranted(Roles::ROLE_ADMIN) && $this->isGranted(Roles::ROLE_API)) {
+            $menu->addChild(
+                label: t('key.api_documentation', [], 'emsco-core'),
+                icon: 'fa fa-cog',
+                route: Routes::DOCUMENTATION_API
+            );
+        }
+
         return $menu;
     }
 

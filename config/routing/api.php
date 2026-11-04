@@ -5,6 +5,7 @@ declare(strict_types=1);
 use EMS\CoreBundle\Controller\Api\Admin\DocumentationController;
 use EMS\CoreBundle\Controller\Api\AuthTokenLoginController;
 use EMS\CoreBundle\Controller\Api\UserController;
+use EMS\CoreBundle\Routes;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 return function (RoutingConfigurator $routes): void {
@@ -13,7 +14,7 @@ return function (RoutingConfigurator $routes): void {
         ->methods(['POST'])
         ->format('json');
 
-    $routes->add('emsco_documentation_api', '/admin/documentation/api.{_format}')
+    $routes->add(Routes::DOCUMENTATION_API, '/admin/documentation/api.{_format}')
         ->controller([DocumentationController::class, 'getDocumentation'])
         ->methods(['GET'])
         ->requirements(['_format' => 'html|json'])

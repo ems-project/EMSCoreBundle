@@ -179,4 +179,5 @@ class Routes
     final public const string MCP_RESOURCE_ADD = 'emsco_mcp_resource_add';
     final public const string MCP_RESOURCE_EDIT = 'emsco_mcp_resource_edit';
     final public const string MCP_RESOURCE_DELETE = 'emsco_mcp_resource_delete';
+    final public const string DOCUMENTATION_API = 'emsco_documentation_api';
 }

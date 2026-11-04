@@ -317,7 +317,6 @@ return static function (ContainerConfigurator $container) {
 
     $services->set(DocumentationController::class)
         ->args([
-            '%ems_core.template_namespace%',
             service('router'),
         ])
         ->call('setContainer')

@@ -690,6 +690,7 @@ key:
     all_tasks: 'Toutes les tâches'
     analyzers: Analyseurs
     anonymous_user: 'Utilisateur anonyme'
+    api_documentation: 'Documentation de l’API'
     api_key: 'Clé API'
     applied: Appliquée
     ascending: Ascendant

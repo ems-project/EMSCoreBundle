@@ -2,7 +2,7 @@
 
 {% block title %}{% if response %}{{ 'title.search_engine_results'|trans({'total': response.formattedTotal|default('key.not-applicable'|trans) }) }}{% else %}{{ 'title.search_result_error'|trans }}{%  endif %}{% endblock %}
 {% block pagetitle %}{{ 'key.search'|trans }}{% endblock %}
-{% block subtitle %}<small><span class=" badge">{% if response %}{{ 'field.total'|trans({'total': response.formattedTotal|default('key.not-applicable'|trans) }) }}{% endif %}</span></small>{% endblock %}
+{% block subtitle %}<small><span class=" badge">{% if response %}{{ 'title.total'|trans({'count': response.formattedTotal|default('key.not-applicable'|trans) }) }}{% endif %}</span></small>{% endblock %}
 
 
 {% block body %}

@@ -1241,6 +1241,12 @@ title:
     systems_status: "Systems' status"
     systems_status_tagline: 'Is everything working as expected?'
     task_modal: 'Task: {title}'
+    total: |-
+        {count, plural,
+            =0 {No result}
+            =1 {1 result}
+            other {# results}
+        }
     user_list: 'User list'
     user_not_in_group: 'User not in group'
     users_in_group: 'Users in group'

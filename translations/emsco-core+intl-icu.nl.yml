@@ -1241,6 +1241,12 @@ title:
     systems_status: Systeemstatus
     systems_status_tagline: 'Werkt alles zoals verwacht?'
     task_modal: 'Taak: {title}'
+    total: |-
+        {count, plural,
+            =0 {Geen resultaat}
+            =1 {1 resultaat}
+            other {# resultaten}
+        }
     user_list: Gebruikerslijst
     user_not_in_group: 'Gebruiker niet in groep'
     users_in_group: 'Gebruikers in groep'

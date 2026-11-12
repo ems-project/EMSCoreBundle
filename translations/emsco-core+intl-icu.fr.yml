@@ -1241,6 +1241,12 @@ title:
     systems_status: 'Statut des systèmes'
     systems_status_tagline: 'Est-ce que tout fonctionne comme prévu ?'
     task_modal: 'Tâche : {title}'
+    total: |-
+        {count, plural,
+            =0 {Pas de résultat}
+            =1 {1 résultat}
+            other {# résultats}
+        }
     user_list: 'Liste des utilisateurs'
     user_not_in_group: 'Utilisateur hors du groupe'
     users_in_group: 'Utilisateurs dans le groupe'

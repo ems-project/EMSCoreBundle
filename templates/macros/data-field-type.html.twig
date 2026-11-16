@@ -1303,7 +1303,7 @@
 
 {% block EMS_CoreBundle_Form_DataField_FormFieldType %}
     {% if dataField.fieldType.displayOptions.form is defined %}
-        {% set form = emsco_get_form(dataField.fieldType.displayOptions.form, dataField.rawData) %}
+        {% set form = emsco_get_form(dataField.fieldType.displayOptions.form, dataField.rawData|default([])) %}
         {% set errorMessage = 'view.macros.data-field-type.form.not-found' %}
     {% endif %}
     {% if form is defined and form %}

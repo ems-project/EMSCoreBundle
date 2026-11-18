@@ -250,6 +250,9 @@ class FileService implements EntityServiceInterface
             }
             $uploadedAsset->setUploaded($uploadedAsset->getSize());
             $uploadedAsset->setAvailable(true);
+        } elseif (0 === $size && $hash === \hash($hashAlgo, '')) {
+            $this->storageManager->saveContents('', $name, $type, StorageInterface::STORAGE_USAGE_ASSET);
+            $uploadedAsset->setAvailable(true);
         } else {
             $this->storageManager->initUploadFile($hash, $size, $name, $type, StorageInterface::STORAGE_USAGE_ASSET);
         }

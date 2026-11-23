@@ -22,10 +22,10 @@ readonly class JobExtension
      * @return array{ 'id': int, 'started': bool, 'done': bool, 'created': string, 'statusUrl': string }
      */
     #[AsTwigFunction(name: 'emsco_job')]
-    public function create(string $command, string $tag): array
+    public function create(string $command, ?string $tag = null): array
     {
         $user = $this->userManager->getAuthenticatedUser();
-        $job = $this->jobService->createCommand($user, $command, $tag);
+        $job = $this->jobService->createCommand($user, $command, '' === $tag ? null : $tag);
 
         return [
             'id' => $job->getId(),

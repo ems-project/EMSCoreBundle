@@ -183,10 +183,24 @@ class JobController extends AbstractController
                 throw new NotFoundHttpException(\sprintf('job with id %s not found', $jobId));
             }
             if ($job->getTag() !== $tag) {
-                throw new \RuntimeException(\sprintf('job tag mismatched %s', $job->getTag()));
+                $response = EmsCoreResponse::createJsonResponse($request, true, [
+                    'code' => 'JOB_TYPE_MISMATCH',
+                    'message' => \sprintf('job tag mismatched %s', $job->getTag()),
+                    'job_id' => (string) $job->getId(),
+                ]);
+                $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+                return $response;
             }
             if ($job->getStarted()) {
-                throw new \RuntimeException('job already started');
+                $response = EmsCoreResponse::createJsonResponse($request, true, [
+                    'code' => 'JOB_ALREADY_CLAIMED',
+                    'message' => \sprintf('job %d already claimed', $job->getId()),
+                    'job_id' => (string) $job->getId(),
+                ]);
+                $response->setStatusCode(Response::HTTP_CONFLICT);
+
+                return $response;
             }
         } else {
             $job = $this->jobService->nextJob($tag);
